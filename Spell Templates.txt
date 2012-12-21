@@ -1,0 +1,87 @@
+Arcane Dart:
+[REQ]
+resource(self, MP, 2)
+resource(self, AP, 5)
+inRange(self, target, 8)
+[RES]
+modifyResource(self, MP, -2)
+modifyResource(self, AP, -5)
+[HIT]
+calcHit(self, target)
+[ACT]
+modifyResource(target, HP, 0-scale(calcDamage(self, target, 2, 4, Arcane, HIT), 0.03, Spellpower))
+
+Arcane Warding:
+[REQ]
+resource(self, MP, 7)
+resource(self, AP, 9)
+[RES]
+modifyResource(self, MP, -7)
+modifyResource(self, AP, -9)
+[HIT]
+1
+[ACT]
+addStatus(self, "Arcane Ward", scale(3, 0.1, Spellpower, 6), scale(5, 0.01, Spellpower))
+
+Mystic Shield:
+[REQ]
+resource(self, MP, 15)
+resource(self, AP, 12)
+!onCooldown(self, "Mystic Shield")
+[RES]
+modifyResource(self, MP, -15)
+modifyResource(self, AP, -12)
+applyCooldown(self, "Mystic Shield", 4)
+[HIT]
+1
+[ACT]
+addStatus(self, "Mystic Shield", 5, scale(10, 0.06, Spellpower))
+
+Flicker of Life:
+[REQ]
+resource(self, MP, 15)
+resource(self, AP, 9)
+inRange(self, target, 6)
+[RES]
+modifyResource(self, MP, -15)
+modifyResource(self, AP, -9)
+[HIT]
+1
+[ACT]
+modifyResource(target, HP, scale(roll(10, 20), 0.02, Spellpower))
+
+Stone Guard:
+[REQ]
+resource(self, MP, 15)
+resource(self, AP, 9)
+inRange(self, target, 4)
+[HIT]
+1
+[ACT]
+modifyResource(self, MP, -15)
+modifyResource(self, AP, -9)
+addStatus(target, "Stone Guard", scale(4, 0.05, Spellpower, 6), scale(10, 0.008, Spellpower))
+
+Singe:
+[REQ]
+resource(self, MP, 6)
+resource(self, AP, 7)
+inRange(self, target, 7)
+[ACT]
+modifyResource(self, MP, -6)
+modifyResource(self, AP, -7)
+modifyResource(target, HP, 0-scale(calcDamage(self, target, 2, 9, Fire, calcHit(self, target), partial = 0.5, critical = 1.2), 0.05, Spellpower))
+
+Chill:
+[REQ]
+resource(self, MP, 10)
+resource(self, AP, 6)
+inRange(self, target, 6)
+[RES]
+modifyResource(self, MP, -10)
+modifyResource(self, AP, -6)
+[HIT]
+calcHit(self, target)
+[ACT]
+modifyResource(target, HP, 0-scale(calcDamage(self, target, 1, 12, Cold, HIT), 0.01, Spellpower))
+addStatus(target, "Chill", 2, scale(5, 0.012, Spellpower), FREQUENT)
