@@ -1,0 +1,42 @@
+boolean resource(Person target = self, int type, int quantity)
+// Types
+// 1 = AP
+// 2 = MP
+// 3 = HP
+// 4 = CD
+int modifyResource(Person target = self, int type, int value)
+
+boolean inRange(Person source, Person target, int range)
+boolean onCooldown(Person target, Ability a)
+int applyCooldown(Person target, Ability a, int duration)
+
+int calcHit(Person source, Person target)
+return hitType;
+// Hit Types
+// 0 = Miss
+// 1 = Partially resisted
+// 2 = Normal hit
+// 3 = Critical hit
+
+int calcDamage(Person source, Person target, int min, int max, float scale, Attribute scalesWith, int element, int hitType, float partial = 1, float critical = 1)
+// Elements
+// 1 = Fire
+// 2 = Cold
+// 3 = Divine
+// 4 = Shadow
+// 5 = Electric
+// 6 = Poison
+// 7 = Arcane
+// 8 = Bludgeoning
+// 9 = Slashing
+// 10 = Piercing
+
+// Attributes
+// 1 = Spellpower
+
+int roll(int min, int max)
+int displayAnimation(Coord source.location, Coord target.location, Animation anim)
+int addStatus(Person target, Status s, int duration, float magnitude, float chance = 1, boolean overwrite = true)
+int removeStatus(Person target, Status s)
+int scale(int value, int scale, Attribute a, int cap = 0)
+
