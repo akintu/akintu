@@ -36,7 +36,13 @@ int calcDamage(Person source, Person target, int min, int max, float scale, Attr
 
 int roll(int min, int max)
 int displayAnimation(Coord source.location, Coord target.location, Animation anim)
-int addStatus(Person target, Status s, int duration, float magnitude, float chance = 1, boolean overwrite = true)
+int addStatus(Person target, Status status, int duration, float magnitude=0, float chance = 1, boolean overwrite = true, boolean partial = false, boolean critical = false, HitType hit = NORMAL,
+              int min=0, int max=0)
 int removeStatus(Person target, Status s)
+int addTerrainStatus(TerrainStatus terrainStatus, int duration, Location location)
+// TerrainStatus shapes and sizes are determined on a case by case basis.
+int removeTerrainStatus(TerrainStatus terrainStatus, Location location, boolean dispelConnectedTiles=True)
 int scale(int value, int scale, Attribute a, int cap = 0)
-
+Set<Targets> getAffectedTargets(Location center, int radius, boolean selectMonstersOnly)
+// Used for AoE attacks.
+boolean calcPoisonHit(Person source, Person target, int poisonRating)

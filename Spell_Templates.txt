@@ -67,10 +67,13 @@ Singe:
 resource(self, MP, 6)
 resource(self, AP, 7)
 inRange(self, target, 7)
-[ACT]
+[RES]
 modifyResource(self, MP, -6)
 modifyResource(self, AP, -7)
-modifyResource(target, HP, 0-scale(calcDamage(self, target, 2, 9, Fire, calcHit(self, target), partial = 0.5, critical = 1.2), 0.05, Spellpower))
+[HIT]
+calcHit(self, target)
+[ACT]
+modifyResource(target, HP, 0-scale(calcDamage(self, target, 2, 9, Fire, HIT, partial = 0.5, critical = 1.2), 0.05, Spellpower))
 
 Chill:
 [REQ]
@@ -85,3 +88,220 @@ calcHit(self, target)
 [ACT]
 modifyResource(target, HP, 0-scale(calcDamage(self, target, 1, 12, Cold, HIT), 0.01, Spellpower))
 addStatus(target, "Chill", 2, scale(5, 0.012, Spellpower), FREQUENT)
+
+Shock:
+[REQ]
+resource(self, MP, 13)
+resource(self, AP, 7)
+inRange(self, target, 2)
+!onCooldown(self, "Shock")
+[RES]
+modifyResource(self, MP, -13)
+modifyResource(self, AP, -6)
+[HIT]
+calcHit(self, target)
+[ACT]
+modifyResource(target, HP, 0 - scale(calcDamage(self, target, min=15, max=22, element=Electric, hitType=hit), 0.014, Spellpower))
+applyCooldown(self, "Shock", 1)
+
+Suggest Laziness:
+[REQ]
+resource(self, MP, 5)
+resource(self, AP, 5)
+inRange(self, target, 12)
+[RES]
+modifyResource(self, MP -5)
+modifyResource(self, AP, -5)
+[HIT]
+calcHit(self, target)
+[ACT]
+addStatus(target, "Suggest: Laziness", 1, 0, OCCASIONAL)
+
+Stutter:
+[REQ]
+resource(self, MP, 14)
+resource(self, AP, 9)
+inRange(self, target, 6)
+[RES]
+modifyResource(self, MP, -14)
+modifyResource(self, AP, -9)
+[HIT]
+calcHit(self, target)
+[ACT]
+addStatus(target, "Stutter_spell_fail", 5, 10)
+addStatus(target, "Stutter_spellpower_reduction", 5, scale(5, 0.02, Spellpower))
+
+Cloud Vision:
+[REQ]
+resource(self, MP, 9)
+resource(self, AP, 9)
+inRange(self, target, 6)
+[RES]
+modifyResource(self, MP, -9)
+modifyResource(self, AP, -9)
+[HIT]
+calcHit(self, target)
+[ACT]
+addStatus(target, "Cloud Vision", scale(5, 0.02, Spellpower), scale(5, 0.012, Spellpower))
+addStatus(target, "Cloud Vision", scale(5, 0.02, Spellpower), scale(2.5, 0.012, Spellpower), partial = true)
+
+Haunt:
+[REQ]
+resource(self, MP, 20)
+resource(self, AP, 11)
+inRange(self, target, 5)
+!onCooldown(self, "Haunt")
+[RES]
+modifyResource(self, MP -20)
+modifyResource(self, AP, -11)
+applyCooldown(self, "Haunt", 3)
+[HIT]
+calcHit(self, target)
+[ACT]
+modifyResource(target, HP, 0 - scale(calcDamage(self, target, min=13, max=20, element=Shadow, hitType=hit), 0.01, Spellpower))
+addStatus(target, "Haunt", scale(3, 0.02, Spellpower, cap = 4), min=scale(2, 0.005, Spellpower), max=scale(8, 0.005, Spellpower))
+
+Zone of Silence:
+[REQ]
+resource(self, MP, 20)
+resource(self, AP, 6)
+inRange(self, target, 3)
+[RES]
+modifyResource(self, MP, -20)
+modifyResource(self, AP, -6)
+[ACT]
+removeTerrainStatus(terrainStatus="Zone of Silence", location=target.location)
+addTerrainStatus(terrainStatus="Zone of Silence", location=target.location, duration=scale(3, 0.011, Spellpower, cap=6)) 
+
+Blurry:
+[REQ]
+resource(self, MP, 6)
+resource(self, AP, 3)
+[RES]
+modifyResource(self, MP, -6)
+modifyResource(self, AP, -3)
+[ACT]
+addStatus(self, "Blurry", 1, scale(5, 0.02, Spellpower))
+
+Weapon Enhance:
+[REQ]
+resource(self, MP, 9)
+resource(self, AP, 5)
+inRange(self, target, 3)
+[RES]
+modifyResource(self, MP, -9)
+modifyResource(self, AP, -5)
+[ACT]
+addStatus(target, "Weapon_enhance_accuracy", scale(3, 0.03, Spellpower, cap=7), scale(3, 0.07, Spellpower))
+addStatus(target, "Weapon_enhance_critical_damage", scale(3, 0.03, Spellpower, cap=7), scale(5, 0.05, Spellpower))
+addStatus(target, "Weapon_enhance_armor_penetration", scale(3, 0.03, Spellpower, cap=7), scale(3, 0.07, Spellpower))
+addStatus(target, "Weapon_enhance_critical_chance", scale(3, 0.03, Spellpower, cap=7), scale(1, 0.035, Spellpower))
+
+Flaming Weapon:
+[REQ]
+resource(self, MP, 12)
+resource(self, AP, 8)
+inRange(self, target, 3)
+[RES]
+modifyResource(self, MP, -12)
+modifyResource(self, AP, -8)
+[ACT]
+addStatus(target, "Flaming Weapon", scale(3, 0.03, cap=7), min=scale(1, 0.01, Spellpower), max=scale(8, 0.01, Spellpower))
+
+Burst:
+[REQ]
+resource(self, MP, 12)
+resource(self, AP, 9)
+inRange(self, target, 8)
+!onCooldown(self, "Burst")
+[RES]
+modifyResource(self, MP -12)
+modifyResource(self, AP, -9)
+applyCooldown(self, "Burst", 1)
+[HIT]
+getAffectedTargets(target, radius=1, selectMonstersOnly=True)
+calcHit(self, target)
+[ACT]
+modifyResource(target, HP, 0 - scale(calcDamage(self, target, min=5, max=6, element=Arcane, hitType=hit), 0.005, Spellpower))
+## Apply the following to all targets -- Will need to track the hit for the main target seperately.
+modifyResource(targetSet, HP, 0-scale(calcDamage(self, targetSet, min=5, max=6, element=Arcane, hitType=hit), 0.005, Spellpower))
+
+Identification:
+# Needs out of combat use...
+[REQ]
+resource(self, MP, 5)
+resource(self, AP, 5)
+[RES]
+modifyResource(self, MP, -5)
+modifyResource(self, AP, -5)
+[ACT]
+addStatus(self, "Identification", 5, 5)
+
+Hovering Shield:
+[REQ]
+resource(self, MP, 8)
+resource(self, AP 5)
+[RES]
+modifyResource(self, MP -8)
+modifyResource(self, AP, -5)
+[ACT]
+addStatus(self, "Hovering Shield", 5, scale(12, 0.008, Spellpower))
+
+Fright:
+[REQ]
+resource(self, MP, 6)
+resource(self, AP, 3)
+!onCooldown(self, "Fright")
+inRange(self, target, 6)
+[RES]
+modifyResource(self, MP, -6)
+modifyResource(self, AP, -3)
+applyCooldown(self, "Fright", 1)
+[HIT]
+calcHit(self, target)
+[ACT]
+addStatus(target, "Fright_shadow_adjustment", 4, 20)
+addStatus(target, "Fright_attack_power_adjustment", 4, 5)
+
+Infection:
+[REQ]
+resource(self, MP, 7)
+resource(self, AP, 6)
+inRange(self, target, 1)
+[RES]
+modifyResource(self, MP, -7)
+modifyResource(self, AP, -6)
+[HIT]
+calcHit(self, target)
+calcPoisonHit(self, target, scale(35, 0.012, Spellpower))
+[ACT]
+addStatus(target, "Infection_damage", scale(4, 0.013, Spellpower), min=scale(7, 0.03, Spellpower), max=scale(10, 0.03, Spellpower))
+addStatus(target, "Infection_tolerance_adjustment", scale(4, 0.013, Spellpower), 5)
+
+Hands of Healing:
+[REQ]
+resource(self, MP, 22)
+resource(self, AP, 8)
+!onCooldown(self, "Hands of Healing")
+inRange(self, target, 1)
+[RES]
+modifyResource(self, MP, -22)
+modifyResource(self, AP, -8)
+applyCooldown(self, "Hands of Healing", 1)
+[ACT]
+modifyResource(target, HP, roll(scale(20, 0.02, Spellpower), scale(40, 0.02), Spellpower))
+
+Elemental Boon:
+[REQ]
+resource(self, MP, 8)
+resource(self, AP, 10)
+inRange(self, target, 6)
+[RES]
+modifyResource(self, MP, -8)
+modifyResource(self, AP, -10)
+[ACT]
+addStatus(target, "Elemental Boon", scale(6, 0.003, Spellpower, cap=7), scale(15, 0.007, Spellpower))
+
+
+
+
