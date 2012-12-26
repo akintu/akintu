@@ -115,7 +115,7 @@ modifyResource(self, AP, -5)
 [HIT]
 calcHit(self, target)
 [ACT]
-addStatus(target, "Suggest: Laziness", 1, 0, OCCASIONAL)
+addStatus(target, "Suggest Laziness", 1, 0, OCCASIONAL)
 
 Stutter:
 [REQ]
@@ -219,12 +219,12 @@ modifyResource(self, MP -12)
 modifyResource(self, AP, -9)
 applyCooldown(self, "Burst", 1)
 [HIT]
-getAffectedTargets(target, radius=1, selectMonstersOnly=True)
-calcHit(self, target)
+getAOETargets(target, radius=1, selectMonsters=True)
+calcHit(self, targetSet)
 [ACT]
 modifyResource(target, HP, 0 - scale(calcDamage(self, target, min=5, max=6, element=Arcane, hitType=hit), 0.005, Spellpower))
-## Apply the following to all targets -- Will need to track the hit for the main target seperately.
-modifyResource(targetSet, HP, 0-scale(calcDamage(self, targetSet, min=5, max=6, element=Arcane, hitType=hit), 0.005, Spellpower))
+## Apply the following to all targets
+modifyResource(targetSet, HP, 0-scale(calcDamage(self, targetSet, min=5, max=6, element=Arcane, hitType=hitSet), 0.005, Spellpower))
 
 Identification:
 # Needs out of combat use...
@@ -301,6 +301,111 @@ modifyResource(self, MP, -8)
 modifyResource(self, AP, -10)
 [ACT]
 addStatus(target, "Elemental Boon", scale(6, 0.003, Spellpower, cap=7), scale(15, 0.007, Spellpower))
+
+Torrent:
+[REQ]
+resource(self, MP, 25)
+resource(self, AP, 14)
+inRange(self, target, 14)
+!onCooldown(self, "Torrent")
+[RES]
+modifyResource(self, MP, -25)
+modifyResource(self, AP, -14)
+applyCooldown(self, "Torrent", 2)
+[HIT]
+getPathTargets(self.location, target.location, selectMonsters=True, selectFirstOnly=True)
+calcHit(self, target)
+[ACT]
+modifyResource(target, HP, 0 - scale(calcDamage(self, target, min=10, max=35, element=Cold, hitType=hit), 0.014, Spellpower))
+[COND]
+hit >= "normal hit"
+target.size < "huge"
+[ACT]
+knockback( self.location, target, 5)
+
+Lightning Bolt:
+[REQ]
+resource(self, MP, 32)
+resource(self, AP, 8)
+inRange(self, target, 6)
+!onCooldown(self, "Lightning Bolt")
+[RES]
+modifyResource(self, MP, -32)
+modifyResource(self, AP, -8)
+applyCooldown(self, "Lightning Bolt", 1)
+[HIT]
+getPathTargets(self.location, target.location, selectMonsters=True, selectFirstOnly=False)
+calcHit(self, targetSet)
+[ACT]
+modifyResource(targetSet, HP, 0 - scale(calcDamage(self, target, min=5, max=33, element=Electric, hitType=hitSet, partial=0.5, critical=1.3), 0.005, Spellpower))
+
+Suggest Cowardice:
+[REQ]
+resource(self, MP, 9)
+resource(self, AP, 10)
+inRange(self, target, 5)
+targetSize(target, LARGE, smallerThan=True)
+[RES]
+modifyResource(self, MP -9)
+modifyResource(self, AP, -10)
+[HIT]
+calcHit(self, target)
+[ACT]
+addStatus(target, "Suggest Cowardice", 1, 0, hit=RELIABLE, partial=True)
+
+Pit:
+[REQ]
+resource(self, MP, 8)
+resource(self, AP, 5)
+inRange(self, target, 5)
+!onCooldown(self, "Pit")
+[RES]
+modifyResource(self, MP, -8)
+modifyResource(self, AP, -5)
+applyCooldown(self, "Pit", 1)
+[ACT]
+removeTerrainStatus(terrainStatus="Pit", location=target, boolean dispelConnectedTiles=False)
+addTerrainStatus(terrainStatus="Pit", duration=4, location=target)
+
+Smoke Screen:
+[REQ]
+resource(self, MP, 18)
+resource(self, AP, 6)
+inRange(self, target, 4)
+!onCooldown(self, "Smoke Screen")
+[RES]
+modifyResource(self, MP, -18)
+modifyResrouce(self, AP, -6)
+applyCooldown(self, "Smoke Screen", 2)
+[ACT]
+removeTerrainStatus(terrainStatus="Smoke Screen", location=target, boolean dispelConnectedTiles=False)
+addTerrainStatus(terrainStatus="Smoke Screen", duration=scale(2, 0.03, Spellpower, cap=6), location=target)
+
+Shrink:
+[REQ]
+resource(self, MP, 10)
+resource(self, AP, 4)
+inRange(self, target, 4)
+!onCooldown(self, "Shrink")
+targetSize(target, SMALL, smallerThan=False)
+[RES]
+modifyResource(self, MP -10)
+modifyResource(self, AP, -4)
+applyCooldown(self, "Shrink", 2)
+[ACT]
+addStatus(target, "Shrink", scale(2, 0.025, Spellpower, cap=5), 10, partial=True)
+
+Frost Weapon:
+[REQ]
+resource(self, MP, 12)
+resource(self, AP, 8)
+inRange(self, target, 3)
+[RES]
+modifyResource(self, MP, -12)
+modifyResource(self, AP, -8)
+[ACT]
+addStatus(target, "Frost Weapon", scale(3, 0.03, Spellpower, cap=7), scale(roll(min=2, max=5), 0.019, Spellpower))
+
 
 
 

@@ -43,6 +43,8 @@ int addTerrainStatus(TerrainStatus terrainStatus, int duration, Location locatio
 // TerrainStatus shapes and sizes are determined on a case by case basis.
 int removeTerrainStatus(TerrainStatus terrainStatus, Location location, boolean dispelConnectedTiles=True)
 int scale(int value, int scale, Attribute a, int cap = 0)
-Set<Targets> getAffectedTargets(Location center, int radius, boolean selectMonstersOnly)
-// Used for AoE attacks.
+Set<Targets> getAOETargets(Location center, int radius, boolean selectMonsters)
+Set<Targets> getPathTargets(Location start, Location end, boolean selectMonsters, boolean selectFirstOnly=false)
 boolean calcPoisonHit(Person source, Person target, int poisonRating)
+int knockback(Location sourceOfImpact, Person target, int distance)
+boolean targetSize(Person target, Size size, boolean smallerThan)
