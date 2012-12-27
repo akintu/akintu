@@ -678,6 +678,70 @@ applyCooldown(self, "Trap Tar", 1)
 removeTrap(self.location)
 addTerrainStatus("Trap Tar", duration=0, location=self.location, trapRating=scale(30, 0.005, Cunning))
 
+// Wizard Skills
+
+Magic Guard:
+[REQ]
+resource(self, AP, 3)
+[RES]
+modifyResource(self, AP, -3)
+[ACT]
+addStatus(self, "Magic Guard", duration=1)
+endTurn(self)
+
+Gather:
+[REQ]
+resource(self, AP, 7)
+[RES]
+modifyResource(self, AP, -7)
+[ACT]
+addStatus(self, "Gather", duration=1)
+
+#Apply Salve:
+#[REQ]
+#resource(self, AP, 7)
+#!onCooldown(self, "Apply Salve")
+#inRange(self, target, 1)
+# // Has Potion??? TODO
+#[RES]
+#modifyResource(self, AP, -7)
+#applyCooldown(self, "Apply Salve", 1)
+#[ACT]
+# todo!
+#
+
+Spell Sight:
+[REQ]
+resource(self, AP, 3)
+!onCooldown(self, "Spell Sight")
+[RES]
+modifyResource(self, AP, -3)
+applyCooldown(self, "Spell Sight", 2)
+[ACT]
+addStatus(self, "Spell Sight", duration=0)
+
+Runic Dust:
+[REQ]
+resource(self, AP, 5)
+inRange(self, target, 1)
+!onCooldown(self, "Runic Dust")
+[RES]
+modifyResource(self, AP, -5)
+applyCooldown(self, "Runic Dust", 1)
+[ACT]
+addStatus(target, "Runic Dust", duration=3, magnitude=(2 + self.level))
+
+Befuddle:
+[REQ]
+resource(self, AP, 12)
+inRange(self, target, 3)
+!onCooldown(self, "Befuddle")
+[RES]
+modifyResource(self, AP, -12)
+applyCooldown(self, "Befuddle", 4)
+[ACT]
+modifyThreat(self, target, 0.7)
+addStatus(target, "Stun", duration=1, chance=RARE)
 
 
 

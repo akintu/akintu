@@ -84,6 +84,9 @@ int setMovementCost(Person target, int newCost, int numberOfMoves=1, int duratio
   // duration to non-zero values is undefined.  inStealth determines if the movement cost change only affects stealthed movement if set to True.
 int movePlayer(Person player, Location destination, boolean instant=False)
   // if instant is left as False, will show player moving animation to reach the destination, otherwise it will be instant.
+int endTurn(Person player)
+int modifyThreat(Person source, Person target, float threatAdjustment)
+
 
 [COND ONLY]
 boolean isHit(HitType hit, HitType requiredHit, boolean greaterThan=True)
