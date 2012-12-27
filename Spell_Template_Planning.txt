@@ -1,95 +1,89 @@
-boolean resource(Person target=self, int type, int quantity, int modifier=0)
-// Types
-// 1 = AP
-// 2 = MP
-// 3 = HP
-// 4 = CD
-int modifyResource(Person target=self, int type, int value, int modifier=0)
-
+[REQ]
+boolean resource(Person target=self, Resource type, int quantity, int modifier=0)
+  // Types
+  //  AP
+  //  MP
+  //  HP
 boolean inRange(Person source, Person target, int range)
 boolean onCooldown(Person target, Ability a)
+boolean targetSize(Person target, Size size, boolean smallerThan)
+boolean usingWeapon(Person player, WeaponType weapon)
+  // Weapon Types
+  // "Sword"
+  // "Club"
+  // "Shortbow"
+  // "Longbow"
+  // "Bow" ( Equals ("Shortbow" || "Longbow"))
+  // "Crossbow"
+boolean usingArmor(Person player, ArmorLevel armor)
+  // ArmorLevels
+  // "Heavy"
+  // "Medium"
+  // "Light"
+  // "Robes"
+float numberOfStackedStatus(Person player, Status status)
+  // returns the number of the same status on the player.  Is stored in variable "stack". 
+  // Rerturn is used as a float to prevent repeated casting for division/multiplication but will really only return integers.
+Person facingMeleeEnemy(Person player)
+  // If the player is directly facing an enemy character in melee, return that character.  Otherwise return None.
+boolean canReach(Person player, Location target, int tilesAllowed)
+  // returns True if the player can reach the destination within the given number of tiles.
+
+[RES]
+int modifyResource(Person target=self, int type, int value, int modifier=0)
 int applyCooldown(Person target, Ability a, int duration)
 
-int calcHit(Person source, Person target, AttackType type, int rating=0, int modifier=0)
-// AttackType types:
-// Physical (Dodge vs. Accuracy)
-// Magical  (Magic Resist vs. Spellpower)
-// Poison   (Poison Tolerance vs. Poison Rating)
-// Trap     (Trap Evade vs. Trap Rating)
+[HIT]
+HitType calcHit(Person source, Person target, AttackType type, int rating=0, int modifier=0)
+  // AttackType types:
+  // Physical (Dodge vs. Accuracy)
+  // Magical  (Magic Resist vs. Spellpower)
+  // Poison   (Poison Tolerance vs. Poison Rating)
+  // Trap     (Trap Evade vs. Trap Rating)
+  // HitType types:
+  // "Miss"
+  // "Partially resisted"
+  // "Normal hit"
+  // "Critical hit"
 
-return hitType;
-// Hit Types
-// 0 = Miss
-// 1 = Partially resisted
-// 2 = Normal hit
-// 3 = Critical hit
-
+[ACT]
 int calcDamage(Person source, Person target, int min, int max, Element element, int hitType, float partial=1, float critical=1)
-// Elements
-// 1 = Fire
-// 2 = Cold
-// 3 = Divine
-// 4 = Shadow
-// 5 = Electric
-// 6 = Poison
-// 7 = Arcane
-// 8 = Bludgeoning -- Not used here; should call WeaponAttack 
-// 9 = Slashing -- Not used here; should call WeaponAttack 
-// 10 = Piercing -- Not used here; should call WeaponAttack 
-
-// Attributes
-// 1 = Spellpower
-// 2 = Strength
-
+  // Elements:
+  // "Fire"
+  // "Cold"
+  // "Divine"
+  // "Shadow"
+  // "Electric"
+  // "Poison"
+  // "Arcane"
+  // "Bludgeoning" -- Not typically used here; should call WeaponAttack 
+  // "Slashing" -- Not typically used here; should call WeaponAttack 
+  // "Piercing" -- Not typically used here; should call WeaponAttack 
+  // Attributes:
+  // "Spellpower"
+  // "Strength"
+  // "Cunning"
 int roll(int min, int max)
-int displayAnimation(Coord source.location, Coord target.location, Animation anim)
 int addStatus(Person target, Status status, int duration, float magnitude=0, float chance = 1, boolean overwrite = true, boolean partial = false, boolean critical = false, HitType hit = NORMAL,
               int min=0, int max=0)
 int removeStatus(Person target, Status s)
-int addTerrainStatus(TerrainStatus terrainStatus, int duration, Location location)
-// TerrainStatus shapes and sizes are determined on a case by case basis.
+int removeTrap(Location location)
+int addTerrainStatus(TerrainStatus terrainStatus, int duration, Location location, int trapRating=0, int minDamage=0, int maxDamage=0, Element element=None)
+  // TerrainStatus shapes and sizes are determined on a case by case basis.
 int removeTerrainStatus(TerrainStatus terrainStatus, Location location, boolean dispelConnectedTiles=True)
 int scale(int value, int scale, Attribute a, int cap = 0)
 Set<Targets> getAOETargets(Location center, int radius, boolean selectMonsters)
 Set<Targets> getPathTargets(Location start, Location end, boolean selectMonsters, boolean selectFirstOnly=false)
-boolean calcPoisonHit(Person source, Person target, int poisonRating)
 int knockback(Location sourceOfImpact, Person target, int distance)
-
-boolean targetSize(Person target, Size size, boolean smallerThan)
-
-boolean isHit(HitType hit, HitType requiredHit, boolean greaterThan=True)
-
 int weaponAttack(Person source, Person target, int hitType, float forceMod=1, float criticalChanceMod=1, float criticalDamageMod=1, int armorPenetrationMod=0, Element elementOverride=None,
                  float overallDamageMod=1)
-// Method calls calcDamage internally. 
-// Element override will replace the physical damage of the attack with a different element if such is provided.  This will usually be None as this behavior is not common.
-
+  // Method calls calcDamage internally. 
+  // Element override will replace the physical damage of the attack with a different element if such is provided.  This will usually be None as this behavior is not common.
 int setMovementCost(Person target, int newCost, int numberOfMoves=1, int duration=0, boolean inStealth=False)
-// By default only affects the next movement action.  If duration is set instead, it will last until that many turns have expired.  Behavior for setting both numberOfMoves and
-// duration to non-zero values is undefined.  inStealth determines if the movement cost change only affects stealthed movement if set to True.
-
-boolean usingWeapon(Person player, WeaponType weapon)
-// Weapon Types
-// "Sword"
-// "Club"
-// etc.
-
-boolean usingArmor(Person player, ArmorLevel armor)
-// ArmorLevels
-// "Heavy"
-// "Medium"
-// "Light"
-// "Robes"
-
-float numberOfStackedStatus(Person player, Status status)
-// returns the number of the same status on the player.  Is stored in variable "stack". 
-// Rerturn is used as a float to prevent repeated casting for division/multiplication but will really only return integers.
-
-Person facingMeleeEnemy(Person player)
-// If the player is directly facing an enemy character in melee, return that character.  Otherwise return None.
-
-boolean canReach(Person player, Location target, int tilesAllowed)
-// returns True if the player can reach the destination within the given number of tiles.
-
+  // By default only affects the next movement action.  If duration is set instead, it will last until that many turns have expired.  Behavior for setting both numberOfMoves and
+  // duration to non-zero values is undefined.  inStealth determines if the movement cost change only affects stealthed movement if set to True.
 int movePlayer(Person player, Location destination, boolean instant=False)
-// if instant is left as False, will show player moving animation to reach the destination, otherwise it will be instant.
+  // if instant is left as False, will show player moving animation to reach the destination, otherwise it will be instant.
+
+[COND ONLY]
+boolean isHit(HitType hit, HitType requiredHit, boolean greaterThan=True)
