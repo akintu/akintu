@@ -549,4 +549,135 @@ weaponAttack(self, enemy, hit, overallDamageMod=1.2)
 usingArmor(self, "Heavy")
 modifyResource(enemy, HP, 0 - calcDamage(self, target, min=(self.totalDR * 0.4), max=(self.totalDR * 0.4), element=Bludgeoning, hitType=hit))
 
+// Ranger Skills
+
+Expert Notch:
+[REQ]
+resource(self, AP, 7)
+inRange(self, target, self.weaponRange)
+usingWeapon(self, "Bow")
+[RES]
+modifyResource(self, AP -7)
+[HIT]
+calcHit(self, target, "Physical", modifier=6)
+[ACT]
+weaponAttack(self, target, hit)
+
+Trap Shrapnel:
+[REQ]
+resource(self, AP, 5)
+!onCooldown(self, "Trap Shrapnel")
+[RES]
+modifyResource(self, AP, -5)
+applyCooldown(self, "Trap Shrapnel", 1)
+[ACT]
+removeTrap(self.location)
+addTerrainStatus("Trap Shrapnel", duration=0, self.location, minDamage=scale(5, 0.014, Cunning), maxDamage=scale(12, 0.014, Cunning), trapRating=scale(13, 0.015, Cunning)) 
+
+Tunnel Vision:
+[REQ]
+resource(self, AP, 10)
+!onCooldown(self, "Tunnel Vision")
+[RES]
+modifyResource(self, AP -10)
+applyCooldown(self, "Tunnel Vision", 5)
+[ACT]
+addStatus(self, "Tunnel Vision", duration=4)
+
+Trap Sticky:
+[REQ]
+resource(self, AP, 3)
+!onCooldown(self, "Trap Sticky")
+[RES]
+modifyResource(self, AP, -3)
+applyCooldown(self, "Trap Sticky", 1)
+[ACT]
+removeTrap(self.location)
+addTerrainStatus("Trap Sticky", duration=0, location=self.location, trapRating=scale(20, 0.007, Cunning))
+
+Balm:
+[REQ]
+resource(self, AP, 6)
+!onCooldown(self, "Balm")
+[RES]
+modifyResource(self, AP, -6)
+applyCooldown(self, "Balm", 2)
+[ACT]
+modifyResource(self, HP, (self.maxHP * 0.05)) 
+
+Rapid Reload:
+[REQ]
+resource(self, AP, 3)
+inRange(self, target, self.weaponRange)
+weaponEquipped(self, "Crossbow")
+[RES]
+modifyResource(self, AP, -3)
+[HIT]
+calcHit(self, target, "Physical", modifier=-8)
+[ACT]
+weaponAttack(self, target, hit)
+
+Ranger's Aim:
+[REQ]
+resource(self, AP, 2)
+!onCooldown(self, "Ranger's Aim")
+[RES]
+modifyResource(self, AP, -2)
+applyCooldown(self, "Ranger's Aim", 1)
+[ACT]
+addStatus(self, "Ranger's Aim", duration=1)
+
+Trap Boulder-Pit:
+[REQ]
+resource(self, AP, 5)
+!onCooldown(self, "Trap Boulder-Pit")
+[RES]
+modifyResource(self, AP, -5)
+applyCooldown(self, "Trap Boulder-Pit", 1)
+[ACT]
+removeTrap(self.location)
+addTerrainStatus("Trap Boulder-Pit", duration=0, location=self.location, minDamage=scale(3, 0.02, Cunning), maxDamage=scale(8, 0.02, Cunning), element="Bludgeoning", trapRating=scale(25, 0.006, Cunning))
+
+Defensive Slash:
+[REQ]
+resource(self, AP, 10)
+inRange(self, target, 1)
+[RES]
+modifyResource(self, AP, -10)
+[HIT]
+calcHit(self, target, "Physical", modifier=-3)
+[ACT]
+weaponAttack(self, target, hit, overallDamageMod=0.75)
+addStatus(self, "Defensive Slash", duration=2, hit=hit)
+
+Double-Shot:
+[REQ]
+resource(self, AP, 7)
+inRange(self, target, self.weaponRange)
+!onCooldown(self, "Double-Shot")
+[RES]
+modifyResource(self, AP, -7)
+applyCooldown(self, "Double-Shot", 1)
+[HIT]
+calcHit(self, target, "Physical")
+[ACT]
+weaponAttack(self, target, hit, criticalChanceMod=0, overallDamageMod=1.05)
+[HIT]
+calcHit(self, target, "Physical")
+[ACT]
+weaponAttack(self, target, hit, criticalChanceMod=0, overallDamageMod=1.05)
+
+Trap Tar:
+[REQ]
+resource(self, AP, 5)
+!onCooldown(self, "Trap Tar")
+[RES]
+modifyResource(self, AP, -5)
+applyCooldown(self, "Trap Tar", 1)
+[ACT]
+removeTrap(self.location)
+addTerrainStatus("Trap Tar", duration=0, location=self.location, trapRating=scale(30, 0.005, Cunning))
+
+
+
 
