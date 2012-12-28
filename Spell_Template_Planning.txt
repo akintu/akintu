@@ -21,6 +21,7 @@ boolean usingArmor(Person player, ArmorLevel armor)
   // "Medium"
   // "Light"
   // "Robes"
+boolean dualWielding(Person player)
 float numberOfStackedStatus(Person player, Status status)
   // returns the number of the same status on the player.  Is stored in variable "stack". 
   // Rerturn is used as a float to prevent repeated casting for division/multiplication but will really only return integers.
@@ -28,13 +29,20 @@ Person facingMeleeEnemy(Person player)
   // If the player is directly facing an enemy character in melee, return that character.  Otherwise return None.
 boolean canReach(Person player, Location target, int tilesAllowed)
   // returns True if the player can reach the destination within the given number of tiles.
-
+boolean stealthed(Person player)
+  // returns True if any kind of stealth is active on the player (but not including invisibility.)
+boolean backstabPosition(Person source, Person target, boolean rangedBackstab=false)
+  // returns True if in melee range and facing the back of target (if rangedBackstab == True, melee requirement is lifted)
+boolean hasPotion(Person target)
+  // returns True if the target has a potion that can be stolen (should only be used on monster-targets).
+  
+  
 [RES]
 int modifyResource(Person target=self, int type, int value, int modifier=0)
 int applyCooldown(Person target, Ability a, int duration)
 
 [HIT]
-HitType calcHit(Person source, Person target, AttackType type, int rating=0, int modifier=0)
+HitType calcHit(Person source, Person target, AttackType type, int rating=0, int modifier=0, float critMod=0)
   // AttackType types:
   // Physical (Dodge vs. Accuracy)
   // Magical  (Magic Resist vs. Spellpower)
@@ -45,7 +53,9 @@ HitType calcHit(Person source, Person target, AttackType type, int rating=0, int
   // "Partially resisted"
   // "Normal hit"
   // "Critical hit"
-
+HitType rollSuccess(float chanceOfSuccess)
+  // rolls between 0 and 100.  If the roll is <= chanceOfSuccess, returns "Normal Hit", otherwise "Miss". 
+  
 [ACT]
 int calcDamage(Person source, Person target, int min, int max, Element element, int hitType, float partial=1, float critical=1)
   // Elements:
@@ -63,10 +73,11 @@ int calcDamage(Person source, Person target, int min, int max, Element element, 
   // "Spellpower"
   // "Strength"
   // "Cunning"
-int roll(int min, int max)
 int addStatus(Person target, Status status, int duration, float magnitude=0, float chance = 1, boolean overwrite = true, boolean partial = false, boolean critical = false, HitType hit = NORMAL,
-              int min=0, int max=0)
+              int min=0, int max=0, Person relativeTarget=None)
 int removeStatus(Person target, Status s)
+int removeStealth(Person target)
+  // Removes any version of stealth from the target (but not invisibility.)
 int removeTrap(Location location)
 int addTerrainStatus(TerrainStatus terrainStatus, int duration, Location location, int trapRating=0, int minDamage=0, int maxDamage=0, Element element=None)
   // TerrainStatus shapes and sizes are determined on a case by case basis.
@@ -74,9 +85,9 @@ int removeTerrainStatus(TerrainStatus terrainStatus, Location location, boolean 
 int scale(int value, int scale, Attribute a, int cap = 0)
 Set<Targets> getAOETargets(Location center, int radius, boolean selectMonsters)
 Set<Targets> getPathTargets(Location start, Location end, boolean selectMonsters, boolean selectFirstOnly=false)
-int knockback(Location sourceOfImpact, Person target, int distance)
-int weaponAttack(Person source, Person target, int hitType, float forceMod=1, float criticalChanceMod=1, float criticalDamageMod=1, int armorPenetrationMod=0, Element elementOverride=None,
-                 float overallDamageMod=1)
+int knockback(Location sourceOfImpact, Person target, int distance, boolean ignoreResistance=False)
+int weaponAttack(Person source, Person target, int hitType, float forceMod=1, float criticalDamageMod=1, int armorPenetrationMod=0, Element elementOverride=None, boolean noCounter=False,
+                 float overallDamageMod=1, int mightMod=0)
   // Method calls calcDamage internally. 
   // Element override will replace the physical damage of the attack with a different element if such is provided.  This will usually be None as this behavior is not common.
 int setMovementCost(Person target, int newCost, int numberOfMoves=1, int duration=0, boolean inStealth=False)
@@ -86,7 +97,10 @@ int movePlayer(Person player, Location destination, boolean instant=False)
   // if instant is left as False, will show player moving animation to reach the destination, otherwise it will be instant.
 int endTurn(Person player)
 int modifyThreat(Person source, Person target, float threatAdjustment)
-
+int stealPotion(Person reciever, Person victim)
+  // removes a stealable potion from the victim if it is carrying one, and gives it to the reciever.  Is only used to steal a potion from monster-characters.
 
 [COND ONLY]
 boolean isHit(HitType hit, HitType requiredHit, boolean greaterThan=True)
+boolean isClass(Person player, Class class)
+int roll(int min, int max)
