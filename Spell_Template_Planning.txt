@@ -1,13 +1,13 @@
 [REQ]
-boolean resource(Person target=self, Resource type, int quantity, int modifier=0)
+boolean instance resource(Person self, Resource type, int quantity, int modifier=0)
   // Types
   //  AP
   //  MP
   //  HP
-boolean inRange(Person source, Person target, int range)
-boolean onCooldown(Person target, Ability a)
-boolean targetSize(Person target, Size size, boolean smallerThan)
-boolean usingWeapon(Person player, WeaponType weapon)
+boolean inRange(Person self, Person target, int range)
+boolean onCooldown(Person self, Ability a)
+boolean sizeCompare(Person self, Size size, boolean smallerThan)
+boolean usingWeapon(Person self, WeaponType weapon)
   // Weapon Types
   // "Sword"
   // "Club"
@@ -15,34 +15,38 @@ boolean usingWeapon(Person player, WeaponType weapon)
   // "Longbow"
   // "Bow" ( Equals ("Shortbow" || "Longbow"))
   // "Crossbow"
-boolean usingArmor(Person player, ArmorLevel armor)
+  // "Axe"
+boolean usingArmor(Person self, ArmorLevel armor)
   // ArmorLevels
   // "Heavy"
   // "Medium"
   // "Light"
   // "Robes"
-boolean dualWielding(Person player)
-float numberOfStackedStatus(Person player, Status status)
+boolean usingShield(Person self, ShieldType shield)
+  // ShieldTypes
+  // "Heavy"
+  // "Medium"
+  // "Any" (Heavy || Medium)
+boolean isDualWielding(Person self)
+float getNumberOfStackedStatus(Person self, Status status)
   // returns the number of the same status on the player.  Is stored in variable "stack". 
   // Rerturn is used as a float to prevent repeated casting for division/multiplication but will really only return integers.
-Person facingMeleeEnemy(Person player)
-  // If the player is directly facing an enemy character in melee, return that character.  Otherwise return None.
-boolean canReach(Person player, Location target, int tilesAllowed)
+boolean canReach(Person self, Location target, int tilesAllowed)
   // returns True if the player can reach the destination within the given number of tiles.
-boolean stealthed(Person player)
+boolean isStealthed(Person self)
   // returns True if any kind of stealth is active on the player (but not including invisibility.)
-boolean backstabPosition(Person source, Person target, boolean rangedBackstab=false)
+boolean inBackstabPosition(Person self, Person target, boolean rangedBackstab=false)
   // returns True if in melee range and facing the back of target (if rangedBackstab == True, melee requirement is lifted)
-boolean hasPotion(Person target)
+boolean hasPotion(Person self)
   // returns True if the target has a potion that can be stolen (should only be used on monster-targets).
-  
+boolean isClass(Person self, Class class)
   
 [RES]
-int modifyResource(Person target=self, int type, int value, int modifier=0)
-int applyCooldown(Person target, Ability a, int duration)
+void modifyResource(Combat cls, Person target, int type, int value, int modifier=0)
+void applyCooldown(Combat cls, Person target, Ability a, int duration)
 
 [HIT]
-HitType calcHit(Person source, Person target, AttackType type, int rating=0, int modifier=0, float critMod=0)
+HitType[] calcHit(Combat cls, Person source, Person target, AttackType type, int rating=0, int modifier=0, float critMod=0)
   // AttackType types:
   // Physical (Dodge vs. Accuracy)
   // Magical  (Magic Resist vs. Spellpower)
@@ -53,11 +57,11 @@ HitType calcHit(Person source, Person target, AttackType type, int rating=0, int
   // "Partially resisted"
   // "Normal hit"
   // "Critical hit"
-HitType rollSuccess(float chanceOfSuccess)
+HitType[] rollSuccess(Dice cls, float chanceOfSuccess)
   // rolls between 0 and 100.  If the roll is <= chanceOfSuccess, returns "Normal Hit", otherwise "Miss". 
   
 [ACT]
-int calcDamage(Person source, Person target, int min, int max, Element element, int hitType, float partial=1, float critical=1)
+int calcDamage(Combat cls, Person source, Person target, int min, int max, Element element, int hitType, float partial=1, float critical=1)
   // Elements:
   // "Fire"
   // "Cold"
@@ -73,34 +77,44 @@ int calcDamage(Person source, Person target, int min, int max, Element element, 
   // "Spellpower"
   // "Strength"
   // "Cunning"
-int addStatus(Person target, Status status, int duration, float magnitude=0, float chance = 1, boolean overwrite = true, boolean partial = false, boolean critical = false, HitType hit = NORMAL,
+void addStatus(Combat cls, Person[] target, Status status, int duration, float magnitude=0, float chance = 1, boolean overwrite = true, boolean partial = false, boolean critical = false, HitType hit = NORMAL,
               int min=0, int max=0, Person relativeTarget=None)
-int removeStatus(Person target, Status s)
-int removeStealth(Person target)
+void removeStatus(Combat cls, Person target, Status s)
+void removeStealth(Combat cls, Person target)
   // Removes any version of stealth from the target (but not invisibility.)
-int removeTrap(Location location)
-int addTerrainStatus(TerrainStatus terrainStatus, int duration, Location location, int trapRating=0, int minDamage=0, int maxDamage=0, Element element=None)
+void removeTrap(Terrain cls, Location location)
+void addTerrainStatus(Terrain cls, TerrainStatus terrainStatus, int duration, Location location, int trapRating=0, int minDamage=0, int maxDamage=0, Element element=None)
   // TerrainStatus shapes and sizes are determined on a case by case basis.
-int removeTerrainStatus(TerrainStatus terrainStatus, Location location, boolean dispelConnectedTiles=True)
-int scale(int value, int scale, Attribute a, int cap = 0)
-Set<Targets> getAOETargets(Location center, int radius, boolean selectMonsters)
-Set<Targets> getPathTargets(Location start, Location end, boolean selectMonsters, boolean selectFirstOnly=false)
-int knockback(Location sourceOfImpact, Person target, int distance, boolean ignoreResistance=False)
-int weaponAttack(Person source, Person target, int hitType, float forceMod=1, float criticalDamageMod=1, int armorPenetrationMod=0, Element elementOverride=None, boolean noCounter=False,
-                 float overallDamageMod=1, int mightMod=0)
+void removeTerrainStatus(Terrain cls, TerrainStatus terrainStatus, Location location, boolean dispelConnectedTiles=True)
+int scale(Dice cls, int value, int scale, Attribute a, int cap = 0)
+Set<Targets> getAOETargets(Terrain cls, Location center, int radius, boolean selectMonsters, boolean includeCenter=True)
+Set<Targets> getLineTargets(Terrain cls, Location start, Location end, boolean selectMonsters, boolean selectFirstOnly=false)
+Set<Targets> getConeTargets(Terrain cls, Location center, int distance, int degrees, boolean selectMonsters)
+  // Degrees allowed:
+  // 90 -- Front and front-diagonals
+  // 180 -- Front, front-diagonals, sides
+  // 270 -- Front, front-diagonals, sides, back-diagonals
+  // For <90 degrees, use getLineTargets, for >270 degrees use getAOETargets
+void knockback(Combat cls, Person target, Location sourceOfImpact, int distance, boolean ignoreResistance=False, boolean didHit=True)
+void weaponAttack(Combat cls, Person source, Person target, int hitType, float forceMod=1, float criticalDamageMod=1, int armorPenetrationMod=0, Element elementOverride=None, boolean noCounter=False,
+                 float overallDamageMod=1, int mightMod=0, boolean ignoreOnHitEffects=False)
   // Method calls calcDamage internally. 
   // Element override will replace the physical damage of the attack with a different element if such is provided.  This will usually be None as this behavior is not common.
-int setMovementCost(Person target, int newCost, int numberOfMoves=1, int duration=0, boolean inStealth=False)
+void setMovementCost(Combat cls, Person target, int newCost, int numberOfMoves=1, int duration=0, boolean inStealth=False)
   // By default only affects the next movement action.  If duration is set instead, it will last until that many turns have expired.  Behavior for setting both numberOfMoves and
   // duration to non-zero values is undefined.  inStealth determines if the movement cost change only affects stealthed movement if set to True.
-int movePlayer(Person player, Location destination, boolean instant=False)
+void movePlayer(Combat cls, Person target, Location destination, boolean instant=False)
   // if instant is left as False, will show player moving animation to reach the destination, otherwise it will be instant.
-int endTurn(Person player)
-int modifyThreat(Person source, Person target, float threatAdjustment)
-int stealPotion(Person reciever, Person victim)
+void endTurn(Combat cls, Person player)
+void modifyThreat(Combat cls, Person source, Person target, float threatAdjustment)
+void stealPotion(Combat cls, Person reciever, Person victim)
   // removes a stealable potion from the victim if it is carrying one, and gives it to the reciever.  Is only used to steal a potion from monster-characters.
 
-[COND ONLY]
-boolean isHit(HitType hit, HitType requiredHit, boolean greaterThan=True)
-boolean isClass(Person player, Class class)
-int roll(int min, int max)
+[*???*]
+boolean isHit(HitType self, HitType requiredHit, boolean greaterThan=True)
+int roll(Dice cls, int min, int max)
+boolean chanceFromSize(Dice cls, Person target, SizeTuple sizeRules, float defaultChance=0)
+  // sizeRules format example: [["Small", 0.8], ["Medium", 0.5], ["Large", 0.15]]
+  // uses roll() and sizeCompare() to make a roll based on the target size.
+Person getMeleeFacingEnemey(Person self)
+  // will return None if there is no enemy directly in front of the source.
