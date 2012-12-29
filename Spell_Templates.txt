@@ -1,904 +1,922 @@
 Arcane Dart:
 [REQ]
-resource(self, MP, 2)
-resource(self, AP, 5)
-inRange(self, target, 8)
+resource(source, MP, 2)
+resource(source, AP, 5)
+inRange(source, target, 8)
 [RES]
-modifyResource(self, MP, -2)
-modifyResource(self, AP, -5)
+Combat.modifyResource(source, MP, -2)
+Combat.modifyResource(source, AP, -5)
 [HIT]
-calcHit(self, target, "Magical")
+Combat.calcHit(source, target, "Magical")
 [ACT]
-modifyResource(target, HP, 0-scale(calcDamage(self, target, 2, 4, Arcane, HIT), 0.03, Spellpower))
+Combat.modifyResource(target, HP, 0-Dice.scale(Combat.calcDamage(source, target, 2, 4, Arcane, HIT), 0.03, Spellpower))
 
 Arcane Warding:
 [REQ]
-resource(self, MP, 7)
-resource(self, AP, 9)
+resource(source, MP, 7)
+resource(source, AP, 9)
 [RES]
-modifyResource(self, MP, -7)
-modifyResource(self, AP, -9)
-[HIT]
-1
+Combat.modifyResource(source, MP, -7)
+Combat.modifyResource(source, AP, -9)
 [ACT]
-addStatus(self, "Arcane Ward", scale(3, 0.1, Spellpower, 6), scale(5, 0.01, Spellpower))
+Combat.addStatus(source, "Arcane Ward", Dice.scale(3, 0.1, Spellpower, 6), Dice.scale(5, 0.01, Spellpower))
 
 Mystic Shield:
 [REQ]
-resource(self, MP, 15)
-resource(self, AP, 12)
-!onCooldown(self, "Mystic Shield")
+resource(source, MP, 15)
+resource(source, AP, 12)
+!onCooldown(source, "Mystic Shield")
 [RES]
-modifyResource(self, MP, -15)
-modifyResource(self, AP, -12)
-applyCooldown(self, "Mystic Shield", 4)
-[HIT]
-1
+Combat.modifyResource(source, MP, -15)
+Combat.modifyResource(source, AP, -12)
+Combat.applyCooldown(source, "Mystic Shield", 4)
 [ACT]
-addStatus(self, "Mystic Shield", 5, scale(10, 0.06, Spellpower))
+Combat.addStatus(source, "Mystic Shield", 5, Dice.scale(10, 0.06, Spellpower))
 
 Flicker of Life:
 [REQ]
-resource(self, MP, 15)
-resource(self, AP, 9)
-inRange(self, target, 6)
+resource(source, MP, 15)
+resource(source, AP, 9)
+inRange(source, target, 6)
 [RES]
-modifyResource(self, MP, -15)
-modifyResource(self, AP, -9)
-[HIT]
-1
+Combat.modifyResource(source, MP, -15)
+Combat.modifyResource(source, AP, -9)
 [ACT]
-modifyResource(target, HP, scale(roll(10, 20), 0.02, Spellpower))
+Combat.modifyResource(target, HP, Dice.scale(Dice.roll(10, 20), 0.02, Spellpower))
 
 Stone Guard:
 [REQ]
-resource(self, MP, 15)
-resource(self, AP, 9)
-inRange(self, target, 4)
-[HIT]
-1
+resource(source, MP, 15)
+resource(source, AP, 9)
+inRange(source, target, 4)
 [ACT]
-modifyResource(self, MP, -15)
-modifyResource(self, AP, -9)
-addStatus(target, "Stone Guard", scale(4, 0.05, Spellpower, 6), scale(10, 0.008, Spellpower))
+Combat.modifyResource(source, MP, -15)
+Combat.modifyResource(source, AP, -9)
+Combat.addStatus(target, "Stone Guard", Dice.scale(4, 0.05, Spellpower, 6), Dice.scale(10, 0.008, Spellpower))
 
 Singe:
 [REQ]
-resource(self, MP, 6)
-resource(self, AP, 7)
-inRange(self, target, 7)
+resource(source, MP, 6)
+resource(source, AP, 7)
+inRange(source, target, 7)
 [RES]
-modifyResource(self, MP, -6)
-modifyResource(self, AP, -7)
+Combat.modifyResource(source, MP, -6)
+Combat.modifyResource(source, AP, -7)
 [HIT]
-calcHit(self, target, "Magical")
+Combat.calcHit(source, target, "Magical")
 [ACT]
-modifyResource(target, HP, 0-scale(calcDamage(self, target, 2, 9, Fire, HIT, partial = 0.5, critical = 1.2), 0.05, Spellpower))
+Combat.modifyResource(target, HP, 0-Dice.scale(Combat.calcDamage(source, target, 2, 9, Fire, HIT, partial = 0.5, critical = 1.2), 0.05, Spellpower))
 
 Chill:
 [REQ]
-resource(self, MP, 10)
-resource(self, AP, 6)
-inRange(self, target, 6)
+resource(source, MP, 10)
+resource(source, AP, 6)
+inRange(source, target, 6)
 [RES]
-modifyResource(self, MP, -10)
-modifyResource(self, AP, -6)
+Combat.modifyResource(source, MP, -10)
+Combat.modifyResource(source, AP, -6)
 [HIT]
-calcHit(self, target, "Magical")
+Combat.calcHit(source, target, "Magical")
 [ACT]
-modifyResource(target, HP, 0-scale(calcDamage(self, target, 1, 12, Cold, HIT), 0.01, Spellpower))
-addStatus(target, "Chill", 2, scale(5, 0.012, Spellpower), FREQUENT)
+Combat.modifyResource(target, HP, 0-Dice.scale(Combat.calcDamage(source, target, 1, 12, Cold, HIT), 0.01, Spellpower))
+Combat.addStatus(target, "Chill", 2, Dice.scale(5, 0.012, Spellpower), FREQUENT)
 
 Shock:
 [REQ]
-resource(self, MP, 13)
-resource(self, AP, 7)
-inRange(self, target, 2)
-!onCooldown(self, "Shock")
+resource(source, MP, 13)
+resource(source, AP, 7)
+inRange(source, target, 2)
+!onCooldown(source, "Shock")
 [RES]
-modifyResource(self, MP, -13)
-modifyResource(self, AP, -6)
+Combat.modifyResource(source, MP, -13)
+Combat.modifyResource(source, AP, -6)
 [HIT]
-calcHit(self, target, "Magical")
+Combat.calcHit(source, target, "Magical")
 [ACT]
-modifyResource(target, HP, 0 - scale(calcDamage(self, target, min=15, max=22, element=Electric, hitType=hit), 0.014, Spellpower))
-applyCooldown(self, "Shock", 1)
+Combat.modifyResource(target, HP, 0 - Dice.scale(Combat.calcDamage(source, target, min=15, max=22, element=Electric, hitType=hit), 0.014, Spellpower))
+Combat.applyCooldown(source, "Shock", 1)
 
 Suggest Laziness:
 [REQ]
-resource(self, MP, 5)
-resource(self, AP, 5)
-inRange(self, target, 12)
+resource(source, MP, 5)
+resource(source, AP, 5)
+inRange(source, target, 12)
 [RES]
-modifyResource(self, MP -5)
-modifyResource(self, AP, -5)
+Combat.modifyResource(source, MP -5)
+Combat.modifyResource(source, AP, -5)
 [HIT]
-calcHit(self, target, "Magical")
+Combat.calcHit(source, target, "Magical")
 [ACT]
-addStatus(target, "Suggest Laziness", 1, 0, OCCASIONAL)
+Combat.addStatus(target, "Suggest Laziness", 1, 0, OCCASIONAL)
 
 Stutter:
 [REQ]
-resource(self, MP, 14)
-resource(self, AP, 9)
-inRange(self, target, 6)
+resource(source, MP, 14)
+resource(source, AP, 9)
+inRange(source, target, 6)
 [RES]
-modifyResource(self, MP, -14)
-modifyResource(self, AP, -9)
+Combat.modifyResource(source, MP, -14)
+Combat.modifyResource(source, AP, -9)
 [HIT]
-calcHit(self, target, "Magical")
+Combat.calcHit(source, target, "Magical")
 [ACT]
-addStatus(target, "Stutter_spell_fail", 5, 10)
-addStatus(target, "Stutter_spellpower_reduction", 5, scale(5, 0.02, Spellpower))
+Combat.addStatus(target, "Stutter_spell_fail", 5, 10)
+Combat.addStatus(target, "Stutter_spellpower_reduction", 5, Dice.scale(5, 0.02, Spellpower))
 
 Cloud Vision:
 [REQ]
-resource(self, MP, 9)
-resource(self, AP, 9)
-inRange(self, target, 6)
+resource(source, MP, 9)
+resource(source, AP, 9)
+inRange(source, target, 6)
 [RES]
-modifyResource(self, MP, -9)
-modifyResource(self, AP, -9)
+Combat.modifyResource(source, MP, -9)
+Combat.modifyResource(source, AP, -9)
 [HIT]
-calcHit(self, target, "Magical")
+Combat.calcHit(source, target, "Magical")
 [ACT]
-addStatus(target, "Cloud Vision", scale(5, 0.02, Spellpower), scale(5, 0.012, Spellpower))
-addStatus(target, "Cloud Vision", scale(5, 0.02, Spellpower), scale(2.5, 0.012, Spellpower), partial = true)
+Combat.addStatus(target, "Cloud Vision", Dice.scale(5, 0.02, Spellpower), Dice.scale(5, 0.012, Spellpower))
+Combat.addStatus(target, "Cloud Vision", Dice.scale(5, 0.02, Spellpower), Dice.scale(2.5, 0.012, Spellpower), partial = true)
 
 Haunt:
 [REQ]
-resource(self, MP, 20)
-resource(self, AP, 11)
-inRange(self, target, 5)
-!onCooldown(self, "Haunt")
+resource(source, MP, 20)
+resource(source, AP, 11)
+inRange(source, target, 5)
+!onCooldown(source, "Haunt")
 [RES]
-modifyResource(self, MP -20)
-modifyResource(self, AP, -11)
-applyCooldown(self, "Haunt", 3)
+Combat.modifyResource(source, MP -20)
+Combat.modifyResource(source, AP, -11)
+Combat.applyCooldown(source, "Haunt", 3)
 [HIT]
-calcHit(self, target, "Magical")
+Combat.calcHit(source, target, "Magical")
 [ACT]
-modifyResource(target, HP, 0 - scale(calcDamage(self, target, min=13, max=20, element=Shadow, hitType=hit), 0.01, Spellpower))
-addStatus(target, "Haunt", scale(3, 0.02, Spellpower, cap = 4), min=scale(2, 0.005, Spellpower), max=scale(8, 0.005, Spellpower))
+Combat.modifyResource(target, HP, 0 - Dice.scale(Combat.calcDamage(source, target, min=13, max=20, element=Shadow, hitType=hit), 0.01, Spellpower))
+Combat.addStatus(target, "Haunt", Dice.scale(3, 0.02, Spellpower, cap = 4), min=Dice.scale(2, 0.005, Spellpower), max=Dice.scale(8, 0.005, Spellpower))
 
 Zone of Silence:
 [REQ]
-resource(self, MP, 20)
-resource(self, AP, 6)
-inRange(self, target, 3)
+resource(source, MP, 20)
+resource(source, AP, 6)
+inRange(source, target, 3)
 [RES]
-modifyResource(self, MP, -20)
-modifyResource(self, AP, -6)
+Combat.modifyResource(source, MP, -20)
+Combat.modifyResource(source, AP, -6)
 [ACT]
-removeTerrainStatus(terrainStatus="Zone of Silence", location=target.location)
-addTerrainStatus(terrainStatus="Zone of Silence", location=target.location, duration=scale(3, 0.011, Spellpower, cap=6)) 
+Terrain.removeTerrainStatus(terrainStatus="Zone of Silence", location=target.location)
+Terrain.addTerrainStatus(terrainStatus="Zone of Silence", location=target.location, duration=Dice.scale(3, 0.011, Spellpower, cap=6)) 
 
 Blurry:
 [REQ]
-resource(self, MP, 6)
-resource(self, AP, 3)
+resource(source, MP, 6)
+resource(source, AP, 3)
 [RES]
-modifyResource(self, MP, -6)
-modifyResource(self, AP, -3)
+Combat.modifyResource(source, MP, -6)
+Combat.modifyResource(source, AP, -3)
 [ACT]
-addStatus(self, "Blurry", 1, scale(5, 0.02, Spellpower))
+Combat.addStatus(source, "Blurry", 1, Dice.scale(5, 0.02, Spellpower))
 
 Weapon Enhance:
 [REQ]
-resource(self, MP, 9)
-resource(self, AP, 5)
-inRange(self, target, 3)
+resource(source, MP, 9)
+resource(source, AP, 5)
+inRange(source, target, 3)
 [RES]
-modifyResource(self, MP, -9)
-modifyResource(self, AP, -5)
+Combat.modifyResource(source, MP, -9)
+Combat.modifyResource(source, AP, -5)
 [ACT]
-addStatus(target, "Weapon_enhance_accuracy", scale(3, 0.03, Spellpower, cap=7), scale(3, 0.07, Spellpower))
-addStatus(target, "Weapon_enhance_critical_damage", scale(3, 0.03, Spellpower, cap=7), scale(5, 0.05, Spellpower))
-addStatus(target, "Weapon_enhance_armor_penetration", scale(3, 0.03, Spellpower, cap=7), scale(3, 0.07, Spellpower))
-addStatus(target, "Weapon_enhance_critical_chance", scale(3, 0.03, Spellpower, cap=7), scale(1, 0.035, Spellpower))
+Combat.addStatus(target, "Weapon_enhance_accuracy", Dice.scale(3, 0.03, Spellpower, cap=7), Dice.scale(3, 0.07, Spellpower))
+Combat.addStatus(target, "Weapon_enhance_critical_damage", Dice.scale(3, 0.03, Spellpower, cap=7), Dice.scale(5, 0.05, Spellpower))
+Combat.addStatus(target, "Weapon_enhance_armor_penetration", Dice.scale(3, 0.03, Spellpower, cap=7), Dice.scale(3, 0.07, Spellpower))
+Combat.addStatus(target, "Weapon_enhance_critical_chance", Dice.scale(3, 0.03, Spellpower, cap=7), Dice.scale(1, 0.035, Spellpower))
 
 Flaming Weapon:
 [REQ]
-resource(self, MP, 12)
-resource(self, AP, 8)
-inRange(self, target, 3)
+resource(source, MP, 12)
+resource(source, AP, 8)
+inRange(source, target, 3)
 [RES]
-modifyResource(self, MP, -12)
-modifyResource(self, AP, -8)
+Combat.modifyResource(source, MP, -12)
+Combat.modifyResource(source, AP, -8)
 [ACT]
-addStatus(target, "Flaming Weapon", scale(3, 0.03, cap=7), min=scale(1, 0.01, Spellpower), max=scale(8, 0.01, Spellpower))
+Combat.addStatus(target, "Flaming Weapon", Dice.scale(3, 0.03, cap=7), min=Dice.scale(1, 0.01, Spellpower), max=Dice.scale(8, 0.01, Spellpower))
 
 Burst:
 [REQ]
-resource(self, MP, 12)
-resource(self, AP, 9)
-inRange(self, target, 8)
-!onCooldown(self, "Burst")
+resource(source, MP, 12)
+resource(source, AP, 9)
+inRange(source, target, 8)
+!onCooldown(source, "Burst")
 [RES]
-modifyResource(self, MP -12)
-modifyResource(self, AP, -9)
-applyCooldown(self, "Burst", 1)
+Combat.modifyResource(source, MP -12)
+Combat.modifyResource(source, AP, -9)
+Combat.applyCooldown(source, "Burst", 1)
 [HIT]
-getAOETargets(target, radius=1, selectMonsters=True)
-calcHit(self, targetSet, "Magical")
+Combat.calcHit(source, Terrain.getAOETargets(target, radius=1, selectMonsters=True, includeCenter=False), "Magical")
 [ACT]
-modifyResource(target, HP, 0 - scale(calcDamage(self, target, min=5, max=6, element=Arcane, hitType=hit), 0.005, Spellpower))
-## Apply the following to all targets
-modifyResource(targetSet, HP, 0-scale(calcDamage(self, targetSet, min=5, max=6, element=Arcane, hitType=hitSet), 0.005, Spellpower))
+Combat.modifyResource(target, HP, 0 - Dice.scale(Combat.calcDamage(source, target, min=5, max=6, element=Arcane, hitType=hitSet), 0.005, Spellpower))
+Combat.knockback(Terrain.getAOETargets(target, radius=1, selectMonsters=True, includeCenter=False), target.location, distance=1)
+[HIT]
+Combat.calcHit(source, target, "Magical")
+[ACT]
+Combat.modifyResource(target, HP, 0-Dice.scale(Combat.calcDamage(source, targetSet, min=10, max=12, element=Arcane, hitType=hit), 0.005, Spellpower))
 
 Identification:
 # Needs out of combat use...
 [REQ]
-resource(self, MP, 5)
-resource(self, AP, 5)
+resource(source, MP, 5)
+resource(source, AP, 5)
 [RES]
-modifyResource(self, MP, -5)
-modifyResource(self, AP, -5)
+Combat.modifyResource(source, MP, -5)
+Combat.modifyResource(source, AP, -5)
 [ACT]
-addStatus(self, "Identification", 5, 5)
+Combat.addStatus(source, "Identification", 5, 5)
 
 Hovering Shield:
 [REQ]
-resource(self, MP, 8)
-resource(self, AP 5)
+resource(source, MP, 8)
+resource(source, AP 5)
 [RES]
-modifyResource(self, MP -8)
-modifyResource(self, AP, -5)
+Combat.modifyResource(source, MP -8)
+Combat.modifyResource(source, AP, -5)
 [ACT]
-addStatus(self, "Hovering Shield", 5, scale(12, 0.008, Spellpower))
+Combat.addStatus(source, "Hovering Shield", 5, Dice.scale(12, 0.008, Spellpower))
 
 Fright:
 [REQ]
-resource(self, MP, 6)
-resource(self, AP, 3)
-!onCooldown(self, "Fright")
-inRange(self, target, 6)
+resource(source, MP, 6)
+resource(source, AP, 3)
+!onCooldown(source, "Fright")
+inRange(source, target, 6)
 [RES]
-modifyResource(self, MP, -6)
-modifyResource(self, AP, -3)
-applyCooldown(self, "Fright", 1)
+Combat.modifyResource(source, MP, -6)
+Combat.modifyResource(source, AP, -3)
+Combat.applyCooldown(source, "Fright", 1)
 [HIT]
-calcHit(self, target, "Magical")
+Combat.calcHit(source, target, "Magical")
 [ACT]
-addStatus(target, "Fright_shadow_adjustment", 4, 20)
-addStatus(target, "Fright_attack_power_adjustment", 4, 5)
+Combat.addStatus(target, "Fright_shadow_adjustment", 4, 20)
+Combat.addStatus(target, "Fright_attack_power_adjustment", 4, 5)
 
 Infection:
 [REQ]
-resource(self, MP, 7)
-resource(self, AP, 6)
-inRange(self, target, 1)
+resource(source, MP, 7)
+resource(source, AP, 6)
+inRange(source, target, 1)
 [RES]
-modifyResource(self, MP, -7)
-modifyResource(self, AP, -6)
+Combat.modifyResource(source, MP, -7)
+Combat.modifyResource(source, AP, -6)
 [HIT]
-calcHit(self, target, "Magical")
-calcHit(self, target, "Poison", rating=scale(35, 0.012, Spellpower))
+Combat.calcHit(source, target, "Magical")
+Combat.calcHit(source, target, "Poison", rating=Dice.scale(35, 0.012, Spellpower))
 [ACT]
-addStatus(target, "Infection_damage", scale(4, 0.013, Spellpower), min=scale(7, 0.03, Spellpower), max=scale(10, 0.03, Spellpower))
-addStatus(target, "Infection_tolerance_adjustment", scale(4, 0.013, Spellpower), 5)
+Combat.addStatus(target, "Infection_damage", Dice.scale(4, 0.013, Spellpower), min=Dice.scale(7, 0.03, Spellpower), max=Dice.scale(10, 0.03, Spellpower))
+Combat.addStatus(target, "Infection_tolerance_adjustment", Dice.scale(4, 0.013, Spellpower), 5)
 
 Hands of Healing:
 [REQ]
-resource(self, MP, 22)
-resource(self, AP, 8)
-!onCooldown(self, "Hands of Healing")
-inRange(self, target, 1)
+resource(source, MP, 22)
+resource(source, AP, 8)
+!onCooldown(source, "Hands of Healing")
+inRange(source, target, 1)
 [RES]
-modifyResource(self, MP, -22)
-modifyResource(self, AP, -8)
-applyCooldown(self, "Hands of Healing", 1)
+Combat.modifyResource(source, MP, -22)
+Combat.modifyResource(source, AP, -8)
+Combat.applyCooldown(source, "Hands of Healing", 1)
 [ACT]
-modifyResource(target, HP, roll(scale(20, 0.02, Spellpower), scale(40, 0.02), Spellpower))
+Combat.modifyResource(target, HP, Dice.scale(Dice.roll(20, 40), 0.02, Spellpower))
 
 Elemental Boon:
 [REQ]
-resource(self, MP, 8)
-resource(self, AP, 10)
-inRange(self, target, 6)
+resource(source, MP, 8)
+resource(source, AP, 10)
+inRange(source, target, 6)
 [RES]
-modifyResource(self, MP, -8)
-modifyResource(self, AP, -10)
+Combat.modifyResource(source, MP, -8)
+Combat.modifyResource(source, AP, -10)
 [ACT]
-addStatus(target, "Elemental Boon", scale(6, 0.003, Spellpower, cap=7), scale(15, 0.007, Spellpower))
+Combat.addStatus(target, "Elemental Boon", Dice.scale(6, 0.003, Spellpower, cap=7), Dice.scale(15, 0.007, Spellpower))
 
 Torrent:
 [REQ]
-resource(self, MP, 25)
-resource(self, AP, 14)
-inRange(self, target, 14)
-!onCooldown(self, "Torrent")
+resource(source, MP, 25)
+resource(source, AP, 14)
+inRange(source, target, 14)
+!onCooldown(source, "Torrent")
 [RES]
-modifyResource(self, MP, -25)
-modifyResource(self, AP, -14)
-applyCooldown(self, "Torrent", 2)
+Combat.modifyResource(source, MP, -25)
+Combat.modifyResource(source, AP, -14)
+Combat.applyCooldown(source, "Torrent", 2)
 [HIT]
-getPathTargets(self.location, target.location, selectMonsters=True, selectFirstOnly=True)
-calcHit(self, target, "Magical")
+Terrain.getLineTargets(source.location, target.location, selectMonsters=True, selectFirstOnly=True)
+Combat.calcHit(source, target, "Magical")
 [ACT]
-modifyResource(target, HP, 0 - scale(calcDamage(self, target, min=10, max=35, element=Cold, hitType=hit), 0.014, Spellpower))
-[COND]
-hit >= "normal hit"
-target.size < "huge"
-[ACT]
-knockback( self.location, target, 5)
+Combat.modifyResource(target, HP, 0 - Dice.scale(Combat.calcDamage(source, target, min=10, max=35, element=Cold, hitType=hit), 0.014, Spellpower))
+knockback(target, source.location, distance=5, didHit=(isHit(hit, "Normal Hit") and sizeCompare(target, "Huge", smallerThan=True)))
 
 Lightning Bolt:
 [REQ]
-resource(self, MP, 32)
-resource(self, AP, 8)
-inRange(self, target, 6)
-!onCooldown(self, "Lightning Bolt")
+resource(source, MP, 32)
+resource(source, AP, 8)
+inRange(source, target, 6)
+!onCooldown(source, "Lightning Bolt")
 [RES]
-modifyResource(self, MP, -32)
-modifyResource(self, AP, -8)
-applyCooldown(self, "Lightning Bolt", 1)
+Combat.modifyResource(source, MP, -32)
+Combat.modifyResource(source, AP, -8)
+Combat.applyCooldown(source, "Lightning Bolt", 1)
 [HIT]
-getPathTargets(self.location, target.location, selectMonsters=True, selectFirstOnly=False)
-calcHit(self, targetSet, "Magical")
+Terrain.getLineTargets(source.location, target.location, selectMonsters=True, selectFirstOnly=False)
+Combat.calcHit(source, targetSet, "Magical")
 [ACT]
-modifyResource(targetSet, HP, 0 - scale(calcDamage(self, target, min=5, max=33, element=Electric, hitType=hitSet, partial=0.5, critical=1.3), 0.005, Spellpower))
+Combat.modifyResource(targetSet, HP, 0 - Dice.scale(Combat.calcDamage(source, target, min=5, max=33, element=Electric, hitType=hitSet, partial=0.5, critical=1.3), 0.005, Spellpower))
 
 Suggest Cowardice:
 [REQ]
-resource(self, MP, 9)
-resource(self, AP, 10)
-inRange(self, target, 5)
-targetSize(target, LARGE, smallerThan=True)
+resource(source, MP, 9)
+resource(source, AP, 10)
+inRange(source, target, 5)
+sizeCompare(target, LARGE, smallerThan=True)
 [RES]
-modifyResource(self, MP -9)
-modifyResource(self, AP, -10)
+Combat.modifyResource(source, MP -9)
+Combat.modifyResource(source, AP, -10)
 [HIT]
-calcHit(self, target, "Magical")
+Combat.calcHit(source, target, "Magical")
 [ACT]
-addStatus(target, "Suggest Cowardice", 1, 0, hit=RELIABLE, partial=True)
+Combat.addStatus(target, "Suggest Cowardice", 1, 0, hit=RELIABLE, partial=True)
 
 Pit:
 [REQ]
-resource(self, MP, 8)
-resource(self, AP, 5)
-inRange(self, target, 5)
-!onCooldown(self, "Pit")
+resource(source, MP, 8)
+resource(source, AP, 5)
+inRange(source, target, 5)
+!onCooldown(source, "Pit")
 [RES]
-modifyResource(self, MP, -8)
-modifyResource(self, AP, -5)
-applyCooldown(self, "Pit", 1)
+Combat.modifyResource(source, MP, -8)
+Combat.modifyResource(source, AP, -5)
+Combat.applyCooldown(source, "Pit", 1)
 [ACT]
-removeTerrainStatus(terrainStatus="Pit", location=target, boolean dispelConnectedTiles=False)
-addTerrainStatus(terrainStatus="Pit", duration=4, location=target)
+Terrain.removeTerrainStatus(terrainStatus="Pit", location=target, boolean dispelConnectedTiles=False)
+Terrain.addTerrainStatus(terrainStatus="Pit", duration=4, location=target)
 
 Smoke Screen:
 [REQ]
-resource(self, MP, 18)
-resource(self, AP, 6)
-inRange(self, target, 4)
-!onCooldown(self, "Smoke Screen")
+resource(source, MP, 18)
+resource(source, AP, 6)
+inRange(source, target, 4)
+!onCooldown(source, "Smoke Screen")
 [RES]
-modifyResource(self, MP, -18)
-modifyResrouce(self, AP, -6)
-applyCooldown(self, "Smoke Screen", 2)
+Combat.modifyResource(source, MP, -18)
+Combat.modifyResrouce(source, AP, -6)
+Combat.applyCooldown(source, "Smoke Screen", 2)
 [ACT]
-removeTerrainStatus(terrainStatus="Smoke Screen", location=target, boolean dispelConnectedTiles=False)
-addTerrainStatus(terrainStatus="Smoke Screen", duration=scale(2, 0.03, Spellpower, cap=6), location=target)
+Terrain.removeTerrainStatus(terrainStatus="Smoke Screen", location=target, boolean dispelConnectedTiles=False)
+Terrain.addTerrainStatus(terrainStatus="Smoke Screen", duration=Dice.scale(2, 0.03, Spellpower, cap=6), location=target)
 
 Shrink:
 [REQ]
-resource(self, MP, 10)
-resource(self, AP, 4)
-inRange(self, target, 4)
-!onCooldown(self, "Shrink")
-targetSize(target, SMALL, smallerThan=False)
+resource(source, MP, 10)
+resource(source, AP, 4)
+inRange(source, target, 4)
+!onCooldown(source, "Shrink")
+sizeCompare(target, SMALL, smallerThan=False)
 [RES]
-modifyResource(self, MP -10)
-modifyResource(self, AP, -4)
-applyCooldown(self, "Shrink", 2)
+Combat.modifyResource(source, MP -10)
+Combat.modifyResource(source, AP, -4)
+Combat.applyCooldown(source, "Shrink", 2)
 [ACT]
-addStatus(target, "Shrink", scale(2, 0.025, Spellpower, cap=5), 10, partial=True)
+Combat.addStatus(target, "Shrink", Dice.scale(2, 0.025, Spellpower, cap=5), 10, partial=True)
 
 Frost Weapon:
 [REQ]
-resource(self, MP, 12)
-resource(self, AP, 8)
-inRange(self, target, 3)
+resource(source, MP, 12)
+resource(source, AP, 8)
+inRange(source, target, 3)
 [RES]
-modifyResource(self, MP, -12)
-modifyResource(self, AP, -8)
+Combat.modifyResource(source, MP, -12)
+Combat.modifyResource(source, AP, -8)
 [ACT]
-addStatus(target, "Frost Weapon", scale(3, 0.03, Spellpower, cap=7), scale(roll(min=2, max=5), 0.019, Spellpower))
+Combat.addStatus(target, "Frost Weapon", Dice.scale(3, 0.03, Spellpower, cap=7), Dice.scale(Dice.roll(min=2, max=5), 0.019, Spellpower))
 
 // Fighter Skills
 
 Mighty Blow:
 [REQ]
-resource(self, AP, 9)
-inRange(self, target, 1)
+resource(source, AP, 9)
+inRange(source, target, 1)
 [RES]
-modifyResource(self, AP, -9)
+Combat.modifyResource(source, AP, -9)
 [HIT]
-calcHit(self, target, "Physical", modifier=-5)
+Combat.calcHit(source, target, "Physical", modifier=-5)
 [ACT]
-weaponAttack(self, target, hit, forceMod=1.5)
+Combat.weaponAttack(source, target, hit, forceMod=1.5)
 
 Brace:
 [REQ]
-resource(self, AP, 2)
+resource(source, AP, 2)
 [RES]
-modifyResource(self, AP, -2)
+Combat.modifyResource(source, AP, -2)
 [ACT]
-addStatus(self, "Brace", 1, 5)
-endTurn(self)
+Combat.addStatus(source, "Brace", 1, 5)
+Combat.endTurn(source)
 
 Dash:
 [REQ]
-resource(self, AP, 2)
-!onCooldown(self, "Dash")
+resource(source, AP, 2)
+!onCooldown(source, "Dash")
 [RES]
-modifyResource(self, AP, -2)
-applyCooldown(self, "Dash", 4)
+Combat.modifyResource(source, AP, -2)
+Combat.applyCooldown(source, "Dash", 4)
 [ACT]
-setMovementCost(self, 2)
+Combat.setMovementCost(source, 2)
 
 Quick Strike:
 [REQ]
-resource(self, AP, 3)
-inRange(self, target, 1)
+resource(source, AP, 3)
+inRange(source, target, 1)
 [RES]
-modifyResource(self, AP, -3)
+Combat.modifyResource(source, AP, -3)
 [HIT]
-calcHit(self, target, "Physical", modifier=-10)
+Combat.calcHit(source, target, "Physical", modifier=-10)
 [ACT]
-weaponAttack(self, target, hit, forceMod=0.5)
+Combat.weaponAttack(source, target, hit, forceMod=0.5)
 
 Precise Blow:
 [REQ]
-resource(self, AP, 7)
-inRange(self, target, 1)
+resource(source, AP, 7)
+inRange(source, target, 1)
 [RES]
-modifyResource(self, AP, -7)
+Combat.modifyResource(source, AP, -7)
 [HIT]
-calcHit(self, target, "Physical", modifier=4)
+Combat.calcHit(source, target, "Physical", modifier=4)
 [ACT]
-weaponAttack(self, target, hit)
+Combat.weaponAttack(source, target, hit)
 
 Thrust:
 [REQ]
-resource(self, AP, 5)
-inRange(self, target, 1)
-!onCooldown(self, "Thrust")
-usingWeapon(self, "Sword")
+resource(source, AP, 5)
+inRange(source, target, 1)
+!onCooldown(source, "Thrust")
+usingWeapon(source, "Sword")
 [RES]
-modifyResource(self, AP -5)
-applyCooldown(self, "Thrust", 1)
+Combat.modifyResource(source, AP -5)
+Combat.applyCooldown(source, "Thrust", 1)
 [HIT]
-calcHit(self, target, "Physical")
+Combat.calcHit(source, target, "Physical")
 [ACT]
-weaponAttack(self, target, hit, elementOverride="Piercing")
+Combat.weaponAttack(source, target, hit, elementOverride="Piercing")
 
 Clobber:
 [REQ]
-resource(self, AP, 10)
-inRange(self, target, 1)
-usingWeapon(self, "Club")
+resource(source, AP, 10)
+inRange(source, target, 1)
+usingWeapon(source, "Club")
 [RES]
-modifyResource(self, AP, -10)
+Combat.modifyResource(source, AP, -10)
 [HIT]
-calcHit(self, target, "Physical", modifier=-3)
+Combat.calcHit(source, target, "Physical", modifier=-3)
 [ACT]
-weaponAttack(self, target, hit, armorPenetrationMod=5)
-[COND]
-targetSize(target, LARGE, smallerThan=True)
-[ACT]
-addStatus(target, "Stun", duration=1, chance = 0.2, hit=hit)
+Combat.weaponAttack(source, target, hit, armorPenetrationMod=5)
+Combat.addStatus(target, "Stun", duration=1, chance = (0.2 * sizeCompare(target, LARGE, smallerThan=True)), hit=hit)
 
 Wound Leg:
 [REQ]
-resource(self, AP, 9)
-inRange(self, target, 1)
+resource(source, AP, 9)
+inRange(source, target, 1)
 [RES]
-modifyResource(self, AP, -9)
+Combat.modifyResource(source, AP, -9)
 [HIT]
-calcHit(self, target, "Physical", modifier=-10)
+Combat.calcHit(source, target, "Physical", modifier=-10)
 [ACT]
-addStatus(target, "Wound Leg", duration=3, hit=hit)
+Combat.addStatus(target, "Wound Leg", duration=3, hit=hit)
 
 Wound Arm:
 [REQ]
-resource(self, AP, 9)
-inRange(self, target, 1)
+resource(source, AP, 9)
+inRange(source, target, 1)
 [RES]
-modifyResource(self, AP, -9)
+Combat.modifyResource(source, AP, -9)
 [HIT]
-calcHit(self, target, "Physical", modifier=-10)
+Combat.calcHit(source, target, "Physical", modifier=-10)
 [ACT]
-addStatus(target, "Wound Arm", duration=3, hit=hit)
+Combat.addStatus(target, "Wound Arm", duration=3, hit=hit)
 
 Combo Attack:
 [REQ]
-resource(self, AP, 6)
-inRange(self, target, 1)
+resource(source, AP, 6)
+inRange(source, target, 1)
 [RES]
-modifyResource(self, AP, -6)
-[COND]
-numberOfStackedStatus(self, "Combo Attack")
+Combat.modifyResource(source, AP, -6)
 [HIT]
-calcHit(self, target, "Physical", modifier=((stack) - 2), critMod=stack)
+Combat.calcHit(source, target, "Physical", modifier=(getNumberOfStackedStatus(source, "Combo Attack") - 2), critMod=getNumberOfStackedStatus(source, "Combo Attack"))
 [ACT]
-weaponAttack(self, target, hit, overallDamageMod=1.1, criticalDamageMod=( 1 + (3 * stack/100) ))
-addStatus(self, "Combo Attack", duration=1, overwrite=False)  
+Combat.weaponAttack(source, target, hit, overallDamageMod=1.1, criticalDamageMod=( 1 + (3 * getNumberOfStackedStatus(source, "Combo Attack")/100) ))
+Combat.addStatus(source, "Combo Attack", duration=1, overwrite=False)  
 
 Rush:
-[MOD]
-usingArmor(self, "Heavy")
-# Save value as armorMod, 1 if True, 0 if False.
 [REQ]
-resource(self, AP, 7, modifier=armorMod)
-canReach(self, target, self.movementTiles)
-!onCooldown(self, "Rush")
+resource(source, AP, 7, modifier=usingArmor(source, "Heavy"))
+canReach(source, target, source.movementTiles)
+!onCooldown(source, "Rush")
 [RES]
-modifyResource(self, AP, 7, modifier=armorMod)
-applyCooldown(self, "Rush", 3)
+Combat.modifyResource(source, AP, -7, modifier= 0-usingArmor(source, "Heavy"))
+Combat.applyCooldown(source, "Rush", 3)
 [ACT]
-movePlayer(self, target)
-[COND]
-facingMeleeEnemy(self)
+Combat.movePlayer(source, target)
 [HIT]
-calcHit(self, enemy, "Physical")
+Combat.calcHit(source, getMeleeFacingEnemy(source), "Physical")
 [ACT]
-weaponAttack(self, enemy, hit, overallDamageMod=1.2)
-[COND]
-usingArmor(self, "Heavy")
-modifyResource(enemy, HP, 0 - calcDamage(self, target, min=(self.totalDR * 0.4), max=(self.totalDR * 0.4), element=Bludgeoning, hitType=hit))
-
-// Ranger Skills
-
+Combat.weaponAttack(source, getMeleeFacingEnemy(source), hit, overallDamageMod=1.2)
+Combat.modifyResource(enemy, HP, 0 - Combat.calcDamage(source, target, min=(source.totalDR * 0.4 * usingArmor("Heavy")),
+                      max=(source.totalDR * 0.4 * usingArmor("Heavy")), element=Bludgeoning, hitType=hit))
+					  
 Expert Notch:
 [REQ]
-resource(self, AP, 7)
-inRange(self, target, self.weaponRange)
-usingWeapon(self, "Bow")
+resource(source, AP, 7)
+inRange(source, target, source.weaponRange)
+usingWeapon(source, "Bow")
 [RES]
-modifyResource(self, AP -7)
+Combat.modifyResource(source, AP -7)
 [HIT]
-calcHit(self, target, "Physical", modifier=6)
+Combat.calcHit(source, target, "Physical", modifier=6)
 [ACT]
-weaponAttack(self, target, hit)
+Combat.weaponAttack(source, target, hit)
 
 Trap Shrapnel:
 [REQ]
-resource(self, AP, 5)
-!onCooldown(self, "Trap Shrapnel")
+resource(source, AP, 5)
+!onCooldown(source, "Trap Shrapnel")
 [RES]
-modifyResource(self, AP, -5)
-applyCooldown(self, "Trap Shrapnel", 1)
+Combat.modifyResource(source, AP, -5)
+Combat.applyCooldown(source, "Trap Shrapnel", 1)
 [ACT]
-removeTrap(self.location)
-addTerrainStatus("Trap Shrapnel", duration=0, self.location, minDamage=scale(5, 0.014, Cunning), maxDamage=scale(12, 0.014, Cunning), trapRating=scale(13, 0.015, Cunning)) 
+Terrain.removeTrap(source.location)
+Terrain.addTerrainStatus("Trap Shrapnel", duration=0, source.location, minDamage=Dice.scale(5, 0.014, Cunning), maxDamage=Dice.scale(12, 0.014, Cunning), trapRating=Dice.scale(13, 0.015, Cunning)) 
 
 Tunnel Vision:
 [REQ]
-resource(self, AP, 10)
-!onCooldown(self, "Tunnel Vision")
+resource(source, AP, 10)
+!onCooldown(source, "Tunnel Vision")
 [RES]
-modifyResource(self, AP -10)
-applyCooldown(self, "Tunnel Vision", 5)
+Combat.modifyResource(source, AP -10)
+Combat.applyCooldown(source, "Tunnel Vision", 5)
 [ACT]
-addStatus(self, "Tunnel Vision", duration=4)
+Combat.addStatus(source, "Tunnel Vision", duration=4)
 
 Trap Sticky:
 [REQ]
-resource(self, AP, 3)
-!onCooldown(self, "Trap Sticky")
+resource(source, AP, 3)
+!onCooldown(source, "Trap Sticky")
 [RES]
-modifyResource(self, AP, -3)
-applyCooldown(self, "Trap Sticky", 1)
+Combat.modifyResource(source, AP, -3)
+Combat.applyCooldown(source, "Trap Sticky", 1)
 [ACT]
-removeTrap(self.location)
-addTerrainStatus("Trap Sticky", duration=0, location=self.location, trapRating=scale(20, 0.007, Cunning))
+Terrain.removeTrap(source.location)
+Terrain.addTerrainStatus("Trap Sticky", duration=0, location=source.location, trapRating=Dice.scale(20, 0.007, Cunning))
 
 Balm:
 [REQ]
-resource(self, AP, 6)
-!onCooldown(self, "Balm")
+resource(source, AP, 6)
+!onCooldown(source, "Balm")
 [RES]
-modifyResource(self, AP, -6)
-applyCooldown(self, "Balm", 2)
+Combat.modifyResource(source, AP, -6)
+Combat.applyCooldown(source, "Balm", 2)
 [ACT]
-modifyResource(self, HP, (self.maxHP * 0.05)) 
+Combat.modifyResource(source, HP, (source.maxHP * 0.05)) 
 
 Rapid Reload:
 [REQ]
-resource(self, AP, 3)
-inRange(self, target, self.weaponRange)
-weaponEquipped(self, "Crossbow")
+resource(source, AP, 3)
+inRange(source, target, source.weaponRange)
+weaponEquipped(source, "Crossbow")
 [RES]
-modifyResource(self, AP, -3)
+Combat.modifyResource(source, AP, -3)
 [HIT]
-calcHit(self, target, "Physical", modifier=-8)
+Combat.calcHit(source, target, "Physical", modifier=-8)
 [ACT]
-weaponAttack(self, target, hit)
+Combat.weaponAttack(source, target, hit)
 
 Ranger's Aim:
 [REQ]
-resource(self, AP, 2)
-!onCooldown(self, "Ranger's Aim")
+resource(source, AP, 2)
+!onCooldown(source, "Ranger's Aim")
 [RES]
-modifyResource(self, AP, -2)
-applyCooldown(self, "Ranger's Aim", 1)
+Combat.modifyResource(source, AP, -2)
+Combat.applyCooldown(source, "Ranger's Aim", 1)
 [ACT]
-addStatus(self, "Ranger's Aim", duration=1)
+Combat.addStatus(source, "Ranger's Aim", duration=1)
 
 Trap Boulder-Pit:
 [REQ]
-resource(self, AP, 5)
-!onCooldown(self, "Trap Boulder-Pit")
+resource(source, AP, 5)
+!onCooldown(source, "Trap Boulder-Pit")
 [RES]
-modifyResource(self, AP, -5)
-applyCooldown(self, "Trap Boulder-Pit", 1)
+Combat.modifyResource(source, AP, -5)
+Combat.applyCooldown(source, "Trap Boulder-Pit", 1)
 [ACT]
-removeTrap(self.location)
-addTerrainStatus("Trap Boulder-Pit", duration=0, location=self.location, minDamage=scale(3, 0.02, Cunning), maxDamage=scale(8, 0.02, Cunning), element="Bludgeoning", trapRating=scale(25, 0.006, Cunning))
+Terrain.removeTrap(source.location)
+Terrain.addTerrainStatus("Trap Boulder-Pit", duration=0, location=source.location, minDamage=Dice.scale(3, 0.02, Cunning), maxDamage=Dice.scale(8, 0.02, Cunning), element="Bludgeoning", trapRating=Dice.scale(25, 0.006, Cunning))
 
 Defensive Slash:
 [REQ]
-resource(self, AP, 10)
-inRange(self, target, 1)
+resource(source, AP, 10)
+inRange(source, target, 1)
 [RES]
-modifyResource(self, AP, -10)
+Combat.modifyResource(source, AP, -10)
 [HIT]
-calcHit(self, target, "Physical", modifier=-3)
+Combat.calcHit(source, target, "Physical", modifier=-3)
 [ACT]
-weaponAttack(self, target, hit, overallDamageMod=0.75)
-addStatus(self, "Defensive Slash", duration=2, hit=hit)
+Combat.weaponAttack(source, target, hit, overallDamageMod=0.75)
+Combat.addStatus(source, "Defensive Slash", duration=2, hit=hit)
 
 Double-Shot:
 [REQ]
-resource(self, AP, 7)
-inRange(self, target, self.weaponRange)
-!onCooldown(self, "Double-Shot")
+resource(source, AP, 7)
+inRange(source, target, source.weaponRange)
+!onCooldown(source, "Double-Shot")
 [RES]
-modifyResource(self, AP, -7)
-applyCooldown(self, "Double-Shot", 1)
+Combat.modifyResource(source, AP, -7)
+Combat.applyCooldown(source, "Double-Shot", 1)
 [HIT]
-calcHit(self, target, "Physical", critMod=(0-self.totalCritChance)
+Combat.calcHit(source, target, "Physical", critMod=(0-source.totalCritChance)
 [ACT]
-weaponAttack(self, target, hit, overallDamageMod=1.05)
+Combat.weaponAttack(source, target, hit, overallDamageMod=1.05)
 [HIT]
-calcHit(self, target, "Physical", critMod=(0-self.totalCritChance)
+Combat.calcHit(source, target, "Physical", critMod=(0-source.totalCritChance)
 [ACT]
-weaponAttack(self, target, hit, overallDamageMod=1.05)
+Combat.weaponAttack(source, target, hit, overallDamageMod=1.05)
 
 Trap Tar:
 [REQ]
-resource(self, AP, 5)
-!onCooldown(self, "Trap Tar")
+resource(source, AP, 5)
+!onCooldown(source, "Trap Tar")
 [RES]
-modifyResource(self, AP, -5)
-applyCooldown(self, "Trap Tar", 1)
+Combat.modifyResource(source, AP, -5)
+Combat.applyCooldown(source, "Trap Tar", 1)
 [ACT]
-removeTrap(self.location)
-addTerrainStatus("Trap Tar", duration=0, location=self.location, trapRating=scale(30, 0.005, Cunning))
+Terrain.removeTrap(source.location)
+Terrain.addTerrainStatus("Trap Tar", duration=0, location=source.location, trapRating=Dice.scale(30, 0.005, Cunning))
 
 // Wizard Skills
 
 Magic Guard:
 [REQ]
-resource(self, AP, 3)
+resource(source, AP, 3)
 [RES]
-modifyResource(self, AP, -3)
+Combat.modifyResource(source, AP, -3)
 [ACT]
-addStatus(self, "Magic Guard", duration=1)
-endTurn(self)
+Combat.addStatus(source, "Magic Guard", duration=1)
+Combat.endTurn(source)
 
 Gather:
 [REQ]
-resource(self, AP, 7)
+resource(source, AP, 7)
 [RES]
-modifyResource(self, AP, -7)
+Combat.modifyResource(source, AP, -7)
 [ACT]
-addStatus(self, "Gather", duration=1)
+Combat.addStatus(source, "Gather", duration=1)
 
 #Apply Salve:
 #[REQ]
-#resource(self, AP, 7)
-#!onCooldown(self, "Apply Salve")
-#inRange(self, target, 1)
+#resource(source, AP, 7)
+#!onCooldown(source, "Apply Salve")
+#inRange(source, target, 1)
 # // Has Potion??? TODO
 #[RES]
-#modifyResource(self, AP, -7)
-#applyCooldown(self, "Apply Salve", 1)
+#Combat.modifyResource(source, AP, -7)
+#Combat.applyCooldown(source, "Apply Salve", 1)
 #[ACT]
 # todo!
 #
 
 Spell Sight:
 [REQ]
-resource(self, AP, 3)
-!onCooldown(self, "Spell Sight")
+resource(source, AP, 3)
+!onCooldown(source, "Spell Sight")
 [RES]
-modifyResource(self, AP, -3)
-applyCooldown(self, "Spell Sight", 2)
+Combat.modifyResource(source, AP, -3)
+Combat.applyCooldown(source, "Spell Sight", 2)
 [ACT]
-addStatus(self, "Spell Sight", duration=0)
+Combat.addStatus(source, "Spell Sight", duration=0)
 
 Runic Dust:
 [REQ]
-resource(self, AP, 5)
-inRange(self, target, 1)
-!onCooldown(self, "Runic Dust")
+resource(source, AP, 5)
+inRange(source, target, 1)
+!onCooldown(source, "Runic Dust")
 [RES]
-modifyResource(self, AP, -5)
-applyCooldown(self, "Runic Dust", 1)
+Combat.modifyResource(source, AP, -5)
+Combat.applyCooldown(source, "Runic Dust", 1)
 [ACT]
-addStatus(target, "Runic Dust", duration=3, magnitude=(2 + self.level))
+Combat.addStatus(target, "Runic Dust", duration=3, magnitude=(2 + source.level))
 
 Befuddle:
 [REQ]
-resource(self, AP, 12)
-inRange(self, target, 3)
-!onCooldown(self, "Befuddle")
+resource(source, AP, 12)
+inRange(source, target, 3)
+!onCooldown(source, "Befuddle")
 [RES]
-modifyResource(self, AP, -12)
-applyCooldown(self, "Befuddle", 4)
+Combat.modifyResource(source, AP, -12)
+Combat.applyCooldown(source, "Befuddle", 4)
 [ACT]
-modifyThreat(self, target, 0.7)
-addStatus(target, "Stun", duration=1, chance=RARE)
+Combat.modifyThreat(source, target, 0.7)
+Combat.addStatus(target, "Stun", duration=1, chance=RARE)
 
 // Thief Skills
 
 Stealth:
 [REQ]
-resource(self, AP, 7)
-!onCooldown(self, "Stealth")
-!stealthed(self)
+resource(source, AP, 7)
+!onCooldown(source, "Stealth")
+!isStealthed(source)
 [RES]
-modifyResource(self, AP, -7)
-applyCooldown(self, "Stealth", 3)
+Combat.modifyResource(source, AP, -7)
+Combat.applyCooldown(source, "Stealth", 3)
 [ACT]
-addStatus(self, "Stealth", duration=0)
+Combat.addStatus(source, "Stealth", duration=0)
 
 Backstab:
 [REQ]
-resource(self, AP, 10)
-!onCooldown(self, "Backstab")
-stealthed(self)
-inRange(self, target, self.weaponRange)
-backstabPosition(self, target, rangedBackstab=isClass(self, "Assassin"))
-usingWeapon(self, "Sword") || usingWeapon(self, "Knife") || (isClass(self, "Assassin") && usingWeapon(self, "Bow"))
+resource(source, AP, 10)
+!onCooldown(source, "Backstab")
+isStealthed(source)
+inRange(source, target, source.weaponRange)
+inBackstabPosition(source, target, rangedBackstab=isClass(source, "Assassin"))
+usingWeapon(source, "Sword") || usingWeapon(source, "Knife") || (isClass(source, "Assassin") && usingWeapon(source, "Bow"))
 [RES]
-modifyResource(self, AP, -10)
-applyCooldown(self, "Backstab", 2)
-[COND]
-!dualWielding(self)
-# Save value as dual, 1 for True, 0 for False
-usingWeapon(self, "Sword")
-# Save value as sword, 1 for True, 0 for False
+Combat.modifyResource(source, AP, -10)
+Combat.applyCooldown(source, "Backstab", 2)
 [HIT]
-calcHit(self, target, modifier=(dual * (5 + (4 * sword))), critMod=(50 - (sword * 25)))
+Combat.calcHit(source, target, "Physical", modifier=((5 + (4 * usingWeapon("Sword"))) * !isDualWielding(source)), critMod=(50 - (usingWeapon("Sword") * 25)))
 [ACT]
-weaponAttack(self, target, hit, criticalDamageMod=(2 - (0.5 * sword)))
+Combat.weaponAttack(source, target, hit, criticalDamageMod=(2 - (0.5 * sword)))
 
 Swipe Potion:
 [REQ]
-resource(self, AP, 3)
-inRange(self, target, 1)
-!onCooldown(self, "Swipe Potion")
+resource(source, AP, 3)
+inRange(source, target, 1)
+!onCooldown(source, "Swipe Potion")
 hasPotion(target)
 [RES]
-modifyResource(self, AP, -3)
-applyCooldown(self, "Swipe Potion", 2)
+Combat.modifyResource(source, AP, -3)
+Combat.applyCooldown(source, "Swipe Potion", 2)
 [HIT]
-rollSuccess( self.totalCunning - target.totalCunning )
+Dice.rollSuccess( source.totalCunning - target.totalCunning )
 [ACT]
-stealPotion(self, target)
+Combat.stealPotion(source, target)
 
 # Trap disarming mechanics have not been fleshed out.  This needs to be done before this can be encoded. TODO
 #Disarm Trap:
 #[REQ]
-#resource(self, AP, 17)
-#inRange(self, target, 1)
+#resource(source, AP, 17)
+#inRange(source, target, 1)
 #[RES]
-#modifyResource(self, AP, -17)
+#Combat.modifyResource(source, AP, -17)
 #[HIT]
-#rollSuccess(
+#Dice.rollSuccess(
 
 Hit and Run:
 [REQ]
-resource(self, AP, 5)
-inRange(self, target, 1)
-!onCooldown(self, "Hit and Run")
+resource(source, AP, 5)
+inRange(source, target, 1)
+!onCooldown(source, "Hit and Run")
 [RES]
-modifyResource(self, AP, -5)
-applyCooldown(self, "Hit and Run", 2)
+Combat.modifyResource(source, AP, -5)
+Combat.applyCooldown(source, "Hit and Run", 2)
 [HIT]
-calcHit(self, target)
+Combat.calcHit(source, target, "Physical")
 [ACT]
-weaponAttack(self, target, hit, noCounter=True)
-knockback(target, self, 2, ignoreResistance=True)
+Combat.weaponAttack(source, target, hit, noCounter=True)
+knockback(source, target.location, 2, ignoreResistance=True)
 
 Agile Position:
 [REQ]
-resource(self, AP, 5)
-!onCooldown(self, "Agile Position")
+resource(source, AP, 5)
+!onCooldown(source, "Agile Position")
 [RES]
-modifyResource(self, AP, -5)
-applyCooldown(self, "Agile Position", 5)
+Combat.modifyResource(source, AP, -5)
+Combat.applyCooldown(source, "Agile Position", 5)
 [ACT]
-addStatus(self, "Agile Position", duration=1)
-endTurn(self)
+Combat.addStatus(source, "Agile Position", duration=1)
+Combat.endTurn(source)
 
 Feint:
 [REQ]
-resource(self, AP, 5)
-inRange(self, target, 1)
+resource(source, AP, 5)
+inRange(source, target, 1)
 [RES]
-modifyResource(self, AP, -5)
+Combat.modifyResource(source, AP, -5)
 [HIT]
-rollSuccess(max((self.totalCunning - target.totalCunning) * 8, 72))
+Dice.rollSuccess(max((source.totalCunning - target.totalCunning) * 8, 72))
 [ACT]
-addStatus(target, "Feint", duration=2, hit=hit) 
+Combat.addStatus(target, "Feint", duration=2, hit=hit) 
 
 Far-Sighted Focus:
 [REQ]
-resource(self, AP, 8)
-!onCooldown(self, "Far-Sighted Focus")
+resource(source, AP, 8)
+!onCooldown(source, "Far-Sighted Focus")
 [RES]
-modifyResource(self, AP, -8)
-applyCooldown(self, "Far-Sighted Focus", 1)
+Combat.modifyResource(source, AP, -8)
+Combat.applyCooldown(source, "Far-Sighted Focus", 1)
 [ACT]
-addStatus(self, "Far-Sighted Focus", duration=3, relativeTarget=target)
+Combat.addStatus(source, "Far-Sighted Focus", duration=3, relativeTarget=target)
 
 All or Nothing:
 [REQ]
-resource(self, AP, 6)
-!onCooldown(self, "All or Nothing")
-inRange(self, target, self.weaponRange)
+resource(source, AP, 6)
+!onCooldown(source, "All or Nothing")
+inRange(source, target, source.weaponRange)
 [RES]
-modifyResource(self, AP, -6)
-applyCooldown(self, "All or Nothing", 2)
+Combat.modifyResource(source, AP, -6)
+Combat.applyCooldown(source, "All or Nothing", 2)
 [HIT]
-calcHit(self, target, modifier=-22, critMod=80)
+Combat.calcHit(source, target, "Physical", modifier=-22, critMod=80)
 [ACT]
-weaponAttack(self, target, hit, overallDamageMod=1.3)
+Combat.weaponAttack(source, target, hit, overallDamageMod=1.3)
 
 Redirect:
 [REQ]
-resource(self, AP, 10)
-!onCooldown(self, "Redirect")
-inRange(self, target, 5)
+resource(source, AP, 10)
+!onCooldown(source, "Redirect")
+inRange(source, target, 5)
 [RES]
-modifyResource(self, AP, -10)
-applyCooldown(self, "Redirect", 3)
+Combat.modifyResource(source, AP, -10)
+Combat.applyCooldown(source, "Redirect", 3)
 [ACT]
-modifyThreat(self, target, 0.35)
+Combat.modifyThreat(source, target, 0.35)
 
 Dirty Shot:
 [REQ]
-resource(self, AP, 5)
-!onCooldown(self, "Dirty Shot")
-inRange(self, target, self.weaponRange)
+resource(source, AP, 5)
+!onCooldown(source, "Dirty Shot")
+inRange(source, target, source.weaponRange)
 [RES]
-modifyResource(self, AP, -5)
-applyCooldown(self, "Dirty Shot", 3)
+Combat.modifyResource(source, AP, -5)
+Combat.applyCooldown(source, "Dirty Shot", 3)
 [HIT]
-calcHit(self, target)
+Combat.calcHit(source, target, "Physical")
 [ACT]
-weaponAttack(self, target, hit, mightMod=(self.totalCunning / 2))
-addStatus(target, "Stun", 1, chance=OCCASIONAL)
+Combat.weaponAttack(source, target, hit, mightMod=(source.totalCunning / 2))
+Combat.addStatus(target, "Stun", 1, chance=OCCASIONAL)
 
 Shock Factor:
 [REQ]
-resource(self, AP, 11)
-!onCooldown(self, "Shock Factor")
-inRange(self, target, 6)
+resource(source, AP, 11)
+!onCooldown(source, "Shock Factor")
+inRange(source, target, 6)
 [RES]
-modifyResource(self, AP, -11)
-applyCooldown(self, "Shock Factor", 4)
+Combat.modifyResource(source, AP, -11)
+Combat.applyCooldown(source, "Shock Factor", 4)
 [ACT]
-addStatus(target, "Stun", 1, chance=FREQUENT)
-addStatus(target, "Shock_Factor_attack_mod", 3, chance=RELIABLE)
-addStatus(target, "Shock_Factor_spell_failure", 3, chance=RELIABLE)
+Combat.addStatus(target, "Stun", 1, chance=FREQUENT)
+Combat.addStatus(target, "Shock_Factor_attack_mod", 3, chance=RELIABLE)
+Combat.addStatus(target, "Shock_Factor_spell_failure", 3, chance=RELIABLE)
 
+# WeaponMaster Combination Abilities (Active)
 
+Shield Deflection:
+[REQ]
+resource(source, AP, 4)
+!onCooldown(source, "Shield Deflection")
+usingShield(source, "Heavy")
+[RES]
+Combat.modifyResource(source, AP, -4)
+Combat.applyCooldown(source, "Shield Deflection", 5)
+[ACT]
+Combat.addStatus(source, "Shield Deflection", duration=2)
+
+Shield Bash:
+[REQ]
+resource(source, AP, 8)
+!onCooldown(source, "Shield Bash")
+usingShield(source, "Any")
+[RES]
+Combat.modifyResource(source, AP, -8)
+Combat.applyCooldown(source, "Shield Bash", 3)
+[HIT]
+Combat.calcHit(source, target, "Physical")
+[ACT]
+Combat.weaponAttack(source, target, hit, elementOverride="bludgeoning", overallDamageMod=0.3)
+Combat.addStatus(target, "Stun", duration=1, chance=chanceFromSize(target, [["Large", 0.3], ["Huge", 0]], defaultChance=0.8)) 
+
+True Friend:
+[REQ]
+resource(source, AP, 10)
+[RES]
+Combat.modifyResource(source, AP, -10)
+[ACT]
+Combat.addStatus(source, "True_Friend_DR_bonus", duration=1)
+Combat.addStatus(Terrain.getAOETargets(source.location, radius=1, selectMonsters=False, includeCenter=False), "True_Friend_Redirect", duration=1, relativeTarget=source)
+Combat.endTurn(source)
+
+Cleave:
+[REQ]
+resource(source, AP, 8)
+[RES]
+Combat.modifyResource(source, AP, -8)
+[HIT]
+Combat.calcHit(source, Terrain.getConeTargets(source, distance=1, degrees=180, selectMonsters=True), "Physical", modifier=-5)
+[ACT]
+Combat.weaponAttack(source, targetSet.remove(getMeleeFacingEnemy(source)), hit, overallDamageMod=0.3, ignoreOnHitEffects=True)
+Combat.weaponAttack(source, getMeleeFacingEnemy(source), hit, overallDamageMod=(0.8 + 0.2 * usingWeapon(source, "Axe"))
 
 
 
