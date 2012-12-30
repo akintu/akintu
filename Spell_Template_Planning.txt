@@ -28,9 +28,10 @@ boolean usingShield(Person self, ShieldType shield)
   // "Heavy"
   // "Medium"
   // "Any" (Heavy || Medium)
-boolean singWeaponStyle(Person self, WeaponStyle style)
+boolean usingWeaponStyle(Person self, WeaponStyle style)
   // Weapon Styles
   // "Dual"
+  // "Dual-Same-Type" (Dual && both weapons are the same usingWeapon() type.)
   // "Two-Handed"
   // "Single"
   // "Single and Shield"
@@ -47,6 +48,8 @@ boolean hasPotion(Person self)
   // returns True if the target has a potion that can be stolen (should only be used on monster-targets).
 boolean isClass(Person self, Class class)
 boolean hasAdjacentFreeSpace(Person self)
+boolean hasWeaponEnchant(Person self)
+  // returns True if any weapon enchantment cast by a spellsword is present on the weapon(s) of the Person.
   
 [RES]
 void modifyResource(Combat cls, Person target, int type, int value, int modifier=0)
@@ -68,7 +71,7 @@ HitType[] rollSuccess(Dice cls, float chanceOfSuccess)
   // rolls between 0 and 100.  If the roll is <= chanceOfSuccess, returns "Normal Hit", otherwise "Miss". 
   
 [ACT]
-int calcDamage(Combat cls, Person source, Person target, int min, int max, Element element, int hitType, float partial=1, float critical=1)
+int calcDamage(Combat cls, Person source, Person target, int min, int max, Element element, int hitValue, float partial=1, float critical=1)
   // Elements:
   // "Fire"
   // "Cold"
@@ -84,7 +87,9 @@ int calcDamage(Combat cls, Person source, Person target, int min, int max, Eleme
   // "Spellpower"
   // "Strength"
   // "Cunning"
-void addStatus(Combat cls, Person[] target, Status status, int duration, float magnitude=0, float chance = 1, boolean overwrite = true, boolean partial = false, boolean critical = false, HitType hit = NORMAL,
+  //
+  // If min < max, min will be set to max.
+void addStatus(Combat cls, Person[] target, Status status, int duration, float magnitude=0, float chance = 1, boolean overwrite = true, boolean partial = false, boolean critical = false, HitType hitValue = NORMAL,
               int min=0, int max=0, Person relativeTarget=None)
 void removeStatus(Combat cls, Person target, Status s)
 void removeStealth(Combat cls, Person target)
@@ -93,7 +98,7 @@ void removeTrap(Terrain cls, Location location)
 void addTerrainStatus(Terrain cls, TerrainStatus terrainStatus, int duration, Location location, int trapRating=0, int minDamage=0, int maxDamage=0, Element element=None)
   // TerrainStatus shapes and sizes are determined on a case by case basis.
 void removeTerrainStatus(Terrain cls, TerrainStatus terrainStatus, Location location, boolean dispelConnectedTiles=True)
-int scale(Dice cls, int value, int scale, Attribute a, int cap = 0)
+int scale(Dice cls, Person source, int value, int scale, Attribute a, int cap = 0)
 void knockback(Combat cls, Person target, Location sourceOfImpact, int distance, boolean ignoreResistance=False, boolean didHit=True)
 void weaponAttack(Combat cls, Person source, Person target, int hitType, float forceMod=1, float criticalDamageMod=1, int armorPenetrationMod=0, Element elementOverride=None, boolean noCounter=False,
                  float overallDamageMod=1, int mightMod=0, boolean ignoreOnHitEffects=False)
@@ -129,3 +134,14 @@ Set<Targets> getConeTargets(Terrain cls, Location center, int distance, int degr
 Set<Targets> getForwardDiagonalTargets(Terrain cls, Location center, boolean selectMonsters)
 boolean rollPresetChance(Dice cls, Person source, Person target, ChancePreset chance)
   // PresetChances defined in the Misc. Page of the wiki.
+Status getMostRecentStatus(Person self, StatusCategory category)
+  // Status Categories:
+  // "Debuff"     (Any Harmful)
+  // "Buff"       (Any Beneficial)
+  // "Magical"    (Caused by a Spell or magical monster ability)
+  // "Physical"   (Not magical)
+  // "Weapon Enchantment" (Caused by a Spellsword weapon enchantment spell)
+Element getElement(Status self)
+  // May return None.  Many statuses do not have elements.  
+Element getSplashMagicAbilityElement(AbilityUtils cls, Person source)  
+  
