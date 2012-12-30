@@ -1,5 +1,5 @@
 [REQ]
-boolean instance resource(Person self, Resource type, int quantity, int modifier=0)
+boolean hasResource(Person self, Resource type, int quantity, int modifier=0)
   // Types
   //  AP
   //  MP
@@ -16,6 +16,7 @@ boolean usingWeapon(Person self, WeaponType weapon)
   // "Bow" ( Equals ("Shortbow" || "Longbow"))
   // "Crossbow"
   // "Axe"
+  // "Polearm"
 boolean usingArmor(Person self, ArmorLevel armor)
   // ArmorLevels
   // "Heavy"
@@ -27,7 +28,12 @@ boolean usingShield(Person self, ShieldType shield)
   // "Heavy"
   // "Medium"
   // "Any" (Heavy || Medium)
-boolean isDualWielding(Person self)
+boolean singWeaponStyle(Person self, WeaponStyle style)
+  // Weapon Styles
+  // "Dual"
+  // "Two-Handed"
+  // "Single"
+  // "Single and Shield"
 float getNumberOfStackedStatus(Person self, Status status)
   // returns the number of the same status on the player.  Is stored in variable "stack". 
   // Rerturn is used as a float to prevent repeated casting for division/multiplication but will really only return integers.
@@ -40,6 +46,7 @@ boolean inBackstabPosition(Person self, Person target, boolean rangedBackstab=fa
 boolean hasPotion(Person self)
   // returns True if the target has a potion that can be stolen (should only be used on monster-targets).
 boolean isClass(Person self, Class class)
+boolean hasAdjacentFreeSpace(Person self)
   
 [RES]
 void modifyResource(Combat cls, Person target, int type, int value, int modifier=0)
@@ -87,14 +94,6 @@ void addTerrainStatus(Terrain cls, TerrainStatus terrainStatus, int duration, Lo
   // TerrainStatus shapes and sizes are determined on a case by case basis.
 void removeTerrainStatus(Terrain cls, TerrainStatus terrainStatus, Location location, boolean dispelConnectedTiles=True)
 int scale(Dice cls, int value, int scale, Attribute a, int cap = 0)
-Set<Targets> getAOETargets(Terrain cls, Location center, int radius, boolean selectMonsters, boolean includeCenter=True)
-Set<Targets> getLineTargets(Terrain cls, Location start, Location end, boolean selectMonsters, boolean selectFirstOnly=false)
-Set<Targets> getConeTargets(Terrain cls, Location center, int distance, int degrees, boolean selectMonsters)
-  // Degrees allowed:
-  // 90 -- Front and front-diagonals
-  // 180 -- Front, front-diagonals, sides
-  // 270 -- Front, front-diagonals, sides, back-diagonals
-  // For <90 degrees, use getLineTargets, for >270 degrees use getAOETargets
 void knockback(Combat cls, Person target, Location sourceOfImpact, int distance, boolean ignoreResistance=False, boolean didHit=True)
 void weaponAttack(Combat cls, Person source, Person target, int hitType, float forceMod=1, float criticalDamageMod=1, int armorPenetrationMod=0, Element elementOverride=None, boolean noCounter=False,
                  float overallDamageMod=1, int mightMod=0, boolean ignoreOnHitEffects=False)
@@ -110,7 +109,7 @@ void modifyThreat(Combat cls, Person source, Person target, float threatAdjustme
 void stealPotion(Combat cls, Person reciever, Person victim)
   // removes a stealable potion from the victim if it is carrying one, and gives it to the reciever.  Is only used to steal a potion from monster-characters.
 
-[*???*]
+[Helper]
 boolean isHit(HitType self, HitType requiredHit, boolean greaterThan=True)
 int roll(Dice cls, int min, int max)
 boolean chanceFromSize(Dice cls, Person target, SizeTuple sizeRules, float defaultChance=0)
@@ -118,3 +117,15 @@ boolean chanceFromSize(Dice cls, Person target, SizeTuple sizeRules, float defau
   // uses roll() and sizeCompare() to make a roll based on the target size.
 Person getMeleeFacingEnemey(Person self)
   // will return None if there is no enemy directly in front of the source.
+Location getRandomAdjacentFreeSpace(Terrain cls, Person focus)
+Set<Targets> getAOETargets(Terrain cls, Location center, int radius, boolean selectMonsters, boolean includeCenter=True)
+Set<Targets> getLineTargets(Terrain cls, Location start, Location end, boolean selectMonsters, boolean selectFirstOnly=false)
+Set<Targets> getConeTargets(Terrain cls, Location center, int distance, int degrees, boolean selectMonsters)
+  // Degrees allowed:
+  // 90 -- Front and front-diagonals
+  // 180 -- Front, front-diagonals, sides
+  // 270 -- Front, front-diagonals, sides, back-diagonals
+  // For <90 degrees, use getLineTargets, for >270 degrees use getAOETargets
+Set<Targets> getForwardDiagonalTargets(Terrain cls, Location center, boolean selectMonsters)
+boolean rollPresetChance(Dice cls, Person source, Person target, ChancePreset chance)
+  // PresetChances defined in the Misc. Page of the wiki.

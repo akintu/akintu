@@ -79,7 +79,7 @@ Combat.modifyResource(source, AP, -6)
 Combat.calcHit(source, target, "Magical")
 [ACT]
 Combat.modifyResource(target, HP, 0-Dice.scale(Combat.calcDamage(source, target, 1, 12, Cold, HIT), 0.01, Spellpower))
-Combat.addStatus(target, "Chill", 2, Dice.scale(5, 0.012, Spellpower), FREQUENT)
+Combat.addStatus(target, "Chill", 2, Dice.scale(5, 0.012, Spellpower), chance=Dice.rollPresetChance(source, target, "Frequent"))
 
 Shock:
 [REQ]
@@ -107,7 +107,7 @@ Combat.modifyResource(source, AP, -5)
 [HIT]
 Combat.calcHit(source, target, "Magical")
 [ACT]
-Combat.addStatus(target, "Suggest Laziness", 1, 0, OCCASIONAL)
+Combat.addStatus(target, "Suggest Laziness", 1, chance=Dice.rollPresetChance(source, target, "Occasional"))
 
 Stutter:
 [REQ]
@@ -341,7 +341,7 @@ Combat.modifyResource(source, AP, -10)
 [HIT]
 Combat.calcHit(source, target, "Magical")
 [ACT]
-Combat.addStatus(target, "Suggest Cowardice", 1, 0, hit=RELIABLE, partial=True)
+Combat.addStatus(target, "Suggest Cowardice", 1, 0,  chance=Dice.rollPresetChance(source, target, "Reliable"), partial=True)
 
 Pit:
 [REQ]
@@ -718,7 +718,7 @@ Combat.modifyResource(source, AP, -12)
 Combat.applyCooldown(source, "Befuddle", 4)
 [ACT]
 Combat.modifyThreat(source, target, 0.7)
-Combat.addStatus(target, "Stun", duration=1, chance=RARE)
+Combat.addStatus(target, "Stun", duration=1,  chance=Dice.rollPresetChance(source, target, "Rare"))
 
 // Thief Skills
 
@@ -745,7 +745,7 @@ usingWeapon(source, "Sword") || usingWeapon(source, "Knife") || (isClass(source,
 Combat.modifyResource(source, AP, -10)
 Combat.applyCooldown(source, "Backstab", 2)
 [HIT]
-Combat.calcHit(source, target, "Physical", modifier=((5 + (4 * usingWeapon("Sword"))) * !isDualWielding(source)), critMod=(50 - (usingWeapon("Sword") * 25)))
+Combat.calcHit(source, target, "Physical", modifier=((5 + (4 * usingWeapon("Sword"))) * !usingWeaponStyle(source, "Dual")), critMod=(50 - (usingWeapon("Sword") * 25)))
 [ACT]
 Combat.weaponAttack(source, target, hit, criticalDamageMod=(2 - (0.5 * sword)))
 
@@ -855,7 +855,7 @@ Combat.applyCooldown(source, "Dirty Shot", 3)
 Combat.calcHit(source, target, "Physical")
 [ACT]
 Combat.weaponAttack(source, target, hit, mightMod=(source.totalCunning / 2))
-Combat.addStatus(target, "Stun", 1, chance=OCCASIONAL)
+Combat.addStatus(target, "Stun", 1, chance=Dice.rollPresetChance(source, target, "Occasional"))
 
 Shock Factor:
 [REQ]
@@ -866,9 +866,9 @@ inRange(source, target, 6)
 Combat.modifyResource(source, AP, -11)
 Combat.applyCooldown(source, "Shock Factor", 4)
 [ACT]
-Combat.addStatus(target, "Stun", 1, chance=FREQUENT)
-Combat.addStatus(target, "Shock_Factor_attack_mod", 3, chance=RELIABLE)
-Combat.addStatus(target, "Shock_Factor_spell_failure", 3, chance=RELIABLE)
+Combat.addStatus(target, "Stun", 1,  chance=Dice.rollPresetChance(source, target, "Frequent"))
+Combat.addStatus(target, "Shock_Factor_attack_mod", 3,  chance=Dice.rollPresetChance(source, target, "Reliable"))
+Combat.addStatus(target, "Shock_Factor_spell_failure", 3,  chance=Dice.rollPresetChance(source, target, "Reliable"))
 
 # WeaponMaster Combination Abilities (Active)
 
@@ -917,6 +917,62 @@ Combat.calcHit(source, Terrain.getConeTargets(source, distance=1, degrees=180, s
 [ACT]
 Combat.weaponAttack(source, targetSet.remove(getMeleeFacingEnemy(source)), hit, overallDamageMod=0.3, ignoreOnHitEffects=True)
 Combat.weaponAttack(source, getMeleeFacingEnemy(source), hit, overallDamageMod=(0.8 + 0.2 * usingWeapon(source, "Axe"))
+
+# Dragoon Combination Abilities
+
+Jump Attack:
+[REQ]
+resource(source, AP, 15)
+usingWeaponStyle(source, "Two-Handed")
+inRange(source, target, 6)
+!onCooldown(source, "Jump Attack")
+hasAdjacentFreeSpace(target)
+[RES]
+Combat.modifyResource(source, AP, -15)
+Combat.applyCooldown(source, "Jump Attack", 2)
+[HIT]
+Combat.calcHit(source, target, "Physical")
+[ACT]
+Combat.movePlayer(source, Terrain.getRandomAdjacentFreeSpace(target), instant=True)
+Combat.weaponAttack(source, target, hit, overallDamageMod=2)
+Combat.weaponAttack(source, Terrain.getAOETargets(source.location, radius=1, selectMonsters=True), 
+                    "Normal Hit", overallDamageMod=0.15, elementOverride="Bludgeoning", ignoreOnHitEffects=True)
+
+Diagonal Thrusts:
+[REQ]
+resource(source, AP, 11)
+usingWeapon(source, "Polearm")
+[RES]
+Combat.modifyResource(source, AP, -11)
+[HIT]
+calcHit(source, Terrain.getForwardDiagonalTargets(source.location, selectMonsters=True), "Physical")
+[ACT]
+Combat.weaponAttack(source, targetSet, hitSet, forceMod=1.2, criticalDamageMod=1.05)
+
+Long Reach:
+[REQ]
+resource(source, AP, 7)
+usingWeapon(source, "Polearm")
+inRange(source, target, 2)
+[RES]
+Combat.modifyResource(source, AP, -7)
+[HIT]
+calcHit(source, target, "Physical")
+[ACT]
+Combat.weaponAttack(source, target, hit, noCounter=True)
+
+Spear-Pierce:
+[REQ]
+resource(source, AP, 10)
+usingWeapon(source, "Polearm")
+inRange(source, target, 1)
+[RES]
+Combat.modifyResource(source, AP, -10)
+[HIT]
+calcHit(source, target, "Physical", modifier=-2)
+[ACT]
+Combat.weaponAttack(source, target, hit)
+Combat.addStatus(target, "Spear-Pierce", duration=3, hit=hit, chance=Dice.rollPresetChance(source, target, "Reliable"))
 
 
 
