@@ -1,12 +1,19 @@
 [REQ]
+// If an item in REQ does not return True, the ability fails to activate and a message is sent to the player indicating why the ability cannot be used.
+// If one of the methods prototyped here is used outside of the REQ section, no such message is delivered on failure.
+
 boolean hasResource(Person self, Resource type, int quantity, int modifier=0)
   // Types
   //  AP
   //  MP
   //  HP
+ 
 boolean inRange(Person self, Person target, int range)
+
 boolean onCooldown(Person self, Ability a)
+
 boolean sizeCompare(Person self, Size size, boolean smallerThan)
+
 boolean usingWeapon(Person self, WeaponType weapon)
   // Weapon Types
   // "Sword"
@@ -17,17 +24,22 @@ boolean usingWeapon(Person self, WeaponType weapon)
   // "Crossbow"
   // "Axe"
   // "Polearm"
+  // "Ranged" ( "Shortbow" || "Longbow" || "Sling" || "Shuriken" || "Crossbow" )
+  // "Melee" ( !"Ranged" )
+  
 boolean usingArmor(Person self, ArmorLevel armor)
   // ArmorLevels
   // "Heavy"
   // "Medium"
   // "Light"
   // "Robes"
+  
 boolean usingShield(Person self, ShieldType shield)
   // ShieldTypes
   // "Heavy"
   // "Medium"
   // "Any" (Heavy || Medium)
+  
 boolean usingWeaponStyle(Person self, WeaponStyle style)
   // Weapon Styles
   // "Dual"
@@ -35,28 +47,47 @@ boolean usingWeaponStyle(Person self, WeaponStyle style)
   // "Two-Handed"
   // "Single"
   // "Single and Shield"
+  
 float getNumberOfStackedStatus(Person self, Status status)
   // returns the number of the same status on the player.  Is stored in variable "stack". 
   // Rerturn is used as a float to prevent repeated casting for division/multiplication but will really only return integers.
+  
 boolean canReach(Person self, Location target, int tilesAllowed)
   // returns True if the player can reach the destination within the given number of tiles.
+  
 boolean isStealthed(Person self)
   // returns True if any kind of stealth is active on the player (but not including invisibility.)
+  
 boolean inBackstabPosition(Person self, Person target, boolean rangedBackstab=false)
   // returns True if in melee range and facing the back of target (if rangedBackstab == True, melee requirement is lifted)
+  
 boolean hasPotion(Person self)
   // returns True if the target has a potion that can be stolen (should only be used on monster-targets).
+  
 boolean isClass(Person self, Class class)
+
 boolean hasAdjacentFreeSpace(Person self)
+
 boolean hasWeaponEnchant(Person self)
   // returns True if any weapon enchantment cast by a spellsword is present on the weapon(s) of the Person.
   
+boolean hasStatus(Person self, Status status)
+
+boolean isExactDistanceBetween(Terrain cls, Location a, Location b, int distance)
+
+  
 [RES]
+// The RES section is always executed if the REQ section finished.  It is used to house resource modifications such as cooldowns and mana costs upon ability use.
+
 void modifyResource(Combat cls, Person target, int type, int value, int modifier=0)
+
 void applyCooldown(Combat cls, Person target, Ability a, int duration)
 
+
 [HIT]
-HitType[] calcHit(Combat cls, Person source, Person target, AttackType type, int rating=0, int modifier=0, float critMod=0)
+// The functions in HIT assign a HitType tuple to the variable "hit" with the target and the hit type.  This can be (and usually is) referenced by the methods in ACT.
+
+HitType[] calcHit(Combat cls, Person source, Person target, AttackType type, int rating=0, int modifier=0, float critMod=0, boolean ignoreMeleeBowPenalty=False)
   // AttackType types:
   // Physical (Dodge vs. Accuracy)
   // Magical  (Magic Resist vs. Spellpower)
@@ -67,10 +98,14 @@ HitType[] calcHit(Combat cls, Person source, Person target, AttackType type, int
   // "Partially resisted"
   // "Normal hit"
   // "Critical hit"
+  
 HitType[] rollSuccess(Dice cls, float chanceOfSuccess)
   // rolls between 0 and 100.  If the roll is <= chanceOfSuccess, returns "Normal Hit", otherwise "Miss". 
   
+  
 [ACT]
+// The functions in ACT perform the most "active" actions.  They often refer to the variable "hit" or "hitSet" which should really map to the same variable stored from the HIT section.
+
 int calcDamage(Combat cls, Person source, Person target, int min, int max, Element element, int hitValue, float partial=1, float critical=1)
   // Elements:
   // "Fire"
@@ -89,51 +124,77 @@ int calcDamage(Combat cls, Person source, Person target, int min, int max, Eleme
   // "Cunning"
   //
   // If min < max, min will be set to max.
+  
+
 void addStatus(Combat cls, Person[] target, Status status, int duration, float magnitude=0, float chance = 1, boolean overwrite = true, boolean partial = false, boolean critical = false, HitType hitValue = NORMAL,
               int min=0, int max=0, Person relativeTarget=None)
+
 void removeStatus(Combat cls, Person target, Status s)
+
 void removeStealth(Combat cls, Person target)
   // Removes any version of stealth from the target (but not invisibility.)
+  
 void removeTrap(Terrain cls, Location location)
-void addTerrainStatus(Terrain cls, TerrainStatus terrainStatus, int duration, Location location, int trapRating=0, int minDamage=0, int maxDamage=0, Element element=None)
+
+void addTerrainStatus(Terrain cls, TerrainStatus terrainStatus, int duration, Location location, int trapRating=0, int minDamage=0, int maxDamage=0, float splashDamPercent=0, splashRadius=0, Element element=None)
   // TerrainStatus shapes and sizes are determined on a case by case basis.
+ 
 void removeTerrainStatus(Terrain cls, TerrainStatus terrainStatus, Location location, boolean dispelConnectedTiles=True)
-int scale(Dice cls, Person source, int value, int scale, Attribute a, int cap = 0)
+
+int scale(Dice cls, int scaleAttributeValue, int value, float scale, int cap = 0)
+
 void knockback(Combat cls, Person target, Location sourceOfImpact, int distance, boolean ignoreResistance=False, boolean didHit=True)
+
 void weaponAttack(Combat cls, Person source, Person target, int hitType, float forceMod=1, float criticalDamageMod=1, int armorPenetrationMod=0, Element elementOverride=None, boolean noCounter=False,
                  float overallDamageMod=1, int mightMod=0, boolean ignoreOnHitEffects=False)
   // Method calls calcDamage internally. 
   // Element override will replace the physical damage of the attack with a different element if such is provided.  This will usually be None as this behavior is not common.
+
 void setMovementCost(Combat cls, Person target, int newCost, int numberOfMoves=1, int duration=0, boolean inStealth=False)
   // By default only affects the next movement action.  If duration is set instead, it will last until that many turns have expired.  Behavior for setting both numberOfMoves and
   // duration to non-zero values is undefined.  inStealth determines if the movement cost change only affects stealthed movement if set to True.
+  
 void movePlayer(Combat cls, Person target, Location destination, boolean instant=False)
   // if instant is left as False, will show player moving animation to reach the destination, otherwise it will be instant.
+  
 void endTurn(Combat cls, Person player)
+
 void modifyThreat(Combat cls, Person source, Person target, float threatAdjustment)
+
 void stealPotion(Combat cls, Person reciever, Person victim)
   // removes a stealable potion from the victim if it is carrying one, and gives it to the reciever.  Is only used to steal a potion from monster-characters.
 
+  
 [Helper]
 boolean isHit(HitType self, HitType requiredHit, boolean greaterThan=True)
+
 int roll(Dice cls, int min, int max)
+
 boolean chanceFromSize(Dice cls, Person target, SizeTuple sizeRules, float defaultChance=0)
   // sizeRules format example: [["Small", 0.8], ["Medium", 0.5], ["Large", 0.15]]
   // uses roll() and sizeCompare() to make a roll based on the target size.
+  
 Person getMeleeFacingEnemey(Person self)
   // will return None if there is no enemy directly in front of the source.
+  
 Location getRandomAdjacentFreeSpace(Terrain cls, Person focus)
+
 Set<Targets> getAOETargets(Terrain cls, Location center, int radius, boolean selectMonsters, boolean includeCenter=True)
+
 Set<Targets> getLineTargets(Terrain cls, Location start, Location end, boolean selectMonsters, boolean selectFirstOnly=false)
+
 Set<Targets> getConeTargets(Terrain cls, Location center, int distance, int degrees, boolean selectMonsters)
   // Degrees allowed:
   // 90 -- Front and front-diagonals
   // 180 -- Front, front-diagonals, sides
   // 270 -- Front, front-diagonals, sides, back-diagonals
   // For <90 degrees, use getLineTargets, for >270 degrees use getAOETargets
+  
 Set<Targets> getForwardDiagonalTargets(Terrain cls, Location center, boolean selectMonsters)
+
 boolean rollPresetChance(Dice cls, Person source, Person target, ChancePreset chance)
   // PresetChances defined in the Misc. Page of the wiki.
+  
 Status getMostRecentStatus(Person self, StatusCategory category)
   // Status Categories:
   // "Debuff"     (Any Harmful)
@@ -141,7 +202,8 @@ Status getMostRecentStatus(Person self, StatusCategory category)
   // "Magical"    (Caused by a Spell or magical monster ability)
   // "Physical"   (Not magical)
   // "Weapon Enchantment" (Caused by a Spellsword weapon enchantment spell)
+  
 Element getElement(Status self)
   // May return None.  Many statuses do not have elements.  
-Element getSplashMagicAbilityElement(AbilityUtils cls, Person source)  
   
+Element getSplashMagicAbilityElement(AbilityUtils cls, Person source)  
