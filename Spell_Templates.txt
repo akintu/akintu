@@ -9,7 +9,7 @@ Combat.modifyResource(source, AP, -5)
 [HIT]
 Combat.calcHit(source, target, "Magical")
 [ACT]
-Combat.modifyResource(target, HP, 0-Dice.scale(Combat.calcDamage(source, target, 2, 4, Arcane, hit), 0.03, Spellpower))
+Combat.modifyResource(target, HP, 0-Dice.scale(source.totalSpellpower, Combat.calcDamage(source, target, 2, 4, Arcane, hit), 0.03))
 
 Arcane Warding:
 [REQ]
@@ -19,7 +19,7 @@ resource(source, AP, 9)
 Combat.modifyResource(source, MP, -7)
 Combat.modifyResource(source, AP, -9)
 [ACT]
-Combat.addStatus(source, "Arcane Ward", Dice.scale(3, 0.1, Spellpower, 6), Dice.scale(5, 0.01, Spellpower))
+Combat.addStatus(source, "Arcane Ward", Dice.scale(source.totalSpellpower, 3, 0.1, cap=6), Dice.scale(source.totalSpellpower, 5, 0.01))
 
 Mystic Shield:
 [REQ]
@@ -31,7 +31,7 @@ Combat.modifyResource(source, MP, -15)
 Combat.modifyResource(source, AP, -12)
 Combat.applyCooldown(source, "Mystic Shield", 4)
 [ACT]
-Combat.addStatus(source, "Mystic Shield", 5, Dice.scale(10, 0.06, Spellpower))
+Combat.addStatus(source, "Mystic Shield", 5, Dice.scale(source.totalSpellpower, 10, 0.06)
 
 Flicker of Life:
 [REQ]
@@ -42,7 +42,7 @@ inRange(source, target, 6)
 Combat.modifyResource(source, MP, -15)
 Combat.modifyResource(source, AP, -9)
 [ACT]
-Combat.modifyResource(target, HP, Dice.scale(Dice.roll(10, 20), 0.02, Spellpower))
+Combat.modifyResource(target, HP, Dice.scale(source.totalSpellpower, Dice.roll(10, 20), 0.02))
 
 Stone Guard:
 [REQ]
@@ -52,7 +52,7 @@ inRange(source, target, 4)
 [ACT]
 Combat.modifyResource(source, MP, -15)
 Combat.modifyResource(source, AP, -9)
-Combat.addStatus(target, "Stone Guard", Dice.scale(4, 0.05, Spellpower, 6), Dice.scale(10, 0.008, Spellpower))
+Combat.addStatus(target, "Stone Guard", Dice.scale(source.totalSpellpower, 4, 0.05, cap=6), Dice.scale(source.totalSpellpower, 10, 0.008))
 
 Singe:
 [REQ]
@@ -65,7 +65,7 @@ Combat.modifyResource(source, AP, -7)
 [HIT]
 Combat.calcHit(source, target, "Magical")
 [ACT]
-Combat.modifyResource(target, HP, 0-Dice.scale(Combat.calcDamage(source, target, 2, 9, Fire, hit, partial = 0.5, critical = 1.2), 0.05, Spellpower))
+Combat.modifyResource(target, HP, 0-Dice.scale(source.totalSpellpower, Combat.calcDamage(source, target, 2, 9, Fire, hit, partial = 0.5, critical = 1.2), 0.05))
 
 Chill:
 [REQ]
@@ -78,8 +78,8 @@ Combat.modifyResource(source, AP, -6)
 [HIT]
 Combat.calcHit(source, target, "Magical")
 [ACT]
-Combat.modifyResource(target, HP, 0-Dice.scale(Combat.calcDamage(source, target, 1, 12, Cold, hit), 0.01, Spellpower))
-Combat.addStatus(target, "Chill", 2, Dice.scale(5, 0.012, Spellpower), chance=Dice.rollPresetChance(source, target, "Frequent"))
+Combat.modifyResource(target, HP, 0-Dice.scale(source.totalSpellpower, Combat.calcDamage(source, target, 1, 12, Cold, hit), 0.01))
+Combat.addStatus(target, "Chill", 2, Dice.scale(source.totalSpellpower, 5, 0.012), chance=Dice.rollPresetChance(source, target, "Frequent"))
 
 Shock:
 [REQ]
@@ -93,7 +93,7 @@ Combat.modifyResource(source, AP, -6)
 [HIT]
 Combat.calcHit(source, target, "Magical")
 [ACT]
-Combat.modifyResource(target, HP, 0 - Dice.scale(Combat.calcDamage(source, target, min=15, max=22, element=Electric, hitValue=hit), 0.014, Spellpower))
+Combat.modifyResource(target, HP, 0 - Dice.scale(source.totalSpellpower, Combat.calcDamage(source, target, min=15, max=22, element=Electric, hitValue=hit), 0.014))
 Combat.applyCooldown(source, "Shock", 1)
 
 Suggest Laziness:
@@ -121,7 +121,7 @@ Combat.modifyResource(source, AP, -9)
 Combat.calcHit(source, target, "Magical")
 [ACT]
 Combat.addStatus(target, "Stutter_spell_fail", 5, 10)
-Combat.addStatus(target, "Stutter_spellpower_reduction", 5, Dice.scale(5, 0.02, Spellpower))
+Combat.addStatus(target, "Stutter_spellpower_reduction", 5, Dice.scale(source.totalSpellpower, 5, 0.02))
 
 Cloud Vision:
 [REQ]
@@ -134,8 +134,8 @@ Combat.modifyResource(source, AP, -9)
 [HIT]
 Combat.calcHit(source, target, "Magical")
 [ACT]
-Combat.addStatus(target, "Cloud Vision", Dice.scale(5, 0.02, Spellpower), Dice.scale(5, 0.012, Spellpower))
-Combat.addStatus(target, "Cloud Vision", Dice.scale(5, 0.02, Spellpower), Dice.scale(2.5, 0.012, Spellpower), partial = true)
+Combat.addStatus(target, "Cloud Vision", Dice.scale(source.totalSpellpower, 5, 0.02), Dice.scale(source.totalSpellpower, 5, 0.012))
+Combat.addStatus(target, "Cloud Vision", Dice.scale(source.totalSpellpower, 5, 0.02), Dice.scale(source.totalSpellpower, 2.5, 0.012), partial = true)
 
 Haunt:
 [REQ]
@@ -150,8 +150,8 @@ Combat.applyCooldown(source, "Haunt", 3)
 [HIT]
 Combat.calcHit(source, target, "Magical")
 [ACT]
-Combat.modifyResource(target, HP, 0 - Dice.scale(Combat.calcDamage(source, target, min=13, max=20, element=Shadow, hitValue=hit), 0.01, Spellpower))
-Combat.addStatus(target, "Haunt", Dice.scale(3, 0.02, Spellpower, cap = 4), min=Dice.scale(2, 0.005, Spellpower), max=Dice.scale(8, 0.005, Spellpower))
+Combat.modifyResource(target, HP, 0 - Dice.scale(source.totalSpellpower, Combat.calcDamage(source, target, min=13, max=20, element=Shadow, hitValue=hit), 0.01))
+Combat.addStatus(target, "Haunt", Dice.scale(source.totalSpellpower, 3, 0.02, cap = 4), min=Dice.scale(source.totalSpellpower, 2, 0.005), max=Dice.scale(source.totalSpellpower, 8, 0.005))
 
 Zone of Silence:
 [REQ]
@@ -163,7 +163,7 @@ Combat.modifyResource(source, MP, -20)
 Combat.modifyResource(source, AP, -6)
 [ACT]
 Terrain.removeTerrainStatus(terrainStatus="Zone of Silence", location=target.location)
-Terrain.addTerrainStatus(terrainStatus="Zone of Silence", location=target.location, duration=Dice.scale(3, 0.011, Spellpower, cap=6)) 
+Terrain.addTerrainStatus(terrainStatus="Zone of Silence", location=target.location, duration=Dice.scale(source.totalSpellpower, 3, 0.011, cap=6)) 
 
 Blurry:
 [REQ]
@@ -173,7 +173,7 @@ resource(source, AP, 3)
 Combat.modifyResource(source, MP, -6)
 Combat.modifyResource(source, AP, -3)
 [ACT]
-Combat.addStatus(source, "Blurry", 1, Dice.scale(5, 0.02, Spellpower))
+Combat.addStatus(source, "Blurry", 1, Dice.scale(source.totalSpellpower, 5, 0.02))
 
 Weapon Enhance:
 [REQ]
@@ -184,10 +184,10 @@ inRange(source, target, 3)
 Combat.modifyResource(source, MP, -9)
 Combat.modifyResource(source, AP, -5)
 [ACT]
-Combat.addStatus(target, "Weapon_enhance_accuracy", Dice.scale(3, 0.03, Spellpower, cap=7), Dice.scale(3, 0.07, Spellpower))
-Combat.addStatus(target, "Weapon_enhance_critical_damage", Dice.scale(3, 0.03, Spellpower, cap=7), Dice.scale(5, 0.05, Spellpower))
-Combat.addStatus(target, "Weapon_enhance_armor_penetration", Dice.scale(3, 0.03, Spellpower, cap=7), Dice.scale(3, 0.07, Spellpower))
-Combat.addStatus(target, "Weapon_enhance_critical_chance", Dice.scale(3, 0.03, Spellpower, cap=7), Dice.scale(1, 0.035, Spellpower))
+Combat.addStatus(target, "Weapon_enhance_accuracy", Dice.scale(source.totalSpellpower, 3, 0.03, cap=7), Dice.scale(source.totalSpellpower, 3, 0.07))
+Combat.addStatus(target, "Weapon_enhance_critical_damage", Dice.scale(source.totalSpellpower, 3, 0.03, cap=7), Dice.scale(source.totalSpellpower, 5, 0.05))
+Combat.addStatus(target, "Weapon_enhance_armor_penetration", Dice.scale(source.totalSpellpower, 3, 0.03, cap=7), Dice.scale(source.totalSpellpower, 3, 0.07))
+Combat.addStatus(target, "Weapon_enhance_critical_chance", Dice.scale(source.totalSpellpower, 3, 0.03, cap=7), Dice.scale(source.totalSpellpower, 1, 0.035))
 
 Flaming Weapon:
 [REQ]
@@ -198,7 +198,7 @@ inRange(source, target, 3)
 Combat.modifyResource(source, MP, -12)
 Combat.modifyResource(source, AP, -8)
 [ACT]
-Combat.addStatus(target, "Flaming Weapon", Dice.scale(3, 0.03, cap=7), min=Dice.scale(1, 0.01, Spellpower), max=Dice.scale(8, 0.01, Spellpower))
+Combat.addStatus(target, "Flaming Weapon", Dice.scale(source.totalSpellpower, 3, 0.03, cap=7), min=Dice.scale(source.totalSpellpower, 1, 0.01), max=Dice.scale(source.totalSpellpower, 8, 0.01))
 
 Burst:
 [REQ]
@@ -213,12 +213,12 @@ Combat.applyCooldown(source, "Burst", 1)
 [HIT]
 Combat.calcHit(source, Terrain.getAOETargets(target, radius=1, selectMonsters=True, includeCenter=False), "Magical")
 [ACT]
-Combat.modifyResource(target, HP, 0 - Dice.scale(Combat.calcDamage(source, target, min=5, max=6, element=Arcane, hitValue=hitSet), 0.005, Spellpower))
+Combat.modifyResource(target, HP, 0 - Dice.scale(source.totalSpellpower, Combat.calcDamage(source, target, min=5, max=6, element=Arcane, hitValue=hitSet), 0.005))
 Combat.knockback(Terrain.getAOETargets(target, radius=1, selectMonsters=True, includeCenter=False), target.location, distance=1)
 [HIT]
 Combat.calcHit(source, target, "Magical")
 [ACT]
-Combat.modifyResource(target, HP, 0-Dice.scale(Combat.calcDamage(source, targetSet, min=10, max=12, element=Arcane, hitValue=hit), 0.005, Spellpower))
+Combat.modifyResource(target, HP, 0-Dice.scale(source.totalSpellpower, Combat.calcDamage(source, targetSet, min=10, max=12, element=Arcane, hitValue=hit), 0.005))
 
 Identification:
 # Needs out of combat use...
@@ -239,7 +239,7 @@ resource(source, AP 5)
 Combat.modifyResource(source, MP -8)
 Combat.modifyResource(source, AP, -5)
 [ACT]
-Combat.addStatus(source, "Hovering Shield", 5, Dice.scale(12, 0.008, Spellpower))
+Combat.addStatus(source, "Hovering Shield", 5, Dice.scale(source.totalSpellpower, 12, 0.008))
 
 Fright:
 [REQ]
@@ -267,10 +267,10 @@ Combat.modifyResource(source, MP, -7)
 Combat.modifyResource(source, AP, -6)
 [HIT]
 Combat.calcHit(source, target, "Magical")
-Combat.calcHit(source, target, "Poison", rating=Dice.scale(35, 0.012, Spellpower))
+Combat.calcHit(source, target, "Poison", rating=Dice.scale(source.totalSpellpower, 35, 0.012))
 [ACT]
-Combat.addStatus(target, "Infection_damage", Dice.scale(4, 0.013, Spellpower), min=Dice.scale(7, 0.03, Spellpower), max=Dice.scale(10, 0.03, Spellpower))
-Combat.addStatus(target, "Infection_tolerance_adjustment", Dice.scale(4, 0.013, Spellpower), 5)
+Combat.addStatus(target, "Infection_damage", Dice.scale(source.totalSpellpower, 4, 0.013), min=Dice.scale(source.totalSpellpower, 7, 0.03), max=Dice.scale(source.totalSpellpower, 10, 0.03))
+Combat.addStatus(target, "Infection_tolerance_adjustment", Dice.scale(source.totalSpellpower, 4, 0.013), 5)
 
 Hands of Healing:
 [REQ]
@@ -283,7 +283,7 @@ Combat.modifyResource(source, MP, -22)
 Combat.modifyResource(source, AP, -8)
 Combat.applyCooldown(source, "Hands of Healing", 1)
 [ACT]
-Combat.modifyResource(target, HP, Dice.scale(Dice.roll(20, 40), 0.02, Spellpower))
+Combat.modifyResource(target, HP, Dice.scale(source.totalSpellpower, Dice.roll(20, 40), 0.02))
 
 Elemental Boon:
 [REQ]
@@ -294,7 +294,7 @@ inRange(source, target, 6)
 Combat.modifyResource(source, MP, -8)
 Combat.modifyResource(source, AP, -10)
 [ACT]
-Combat.addStatus(target, "Elemental Boon", Dice.scale(6, 0.003, Spellpower, cap=7), Dice.scale(15, 0.007, Spellpower))
+Combat.addStatus(target, "Elemental Boon", Dice.scale(source.totalSpellpower, 6, 0.003, cap=7), Dice.scale(source.totalSpellpower, 15, 0.007))
 
 Torrent:
 [REQ]
@@ -310,7 +310,7 @@ Combat.applyCooldown(source, "Torrent", 2)
 Terrain.getLineTargets(source.location, target.location, selectMonsters=True, selectFirstOnly=True)
 Combat.calcHit(source, target, "Magical")
 [ACT]
-Combat.modifyResource(target, HP, 0 - Dice.scale(Combat.calcDamage(source, target, min=10, max=35, element=Cold, hitValue=hit), 0.014, Spellpower))
+Combat.modifyResource(target, HP, 0 - Dice.scale(source.totalSpellpower, Combat.calcDamage(source, target, min=10, max=35, element=Cold, hitValue=hit), 0.014))
 knockback(target, source.location, distance=5, didHit=(isHit(hit, "Normal Hit") and sizeCompare(target, "Huge", smallerThan=True)))
 
 Lightning Bolt:
@@ -327,7 +327,7 @@ Combat.applyCooldown(source, "Lightning Bolt", 1)
 Terrain.getLineTargets(source.location, target.location, selectMonsters=True, selectFirstOnly=False)
 Combat.calcHit(source, targetSet, "Magical")
 [ACT]
-Combat.modifyResource(targetSet, HP, 0 - Dice.scale(Combat.calcDamage(source, target, min=5, max=33, element=Electric, hitValue=hitSet, partial=0.5, critical=1.3), 0.005, Spellpower))
+Combat.modifyResource(targetSet, HP, 0 - Dice.scale(source.totalSpellpower, Combat.calcDamage(source, target, min=5, max=33, element=Electric, hitValue=hitSet, partial=0.5, critical=1.3), 0.005))
 
 Suggest Cowardice:
 [REQ]
@@ -369,7 +369,7 @@ Combat.modifyResrouce(source, AP, -6)
 Combat.applyCooldown(source, "Smoke Screen", 2)
 [ACT]
 Terrain.removeTerrainStatus(terrainStatus="Smoke Screen", location=target, boolean dispelConnectedTiles=False)
-Terrain.addTerrainStatus(terrainStatus="Smoke Screen", duration=Dice.scale(2, 0.03, Spellpower, cap=6), location=target)
+Terrain.addTerrainStatus(terrainStatus="Smoke Screen", duration=Dice.scale(source.totalSpellpower, 2, 0.03, cap=6), location=target)
 
 Shrink:
 [REQ]
@@ -383,7 +383,7 @@ Combat.modifyResource(source, MP -10)
 Combat.modifyResource(source, AP, -4)
 Combat.applyCooldown(source, "Shrink", 2)
 [ACT]
-Combat.addStatus(target, "Shrink", Dice.scale(2, 0.025, Spellpower, cap=5), 10, partial=True)
+Combat.addStatus(target, "Shrink", Dice.scale(source.totalSpellpower, 2, 0.025, cap=5), 10, partial=True)
 
 Frost Weapon:
 [REQ]
@@ -394,7 +394,7 @@ inRange(source, target, 3)
 Combat.modifyResource(source, MP, -12)
 Combat.modifyResource(source, AP, -8)
 [ACT]
-Combat.addStatus(target, "Frost Weapon", Dice.scale(3, 0.03, Spellpower, cap=7), Dice.scale(Dice.roll(min=2, max=5), 0.019, Spellpower))
+Combat.addStatus(target, "Frost Weapon", Dice.scale(source.totalSpellpower, 3, 0.03, cap=7), Dice.scale(source.totalSpellpower, Dice.roll(min=2, max=5), 0.019))
 
 // Fighter Skills
 
@@ -540,16 +540,16 @@ Combat.calcHit(source, target, "Physical", modifier=6)
 [ACT]
 Combat.weaponAttack(source, target, hit)
 
-Trap Shrapnel:
+Shrapnel Trap:
 [REQ]
 resource(source, AP, 5)
-!onCooldown(source, "Trap Shrapnel")
+!onCooldown(source, "Shrapnel Trap")
 [RES]
 Combat.modifyResource(source, AP, -5)
-Combat.applyCooldown(source, "Trap Shrapnel", 1)
+Combat.applyCooldown(source, "Shrapnel Trap", 1)
 [ACT]
 Terrain.removeTrap(source.location)
-Terrain.addTerrainStatus("Trap Shrapnel", duration=0, source.location, minDamage=Dice.scale(5, 0.014, Cunning), maxDamage=Dice.scale(12, 0.014, Cunning), trapRating=Dice.scale(13, 0.015, Cunning)) 
+Terrain.addTerrainStatus("Shrapnel Trap", duration=0, source.location, minDamage=Dice.scale(source.totalCunning, 5, 0.014), maxDamage=Dice.scale(source.totalCunning, 12, 0.014), trapRating=Dice.scale(source.totalCunning, 13, 0.015)) 
 
 Tunnel Vision:
 [REQ]
@@ -561,16 +561,16 @@ Combat.applyCooldown(source, "Tunnel Vision", 5)
 [ACT]
 Combat.addStatus(source, "Tunnel Vision", duration=4)
 
-Trap Sticky:
+Sticky Trap:
 [REQ]
 resource(source, AP, 3)
-!onCooldown(source, "Trap Sticky")
+!onCooldown(source, "Sticky Trap")
 [RES]
 Combat.modifyResource(source, AP, -3)
-Combat.applyCooldown(source, "Trap Sticky", 1)
+Combat.applyCooldown(source, "Sticky Trap", 1)
 [ACT]
 Terrain.removeTrap(source.location)
-Terrain.addTerrainStatus("Trap Sticky", duration=0, location=source.location, trapRating=Dice.scale(20, 0.007, Cunning))
+Terrain.addTerrainStatus("Sticky Trap", duration=0, location=source.location, trapRating=Dice.scale(source.totalCunning, 20, 0.007))
 
 Balm:
 [REQ]
@@ -604,16 +604,16 @@ Combat.applyCooldown(source, "Ranger's Aim", 1)
 [ACT]
 Combat.addStatus(source, "Ranger's Aim", duration=1)
 
-Trap Boulder-Pit:
+Boulder-Pit Trap:
 [REQ]
 resource(source, AP, 5)
-!onCooldown(source, "Trap Boulder-Pit")
+!onCooldown(source, "Boulder-Pit Trap")
 [RES]
 Combat.modifyResource(source, AP, -5)
-Combat.applyCooldown(source, "Trap Boulder-Pit", 1)
+Combat.applyCooldown(source, "Boulder-Pit Trap", 1)
 [ACT]
 Terrain.removeTrap(source.location)
-Terrain.addTerrainStatus("Trap Boulder-Pit", duration=0, location=source.location, minDamage=Dice.scale(3, 0.02, Cunning), maxDamage=Dice.scale(8, 0.02, Cunning), element="Bludgeoning", trapRating=Dice.scale(25, 0.006, Cunning))
+Terrain.addTerrainStatus("Boulder-Pit Trap", duration=0, location=source.location, minDamage=Dice.scale(source.totalCunning, 3, 0.02), maxDamage=Dice.scale(source.totalCunning, 8, 0.02), element="Bludgeoning", trapRating=Dice.scale(source.totalCunning, 25, 0.006))
 
 Defensive Slash:
 [REQ]
@@ -644,16 +644,16 @@ Combat.calcHit(source, target, "Physical", critMod=(0-source.totalCritChance)
 [ACT]
 Combat.weaponAttack(source, target, hit, overallDamageMod=1.05)
 
-Trap Tar:
+Tar Trap:
 [REQ]
 resource(source, AP, 5)
-!onCooldown(source, "Trap Tar")
+!onCooldown(source, "Tar Trap")
 [RES]
 Combat.modifyResource(source, AP, -5)
-Combat.applyCooldown(source, "Trap Tar", 1)
+Combat.applyCooldown(source, "Tar Trap", 1)
 [ACT]
 Terrain.removeTrap(source.location)
-Terrain.addTerrainStatus("Trap Tar", duration=0, location=source.location, trapRating=Dice.scale(30, 0.005, Cunning))
+Terrain.addTerrainStatus("Tar Trap", duration=0, location=source.location, trapRating=Dice.scale(source.totalCunning, 30, 0.005))
 
 // Wizard Skills
 
@@ -761,7 +761,7 @@ Combat.applyCooldown(source, "Swipe Potion", 2)
 [HIT]
 Dice.rollSuccess( source.totalCunning - target.totalCunning )
 [ACT]
-Combat.stealPotion(source, target)
+Combat.stealPotion(source, target, hitValue=hit)
 
 # Trap disarming mechanics have not been fleshed out.  This needs to be done before this can be encoded. TODO
 #Disarm Trap:
@@ -1074,7 +1074,7 @@ Combat.calcHit(source, target, "Physical")
 Combat.weaponAttack(source, target, hit)
 Combat.modifyResource(Terrain.getAOETargets(target.location, radius=1, selectMonsters=True, includeCenter=False), HP, 
                          (0 - Combat.calcDamage(source, Terrain.getAOETargets(target.location, 1, True, False), 
-						                        min=Dice.scale(source, 3, 0.33, "Spellpower"), max=0,
+						                        min=Dice.scale(source.totalCunning, 3, 0.33), max=0,
 					                            element=AbilityUtils.getSplashMagicAbilityElement(source), hitValue=hit)
                          )
                      )						 
@@ -1086,5 +1086,169 @@ resource(source, AP, 4)
 Combat.modifyResource(source, AP, -4)
 [ACT]
 Combat.addStatus(source, "Rebound", duration=3)
+
+# Anarchist Abilities
+
+Follow up:
+[REQ]
+resource(source, AP, 5)
+!onCooldown(source, "Follow up")
+inRange(source, target, 1)
+hasStatus(target, "Trap Chaos")
+[RES]
+Combat.modifyResource(source, AP, -5)
+Combat.applyCooldown(source, "Follow up", 1)
+[HIT]
+Combat.calcHit(source, target, "Physical")
+Combat.weaponAttack(source, target, hit)
+
+Face shot:
+[REQ]
+resource(source, AP, 9)
+inRange(source, target, 1)
+usingWeapon(source, "Ranged")
+hasStatus(target, "Trap Chaos")
+[RES]
+Combat.modifyResource(source, AP, -9)
+[HIT]
+Combat.calcHit(source, target, "Physical", ignoreMeleeBowPenalty=True, critMod=5)
+[ACT]
+Combat.weaponAttack(source, target, hit, criticalDamageMod=1.15)
+
+Trap Worry:
+[REQ]
+resource(source, AP, 10)
+inRange(source, target, 1)
+[RES]
+Combat.modifyResource(source, AP, -10)
+[HIT]
+Dice.rollSuccess((Dice.max(source.totalCunning - target.totalCunning) * 10 + 20, 80))
+[ACT]
+Combat.addStatus(target, "Trap Worry", duration=3, hitValue=hit)
+
+Harmless Grin:
+[REQ]
+resource(source, AP, 5)
+inRange(source, target, 1)
+[RES]
+Combat.modifyResource(source, AP, -5)
+[HIT]
+Dice.rollSuccess((Dice.max(source.totalCunning - target.totalCunning) * 10 + 10, 80))
+[ACT]
+Combat.addStatus(target, "Harmless Grin", duration=3, hitValue=hit)
+
+Explosive Trap:
+[REQ]
+resource(source, AP, 5)
+!onCooldown(source, "Explosive Trap")
+inRange(source, target, 1)
+[RES]
+Combat.modifyResource(source, AP, -5)
+Combat.applyCooldown(source, "Explosive Trap", 2)
+[ACT]
+Terrain.removeTrap(target.location)
+Terrain.addTerrainStatus("Explosive Trap", duration=0, target.location, minDamage=Dice.scale(source.totalCunning, 5, 0.01), 
+                         maxDamage=Dice.scale(source.totalCunning, 10, 0.01), trapRating=Dice.scale(source.totalCunning, 25, 0.01), 
+						 splashDamPercent=0.75, splashRadius=1, element=Fire)
+# Does not suffer from the 20% Anarchist damage penalty.
+# Update Wiki with detail re: Trap rating = 25 + 1/4 per Cunning
+
+Grab Bag:
+[REQ]
+resource(source, AP, 10)
+!onCooldown(source, "Grab Bag")
+[RES]
+Combat.modifyResource(source, AP, -10)
+Combat.applyCooldown(source, "Grab Bag", 2)
+[ACT]
+Combat.modifyResource(Terrain.getAOETargets(source.location, radius=1, selectMonsters=True, includeCenter=False), HP, 
+                      0-Combat.calcDamage(source, Terrain.getAOETargets(source.location, 1, True, False), scale(source.totalCunning, 2, 0.01), scale(source.totalCunning, 20, 0.01),
+					                    element="Piercing", hitValue="Normal Hit"))
+
+# Marksman Abilities
+
+Cusp of Escape:
+[REQ]
+resource(source, AP, 10)
+!onCooldown(source, "Cusp of Escape")
+usingWeapon(source, "Ranged")
+Terrain.isExactDistanceBetween(source.location, target.location, distance=source.weaponRange)
+[RES]
+Combat.modifyResource(source, AP, -10)
+Combat.applyCooldown(source, "Cusp of Escape", 1)
+[HIT]
+Combat.calcHit(source, target, "Physical", modifier=10, critMod=5)
+[ACT]
+Combat.weaponAttack(source, target, hit)
+
+Hot Arrow:
+[REQ]
+resource(source, AP, 5)
+!onCooldown(source, "Hot Arrow")
+usingWeapon(source, "Bow") || usingWeapon(source, "Crossbow")
+inRange(source, target, source.weaponRange)
+[RES]
+Combat.modifyResource(source, AP, -5)
+Combat.applyCooldown(source, "Hot Arrow", 1)
+[HIT]
+Combat.calcHit(source, target, "Physical", modifier=-1)
+[ACT]
+Combat.weaponAttack(source, target, hit)
+Combat.modifyResource(target, HP, Combat.calcDamage(source, target, min=3, max=0, element="Fire", hitValue=hit))
+
+Hot Bullet:
+[REQ]
+resource(source, AP, 5)
+!onCooldown(source, "Hot Bullet")
+usingWeapon(source, "Sling")
+inRange(source, target, source.weaponRange)
+[RES]
+Combat.modifyResource(source, AP, -5)
+Combat.applyCooldown(source, "Hot Bullet", 1)
+[HIT]
+Combat.calcHit(source, target, "Physical")
+[ACT]
+Combat.weaponAttack(source, target, hit, criticalDamageMod=1.1)
+Combat.modifyResource(target, HP, Combat.calcDamage(source, target, min=8, max=0, element="Fire", hitValue=hit))
+
+Suppressing Fire:
+[REQ]
+resource(source, AP, 5)
+[RES]
+Combat.modifyResource(source, AP, -5)
+[ACT]
+Combat.addStatus(source, "Suppressing Fire", duration=4)
+
+Smoking Projectile:
+[REQ]
+resource(source, AP, 12)
+usingWeapon(source, "Ranged")
+inRange(source, target, source.weaponRange)
+[RES]
+Combat.modifyResource(source, AP, -12)
+[HIT]
+Combat.calcHit(source, target, "Physical", modifier=5)
+[ACT]
+Combat.addStatus(target, "Smoking Projectile", duration=4, min=Dice.scale(source.totalCunning, 2, 0.01), max=Dice.scale(source.totalCunning, 10, 0.01), hitValue=hit)
+
+Beacon Trap:
+[REQ]
+resource(source, AP, 5)
+!onCooldown(source, "Beacon Trap")
+[RES]
+Combat.modifyResource(source, AP, -5)
+Combat.applyCooldown(source, "Beacon Trap", 1)
+[ACT]
+Terrain.removeTrap(source.location)
+Terrain.addTerrainStatus("Beacon Trap", duration=0, source.location, trapRatin=Dice.scale(source.totalCunning, 27, 0.01))
+# Update Wiki with detail re: Trap rating = 27 + 1% per Cunning
+
+Cost: 5 AP
+Effect: Tactical; If an enemy triggers this trap, it lights them up with a special signal that decreases the 
+effective dodge rating of the target against any Marksmen that choose to attack it with a ranged attack. Effective Dodge - 15.
+Duration (debuff): 3 Turns
+Cooldown: 1x per turn
+
+
 
 
