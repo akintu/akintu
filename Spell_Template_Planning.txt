@@ -137,11 +137,15 @@ void removeStealth(Combat cls, Person target)
   // Removes any version of stealth from the target (but not invisibility.)
   
 void removeTrap(Terrain cls, Location location)
+  // Also removes any Favor type "trap"
 
-void addTerrainStatus(Terrain cls, TerrainStatus terrainStatus, int duration, Location location, int trapRating=0, int minDamage=0, int maxDamage=0, float splashDamPercent=0, 
-                      splashRadius=0, Element element=None, Person applier=None)
+void addTerrainStatus(Terrain cls, TerrainStatus terrainStatus, int duration, Location location, Person applier=None)
   // TerrainStatus shapes and sizes are determined on a case by case basis.
- 
+
+void addTrap(Terrain cls, TerrainStatus trap, Location location, int trapRating=0, int minDamage=0, int maxDamage=0, float splashDamPercent=0, splashRadius=0, Person applier=None,
+             int charges=1, int magnitude=0)
+  // Magnitude should not be used if min and max damage are supplied.
+  
 void removeTerrainStatus(Terrain cls, TerrainStatus terrainStatus, Location location, boolean dispelConnectedTiles=True)
 
 int scale(Dice cls, int scaleAttributeValue, int value, float scale, int cap = 0)
