@@ -551,7 +551,9 @@ Combat.modifyResource(source, AP, -5)
 Combat.applyCooldown(source, "Shrapnel Trap", 1)
 [ACT]
 Terrain.removeTrap(source.location)
-Terrain.addTerrainStatus("Shrapnel Trap", duration=0, source.location, minDamage=Dice.scale(source.totalCunning, 5, 0.014), maxDamage=Dice.scale(source.totalCunning, 12, 0.014), trapRating=Dice.scale(source.totalCunning, 13, 0.015)) 
+Terrain.addTrap("Shrapnel Trap", source.location, minDamage=Dice.scale(source.totalCunning, 5, 0.014), 
+                maxDamage=Dice.scale(source.totalCunning, 12, 0.014), trapRating=Dice.scale(source.totalCunning, 13, 0.015),
+				applier=source) 
 
 Tunnel Vision:
 [REQ]
@@ -572,7 +574,7 @@ Combat.modifyResource(source, AP, -3)
 Combat.applyCooldown(source, "Sticky Trap", 1)
 [ACT]
 Terrain.removeTrap(source.location)
-Terrain.addTerrainStatus("Sticky Trap", duration=0, location=source.location, trapRating=Dice.scale(source.totalCunning, 20, 0.007))
+Terrain.addTrap("Sticky Trap", location=source.location, trapRating=Dice.scale(source.totalCunning, 20, 0.007), applier=source)
 
 Balm:
 [REQ]
@@ -615,7 +617,8 @@ Combat.modifyResource(source, AP, -5)
 Combat.applyCooldown(source, "Boulder-Pit Trap", 1)
 [ACT]
 Terrain.removeTrap(source.location)
-Terrain.addTerrainStatus("Boulder-Pit Trap", duration=0, location=source.location, minDamage=Dice.scale(source.totalCunning, 3, 0.02), maxDamage=Dice.scale(source.totalCunning, 8, 0.02), element="Bludgeoning", trapRating=Dice.scale(source.totalCunning, 25, 0.006))
+Terrain.addTrap("Boulder-Pit Trap", location=source.location, minDamage=Dice.scale(source.totalCunning, 3, 0.02), 
+                maxDamage=Dice.scale(source.totalCunning, 8, 0.02), trapRating=Dice.scale(source.totalCunning, 25, 0.006), applier=source)
 
 Defensive Slash:
 [REQ]
@@ -655,7 +658,7 @@ Combat.modifyResource(source, AP, -5)
 Combat.applyCooldown(source, "Tar Trap", 1)
 [ACT]
 Terrain.removeTrap(source.location)
-Terrain.addTerrainStatus("Tar Trap", duration=0, location=source.location, trapRating=Dice.scale(source.totalCunning, 30, 0.005))
+Terrain.addTrap("Tar Trap", location=source.location, trapRating=Dice.scale(source.totalCunning, 30, 0.005), applier=source)
 
 // Wizard Skills
 
@@ -1149,9 +1152,9 @@ Combat.modifyResource(source, AP, -5)
 Combat.applyCooldown(source, "Explosive Trap", 2)
 [ACT]
 Terrain.removeTrap(target.location)
-Terrain.addTerrainStatus("Explosive Trap", duration=0, target.location, minDamage=Dice.scale(source.totalCunning, 5, 0.01), 
+Terrain.addTrap("Explosive Trap", target.location, minDamage=Dice.scale(source.totalCunning, 5, 0.01), 
                          maxDamage=Dice.scale(source.totalCunning, 10, 0.01), trapRating=Dice.scale(source.totalCunning, 25, 0.01), 
-						 splashDamPercent=0.75, splashRadius=1, element=Fire)
+						 splashDamPercent=0.75, splashRadius=1)
 # Does not suffer from the 20% Anarchist damage penalty.
 # Update Wiki with detail re: Trap rating = 25 + 1/4 per Cunning
 
@@ -1242,7 +1245,7 @@ Combat.modifyResource(source, AP, -5)
 Combat.applyCooldown(source, "Beacon Trap", 1)
 [ACT]
 Terrain.removeTrap(source.location)
-Terrain.addTerrainStatus("Beacon Trap", duration=0, source.location, trapRatin=Dice.scale(source.totalCunning, 27, 0.01))
+Terrain.addTrap("Beacon Trap", source.location, trapRating=Dice.scale(source.totalCunning, 27, 0.01), applier=source)
 # Update Wiki with detail re: Trap rating = 27 + 1% per Cunning
 
 # Druid Abilities
@@ -1307,8 +1310,8 @@ Combat.modifyResource(source, AP, -5)
 Combat.applyCooldown(source, "Poison Thorn Trap", 1)
 [ACT]
 Terrain.removeTrap(source.location)
-Terrain.addTerrainStatus("Poison Thorn Trap", duration=0, location=source.location, trapRating=Dice.scale(source.totalCunning, 18, 0.011), minDamage=5, maxDamage=10,
-                         element="Poison", applier=source)  
+Terrain.addTrap("Poison Thorn Trap", location=source.location, trapRating=Dice.scale(source.totalCunning, 18, 0.011), minDamage=5, maxDamage=10,
+                applier=source)  
 
 Lethargic Shot:
 [REQ]
@@ -1328,6 +1331,72 @@ Combat.addStatus(target, "Lethargic Shot", duration=3, chance=isHit(Combat.calcH
                                                                                    rating=Dice.scale(source.totalCunning, 25, 0.008).isHit("Normal Hit"))))
 													
 # Tactician Abilities
+
+Accuracy Favor:
+[REQ]
+resource(source, AP, 5)
+!onCooldown(source, "Accuracy Favor")
+[RES]
+Combat.modifyResource(source, AP, -5)
+Combat.applyCooldown(source, "Accuracy Favor", 2)
+[ACT]
+Terrain.removeTrap(source.location)
+Terrain.addTrap("Accuracy Favor", location=source.location, charges=3, magnitude=Dice.scale(source.totalCunning, 3, 0.083), applier=source)
+
+Mana Favor:
+[REQ]
+resource(source, AP, 5)
+[RES]
+Combat.modifyResource(source, AP, -5)
+[ACT]
+Terrain.removeTrap(source.location)
+Terrain.addTrap("Mana Favor", location=source.location, charges=3, magnitude=Dice.scale(source.totalCunning, 5, 0.033), applier=source)
+
+Magical Dampening Trap:
+[REQ]
+resource(source, AP, 5)
+[RES]
+Combat.modifyResource(source, AP, -5)
+[ACT]
+Terrain.removeTrap(source.location)
+Terrain.addTrap("Magical Dampening Trap", location=source.location, magnitude=Dice.scale(source.totalSpellpower, 6, 0.014), 
+                trapRating=Dice.scale(source.totalCunning, 30, 0.008), applier=source)
+
+Nearsighted Trap:
+[REQ]
+resource(source, AP, 5)
+!onCooldown(source, "Nearsighted Trap")
+[RES]
+Combat.modifyResource(source, AP, -5)
+Combat.applyCooldown(source, "Nearsighted Trap", 1)
+[ACT]
+Terrain.removeTrap(source.location)
+Terrain.addTrap("Nearsighted Trap", location=source.location, trapRating=Dice.scale(source.totalCunning, 30, 0.008), applier=source)
+
+Mage Hunting:
+[REQ]
+resource(source, AP, 10)
+!onCooldown(source, "Mage Hunting")
+[RES]
+Combat.modifyResource(source, AP, -10)
+Combat.applyCooldown(source, "Mage Hunting", 6)
+[ACT]
+Combat.addStatus(source, "Mage Hunting", duration=5)
+
+Mighty Favor:
+[REQ]
+resource(source, AP, 5)
+!onCooldown(source, "Mighty Favor")
+[RES]
+Combat.modifyResource(source, AP, -5)
+Combat.applyCooldown(source, "Mighty Favor", 2)
+[ACT]
+Terrain.removeTrap(source.location)
+Terrain.addTrap("Mighty Favor", location=source.location, charges=3, magnitude=Dice.scale(source.totalCunning, 6, 0.027), applier=source)
+
+
+
+
 
 
 
