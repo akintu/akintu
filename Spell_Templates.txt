@@ -19,7 +19,7 @@ resource(source, AP, 9)
 Combat.modifyResource(source, MP, -7)
 Combat.modifyResource(source, AP, -9)
 [ACT]
-Combat.addStatus(source, "Arcane Ward", Dice.scale(source.totalSpellpower, 3, 0.1, cap=6), Dice.scale(source.totalSpellpower, 5, 0.01))
+Combat.addStatus(source, "Arcane Ward", duration=Dice.scale(source.totalSpellpower, 3, 0.1, cap=6), magnitude=Dice.scale(source.totalSpellpower, 5, 0.01))
 
 Mystic Shield:
 [REQ]
@@ -31,7 +31,7 @@ Combat.modifyResource(source, MP, -15)
 Combat.modifyResource(source, AP, -12)
 Combat.applyCooldown(source, "Mystic Shield", 4)
 [ACT]
-Combat.addStatus(source, "Mystic Shield", 5, Dice.scale(source.totalSpellpower, 10, 0.06)
+Combat.addStatus(source, "Mystic Shield", duration=5, magnitude=Dice.scale(source.totalSpellpower, 10, 0.06)
 
 Flicker of Life:
 [REQ]
@@ -52,7 +52,7 @@ inRange(source, target, 4)
 [ACT]
 Combat.modifyResource(source, MP, -15)
 Combat.modifyResource(source, AP, -9)
-Combat.addStatus(target, "Stone Guard", Dice.scale(source.totalSpellpower, 4, 0.05, cap=6), Dice.scale(source.totalSpellpower, 10, 0.008))
+Combat.addStatus(target, "Stone Guard", duration=Dice.scale(source.totalSpellpower, 4, 0.05, cap=6), magnitude=Dice.scale(source.totalSpellpower, 10, 0.008))
 
 Singe:
 [REQ]
@@ -79,7 +79,7 @@ Combat.modifyResource(source, AP, -6)
 Combat.calcHit(source, target, "Magical")
 [ACT]
 Combat.modifyResource(target, HP, 0-Dice.scale(source.totalSpellpower, Combat.calcDamage(source, target, 1, 12, Cold, hit), 0.01))
-Combat.addStatus(target, "Chill", 2, Dice.scale(source.totalSpellpower, 5, 0.012), chance=Dice.rollPresetChance(source, target, "Frequent"))
+Combat.addStatus(target, "Chill", duration=2, magnitude=Dice.scale(source.totalSpellpower, 5, 0.012), chance=Dice.rollPresetChance(source, target, "Frequent"))
 
 Shock:
 [REQ]
@@ -107,7 +107,7 @@ Combat.modifyResource(source, AP, -5)
 [HIT]
 Combat.calcHit(source, target, "Magical")
 [ACT]
-Combat.addStatus(target, "Suggest Laziness", 1, chance=Dice.rollPresetChance(source, target, "Occasional"))
+Combat.addStatus(target, "Suggest Laziness", duration=1, chance=Dice.rollPresetChance(source, target, "Occasional"))
 
 Stutter:
 [REQ]
@@ -121,7 +121,7 @@ Combat.modifyResource(source, AP, -9)
 Combat.calcHit(source, target, "Magical")
 [ACT]
 Combat.addStatus(target, "Stutter_spell_fail", 5, 10)
-Combat.addStatus(target, "Stutter_spellpower_reduction", 5, Dice.scale(source.totalSpellpower, 5, 0.02))
+Combat.addStatus(target, "Stutter_spellpower_reduction", duration=5, magnitude=Dice.scale(source.totalSpellpower, 5, 0.02))
 
 Cloud Vision:
 [REQ]
@@ -134,8 +134,8 @@ Combat.modifyResource(source, AP, -9)
 [HIT]
 Combat.calcHit(source, target, "Magical")
 [ACT]
-Combat.addStatus(target, "Cloud Vision", Dice.scale(source.totalSpellpower, 5, 0.02), Dice.scale(source.totalSpellpower, 5, 0.012))
-Combat.addStatus(target, "Cloud Vision", Dice.scale(source.totalSpellpower, 5, 0.02), Dice.scale(source.totalSpellpower, 2.5, 0.012), partial = true)
+Combat.addStatus(target, "Cloud Vision", Dice.scale(source.totalSpellpower, 5, 0.02), magnitude=Dice.scale(source.totalSpellpower, 5, 0.012), hitValue=hit)
+Combat.addStatus(target, "Cloud Vision", Dice.scale(source.totalSpellpower, 5, 0.02), magnitude=Dice.scale(source.totalSpellpower, 2.5, 0.012), hitValue=hit, partial=true)
 
 Haunt:
 [REQ]
@@ -151,7 +151,7 @@ Combat.applyCooldown(source, "Haunt", 3)
 Combat.calcHit(source, target, "Magical")
 [ACT]
 Combat.modifyResource(target, HP, 0 - Dice.scale(source.totalSpellpower, Combat.calcDamage(source, target, min=13, max=20, element=Shadow, hitValue=hit), 0.01))
-Combat.addStatus(target, "Haunt", Dice.scale(source.totalSpellpower, 3, 0.02, cap = 4), min=Dice.scale(source.totalSpellpower, 2, 0.005), max=Dice.scale(source.totalSpellpower, 8, 0.005))
+Combat.addStatus(target, "Haunt", Dice.scale(source.totalSpellpower, 3, 0.02, cap = 4), min=2, max=8, applier=source, scalesWith="Spellpower", scaleFactor=0.005)
 
 Zone of Silence:
 [REQ]
@@ -184,10 +184,10 @@ inRange(source, target, 3)
 Combat.modifyResource(source, MP, -9)
 Combat.modifyResource(source, AP, -5)
 [ACT]
-Combat.addStatus(target, "Weapon_enhance_accuracy", Dice.scale(source.totalSpellpower, 3, 0.03, cap=7), Dice.scale(source.totalSpellpower, 3, 0.07))
-Combat.addStatus(target, "Weapon_enhance_critical_damage", Dice.scale(source.totalSpellpower, 3, 0.03, cap=7), Dice.scale(source.totalSpellpower, 5, 0.05))
-Combat.addStatus(target, "Weapon_enhance_armor_penetration", Dice.scale(source.totalSpellpower, 3, 0.03, cap=7), Dice.scale(source.totalSpellpower, 3, 0.07))
-Combat.addStatus(target, "Weapon_enhance_critical_chance", Dice.scale(source.totalSpellpower, 3, 0.03, cap=7), Dice.scale(source.totalSpellpower, 1, 0.035))
+Combat.addStatus(target, "Weapon_enhance_accuracy", duration=Dice.scale(source.totalSpellpower, 3, 0.03, cap=7), Dice.scale(source.totalSpellpower, 3, 0.07))
+Combat.addStatus(target, "Weapon_enhance_critical_damage", duration=Dice.scale(source.totalSpellpower, 3, 0.03, cap=7), Dice.scale(source.totalSpellpower, 5, 0.05))
+Combat.addStatus(target, "Weapon_enhance_armor_penetration", duration=Dice.scale(source.totalSpellpower, 3, 0.03, cap=7), Dice.scale(source.totalSpellpower, 3, 0.07))
+Combat.addStatus(target, "Weapon_enhance_critical_chance", duration=Dice.scale(source.totalSpellpower, 3, 0.03, cap=7), Dice.scale(source.totalSpellpower, 1, 0.035))
 
 Flaming Weapon:
 [REQ]
@@ -198,7 +198,7 @@ inRange(source, target, 3)
 Combat.modifyResource(source, MP, -12)
 Combat.modifyResource(source, AP, -8)
 [ACT]
-Combat.addStatus(target, "Flaming Weapon", Dice.scale(source.totalSpellpower, 3, 0.03, cap=7), min=Dice.scale(source.totalSpellpower, 1, 0.01), max=Dice.scale(source.totalSpellpower, 8, 0.01))
+Combat.addStatus(target, "Flaming Weapon", Dice.scale(source.totalSpellpower, 3, 0.03, cap=7), min=1, max=8, applier=source, scalesWith="Spellpower", scaleFactor=0.01)
 
 Burst:
 [REQ]
@@ -239,7 +239,7 @@ resource(source, AP 5)
 Combat.modifyResource(source, MP -8)
 Combat.modifyResource(source, AP, -5)
 [ACT]
-Combat.addStatus(source, "Hovering Shield", 5, Dice.scale(source.totalSpellpower, 12, 0.008))
+Combat.addStatus(source, "Hovering Shield", 5, applier=source, scalesWith="Spellpower", scaleFactor=0.008)
 
 Fright:
 [REQ]
@@ -269,8 +269,8 @@ Combat.modifyResource(source, AP, -6)
 Combat.calcHit(source, target, "Magical")
 Combat.calcHit(source, target, "Poison", rating=Dice.scale(source.totalSpellpower, 35, 0.012))
 [ACT]
-Combat.addStatus(target, "Infection_damage", Dice.scale(source.totalSpellpower, 4, 0.013), min=Dice.scale(source.totalSpellpower, 7, 0.03), max=Dice.scale(source.totalSpellpower, 10, 0.03))
-Combat.addStatus(target, "Infection_tolerance_adjustment", Dice.scale(source.totalSpellpower, 4, 0.013), 5)
+Combat.addStatus(target, "Infection_damage", Dice.scale(source.totalSpellpower, 4, 0.013), min=7, max=10, applier=source, scalesWith="Spellpower", scaleFactor=0.03)
+Combat.addStatus(target, "Infection_tolerance_adjustment", duration=Dice.scale(source.totalSpellpower, 4, 0.013), magnitude=5)
 
 Hands of Healing:
 [REQ]
@@ -294,7 +294,8 @@ inRange(source, target, 6)
 Combat.modifyResource(source, MP, -8)
 Combat.modifyResource(source, AP, -10)
 [ACT]
-Combat.addStatus(target, "Elemental Boon", Dice.scale(source.totalSpellpower, 6, 0.003, cap=7), Dice.scale(source.totalSpellpower, 15, 0.007))
+Combat.addStatus(target, "Elemental Boon", duration=Dice.scale(source.totalSpellpower, 6, 0.003, cap=7), 
+                 applier=source, scalesWith="Spellpower", scaleFactor=0.007)
 
 Torrent:
 [REQ]
@@ -341,7 +342,7 @@ Combat.modifyResource(source, AP, -10)
 [HIT]
 Combat.calcHit(source, target, "Magical")
 [ACT]
-Combat.addStatus(target, "Suggest Cowardice", 1, 0,  chance=Dice.rollPresetChance(source, target, "Reliable"), partial=True)
+Combat.addStatus(target, "Suggest Cowardice", duration=1, chance=Dice.rollPresetChance(source, target, "Reliable"), partial=True)
 
 Pit:
 [REQ]
@@ -383,7 +384,7 @@ Combat.modifyResource(source, MP -10)
 Combat.modifyResource(source, AP, -4)
 Combat.applyCooldown(source, "Shrink", 2)
 [ACT]
-Combat.addStatus(target, "Shrink", Dice.scale(source.totalSpellpower, 2, 0.025, cap=5), 10, partial=True)
+Combat.addStatus(target, "Shrink", duration=Dice.scale(source.totalSpellpower, 2, 0.025, cap=5), magnitude=10, partial=True)
 
 Frost Weapon:
 [REQ]
@@ -394,7 +395,8 @@ inRange(source, target, 3)
 Combat.modifyResource(source, MP, -12)
 Combat.modifyResource(source, AP, -8)
 [ACT]
-Combat.addStatus(target, "Frost Weapon", Dice.scale(source.totalSpellpower, 3, 0.03, cap=7), Dice.scale(source.totalSpellpower, Dice.roll(min=2, max=5), 0.019))
+Combat.addStatus(target, "Frost Weapon", duration=Dice.scale(source.totalSpellpower, 3, 0.03, cap=7), 
+                 min=2, max=5, applier=source, scalesWith="Spellpower", scaleFactor=0.019)
 
 // Fighter Skills
 
@@ -1229,7 +1231,7 @@ Combat.modifyResource(source, AP, -12)
 [HIT]
 Combat.calcHit(source, target, "Physical", modifier=5)
 [ACT]
-Combat.addStatus(target, "Smoking Projectile", duration=4, min=Dice.scale(source.totalCunning, 2, 0.01), max=Dice.scale(source.totalCunning, 10, 0.01), hitValue=hit)
+Combat.addStatus(target, "Smoking Projectile", duration=4, min=2, max=10, applier=source, scalesWith="Cunning", scaleFactor=0.01, hitValue=hit)
 
 Beacon Trap:
 [REQ]
@@ -1243,11 +1245,89 @@ Terrain.removeTrap(source.location)
 Terrain.addTerrainStatus("Beacon Trap", duration=0, source.location, trapRatin=Dice.scale(source.totalCunning, 27, 0.01))
 # Update Wiki with detail re: Trap rating = 27 + 1% per Cunning
 
-Cost: 5 AP
-Effect: Tactical; If an enemy triggers this trap, it lights them up with a special signal that decreases the 
-effective dodge rating of the target against any Marksmen that choose to attack it with a ranged attack. Effective Dodge - 15.
-Duration (debuff): 3 Turns
-Cooldown: 1x per turn
+# Druid Abilities
+
+Deep Wound:
+[REQ]
+resource(source, AP, 10)
+!onCooldown(source, "Deep Wound")
+inRange(source, target, source.weaponRange)
+[RES]
+Combat.modifyResource(source, AP, -10)
+Combat.applyCooldown(source, "Deep Wound", 1)
+[HIT]
+Combat.calcHit(source, target, "Physical")
+[ACT]
+Combat.weaponAttack(source, target, hit, poisonRatingMod=5)
+Combat.addStatus(target, "Deep Wound", duration=5)
+
+Painful Shot:
+[REQ]
+resource(source, AP, 7)
+usingWeapon(source, "Ranged")
+inRange(source, target, source.weaponRange)
+[RES]
+Combat.modifyResource(source, AP, -7)
+[HIT]
+Combat.calcHit(source, target, "Physical")
+[ACT]
+Combat.weaponAttack(source, target, hit, criticalDamageMod=1.1)
+Combat.addStatus(target, "Painful Shot", duration=5, chance=(Dice.rollPresetChance(source, target, "Occasional") * isHit(hit, "Normal Hit")))
+
+Poisonous Touch:
+[REQ]
+resource(source, AP, 5)
+!onCooldown(source, "Poisonous Touch")
+inRange(source, target, 1)
+[RES]
+Combat.modifyResource(source, AP, -5)
+Combat.applyCooldown(source, "Poisonous Touch", 3)
+[HIT]
+Combat.calcHit(source, target, "Physical", modifier=5)
+[ACT]
+Combat.addStatus(target, "Poisonous Touch", duration=4, min=5, max=15, applier=source, scalesWith="Cunning", scaleFactor=0.07)
+# Make sure Poison rating of 12 is encoded into the status effect.
+
+Target Throat:
+[REQ]
+resource(source, AP, 8)
+!onCooldown(source, "Target Throat")
+[RES]
+Combat.modifyResource(source, AP, -8)
+Combat.applyCooldown(source, "Target Throat", 6)
+[ACT]
+Combat.addStatus(source, "Target Throat", duration=4)
+
+Poison Thorn Trap:
+[REQ]
+resource(source, AP, 5)
+!onCooldown(source, "Poison Thorn Trap")
+[RES]
+Combat.modifyResource(source, AP, -5)
+Combat.applyCooldown(source, "Poison Thorn Trap", 1)
+[ACT]
+Terrain.removeTrap(source.location)
+Terrain.addTerrainStatus("Poison Thorn Trap", duration=0, location=source.location, trapRating=Dice.scale(source.totalCunning, 18, 0.011), minDamage=5, maxDamage=10,
+                         element="Poison", applier=source)  
+
+Lethargic Shot:
+[REQ]
+resource(source, AP, 8)
+usingWeapon(source, "Ranged")
+inRange(source, target, source.weaponRange)
+[RES]
+Combat.modifyResource(source, AP, -8)
+[HIT]
+Combat.calcHit(source, target, "Physical")
+[ACT]
+Combat.weaponAttack(source, target, hit, forceMod=1.1)
+[HIT]
+Combat.calcHit(source, target, "Poison", rating=Dice.scale(source.totalCunning, 25, 0.008))
+[ACT]
+Combat.addStatus(target, "Lethargic Shot", duration=3, chance=isHit(Combat.calcHit(source, target, "Poison", 
+                                                                                   rating=Dice.scale(source.totalCunning, 25, 0.008).isHit("Normal Hit"))))
+													
+# Tactician Abilities
 
 
 
