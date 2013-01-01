@@ -106,7 +106,7 @@ HitType[] rollSuccess(Dice cls, float chanceOfSuccess)
 [ACT]
 // The functions in ACT perform the most "active" actions.  They often refer to the variable "hit" or "hitSet" which should really map to the same variable stored from the HIT section.
 
-int calcDamage(Combat cls, Person source, Person target, int min, int max, Element element, int hitValue, float partial=1, float critical=1)
+int calcDamage(Combat cls, Person source, Person target, int min, int max, Element element, int hitValue, float partial=1, float critical=1, Attribute scalesWith=None, float scaleFactor=0)
   // Elements:
   // "Fire"
   // "Cold"
@@ -127,7 +127,9 @@ int calcDamage(Combat cls, Person source, Person target, int min, int max, Eleme
   
 
 void addStatus(Combat cls, Person[] target, Status status, int duration, float magnitude=0, float chance = 1, boolean overwrite = true, boolean partial = false, boolean critical = false, HitType hitValue = NORMAL,
-              int min=0, int max=0, Person relativeTarget=None)
+              int min=0, int max=0, Person relativeTarget=None, Person applier=None, Attribute scalesWith=None, float scaleFactor=0)
+  // Applier is typically not relevant but is for the purposes of applying +30% Poison elemental damage or somesuch bonus.
+  // If applier is supplied, scalesWith and scaleFactor should be supplied.
 
 void removeStatus(Combat cls, Person target, Status s)
 
@@ -136,7 +138,8 @@ void removeStealth(Combat cls, Person target)
   
 void removeTrap(Terrain cls, Location location)
 
-void addTerrainStatus(Terrain cls, TerrainStatus terrainStatus, int duration, Location location, int trapRating=0, int minDamage=0, int maxDamage=0, float splashDamPercent=0, splashRadius=0, Element element=None)
+void addTerrainStatus(Terrain cls, TerrainStatus terrainStatus, int duration, Location location, int trapRating=0, int minDamage=0, int maxDamage=0, float splashDamPercent=0, 
+                      splashRadius=0, Element element=None, Person applier=None)
   // TerrainStatus shapes and sizes are determined on a case by case basis.
  
 void removeTerrainStatus(Terrain cls, TerrainStatus terrainStatus, Location location, boolean dispelConnectedTiles=True)
@@ -146,7 +149,7 @@ int scale(Dice cls, int scaleAttributeValue, int value, float scale, int cap = 0
 void knockback(Combat cls, Person target, Location sourceOfImpact, int distance, boolean ignoreResistance=False, boolean didHit=True)
 
 void weaponAttack(Combat cls, Person source, Person target, int hitType, float forceMod=1, float criticalDamageMod=1, int armorPenetrationMod=0, Element elementOverride=None, boolean noCounter=False,
-                 float overallDamageMod=1, int mightMod=0, boolean ignoreOnHitEffects=False)
+                 float overallDamageMod=1, int mightMod=0, boolean ignoreOnHitEffects=False, int poisonRatingMod=0)
   // Method calls calcDamage internally. 
   // Element override will replace the physical damage of the attack with a different element if such is provided.  This will usually be None as this behavior is not common.
 
