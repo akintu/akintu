@@ -240,3 +240,53 @@ Element getElement(Status self)
   
 Element getSplashMagicAbilityElement(AbilityUtils cls, Person source)  
 
+[TAGS]
+// Tags are used to identify properties of an ability in a declarative style.  They will be loaded into the data structure as variables associated with the ability/spell.
+ 
+  [BREAKS_STEALTH: ___]
+    // Defaults to 100
+	// Indicates the chance to break stealth of an ability out of 100%.
+ 
+  [CLASS: ___]
+    // Has no default -- must always be supplied.
+	// Indicates the base class that may learn this ability.  If it is a combination ability, indicates the combination class instead.
+	// If an asterisk is supplied after the base class name, it indicates that ONLY primaries of that class may know the ability. (Such as with Ranger traps.)
+	
+  [DISPLAY_NAME: ___]
+    // Defaults to "None"
+	// If included, indicates the external display name of this ability.  The NAME tag is still used to define the internal name.
+
+  [LEVEL: ___]
+    // Has no default -- must always be supplied.
+    // Indicates the level at which the ability is learned or becomes avaiable to learn.
+
+  [NAME: ___]
+    // Has no default -- must always be supplied.
+	// Indicates the internal and display name of the ability.
+
+  [REPLACED_BY: ___]
+    // Defaults to "None"
+	// Is used to indicate that if a character has the listed ability, this ability is not known (usable?) by that character.
+
+  [REPLACES: ___]
+    // Defaults to "None"
+	// A decoration tag that is currently not necessary but helps indicate when an ability overrides an earlier one.
+	
+  [SPELL_SCHOOL: ___]
+    // Defaults to "None"
+	// Is used to indicate which school of magic a spell comes from.  Should not be applied to skills etc.
+	
+  [TARGET: ___]
+    // Defaults to "Enemy"
+	// Is used to indicate what may be targeted with this ability.
+	// TARGET: Enemy -- indicates an enemy should be selected.
+	// TARGET: None -- indicates the caster is the target (or no target is necessary??)
+	// TARGET: Ally -- indicates the caster OR a friendly player/summon should be selected.
+	// TARGET: Location -- indicates that the ability only needs to target a valid spot on the ground.  It is probably an AoE spell/ability.
+	
+[/TAGS] Indicates the tag section is concluded and the procedural section should begin.
+	
+
+	
+
+	

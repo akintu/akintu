@@ -1,4 +1,10 @@
-Arcane Dart:
+
+[TAGS]
+  [NAME: Arcane Dart]
+  [CLASS: Wizard]
+  [LEVEL: 1]
+  [SPELL_SCHOOL: Mystic]
+[/TAGS]
 [REQ]
 resource(source, "MP", 2)
 resource(source, "AP", 5)
@@ -11,7 +17,13 @@ Combat.calcHit(source, target, "Magical")
 [ACT]
 Combat.modifyresource(target, "HP", 0-Combat.calcDamage(source, target, min=2, max=4, element="Arcane", hitValue=hit, critical=1.2, scalesWith="Spellpower", scaleFactor=0.03))
 
-Arcane Warding:
+[TAGS]
+  [NAME: Arcane Ward]
+  [CLASS: Wizard]
+  [LEVEL: 1]
+  [SPELL_SCHOOL: Mystic]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "MP", 7)
 resource(source, "AP", 9)
@@ -21,7 +33,13 @@ Combat.modifyresource(source, "AP", -9)
 [ACT]
 Combat.addStatus(source, "Arcane Ward", duration=Dice.scale(source.totalSpellpower, 3, 0.1, cap=6), magnitude=Dice.scale(source.totalSpellpower, 5, 0.01))
 
-Mystic Shield:
+[TAGS]
+  [NAME: Mystic Shield]
+  [CLASS: Wizard]
+  [LEVEL: 1]
+  [SPELL_SCHOOL: Mystic]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "MP", 15)
 resource(source, "AP", 12)
@@ -33,7 +51,13 @@ Combat.applyCooldown(source, "Mystic Shield", 4)
 [ACT]
 Combat.addStatus(source, "Mystic Shield", duration=5, magnitude=Dice.scale(source.totalSpellpower, 10, 0.06)
 
-Flicker of Life:
+[TAGS]
+  [NAME: Flicker of Life]
+  [CLASS: Wizard]
+  [LEVEL: 1]
+  [SPELL_SCHOOL: Natural]
+  [TARGET: Ally]
+[/TAGS]
 [REQ]
 resource(source, "MP", 15)
 resource(source, "AP", 9)
@@ -44,7 +68,13 @@ Combat.modifyresource(source, "AP", -9)
 [ACT]
 Combat.modifyresource(target, "HP", Dice.scale(source.totalSpellpower, Dice.roll(10, 20), 0.02))
 
-Stone Guard:
+[TAGS]
+  [NAME: Stone Guard]
+  [CLASS: Wizard]
+  [LEVEL: 1]
+  [SPELL_SCHOOL: Natural]
+  [TARGET: Ally]
+[/TAGS]
 [REQ]
 resource(source, "MP", 15)
 resource(source, "AP", 9)
@@ -54,7 +84,12 @@ Combat.modifyresource(source, "MP", -15)
 Combat.modifyresource(source, "AP", -9)
 Combat.addStatus(target, "Stone Guard", duration=Dice.scale(source.totalSpellpower, 4, 0.05, cap=6), magnitude=Dice.scale(source.totalSpellpower, 10, 0.008))
 
-Singe:
+[TAGS]
+  [NAME: Singe]
+  [CLASS: Wizard]
+  [LEVEL: 1]
+  [SPELL_SCHOOL: Primal]
+[/TAGS]
 [REQ]
 resource(source, "MP", 6)
 resource(source, "AP", 7)
@@ -68,7 +103,12 @@ Combat.calcHit(source, target, "Magical")
 Combat.modifyresource(target, "HP", 0-Combat.calcDamage(source, target, min=2, max=9, element="Fire", 
                       hitValue=hit, critical=1.2, partial=0.5, scalesWith="Spellpower", scaleFactor=0.05))
 
-Chill:
+[TAGS]
+  [NAME: Chill]
+  [CLASS: Wizard]
+  [LEVEL: 1]
+  [SPELL_SCHOOL: Primal]
+[/TAGS]
 [REQ]
 resource(source, "MP", 10)
 resource(source, "AP", 6)
@@ -83,7 +123,12 @@ Combat.modifyresource(target, "HP", 0 - Combat.calcDamage(source, target, min=1,
                       hitValue=hit, scalesWith="Spellpower", scaleFactor=0.01))
 Combat.addStatus(target, "Chill", duration=2, magnitude=Dice.scale(source.totalSpellpower, 5, 0.012), chance=Dice.rollPresetChance(source, target, "Frequent"))
 
-Shock:
+[TAGS]
+  [NAME: Shock]
+  [CLASS: Wizard]
+  [LEVEL: 1]
+  [SPELL_SCHOOL: Primal]
+[/TAGS]
 [REQ]
 resource(source, "MP", 13)
 resource(source, "AP", 7)
@@ -99,8 +144,12 @@ Combat.calcHit(source, target, "Magical")
 Combat.modifyresource(target, "HP", 0 - Combat.calcDamage(source, target, min=15, max=22, element="Electric", 
                       hitValue=hit, scalesWith="Spellpower", scaleFactor=0.014))
 
-
-Suggest Laziness:
+[TAGS]
+  [NAME: Suggest Laziness]
+  [CLASS: Wizard]
+  [LEVEL: 1]
+  [SPELL_SCHOOL: Mental]
+[/TAGS]
 [REQ]
 resource(source, "MP", 5)
 resource(source, "AP", 5)
@@ -113,7 +162,12 @@ Combat.calcHit(source, target, "Magical")
 [ACT]
 Combat.addStatus(target, "Suggest Laziness", duration=1, chance=Dice.rollPresetChance(source, target, "Occasional"))
 
-Stutter:
+[TAGS]
+  [NAME: Stutter]
+  [CLASS: Wizard]
+  [LEVEL: 1]
+  [SPELL_SCHOOL: Mental]
+[/TAGS]
 [REQ]
 resource(source, "MP", 14)
 resource(source, "AP", 9)
@@ -127,7 +181,12 @@ Combat.calcHit(source, target, "Magical")
 Combat.addStatus(target, "Stutter_spell_fail", 5, 10)
 Combat.addStatus(target, "Stutter_spellpower_reduction", duration=5, magnitude=Dice.scale(source.totalSpellpower, 5, 0.02))
 
-Cloud Vision:
+[TAGS]
+  [NAME: Cloud Vision]
+  [CLASS: Wizard]
+  [LEVEL: 1]
+  [SPELL_SCHOOL: Bane]
+[/TAGS]
 [REQ]
 resource(source, "MP", 9)
 resource(source, "AP", 9)
@@ -141,7 +200,12 @@ Combat.calcHit(source, target, "Magical")
 Combat.addStatus(target, "Cloud Vision", Dice.scale(source.totalSpellpower, 5, 0.02), magnitude=Dice.scale(source.totalSpellpower, 5, 0.012), hitValue=hit)
 Combat.addStatus(target, "Cloud Vision", Dice.scale(source.totalSpellpower, 5, 0.02), magnitude=Dice.scale(source.totalSpellpower, 2.5, 0.012), hitValue=hit, partial=true)
 
-Haunt:
+[TAGS]
+  [NAME: Haunt]
+  [CLASS: Wizard]
+  [LEVEL: 1]
+  [SPELL_SCHOOL: Bane]
+[/TAGS]
 [REQ]
 resource(source, "MP", 20)
 resource(source, "AP", 11)
@@ -157,7 +221,13 @@ Combat.calcHit(source, target, "Magical")
 Combat.modifyresource(target, "HP", 0 - Dice.scale(source.totalSpellpower, Combat.calcDamage(source, target, min=13, max=20, element=Shadow, hitValue=hit), 0.01))
 Combat.addStatus(target, "Haunt", Dice.scale(source.totalSpellpower, 3, 0.02, cap = 4), min=2, max=8, applier=source, scalesWith="Spellpower", scaleFactor=0.005)
 
-Zone of Silence:
+[TAGS]
+  [NAME: Zone of Silence]
+  [CLASS: Wizard]
+  [LEVEL: 1]
+  [SPELL_SCHOOL: Illusion]
+  [TARGET: Location]
+[/TAGS]
 [REQ]
 resource(source, "MP", 20)
 resource(source, "AP", 6)
@@ -169,7 +239,13 @@ Combat.modifyresource(source, "AP", -6)
 Terrain.removeTerrainStatus(terrainStatus="Zone of Silence", location=target.location)
 Terrain.addTerrainStatus(terrainStatus="Zone of Silence", location=target.location, duration=Dice.scale(source.totalSpellpower, 3, 0.011, cap=6)) 
 
-Blurry:
+[TAGS]
+  [NAME: Blurry]
+  [CLASS: Wizard]
+  [LEVEL: 1]
+  [SPELL_SCHOOL: Illusion]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "MP", 6)
 resource(source, "AP", 3)
@@ -179,7 +255,13 @@ Combat.modifyresource(source, "AP", -3)
 [ACT]
 Combat.addStatus(source, "Blurry", 1, Dice.scale(source.totalSpellpower, 5, 0.02))
 
-Weapon Enhance:
+[TAGS]
+  [NAME: Weapon Enhance]
+  [CLASS: Wizard]
+  [LEVEL: 1]
+  [SPELL_SCHOOL: Enchantment]
+  [TARGET: Ally]
+[/TAGS]
 [REQ]
 resource(source, "MP", 9)
 resource(source, "AP", 5)
@@ -193,7 +275,13 @@ Combat.addStatus(target, "Weapon_enhance_critical_damage", duration=Dice.scale(s
 Combat.addStatus(target, "Weapon_enhance_armor_penetration", duration=Dice.scale(source.totalSpellpower, 3, 0.03, cap=7), Dice.scale(source.totalSpellpower, 3, 0.07))
 Combat.addStatus(target, "Weapon_enhance_critical_chance", duration=Dice.scale(source.totalSpellpower, 3, 0.03, cap=7), Dice.scale(source.totalSpellpower, 1, 0.035))
 
-Flaming Weapon:
+[TAGS]
+  [NAME: Flaming Weapon]
+  [CLASS: Wizard]
+  [LEVEL: 1]
+  [SPELL_SCHOOL: Enchantment]
+  [TARGET: Ally]
+[/TAGS]
 [REQ]
 resource(source, "MP", 12)
 resource(source, "AP", 8)
@@ -204,7 +292,13 @@ Combat.modifyresource(source, "AP", -8)
 [ACT]
 Combat.addStatus(target, "Flaming Weapon", Dice.scale(source.totalSpellpower, 3, 0.03, cap=7), min=1, max=8, applier=source, scalesWith="Spellpower", scaleFactor=0.01)
 
-Burst:
+[TAGS]
+  [NAME: Burst]
+  [CLASS: Wizard]
+  [LEVEL: 5]
+  [SPELL_SCHOOL: Mystic]
+  [TARGET: Location]
+[/TAGS]
 [REQ]
 resource(source, "MP", 12)
 resource(source, "AP", 9)
@@ -226,7 +320,13 @@ Combat.calcHit(source, target, "Magical")
 Combat.modifyresource(target, "HP", 0 - Combat.calcDamage(source, target, min=10, max=12, element="Arcane", 
                       hitValue=hit, scalesWith="Spellpower", scaleFactor=0.005))
 
-Identification:
+[TAGS]
+  [NAME: Identification]
+  [CLASS: Wizard]
+  [LEVEL: 5]
+  [SPELL_SCHOOL: Mystic]
+  [TARGET: None]
+[/TAGS]
 # Needs out of combat use...
 [REQ]
 resource(source, "MP", 5)
@@ -237,7 +337,13 @@ Combat.modifyresource(source, "AP", -5)
 [ACT]
 Combat.addStatus(source, "Identification", 5, 5)
 
-Hovering Shield:
+[TAGS]
+  [NAME: Hovering Shield]
+  [CLASS: Wizard]
+  [LEVEL: 5]
+  [SPELL_SCHOOL: Mystic]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "MP", 8)
 resource(source, AP 5)
@@ -247,7 +353,12 @@ Combat.modifyresource(source, "AP", -5)
 [ACT]
 Combat.addStatus(source, "Hovering Shield", 5, applier=source, scalesWith="Spellpower", scaleFactor=0.008)
 
-Fright:
+[TAGS]
+  [NAME: Fright]
+  [CLASS: Wizard]
+  [LEVEL: 5]
+  [SPELL_SCHOOL: Bane]
+[/TAGS]
 [REQ]
 resource(source, "MP", 6)
 resource(source, "AP", 3)
@@ -263,7 +374,12 @@ Combat.calcHit(source, target, "Magical")
 Combat.addStatus(target, "Fright_shadow_adjustment", 4, 20)
 Combat.addStatus(target, "Fright_attack_power_adjustment", 4, 5)
 
-Infection:
+[TAGS]
+  [NAME: Infection]
+  [CLASS: Wizard]
+  [LEVEL: 5]
+  [SPELL_SCHOOL: Natural]
+[/TAGS]
 [REQ]
 resource(source, "MP", 7)
 resource(source, "AP", 6)
@@ -278,7 +394,13 @@ Combat.calcHit(source, target, "Poison", rating=Dice.scale(source.totalSpellpowe
 Combat.addStatus(target, "Infection_damage", Dice.scale(source.totalSpellpower, 4, 0.013), min=7, max=10, applier=source, scalesWith="Spellpower", scaleFactor=0.03)
 Combat.addStatus(target, "Infection_tolerance_adjustment", duration=Dice.scale(source.totalSpellpower, 4, 0.013), magnitude=5)
 
-Hands of Healing:
+[TAGS]
+  [NAME: Hands of Healing]
+  [CLASS: Wizard]
+  [LEVEL: 5]
+  [SPELL_SCHOOL: Natural]
+  [TARGET: Ally]
+[/TAGS]
 [REQ]
 resource(source, "MP", 22)
 resource(source, "AP", 8)
@@ -291,7 +413,13 @@ Combat.applyCooldown(source, "Hands of Healing", 1)
 [ACT]
 Combat.modifyresource(target, "HP", Dice.scale(source.totalSpellpower, Dice.roll(20, 40), 0.02))
 
-Elemental Boon:
+[TAGS]
+  [NAME: Elemental Boon]
+  [CLASS: Wizard]
+  [LEVEL: 5]
+  [SPELL_SCHOOL: Primal]
+  [TARGET: Ally]
+[/TAGS]
 [REQ]
 resource(source, "MP", 8)
 resource(source, "AP", 10)
@@ -303,7 +431,12 @@ Combat.modifyresource(source, "AP", -10)
 Combat.addStatus(target, "Elemental Boon", duration=Dice.scale(source.totalSpellpower, 6, 0.003, cap=7), 
                  applier=source, scalesWith="Spellpower", scaleFactor=0.007)
 
-Torrent:
+[TAGS]
+  [NAME: Torrent]
+  [CLASS: Wizard]
+  [LEVEL: 5]
+  [SPELL_SCHOOL: Primal]
+[/TAGS]
 [REQ]
 resource(source, "MP", 25)
 resource(source, "AP", 14)
@@ -321,7 +454,12 @@ Combat.modifyresource(target, "HP", 0 - Combat.calcDamage(source, target, min=10
                       hitValue=hit, scalesWith="Spellpower", scaleFactor=0.014))
 knockback(target, source.location, distance=5, didHit=(isHit(hit, "Normal Hit") and sizeCompare(target, "Huge", smallerThan=True)))
 
-Lightning Bolt:
+[TAGS]
+  [NAME: Lightning Bolt]
+  [CLASS: Wizard]
+  [LEVEL: 5]
+  [SPELL_SCHOOL: Primal]
+[/TAGS]
 [REQ]
 resource(source, "MP", 32)
 resource(source, "AP", 8)
@@ -338,7 +476,12 @@ Combat.calcHit(source, targetSet, "Magical")
 Combat.modifyresource(target, "HP", 0 - Combat.calcDamage(source, target, min=5, max=33, element="Electric", 
                       hitValue=hit, scalesWith="Spellpower", partial=0.5, critical=1.3, scaleFactor=0.005))
 					  
-Suggest Cowardice:
+[TAGS]
+  [NAME: Suggest Cowardice]
+  [CLASS: Wizard]
+  [LEVEL: 5]
+  [SPELL_SCHOOL: Mental]
+[/TAGS]
 [REQ]
 resource(source, "MP", 9)
 resource(source, "AP", 10)
@@ -352,7 +495,13 @@ Combat.calcHit(source, target, "Magical")
 [ACT]
 Combat.addStatus(target, "Suggest Cowardice", duration=1, chance=Dice.rollPresetChance(source, target, "Reliable"), partial=True)
 
-Pit:
+[TAGS]
+  [NAME: Pit]
+  [CLASS: Wizard]
+  [LEVEL: 5]
+  [SPELL_SCHOOL: Illusion]
+  [TARGET: Location]
+[/TAGS]
 [REQ]
 resource(source, "MP", 8)
 resource(source, "AP", 5)
@@ -366,7 +515,13 @@ Combat.applyCooldown(source, "Pit", 1)
 Terrain.removeTerrainStatus(terrainStatus="Pit", location=target, boolean dispelConnectedTiles=False)
 Terrain.addTerrainStatus(terrainStatus="Pit", duration=4, location=target)
 
-Smoke Screen:
+[TAGS]
+  [NAME: Smoke Screen]
+  [CLASS: Wizard]
+  [LEVEL: 5]
+  [SPELL_SCHOOL: Illusion]
+  [TARGET: Location]
+[/TAGS]
 [REQ]
 resource(source, "MP", 18)
 resource(source, "AP", 6)
@@ -380,7 +535,12 @@ Combat.applyCooldown(source, "Smoke Screen", 2)
 Terrain.removeTerrainStatus(terrainStatus="Smoke Screen", location=target, boolean dispelConnectedTiles=False)
 Terrain.addTerrainStatus(terrainStatus="Smoke Screen", duration=Dice.scale(source.totalSpellpower, 2, 0.03, cap=6), location=target)
 
-Shrink:
+[TAGS]
+  [NAME: Shrink]
+  [CLASS: Wizard]
+  [LEVEL: 5]
+  [SPELL_SCHOOL: Enchantment]
+[/TAGS]
 [REQ]
 resource(source, "MP", 10)
 resource(source, "AP", 4)
@@ -394,6 +554,13 @@ Combat.applyCooldown(source, "Shrink", 2)
 [ACT]
 Combat.addStatus(target, "Shrink", duration=Dice.scale(source.totalSpellpower, 2, 0.025, cap=5), magnitude=10, partial=True)
 
+[TAGS]
+  [NAME: Frost Weapon]
+  [CLASS: Wizard]
+  [LEVEL: 5]
+  [SPELL_SCHOOL: Enchantment]
+  [TARGET: Ally]
+[/TAGS]
 Frost Weapon:
 [REQ]
 resource(source, "MP", 12)
@@ -406,9 +573,13 @@ Combat.modifyresource(source, "AP", -8)
 Combat.addStatus(target, "Frost Weapon", duration=Dice.scale(source.totalSpellpower, 3, 0.03, cap=7), 
                  min=2, max=5, applier=source, scalesWith="Spellpower", scaleFactor=0.019)
 
-// Fighter Skills
+# Fighter Skills
 
-Mighty Blow:
+[TAGS]
+  [NAME: Mighty Blow]
+  [CLASS: Fighter]
+  [LEVEL: 1]
+[/TAGS]
 [REQ]
 resource(source, "AP", 9)
 inRange(source, target, 1)
@@ -420,16 +591,25 @@ Combat.calcHit(source, target, "Physical", modifier=-5)
 [ACT]
 Combat.weaponAttack(source, target, hit, forceMod=1.5)
 
-Brace:
+[TAGS]
+  [NAME: Brace]
+  [CLASS: Fighter]
+  [LEVEL: 1]
+[/TAGS]
 [REQ]
 resource(source, "AP", 2)
 [RES]
 Combat.modifyresource(source, "AP", -2)
 [ACT]
-Combat.addStatus(source, "Brace", 1, 5)
+Combat.addStatus(source, "Brace", duration=1, magnitude=5)
 Combat.endTurn(source)
 
-Dash:
+[TAGS]
+  [NAME: Dash]
+  [CLASS: Fighter]
+  [LEVEL: 1]
+  [TARGET: Location]
+[/TAGS]
 [REQ]
 resource(source, "AP", 2)
 !onCooldown(source, "Dash")
@@ -439,7 +619,11 @@ Combat.applyCooldown(source, "Dash", 4)
 [ACT]
 Combat.setMovementCost(source, 2)
 
-Quick Strike:
+[TAGS]
+  [NAME: Quick Strike]
+  [CLASS: Fighter]
+  [LEVEL: 2]
+[/TAGS]
 [REQ]
 resource(source, "AP", 3)
 inRange(source, target, 1)
@@ -451,7 +635,11 @@ Combat.calcHit(source, target, "Physical", modifier=-10)
 [ACT]
 Combat.weaponAttack(source, target, hit, forceMod=0.5)
 
-Precise Blow:
+[TAGS]
+  [NAME: Precise Blow]
+  [CLASS: Fighter]
+  [LEVEL: 2]
+[/TAGS]
 [REQ]
 resource(source, "AP", 7)
 inRange(source, target, 1)
@@ -463,7 +651,11 @@ Combat.calcHit(source, target, "Physical", modifier=4)
 [ACT]
 Combat.weaponAttack(source, target, hit)
 
-Thrust:
+[TAGS]
+  [NAME: Thrust]
+  [CLASS: Fighter]
+  [LEVEL: 4]
+[/TAGS]
 [REQ]
 resource(source, "AP", 5)
 inRange(source, target, 1)
@@ -477,7 +669,11 @@ Combat.calcHit(source, target, "Physical")
 [ACT]
 Combat.weaponAttack(source, target, hit, elementOverride="Piercing")
 
-Clobber:
+[TAGS]
+  [NAME: Clobber]
+  [CLASS: Fighter]
+  [LEVEL: 4]
+[/TAGS]
 [REQ]
 resource(source, "AP", 10)
 inRange(source, target, 1)
@@ -490,7 +686,11 @@ Combat.calcHit(source, target, "Physical", modifier=-3)
 Combat.weaponAttack(source, target, hit, armorPenetrationMod=5)
 Combat.addStatus(target, "Stun", duration=1, chance = (0.2 * sizeCompare(target, LARGE, smallerThan=True)), hitValue=hit)
 
-Wound Leg:
+[TAGS]
+  [NAME: Wound Leg]
+  [CLASS: Fighter]
+  [LEVEL: 6]
+[/TAGS]
 [REQ]
 resource(source, "AP", 9)
 inRange(source, target, 1)
@@ -502,6 +702,11 @@ Combat.calcHit(source, target, "Physical", modifier=-10)
 [ACT]
 Combat.addStatus(target, "Wound Leg", duration=3, hitValue=hit)
 
+[TAGS]
+  [NAME: Wound Arm]
+  [CLASS: Fighter]
+  [LEVEL: 6]
+[/TAGS]
 Wound Arm:
 [REQ]
 resource(source, "AP", 9)
@@ -514,7 +719,11 @@ Combat.calcHit(source, target, "Physical", modifier=-10)
 [ACT]
 Combat.addStatus(target, "Wound Arm", duration=3, hitValue=hit)
 
-Combo Attack:
+[TAGS]
+  [NAME: Combo Attack]
+  [CLASS: Fighter]
+  [LEVEL: 8]
+[/TAGS]
 [REQ]
 resource(source, "AP", 6)
 inRange(source, target, 1)
@@ -527,7 +736,12 @@ Combat.calcHit(source, target, "Physical", modifier=(getNumberOfStackedStatus(so
 Combat.weaponAttack(source, target, hit, overallDamageMod=1.1, criticalDamageMod=( 1 + (3 * getNumberOfStackedStatus(source, "Combo Attack")/100) ))
 Combat.addStatus(source, "Combo Attack", duration=1, overwrite=False)  
 
-Rush:
+[TAGS]
+  [NAME: Rush]
+  [CLASS: Fighter]
+  [LEVEL: 8]
+  [TARGET: Location]
+[/TAGS]
 [REQ]
 resource(source, "AP", 7, modifier=usingArmor(source, "Heavy"))
 canReach(source, target, source.movementTiles)
@@ -544,8 +758,14 @@ Combat.calcHit(source, getMeleeFacingEnemy(source), "Physical")
 Combat.weaponAttack(source, getMeleeFacingEnemy(source), hit, overallDamageMod=1.2)
 Combat.modifyResource(enemy, HP, 0 - Combat.calcDamage(source, target, min=(source.totalDR * 0.4 * usingArmor("Heavy")),
                       max=(source.totalDR * 0.4 * usingArmor("Heavy")), element=Bludgeoning, hitValue=hit))
+
+# Ranger Abilities
 					  
-Expert Notch:
+[TAGS]
+  [NAME: Expert Notch]
+  [CLASS: Ranger]
+  [LEVEL: 1]
+[/TAGS]					  
 [REQ]
 resource(source, "AP", 7)
 inRange(source, target, source.weaponRange)
@@ -557,7 +777,14 @@ Combat.calcHit(source, target, "Physical", modifier=6)
 [ACT]
 Combat.weaponAttack(source, target, hit)
 
-Shrapnel Trap:
+# How do we represent (via tags?) how the Anarchist can place traps on adjacent foes?
+
+[TAGS]
+  [NAME: Shrapnel Trap]
+  [CLASS: Ranger*]
+  [LEVEL: 1]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "AP", 5)
 !onCooldown(source, "Shrapnel Trap")
@@ -570,7 +797,12 @@ Terrain.addTrap("Shrapnel Trap", source.location, minDamage=Dice.scale(source.to
                 maxDamage=Dice.scale(source.totalCunning, 12, 0.014), trapRating=Dice.scale(source.totalCunning, 13, 0.015),
 				applier=source) 
 
-Tunnel Vision:
+[TAGS]
+  [NAME: Tunnel Vision]
+  [CLASS: Ranger]
+  [LEVEL: 2]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "AP", 10)
 !onCooldown(source, "Tunnel Vision")
@@ -580,7 +812,12 @@ Combat.applyCooldown(source, "Tunnel Vision", 5)
 [ACT]
 Combat.addStatus(source, "Tunnel Vision", duration=4)
 
-Sticky Trap:
+[TAGS]
+  [NAME: Sticky Trap]
+  [CLASS: Ranger*]
+  [LEVEL: 2]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "AP", 3)
 !onCooldown(source, "Sticky Trap")
@@ -591,7 +828,12 @@ Combat.applyCooldown(source, "Sticky Trap", 1)
 Terrain.removeTrap(source.location)
 Terrain.addTrap("Sticky Trap", location=source.location, trapRating=Dice.scale(source.totalCunning, 20, 0.007), applier=source)
 
-Balm:
+[TAGS]
+  [NAME: Balm]
+  [CLASS: Ranger]
+  [LEVEL: 2]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "AP", 6)
 !onCooldown(source, "Balm")
@@ -601,7 +843,11 @@ Combat.applyCooldown(source, "Balm", 2)
 [ACT]
 Combat.modifyresource(source, "HP", (source.maxHP * 0.05)) 
 
-Rapid Reload:
+[TAGS]
+  [NAME: Rapid Reload]
+  [CLASS: Ranger]
+  [LEVEL: 2]
+[/TAGS]
 [REQ]
 resource(source, "AP", 3)
 inRange(source, target, source.weaponRange)
@@ -613,7 +859,12 @@ Combat.calcHit(source, target, "Physical", modifier=-8)
 [ACT]
 Combat.weaponAttack(source, target, hit)
 
-Ranger's Aim:
+[TAGS]
+  [NAME: Ranger's Aim]
+  [CLASS: Ranger]
+  [LEVEL: 4]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "AP", 2)
 !onCooldown(source, "Ranger's Aim")
@@ -623,7 +874,12 @@ Combat.applyCooldown(source, "Ranger's Aim", 1)
 [ACT]
 Combat.addStatus(source, "Ranger's Aim", duration=1)
 
-Boulder-Pit Trap:
+[TAGS]
+  [NAME: Boluder-Pit Trap]
+  [CLASS: Ranger*]
+  [LEVEL: 4]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "AP", 5)
 !onCooldown(source, "Boulder-Pit Trap")
@@ -635,7 +891,11 @@ Terrain.removeTrap(source.location)
 Terrain.addTrap("Boulder-Pit Trap", location=source.location, minDamage=Dice.scale(source.totalCunning, 3, 0.02), 
                 maxDamage=Dice.scale(source.totalCunning, 8, 0.02), trapRating=Dice.scale(source.totalCunning, 25, 0.006), applier=source)
 
-Defensive Slash:
+[TAGS]
+  [NAME: Defensive Slash]
+  [CLASS: Ranger]
+  [LEVEL: 6]
+[/TAGS]
 [REQ]
 resource(source, "AP", 10)
 inRange(source, target, 1)
@@ -648,7 +908,11 @@ Combat.calcHit(source, target, "Physical", modifier=-3)
 Combat.weaponAttack(source, target, hit, overallDamageMod=0.75)
 Combat.addStatus(source, "Defensive Slash", duration=2, hitValue=hit)
 
-Double-Shot:
+[TAGS]
+  [NAME: Double-Shot]
+  [CLASS: Ranger]
+  [LEVEL: 6]
+[/TAGS]
 [REQ]
 resource(source, "AP", 7)
 inRange(source, target, source.weaponRange)
@@ -665,7 +929,12 @@ Combat.calcHit(source, target, "Physical", critMod=(0-source.totalCritChance)
 [ACT]
 Combat.weaponAttack(source, target, hit, overallDamageMod=1.05)
 
-Tar Trap:
+[TAGS]
+  [NAME: Tar Trap]
+  [CLASS: Ranger*]
+  [LEVEL: 8]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "AP", 5)
 !onCooldown(source, "Tar Trap")
@@ -676,9 +945,14 @@ Combat.applyCooldown(source, "Tar Trap", 1)
 Terrain.removeTrap(source.location)
 Terrain.addTrap("Tar Trap", location=source.location, trapRating=Dice.scale(source.totalCunning, 30, 0.005), applier=source)
 
-// Wizard Skills
+# Wizard Skills
 
-Magic Guard:
+[TAGS]
+  [NAME: Magic Guard]
+  [CLASS: Wizard]
+  [LEVEL: 1]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "AP", 3)
 [RES]
@@ -687,7 +961,12 @@ Combat.modifyresource(source, "AP", -3)
 Combat.addStatus(source, "Magic Guard", duration=1)
 Combat.endTurn(source)
 
-Gather:
+[TAGS]
+  [NAME: Gather]
+  [CLASS: Wizard]
+  [LEVEL: 2]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "AP", 7)
 [RES]
@@ -695,6 +974,12 @@ Combat.modifyresource(source, "AP", -7)
 [ACT]
 Combat.addStatus(source, "Gather", duration=1)
 
+#[TAGS]
+#  [NAME: Apply Salve]
+#  [CLASS: Wizard]
+#  [LEVEL: 2]
+#  [TARGET: Ally]
+#[/TAGS]
 #Apply Salve:
 #[REQ]
 #resource(source, "AP", 7)
@@ -708,7 +993,12 @@ Combat.addStatus(source, "Gather", duration=1)
 # todo!
 #
 
-Spell Sight:
+[TAGS]
+  [NAME: Spell Sight]
+  [CLASS: Wizard]
+  [LEVEL: 4]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "AP", 3)
 !onCooldown(source, "Spell Sight")
@@ -718,7 +1008,11 @@ Combat.applyCooldown(source, "Spell Sight", 2)
 [ACT]
 Combat.addStatus(source, "Spell Sight", duration=-1)
 
-Runic Dust:
+[TAGS]
+  [NAME: Runic Dust]
+  [CLASS: Wizard]
+  [LEVEL: 6]
+[/TAGS]
 [REQ]
 resource(source, "AP", 5)
 inRange(source, target, 1)
@@ -729,7 +1023,11 @@ Combat.applyCooldown(source, "Runic Dust", 1)
 [ACT]
 Combat.addStatus(target, "Runic Dust", duration=3, magnitude=(2 + source.level))
 
-Befuddle:
+[TAGS]
+  [NAME: Befuddle]
+  [CLASS: Wizard]
+  [LEVEL: 8]
+[/TAGS]
 [REQ]
 resource(source, "AP", 12)
 inRange(source, target, 3)
@@ -741,9 +1039,16 @@ Combat.applyCooldown(source, "Befuddle", 4)
 Combat.modifyThreat(source, target, 0.7)
 Combat.addStatus(target, "Stun", duration=1,  chance=Dice.rollPresetChance(source, target, "Rare"))
 
-// Thief Skills
+# Thief Skills
 
-Stealth:
+[TAGS]
+  [NAME: Stealth]
+  [CLASS: Thief]
+  [LEVEL: 1]
+  [TARGET: None]
+  [REPLACED_BY: Conceal]
+  [REPLACED_BY: Shadow Walk]
+[/TAGS]
 [REQ]
 resource(source, "AP", 7)
 !onCooldown(source, "Stealth")
@@ -754,7 +1059,11 @@ Combat.applyCooldown(source, "Stealth", 3)
 [ACT]
 Combat.addStatus(source, "Stealth", duration=-1)
 
-Backstab:
+[TAGS]
+  [NAME: Backstab]
+  [CLASS: Thief]
+  [LEVEL: 1]
+[/TAGS]
 [REQ]
 resource(source, "AP", 10)
 !onCooldown(source, "Backstab")
@@ -771,7 +1080,12 @@ Combat.calcHit(source, target, "Physical", modifier=((5 + (4 * usingWeapon(sourc
 [ACT]
 Combat.weaponAttack(source, target, hit, criticalDamageMod=(2 - (0.5 * usingWeapon(source, "Sword"))))
 
-Swipe Potion:
+[TAGS]
+  [NAME: Swipe Potion]
+  [CLASS: Thief]
+  [LEVEL: 1]
+  [BREAKS_STEALTH: 0]
+[/TAGS]
 [REQ]
 resource(source, "AP", 3)
 inRange(source, target, 1)
@@ -785,6 +1099,13 @@ Dice.rollSuccess( source.totalCunning - target.totalCunning )
 [ACT]
 Combat.stealPotion(source, target, hitValue=hit)
 
+#[TAGS]
+#  [NAME: Disarm Trap]
+#  [CLASS: Thief]
+#  [LEVEL: 2]
+#  [TARGET: Location]
+#  [BREAKS_STEALTH: 0]
+#[/TAGS]
 # Trap disarming mechanics have not been fleshed out.  This needs to be done before this can be encoded. TODO
 #Disarm Trap:
 #[REQ]
@@ -795,7 +1116,11 @@ Combat.stealPotion(source, target, hitValue=hit)
 #[HIT]
 #Dice.rollSuccess(
 
-Hit and Run:
+[TAGS]
+  [NAME: Hit and Run]
+  [CLASS: Thief]
+  [LEVEL: 2]
+[/TAGS]
 [REQ]
 resource(source, "AP", 5)
 inRange(source, target, 1)
@@ -810,7 +1135,13 @@ Combat.calcHit(source, target, "Physical")
 Combat.weaponAttack(source, target, hit, noCounter=True)
 knockback(source, target.location, 2, ignoreResistance=True)
 
-Agile Position:
+[TAGS]
+  [NAME: Agile Position]
+  [CLASS: Thief]
+  [LEVEL: 2]
+  [BREAKS_STEALTH: 0]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "AP", 5)
 !onCooldown(source, "Agile Position")
@@ -821,7 +1152,11 @@ Combat.applyCooldown(source, "Agile Position", 5)
 Combat.addStatus(source, "Agile Position", duration=1)
 Combat.endTurn(source)
 
-Feint:
+[TAGS]
+  [NAME: Feint]
+  [CLASS: Thief]
+  [LEVEL: 4]
+[/TAGS]
 [REQ]
 resource(source, "AP", 5)
 inRange(source, target, 1)
@@ -832,7 +1167,12 @@ Dice.rollSuccess(max((source.totalCunning - target.totalCunning) * 8, 72))
 [ACT]
 Combat.addStatus(target, "Feint", duration=2, hitValue=hit) 
 
-Far-Sighted Focus:
+[TAGS]
+  [NAME: Far-Sighted Focus]
+  [CLASS: Thief]
+  [LEVEL: 4]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "AP", 8)
 !onCooldown(source, "Far-Sighted Focus")
@@ -842,7 +1182,11 @@ Combat.applyCooldown(source, "Far-Sighted Focus", 1)
 [ACT]
 Combat.addStatus(source, "Far-Sighted Focus", duration=3, relativeTarget=target)
 
-All or Nothing:
+[TAGS]
+  [NAME: All or Nothing]
+  [CLASS: Thief]
+  [LEVEL: 6]
+[/TAGS]
 [REQ]
 resource(source, "AP", 6)
 !onCooldown(source, "All or Nothing")
@@ -855,7 +1199,12 @@ Combat.calcHit(source, target, "Physical", modifier=-22, critMod=80)
 [ACT]
 Combat.weaponAttack(source, target, hit, overallDamageMod=1.3)
 
-Redirect:
+[TAGS]
+  [NAME: Redirect]
+  [CLASS: Thief]
+  [LEVEL: 6]
+  [BREAKS_STEALTH: 0]
+[/TAGS]
 [REQ]
 resource(source, "AP", 10)
 !onCooldown(source, "Redirect")
@@ -866,7 +1215,11 @@ Combat.applyCooldown(source, "Redirect", 3)
 [ACT]
 Combat.modifyThreat(source, target, 0.35)
 
-Dirty Shot:
+[TAGS]
+  [NAME: Dirty Shot]
+  [CLASS: Thief]
+  [LEVEL: 8]
+[/TAGS]
 [REQ]
 resource(source, "AP", 5)
 !onCooldown(source, "Dirty Shot")
@@ -880,7 +1233,11 @@ Combat.calcHit(source, target, "Physical")
 Combat.weaponAttack(source, target, hit, mightMod=(source.totalCunning / 2))
 Combat.addStatus(target, "Stun", 1, chance=Dice.rollPresetChance(source, target, "Occasional"))
 
-Shock Factor:
+[TAGS]
+  [NAME: Shock Factor]
+  [CLASS: Thief]
+  [LEVEL: 8]
+[/TAGS]
 [REQ]
 resource(source, "AP", 11)
 !onCooldown(source, "Shock Factor")
@@ -895,7 +1252,12 @@ Combat.addStatus(target, "Shock_Factor_spell_failure", 3,  chance=Dice.rollPrese
 
 # WeaponMaster Combination Abilities (Active)
 
-Shield Deflection:
+[TAGS]
+  [NAME: Shield Deflection]
+  [CLASS: Weapon Master]
+  [LEVEL: 1]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "AP", 4)
 !onCooldown(source, "Shield Deflection")
@@ -906,7 +1268,11 @@ Combat.applyCooldown(source, "Shield Deflection", 5)
 [ACT]
 Combat.addStatus(source, "Shield Deflection", duration=2)
 
-Shield Bash:
+[TAGS]
+  [NAME: Shield Bash]
+  [CLASS: Weapon Master]
+  [LEVEL: 1]
+[/TAGS]
 [REQ]
 resource(source, "AP", 8)
 !onCooldown(source, "Shield Bash")
@@ -920,7 +1286,12 @@ Combat.calcHit(source, target, "Physical")
 Combat.weaponAttack(source, target, hit, elementOverride="bludgeoning", overallDamageMod=0.3)
 Combat.addStatus(target, "Stun", duration=1, chance=chanceFromSize(target, [["Large", 0.3], ["Huge", 0]], defaultChance=0.8)) 
 
-True Friend:
+[TAGS]
+  [NAME: True Friend]
+  [CLASS: Weapon Master]
+  [LEVEL: 3]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "AP", 10)
 [RES]
@@ -930,7 +1301,11 @@ Combat.addStatus(source, "True_Friend_DR_bonus", duration=1)
 Combat.addStatus(Terrain.getAOETargets(source.location, radius=1, selectMonsters=False, includeCenter=False), "True_Friend_Redirect", duration=1, relativeTarget=source)
 Combat.endTurn(source)
 
-Cleave:
+[TAGS]
+  [NAME: Cleave]
+  [CLASS: Weapon Master]
+  [LEVEL: 6]
+[/TAGS]
 [REQ]
 resource(source, "AP", 8)
 [RES]
@@ -943,7 +1318,11 @@ Combat.weaponAttack(source, getMeleeFacingEnemy(source), hit, overallDamageMod=(
 
 # Dragoon Combination Abilities
 
-Jump Attack:
+[TAGS]
+  [NAME: Jump Attack]
+  [CLASS: Dragoon]
+  [LEVEL: 1]
+[/TAGS]
 [REQ]
 resource(source, "AP", 15)
 usingWeaponStyle(source, "Two-Handed")
@@ -961,18 +1340,28 @@ Combat.weaponAttack(source, target, hit, overallDamageMod=2)
 Combat.weaponAttack(source, Terrain.getAOETargets(source.location, radius=1, selectMonsters=True), 
                     "Normal Hit", overallDamageMod=0.15, elementOverride="Bludgeoning", ignoreOnHitEffects=True)
 
-Diagonal Thrusts:
+[TAGS]
+  [NAME: Diagonal Thrusts]
+  [CLASS: Dragoon]
+  [LEVEL: 3]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "AP", 11)
 usingWeapon(source, "Polearm")
 [RES]
 Combat.modifyresource(source, "AP", -11)
 [HIT]
-calcHit(source, Terrain.getForwardDiagonalTargets(source.location, selectMonsters=True), "Physical")
+Terrain.getForwardDiagonalTargets(source.location, selectMonsters=True)
+calcHit(source, targetSet, "Physical")
 [ACT]
 Combat.weaponAttack(source, targetSet, hitSet, forceMod=1.2, criticalDamageMod=1.05)
 
-Long Reach:
+[TAGS]
+  [NAME: Long Reach]
+  [CLASS: Dragoon]
+  [LEVEL: 4]
+[/TAGS]
 [REQ]
 resource(source, "AP", 7)
 usingWeapon(source, "Polearm")
@@ -984,7 +1373,11 @@ calcHit(source, target, "Physical")
 [ACT]
 Combat.weaponAttack(source, target, hit, noCounter=True)
 
-Spear-Pierce:
+[TAGS]
+  [NAME: Spear-Pierce]
+  [CLASS: Dragoon]
+  [LEVEL: 5]
+[/TAGS]
 [REQ]
 resource(source, "AP", 10)
 usingWeapon(source, "Polearm")
@@ -997,7 +1390,14 @@ calcHit(source, target, "Physical", modifier=-2)
 Combat.weaponAttack(source, target, hit)
 Combat.addStatus(target, "Spear-Pierce", duration=3, hitValue=hit, chance=Dice.rollPresetChance(source, target, "Reliable"))
 
-Berserker Rage:
+# Barbarian Unique Abilities
+
+[TAGS]
+  [NAME: Berserker Rage]
+  [CLASS: Barbarian]
+  [LEVEL: 1]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "AP", 8)
 !resource(source, "HP", source.totalHP * 0.75)
@@ -1008,9 +1408,11 @@ Combat.applyCooldown(source, "Berserker Rage", 5)
 [ACT]
 Combat.addStatus(source, "Berserker Rage", duration=6)
 
-# Barbarian Unique Abilities
-
-Sacrificial Strike:
+[TAGS]
+  [NAME: Sacrificial Strike]
+  [CLASS: Barbarian]
+  [LEVEL: 2]
+[/TAGS]
 [REQ]
 resource(source, "AP", 5)
 resource(source, "HP", source.totalHP * 0.05 + 1)
@@ -1024,7 +1426,11 @@ Combat.calcHit(source, target, "Physical", critMod=1)
 [ACT]
 Combat.weaponAttack(source, target, hit, forceMod=1.5)
 
-Desperate Strike:
+[TAGS]
+  [NAME: Desperate Strike]
+  [CLASS: Barbarian]
+  [LEVEL: 3]
+[/TAGS]
 [REQ]
 resource(source, "AP", 12)
 !resource(source, "HP", source.totalHP * 0.25)
@@ -1038,7 +1444,12 @@ Combat.calcHit(source, target, "Physical", modifier=10, critMod=20)
 Combat.weaponAttack(source, target, hit, forceMod=2.5, armorPenetrationMod=10)
 Combat.addStatus(target, "Stun", duration=1, hitValue=hit, chance=Dice.rollPresetChance(source, target, "Occasional"))
 
-Blood of the Ancients:
+[TAGS]
+  [NAME: Blood of the Ancients]
+  [CLASS: Barbarian]
+  [LEVEL: 4]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "AP", 11)
 !onCooldown(source, "Blood of the Ancients")
@@ -1049,7 +1460,11 @@ applyCooldown(source, "Blood of the Ancients", 4)
 Combat.modifyresource(source, "HP", source.totalHP * 0.15)
 Combat.addStatus(source, "Blood of the Ancients", duration=1)
 
-Crush Armor:
+[TAGS]
+  [NAME: Crush Armor]
+  [CLASS: Barbarian]
+  [LEVEL: 5]
+[/TAGS]
 [REQ]
 resource(source, "AP", 8)
 inRange(source, target, 1)
@@ -1064,7 +1479,12 @@ Combat.calcHit(source, target, "Physical", modifier=(5 * resource(source, "HP", 
 Combat.weaponAttack(source, target, hit, overallDamageMod=(0.75 + 0.25 * ((usingWeaponStyle(source, "Dual-Same-Type") || usingWeaponStyle(source, "Two-Handed")) && usingWeapon(source, "Club")))) 
 Combat.addStatus(target, "Crush Armor", duration=3, hitValue=hit)
 
-Guzzle:
+[TAGS]
+  [NAME: Guzzle]
+  [CLASS: Barbarian]
+  [LEVEL: 6]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "AP", 1)
 !onCooldown(source, "Guzzle")
@@ -1076,7 +1496,12 @@ Combat.addStatus(source, "Guzzle", duration=1)
 
 # Spellsword Abilities
 
-Martial Mode:
+[TAGS]
+  [NAME: Martial Mode]
+  [CLASS: Spellsword]
+  [LEVEL: 2]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "AP", 1)
 !resource(source, "MP", source.totalMP * 0.15)
@@ -1085,7 +1510,11 @@ Combat.modifyresource(source, "AP", -1)
 [ACT]
 Combat.addStatus(source, "Martial Mode", duration=-1)
 
-Splash Magic:
+[TAGS]
+  [NAME: Splash Magic]
+  [CLASS: Spellsword]
+  [LEVEL: 3]
+[/TAGS]
 [REQ]
 resource(source, "AP", 10)
 !onCooldown(source, "Splash Magic")
@@ -1102,11 +1531,14 @@ Combat.weaponAttack(source, target, hit)
 Combat.modifyResource(Terrain.getAOETargets(target.location, radius=1, selectMonsters=True, includeCenter=False), HP, 
                          (0 - Combat.calcDamage(source, Terrain.getAOETargets(target.location, 1, True, False), 
 						                        min=Dice.scale(source.totalCunning, 3, 0.33), max=0,
-					                            element=AbilityUtils.getSplashMagicAbilityElement(source), hitValue=hit)
-                         )
-                     )						 
-                             
-Rebound:
+					                            element=AbilityUtils.getSplashMagicAbilityElement(source), hitValue=hit)))						 
+
+[TAGS]
+  [NAME: Rebound]
+  [CLASS: Spellsword]
+  [LEVEL: 5]
+  [TARGET: None]
+[/TAGS]                             
 [REQ]
 resource(source, "AP", 4)
 [RES]
@@ -1116,7 +1548,11 @@ Combat.addStatus(source, "Rebound", duration=3)
 
 # Anarchist Abilities
 
-Follow up:
+[TAGS]
+  [NAME: Follow up]
+  [CLASS: Anarchist]
+  [LEVEL: 1]
+[/TAGS]
 [REQ]
 resource(source, "AP", 5)
 !onCooldown(source, "Follow up")
@@ -1130,7 +1566,11 @@ Combat.applyCooldown(source, "Follow up", 1)
 Combat.calcHit(source, target, "Physical")
 Combat.weaponAttack(source, target, hit)
 
-Face shot:
+[TAGS]
+  [NAME: Face Shot]
+  [CLASS: Anarchist]
+  [LEVEL: 1]
+[/TAGS]
 [REQ]
 resource(source, "AP", 9)
 inRange(source, target, 1)
@@ -1143,7 +1583,11 @@ Combat.calcHit(source, target, "Physical", ignoreMeleeBowPenalty=True, critMod=5
 [ACT]
 Combat.weaponAttack(source, target, hit, criticalDamageMod=1.15)
 
-Trap Worry:
+[TAGS]
+  [NAME: Trap Worry]
+  [CLASS: Anarchist]
+  [LEVEL: 2]
+[/TAGS]
 [REQ]
 resource(source, "AP", 10)
 inRange(source, target, 1)
@@ -1154,7 +1598,11 @@ Dice.rollSuccess((Dice.max(source.totalCunning - target.totalCunning) * 10 + 20,
 [ACT]
 Combat.addStatus(target, "Trap Worry", duration=3, hitValue=hit)
 
-Harmless Grin:
+[TAGS]
+  [NAME: Harmless Grin]
+  [CLASS: Anarchist]
+  [LEVEL: 2]
+[/TAGS]
 [REQ]
 resource(source, "AP", 5)
 inRange(source, target, 1)
@@ -1165,7 +1613,12 @@ Dice.rollSuccess((Dice.max(source.totalCunning - target.totalCunning) * 10 + 10,
 [ACT]
 Combat.addStatus(target, "Harmless Grin", duration=3, hitValue=hit)
 
-Explosive Trap:
+[TAGS]
+  [NAME: Explosive Trap]
+  [CLASS: Anarchist]
+  [LEVEL: 4]
+  [TARGET: Location]
+[/TAGS]
 [REQ]
 resource(source, "AP", 5)
 !onCooldown(source, "Explosive Trap")
@@ -1181,7 +1634,12 @@ Terrain.addTrap("Explosive Trap", target.location, minDamage=Dice.scale(source.t
 # Does not suffer from the 20% Anarchist damage penalty.
 # Update Wiki with detail re: Trap rating = 25 + 1/4 per Cunning
 
-Grab Bag:
+[TAGS]
+  [NAME: Grab Bag]
+  [CLASS: Anarchist]
+  [LEVEL: 5]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "AP", 10)
 !onCooldown(source, "Grab Bag")
@@ -1195,7 +1653,11 @@ Combat.modifyResource(Terrain.getAOETargets(source.location, radius=1, selectMon
 
 # Marksman Abilities
 
-Cusp of Escape:
+[TAGS]
+  [NAME: Cusp of Escape]
+  [CLASS: Marksman]
+  [LEVEL: 1]
+[/TAGS]
 [REQ]
 resource(source, "AP", 10)
 !onCooldown(source, "Cusp of Escape")
@@ -1209,7 +1671,11 @@ Combat.calcHit(source, target, "Physical", modifier=10, critMod=5)
 [ACT]
 Combat.weaponAttack(source, target, hit)
 
-Hot Arrow:
+[TAGS]
+  [NAME: Hot Arrow]
+  [CLASS: Marksman]
+  [LEVEL: 2]
+[/TAGS]
 [REQ]
 resource(source, "AP", 5)
 !onCooldown(source, "Hot Arrow")
@@ -1224,7 +1690,11 @@ Combat.calcHit(source, target, "Physical", modifier=-1)
 Combat.weaponAttack(source, target, hit)
 Combat.modifyresource(target, "HP", Combat.calcDamage(source, target, min=3, max=0, element="Fire", hitValue=hit))
 
-Hot Bullet:
+[TAGS]
+  [NAME: Hot Bullet]
+  [CLASS: Marksman]
+  [LEVEL: 3]
+[/TAGS]
 [REQ]
 resource(source, "AP", 5)
 !onCooldown(source, "Hot Bullet")
@@ -1239,7 +1709,12 @@ Combat.calcHit(source, target, "Physical")
 Combat.weaponAttack(source, target, hit, criticalDamageMod=1.1)
 Combat.modifyresource(target, "HP", Combat.calcDamage(source, target, min=8, max=0, element="Fire", hitValue=hit))
 
-Suppressing Fire:
+[TAGS]
+  [NAME: Suppressing Fire]
+  [CLASS: Marksman]
+  [LEVEL: 4]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "AP", 5)
 [RES]
@@ -1247,7 +1722,11 @@ Combat.modifyresource(source, "AP", -5)
 [ACT]
 Combat.addStatus(source, "Suppressing Fire", duration=4)
 
-Smoking Projectile:
+[TAGS]
+  [NAME: Smoking Projectile]
+  [CLASS: Marksman]
+  [LEVEL: 5]
+[/TAGS]
 [REQ]
 resource(source, "AP", 12)
 usingWeapon(source, "Ranged")
@@ -1259,7 +1738,12 @@ Combat.calcHit(source, target, "Physical", modifier=5)
 [ACT]
 Combat.addStatus(target, "Smoking Projectile", duration=4, min=2, max=10, applier=source, scalesWith="Cunning", scaleFactor=0.01, hitValue=hit)
 
-Beacon Trap:
+[TAGS]
+  [NAME: Beacon Trap]
+  [CLASS: Marksman]
+  [LEVEL: 6]
+  [TARGET: Location]
+[/TAGS]
 [REQ]
 resource(source, "AP", 5)
 !onCooldown(source, "Beacon Trap")
@@ -1273,7 +1757,11 @@ Terrain.addTrap("Beacon Trap", source.location, trapRating=Dice.scale(source.tot
 
 # Druid Abilities
 
-Deep Wound:
+[TAGS]
+  [NAME: Deep Wound]
+  [CLASS: Druid]
+  [LEVEL: 1]
+[/TAGS]
 [REQ]
 resource(source, "AP", 10)
 !onCooldown(source, "Deep Wound")
@@ -1287,7 +1775,11 @@ Combat.calcHit(source, target, "Physical")
 Combat.weaponAttack(source, target, hit, poisonRatingMod=5)
 Combat.addStatus(target, "Deep Wound", duration=5)
 
-Painful Shot:
+[TAGS]
+  [NAME: Painful Shot]
+  [CLASS: Druid]
+  [LEVEL: 1]
+[/TAGS]
 [REQ]
 resource(source, "AP", 7)
 usingWeapon(source, "Ranged")
@@ -1300,7 +1792,11 @@ Combat.calcHit(source, target, "Physical")
 Combat.weaponAttack(source, target, hit, criticalDamageMod=1.1)
 Combat.addStatus(target, "Painful Shot", duration=5, chance=(Dice.rollPresetChance(source, target, "Occasional") * isHit(hit, "Normal Hit")))
 
-Poisonous Touch:
+[TAGS]
+  [NAME: Poisonous Touch]
+  [CLASS: Druid]
+  [LEVEL: 2]
+[/TAGS]
 [REQ]
 resource(source, "AP", 5)
 !onCooldown(source, "Poisonous Touch")
@@ -1314,7 +1810,12 @@ Combat.calcHit(source, target, "Physical", modifier=5)
 Combat.addStatus(target, "Poisonous Touch", duration=4, min=5, max=15, applier=source, scalesWith="Cunning", scaleFactor=0.07)
 # Make sure Poison rating of 12 is encoded into the status effect.
 
-Target Throat:
+[TAGS]
+  [NAME: Target Throat]
+  [CLASS: Druid]
+  [LEVEL: 3]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "AP", 8)
 !onCooldown(source, "Target Throat")
@@ -1324,7 +1825,12 @@ Combat.applyCooldown(source, "Target Throat", 6)
 [ACT]
 Combat.addStatus(source, "Target Throat", duration=4)
 
-Poison Thorn Trap:
+[TAGS]
+  [NAME: Poison Thorn Trap]
+  [CLASS: Druid]
+  [LEVEL: 4]
+  [TARGET: Location]
+[/TAGS]
 [REQ]
 resource(source, "AP", 5)
 !onCooldown(source, "Poison Thorn Trap")
@@ -1336,7 +1842,11 @@ Terrain.removeTrap(source.location)
 Terrain.addTrap("Poison Thorn Trap", location=source.location, trapRating=Dice.scale(source.totalCunning, 18, 0.011), minDamage=5, maxDamage=10,
                 applier=source)  
 
-Lethargic Shot:
+[TAGS]
+  [NAME: Lethargic Shot]
+  [CLASS: Druid]
+  [LEVEL: 5]
+[/TAGS]
 [REQ]
 resource(source, "AP", 8)
 usingWeapon(source, "Ranged")
@@ -1355,7 +1865,12 @@ Combat.addStatus(target, "Lethargic Shot", duration=3, chance=isHit(Combat.calcH
 													
 # Tactician Abilities
 
-Accuracy Favor:
+[TAGS]
+  [NAME: Accuracy Favor]
+  [CLASS: Tactician]
+  [LEVEL: 1]
+  [TARGET: Location]
+[/TAGS]
 [REQ]
 resource(source, "AP", 5)
 !onCooldown(source, "Accuracy Favor")
@@ -1366,7 +1881,12 @@ Combat.applyCooldown(source, "Accuracy Favor", 2)
 Terrain.removeTrap(source.location)
 Terrain.addTrap("Accuracy Favor", location=source.location, charges=3, magnitude=Dice.scale(source.totalCunning, 3, 0.083), applier=source)
 
-Mana Favor:
+[TAGS]
+  [NAME: Mana Favor]
+  [CLASS: Tactician]
+  [LEVEL: 1]
+  [TARGET: Location]
+[/TAGS]
 [REQ]
 resource(source, "AP", 5)
 [RES]
@@ -1375,7 +1895,12 @@ Combat.modifyresource(source, "AP", -5)
 Terrain.removeTrap(source.location)
 Terrain.addTrap("Mana Favor", location=source.location, charges=3, magnitude=Dice.scale(source.totalCunning, 5, 0.033), applier=source)
 
-Magical Dampening Trap:
+[TAGS]
+  [NAME: Magical Dampening Trap]
+  [CLASS: Tactician]
+  [LEVEL: 2]
+  [TARGET: Location]
+[/TAGS]
 [REQ]
 resource(source, "AP", 5)
 [RES]
@@ -1385,7 +1910,12 @@ Terrain.removeTrap(source.location)
 Terrain.addTrap("Magical Dampening Trap", location=source.location, magnitude=Dice.scale(source.totalSpellpower, 6, 0.014), 
                 trapRating=Dice.scale(source.totalCunning, 30, 0.008), applier=source)
 
-Nearsighted Trap:
+[TAGS]
+  [NAME: Nearsighted Trap]
+  [CLASS: Tactician]
+  [LEVEL: 3]
+  [TARGET: Location]
+[/TAGS]
 [REQ]
 resource(source, "AP", 5)
 !onCooldown(source, "Nearsighted Trap")
@@ -1396,7 +1926,12 @@ Combat.applyCooldown(source, "Nearsighted Trap", 1)
 Terrain.removeTrap(source.location)
 Terrain.addTrap("Nearsighted Trap", location=source.location, trapRating=Dice.scale(source.totalCunning, 30, 0.008), applier=source)
 
-Mage Hunting:
+[TAGS]
+  [NAME: Mage Hunting]
+  [CLASS: Tactician]
+  [LEVEL: 4]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "AP", 10)
 !onCooldown(source, "Mage Hunting")
@@ -1406,7 +1941,12 @@ Combat.applyCooldown(source, "Mage Hunting", 6)
 [ACT]
 Combat.addStatus(source, "Mage Hunting", duration=5)
 
-Mighty Favor:
+[TAGS]
+  [NAME: Mighty Favor]
+  [CLASS: Tactician]
+  [LEVEL: 5]
+  [TARGET: Location]
+[/TAGS]
 [REQ]
 resource(source, "AP", 5)
 !onCooldown(source, "Mighty Favor")
@@ -1419,7 +1959,12 @@ Terrain.addTrap("Mighty Favor", location=source.location, charges=3, magnitude=D
 
 # Nightblade Abilities
 
-Shadowstep:
+[TAGS]
+  [NAME: Shadowstep]
+  [CLASS: Nightblade]
+  [LEVEL: 4]
+  [TARGET: Location]
+[/TAGS]
 [REQ]
 resource(source, "AP", 6)
 !onCooldown(source, "Shadowstep")
@@ -1431,7 +1976,12 @@ Combat.applyCooldown(source, "Shadowstep", 2)
 [ACT]
 Combat.movePlayer(source, target.location)
 
-Dark Intent:
+[TAGS]
+  [NAME: Dark Intent]
+  [CLASS: Nightblade]
+  [LEVEL: 5]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "AP", 1)
 [RES]
@@ -1439,10 +1989,15 @@ Combat.modifyresource(source, "AP", -1)
 [ACT]
 Combat.addStatus(source, "Dark Intent", duration=1, magnitude=(3 + Dice.max((source.level - 4) / 2, 0)))
 
-Seeping Darkness:
+[TAGS]
+  [NAME: Seeping Darkness]
+  [CLASS: Nightblade]
+  [LEVEL: 7]
+[/TAGS]
 [REQ]
 resource(source, "AP", 10)
 inRange(source, target, 1)
+usingWeapon(source, "Melee")
 [RES]
 Combat.modifyresource(source, "AP", -10)
 [HIT]
@@ -1452,7 +2007,13 @@ Combat.addStatus(target, "Seeping Darkness", duration=7, hitValue=hit, magnitude
 
 # Shadow Abilities
 
-Shadow Walk:
+[TAGS]
+  [NAME: Shadow Walk]
+  [CLASS: Shadow]
+  [LEVEL: 1]
+  [TARGET: None]
+  [REPLACES: Stealth]
+[/TAGS]
 [REQ]
 resource(source, "AP", 6)
 !onCooldown(source, "Shadow Walk")
@@ -1463,7 +2024,11 @@ Combat.applyCooldown(source, "Shadow Walk", 2)
 [ACT]
 Combat.addStatus(source, "Shadow Walk", duration=-1)
 
-Rear Assault:
+[TAGS]
+  [NAME: Rear Assault]
+  [CLASS: Shadow]
+  [LEVEL: 3]
+[/TAGS]
 [REQ]
 resource(source, "AP", 9)
 !onCooldown(source, "Rear Assault")
@@ -1478,7 +2043,11 @@ Combat.calcHit(source, target, "Physical", modifier=-14, critMod=(50 - (usingWea
 [ACT]
 Combat.weaponAttack(source, target, hit, criticalDamageMod=(2 - 0.5 * usingWeapon(source, "Sword")))
 
-Quick with a Crossbow:
+[TAGS]
+  [NAME: Quick with a Crossbow]
+  [CLASS: Shadow]
+  [LEVEL: 3]
+[/TAGS]
 [REQ]
 resource(source, "AP", 4)
 !onCooldown(source, "Quick with a Crossbow")
@@ -1492,7 +2061,13 @@ Combat.calcHit(source, target, "Physical", modifier=1, critMod=1)
 [ACT]
 Combat.weaponAttack(source, target, hit)
 
-Stealth Recovery:
+[TAGS]
+  [NAME: Stealth Recovery]
+  [CLASS: Shadow]
+  [LEVEL: 4]
+  [TARGET: None]
+  [BREAKS_STEALTH: 0]
+[/TAGS]
 [REQ]
 resource(source, "AP", 2)
 !onCooldown(source, "Stealth Recovery")
@@ -1503,7 +2078,11 @@ Combat.applyCooldown(source, "Stealth Recovery", 3)
 [ACT]
 Combat.modifyresource(source, "HP", source.totalHP * 0.03)
 
-Sudden Flurry:
+[TAGS]
+  [NAME: Sudden Flurry]
+  [CLASS: Shadow]
+  [LEVEL: 6]
+[/TAGS]
 [REQ]
 resource(source, "AP", 6)
 usingWeapon(source, "Melee")
@@ -1521,7 +2100,12 @@ Combat.addStatus(target, "Sudden_flurry_debuff", duration=1, chance=Dice.chanceF
 
 # Assassin Abilities
 
-Hidden Shot:
+[TAGS]
+  [NAME: Hidden Shot]
+  [CLASS: Assassin]
+  [LEVEL: 1]
+  [BREAKS_STEALTH: 5]
+[/TAGS]
 [REQ]
 resource(source, "AP", 5)
 usingWeapon(source, "Ranged")
@@ -1535,9 +2119,12 @@ Combat.applyCooldown(source, "Hidden Shot", 2)
 Combat.calcHit(source, target, "Physical")
 [ACT]
 Combat.weaponAttack(source, target, hit, criticalDamageMod=1.1)
-# 5% chance to break stealth
 
-Visible Attack:
+[TAGS]
+  [NAME: Visible Attack]
+  [CLASS: Assassin]
+  [LEVEL: 2]
+[/TAGS]
 [REQ]
 resource(source, "AP", 5)
 inRange(source, target, source.weaponRange)
@@ -1551,7 +2138,13 @@ Combat.calcHit(source, target, "Physical", modifier=3)
 [ACT]
 Combat.weaponAttack(source, target, hit)
 
-Sneaky Sneaky:
+[TAGS]
+  [NAME: Sneaky Sneaky]
+  [CLASS: Assassin]
+  [LEVEL: 2]
+  [BREAKS_STEALTH: 0]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "AP", 8)
 !onCooldown(source, "Sneaky Sneaky")
@@ -1562,7 +2155,12 @@ Combat.applyCooldown(source, "Sneaky Sneaky", 3)
 [ACT]
 Combat.addStatus(source, "Sneaky Sneaky", duraiton=4)
 
-Cautious Shot:
+[TAGS]
+  [NAME: Cautious Shot]
+  [CLASS: Assassin]
+  [LEVEL: 2]
+  [BREAKS_STEALTH: 2]
+[/TAGS]
 [REQ]
 resource(source, "AP", 6)
 !onCooldown(source, "Cautious Shot")
@@ -1576,9 +2174,12 @@ Combat.applyCooldown(source, "Cautious Shot", 1)
 Combat.calcHit(source, target, "Physical")
 [ACT]
 Combat.weaponAttack(source, target, hit, overallDamageMod=0.5)
-# 2% chance to break stealth.
 
-Massive Shot:
+[TAGS]
+  [NAME: Massive Shot]
+  [CLASS: Assassin]
+  [LEVEL: 3]
+[/TAGS]
 [REQ]
 resource(source, "AP", 20)
 !onCooldown(source, "Massive Shot")
@@ -1594,7 +2195,12 @@ Combat.calcHit(source, target, "Physical", modifier=2)
 Combat.weaponAttack(source, target, hit, forceMod=1.3, criticalDamageMod=4.5)
 Combat.addStatus(source, "Massive Shot", duration=8, overwrite=False)
 
-Risky Shot:
+[TAGS]
+  [NAME: Risky Shot]
+  [CLASS: Assassin]
+  [LEVEL: 5]
+  [BREAKS_STEALTH: 20]
+[/TAGS]
 [REQ]
 resource(source, "AP", 6)
 !onCooldown(source, "Risky Shot")
@@ -1609,11 +2215,16 @@ Combat.calcHit(source, target, "Physical", critMod=15)
 [ACT]
 Combat.weaponAttack(source, target, hit)
 Combat.addStatus(target, "Risky Shot", duration=5, critical=True, hitValue=hit)
-# 20% chance to break stealth.
 
 # Ninja Abilities
 
-Conceal:
+[TAGS]
+  [NAME: Conceal]
+  [CLASS: Ninja]
+  [LEVEL: 1]
+  [REAPLACES: Stealth]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "AP", 11)
 !inStealth(source)
@@ -1622,7 +2233,12 @@ Combat.modifyresource(source, "AP", -11)
 [ACT]
 Combat.addStatus(source, "Conceal", duration=-1)
 
-Blind Strike:
+[TAGS]
+  [NAME: Blind Strike]
+  [CLASS: Ninja]
+  [LEVEL: 2]
+  [BREAKS_STEALTH: 0]
+[/TAGS]
 [REQ]
 resource(source, "AP", 5)
 inStealth(source)
@@ -1636,9 +2252,12 @@ Combat.applyCooldown(source, "Blind Strike", 1)
 Combat.calcHit(source, target, "Physical")
 [ACT]
 Combat.weaponAttack(source, target, hit, overallDamageMod=1.2)
-# 0% chance to break stealth
 
-Pin:
+[TAGS]
+  [NAME: Pin]
+  [CLASS: Ninja]
+  [LEVEL: 2]
+[/TAGS]
 [REQ]
 resource(source, "AP", 3)
 usingWeapon(source, "Ranged")
@@ -1651,7 +2270,11 @@ Combat.calcHit(source, target, "Physical", modifier=-5)
 Combat.weaponAttack(source, target, hit, overallDamageMod=0.3)
 Combat.addStatus(target, "Pin", duration=1, chance=Dice.chanceFromSize(target, [["Small", 0.2], ["Medium", 0.2]]))
 
-Follow-through:
+[TAGS]
+  [NAME: Follow-Through]
+  [CLASS: Ninja]
+  [LEVEL: 3]
+[/TAGS]
 [REQ]
 resource(source, "AP", 8)
 usingAnimalStyle(source, "Tiger") || usingAnimalStyle(source, "Panther")
@@ -1667,7 +2290,12 @@ Combat.calcHit(source, target, "Physical")
 Combat.weaponAttack(source, target, hit, forceMod=1.4)
 Combat.knockback(target, source.location, distance=1, didHit=isHit(hit, "Normal Hit"))
 
-Bait:
+[TAGS]
+  [NAME: Bait]
+  [CLASS: Ninja]
+  [LEVEL: 3]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "AP", 7)
 usingAnimalStyle(source, "Crane") || usingAnimalStyle(source, "Snake") || usingAnimalStyle(source, "Dragon")
@@ -1678,7 +2306,12 @@ Combat.addStatus(source, "Bait_crane", duration=1, chance=usingAnimalStyle(sourc
 Combat.addStatus(source, "Bait_snake", duration=1, chance=usingAnimalStyle(source, "Snake"))
 Combat.addStatus(source, "Bait_dragon", duration=1, chance=usingAnimalStyle(source, "Dragon")) 
 
-Hidden Slice:
+[TAGS]
+  [NAME: Hidden Slice]
+  [CLASS: Ninja]
+  [LEVEL: 4]
+  [BREAKS_STEALTH: 0]
+[/TAGS]
 [REQ]
 resource(source, "AP", 5)
 usingWeapon(source, "Sword") || usingWeapon(source, "Shuriken") || usingWeapon(source, "Axe")
@@ -1689,9 +2322,12 @@ Combat.modifyresource(source, "AP", -5)
 Combat.calcHit(source, target, "Physical", modifier=1)
 [ACT]
 Combat.weaponAttack(source, target, hit, overallDamageMod=0.7)
-# Will not break conceal
 
-Urgency Attack:
+[TAGS]
+  [NAME: Urgency Attack]
+  [CLASS: Ninja]
+  [LEVEL: 4]
+[/TAGS]
 [REQ]
 resource(source, "AP", 9)
 usingAnimalStyle(source, "Panther") || usingAnimalStyle(source, "Dragon")
@@ -1705,7 +2341,11 @@ Combat.calcHit(source, target, "Physical", modifier=-2)
 [ACT]
 Combat.weaponAttack(source, target, hit, overallDamageMod=2.1)
 
-Whittle Away:
+[TAGS]
+  [NAME: Whittle Away]
+  [CLASS: Ninja]
+  [LEVEL: 5]
+[/TAGS]
 [REQ]
 resource(source, "AP", 10)
 usingAnimalStyle(source, "Crane") || usingAnimalStyle(source, "Snake") || usingAnimalStyle(source, "Tiger")
@@ -1719,7 +2359,11 @@ Combat.weaponAttack(source, target, hit, overallDamageMod=(0.9 + 0.1 * usingAnim
 Combat.addStatus(target, "Whittle Away", duration=3, chance=(Dice.rollPresetChance(source, target, "Frequent") || (Dice.chanceFromSize(target, [["Large", 0.05], ["Huge", 0.18]]))))
 # Add the 3 turn duration information to the wiki
 
-Chi blast:
+[TAGS]
+  [NAME: Chi Blast]
+  [CLASS: Ninja]
+  [LEVEL: 6]
+[/TAGS]
 [REQ]
 resource(source, "AP", (15 - usingAnimalStyle(source, "Dragon") * 2))
 usingAnimalStyle(source, "Dragon") || usingAnimalStyle(source, "Snake")
@@ -1733,7 +2377,11 @@ Combat.modifyresource(target, "HP", 0 - Combat.calcDamage(source, target, min=20
 
 # Battlemage
 
-Buffer Strike:
+[TAGS]
+  [NAME: Buffer Strike]
+  [CLASS: Battlemage]
+  [LEVEL: 2]
+[/TAGS]
 [REQ]
 resource(source, "AP", 10)
 !onCooldown(source, "Buffer Strike")
@@ -1748,7 +2396,12 @@ Combat.calcHit(source, target, "Physical", modifier=3)
 Combat.weaponAttack(source, target, hit)
 Combat.addStatus(source, "Buffer Strike", duration=4, magnitude=(10 + source.totalSpellpower / 15), hitValue=hit)
 
-Inner Might:
+[TAGS]
+  [NAME: Inner Might]
+  [CLASS: Battlemage]
+  [LEVEL: 4]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "AP", 4)
 resource(source, "MP", source.totalMP * 0.75 + 1) 
@@ -1759,7 +2412,12 @@ Combat.applyCooldown(source, "Inner Might", 4)
 [ACT]
 Combat.addStatus(source, "Inner Might", duration=2, magnitude=(3 + source.totalSpellpower / 5))
 
-Deflecting Rod:
+[TAGS]
+  [NAME: Deflecting Rod]
+  [CLASS: Battlemage]
+  [LEVEL: 6]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "AP", 6)
 usingWeaponStyle(source, "Two-Handed")
@@ -1775,7 +2433,12 @@ Combat.addStatus(targetSet, "Deflecting Rod", duration=3)
 
 # Arcane Archer
 
-Arcane Threading:
+[TAGS]
+  [NAME: Arcane Threading]
+  [CLASS: Arcane Archer]
+  [LEVEL: 1]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "AP", 1)
 [RES]
@@ -1784,7 +2447,11 @@ Combat.modifyresource(source, "AP", -1)
 Combat.removeStatusOfType(source, "Threading", removeAll=True)
 Combat.addStatus(source, "Arcane Threading", duration=-1)
 
-Triple-charged Arrow:
+[TAGS]
+  [NAME: Triple-Charged Arrow]
+  [CLASS: Arcane Archer]
+  [LEVEL: 3]
+[/TAGS]
 [REQ]
 resource(source, "AP", 5)
 !onCooldown(source, "Triple-charged Arrow")
@@ -1799,7 +2466,12 @@ Combat.calcHit(source, target, "Physical")
 Combat.weaponAttack(source, target, hit)
 # Recovers 3 times the mana it otherwise would.
 
-Electric Threading:
+[TAGS]
+  [NAME: Electric Threading]
+  [CLASS: Arcane Archer]
+  [LEVEL: 4]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "AP", 1)
 [RES]
@@ -1808,7 +2480,11 @@ Combat.modifyresource(source, "AP", -1)
 Combat.removeStatusOfType(source, "Threading", removeAll=True)
 Combat.addStatus(source, "Electric Threading", duration=-1)
 
-Warp Shot:
+[TAGS]
+  [NAME: Warp Shot]
+  [CLASS: Arcane Archer]
+  [LEVEL: 5]
+[/TAGS]
 [REQ]
 resource(source, "AP", 10)
 !onCooldown(source, "Warp Shot")
@@ -1824,7 +2500,12 @@ Combat.weaponAttack(source, target, hit)
 Combat.addStatus(target, "Warp Shot", duration=2, chance=sizeCompare(target, "Huge", smallerThan=True))
 Combat.knockback(target, source.location, distance=1, didHit=(isHit(hit, "Normal Hit") && sizeCompare(target, "Huge", smallerThan=True)))
 
-Precision Threading:
+[TAGS]
+  [NAME: Precision Threading]
+  [CLASS: Arcane Archer]
+  [LEVEL: 6]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "AP", 1)
 [RES]
@@ -1835,7 +2516,12 @@ Combat.addStatus(source, "Precision Threading", duration=-1)
 
 # Trickster Abilities
 
-Sidestep:
+[TAGS]
+  [NAME: Sidestep]
+  [CLASS: Trickster]
+  [LEVEL: 1]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "AP", 4)
 [RES]
@@ -1844,7 +2530,12 @@ Combat.modifyresource(source, "AP", -4)
 Combat.addStatus(source, "Sidestep", duration=1)
 Combat.endTurn(source)
 
-Risky Focus:
+[TAGS]
+  [NAME: Risky Focus]
+  [CLASS: Trickster]
+  [LEVEL: 2]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "AP", 2)
 !onCooldown(source, "Risky Focus")
@@ -1854,7 +2545,11 @@ Combat.applyCooldown(source, "Risky Focus", 1)
 [ACT]
 Combat.addStatus(source, "Risky Focus", duration=1)
 
-Weary Bolt:
+[TAGS]
+  [NAME: Weary Bolt]
+  [CLASS: Trickster]
+  [LEVEL: 3]
+[/TAGS]
 [REQ]
 resource(source, "AP", 5)
 usingWeapon("Crossbow")
@@ -1867,7 +2562,11 @@ Combat.calcHit(source, target, "Physical")
 Combat.weaponAttack(source, target, hit)
 Combat.addStatus(target, "Weary Bolt", duration=3, overwrite=False)
 
-Curious Drain:
+[TAGS]
+  [NAME: Curious Drain]
+  [CLASS: Trickster]
+  [LEVEL: 4]
+[/TAGS]
 [REQ]
 resource(source, "AP", 6)
 !onCooldown(source, "Curious Drain")
@@ -1882,7 +2581,11 @@ Combat.weaponAttack(source, target, hit)
 Combat.addStatus(source, "Curious_drain_buff", duration=4, hitValue=hit)
 Combat.addStatus(target, "Curious_drain_debuff", duration=4, hitValue=hit)
 
-Scar Cut:
+[TAGS]
+  [NAME: Scar Cut]
+  [CLASS: Trickster]
+  [LEVEL: 6]
+[/TAGS]
 [REQ]
 resource(source, "AP", 3)
 !onCooldown(source, "Scar Cut")
@@ -1896,7 +2599,14 @@ Combat.calcHit(source, target, "Physical", modifier=20)
 [ACT]
 Combat.weaponAttack(source, target, hit, overallDamageMod=0.3)
 
-Guardian of Bronze:
+# Sorceror Abilities
+
+[TAGS]
+  [NAME: Guardian of Bronze]
+  [CLASS: Sorcerer]
+  [LEVEL: 1]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "AP", 10)
 !onCooldown(source, "Guardian of Bronze")
@@ -1908,7 +2618,12 @@ Combat.applyCooldown(source, "Guardian of Bronze", 9)
 Combat.unsummonGuardian(source)
 Combat.summonGuardian(source, "Bronze Sword")
 
-Guardian of Safety:
+[TAGS]
+  [NAME: Guardian of Safety]
+  [CLASS: Sorcerer]
+  [LEVEL: 1]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "AP", 12)
 !onCooldown(source, "Guardian of Safety")
@@ -1920,7 +2635,12 @@ Combat.applyCooldown(source, "Guardian of Saftey", 5)
 Combat.unsummonGuardian(source)
 Combat.summonGuardian(source, "Vampiric Dagger")
 
-Transfer Essence:
+[TAGS]
+  [NAME: Transfer Essence]
+  [CLASS: Sorcerer]
+  [LEVEL: 2]
+  [TARGET: Ally]
+[/TAGS]
 [REQ]
 resource(source, "AP", 3)
 resource(source, "HP", 6)
@@ -1934,7 +2654,12 @@ Combat.applyCooldown(source, "Transfer Essence", 2)
 [ACT]
 Combat.modifyresource(target, "HP", 15)
 
-Guardian of Jelly:
+[TAGS]
+  [NAME: Guardian of Jelly]
+  [CLASS: Sorcerer]
+  [LEVEL: 3]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "AP", 10)
 !onCooldown(source, "Guardian of Jelly")
@@ -1946,7 +2671,12 @@ Combat.applyCooldown(source, "Guardian of Jelly", 11)
 Combat.unsummonGuardian(source)
 Combat.summonGuardian(source, "Acidic Jelly")
 
-Bolster Guardian:
+[TAGS]
+  [NAME: Bolster Guardian]
+  [CLASS: Sorcerer]
+  [LEVEL: 4]
+  [TARGET: Ally]
+[/TAGS]
 [REQ]
 resource(source, "AP", 8)
 !onCooldown(source, "Bolster Guardian")
@@ -1958,7 +2688,12 @@ Combat.applyCooldown(source, "Bolster Guardian", 4)
 [ACT]
 Combat.addStatus(target, "Bolster Guardian", duration=5)
 
-Empathy Shell:
+[TAGS]
+  [NAME: Empathy Shell]
+  [CLASS: Sorcerer]
+  [LEVEL: 5]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "AP", 10)
 !onCooldown(source, "Empathy Shell")
@@ -1969,7 +2704,12 @@ Combat.applyCooldown(source, "Empathy Shell", 6)
 [ACT]
 Combat.addStatus(source, "Empathy Shell", duration=5)
 
-Guardian of Stones:
+[TAGS]
+  [NAME: Guardian of Stones]
+  [CLASS: Sorcerer]
+  [LEVEL: 5]
+  [TARGET: None]
+[/TAGS]
 [REQ]
 resource(source, "AP", 10)
 !onCooldown(source, "Guardian of Stones")
