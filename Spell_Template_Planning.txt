@@ -83,6 +83,11 @@ boolean usingAnimalStyle(Person self, AnimalStyle style)
  // Snake
  // Dragon
 
+boolean isSummon(Person self)
+  // returns True if the target is a guardian summoned by a Sorceror-player.
+  
+boolean haveSummon(Person self)
+  // returns True if the target is a Sorceror and has a summon out presently.
   
 [RES]
 // The RES section is always executed if the REQ section finished.  It is used to house resource modifications such as cooldowns and mana costs upon ability use.
@@ -133,8 +138,7 @@ int calcDamage(Combat cls, Person source, Person target, int min, int max, Eleme
   //
   // If min < max, min will be set to max.
   
-
-void addStatus(Combat cls, Person[] target, Status status, int duration, float magnitude=0, float chance = 1, boolean overwrite = true, boolean partial = false, boolean critical = false, 
+void addStatus(Combat cls, Person[] target, Status status, int duration, float magnitude=0, float chance=1, boolean overwrite=true, boolean partial=false, boolean critical=false, 
                HitType hitValue = NORMAL, int min=0, int max=0, Person relativeTarget=None, Person applier=None, Attribute scalesWith=None, float scaleFactor=0)
   // Applier is typically not relevant but is for the purposes of applying +30% Poison elemental damage or somesuch bonus.
   // If applier is supplied, scalesWith and scaleFactor should be supplied.
@@ -183,6 +187,13 @@ void stealPotion(Combat cls, Person reciever, Person victim)
 
 void removeStatusOfType(Combat cls, Person target, StatusCategory category, boolean removeAll=False)
   // See: getMostRecentStatus for a listing of Status Categories.
+
+void unsummonGuardian(Combat cls, Person target)
+  // Remove the guardian assocaiated with this Sorceror.  
+  
+void summonGuardian(Combat cls, Person owner, Guardian name)
+  // Summons a the specified guardian to a nearby tile under the control of the supplied Sorceror.
+  
   
 [Helper]
 boolean isHit(HitType self, HitType requiredHit, boolean greaterThan=True)
@@ -228,3 +239,4 @@ Element getElement(Status self)
   // May return None.  Many statuses do not have elements.  
   
 Element getSplashMagicAbilityElement(AbilityUtils cls, Person source)  
+
