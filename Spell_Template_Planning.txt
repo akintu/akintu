@@ -134,10 +134,11 @@ int calcDamage(Combat cls, Person source, Person target, int min, int max, Eleme
   // If min < max, min will be set to max.
   
 
-void addStatus(Combat cls, Person[] target, Status status, int duration, float magnitude=0, float chance = 1, boolean overwrite = true, boolean partial = false, boolean critical = false, HitType hitValue = NORMAL,
-              int min=0, int max=0, Person relativeTarget=None, Person applier=None, Attribute scalesWith=None, float scaleFactor=0)
+void addStatus(Combat cls, Person[] target, Status status, int duration, float magnitude=0, float chance = 1, boolean overwrite = true, boolean partial = false, boolean critical = false, 
+               HitType hitValue = NORMAL, int min=0, int max=0, Person relativeTarget=None, Person applier=None, Attribute scalesWith=None, float scaleFactor=0)
   // Applier is typically not relevant but is for the purposes of applying +30% Poison elemental damage or somesuch bonus.
   // If applier is supplied, scalesWith and scaleFactor should be supplied.
+  // Supplying both magnitude and min/max will produce undefined behavior!
 
 void removeStatus(Combat cls, Person target, Status s)
 
@@ -166,7 +167,7 @@ int weaponAttack(Combat cls, Person source, Person target, int hitType, float fo
   // Element override will replace the physical damage of the attack with a different element if such is provided.  This will usually be None as this behavior is not common.
   // The return type of int will return the damage before applying target based resistances or vunlerabilities.  This is not typically needed by calling methods.
   
-void setMovementCost(Combat cls, Person target, int newCost, int numberOfMoves=1, int duration=0, boolean inStealth=False)
+void setMovementCost(Combat cls, Person target, int newCost, int numberOfMoves=1, int duration=-1, boolean inStealth=False)
   // By default only affects the next movement action.  If duration is set instead, it will last until that many turns have expired.  Behavior for setting both numberOfMoves and
   // duration to non-zero values is undefined.  inStealth determines if the movement cost change only affects stealthed movement if set to True.
   
@@ -180,6 +181,8 @@ void modifyThreat(Combat cls, Person source, Person target, float threatAdjustme
 void stealPotion(Combat cls, Person reciever, Person victim)
   // removes a stealable potion from the victim if it is carrying one, and gives it to the reciever.  Is only used to steal a potion from monster-characters.
 
+void removeStatusOfType(Combat cls, Person target, StatusCategory category, boolean removeAll=False)
+  // See: getMostRecentStatus for a listing of Status Categories.
   
 [Helper]
 boolean isHit(HitType self, HitType requiredHit, boolean greaterThan=True)
@@ -218,6 +221,8 @@ Status getMostRecentStatus(Person self, StatusCategory category)
   // "Magical"    (Caused by a Spell or magical monster ability)
   // "Physical"   (Not magical)
   // "Weapon Enchantment" (Caused by a Spellsword weapon enchantment spell)
+  // "Threading"  (Caused by an Arcane Archer self-buff)
+  // "Stealth"    (Any stealth ability excluding invisibility)
   
 Element getElement(Status self)
   // May return None.  Many statuses do not have elements.  

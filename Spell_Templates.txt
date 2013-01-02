@@ -65,7 +65,8 @@ Combat.modifyResource(source, AP, -7)
 [HIT]
 Combat.calcHit(source, target, "Magical")
 [ACT]
-Combat.modifyResource(target, HP, 0-Dice.scale(source.totalSpellpower, Combat.calcDamage(source, target, 2, 9, Fire, hit, partial = 0.5, critical = 1.2), 0.05))
+Combat.modifyResource(target, HP, 0-Combat.calcDamage(source, target, min=2, max=9, element="Fire", 
+                      hitValue=hit, critical=1.2, partial=0.5, scalesWith="Spellpower", scaleFactor=0.05))
 
 Chill:
 [REQ]
@@ -78,7 +79,8 @@ Combat.modifyResource(source, AP, -6)
 [HIT]
 Combat.calcHit(source, target, "Magical")
 [ACT]
-Combat.modifyResource(target, HP, 0-Dice.scale(source.totalSpellpower, Combat.calcDamage(source, target, 1, 12, Cold, hit), 0.01))
+Combat.modifyResource(target, HP, 0 - Combat.calcDamage(source, target, min=1, max=12, element="Cold", 
+                      hitValue=hit, scalesWith="Spellpower", scaleFactor=0.01))
 Combat.addStatus(target, "Chill", duration=2, magnitude=Dice.scale(source.totalSpellpower, 5, 0.012), chance=Dice.rollPresetChance(source, target, "Frequent"))
 
 Shock:
@@ -90,11 +92,13 @@ inRange(source, target, 2)
 [RES]
 Combat.modifyResource(source, MP, -13)
 Combat.modifyResource(source, AP, -6)
+Combat.applyCooldown(source, "Shock", 1)
 [HIT]
 Combat.calcHit(source, target, "Magical")
 [ACT]
-Combat.modifyResource(target, HP, 0 - Dice.scale(source.totalSpellpower, Combat.calcDamage(source, target, min=15, max=22, element=Electric, hitValue=hit), 0.014))
-Combat.applyCooldown(source, "Shock", 1)
+Combat.modifyResource(target, HP, 0 - Combat.calcDamage(source, target, min=15, max=22, element="Electric", 
+                      hitValue=hit, scalesWith="Spellpower", scaleFactor=0.014))
+
 
 Suggest Laziness:
 [REQ]
@@ -213,12 +217,14 @@ Combat.applyCooldown(source, "Burst", 1)
 [HIT]
 Combat.calcHit(source, Terrain.getAOETargets(target, radius=1, selectMonsters=True, includeCenter=False), "Magical")
 [ACT]
-Combat.modifyResource(target, HP, 0 - Dice.scale(source.totalSpellpower, Combat.calcDamage(source, target, min=5, max=6, element=Arcane, hitValue=hitSet), 0.005))
+Combat.modifyResource(target, HP, 0 - Combat.calcDamage(source, target, min=5, max=6, element="Arcane", 
+                      hitValue=hit, scalesWith="Spellpower", scaleFactor=0.005))
 Combat.knockback(Terrain.getAOETargets(target, radius=1, selectMonsters=True, includeCenter=False), target.location, distance=1)
 [HIT]
 Combat.calcHit(source, target, "Magical")
 [ACT]
-Combat.modifyResource(target, HP, 0-Dice.scale(source.totalSpellpower, Combat.calcDamage(source, targetSet, min=10, max=12, element=Arcane, hitValue=hit), 0.005))
+Combat.modifyResource(target, HP, 0 - Combat.calcDamage(source, target, min=10, max=12, element="Arcane", 
+                      hitValue=hit, scalesWith="Spellpower", scaleFactor=0.005))
 
 Identification:
 # Needs out of combat use...
@@ -311,7 +317,8 @@ Combat.applyCooldown(source, "Torrent", 2)
 Terrain.getLineTargets(source.location, target.location, selectMonsters=True, selectFirstOnly=True)
 Combat.calcHit(source, target, "Magical")
 [ACT]
-Combat.modifyResource(target, HP, 0 - Dice.scale(source.totalSpellpower, Combat.calcDamage(source, target, min=10, max=35, element=Cold, hitValue=hit), 0.014))
+Combat.modifyResource(target, HP, 0 - Combat.calcDamage(source, target, min=10, max=35, element="Cold", 
+                      hitValue=hit, scalesWith="Spellpower", scaleFactor=0.014))
 knockback(target, source.location, distance=5, didHit=(isHit(hit, "Normal Hit") and sizeCompare(target, "Huge", smallerThan=True)))
 
 Lightning Bolt:
@@ -328,8 +335,9 @@ Combat.applyCooldown(source, "Lightning Bolt", 1)
 Terrain.getLineTargets(source.location, target.location, selectMonsters=True, selectFirstOnly=False)
 Combat.calcHit(source, targetSet, "Magical")
 [ACT]
-Combat.modifyResource(targetSet, HP, 0 - Dice.scale(source.totalSpellpower, Combat.calcDamage(source, target, min=5, max=33, element=Electric, hitValue=hitSet, partial=0.5, critical=1.3), 0.005))
-
+Combat.modifyResource(target, HP, 0 - Combat.calcDamage(source, target, min=5, max=33, element="Electric", 
+                      hitValue=hit, scalesWith="Spellpower", partial=0.5, critical=1.3, scaleFactor=0.005))
+					  
 Suggest Cowardice:
 [REQ]
 resource(source, MP, 9)
@@ -700,7 +708,7 @@ resource(source, AP, 3)
 Combat.modifyResource(source, AP, -3)
 Combat.applyCooldown(source, "Spell Sight", 2)
 [ACT]
-Combat.addStatus(source, "Spell Sight", duration=0)
+Combat.addStatus(source, "Spell Sight", duration=-1)
 
 Runic Dust:
 [REQ]
@@ -736,7 +744,7 @@ resource(source, AP, 7)
 Combat.modifyResource(source, AP, -7)
 Combat.applyCooldown(source, "Stealth", 3)
 [ACT]
-Combat.addStatus(source, "Stealth", duration=0)
+Combat.addStatus(source, "Stealth", duration=-1)
 
 Backstab:
 [REQ]
@@ -1063,7 +1071,7 @@ resource(source, AP, 1)
 [RES]
 Combat.modifyResource(source, AP, -1)
 [ACT]
-Combat.addStatus(source, "Martial Mode", duration=0)
+Combat.addStatus(source, "Martial Mode", duration=-1)
 
 Splash Magic:
 [REQ]
@@ -1439,7 +1447,7 @@ resource(source, AP, 6)
 Combat.modifyResource(source, AP, -6)
 Combat.applyCooldown(source, "Shadow Walk", 2)
 [ACT]
-Combat.addStatus(source, "Shadow Walk", duration=0)
+Combat.addStatus(source, "Shadow Walk", duration=-1)
 
 Rear Assault:
 [REQ]
@@ -1598,7 +1606,7 @@ resource(source, AP, 11)
 [RES]
 Combat.modifyResource(source, AP, -11)
 [ACT]
-Combat.addStatus(source, "Conceal", duration=0)
+Combat.addStatus(source, "Conceal", duration=-1)
 
 Blind Strike:
 [REQ]
@@ -1707,6 +1715,109 @@ inRange(source, target, (3 + usingAnimalStyle(source, "Snake") * 2))
 Combat.modifyResource(source, AP, (15 - usingAnimalStyle(source, "Dragon") * 2))
 Combat.applyCooldown(source, "Chi blast", 4)
 [ACT]
-Combat.modifyResource(target, HP, 0-Combat.calcDamage(source, target, min=20, max=45, element="Holy", hitValue="Normal Hit", scalesWith="Piety", scaleFactor=0.02))
+Combat.modifyResource(target, HP, 0 - Combat.calcDamage(source, target, min=20, max=45, element="Holy", hitValue="Normal Hit", scalesWith="Piety", scaleFactor=0.02))
+
+# Battlemage
+
+Buffer Strike:
+[REQ]
+resource(source, AP, 10)
+!onCooldown(source, "Buffer Strike")
+usingWeapon(source, "Melee")
+inRange(source, target, 1)
+[RES]
+Combat.modifyResource(source, AP, -10)
+Combat.applyCooldown(source, "Buffer Strike", 3)
+[HIT]
+Combat.calcHit(source, target, "Physical", modifier=3)
+[ACT]
+Combat.weaponAttack(source, target, hit)
+Combat.addStatus(source, "Buffer Strike", duration=4, magnitude=(10 + source.totalSpellpower / 15), hitValue=hit)
+
+Inner Might:
+[REQ]
+resource(source, AP, 4)
+resource(source, MP, source.totalMP * 0.75 + 1) 
+!onCooldown(source, "Inner Might")
+[RES]
+Combat.modifyResource(source, AP, -4)
+Combat.applyCooldown(source, "Inner Might", 4)
+[ACT]
+Combat.addStatus(source, "Inner Might", duration=2, magnitude=(3 + source.totalSpellpower / 5))
+
+Deflecting Rod:
+[REQ]
+resource(source, AP, 6)
+usingWeaponStyle(source, "Two-Handed")
+usingWeaponStyle(source, "Melee")
+!onCooldown(source, "Deflecting Rod")
+[RES]
+Combat.modifyResource(source, AP, -6)
+Combat.applyCooldown(source, "Deflecting Rod", 4)
+[HIT]
+Terrain.getAOETargets(source.location, radius=3, selectMonsters=False)
+[ACT]
+Combat.addStatus(targetSet, "Deflecting Rod", duration=3)
+
+# Arcane Archer
+
+Arcane Threading:
+[REQ]
+resource(source, AP, 1)
+[RES]
+Combat.modifyResource(source, AP, -1)
+[ACT]
+Combat.removeStatusOfType(source, "Threading", removeAll=True)
+Combat.addStatus(source, "Arcane Threading", duration=-1)
+
+Triple-charged Arrow:
+[REQ]
+resource(source, AP, 5)
+!onCooldown(source, "Triple-charged Arrow")
+usingWeapon(source, "Ranged")
+inRange(source, target, source.weaponRange)
+[RES]
+Combat.modifyResource(source, AP, -5)
+Combat.applyCooldown(source, "Triple-charged Arrow", 3)
+[HIT]
+Combat.calcHit(source, target, "Physical")
+[ACT]
+Combat.weaponAttack(source, target, hit)
+# Recovers 3 times the mana it otherwise would.
+
+Electric Threading:
+[REQ]
+resource(source, AP, 1)
+[RES]
+Combat.modifyResource(source, AP, -1)
+[ACT]
+Combat.removeStatusOfType(source, "Threading", removeAll=True)
+Combat.addStatus(source, "Electric Threading", duration=-1)
+
+Warp Shot:
+[REQ]
+resource(source, AP, 10)
+!onCooldown(source, "Warp Shot")
+usingWeapon(source, "Ranged")
+inRange(source, target, source.weaponRange)
+[RES]
+Combat.modifyResource(source, AP, -10)
+Combat.applyCooldown(source, "Warp Shot", 2)
+[HIT]
+Combat.calcHit(source, target, "Physical", modifier=-2)
+[ACT]
+Combat.weaponAttack(source, target, hit)
+Combat.addStatus(target, "Warp Shot", duration=2, chance=sizeCompare(target, "Huge", smallerThan=True))
+Combat.knockback(target, source.location, distance=1, didHit=(isHit(hit, "Normal Hit") && sizeCompare(target, "Huge", smallerThan=True)))
+
+Precision Threading:
+[REQ]
+resource(source, AP, 1)
+[RES]
+Combat.modifyResource(source, AP, -1)
+[ACT]
+Combat.removeStatusOfType(source, "Threading", removeAll=True)
+Combat.addStatus(source, "Precision Threading", duration=-1)
+
 
 
