@@ -9,7 +9,7 @@ Combat.modifyResource(source, AP, -5)
 [HIT]
 Combat.calcHit(source, target, "Magical")
 [ACT]
-Combat.modifyResource(target, HP, 0-Dice.scale(source.totalSpellpower, Combat.calcDamage(source, target, 2, 4, Arcane, hit), 0.03))
+Combat.modifyResource(target, HP, 0-Combat.calcDamage(source, target, min=2, max=4, element="Arcane", hitValue=hit, critical=1.2, scalesWith="Spellpower", scaleFactor=0.03))
 
 Arcane Warding:
 [REQ]
@@ -731,7 +731,7 @@ Stealth:
 [REQ]
 resource(source, AP, 7)
 !onCooldown(source, "Stealth")
-!isStealthed(source)
+!inStealth(source)
 [RES]
 Combat.modifyResource(source, AP, -7)
 Combat.applyCooldown(source, "Stealth", 3)
@@ -742,7 +742,7 @@ Backstab:
 [REQ]
 resource(source, AP, 10)
 !onCooldown(source, "Backstab")
-isStealthed(source)
+inStealth(source)
 inRange(source, target, source.weaponRange)
 inBackstabPosition(source, target, rangedBackstab=isClass(source, "Assassin"))
 usingWeapon(source, "Sword") || usingWeapon(source, "Knife") || (isClass(source, "Assassin") && usingWeapon(source, "Bow"))
@@ -750,9 +750,10 @@ usingWeapon(source, "Sword") || usingWeapon(source, "Knife") || (isClass(source,
 Combat.modifyResource(source, AP, -10)
 Combat.applyCooldown(source, "Backstab", 2)
 [HIT]
-Combat.calcHit(source, target, "Physical", modifier=((5 + (4 * usingWeapon("Sword"))) * !usingWeaponStyle(source, "Dual")), critMod=(50 - (usingWeapon("Sword") * 25)))
+Combat.calcHit(source, target, "Physical", modifier=((5 + (4 * usingWeapon(source, "Sword"))) * !usingWeaponStyle(source, "Dual")), 
+               critMod=(50 - (usingWeapon(source, "Sword") * 25)))
 [ACT]
-Combat.weaponAttack(source, target, hit, criticalDamageMod=(2 - (0.5 * sword)))
+Combat.weaponAttack(source, target, hit, criticalDamageMod=(2 - (0.5 * usingWeapon(source, "Sword"))))
 
 Swipe Potion:
 [REQ]
@@ -1394,10 +1395,318 @@ Combat.applyCooldown(source, "Mighty Favor", 2)
 Terrain.removeTrap(source.location)
 Terrain.addTrap("Mighty Favor", location=source.location, charges=3, magnitude=Dice.scale(source.totalCunning, 6, 0.027), applier=source)
 
+# Nightblade Abilities
 
+Shadowstep:
+[REQ]
+resource(source, AP, 6)
+!onCooldown(source, "Shadowstep")
+inStealth(source)
+canReach(source, target.location, source.moveTiles * 2)
+[RES]
+Combat.modifyResource(source, AP, -6)
+Combat.applyCooldown(source, "Shadowstep", 2)
+[ACT]
+Combat.movePlayer(source, target.location)
 
+Dark Intent:
+[REQ]
+resource(source, AP, 1)
+[RES]
+Combat.modifyResource(source, AP, -1)
+[ACT]
+Combat.addStatus(source, "Dark Intent", duration=1, magnitude=(3 + Dice.max((source.level - 4) / 2, 0)))
 
+Seeping Darkness:
+[REQ]
+resource(source, AP, 10)
+inRange(source, target, 1)
+[RES]
+Combat.modifyResource(source, AP, -10)
+[HIT]
+Combat.calcHit(source, target, "Physical")
+[ACT]
+Combat.addStatus(target, "Seeping Darkness", duration=7, hitValue=hit, magnitude=(Combat.weaponAttack(source, target, hit, overallDamageMod=0.5) / 2))
 
+# Shadow Abilities
 
+Shadow Walk:
+[REQ]
+resource(source, AP, 6)
+!onCooldown(source, "Shadow Walk")
+!inStealth(source)
+[RES]
+Combat.modifyResource(source, AP, -6)
+Combat.applyCooldown(source, "Shadow Walk", 2)
+[ACT]
+Combat.addStatus(source, "Shadow Walk", duration=0)
+
+Rear Assault:
+[REQ]
+resource(source, AP, 9)
+!onCooldown(source, "Rear Assault")
+!inStealth(source)
+inBackstabPosition(source, target)
+usingWeapon(source, "Sword") || usingWeapon(source, "Knife")
+[RES]
+Combat.modifyResource(source, AP, -9)
+Combat.applyCooldown(source, "Rear Assault", 1)
+[HIT]
+Combat.calcHit(source, target, "Physical", modifier=-14, critMod=(50 - (usingWeapon(source, "Sword") * 25)))
+[ACT]
+Combat.weaponAttack(source, target, hit, criticalDamageMod=(2 - 0.5 * usingWeapon(source, "Sword")))
+
+Quick with a Crossbow:
+[REQ]
+resource(source, AP, 4)
+!onCooldown(source, "Quick with a Crossbow")
+usingWeapon(source, "Crossbow")
+inRange(source, target, source.weaponRange)
+[RES]
+Combat.modifyResource(source, AP, -4)
+Combat.applyCooldown(source, "Quick with a Crossbow", 1)
+[HIT]
+Combat.calcHit(source, target, "Physical", modifier=1, critMod=1)
+[ACT]
+Combat.weaponAttack(source, target, hit)
+
+Stealth Recovery:
+[REQ]
+resource(source, AP, 2)
+!onCooldown(source, "Stealth Recovery")
+inStealth(source)
+[RES]
+Combat.modifyResource, AP, -2)
+Combat.applyCooldown(source, "Stealth Recovery", 3)
+[ACT]
+Combat.modifyResource(source, HP, source.totalHP * 0.03)
+
+Sudden Flurry:
+[REQ]
+resource(source, AP, 6)
+usingWeapon(source, "Melee")
+inRange(source, target, 1)
+[RES]
+Combat.modifyResource(source, AP, -6)
+[HIT]
+Combat.calcHit(source, target, "Physical", modifier=-4, critMod=(15 * Dice.max(hasStatus(source, "Sudden_flurry_stealth"), inStealth(source))))
+[ACT]
+Combat.addStatus(source, "Sudden_flurry_stealth", duration=1, chance=inStealth(source))
+Combat.weaponAttack(source, target, hit, overallDamageMod=(0.85 + 0.4 * hasStatus(source, "Sudden Flurry")))
+Combat.addStatus(source, "Sudden Flurry", duration=1)
+Combat.addStatus(target, "Sudden_flurry_debuff", duration=1, chance=Dice.chanceFromSize(target, [["Small", 0.85], ["Huge", 0.05]], 
+                                                                                        defaultChance=Dice.rollPresetChance(source, target, "Occasional")))
+
+# Assassin Abilities
+
+Hidden Shot:
+[REQ]
+resource(source, AP, 5)
+usingWeapon(source, "Ranged")
+inRange(source, target, source.weaponRange)
+inStealth(source)
+!onCooldown(source, "Hidden Shot")
+[RES]
+Combat.modifyResource(source, AP, -5)
+Combat.applyCooldown(source, "Hidden Shot", 2)
+[HIT]
+Combat.calcHit(source, target, "Physical")
+[ACT]
+Combat.weaponAttack(source, target, hit, criticalDamageMod=1.1)
+# 5% chance to break stealth
+
+Visible Attack:
+[REQ]
+resource(source, AP, 5)
+inRange(source, target, source.weaponRange)
+!inStealth(source)
+!onCooldown(source, "Visible Attack")
+[RES]
+Combat.modifyResource(source, AP, -5)
+Combat.applyCooldown(source, "Visible Attack", 2)
+[HIT]
+Combat.calcHit(source, target, "Physical", modifier=3)
+[ACT]
+Combat.weaponAttack(source, target, hit)
+
+Sneaky Sneaky:
+[REQ]
+resource(source, AP, 8)
+!onCooldown(source, "Sneaky Sneaky")
+inStealth(source)
+[RES]
+Combat.modifyResource(source, AP, -8)
+Combat.applyCooldown(source, "Sneaky Sneaky", 3)
+[ACT]
+Combat.addStatus(source, "Sneaky Sneaky", duraiton=4)
+
+Cautious Shot:
+[REQ]
+resource(source, AP, 6)
+!onCooldown(source, "Cautious Shot")
+usingWeapon(soure, "Ranged")
+inStealth(source)
+inRange(source, target, source.weaponRange)
+[RES]
+Combat.modifyResource(source, AP, -6)
+Combat.applyCooldown(source, "Cautious Shot", 1)
+[HIT]
+Combat.calcHit(source, target, "Physical")
+[ACT]
+Combat.weaponAttack(source, target, hit, overallDamageMod=0.5)
+# 2% chance to break stealth.
+
+Massive Shot:
+[REQ]
+resource(source, AP, 20)
+!onCooldown(source, "Massive Shot")
+usingWeapon(source, "Ranged")
+inRange(source, target, source.weaponRange)
+inStealth(source)
+[RES]
+Combat.modifyResource(source, AP, -20)
+Combat.applyCooldown(source, "Massive Shot", 4)
+[HIT]
+Combat.calcHit(source, target, "Physical", modifier=2)
+[ACT]
+Combat.weaponAttack(source, target, hit, forceMod=1.3, criticalDamageMod=4.5)
+Combat.addStatus(source, "Massive Shot", duration=8, overwrite=False)
+
+Risky Shot:
+[REQ]
+resource(source, AP, 6)
+!onCooldown(source, "Risky Shot")
+usingWeapon(source, "Ranged")
+inRange(source, target, source.weaponRange)
+inStealth(source)
+[RES]
+Combat.modifyResource(source, AP, -6)
+Combat.applyCooldown(source, "Risky Shot", 2)
+[HIT]
+Combat.calcHit(source, target, "Physical", critMod=15)
+[ACT]
+Combat.weaponAttack(source, target, hit)
+Combat.addStatus(target, "Risky Shot", duration=5, critical=True, hitValue=hit)
+# 20% chance to break stealth.
+
+# Ninja Abilities
+
+Conceal:
+[REQ]
+resource(source, AP, 11)
+!inStealth(source)
+[RES]
+Combat.modifyResource(source, AP, -11)
+[ACT]
+Combat.addStatus(source, "Conceal", duration=0)
+
+Blind Strike:
+[REQ]
+resource(source, AP, 5)
+inStealth(source)
+usingWeapon(source, "Melee")
+inRange(source, target, 1)
+!onCooldown(source, "Blind Strike")
+[RES]
+Combat.modifyResource(source, AP, -5)
+Combat.applyCooldown(source, "Blind Strike", 1)
+[HIT]
+Combat.calcHit(source, target, "Physical")
+[ACT]
+Combat.weaponAttack(source, target, hit, overallDamageMod=1.2)
+# 0% chance to break stealth
+
+Pin:
+[REQ]
+resource(source, AP, 3)
+usingWeapon(source, "Ranged")
+inRange(source, target, source.weaponRange)
+[RES]
+Combat.modifyResource(source, AP, -3)
+[HIT]
+Combat.calcHit(source, target, "Physical", modifier=-5)
+[ACT]
+Combat.weaponAttack(source, target, hit, overallDamageMod=0.3)
+Combat.addStatus(target, "Pin", duration=1, chance=Dice.chanceFromSize(target, [["Small", 0.2], ["Medium", 0.2]]))
+
+Follow-through:
+[REQ]
+resource(source, AP, 8)
+usingAnimalStyle(source, "Tiger") || usingAnimalStyle(source, "Panther")
+usingWeapon(source, "Melee")
+inRange(source, target, 1)
+!onCooldown(source, "Follow-through")
+[RES]
+Combat.modifyResource(source, AP, -8)
+Combat.applyCooldown(source, "Follow-through", 1)
+[HIT]
+Combat.calcHit(source, target, "Physical")
+[ACT]
+Combat.weaponAttack(source, target, hit, forceMod=1.4)
+Combat.knockback(target, source.location, distance=1, didHit=isHit(hit, "Normal Hit"))
+
+Bait:
+[REQ]
+resource(source, AP, 7)
+usingAnimalStyle(source, "Crane") || usingAnimalStyle(source, "Snake") || usingAnimalStyle(source, "Dragon")
+[RES]
+Combat.modifyResource(source, AP, -7)
+[ACT]
+Combat.addStatus(source, "Bait_crane", duration=1, chance=usingAnimalStyle(source, "Crane"))
+Combat.addStatus(source, "Bait_snake", duration=1, chance=usingAnimalStyle(source, "Snake"))
+Combat.addStatus(source, "Bait_dragon", duration=1, chance=usingAnimalStyle(source, "Dragon")) 
+
+Hidden Slice:
+[REQ]
+resource(source, AP, 5)
+usingWeapon(source, "Sword") || usingWeapon(source, "Shuriken") || usingWeapon(source, "Axe")
+inRange(source, target, source.weaponRange)
+[RES]
+Combat.modifyResource(source, AP, -5)
+[HIT]
+Combat.calcHit(source, target, "Physical", modifier=1)
+[ACT]
+Combat.weaponAttack(source, target, hit, overallDamageMod=0.7)
+# Will not break conceal
+
+Urgency Attack:
+[REQ]
+resource(source, AP, 9)
+usingAnimalStyle(source, "Panther") || usingAnimalStyle(source, "Dragon")
+!resource(source, HP, source.totalHP * 0.6)
+usingWeapon(source, "Melee")
+inRange(source, target, 1)
+[RES]
+Combat.modifyResource(source, AP, -9)
+[HIT]
+Combat.calcHit(source, target, "Physical", modifier=-2)
+[ACT]
+Combat.weaponAttack(source, target, hit, overallDamageMod=2.1)
+
+Whittle Away:
+[REQ]
+resource(source, AP, 10)
+usingAnimalStyle(source, "Crane") || usingAnimalStyle(source, "Snake") || usingAnimalStyle(source, "Tiger")
+inRange(source, target, source.weaponRange)
+[RES]
+Combat.modifyResource(source, AP, -10)
+[HIT]
+Combat.calcHit(source, target, "Physical", modifier=(3 + (usingAnimalStyle(source, "Crane") || usingAnimalStyle(source, "Snake")) * 2))
+[ACT]
+Combat.weaponAttack(source, target, hit, overallDamageMod=(0.9 + 0.1 * usingAnimalStyle(source, "Tiger")))
+Combat.addStatus(target, "Whittle Away", duration=3, chance=(Dice.rollPresetChance(source, target, "Frequent") || (Dice.chanceFromSize(target, [["Large", 0.05], ["Huge", 0.18]]))))
+# Add the 3 turn duration information to the wiki
+
+Chi blast:
+[REQ]
+resource(source, AP, (15 - usingAnimalStyle(source, "Dragon") * 2))
+usingAnimalStyle(source, "Dragon") || usingAnimalStyle(source, "Snake")
+inRange(source, target, (3 + usingAnimalStyle(source, "Snake") * 2))
+!onCooldown(source, "Chi blast")
+[RES]
+Combat.modifyResource(source, AP, (15 - usingAnimalStyle(source, "Dragon") * 2))
+Combat.applyCooldown(source, "Chi blast", 4)
+[ACT]
+Combat.modifyResource(target, HP, 0-Combat.calcDamage(source, target, min=20, max=45, element="Holy", hitValue="Normal Hit", scalesWith="Piety", scaleFactor=0.02))
 
 

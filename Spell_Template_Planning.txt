@@ -55,7 +55,7 @@ float getNumberOfStackedStatus(Person self, Status status)
 boolean canReach(Person self, Location target, int tilesAllowed)
   // returns True if the player can reach the destination within the given number of tiles.
   
-boolean isStealthed(Person self)
+boolean inStealth(Person self)
   // returns True if any kind of stealth is active on the player (but not including invisibility.)
   
 boolean inBackstabPosition(Person self, Person target, boolean rangedBackstab=false)
@@ -74,6 +74,14 @@ boolean hasWeaponEnchant(Person self)
 boolean hasStatus(Person self, Status status)
 
 boolean isExactDistanceBetween(Terrain cls, Location a, Location b, int distance)
+
+boolean usingAnimalStyle(Person self, AnimalStyle style)
+ // Animal Styles
+ // Tiger
+ // Panther
+ // Crane
+ // Snake
+ // Dragon
 
   
 [RES]
@@ -152,11 +160,12 @@ int scale(Dice cls, int scaleAttributeValue, int value, float scale, int cap = 0
 
 void knockback(Combat cls, Person target, Location sourceOfImpact, int distance, boolean ignoreResistance=False, boolean didHit=True)
 
-void weaponAttack(Combat cls, Person source, Person target, int hitType, float forceMod=1, float criticalDamageMod=1, int armorPenetrationMod=0, Element elementOverride=None, boolean noCounter=False,
+int weaponAttack(Combat cls, Person source, Person target, int hitType, float forceMod=1, float criticalDamageMod=1, int armorPenetrationMod=0, Element elementOverride=None, boolean noCounter=False,
                  float overallDamageMod=1, int mightMod=0, boolean ignoreOnHitEffects=False, int poisonRatingMod=0)
   // Method calls calcDamage internally. 
   // Element override will replace the physical damage of the attack with a different element if such is provided.  This will usually be None as this behavior is not common.
-
+  // The return type of int will return the damage before applying target based resistances or vunlerabilities.  This is not typically needed by calling methods.
+  
 void setMovementCost(Combat cls, Person target, int newCost, int numberOfMoves=1, int duration=0, boolean inStealth=False)
   // By default only affects the next movement action.  If duration is set instead, it will last until that many turns have expired.  Behavior for setting both numberOfMoves and
   // duration to non-zero values is undefined.  inStealth determines if the movement cost change only affects stealthed movement if set to True.
