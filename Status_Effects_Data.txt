@@ -672,13 +672,168 @@
     [MAGNITUDE: 5]
   [INTERNAL: Attack_power_penalty]
     [MAGNITUDE: 5]
+	
+# Display Effects -- Ninja
 
+[NAME: Conceal]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Avoidance]
+    [MAGNITUDE: 40]
+  [INTERNAL: Set_maximum_stealth_break_chance]
+    [MAGNITUDE: 40]
+
+# Should we deal with martial styles here?? TODO
+
+[NAME: Pin]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Movement_speed_penalty]
+    [MAGNITUDE: 100]
+
+[NAME: Bait]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Melee_dodge_bonus]
+    [MAGNITUDE: 10]
+  [INTERNAL: Prepare_melee_dodge_counterattack]
+	[REMOVED_ON: Melee Counterattack]
+	[MAGNITUDE: 0]
+  [INTERNAL: Overall_damage_bonus]
+    [CONDITIONAL: Using Crane Style]
+	[MAGNITUDE: 50]
+  [INTERNAL: Overall_damage_bonus]
+    [CONDITIONAL: Using Dragon Style]
+	[MAGNITUDE: 20]
+  [INTERNAL: Melee_accuracy_bonus]
+    [CONDITIONAL: Using Dragon Style]
+	[MAGNITUDE: 4]
+  [INTERNAL: Melee_accuracy_bonus]
+    [CONDITIONAL: Using Snake Style]
+	[MAGNITUDE: 10]
+	
+[NAME: Whittle Away]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Attack_power_penalty]
+    [MAGNITUDE: 15]
+	
+# Display Effects -- Battlemage
+
+[NAME: Buffer Strike]
+  [TYPE: Display]
+  [ELEMENT: Arcane]
+  [INTERNAL: HP_buffer]
+    [MAGNITUDE: 0]
+	
+[NAME: Inner Might]
+  [TYPE: Display]
+  [ELEMENT: Arcane]
+  [INTERNAL: Might_bonus]
+    [MAGNITUDE: 0]
+  [REMOVED_ON: MP < 75%]
+  
+[NAME: Deflecting Rod]
+  [TYPE: Display]
+  [ELEMENT: Electric]
+  [INTERNAL: Magic_resist_bonus]
+    [MAGNITUDE: 4]
+  [INTERNAL: Elemental_resistance_electric]
+    [MAGNITUDE: 10]
+	
+# Display Effects -- Arcane Archer Skills
+
+[NAME: Arcane Threading]
+  [TYPE: Display]
+  [ELEMENT: Arcane]
+  [INTERNAL: Weapon_damage_bonus]
+    [MAGNITUDE: 2]
+  [CONDITIONAL: Using Bow || Using Crossbow]
+  
+[NAME: Electric Threading]
+  [TYPE: Display]
+  [ELEMENT: Electric]
+  [INTERNAL: Weapon_damage_bonus]
+    [MAGNITUDE: 0]
+	[MIN: 1]
+	[MAX: 8]
+	
+[NAME: Warp Shot]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Movement_speed_penalty]
+    [MAGNITUDE: 50]
+	
+[NAME: Precision Threading]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Ranged_accuracy_bonus]
+    [MAGNITUDE: 9]
+  [INTERNAL: Critical_chance_bonus]
+    [MAGNITUDE: 3]
+  [INTERNAL: Arcane_archer_mana_regen_penalty]
+    [MAGNITUDE: 2]
+	
+# Display Effects -- Trickster Skills
+	
+[NAME: Sidestep]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Dodge_bonus]
+    [MAGNITUDE: 3]
+	
+[NAME: Risky Focus]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Spellpower_bonus]
+    [MAGNITUDE: 6]
+  [ELEMENT: Dodge_penalty]
+    [MAGNITUDE: 5]
+	
+[NAME: Weary Bolt]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Attack_power_penalty]
+    [MAGNITUDE: 5]
+	
+[NAME: Curious Drain]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Dodge_bonus]
+    [MAGNITUDE: 8]
+	
+[NAME: Curiously Sluggish]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Dodge_penalty]
+    [MAGNITUDE: 8]
+	
+# Display Effects -- Sorcerer Skills
+	
+[NAME: Bolster Guardian]
+  [TYPE: Display]
+  [ELEMENT: Arcane]
+  [INTERNAL: Melee_accuracy_bonus]
+    [MAGNITUDE: 3]
+  [INTERNAL: Ranged_accuracy_bonus]
+    [MAGNITUDE: 3]
+  [INTERNAL: Attack_power_bonus]
+    [MAGNITUDE: 10]
+
+[NAME: Empathy Shell]
+  [TYPE: Display]
+  [ELEMENT: Arcane]
+  [INTERNAL: Send_empathy_damage_to_summon]  
+    [MAGNITUDE: 50]
+  [REMOVED_ON: Unsummon Guardian]
+  [REMOVED_ON: Guardian Death]
+	
 # Display Effects -- Common
 
 [NAME: Stun]
   [TYPE: Display]
   [ELEMENT: None]
-  [INTERNAL: No_turn]
+  [INTERNAL: Stun_internal]
     [MAGNITUDE: 0]
 	
 # Internal Effects
@@ -695,9 +850,15 @@
 [NAME: Applied_poison_rating_bonus]
   [TYPE: Internal]
   
+[NAME: Attack_power_bonus]
+  [TYPE: Internal]
+  
 [NAME: Attack_power_penalty]
   [TYPE: Internal]
   [IMMUNE: None]
+  
+[NAME: Arcane_archer_mana_regen_penalty]
+  [TYPE: Internal]
   
 [NAME: Armor_penetration_bonus]
   [TYPE: Internal]
@@ -776,6 +937,9 @@
   [TYPE: Internal]
   [IMMUNE: None]
   
+[NAME: Melee_dodge_bonus]
+  [TYPE: Internal]
+  
 [NAME: Might_bonus]
   [TYPE: Internal]
   
@@ -817,6 +981,9 @@
 [NAME: Potion_effect_bonus]
   [TYPE: Internal]
   
+[NAME: Prepare_melee_dodge_counterattack]
+  [TYPE: Internal]
+  
 [NAME: Ranged_accuracy_bonus]
   [TYPE: Internal]
   
@@ -842,6 +1009,12 @@
 [NAME: Refund_mana_on_cast]
   [TYPE: Internal]
   
+[NAME: Send_empathy_damage_to_summon]
+  [TYPE: Internal]
+  
+[NAME: Set_maximum_stealth_break_chance]
+  [TYPE: Internal]
+  
 [NAME: Set_movement_AP_cost]
   [TYPE: Internal]
   
@@ -861,6 +1034,8 @@
 [NAME: Spell_failure_chance]
   [TYPE: Internal]
   [IMMUNE: Boss]  
+  
+
 	
 [NAME: Target_ranged_accuracy_bonus]
   [TYPE: Internal]
