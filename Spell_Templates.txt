@@ -178,8 +178,7 @@ Combat.modifyresource(source, "AP", -9)
 [HIT]
 Combat.calcHit(source, target, "Magical")
 [ACT]
-Combat.addStatus(target, "Stutter_spell_fail", 5, 10)
-Combat.addStatus(target, "Stutter_spellpower_reduction", duration=5, magnitude=Dice.scale(source.totalSpellpower, 5, 0.02))
+Combat.addStatus(target, "Stutter", duration=5, magnitude=Dice.scale(source.totalSpellpower, 5, 0.02))
 
 [TAGS]
   [NAME: Cloud Vision]
@@ -270,10 +269,7 @@ inRange(source, target, 3)
 Combat.modifyresource(source, "MP", -9)
 Combat.modifyresource(source, "AP", -5)
 [ACT]
-Combat.addStatus(target, "Weapon_enhance_accuracy", duration=Dice.scale(source.totalSpellpower, 3, 0.03, cap=7), Dice.scale(source.totalSpellpower, 3, 0.07))
-Combat.addStatus(target, "Weapon_enhance_critical_damage", duration=Dice.scale(source.totalSpellpower, 3, 0.03, cap=7), Dice.scale(source.totalSpellpower, 5, 0.05))
-Combat.addStatus(target, "Weapon_enhance_armor_penetration", duration=Dice.scale(source.totalSpellpower, 3, 0.03, cap=7), Dice.scale(source.totalSpellpower, 3, 0.07))
-Combat.addStatus(target, "Weapon_enhance_critical_chance", duration=Dice.scale(source.totalSpellpower, 3, 0.03, cap=7), Dice.scale(source.totalSpellpower, 1, 0.035))
+Combat.addStatus(target, "Weapon Enhance", duration=Dice.scale(source.totalSpellpower, 3, 0.03, cap=7), applier=source, scalesWith="Spellpower")
 
 [TAGS]
   [NAME: Flaming Weapon]
@@ -371,8 +367,7 @@ Combat.applyCooldown(source, "Fright", 1)
 [HIT]
 Combat.calcHit(source, target, "Magical")
 [ACT]
-Combat.addStatus(target, "Fright_shadow_adjustment", 4, 20)
-Combat.addStatus(target, "Fright_attack_power_adjustment", 4, 5)
+Combat.addStatus(target, "Fright", duration=4)
 
 [TAGS]
   [NAME: Infection]
@@ -391,8 +386,7 @@ Combat.modifyresource(source, "AP", -6)
 Combat.calcHit(source, target, "Magical")
 Combat.calcHit(source, target, "Poison", rating=Dice.scale(source.totalSpellpower, 35, 0.012))
 [ACT]
-Combat.addStatus(target, "Infection_damage", Dice.scale(source.totalSpellpower, 4, 0.013), min=7, max=10, applier=source, scalesWith="Spellpower", scaleFactor=0.03)
-Combat.addStatus(target, "Infection_tolerance_adjustment", duration=Dice.scale(source.totalSpellpower, 4, 0.013), magnitude=5)
+Combat.addStatus(target, "Infection", Dice.scale(source.totalSpellpower, 4, 0.013), min=7, max=10, applier=source, scalesWith="Spellpower", scaleFactor=0.03)
 
 [TAGS]
   [NAME: Hands of Healing]
@@ -552,7 +546,7 @@ Combat.modifyResource(source, MP -10)
 Combat.modifyresource(source, "AP", -4)
 Combat.applyCooldown(source, "Shrink", 2)
 [ACT]
-Combat.addStatus(target, "Shrink", duration=Dice.scale(source.totalSpellpower, 2, 0.025, cap=5), magnitude=10, partial=True)
+Combat.addStatus(target, "Shrink", duration=Dice.scale(source.totalSpellpower, 2, 0.025, cap=5), partial=True)
 
 [TAGS]
   [NAME: Frost Weapon]

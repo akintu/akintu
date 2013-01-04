@@ -8,8 +8,14 @@
 # Information on Tags:
 #   SKILL_GROWTH -- Caster, Hybrid, or Non-Caster
 #     Casters learn "skills" every 4th level (and 1) and 1 or 2 spells per level.
-#     Hybrids learn "skills" every 3rd level (and 1) and 1 spell per level.
+#       Skills:[1, 4, 8, 12, 16, 20]
+#       Spells:[[1,3],[2,1],[3,2],[4,1],[5,2],[6,1],[7,2],[8,1]...]
+#     Hybrids learn "skills" every 3rd level (and 1 and 20) and 1 spell per level.
+#       Skills:[1, 3, 6, 9, 12, 15, 18, 20]
+#       Spells:[[1,1],[2,1],[3,1]...]
 #     Non-Casters learn "skills" every 2nd level (and 1) and no spells.
+#       Skills:[1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
+#       Spells: None
 #   
 #   STARTING_HP -- Does not include Constitution bonuses on character creation.
 #   LEVELUP_HP -- Does not include Constitution bonuses per levelup.

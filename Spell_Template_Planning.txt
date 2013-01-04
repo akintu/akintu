@@ -141,7 +141,7 @@ int calcDamage(Combat cls, Person source, Person target, int min, int max, Eleme
 void addStatus(Combat cls, Person[] target, Status status, int duration, float magnitude=0, float chance=1, boolean overwrite=true, boolean partial=false, boolean critical=false, 
                HitType hitValue = NORMAL, int min=0, int max=0, Person relativeTarget=None, Person applier=None, Attribute scalesWith=None, float scaleFactor=0)
   // Applier is typically not relevant but is for the purposes of applying +30% Poison elemental damage or somesuch bonus.
-  // If applier is supplied, scalesWith and scaleFactor should be supplied.
+  // If applier is supplied, scalesWith should be supplied, and in many cases, so should scaleFactor.
   // Supplying both magnitude and min/max will produce undefined behavior!
 
 void removeStatus(Combat cls, Person target, Status s)
