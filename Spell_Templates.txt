@@ -121,7 +121,7 @@ Combat.calcHit(source, target, "Magical")
 [ACT]
 Combat.modifyresource(target, "HP", 0 - Combat.calcDamage(source, target, min=1, max=12, element="Cold", 
                       hitValue=hit, scalesWith="Spellpower", scaleFactor=0.01))
-Combat.addStatus(target, "Chill", duration=2, magnitude=Dice.scale(source.totalSpellpower, 5, 0.012), chance=Dice.rollPresetChance(source, target, "Frequent"))
+Combat.addStatus(target, "Chill", duration=2, magnitude=Dice.scale(source.totalSpellpower, 5, 0.012), hitValue=hit, chance=Dice.rollPresetChance(source, target, "Frequent"))
 
 [TAGS]
   [NAME: Shock]
@@ -160,7 +160,7 @@ Combat.modifyresource(source, "AP", -5)
 [HIT]
 Combat.calcHit(source, target, "Magical")
 [ACT]
-Combat.addStatus(target, "Suggest Laziness", duration=1, chance=Dice.rollPresetChance(source, target, "Occasional"))
+Combat.addStatus(target, "Suggest Laziness", duration=1, chance=Dice.rollPresetChance(source, target, "Occasional"), hitValue=hit)
 
 [TAGS]
   [NAME: Stutter]
@@ -218,7 +218,7 @@ Combat.applyCooldown(source, "Haunt", 3)
 Combat.calcHit(source, target, "Magical")
 [ACT]
 Combat.modifyresource(target, "HP", 0 - Dice.scale(source.totalSpellpower, Combat.calcDamage(source, target, min=13, max=20, element=Shadow, hitValue=hit), 0.01))
-Combat.addStatus(target, "Haunt", Dice.scale(source.totalSpellpower, 3, 0.02, cap = 4), min=2, max=8, applier=source, scalesWith="Spellpower", scaleFactor=0.005)
+Combat.addStatus(target, "Haunt", Dice.scale(source.totalSpellpower, 3, 0.02, cap = 4), min=2, max=8, applier=source, scalesWith="Spellpower", scaleFactor=0.005, hitValue=hit)
 
 [TAGS]
   [NAME: Zone of Silence]
@@ -367,7 +367,7 @@ Combat.applyCooldown(source, "Fright", 1)
 [HIT]
 Combat.calcHit(source, target, "Magical")
 [ACT]
-Combat.addStatus(target, "Fright", duration=4)
+Combat.addStatus(target, "Fright", duration=4, hitValue=hit)
 
 [TAGS]
   [NAME: Infection]
@@ -383,10 +383,9 @@ inRange(source, target, 1)
 Combat.modifyresource(source, "MP", -7)
 Combat.modifyresource(source, "AP", -6)
 [HIT]
-Combat.calcHit(source, target, "Magical")
-Combat.calcHit(source, target, "Poison", rating=Dice.scale(source.totalSpellpower, 35, 0.012))
+Combat.calcHit(source, target, "Magical-Poison", rating=Dice.scale(source.totalSpellpower, 35, 0.012))
 [ACT]
-Combat.addStatus(target, "Infection", Dice.scale(source.totalSpellpower, 4, 0.013), min=7, max=10, applier=source, scalesWith="Spellpower", scaleFactor=0.03)
+Combat.addStatus(target, "Infection", Dice.scale(source.totalSpellpower, 4, 0.013), hitValue=hit, min=7, max=10, applier=source, scalesWith="Spellpower", scaleFactor=0.03)
 
 [TAGS]
   [NAME: Hands of Healing]
@@ -487,7 +486,7 @@ Combat.modifyresource(source, "AP", -10)
 [HIT]
 Combat.calcHit(source, target, "Magical")
 [ACT]
-Combat.addStatus(target, "Suggest Cowardice", duration=1, chance=Dice.rollPresetChance(source, target, "Reliable"), partial=True)
+Combat.addStatus(target, "Suggest Cowardice", duration=1, chance=Dice.rollPresetChance(source, target, "Reliable"), hitValue=hit, partial=True)
 
 [TAGS]
   [NAME: Pit]
@@ -546,7 +545,7 @@ Combat.modifyResource(source, MP -10)
 Combat.modifyresource(source, "AP", -4)
 Combat.applyCooldown(source, "Shrink", 2)
 [ACT]
-Combat.addStatus(target, "Shrink", duration=Dice.scale(source.totalSpellpower, 2, 0.025, cap=5), partial=True)
+Combat.addStatus(target, "Shrink", duration=Dice.scale(source.totalSpellpower, 2, 0.025, cap=5), hitValue=hit, partial=True)
 
 [TAGS]
   [NAME: Frost Weapon]
@@ -595,7 +594,7 @@ resource(source, "AP", 2)
 [RES]
 Combat.modifyresource(source, "AP", -2)
 [ACT]
-Combat.addStatus(source, "Brace", duration=1, magnitude=5)
+Combat.addStatus(source, "Brace", duration=1)
 Combat.endTurn(source)
 
 [TAGS]
@@ -607,11 +606,12 @@ Combat.endTurn(source)
 [REQ]
 resource(source, "AP", 2)
 !onCooldown(source, "Dash")
+canReach(source, target, source.movementTiles)
 [RES]
 Combat.modifyresource(source, "AP", -2)
 Combat.applyCooldown(source, "Dash", 4)
 [ACT]
-Combat.setMovementCost(source, 2)
+Combat.movePlayer(source, target)
 
 [TAGS]
   [NAME: Quick Strike]
@@ -737,12 +737,12 @@ Combat.addStatus(source, "Combo Attack", duration=1, overwrite=False)
   [TARGET: Location]
 [/TAGS]
 [REQ]
-resource(source, "AP", 7, modifier=usingArmor(source, "Heavy"))
+resource(source, "AP", (7 + usingArmor(source, "Heavy")))
 canReach(source, target, source.movementTiles)
 !onCooldown(source, "Rush")
 usingWeapon(source, "Melee")
 [RES]
-Combat.modifyresource(source, "AP", -7, modifier= 0-usingArmor(source, "Heavy"))
+Combat.modifyresource(source, "AP", (-7 - usingArmor(source, "Heavy")))
 Combat.applyCooldown(source, "Rush", 3)
 [ACT]
 Combat.movePlayer(source, target)
@@ -1241,8 +1241,8 @@ Combat.modifyresource(source, "AP", -11)
 Combat.applyCooldown(source, "Shock Factor", 4)
 [ACT]
 Combat.addStatus(target, "Stun", 1,  chance=Dice.rollPresetChance(source, target, "Frequent"))
-Combat.addStatus(target, "Shock_Factor_attack_mod", 3,  chance=Dice.rollPresetChance(source, target, "Reliable"))
-Combat.addStatus(target, "Shock_Factor_spell_failure", 3,  chance=Dice.rollPresetChance(source, target, "Reliable"))
+Combat.addStatus(target, "Shock Factor Attack Penalty", 3,  chance=Dice.rollPresetChance(source, target, "Reliable"))
+Combat.addStatus(target, "Shock Factor Spell Failure", 3,  chance=Dice.rollPresetChance(source, target, "Reliable"))
 
 # WeaponMaster Combination Abilities (Active)
 
@@ -1291,8 +1291,8 @@ resource(source, "AP", 10)
 [RES]
 Combat.modifyresource(source, "AP", -10)
 [ACT]
-Combat.addStatus(source, "True_Friend_DR_bonus", duration=1)
-Combat.addStatus(Terrain.getAOETargets(source.location, radius=1, selectMonsters=False, includeCenter=False), "True_Friend_Redirect", duration=1, relativeTarget=source)
+Combat.addStatus(source, "True Friend", duration=1)
+Combat.addStatus(Terrain.getAOETargets(source.location, radius=1, selectMonsters=False, includeCenter=False), "True Friend Protection", duration=1, relativeTarget=source)
 Combat.endTurn(source)
 
 [TAGS]
@@ -1799,10 +1799,9 @@ inRange(source, target, 1)
 Combat.modifyresource(source, "AP", -5)
 Combat.applyCooldown(source, "Poisonous Touch", 3)
 [HIT]
-Combat.calcHit(source, target, "Physical", modifier=5)
+Combat.calcHit(source, target, "Physical-Poison", modifier=5, rating=12)
 [ACT]
 Combat.addStatus(target, "Poisonous Touch", duration=4, min=5, max=15, applier=source, scalesWith="Cunning", scaleFactor=0.07)
-# Make sure Poison rating of 12 is encoded into the status effect.
 
 [TAGS]
   [NAME: Target Throat]
@@ -2084,12 +2083,12 @@ inRange(source, target, 1)
 [RES]
 Combat.modifyresource(source, "AP", -6)
 [HIT]
-Combat.calcHit(source, target, "Physical", modifier=-4, critMod=(15 * Dice.max(hasStatus(source, "Sudden_flurry_stealth"), inStealth(source))))
+Combat.calcHit(source, target, "Physical", modifier=-4, critMod=(15 * Dice.max(hasStatus(source, "Stealthy Sudden Flurry"), inStealth(source))))
 [ACT]
-Combat.addStatus(source, "Sudden_flurry_stealth", duration=1, chance=inStealth(source))
+Combat.addStatus(source, "Stealthy Sudden Flurry", duration=1, chance=inStealth(source))
 Combat.weaponAttack(source, target, hit, overallDamageMod=(0.85 + 0.4 * hasStatus(source, "Sudden Flurry")))
 Combat.addStatus(source, "Sudden Flurry", duration=1)
-Combat.addStatus(target, "Sudden_flurry_debuff", duration=1, chance=Dice.chanceFromSize(target, [["Small", 0.85], ["Huge", 0.05]], 
+Combat.addStatus(target, "Sudden Flurry Surprise", duration=1, chance=Dice.chanceFromSize(target, [["Small", 0.85], ["Huge", 0.05]], 
                                                                                         defaultChance=Dice.rollPresetChance(source, target, "Occasional")))
 
 # Assassin Abilities
