@@ -2,7 +2,7 @@
 // If an item in REQ does not return True, the ability fails to activate and a message is sent to the player indicating why the ability cannot be used.
 // If one of the methods prototyped here is used outside of the REQ section, no such message is delivered on failure.
 
-boolean hasResource(Person self, Resource type, int quantity, int modifier=0)
+boolean resource(Person self, Resource type, int quantity)
   // Types
   //  AP
   //  MP
@@ -92,7 +92,7 @@ boolean haveSummon(Person self)
 [RES]
 // The RES section is always executed if the REQ section finished.  It is used to house resource modifications such as cooldowns and mana costs upon ability use.
 
-void modifyResource(Combat cls, Person target, int type, int value, int modifier=0)
+void modifyResource(Combat cls, Person target, int type, int value)
 
 void applyCooldown(Combat cls, Person target, Ability a, int duration)
 
@@ -104,7 +104,9 @@ HitType[] calcHit(Combat cls, Person source, Person target, AttackType type, int
   // AttackType types:
   // Physical (Dodge vs. Accuracy)
   // Magical  (Magic Resist vs. Spellpower)
-  // Poison   (Poison Tolerance vs. Poison Rating)
+  // Magical-Poison   (Poison Tolerance vs. Poison Rating after Magical roll)
+  // Physical-Poison  (Poison Tolerance vs. Poison Rating after Physical roll)
+  // Poison           (Poison Tolerance vs. Poison Rating, only)
   // Trap     (Trap Evade vs. Trap Rating)
   // HitType types:
   // "Miss"
@@ -139,7 +141,8 @@ int calcDamage(Combat cls, Person source, Person target, int min, int max, Eleme
   // If min < max, min will be set to max.
   
 void addStatus(Combat cls, Person[] target, Status status, int duration, float magnitude=0, float chance=1, boolean overwrite=true, boolean partial=false, boolean critical=false, 
-               HitType hitValue = NORMAL, int min=0, int max=0, Person relativeTarget=None, Person applier=None, Attribute scalesWith=None, float scaleFactor=0)
+               HitType hitValue = NORMAL, int min=0, int max=0, Person relativeTarget=None, Person applier=None, Attribute scalesWith=None, float scaleFactor=0,
+			   int charges=0)
   // Applier is typically not relevant but is for the purposes of applying +30% Poison elemental damage or somesuch bonus.
   // If applier is supplied, scalesWith should be supplied, and in many cases, so should scaleFactor.
   // Supplying both magnitude and min/max will produce undefined behavior!
