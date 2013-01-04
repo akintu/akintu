@@ -2295,9 +2295,7 @@ usingAnimalStyle(source, "Crane") || usingAnimalStyle(source, "Snake") || usingA
 [RES]
 Combat.modifyresource(source, "AP", -7)
 [ACT]
-Combat.addStatus(source, "Bait_crane", duration=1, chance=usingAnimalStyle(source, "Crane"))
-Combat.addStatus(source, "Bait_snake", duration=1, chance=usingAnimalStyle(source, "Snake"))
-Combat.addStatus(source, "Bait_dragon", duration=1, chance=usingAnimalStyle(source, "Dragon")) 
+Combat.addStatus(source, "Bait", duration=1)
 
 [TAGS]
   [NAME: Hidden Slice]
@@ -2350,7 +2348,6 @@ Combat.calcHit(source, target, "Physical", modifier=(3 + (usingAnimalStyle(sourc
 [ACT]
 Combat.weaponAttack(source, target, hit, overallDamageMod=(0.9 + 0.1 * usingAnimalStyle(source, "Tiger")))
 Combat.addStatus(target, "Whittle Away", duration=3, chance=(Dice.rollPresetChance(source, target, "Frequent") || (Dice.chanceFromSize(target, [["Large", 0.05], ["Huge", 0.18]]))))
-# Add the 3 turn duration information to the wiki
 
 [TAGS]
   [NAME: Chi Blast]
@@ -2571,8 +2568,8 @@ Combat.applyCooldown(source, "Curious Drain", 1)
 Combat.calcHit(source, target, "Physical", modifier=-4)
 [ACT]
 Combat.weaponAttack(source, target, hit)
-Combat.addStatus(source, "Curious_drain_buff", duration=4, hitValue=hit)
-Combat.addStatus(target, "Curious_drain_debuff", duration=4, hitValue=hit)
+Combat.addStatus(source, "Curious Drain", duration=4, hitValue=hit)
+Combat.addStatus(target, "Curiously Sluggish", duration=4, hitValue=hit)
 
 [TAGS]
   [NAME: Scar Cut]
