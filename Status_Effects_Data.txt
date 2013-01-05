@@ -828,6 +828,32 @@
   [REMOVED_ON: Unsummon Guardian]
   [REMOVED_ON: Guardian Death]
 	
+# Display Effects -- Traits
+
+[NAME: Wounding Projectiles]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Dodge_penalty]
+    [MAGNITUDE: 0]
+	
+[NAME: Follow-up Expert Accuracy]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Ranged_accuracy_bonus]
+    [MAGNITUDE: 0]
+
+[NAME: Follow-up Expert Force]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Ranged_force_bonus]
+    [MAGNITUDE: 0]
+	
+[NAME: Trap Sadism]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Critical_damage_bonus]
+    [MAGNITUDE: 0]
+
 # Display Effects -- Common
 
 [NAME: Stun]
@@ -995,6 +1021,9 @@
   [TYPE: Internal]
   
 [NAME: Ranged_dodge_bonus]
+  [TYPE: Internal]
+  
+[NAME: Ranged_force_bonus]
   [TYPE: Internal]
   
 [NAME: Redirect_melee_attacks]
