@@ -89,6 +89,9 @@ boolean isSummon(Person self)
 boolean haveSummon(Person self)
   // returns True if the target is a Sorceror and has a summon out presently.
   
+boolean trapOnTile(Terrain cls, Location tile)
+  // returns True if there is a trap on the given tile, hidden or otherwise.
+  
 [RES]
 // The RES section is always executed if the REQ section finished.  It is used to house resource modifications such as cooldowns and mana costs upon ability use.
 
@@ -197,6 +200,9 @@ void unsummonGuardian(Combat cls, Person target)
 void summonGuardian(Combat cls, Person owner, Guardian name)
   // Summons a the specified guardian to a nearby tile under the control of the supplied Sorceror.
   
+void disarmTrap(Combat cls, Person thief, Trap trap, boolean wasSuccessful)
+  // Removes the target trap and grants experience to all allies of the thief in combat with him (and, of course, the thief himself.)
+  // If wasSuccessful is set to false, do nothing.  (Reserved for "critical failure" situations we may want to add later.)
   
 [Helper]
 boolean isHit(HitType self, HitType requiredHit, boolean greaterThan=True)
@@ -242,6 +248,8 @@ Element getElement(Status self)
   // May return None.  Many statuses do not have elements.  
   
 Element getSplashMagicAbilityElement(AbilityUtils cls, Person source)  
+
+Trap getTrapAtLocation(Terrain cls, Location location)
 
 [TAGS]
 // Tags are used to identify properties of an ability in a declarative style.  They will be loaded into the data structure as variables associated with the ability/spell.

@@ -1089,26 +1089,27 @@ hasPotion(target)
 Combat.modifyresource(source, "AP", -3)
 Combat.applyCooldown(source, "Swipe Potion", 2)
 [HIT]
-Dice.rollSuccess( source.totalCunning - target.totalCunning )
+Dice.rollSuccess(source.totalCunning - target.totalCunning)
 [ACT]
 Combat.stealPotion(source, target, hitValue=hit)
 
-#[TAGS]
-#  [NAME: Disarm Trap]
-#  [CLASS: Thief]
-#  [LEVEL: 2]
-#  [TARGET: Location]
-#  [BREAKS_STEALTH: 0]
-#[/TAGS]
-# Trap disarming mechanics have not been fleshed out.  This needs to be done before this can be encoded. TODO
-#Disarm Trap:
-#[REQ]
-#resource(source, "AP", 17)
-#inRange(source, target, 1)
-#[RES]
-#Combat.modifyresource(source, "AP", -17)
-#[HIT]
-#Dice.rollSuccess(
+[TAGS]
+  [NAME: Disarm Trap]
+  [CLASS: Thief]
+  [LEVEL: 2]
+  [TARGET: Location]
+  [BREAKS_STEALTH: 0]
+[/TAGS]
+[REQ]
+resource(source, "AP", 17)
+inRange(source, target, 1)
+Terrain.trapOnTile(target)
+[RES]
+Combat.modifyresource(source, "AP", -17)
+[HIT]
+Dice.rollSuccess(Dice.max(15 + 5 * (source.level - getTrapAtLocation(target).level) + 2 * (source.totalCunning - getTrapAtLocation(target).trapRating), 95))
+[ACT]
+Combat.removeTrap(source, getTrapAtLocation(target), isHit(hit, "Normal Hit"))  
 
 [TAGS]
   [NAME: Hit and Run]
