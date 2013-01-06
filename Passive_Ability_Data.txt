@@ -129,7 +129,7 @@
 [LEVEL: 1]
 [TYPE: Dynamic]
   [TRIGGERED_BY: Incoming Melee Attack Complete]
-    [CONDITIONAL: Attack Counterattackable]
+    [CONDITIONAL: Attack is Counterattackable]
 	[CONDITIONAL: Facing exactly in front]
 	[CONDITIONAL: Does not have ability "Direct Counterattack 2"]
   [INTERRUPT: Counterattack]
@@ -171,7 +171,7 @@
 [LEVEL: 4]
 [TYPE: Dynamic]
   [TRIGGERED_BY: Incoming Melee Attack Complete]
-    [CONDITIONAL: Attack Counterattackable]
+    [CONDITIONAL: Attack is Counterattackable]
 	[CONDITIONAL: Facing exactly in front or front-diagonal]
 	[CONDITIONAL: Does not have ability "Direct Counterattack 3"]
   [INTERRUPT: Counterattack]
@@ -430,5 +430,120 @@
     [MAGNITUDE: 3]
   [ATTRIBUTE_PENALTY: Awareness]
     [MAGNITUDE: 1]  
+	
+# Assassin Abilities
+
+# Ranged Backstab's functionality is mostly handled in the inBackstabPosition() function.
+
+[NAME: Ranged Backstab]
+[CLASS: Assassin]
+[LEVEL: 1]
+[TYPE: Static]
+  [ATTRIBUTE_BONUS: Ranged Backstab]
+    [MAGNITUDE: 1]
+	
+[NAME: Anatomy]
+[CLASS: Assassin]
+[LEVEL 1]
+[TYPE: Dynamic]
+  [TRIGGERED_BY: Outgoing Physical Attack]
+    [CONDITIONAL: Attack is not a backstab]
+  [REMOVED_ON: Outgoing Physical Attack Complete]
+  [ATTRIBUTE_BONUS: Critical Chance]
+    [MAGNITUDE: 10]
+	
+[NAME: Slightly Sneakier]
+[CLASS: Assassin]
+[LEVEL: 3]
+[TYPE: Static]
+  [ATTRIBUTE_BONUS: Sneak]
+    [MAGNITUDE: 3]
+	
+[NAME: Dabbles with Poison]
+[CLASS: Assassin]
+[LEVEL: 4]
+[TYPE: Static]
+  [ATTRIBUTE_BONUS: Poison Rating Bonus]
+    [MAGNITUDE: 2]
+	
+[NAME: Panic Step]
+[CLASS: Assassin]
+[LEVEL: 6]
+[TYPE: Dynamic]
+  [TRIGGERED_BY: Unlucky Stealth Break]
+  [APPLY_STATUS: "Panic Step"]
+    [MAGNITUDE: 4]
+	[DURATION: 1]
+
+# Shadow Passives
+
+[NAME: Backflip]
+[CLASS: Shadow]
+[LEVEL: 1]
+[TYPE: Dynamic]
+  [TRIGGERED_BY: Incoming Physical Attack]
+    [CONDITIONAL: Player does not have back against wall]
+  [REMOVED_ON: Incoming Physical Attack Complete]
+  [ATTRIBUTE_BONUS: Dodge]
+    [MAGNITUDE: 3]
+
+[NAME: A Dabbler of Sorts]
+[CLASS: Shadow]
+[LEVEL: 1]
+[TYPE: Static]
+  [ATTRIBUTE_BONUS: Poison Rating Bonus]
+    [MAGNITUDE: 3]
+  [ATTRIBUTE_BONUS: Poison Elemental Damage]
+    [MAGNITUDE: 5]
+	
+[NAME: Treasure Bag]
+[CLASS: Shadow]
+[LEVEL: 2]
+[TYPE: Static]
+  [ATTRIBUTE_BONUS: Carrying Capacity]
+    [MAGNITUDE: 15]
+	
+[NAME: An Eye for Value]
+[CLASS: Shadow]
+[LEVEL: 2]
+[TYPE: Static]
+  [ATTRIBUTE_BONUS: Gold Find]
+    [MAGNITUDE: 2]
+	
+[NAME: Sling Skills]
+[CLASS: Shadow]
+[LEVEL: 3]
+[TYPE: Dynamic]
+  [TRIGGERED_BY: Outgoing Ranged Attack]
+    [CONDITIONAL: Using sling]
+  [REMOVED_ON: Outgoing Ranged Attack complete]
+  [ATTRIBUTE_BONUS: Ranged Accuracy]
+    [MAGNITUDE: 5]
+	
+[NAME: Hide in Peril]
+[CLASS: Shadow]
+[LEVEL: 4]
+[TYPE: Static]
+  [TRIGGERED_BY: Incoming Physical Attack Complete]
+    [CONDITIONAL: Damage is greater than 39% of Maximum HP]
+	[CONDITIONAL: Not in Stealth]
+	[CONDITIONAL: Probability 75]
+  [INTERRUPT: Enter Stealth]
+  
+[NAME: Shadow-Melder]
+[CLASS: Shadow]
+[LEVEL: 6]
+[TYPE: Static]
+  [ATTRIBUTE_BONUS: Sneak]
+    [MAGNITUDE: 4]
+	
+
+	
+	
+	
+	
+	
+
+
 
 	
