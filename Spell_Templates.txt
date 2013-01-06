@@ -1061,6 +1061,7 @@ Combat.addStatus(source, "Stealth", duration=-1)
   [NAME: Backstab]
   [CLASS: Thief]
   [LEVEL: 1]
+  [REPLACED_BY: Bleeding Backstab]
 [/TAGS]
 [REQ]
 resource(source, "AP", 10)
@@ -2089,6 +2090,22 @@ Terrain.removeTrap(source.location)
 Terrain.addTrap("Accuracy Favor", location=source.location, charges=3, magnitude=Dice.scale(source.totalCunning, 3, 0.083), applier=source)
 
 [TAGS]
+  [NAME: Improved Accuracy Favor]
+  [CLASS: Tactician]
+  [LEVEL: 6]
+  [TARGET: Location]
+[/TAGS]
+[REQ]
+resource(source, "AP", 5)
+!onCooldown(source, "Improved Accuracy Favor")
+[RES]
+Combat.modifyresource(source, "AP", -5)
+Combat.applyCooldown(source, "Improved Accuracy Favor", 2)
+[ACT]
+Terrain.removeTrap(source.location)
+Terrain.addTrap("Improved Accuracy Favor", location=source.location, charges=3, magnitude=Dice.scale(source.totalCunning, 3, 0.1), applier=source)
+
+[TAGS]
   [NAME: Mana Favor]
   [CLASS: Tactician]
   [LEVEL: 1]
@@ -2101,6 +2118,20 @@ Combat.modifyresource(source, "AP", -5)
 [ACT]
 Terrain.removeTrap(source.location)
 Terrain.addTrap("Mana Favor", location=source.location, charges=3, magnitude=Dice.scale(source.totalCunning, 5, 0.033), applier=source)
+
+[TAGS]
+  [NAME: Improved Mana Favor]
+  [CLASS: Tactician]
+  [LEVEL: 6]
+  [TARGET: Location]
+[/TAGS]
+[REQ]
+resource(source, "AP", 4)
+[RES]
+Combat.modifyresource(source, "AP", -4)
+[ACT]
+Terrain.removeTrap(source.location)
+Terrain.addTrap("Mana Favor", location=source.location, charges=4, magnitude=Dice.scale(source.totalCunning, 5, 0.033), applier=source)
 
 [TAGS]
   [NAME: Magical Dampening Trap]
@@ -2160,6 +2191,22 @@ resource(source, "AP", 5)
 [RES]
 Combat.modifyresource(source, "AP", -5)
 Combat.applyCooldown(source, "Mighty Favor", 2)
+[ACT]
+Terrain.removeTrap(source.location)
+Terrain.addTrap("Mighty Favor", location=source.location, charges=3, magnitude=Dice.scale(source.totalCunning, 6, 0.027), applier=source)
+
+[TAGS]
+  [NAME: Improved Mighty Favor]
+  [CLASS: Tactician]
+  [LEVEL: 5]
+  [TARGET: Location]
+[/TAGS]
+[REQ]
+resource(source, "AP", 5)
+!onCooldown(source, "Improved Mighty Favor")
+[RES]
+Combat.modifyresource(source, "AP", -5)
+Combat.applyCooldown(source, "Improved Mighty Favor", 1)
 [ACT]
 Terrain.removeTrap(source.location)
 Terrain.addTrap("Mighty Favor", location=source.location, charges=3, magnitude=Dice.scale(source.totalCunning, 6, 0.027), applier=source)
@@ -2230,6 +2277,55 @@ Combat.modifyresource(source, "AP", -6)
 Combat.applyCooldown(source, "Shadow Walk", 2)
 [ACT]
 Combat.addStatus(source, "Shadow Walk", duration=-1)
+
+[TAGS]
+  [NAME: Bleeding Backstab]
+  [CLASS: Thief]
+  [LEVEL: 2]
+  [REPLACES: Backstab]
+  [REPLACED_BY: Stunning Backstab]
+[/TAGS]
+[REQ]
+resource(source, "AP", 10)
+!onCooldown(source, "Bleeding Backstab")
+inStealth(source)
+inRange(source, target, source.weaponRange)
+inBackstabPosition(source, target)
+usingWeapon(source, "Sword") || usingWeapon(source, "Knife")
+[RES]
+Combat.modifyresource(source, "AP", -10)
+Combat.applyCooldown(source, "Bleeding Backstab", 2)
+[HIT]
+Combat.calcHit(source, target, "Physical", modifier=((5 + (4 * usingWeapon(source, "Sword"))) * !usingWeaponStyle(source, "Dual")), 
+               critMod=(50 - (usingWeapon(source, "Sword") * 25)))
+[ACT]
+Combat.weaponAttack(source, target, hit, criticalDamageMod=(2 - (0.5 * usingWeapon(source, "Sword"))))
+Combat.addStatus(target, "Bleeding Backstab", duration=2, hitValue=hit)
+
+[TAGS]
+  [NAME: Stunning Backstab]
+  [CLASS: Thief]
+  [LEVEL: 5]
+  [REPLACES: Bleeding Backstab]
+[/TAGS]
+[REQ]
+resource(source, "AP", 10)
+!onCooldown(source, "Stunning Backstab")
+inStealth(source)
+inRange(source, target, source.weaponRange)
+inBackstabPosition(source, target)
+usingWeapon(source, "Sword") || usingWeapon(source, "Knife")
+[RES]
+Combat.modifyresource(source, "AP", -10)
+Combat.applyCooldown(source, "Stunning Backstab", 2)
+[HIT]
+Combat.calcHit(source, target, "Physical", modifier=((5 + (4 * usingWeapon(source, "Sword"))) * !usingWeaponStyle(source, "Dual")), 
+               critMod=(50 - (usingWeapon(source, "Sword") * 25)))
+[ACT]
+Combat.weaponAttack(source, target, hit, criticalDamageMod=(2 - (0.5 * usingWeapon(source, "Sword"))))
+Combat.addStatus(target, "Bleeding Backstab", duration=2, hitValue=hit)
+Combat.addStatus(target, "Stun", duration=1, hitValue=hit, 
+                 chance=Dice.max(Dice.rollPresetChance(source, target, "Occasional"), Dice.chanceFromSize(target, [["Small", 0.25]], 0)))
 
 [TAGS]
   [NAME: Rear Assault]

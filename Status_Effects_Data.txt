@@ -592,6 +592,14 @@
   [INTERNAL: Ranged_accuracy_bonus]
     [MAGNITUDE: 0]
 	
+[NAME: Improved Accuracy Favor]
+  [TYPE: Display]
+  [ELEMENT: Arcane]
+  [INTERNAL: Melee_accuracy_bonus]
+    [MAGNITUDE: 0]
+  [INTERNAL: Ranged_accuracy_bonus]
+    [MAGNITUDE: 0] 
+	
 [NAME: Magical Dampening Trap]
   [TYPE: Display]
   [ELEMENT: Arcane]
@@ -917,6 +925,22 @@
     [MAGNITUDE: 0]
   [INTERNAL: Melee_accuracy]
     [MAGNITUDE: 0]
+	
+# Display Effects -- Assassin Passives
+
+[NAME: Panic Step]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Dodge]
+    [MAGNITUDE: 0]
+	
+# Display Effects -- Shadow Passives
+
+[NAME: Bleeding Backstab]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Bleed]
+    [MAGNITUDE: 3]
 	
 # Display Effects -- Common
 
