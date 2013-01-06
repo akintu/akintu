@@ -29,8 +29,7 @@
 [CLASS: Fighter]
 [TYPE: Dynamic]
 [TRIGGERED_BY: Starting Player Turn]
-  [CONDITIONAL: No Attacks Last Turn]
-  [CONDITIONAL: No Attacks This Turn]
+  [CONDITIONAL: Exactly 0 Attacks Last Turn]
 [REMOVED_ON: Outgoing Physical Attack Complete]
 [RANK 1]
   [ATTRIBUTE_BONUS: Melee Accuracy]
@@ -1010,27 +1009,39 @@
 
 # ~~ Conditionals to code ~~
 # Facing Attacker
-# No Attacks [This|Last] Turn
 # [Not] Using [Heavy|Medium|Light|Robe] Armor
 # [Not] Using [Normal|Heavy|Any] Shield
-# [Not] Using [Two-Handed|Two|Knife|Solo] Weapon[s]
+# [Not] Using [Two-Handed|Two|Knife|Solo|Polearm|Slashing|shortbow] [Weapon|weapons]
 # Target is [not] [smaller than|larger than|exactly] [Small|Medium|Large|Huge] Size
+# [Target|Attacker] is [not] [Dragonkin|Self]
 # [Player|Target] [has|does not have] back against wall
-# [Player|Target] [has|does not have] Status "[STATUS]" [Stack] [Greater Than|Less Than|Excatly Equal to] [NUMBER]
+# [Player|Target] [has|does not have] Status [of type] "[STATUS]" [Stack] [Greater Than|Less Than|Excatly Equal to] [NUMBER]
 # Probability [NUMBER]
 # Player Traps [Greater Than|Less Than|Exactly] NUMBER
 # Player [not] in stealth
-# Spell School [not] [Illusion|Primal|Natural|Mystic|Bane|Enchantment|Mental]
+# Spell School [not] [Illusion|Primal|Natural|Mystic|Bane|Enchantment|Mental] or [...]
+# Player [HP|MP|AP] [Less Than|Greater Than|Exactly] NUMBER% of Maximum
+# Damage [Less Than|Greater Than] NUMBER% of Maximum HP
+# Player Stunned
+# [At least|At most|Exactly] NUMBER [Attacks|Movements|Potions Used] [this|last] turn
+# Attack Counterattackable
+# Facing Exactly [in front|behind] [or front-diagonal] [or side] [or back-diagonal]
+# is [not] Counterattackable Angle
+# Status is [not] "STATUS"
+# Trap does [not] deal damage
 	
 # ~~ Broadcasts ~~ (Not including some Conditionals which may double as broadcasts?)
-# [Incoming|Outgoing] [Physical|Melee|Ranged|Magical|Any] Attack [Hit|Complete|in Range NUMBER]
+# [Incoming|Outgoing] [Physical|Melee|Ranged|Magical|Any] Attack [Hit|Complete|in Range NUMBER|Critical Hit]
 # [Starting|Ending] Player Turn
 # [un]Equipping [Normal|Heavy|Any] Shield
 # [un]Equipping [Robe|Light|Medium|Heavy|any] Armor
 # [Incoming|Outgoing] Spell Cast [Complete]
 # [Monster|Player] [triggers|hit by] trap [complete]
 # Player Trap Removed
-#
+# [Incoming|Outgoing] Damage
+# [Incoming|Outgoing] Status Applied
+# Placing trap [not] on Enemy [complete]
+
 
 	
 	

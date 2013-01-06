@@ -391,6 +391,12 @@
   [INTERNAL: Bleeding]
     [MAGNITUDE: 10]
 	
+[NAME: Restful Jump Attack]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: DR_bonus]
+    [MAGNITUDE: 10]
+	
 # Display Effects -- Barbarian Skills
 
 [NAME: Berserker Rage]
@@ -402,6 +408,15 @@
     [MAGNITUDE: 50]
   [REMOVED_ON: HP > 75%]
 	
+[NAME: Improved Berserker Rage]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Might_bonus]
+    [MAGNITUDE: 15]
+  [INTERNAL: Critical_magnitude]
+    [MAGNITUDE: 70]
+  [REMOVED_ON: HP > 75%]
+ 
 [NAME: Blood of the Ancients]
   [TYPE: Display]
   [ELEMENT: None]
@@ -433,6 +448,17 @@
 	[MAGNITUDE: 3]
   [REMOVE_ON: MP > 15%]
   
+[NAME: Improved Martial Mode]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Might_bonus]
+    [MAGNITUDE: 7]
+  [INTERNAL: DR_bonus]
+    [CONDITIONAL: Using Shield]
+	[REMOVE_ON: Unequip Shield]
+	[MAGNITUDE: 3]
+  [REMOVE_ON: MP > 20%] 
+
 [NAME: Rebound]
   [TYPE: Display]
   [ELEMENT: Arcane]
@@ -854,6 +880,44 @@
   [INTERNAL: Critical_damage_bonus]
     [MAGNITUDE: 0]
 
+# Display Effects -- Barbarian Passives
+
+[NAME: Stunning Recovery]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Recover_HP_percent]
+    [MAGNITUDE: 0]
+	
+# Display Effects -- Spellsword Passives
+
+[NAME: Blades of Reduction]
+  [TYPE: Display]
+  [ELEMENT: Arcane]
+  [INTERNAL: Magic_resist_penalty]
+    [MAGNITUDE: 3]
+	
+# Display Effects -- Anarchist Passives
+
+[NAME: Celebrate Misfortune]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Critical_damage_bonus]
+    [MAGNITUDE: 20]
+  [INTERNAL: Melee_force_bonus]
+    [MAGNITUDE: 10]
+  [INTERNAL: Ranged_force_bonus]
+    [MAGNITUDE: 10]
+
+# Display Effects -- Marksman Passives
+
+[NAME: Superior Training]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Ranged_accuracy]
+    [MAGNITUDE: 0]
+  [INTERNAL: Melee_accuracy]
+    [MAGNITUDE: 0]
+	
 # Display Effects -- Common
 
 [NAME: Stun]
@@ -966,6 +1030,9 @@
 [NAME: Melee_dodge_bonus]
   [TYPE: Internal]
   
+[NAME: Melee_force_bonus]
+  [TYPE: Internal]
+  
 [NAME: Might_bonus]
   [TYPE: Internal]
   
@@ -1024,6 +1091,9 @@
   [TYPE: Internal]
   
 [NAME: Ranged_force_bonus]
+  [TYPE: Internal]
+  
+[NAME: Recover_HP_percent]
   [TYPE: Internal]
   
 [NAME: Redirect_melee_attacks]
