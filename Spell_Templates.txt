@@ -778,6 +778,7 @@ Combat.weaponAttack(source, target, hit)
   [CLASS: Ranger*]
   [LEVEL: 1]
   [TARGET: None]
+  [REPLACED_BY: Anarchist Shrapnel Trap]
 [/TAGS]
 [REQ]
 resource(source, "AP", 5)
@@ -811,6 +812,7 @@ Combat.addStatus(source, "Tunnel Vision", duration=4)
   [CLASS: Ranger*]
   [LEVEL: 2]
   [TARGET: None]
+  [REPLACED_BY: Anarchist Sticky Trap]
 [/TAGS]
 [REQ]
 resource(source, "AP", 3)
@@ -869,10 +871,11 @@ Combat.applyCooldown(source, "Ranger's Aim", 1)
 Combat.addStatus(source, "Ranger's Aim", duration=1)
 
 [TAGS]
-  [NAME: Boluder-Pit Trap]
+  [NAME: Boulder-Pit Trap]
   [CLASS: Ranger*]
   [LEVEL: 4]
   [TARGET: None]
+  [REPLACED_BY: Anarchist Boulder-Pit Trap]
 [/TAGS]
 [REQ]
 resource(source, "AP", 5)
@@ -928,6 +931,7 @@ Combat.weaponAttack(source, target, hit, overallDamageMod=1.05)
   [CLASS: Ranger*]
   [LEVEL: 8]
   [TARGET: None]
+  [REPLACED_BY: Anarchist Tar Trap]
 [/TAGS]
 [REQ]
 resource(source, "AP", 5)
@@ -1317,6 +1321,7 @@ Combat.weaponAttack(source, getMeleeFacingEnemy(source), hit, overallDamageMod=(
   [NAME: Jump Attack]
   [CLASS: Dragoon]
   [LEVEL: 1]
+  [REPLACED_BY: Faster Jump Attack]
 [/TAGS]
 [REQ]
 resource(source, "AP", 15)
@@ -1335,6 +1340,107 @@ Combat.weaponAttack(source, target, hit, overallDamageMod=2)
 Combat.weaponAttack(source, Terrain.getAOETargets(source.location, radius=1, selectMonsters=True), 
                     "Normal Hit", overallDamageMod=0.15, elementOverride="Bludgeoning", ignoreOnHitEffects=True)
 
+[TAGS]
+  [NAME: Faster Jump Attack]
+  [CLASS: Dragoon]
+  [LEVEL: 3]
+  [REPLACES: Jump Attack]
+  [REPLACED_BY: Faster Jump Attack 2]
+[/TAGS]
+[REQ]
+resource(source, "AP", 14)
+usingWeaponStyle(source, "Two-Handed")
+inRange(source, target, 6)
+!onCooldown(source, "Faster Jump Attack")
+hasAdjacentFreeSpace(target)
+[RES]
+Combat.modifyresource(source, "AP", -14)
+Combat.applyCooldown(source, "Faster Jump Attack", 2)
+[HIT]
+Combat.calcHit(source, target, "Physical")
+[ACT]
+Combat.movePlayer(source, Terrain.getRandomAdjacentFreeSpace(target), instant=True)
+Combat.weaponAttack(source, target, hit, overallDamageMod=2)
+Combat.weaponAttack(source, Terrain.getAOETargets(source.location, radius=1, selectMonsters=True), 
+                    "Normal Hit", overallDamageMod=0.15, elementOverride="Bludgeoning", ignoreOnHitEffects=True)
+	
+[TAGS]
+  [NAME: Faster Jump Attack 2]
+  [CLASS: Dragoon]
+  [LEVEL: 4]
+  [REPLACES: Faster Jump Attack]
+  [REPLACED_BY: Crushing Jump Attack]
+[/TAGS]
+[REQ]
+resource(source, "AP", 14)
+usingWeaponStyle(source, "Two-Handed")
+inRange(source, target, 6)
+!onCooldown(source, "Faster Jump Attack 2")
+hasAdjacentFreeSpace(target)
+[RES]
+Combat.modifyresource(source, "AP", -14)
+Combat.applyCooldown(source, "Faster Jump Attack 2", 1)
+[HIT]
+Combat.calcHit(source, target, "Physical")
+[ACT]
+Combat.movePlayer(source, Terrain.getRandomAdjacentFreeSpace(target), instant=True)
+Combat.weaponAttack(source, target, hit, overallDamageMod=2)
+Combat.weaponAttack(source, Terrain.getAOETargets(source.location, radius=1, selectMonsters=True), 
+                    "Normal Hit", overallDamageMod=0.15, elementOverride="Bludgeoning", ignoreOnHitEffects=True)
+	
+[TAGS]
+  [NAME: Crushing Jump Attack]
+  [CLASS: Dragoon]
+  [LEVEL: 5]
+  [REPLACES: Faster Jump Attack 2]
+  [REPLACED BY: Restful Jump Attack]
+[/TAGS]
+[REQ]
+resource(source, "AP", 14)
+usingWeaponStyle(source, "Two-Handed")
+inRange(source, target, 6)
+!onCooldown(source, "Crushing Jump Attack")
+hasAdjacentFreeSpace(target)
+[RES]
+Combat.modifyresource(source, "AP", -14)
+Combat.applyCooldown(source, "Crushing Jump Attack", 1)
+[HIT]
+Combat.calcHit(source, target, "Physical")
+[ACT]
+Combat.movePlayer(source, Terrain.getRandomAdjacentFreeSpace(target), instant=True)
+Combat.weaponAttack(source, target, hit, overallDamageMod=2.5)
+Combat.weaponAttack(source, Terrain.getAOETargets(source.location, radius=1, selectMonsters=True), 
+                    "Normal Hit", overallDamageMod=0.2, elementOverride="Bludgeoning", ignoreOnHitEffects=True)
+Combat.addStatus(target, "Stun", duration=1, chance=Dice.min(Dice.rollPresetChance(source, target, "Rare"), 
+                                                             Dice.chanceFromSize(target, [["Huge", 0]], 1))) 
+
+[TAGS]
+  [NAME: Restful Jump Attack]
+  [CLASS: Dragoon]
+  [LEVEL: 6]
+  [REPLACES: Crushing Jump Attack]
+[/TAGS]
+[REQ]
+resource(source, "AP", 14)
+usingWeaponStyle(source, "Two-Handed")
+inRange(source, target, 6)
+!onCooldown(source, "Restful Jump Attack")
+hasAdjacentFreeSpace(target)
+[RES]
+Combat.modifyresource(source, "AP", -14)
+Combat.applyCooldown(source, "Restful Jump Attack", 1)
+[HIT]
+Combat.calcHit(source, target, "Physical")
+[ACT]
+Combat.movePlayer(source, Terrain.getRandomAdjacentFreeSpace(target), instant=True)
+Combat.weaponAttack(source, target, hit, overallDamageMod=2.5)
+Combat.weaponAttack(source, Terrain.getAOETargets(source.location, radius=1, selectMonsters=True), 
+                    "Normal Hit", overallDamageMod=0.2, elementOverride="Bludgeoning", ignoreOnHitEffects=True)
+Combat.addStatus(target, "Stun", duration=1, chance=Dice.min(Dice.rollPresetChance(source, target, "Rare"), 
+                                                             Dice.chanceFromSize(target, [["Huge", 0]], 1))) 
+Combat.addStatus(source, "Restful Jump Attack", duration=1)
+Combat.removeStatusOfType(source, "DR Debuff", removeAll=True)
+															 
 [TAGS]
   [NAME: Diagonal Thrusts]
   [CLASS: Dragoon]
@@ -1392,6 +1498,7 @@ Combat.addStatus(target, "Spear-Pierce", duration=3, hitValue=hit, chance=Dice.r
   [CLASS: Barbarian]
   [LEVEL: 1]
   [TARGET: None]
+  [REPLACED_BY: Improved Berserker Rage]
 [/TAGS]
 [REQ]
 resource(source, "AP", 8)
@@ -1402,6 +1509,23 @@ Combat.modifyresource(source, "AP", -8)
 Combat.applyCooldown(source, "Berserker Rage", 5)
 [ACT]
 Combat.addStatus(source, "Berserker Rage", duration=6)
+
+[TAGS]
+  [NAME: Improved Berserker Rage]
+  [CLASS: Barbarian]
+  [LEVEL: 6]
+  [TARGET: None]
+  [REPLACES: Berserker Rage]
+[/TAGS]
+[REQ]
+resource(source, "AP", 8)
+!resource(source, "HP", source.totalHP * 0.75)
+!onCooldown(source, "Improved Berserker Rage")
+[RES]
+Combat.modifyresource(source, "AP", -8)
+Combat.applyCooldown(source, "Improved Berserker Rage", 4)
+[ACT]
+Combat.addStatus(source, "Improved Berserker Rage", duration=6)
 
 [TAGS]
   [NAME: Sacrificial Strike]
@@ -1496,6 +1620,7 @@ Combat.addStatus(source, "Guzzle", duration=1)
   [CLASS: Spellsword]
   [LEVEL: 2]
   [TARGET: None]
+  [REPLACED_BY: Improved Martial Mode]
 [/TAGS]
 [REQ]
 resource(source, "AP", 1)
@@ -1504,6 +1629,21 @@ resource(source, "AP", 1)
 Combat.modifyresource(source, "AP", -1)
 [ACT]
 Combat.addStatus(source, "Martial Mode", duration=-1)
+
+[TAGS]
+  [NAME: Improved Martial Mode]
+  [CLASS: Spellsword]
+  [LEVEL: 6]
+  [TARGET: None]
+  [REPLACES: Martial Mode]
+[/TAGS]
+[REQ]
+resource(source, "AP", 1)
+!resource(source, "MP", source.totalMP * 0.2)
+[RES]
+Combat.modifyresource(source, "AP", -1)
+[ACT]
+Combat.addStatus(source, "Improved Martial Mode", duration=-1)
 
 [TAGS]
   [NAME: Splash Magic]
@@ -1579,6 +1719,26 @@ Combat.calcHit(source, target, "Physical", ignoreMeleeBowPenalty=True, critMod=5
 Combat.weaponAttack(source, target, hit, criticalDamageMod=1.15)
 
 [TAGS]
+  [NAME: Anarchist Shrapnel Trap]
+  [CLASS: Anarchist]
+  [LEVEL: 1]
+  [TARGET: Location]
+  [REPLACES: Shrapnel Trap]
+[/TAGS]
+[REQ]
+resource(source, "AP", 5)
+!onCooldown(source, "Anarchist Shrapnel Trap")
+[RES]
+Combat.modifyresource(source, "AP", -5)
+Combat.applyCooldown(source, "Anarchist Shrapnel Trap", 1)
+[ACT]
+Terrain.removeTrap(source.location)
+Terrain.addTrap("Shrapnel Trap", target.location, minDamage=Dice.scale(source.totalCunning, 5, 0.014), 
+                maxDamage=Dice.scale(source.totalCunning, 12, 0.014), trapRating=Dice.scale(source.totalCunning, 13, 0.015),
+				applier=source) 
+Terrain.detonateTrapChaos(target.location, source) 
+
+[TAGS]
   [NAME: Trap Worry]
   [CLASS: Anarchist]
   [LEVEL: 2]
@@ -1609,6 +1769,24 @@ Dice.rollSuccess((Dice.max(source.totalCunning - target.totalCunning) * 10 + 10,
 Combat.addStatus(target, "Harmless Grin", duration=3, hitValue=hit)
 
 [TAGS]
+  [NAME: Anarchist Sticky Trap]
+  [CLASS: Anarchist]
+  [LEVEL: 2]
+  [TARGET: Location]
+  [REPLACES: Sticky Trap]
+[/TAGS]
+[REQ]
+resource(source, "AP", 3)
+!onCooldown(source, "Anarchist Sticky Trap")
+[RES]
+Combat.modifyresource(source, "AP", -3)
+Combat.applyCooldown(source, "Anarchist Sticky Trap", 1)
+[ACT]
+Terrain.removeTrap(source.location)
+Terrain.addTrap("Sticky Trap", location=source.location, trapRating=Dice.scale(source.totalCunning, 20, 0.007), applier=source)
+Terrain.detonateTrapChaos(target.location, source)
+
+[TAGS]
   [NAME: Explosive Trap]
   [CLASS: Anarchist]
   [LEVEL: 4]
@@ -1626,8 +1804,26 @@ Terrain.removeTrap(target.location)
 Terrain.addTrap("Explosive Trap", target.location, minDamage=Dice.scale(source.totalCunning, 5, 0.01), 
                          maxDamage=Dice.scale(source.totalCunning, 10, 0.01), trapRating=Dice.scale(source.totalCunning, 25, 0.01), 
 						 splashDamPercent=0.75, splashRadius=1)
-# Does not suffer from the 20% Anarchist damage penalty.
-# Update Wiki with detail re: Trap rating = 25 + 1/4 per Cunning
+Terrain.detonateTrapChaos(target.location, source, reduceDamage=False)
+
+[TAGS]
+  [NAME: Anarchist Boulder-Pit Trap]
+  [CLASS: Anarchist]
+  [LEVEL: 4]
+  [TARGET: Location]
+  [REPLACES: Boulder-Pit Trap]
+[/TAGS]
+[REQ]
+resource(source, "AP", 5)
+!onCooldown(source, "Anarchist Boulder-Pit Trap")
+[RES]
+Combat.modifyresource(source, "AP", -5)
+Combat.applyCooldown(source, "Anarchist Boulder-Pit Trap", 1)
+[ACT]
+Terrain.removeTrap(source.location)
+Terrain.addTrap("Boulder-Pit Trap", location=source.location, minDamage=Dice.scale(source.totalCunning, 3, 0.02), 
+                maxDamage=Dice.scale(source.totalCunning, 8, 0.02), trapRating=Dice.scale(source.totalCunning, 25, 0.006), applier=source)
+Terrain.detonateTrapChaos(target.location, source)
 
 [TAGS]
   [NAME: Grab Bag]
@@ -1646,6 +1842,23 @@ Combat.modifyResource(Terrain.getAOETargets(source.location, radius=1, selectMon
                       0-Combat.calcDamage(source, Terrain.getAOETargets(source.location, 1, True, False), scale(source.totalCunning, 2, 0.01), scale(source.totalCunning, 20, 0.01),
 					                    element="Piercing", hitValue="Normal Hit"))
 
+[TAGS]
+  [NAME: Anarchist Tar Trap]
+  [CLASS: Anarchist]
+  [LEVEL: 8]
+  [TARGET: Location]
+[/TAGS]
+[REQ]
+resource(source, "AP", 5)
+!onCooldown(source, "Anarchist Tar Trap")
+[RES]
+Combat.modifyresource(source, "AP", -5)
+Combat.applyCooldown(source, "Anarchist Tar Trap", 1)
+[ACT]
+Terrain.removeTrap(source.location)
+Terrain.addTrap("Tar Trap", location=source.location, trapRating=Dice.scale(source.totalCunning, 30, 0.005), applier=source)
+Terrain.detonateTrapChaos(target.location, source)
+										
 # Marksman Abilities
 
 [TAGS]

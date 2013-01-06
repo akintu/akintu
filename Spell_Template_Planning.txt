@@ -204,6 +204,14 @@ void disarmTrap(Combat cls, Person thief, Trap trap, boolean wasSuccessful)
   // Removes the target trap and grants experience to all allies of the thief in combat with him (and, of course, the thief himself.)
   // If wasSuccessful is set to false, do nothing.  (Reserved for "critical failure" situations we may want to add later.)
   
+void detonateTrapChaos(Terrain cls, Location trapLocation, Person anarchist, boolean reduceDamage=True)
+  // Explodes a trap at the given location if the trap evade is failed by the monster,
+  // there is actually a trap at the location,
+  // and there is a monster at the location.
+  // Represents the Anarchist trap placement directly on monsters.
+  // Reduces overall damage by 20% (unless reduceDamage is False or passives change this value)
+  // Increases the trap rating by 5 + Cunning / 10 (unless altered by passives)  
+  
 [Helper]
 boolean isHit(HitType self, HitType requiredHit, boolean greaterThan=True)
 
@@ -243,6 +251,7 @@ Status getMostRecentStatus(Person self, StatusCategory category)
   // "Weapon Enchantment" (Caused by a Spellsword weapon enchantment spell)
   // "Threading"  (Caused by an Arcane Archer self-buff)
   // "Stealth"    (Any stealth ability excluding invisibility)
+  // "DR Debuff"  (Any Harmful modification to DR)
   
 Element getElement(Status self)
   // May return None.  Many statuses do not have elements.  
