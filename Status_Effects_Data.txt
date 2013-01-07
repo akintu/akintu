@@ -717,8 +717,36 @@
   [INTERNAL: Set_maximum_stealth_break_chance]
     [MAGNITUDE: 40]
 
-# Should we deal with martial styles here?? TODO
+[NAME: Southern Tiger Style]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Tiger_style]
+    [MAGNITUDE: 0]
 
+[NAME: Flying Crane Style]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Crane_style]
+    [MAGNITUDE: 0]
+	
+[NAME: Way of the Serpent Style]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Snake_style]
+    [MAGNITUDE: 0]
+	
+[NAME: Swift Panther Style]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Panther_style]
+    [MAGNITUDE: 0]
+	
+[NAME: Dragon Master Style]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Dragon_style]
+    [MAGNITUDE: 0]
+	
 [NAME: Pin]
   [TYPE: Display]
   [ELEMENT: None]
@@ -782,6 +810,13 @@
   [ELEMENT: Arcane]
   [INTERNAL: Weapon_damage_bonus]
     [MAGNITUDE: 2]
+  [CONDITIONAL: Using Bow || Using Crossbow]
+  
+[NAME: Arcane Threading]
+  [TYPE: Display]
+  [ELEMENT: Arcane]
+  [INTERNAL: Weapon_damage_bonus]
+    [MAGNITUDE: 5]
   [CONDITIONAL: Using Bow || Using Crossbow]
   
 [NAME: Electric Threading]
@@ -931,7 +966,7 @@
 [NAME: Panic Step]
   [TYPE: Display]
   [ELEMENT: None]
-  [INTERNAL: Dodge]
+  [INTERNAL: Dodge_bonus]
     [MAGNITUDE: 0]
 	
 # Display Effects -- Shadow Passives
@@ -941,6 +976,22 @@
   [ELEMENT: None]
   [INTERNAL: Bleed]
     [MAGNITUDE: 3]
+	
+# Display Effects -- Battlemage Passives
+
+[NAME: Refraction]
+  [TYPE: Display]
+  [ELEMENT: Arcane]
+  [INTERNAL: DR_bonus]
+    [MAGNITUDE: 0]
+	
+# Display Effects -- Trickster Passives
+
+[NAME: Double Dodge]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Dodge_bonus]
+    [MAGNITUDE: 0]
 	
 # Display Effects -- Common
 
@@ -986,6 +1037,9 @@
 [NAME: Combo_attack_internal]
   [TYPE: Internal]
   
+[NAME: Crane_style]
+  [TYPE: Internal]
+  
 [NAME: Critical_chance_bonus]
   [TYPE: Internal]
   
@@ -1003,6 +1057,9 @@
   [TYPE: Internal]
   [IMMUNE: None]  
 
+[NAME: Dragon_style]
+  [TYPE: Internal]
+  
 [NAME: DR_bonus]
   [TYPE: Internal]
   
@@ -1089,6 +1146,9 @@
 [NAME: Overall_damage_penalty]
   [TYPE: Internal]
   
+[NAME: Panther_style]
+  [TYPE: Internal]
+  
 [NAME: Poison_tolerance_bonus]
   [TYPE: Internal]
 
@@ -1141,6 +1201,9 @@
 [NAME: Set_movement_AP_cost]
   [TYPE: Internal]
   
+[NAME: Snake_style]
+  [TYPE: Internal]
+  
 [NAME: Sneak_bonus]
   [TYPE: Internal]
   
@@ -1157,8 +1220,6 @@
 [NAME: Spell_failure_chance]
   [TYPE: Internal]
   [IMMUNE: Boss]  
-  
-
 	
 [NAME: Target_ranged_accuracy_bonus]
   [TYPE: Internal]
@@ -1167,6 +1228,9 @@
   [TYPE: Internal]
 
 [NAME: Target_ranged_dodge_penalty_marksman]
+  [TYPE: Internal]
+  
+[NAME: Tiger_style]
   [TYPE: Internal]
   
 [NAME: Trap_evade_bonus]

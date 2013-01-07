@@ -1011,7 +1011,7 @@
 # Facing Attacker
 # [Not] Using [Heavy|Medium|Light|Robe] Armor
 # [Not] Using [Normal|Heavy|Any] Shield
-# [Not] Using [Two-Handed|Two|Knife|Solo|Polearm|Slashing|shortbow|sling] [Weapon|weapons]
+# [Not] Using [Two-Handed|Two|Knife|Solo|Polearm|Slashing|shortbow|sling|club] [Weapon|weapons]
 # Target is [not] [smaller than|larger than|exactly] [Small|Medium|Large|Huge] Size
 # [Target|Attacker] is [not] [Dragonkin|Self]
 # [Player|Target] [has|does not have] back against wall
@@ -1023,13 +1023,18 @@
 # Player [HP|MP|AP] [Less Than|Greater Than|Exactly] NUMBER% of Maximum
 # Damage [Less Than|Greater Than] NUMBER% of Maximum HP
 # Player Stunned
-# [At least|At most|Exactly] NUMBER [Attacks|Movements|Potions Used] [this|last] turn
+# [At least|At most|Exactly] NUMBER [Attacks|Movements|Potions Used|Dodges] [this|last] turn
 # Attack is [not] [backstab|Counterattackable]
 # Facing Exactly [in front|behind] [or front-diagonal] [or side] [or back-diagonal]
 # is [not] Counterattackable Angle
 # Status is [not] "STATUS"
 # Trap does [not] deal damage
-#
+# Ability Range [Less Than|Greater Than|Exactly] NUMBER Tiles
+# Ability [AP|MP|HP] Cost [Less Than|Greater Than|Exactly] NUMBER
+# is [not] [Monster|Player] turn
+# was [not] [Ranged|Melee|Magical]
+# Spell was [not] Hostile
+# [Has|Does not have] Guardian
 	
 # ~~ Broadcasts ~~ (Not including some Conditionals which may double as broadcasts?)
 # [Incoming|Outgoing] [Physical|Melee|Ranged|Magical|Any] Attack [Hit|Complete|in Range NUMBER|Critical Hit]
@@ -1043,6 +1048,7 @@
 # [Incoming|Outgoing] Status Applied
 # Placing trap [not] on Enemy [complete]
 # Unlucky Stealth Break
+# [Player|Enemy] [Dodges|Partially Resists|Fully Resists] or [...]
 
 	
 	

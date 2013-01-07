@@ -2738,6 +2738,7 @@ Combat.addStatus(targetSet, "Deflecting Rod", duration=3)
   [CLASS: Arcane Archer]
   [LEVEL: 1]
   [TARGET: None]
+  [REPLACED_BY: Improved Arcane Threading]
 [/TAGS]
 [REQ]
 resource(source, "AP", 1)
@@ -2746,6 +2747,22 @@ Combat.modifyresource(source, "AP", -1)
 [ACT]
 Combat.removeStatusOfType(source, "Threading", removeAll=True)
 Combat.addStatus(source, "Arcane Threading", duration=-1)
+
+[TAGS]
+  [NAME: Improved Arcane Threading]
+  [CLASS: Arcane Archer]
+  [LEVEL: 4]
+  [TARGET: None]
+  [REPLACES: Arcane Threading]
+[/TAGS]
+[REQ]
+resource(source, "AP", 1)
+[RES]
+Combat.modifyresource(source, "AP", -1)
+[ACT]
+Combat.removeStatusOfType(source, "Threading", removeAll=True)
+Combat.addStatus(source, "Improved Arcane Threading", duration=-1)
+
 
 [TAGS]
   [NAME: Triple-Charged Arrow]
