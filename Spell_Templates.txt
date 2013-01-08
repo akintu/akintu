@@ -771,8 +771,6 @@ Combat.calcHit(source, target, "Physical", modifier=6)
 [ACT]
 Combat.weaponAttack(source, target, hit)
 
-# How do we represent (via tags?) how the Anarchist can place traps on adjacent foes?
-
 [TAGS]
   [NAME: Shrapnel Trap]
   [CLASS: Ranger*]
@@ -1079,6 +1077,7 @@ Combat.calcHit(source, target, "Physical", modifier=((5 + (4 * usingWeapon(sourc
 [ACT]
 Combat.weaponAttack(source, target, hit, criticalDamageMod=(2 - (0.5 * usingWeapon(source, "Sword"))))
 
+# Needs to be replaced with something else! TODO
 [TAGS]
   [NAME: Swipe Potion]
   [CLASS: Thief]
@@ -1962,7 +1961,6 @@ Combat.applyCooldown(source, "Beacon Trap", 1)
 [ACT]
 Terrain.removeTrap(source.location)
 Terrain.addTrap("Beacon Trap", source.location, trapRating=Dice.scale(source.totalCunning, 27, 0.01), applier=source)
-# Update Wiki with detail re: Trap rating = 27 + 1% per Cunning
 
 # Druid Abilities
 
@@ -2781,7 +2779,8 @@ Combat.applyCooldown(source, "Triple-charged Arrow", 3)
 Combat.calcHit(source, target, "Physical")
 [ACT]
 Combat.weaponAttack(source, target, hit)
-# Recovers 3 times the mana it otherwise would.
+Combat.modifyResource(source, "MP", 8)
+# Recovers 3 times the mana it otherwise would; the 1x is still supplied via the passive ability.
 
 [TAGS]
   [NAME: Electric Threading]
