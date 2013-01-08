@@ -14,6 +14,15 @@
   [ATTRIBUTE_BONUS: Longbow Accuracy Penalty Reduction]
     [MAGNITUDE: 100]
 
+# Thief Passives
+
+[NAME: Lockpicking]
+[CLASS: Thief]
+[LEVEL: 1]
+[TYPE: Static]
+  [ATTRIBUTE_BONUS: Can Lockpick]
+    [MAGNITUDE: 1]
+	
 # Barbarian Passives
 	
 [NAME: Cold Endurance]
@@ -779,7 +788,7 @@
 # Ninja Passives (not Styles)
 
 [NAME: Shuriken Training]
-[CLASS: Ranger]
+[CLASS: Ninja]
 [LEVEL: 1]
 [TYPE: Static]
   [ATTRIBUTE_BONUS: Shuriken Accuracy Penalty Reduction]
