@@ -61,9 +61,6 @@ boolean inStealth(Person self)
 boolean inBackstabPosition(Person self, Person target, boolean rangedBackstab=false)
   // returns True if in melee range and facing the back of target (if rangedBackstab == True, melee requirement is lifted)
   
-boolean hasPotion(Person self)
-  // returns True if the target has a potion that can be stolen (should only be used on monster-targets).
-  
 boolean isClass(Person self, Class class)
 
 boolean hasAdjacentFreeSpace(Person self)
