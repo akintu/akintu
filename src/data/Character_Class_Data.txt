@@ -1,0 +1,586 @@
+# Character_Class_Data.txt
+#
+# Information on this file:
+#   This file is used to detail the starting information and the growth patterns specific to
+#   the different classes.  This information will need to be loaded into a data structure on 
+#   game loading just like the Spells and Abilities.
+#
+# Information on Tags:
+#   SKILL_GROWTH -- Caster, Hybrid, or Non-Caster
+#     Casters learn "skills" every 4th level (and 1) and 1 or 2 spells per level.
+#       Skills:[1, 4, 8, 12, 16, 20]
+#       Spells:[[1,3],[2,1],[3,2],[4,1],[5,2],[6,1],[7,2],[8,1]...]
+#     Hybrids learn "skills" every 3rd level (and 1 and 20) and 1 spell per level.
+#       Skills:[1, 3, 6, 9, 12, 15, 18, 20]
+#       Spells:[[1,1],[2,1],[3,1]...]
+#     Non-Casters learn "skills" every 2nd level (and 1) and no spells.
+#       Skills:[1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
+#       Spells: None
+#   
+#   STARTING_HP -- Does not include Constitution bonuses on character creation.
+#   LEVELUP_HP -- Does not include Constitution bonuses per levelup.
+#   STARTING_MP -- Does not include Piety bonuses on character creation.
+#   LEVELUP_MP -- Does not include Piety bonuses per levelup.
+
+[NAME: Barbarian]
+  [BASE_CLASS: Fighter]
+  [SEC_CLASS: Fighter]
+  
+  [SKILL_GROWTH: Non-Caster]
+  [ARMOR_TOLERANCE: Heavy]
+  
+  [MOVE_AP: 5]
+  [MELEE_AP: 5]
+  [RANGED_AP: 10]
+  
+  [STARTING_SPELL_1: None]
+  [STARTING_SPELL_2: None]
+  [STARTING_SPELL_3: None]
+  
+  # Starting gear: TODO!
+  
+  [STARTING_STR: 19]
+  [STARTING_DEX: 12]
+  [STARTING_CUN: 10]
+  [STARTING_SOR: 4]
+  [STARTING_PIE: 4]
+  [STARTING_CON: 19]
+  [STARTING_HP: 90]
+  [STARTING_MP: 0]
+  
+  [LEVELUP_STR: 2]
+  [LEVELUP_DEX: 1.34]
+  [LEVELUP_CUN: 0.67]
+  [LEVELUP_SOR: 0]
+  [LEVELUP_PIE: 0]
+  [LEVELUP_CON: 2]
+  [LEVELUP_HP: 8]
+  [LEVELUP_MP: 0]
+
+[NAME: Dragoon]
+  [BASE_CLASS: Fighter]
+  [SEC_CLASS: Ranger]
+  
+  [SKILL_GROWTH: Non-Caster]
+  [ARMOR_TOLERANCE: Heavy]
+  
+  [MOVE_AP: 5]
+  [MELEE_AP: 6]
+  [RANGED_AP: 6]
+  
+  [STARTING_SPELL_1: None]
+  [STARTING_SPELL_2: None]
+  [STARTING_SPELL_3: None]
+  
+  # Starting gear: TODO!
+  
+  [STARTING_STR: 17]
+  [STARTING_DEX: 15]
+  [STARTING_CUN: 12]
+  [STARTING_SOR: 4]
+  [STARTING_PIE: 4]
+  [STARTING_CON: 16]
+  [STARTING_HP: 90]
+  [STARTING_MP: 0]
+  
+  [LEVELUP_STR: 1.34]
+  [LEVELUP_DEX: 1.67]
+  [LEVELUP_CUN: 1]
+  [LEVELUP_SOR: 0]
+  [LEVELUP_PIE: 0.5]
+  [LEVELUP_CON: 1.67]
+  [LEVELUP_HP: 8]
+  [LEVELUP_MP: 0]
+
+[NAME: Weapon Master]
+  [BASE_CLASS: Fighter]
+  [SEC_CLASS: Thief]
+  
+  [SKILL_GROWTH: Non-Caster]
+  [ARMOR_TOLERANCE: Heavy]
+  
+  [MOVE_AP: 5]
+  [MELEE_AP: 5]
+  # TODO: Include the -1 AP cost for basic melee attacks as a passive ability.
+  [RANGED_AP: 8]
+  
+  [STARTING_SPELL_1: None]
+  [STARTING_SPELL_2: None]
+  [STARTING_SPELL_3: None]
+  
+  # Starting gear: TODO!
+  
+  [STARTING_STR: 16]
+  [STARTING_DEX: 15]
+  [STARTING_CUN: 13]
+  [STARTING_SOR: 4]
+  [STARTING_PIE: 4]
+  [STARTING_CON: 16]
+  [STARTING_HP: 90]
+  [STARTING_MP: 0]
+  
+  [LEVELUP_STR: 1.34]
+  [LEVELUP_DEX: 1.67]
+  [LEVELUP_CUN: 1.34]
+  [LEVELUP_SOR: 0]
+  [LEVELUP_PIE: 0.5]
+  [LEVELUP_CON: 1.34]
+  [LEVELUP_HP: 8]
+  [LEVELUP_MP: 0]  
+
+[NAME: Spellsword]
+  [BASE_CLASS: Fighter]
+  [SEC_CLASS: Wizard]
+  
+  [SKILL_GROWTH: Hybrid]
+  [ARMOR_TOLERANCE: Heavy]
+  
+  [MOVE_AP: 5]
+  [MELEE_AP: 5]
+  [RANGED_AP: 8]
+  
+  [STARTING_SPELL_1: Weapon Enhance]
+  [STARTING_SPELL_2: None]
+  [STARTING_SPELL_3: None]
+  
+  # Starting gear: TODO!
+  
+  [STARTING_STR: 16]
+  [STARTING_DEX: 12]
+  [STARTING_CUN: 10]
+  [STARTING_SOR: 8]
+  [STARTING_PIE: 6]
+  [STARTING_CON: 16]
+  [STARTING_HP: 90]
+  [STARTING_MP: 30]
+  
+  [LEVELUP_STR: 1]
+  [LEVELUP_DEX: 1]
+  [LEVELUP_CUN: 0.34]
+  [LEVELUP_SOR: 1.5]
+  [LEVELUP_PIE: 1]
+  [LEVELUP_CON: 1.25]
+  [LEVELUP_HP: 8]
+  [LEVELUP_MP: 5]
+  
+[NAME: Anarchist]
+  [BASE_CLASS: Ranger]
+  [SEC_CLASS: Fighter]
+  
+  [SKILL_GROWTH: Non-Caster]
+  [ARMOR_TOLERANCE: Medium]
+  
+  [MOVE_AP: 5]
+  [MELEE_AP: 7]
+  [RANGED_AP: 7]
+  
+  [STARTING_SPELL_1: None]
+  [STARTING_SPELL_2: None]
+  [STARTING_SPELL_3: None]
+  
+  # Starting gear: TODO!
+  
+  [STARTING_STR: 15]
+  [STARTING_DEX: 17]
+  [STARTING_CUN: 12]
+  [STARTING_SOR: 4]
+  [STARTING_PIE: 7]
+  [STARTING_CON: 13]
+  [STARTING_HP: 80]
+  [STARTING_MP: 0]
+  
+  [LEVELUP_STR: 1.34]
+  [LEVELUP_DEX: 1.67]
+  [LEVELUP_CUN: 1]
+  [LEVELUP_SOR: 0]
+  [LEVELUP_PIE: 0.5]
+  [LEVELUP_CON: 1.67]
+  [LEVELUP_HP: 7]
+  [LEVELUP_MP: 0]
+  
+[NAME: Marksman]
+  [BASE_CLASS: Ranger]
+  [SEC_CLASS: Ranger]
+  
+  [SKILL_GROWTH: Non-Caster]
+  [ARMOR_TOLERANCE: Light]
+  
+  [MOVE_AP: 8]
+  [MELEE_AP: 8]
+  [RANGED_AP: 5]
+  
+  [STARTING_SPELL_1: None]
+  [STARTING_SPELL_2: None]
+  [STARTING_SPELL_3: None]
+  
+  # Starting gear: TODO!
+  
+  [STARTING_STR: 14]
+  [STARTING_DEX: 20]
+  [STARTING_CUN: 13]
+  [STARTING_SOR: 4]
+  [STARTING_PIE: 7]
+  [STARTING_CON: 10]
+  [STARTING_HP: 80]
+  [STARTING_MP: 0]
+  
+  [LEVELUP_STR: 0.67]
+  [LEVELUP_DEX: 2]
+  [LEVELUP_CUN: 1]
+  [LEVELUP_SOR: 0]
+  [LEVELUP_PIE: 1]
+  [LEVELUP_CON: 1.34]
+  [LEVELUP_HP: 7]
+  [LEVELUP_MP: 0]
+  
+[NAME: Druid]
+  [BASE_CLASS: Ranger]
+  [SEC_CLASS: Thief]
+  
+  [SKILL_GROWTH: Non-Caster]
+  [ARMOR_TOLERANCE: Light]
+  
+  [MOVE_AP: 5]
+  [MELEE_AP: 7]
+  [RANGED_AP: 5]
+  
+  [STARTING_SPELL_1: None]
+  [STARTING_SPELL_2: None]
+  [STARTING_SPELL_3: None]
+  
+  # Starting gear: TODO!
+  
+  [STARTING_STR: 12]
+  [STARTING_DEX: 20]
+  [STARTING_CUN: 15]
+  [STARTING_SOR: 4]
+  [STARTING_PIE: 7]
+  [STARTING_CON: 10]
+  [STARTING_HP: 80]
+  [STARTING_MP: 0]
+  
+  [LEVELUP_STR: 0.67]
+  [LEVELUP_DEX: 2]
+  [LEVELUP_CUN: 1.5]
+  [LEVELUP_SOR: 0]
+  [LEVELUP_PIE: 0.75]
+  [LEVELUP_CON: 1]
+  [LEVELUP_HP: 7]
+  [LEVELUP_MP: 0]
+  
+[NAME: Tactician]
+  [BASE_CLASS: Ranger]
+  [SEC_CLASS: Wizard]
+  
+  [SKILL_GROWTH: Hybrid]
+  [ARMOR_TOLERANCE: Light]
+  
+  [MOVE_AP: 6]
+  [MELEE_AP: 7]
+  [RANGED_AP: 6]
+  
+  [STARTING_SPELL_1: Stutter]
+  [STARTING_SPELL_2: None]
+  [STARTING_SPELL_3: None]
+  
+  # Starting gear: TODO!
+  
+  [STARTING_STR: 12]
+  [STARTING_DEX: 17]
+  [STARTING_CUN: 12]
+  [STARTING_SOR: 8]
+  [STARTING_PIE: 10]
+  [STARTING_CON: 10]
+  [STARTING_HP: 80]
+  [STARTING_MP: 30]
+  
+  [LEVELUP_STR: 0.34]
+  [LEVELUP_DEX: 1.25]
+  [LEVELUP_CUN: 0.5]
+  [LEVELUP_SOR: 1.5]
+  [LEVELUP_PIE: 1.5]
+  [LEVELUP_CON: 1]
+  [LEVELUP_HP: 7]
+  [LEVELUP_MP: 5]
+  
+[NAME: Ninja]
+  [BASE_CLASS: Thief]
+  [SEC_CLASS: Fighter]
+  
+  [SKILL_GROWTH: Non-Caster]
+  [ARMOR_TOLERANCE: None]
+  
+  [MOVE_AP: 3]
+  [MELEE_AP: 5]
+  [RANGED_AP: 5]
+  
+  [STARTING_SPELL_1: None]
+  [STARTING_SPELL_2: None]
+  [STARTING_SPELL_3: None]
+  
+  # Starting gear: TODO!
+  
+  [STARTING_STR: 13]
+  [STARTING_DEX: 16]
+  [STARTING_CUN: 16]
+  [STARTING_SOR: 6]
+  [STARTING_PIE: 6]
+  [STARTING_CON: 11]
+  [STARTING_HP: 70]
+  [STARTING_MP: 0]
+  
+  [LEVELUP_STR: 1.34]
+  [LEVELUP_DEX: 1.67]
+  [LEVELUP_CUN: 1.34]
+  [LEVELUP_SOR: 0]
+  [LEVELUP_PIE: 0.34]
+  [LEVELUP_CON: 1.34]
+  [LEVELUP_HP: 6]
+  [LEVELUP_MP: 0]
+  
+[NAME: Assassin]
+  [BASE_CLASS: Thief]
+  [SEC_CLASS: Ranger]
+  
+  [SKILL_GROWTH: Non-Caster]
+  [ARMOR_TOLERANCE: Light]
+  
+  [MOVE_AP: 5]
+  [MELEE_AP: 6]
+  [RANGED_AP: 5]
+  
+  [STARTING_SPELL_1: None]
+  [STARTING_SPELL_2: None]
+  [STARTING_SPELL_3: None]
+  
+  # Starting gear: TODO!
+  
+  [STARTING_STR: 12]
+  [STARTING_DEX: 19]
+  [STARTING_CUN: 17]
+  [STARTING_SOR: 5]
+  [STARTING_PIE: 7]
+  [STARTING_CON: 8]
+  [STARTING_HP: 70]
+  [STARTING_MP: 0]
+  
+  [LEVELUP_STR: 0.67]
+  [LEVELUP_DEX: 2]
+  [LEVELUP_CUN: 1.5]
+  [LEVELUP_SOR: 0]
+  [LEVELUP_PIE: 1]
+  [LEVELUP_CON: 1]
+  [LEVELUP_HP: 6]
+  [LEVELUP_MP: 0]
+  
+[NAME: Shadow]
+  [BASE_CLASS: Thief]
+  [SEC_CLASS: Thief]
+  
+  [SKILL_GROWTH: Non-Caster]
+  [ARMOR_TOLERANCE: Light]
+  
+  [MOVE_AP: 4]
+  [MELEE_AP: 5]
+  [RANGED_AP: 5]
+  
+  [STARTING_SPELL_1: None]
+  [STARTING_SPELL_2: None]
+  [STARTING_SPELL_3: None]
+  
+  # Starting gear: TODO!
+  
+  [STARTING_STR: 10]
+  [STARTING_DEX: 19]
+  [STARTING_CUN: 19]
+  [STARTING_SOR: 5]
+  [STARTING_PIE: 7]
+  [STARTING_CON: 8]
+  [STARTING_HP: 70]
+  [STARTING_MP: 0]
+  
+  [LEVELUP_STR: 0.67]
+  [LEVELUP_DEX: 2]
+  [LEVELUP_CUN: 2]
+  [LEVELUP_SOR: 0]
+  [LEVELUP_PIE: 0.67]
+  [LEVELUP_CON: 0.67]
+  [LEVELUP_HP: 6]
+  [LEVELUP_MP: 0]
+  
+[NAME: Nightblade]
+  [BASE_CLASS: Thief]
+  [SEC_CLASS: Wizard]
+  
+  [SKILL_GROWTH: Hybrid]
+  [ARMOR_TOLERANCE: Light]
+  
+  [MOVE_AP: 4]
+  [MELEE_AP: 5]
+  [RANGED_AP: 7]
+  
+  [STARTING_SPELL_1: Cloud Vision]
+  [STARTING_SPELL_2: None]
+  [STARTING_SPELL_3: None]
+  
+  # Starting gear: TODO!
+  
+  [STARTING_STR: 10]
+  [STARTING_DEX: 16]
+  [STARTING_CUN: 16]
+  [STARTING_SOR: 9]
+  [STARTING_PIE: 9]
+  [STARTING_CON: 8]
+  [STARTING_HP: 70]
+  [STARTING_MP: 0]
+  
+  [LEVELUP_STR: 0.34]
+  [LEVELUP_DEX: 1.25]
+  [LEVELUP_CUN: 1]
+  [LEVELUP_SOR: 1.5]
+  [LEVELUP_PIE: 1.34]
+  [LEVELUP_CON: 0.5]
+  [LEVELUP_HP: 6]
+  [LEVELUP_MP: 5]
+
+  
+[NAME: Battlemage]
+  [BASE_CLASS: Wizard]
+  [SEC_CLASS: Fighter]
+  
+  [SKILL_GROWTH: Caster]
+  [ARMOR_TOLERANCE: Medium]
+  
+  [MOVE_AP: 5]
+  [MELEE_AP: 5]
+  [RANGED_AP: 9]
+  
+  [STARTING_SPELL_1: Shock]
+  [STARTING_SPELL_2: Singe]
+  [STARTING_SPELL_3: Mystic Shield]
+  
+  # Starting gear: TODO!
+  
+  [STARTING_STR: 8]
+  [STARTING_DEX: 10]
+  [STARTING_CUN: 7]
+  [STARTING_SOR: 19]
+  [STARTING_PIE: 14]
+  [STARTING_CON: 10]
+  [STARTING_HP: 50]
+  [STARTING_MP: 60]
+  
+  [LEVELUP_STR: 1]
+  [LEVELUP_DEX: 1]
+  [LEVELUP_CUN: 0.34]
+  [LEVELUP_SOR: 1.5]
+  [LEVELUP_PIE: 1]
+  [LEVELUP_CON: 1.25]
+  [LEVELUP_HP: 5]
+  [LEVELUP_MP: 10]
+  
+[NAME: Arcane Archer]
+  [BASE_CLASS: Wizard]
+  [SEC_CLASS: Ranger]
+  
+  [SKILL_GROWTH: Caster]
+  [ARMOR_TOLERANCE: None]
+  
+  [MOVE_AP: 9]
+  [MELEE_AP: 8]
+  [RANGED_AP: 6]
+  
+  [STARTING_SPELL_1: Arcane Dart]
+  [STARTING_SPELL_2: Singe]
+  [STARTING_SPELL_3: Flicker of Life]
+  
+  # Starting gear: TODO!
+  
+  [STARTING_STR: 7]
+  [STARTING_DEX: 13]
+  [STARTING_CUN: 8]
+  [STARTING_SOR: 19]
+  [STARTING_PIE: 14]
+  [STARTING_CON: 7]
+  [STARTING_HP: 50]
+  [STARTING_MP: 60]
+  
+  [LEVELUP_STR: 0.34]
+  [LEVELUP_DEX: 1.25]
+  [LEVELUP_CUN: 0.5]
+  [LEVELUP_SOR: 1.5]
+  [LEVELUP_PIE: 1.5]
+  [LEVELUP_CON: 1]
+  [LEVELUP_HP: 5]
+  [LEVELUP_MP: 10]
+  
+[NAME: Trickster]
+  [BASE_CLASS: Wizard]
+  [SEC_CLASS: Thief]
+  
+  [SKILL_GROWTH: Caster]
+  [ARMOR_TOLERANCE: None]
+  
+  [MOVE_AP: 6]
+  [MELEE_AP: 4]
+  [RANGED_AP: 4]
+  
+  [STARTING_SPELL_1: Arcane Dart]
+  [STARTING_SPELL_2: Arcane Warding]
+  [STARTING_SPELL_3: Flicker of Life]
+  
+  # Starting gear: TODO!
+  
+  [STARTING_STR: 5]
+  [STARTING_DEX: 13]
+  [STARTING_CUN: 10]
+  [STARTING_SOR: 19]
+  [STARTING_PIE: 14]
+  [STARTING_CON: 7]
+  [STARTING_HP: 50]
+  [STARTING_MP: 60]
+  
+  [LEVELUP_STR: 0.34]
+  [LEVELUP_DEX: 1.25]
+  [LEVELUP_CUN: 1]
+  [LEVELUP_SOR: 1.5]
+  [LEVELUP_PIE: 1.34]
+  [LEVELUP_CON: 0.67]
+  [LEVELUP_HP: 5]
+  [LEVELUP_MP: 10]
+  
+[NAME: Sorcerer]
+  [BASE_CLASS: Wizard]
+  [SEC_CLASS: Wizard]
+  
+  [SKILL_GROWTH: Caster]
+  [ARMOR_TOLERANCE: None]
+  
+  [MOVE_AP: 9]
+  [MELEE_AP: 11]
+  [RANGED_AP: 9]
+  
+  [STARTING_SPELL_1: Stone Guard]
+  [STARTING_SPELL_2: Chill]
+  [STARTING_SPELL_3: Arcane Dart]
+  
+  # Starting gear: TODO!
+  
+  [STARTING_STR: 5]
+  [STARTING_DEX: 10]
+  [STARTING_CUN: 7]
+  [STARTING_SOR: 23]
+  [STARTING_PIE: 16]
+  [STARTING_CON: 7]
+  [STARTING_HP: 50]
+  [STARTING_MP: 60]
+  
+  [LEVELUP_STR: 0]
+  [LEVELUP_DEX: 0.5]
+  [LEVELUP_CUN: 0]
+  [LEVELUP_SOR: 3]
+  [LEVELUP_PIE: 2]
+  [LEVELUP_CON: 0.5]
+  [LEVELUP_HP: 5]
+  [LEVELUP_MP: 10]
+

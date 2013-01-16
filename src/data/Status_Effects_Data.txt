@@ -1,0 +1,1252 @@
+# Status_Effects_Data.txt
+#
+# File contains information on "display" status effects which are shown to the user
+# as well as "internal" status effects, which are used to represent components of display status effects
+# and are used to actually modify the properties of the monsters/players they affect.
+#
+# If a non-zero magnitude is supplied to the Combat.addStatus method, it overrides any zero 
+# value declared here. If the magnitude declared here is 0, it probably indicates the magnitude is intended 
+# to be supplied to (and overridden by) the calling method.
+#
+# The IMMUNE tag is applied when the status is an internal debuff.  
+# There are three settings for this tag:
+#   None (implied when no tag is present) -- all monsters can be affected
+#   Boss -- only extremely powerful monsters ignore this effect completely
+#   Strong -- somewhat powerful monsters (and bosses) ignore this effect completely
+#   
+# The MIN and MAX tags are intended to be overriden, but regardless, they represent a range of 
+# values that will be rolled from turn to turn.  The primary use of these tags is for DoT skills
+# that deal a variable amount of damage each turn.
+#
+# If SCALE is listed (it defaults to 0) it indicates the supplied magnitude or the listed magnitude
+# scales with the applier's scaling attribute for the ability that triggered the status.
+#
+# On-hit statuses have a chance of applying thier status which is either a set percent or is a 
+# named factor which is calculated based on the supplied applier's level and the target level.
+# Multiple statuses can be applied with the same chance roll.  They will be nested in this case but
+# they inherit the ELEMENT from the parent status.  
+#
+# REMOVED_ON tags set up listeners for events from this character that will cause the effect
+# on the display status to be removed.  The duration for these abilities could be -1 to indicate
+# they are not dispelled after a set period of time, but instead rely on certain activities to remove
+# them.
+#
+
+# Display Effects -- Tier 1 Spells
+
+[NAME: Arcane Ward]
+  [TYPE: Display]
+  [ELEMENT: Arcane]
+  [INTERNAL: Dodge_bonus]
+    [MAGNITUDE: 0]
+  [INTERNAL: DR_bonus]
+    [MAGNITUDE: 0]
+  [INTERNAL: Magic_resist_bonus]
+    [MAGNITUDE: 0]
+
+[NAME: Mystic Shield]
+  [TYPE: Display]
+  [ELEMENT: Arcane]
+  [INTERNAL: HP_buffer]
+    [MAGNITUDE: 0]
+
+[NAME: Stone Guard]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: DR_bonus]
+    [MAGNITUDE: 0]
+  [INTERNAL: Poison_tolerance_bonus]
+    [MAGNITUDE: 0]
+
+[NAME: Chill]
+  [TYPE: Display]
+  [ELEMENT: Cold]
+  [INTERNAL: Dodge_penalty]
+    [MAGNITUDE: 0]
+
+[NAME: Suggest Laziness]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: AI_attack_nearby]
+    [MAGNITUDE: 0]
+    
+[NAME: Stutter]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Spell_failure_chance]
+    [MAGNITUDE: 10]
+  [INTERNAL: Spellpower_penalty]
+    [MAGNITUDE: 0]
+
+[NAME: Cloud Vision]
+  [TYPE: Display]
+  [ELEMENT: Shadow]
+  [INTERNAL: Melee_accuracy_penalty]
+    [MAGNITUDE: 0]
+  [INTERNAL: Ranged_accuracy_penalty]
+    [MAGNITUDE: 0]
+	
+[NAME: Haunt]
+  [TYPE: Display]
+  [ELEMENT: Shadow]
+  [INTERNAL: Damage_over_time]
+    [MAGNITUDE: 0]
+	[MIN: 0]
+	[MAX: 0]
+	
+[NAME: Zone of Silence]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Sneak_bonus]
+    [MAGNITUDE: 10]
+  [INTERNAL: Reduced_stealth_AP_cost]
+    [MAGNITUDE: 5]
+	
+[NAME: Blurry]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Sneak_bonus]
+    [MAGNITDUE: 0]
+  [INTERNAL: Dodge_bonus]
+    [MAGNITUDE: 0]
+	
+[NAME: Weapon Enhance]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Melee_accuracy_bonus]
+    [MAGNITUDE: 3]
+	[SCALE: 0.07]
+  [INTERNAL: Ranged_accuracy_bonus]
+    [MAGNITUDE: 3]
+	[SCALE: 0.07]
+  [INTERNAL: Critical_magnitude_bonus]
+    [MAGNITUDE: 5]
+	[SCALE: 0.05]
+  [INTERNAL: Armor_penetration_bonus]
+    [MAGNITUDE: 3]
+	[SCALE: 0.07]
+  [INTERNAL: Critical_chance_bonus]
+    [MAGNITUDE: 1]
+	[SCALE: 0.035]
+	
+[NAME: Flaming Weapon]
+  [TYPE: Display]
+  [ELEMENT: Fire]
+  [INTERNAL: Weapon_damage_bonus]
+    [MAGNITUDE: 0]
+	[MIN: 0]
+	[MAX: 0]
+	
+# Display Effects -- Tier 2 Spells
+	
+[NAME: Identification]
+  [TYPE: Display]
+  [ELEMENT: Arcane]
+  [INTERNAL: Spellpower_bonus]
+    [MAGNITUDE: 0]
+	
+[NAME: Hovering Shield]
+  [TYPE: Display]
+  [ELEMENT: Arcane]
+  [INTERNAL: Ranged_dodge_bonus]
+    [MAGNITUDE: 0]
+	
+[NAME: Fright]
+  [TYPE: Display]
+  [ELEMENT: Shadow]
+  [INTERNAL: Elemental_vulnerability]
+    [MAGNITUDE: 20]
+  [INTERNAL: Attack_power_penalty]
+    [MAGNITUDE: 5]
+
+[NAME: Infection]
+  [TYPE: Display]
+  [ELEMENT: Poison]
+  [INTERNAL: Damage_over_time]
+    [MAGNITUDE: 0]
+	[MIN: 0]
+	[MAX: 0]
+  [INTERNAL: Poison_tolerance_penalty]
+    [MAGNITUDE: 5]
+	
+[NAME: Elemental Boon]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Elemental_resistance_fire]
+    [MAGNITUDE: 0]
+  [INTERNAL: Elemental_resistance_cold]
+    [MAGNITUDE: 0]
+  [INTERNAL: Elemental_resistance_electric]
+    [MAGNITUDE: 0]
+	
+[NAME: Suggest Cowardice]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: AI_flee]
+    [MAGNITUDE: 0]
+	
+[NAME: Smoke Screen]
+  [TYPE: Display]
+  [ELEMENT: Fire]
+  [INTERNAL: Dodge_bonus]
+    [MAGNITUDE: 10]
+  [INTERNAL: Elemental_vulnerability]
+    [MAGNITUDE: 10]
+	
+[NAME: Shrink]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Attack_power_penalty]
+    [MAGNITUDE: 10]
+  [INTERNAL: DR_penalty]
+    [MAGNITUDE: 10]
+
+[NAME: Frost Weapon]
+  [TYPE: Display]
+  [ELEMENT: Cold]
+  [INTERNAL: Weapon_damage_bonus]
+    [MAGNITUDE: 0]
+  [INTERNAL: On_hit_frost_weapon]
+    [CHANCE: Unlikely]
+	[INTERNAL: Movement_speed_penalty]
+	  [MAGNITUDE: 25]
+	[INTERNAL: Dodge_penalty]
+	  [MAGNITUDE: 4]
+	
+# Display Effects -- Fighter Skills
+
+[NAME: Brace]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Dodge_bonus]
+    [MAGNITUDE: 5]
+	
+[NAME: Wound Leg]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Dodge_penalty]
+    [MAGNITUDE: 15]
+  [INTERNAL: Movement_speed_penalty]
+    [MAGNITUDE: 50]
+	
+[NAME: Wound Arm]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Melee_accuracy_penalty]
+    [MAGNITUDE: 6]
+  [INTERNAL: Ranged_accuracy_penalty]
+    [MAGNITUDE: 6]
+  [INTERNAL: Attack_power_penalty]
+    [MAGNITUDE: 10]
+	
+[NAME: Combo Attack]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Combo_attack_internal]
+    [MAGNITUDE: 0]
+	
+# Display Effects -- Ranger Skills
+
+[NAME: Tunnel Vision]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Ranged_accuracy_bonus]
+    [MAGNITUDE: 10]
+  [INTERNAL: Increased_movement_AP_cost]
+    [MAGNITUDE: 1]
+  [INTERNAL: Melee_accuracy_penalty]
+    [MAGNITUDE: 8]
+  [INTERNAL: Dodge_penalty]
+    [MAGNITUDE: 8]
+	
+[NAME: Ranger's Aim]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Ranged_accuracy_bonus]
+    [MAGNITUDE: 5]
+  [INTERNAL: Melee_accuracy_bonus]
+    [MAGNITUDE: 5]
+  [INTERNAL: Critical_chance_bonus]
+    [MAGNITUDE: 1]
+	
+[NAME: Defensive Slash]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Dodge_bonus]
+    [MAGNITUDE: 10]
+	
+[NAME: Tar Trap]
+  [TYPE: Display]
+  [ELEMENT: Fire]
+  [INTERNAL: Elemental_vulnerability]
+    [MAGNITUDE: 20]
+  [INTERNAL: Attack_power_penalty]
+    [MAGNITUDE: 5]
+
+# Display Effects -- Wizard Skills
+
+[NAME: Magic Guard]
+  [TYPE: Display]
+  [ELEMENT: Arcane]
+  [INTERNAL: Elemental_resistance_arcane]
+    [MAGNITUDE: 10]
+  [INTERNAL: Magic_resist_bonus]
+    [MAGNITUDE: 3]
+
+[NAME: Gather]
+  [TYPE: Display]
+  [ELEMENT: Arcane]
+  [INTERNAL: Spellpower_bonus]
+    [MAGNITUDE: 5]
+	
+[NAME: Spell Sight]
+  [TYPE: Display]
+  [ELEMENT: Arcane]
+  [REMOVED_ON: Ranged Attack]
+  [REMOVED_ON: Spell Cast]
+  [INTERNAL: Spellpower_bonus]
+    [MAGNITUDE: 3]
+  [INTERNAL: Ranged_accuracy_bonus]
+    [MAGNITUDE: 5]
+
+[NAME: Runic Dust]
+  [TYPE: Display]
+  [ELEMENT: Arcane]
+  [INTERNAL: Magic_resist_penalty]
+    [MAGNITUDE: 0]
+
+# Display Effects -- Thief Skills
+
+[NAME: Stealth]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Set_movement_AP_cost]
+    [MAGNITUDE: 6]
+  [INTERNAL: Avoidance]
+    [MAGNITUDE: 15]
+  [INTERNAL: Hidden]
+    [MAGNITUDE: 0]
+	
+[NAME: Agile Position]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Dodge_bonus]
+    [MAGNITUDE: 12]
+	
+[NAME: Feint]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Dodge_penalty]
+    [MAGNITUDE: 10]
+	
+[NAME: Far-Sighted Focus]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Dodge_penalty]
+    [MAGNITUDE: 2]
+  [INTERNAL: Target_ranged_accuracy_bonus]
+    [MAGNITUDE: 5]
+  [INTERNAL: Target_ranged_dodge_bonus]
+    [MAGNITUDE: 7]
+	# As is, will not display which target the bonuses are given against.	
+	
+[NAME: Shock Factor Attack Penalty]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Attack_power_penalty]
+    [MAGNITUDE: 15]
+
+[NAME: Shock Factor Spell Failure]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Spell_failure_chance]
+    [MAGNITUDE: 5]
+
+# Display Effects -- Weapon Master Skills
+
+[NAME: Shield Deflection]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Ignore_ranged_attacks]
+    [MAGNITUDE: 20]
+  [REMOVED_ON: Shield Unequipped]
+  
+[NAME: True Friend]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: DR_bonus]
+    [MAGNITUDE: 5]
+	
+[NAME: True Friend Protection]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Redirect_melee_attacks]
+    [MAGNITUDE: 90]
+
+# Display Effects -- Dragoon Skills
+
+[NAME: Spear-Pierce]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Bleeding]
+    [MAGNITUDE: 10]
+	
+[NAME: Restful Jump Attack]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: DR_bonus]
+    [MAGNITUDE: 10]
+	
+# Display Effects -- Barbarian Skills
+
+[NAME: Berserker Rage]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Might_bonus]
+    [MAGNITUDE: 10]
+  [INTERNAL: Critical_magnitude]
+    [MAGNITUDE: 50]
+  [REMOVED_ON: HP > 75%]
+	
+[NAME: Improved Berserker Rage]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Might_bonus]
+    [MAGNITUDE: 15]
+  [INTERNAL: Critical_magnitude]
+    [MAGNITUDE: 70]
+  [REMOVED_ON: HP > 75%]
+ 
+[NAME: Blood of the Ancients]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: DR_penalty]
+    [MAGNITUDE: 5]
+	
+[NAME: Crush Armor]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: DR_penalty]
+    [MAGNITUDE: 15]
+	
+[NAME: Guzzle]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Potion_effect_bonus]
+    [MAGNITUDE: 30]
+	
+# Display Effects -- Spellsword
+
+[NAME: Martial Mode]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Might_bonus]
+    [MAGNITUDE: 5]
+  [INTERNAL: DR_bonus]
+    [CONDITIONAL: Using Shield]
+	[REMOVE_ON: Unequip Shield]
+	[MAGNITUDE: 3]
+  [REMOVE_ON: MP > 15%]
+  
+[NAME: Improved Martial Mode]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Might_bonus]
+    [MAGNITUDE: 7]
+  [INTERNAL: DR_bonus]
+    [CONDITIONAL: Using Shield]
+	[REMOVE_ON: Unequip Shield]
+	[MAGNITUDE: 3]
+  [REMOVE_ON: MP > 20%] 
+
+[NAME: Rebound]
+  [TYPE: Display]
+  [ELEMENT: Arcane]
+  [INTERNAL: Refund_mana_on_cast]
+	[TRIGGERED_BY: Spell Cast Resisted]
+	  [CONDITIONAL: Spel Mana Cost > 4]
+	[MAGNITUDE: 5] # 5 MP recovered
+
+# Display Effects -- Anarchist
+
+[NAME: Trap Worry]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Dodge_penalty]
+    [MAGNITUDE: 8]
+  [INTERNAL: Melee_accuracy_penalty]
+    [MAGNITUDE: 4]
+  [INTERNAL: Ranged_accuracy_penalty]
+    [MAGNITUDE: 4]
+  [INTERNAL: DR_penalty]
+    [MAGNITUDE: 5]
+  [INTERNAL: Trap_evade_bonus]
+    [MAGNITUDE: 10]
+	
+[NAME: Harmless Grin]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Trap_evade_penalty]
+    [MAGNITUDE: 12]
+	
+# Display Effects -- Marksman Skills
+
+[NAME: Suppressing Fire]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: On_hit_suppressing_weapon]
+    [CHANCE: 100]
+    [INTERNAL: Melee_accuracy_penalty]
+      [MAGNITUDE: 5]
+    [INTERNAL: Ranged_accuracy_penalty]
+      [MAGNITUDE: 5]
+    [INTERNAL: Attack_power_penalty]
+      [MAGNITUDE: 5]
+  [INTERNAL: On_hit_cripple_weapon]
+    [CHANCE: Rare]
+    [CONDITIONAL: Using Shortbow || Using Sling || Using Crossbow]
+	[INTERNAL: Movement_speed_penalty]
+      [MAGNITUDE: 25]
+  [INTERNAL: Overall_damage_penalty]
+    [MAGNITUDE: 15]
+
+[NAME: Smoking Projectile]
+  [TYPE: Display]
+  [ELEMENT: Fire]
+  [INTERNAL: Damage_over_time]
+    [MAGNITUDE: 0]
+	[MIN: 0]
+	[MAX: 0]
+  [INTERNAL: Melee_accuracy_penalty]
+    [MAGNITUDE: 10]
+  [INTERNAL: Ranged_accuracy_penalty]
+    [MAGNITUDE: 10]
+	
+[NAME: Beacon Trap]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Target_ranged_dodge_penalty_marksman]
+    [MAGNITUDE: 15]
+	
+# Display Effects -- Druid Skills
+
+[NAME: Deep Wound]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Bleed]
+    [MAGNITUDE: 10]
+	
+[NAME: Painful Shot]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Attack_power_penalty]
+    [MAGNITUDE: 10]
+	
+[NAME: Poisonous Touch]
+  [TYPE: Display]
+  [ELEMENT: Poison]
+  [INTERNAL: Damage_over_time]
+    [MAGNITUDE: 0]
+	[MIN: 0]
+	[MAX: 0]
+	
+[NAME: Target Throat]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Ranged_critical_magnitude_bonus]
+    [MAGNITUDE: 30]
+  [INTERNAL: Ranged_accuracy_penalty]
+    [MAGNITUDE: 3]
+  [INTERNAL: Applied_poison_rating_bonus]
+    [MAGNITUDE: 10]
+  [INTERNAL: On_hit_stun]
+    [CHANCE: Rare]
+	[CONDIITONAL: Using Ranged Weapon]
+	[CONDITIONAL: Target not Huge]
+	
+[NAME: Poison Thorn Trap]
+  [TYPE: Display]
+  [ELEMENT: Poison]
+  [INTERNAL: Damage_over_time]
+    [MAGNITUDE: 0]
+	[MIN: 0]
+	[MAX: 0]
+
+[NAME: Lethargic Shot]
+  [TYPE: Display]
+  [ELEMENT: Poison]
+  [INTERNAL: Movement_speed_penalty]
+    [MAGNITUDE: 25]
+  [INTERNAL: Dodge_penalty]
+    [MAGNITUDE: 5]
+  [INTERNAL: Accuracy_penalty]
+    [MAGNITUDE: 2]
+	
+# Display Effects -- Tactician
+
+[NAME: Accuracy Favor]
+  [TYPE: Display]
+  [ELEMENT: Arcane]
+  [INTERNAL: Melee_accuracy_bonus]
+    [MAGNITUDE: 0]
+  [INTERNAL: Ranged_accuracy_bonus]
+    [MAGNITUDE: 0]
+	
+[NAME: Improved Accuracy Favor]
+  [TYPE: Display]
+  [ELEMENT: Arcane]
+  [INTERNAL: Melee_accuracy_bonus]
+    [MAGNITUDE: 0]
+  [INTERNAL: Ranged_accuracy_bonus]
+    [MAGNITUDE: 0] 
+	
+[NAME: Magical Dampening Trap]
+  [TYPE: Display]
+  [ELEMENT: Arcane]
+  [INTERNAL: Spellpower_penalty]
+    [MAGNITUDE: 0]
+	
+[NAME: Nearsighted Trap]
+  [TYPE: Display]
+  [ELEMENT: Arcane]
+  [INTERNAL: Reduced_missile_range]
+    [MAGNITUDE: 2]
+  # Encode the minimum of 4 tiles somewhere?? TODO
+
+[NAME: Mage Hunting]
+  [TYPE: Display]
+  [ELEMENT: Arcane]
+  [INTERNAL: Ranged_accuracy_bonus]
+    [MAGNITUDE: 2]
+  [INTERNAL: Overall_damage_bonus]
+    [MAGNITUDE: 10]
+  [CONDTIONAL: Target MP > 0]
+  [INTERNAL: On_hit_spell_failure]
+    [CHANCE: Frequent]
+	[MAGNITUDE: 8]
+    # Duration 3 turns, where to encode?
+  # This ability requires different syntax rules than the others and thus is broken.
+  # I need to fix this once I am a bit further along... TODO
+  
+[NAME: Mighty Favor]
+  [TYPE: Display]
+  [ELEMENT: Arcane]
+  [INTERNAL: Might_bonus]
+    [MAGNITUDE: 0]
+	
+# Display Effects -- Nightblade
+	
+[NAME: Dark Intent]
+  [TYPE: Display]
+  [ELEMENT: Shadow]
+  [INTERNAL: Weapon_damage_bonus]
+    [MAGNITUDE: 0]
+	
+[NAME: Seeping Darkness]
+  [TYPE: Display]
+  [ELEMENT: Shadow]
+  [INTERNAL: Damage_over_time]
+    [MAGNITUDE: 0]
+	
+# Display Effects -- Shadow
+	
+[NAME: Shadow Walk]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Hidden_double_cunning]
+    [MAGNITUDE: 0]
+  [INTERNAL: Set_movement_AP_cost]
+    [MAGNITUDE: 6]
+  [INTERNAL: Avoidance]
+    [MAGNITUDE: 15]
+
+[NAME: Sudden Flurry]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Sudden_flurry_internal]
+    [MAGNITUDE: 0]
+
+[NAME: Stealthy Sudden Flurry]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Sudden_flurry_internal_stealth]
+    [MAGNITUDE: 0]
+	
+[NAME: Sudden Flurry Surprise]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Movement_speed_penalty]
+    [MAGNITUDE: 100]
+  [INTERNAL: Dodge_penalty]
+    [MAGNITUDE: 4]
+	
+# Display Effects -- Assassin
+
+[NAME: Sneaky Sneaky]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Sneak_bonus]
+    [MAGNITUDE: 8]
+  [INTERNAL: Critical_chance_bonus]
+    [MAGNITUDE: 5]
+  [INTERNAL: Critical_magnitude_bonus]
+    [MAGNITUDE: 10]
+  [REMOVED_ON: Stealth Removed]
+  
+[NAME: Massive Shot]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Sneak_penalty]
+    [MAGNITUDE: 5]
+	
+[NAME: Risky Shot]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Bleed]
+    [MAGNITUDE: 5]
+  [INTERNAL: Attack_power_penalty]
+    [MAGNITUDE: 5]
+	
+# Display Effects -- Ninja
+
+[NAME: Conceal]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Avoidance]
+    [MAGNITUDE: 40]
+  [INTERNAL: Set_maximum_stealth_break_chance]
+    [MAGNITUDE: 40]
+
+[NAME: Southern Tiger Style]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Tiger_style]
+    [MAGNITUDE: 0]
+
+[NAME: Flying Crane Style]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Crane_style]
+    [MAGNITUDE: 0]
+	
+[NAME: Way of the Serpent Style]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Snake_style]
+    [MAGNITUDE: 0]
+	
+[NAME: Swift Panther Style]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Panther_style]
+    [MAGNITUDE: 0]
+	
+[NAME: Dragon Master Style]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Dragon_style]
+    [MAGNITUDE: 0]
+	
+[NAME: Pin]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Movement_speed_penalty]
+    [MAGNITUDE: 100]
+
+[NAME: Bait]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Melee_dodge_bonus]
+    [MAGNITUDE: 10]
+  [INTERNAL: Prepare_melee_dodge_counterattack]
+	[REMOVED_ON: Melee Counterattack]
+	[MAGNITUDE: 0]
+  [INTERNAL: Overall_damage_bonus]
+    [CONDITIONAL: Using Crane Style]
+	[MAGNITUDE: 50]
+  [INTERNAL: Overall_damage_bonus]
+    [CONDITIONAL: Using Dragon Style]
+	[MAGNITUDE: 20]
+  [INTERNAL: Melee_accuracy_bonus]
+    [CONDITIONAL: Using Dragon Style]
+	[MAGNITUDE: 4]
+  [INTERNAL: Melee_accuracy_bonus]
+    [CONDITIONAL: Using Snake Style]
+	[MAGNITUDE: 10]
+	
+[NAME: Whittle Away]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Attack_power_penalty]
+    [MAGNITUDE: 15]
+	
+# Display Effects -- Battlemage
+
+[NAME: Buffer Strike]
+  [TYPE: Display]
+  [ELEMENT: Arcane]
+  [INTERNAL: HP_buffer]
+    [MAGNITUDE: 0]
+	
+[NAME: Inner Might]
+  [TYPE: Display]
+  [ELEMENT: Arcane]
+  [INTERNAL: Might_bonus]
+    [MAGNITUDE: 0]
+  [REMOVED_ON: MP < 75%]
+  
+[NAME: Deflecting Rod]
+  [TYPE: Display]
+  [ELEMENT: Electric]
+  [INTERNAL: Magic_resist_bonus]
+    [MAGNITUDE: 4]
+  [INTERNAL: Elemental_resistance_electric]
+    [MAGNITUDE: 10]
+	
+# Display Effects -- Arcane Archer Skills
+
+[NAME: Arcane Threading]
+  [TYPE: Display]
+  [ELEMENT: Arcane]
+  [INTERNAL: Weapon_damage_bonus]
+    [MAGNITUDE: 2]
+  [CONDITIONAL: Using Bow || Using Crossbow]
+  
+[NAME: Arcane Threading]
+  [TYPE: Display]
+  [ELEMENT: Arcane]
+  [INTERNAL: Weapon_damage_bonus]
+    [MAGNITUDE: 5]
+  [CONDITIONAL: Using Bow || Using Crossbow]
+  
+[NAME: Electric Threading]
+  [TYPE: Display]
+  [ELEMENT: Electric]
+  [INTERNAL: Weapon_damage_bonus]
+    [MAGNITUDE: 0]
+	[MIN: 1]
+	[MAX: 8]
+	
+[NAME: Warp Shot]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Movement_speed_penalty]
+    [MAGNITUDE: 50]
+	
+[NAME: Precision Threading]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Ranged_accuracy_bonus]
+    [MAGNITUDE: 9]
+  [INTERNAL: Critical_chance_bonus]
+    [MAGNITUDE: 3]
+  [INTERNAL: Arcane_archer_mana_regen_penalty]
+    [MAGNITUDE: 2]
+	
+# Display Effects -- Trickster Skills
+	
+[NAME: Sidestep]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Dodge_bonus]
+    [MAGNITUDE: 3]
+	
+[NAME: Risky Focus]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Spellpower_bonus]
+    [MAGNITUDE: 6]
+  [ELEMENT: Dodge_penalty]
+    [MAGNITUDE: 5]
+	
+[NAME: Weary Bolt]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Attack_power_penalty]
+    [MAGNITUDE: 5]
+	
+[NAME: Curious Drain]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Dodge_bonus]
+    [MAGNITUDE: 8]
+	
+[NAME: Curiously Sluggish]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Dodge_penalty]
+    [MAGNITUDE: 8]
+	
+# Display Effects -- Sorcerer Skills
+	
+[NAME: Bolster Guardian]
+  [TYPE: Display]
+  [ELEMENT: Arcane]
+  [INTERNAL: Melee_accuracy_bonus]
+    [MAGNITUDE: 3]
+  [INTERNAL: Ranged_accuracy_bonus]
+    [MAGNITUDE: 3]
+  [INTERNAL: Attack_power_bonus]
+    [MAGNITUDE: 10]
+
+[NAME: Empathy Shell]
+  [TYPE: Display]
+  [ELEMENT: Arcane]
+  [INTERNAL: Send_empathy_damage_to_summon]  
+    [MAGNITUDE: 50]
+  [REMOVED_ON: Unsummon Guardian]
+  [REMOVED_ON: Guardian Death]
+	
+# Display Effects -- Traits
+
+[NAME: Wounding Projectiles]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Dodge_penalty]
+    [MAGNITUDE: 0]
+	
+[NAME: Follow-up Expert Accuracy]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Ranged_accuracy_bonus]
+    [MAGNITUDE: 0]
+
+[NAME: Follow-up Expert Force]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Ranged_force_bonus]
+    [MAGNITUDE: 0]
+	
+[NAME: Trap Sadism]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Critical_damage_bonus]
+    [MAGNITUDE: 0]
+
+# Display Effects -- Barbarian Passives
+
+[NAME: Stunning Recovery]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Recover_HP_percent]
+    [MAGNITUDE: 0]
+	
+# Display Effects -- Spellsword Passives
+
+[NAME: Blades of Reduction]
+  [TYPE: Display]
+  [ELEMENT: Arcane]
+  [INTERNAL: Magic_resist_penalty]
+    [MAGNITUDE: 3]
+	
+# Display Effects -- Anarchist Passives
+
+[NAME: Celebrate Misfortune]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Critical_damage_bonus]
+    [MAGNITUDE: 20]
+  [INTERNAL: Melee_force_bonus]
+    [MAGNITUDE: 10]
+  [INTERNAL: Ranged_force_bonus]
+    [MAGNITUDE: 10]
+
+# Display Effects -- Marksman Passives
+
+[NAME: Superior Training]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Ranged_accuracy]
+    [MAGNITUDE: 0]
+  [INTERNAL: Melee_accuracy]
+    [MAGNITUDE: 0]
+	
+# Display Effects -- Assassin Passives
+
+[NAME: Panic Step]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Dodge_bonus]
+    [MAGNITUDE: 0]
+	
+# Display Effects -- Shadow Passives
+
+[NAME: Bleeding Backstab]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Bleed]
+    [MAGNITUDE: 3]
+	
+# Display Effects -- Battlemage Passives
+
+[NAME: Refraction]
+  [TYPE: Display]
+  [ELEMENT: Arcane]
+  [INTERNAL: DR_bonus]
+    [MAGNITUDE: 0]
+	
+# Display Effects -- Trickster Passives
+
+[NAME: Double Dodge]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Dodge_bonus]
+    [MAGNITUDE: 0]
+	
+# Display Effects -- Common
+
+[NAME: Stun]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Stun_internal]
+    [MAGNITUDE: 0]
+	
+# Internal Effects
+	
+	
+[NAME: AI_attack_nearby]
+  [TYPE: Internal]
+  [IMMUNE: Strong]
+
+[NAME: AI_flee]
+  [TYPE: Internal]
+  [IMMUNE: Boss]
+  
+[NAME: Applied_poison_rating_bonus]
+  [TYPE: Internal]
+  
+[NAME: Attack_power_bonus]
+  [TYPE: Internal]
+  
+[NAME: Attack_power_penalty]
+  [TYPE: Internal]
+  [IMMUNE: None]
+  
+[NAME: Arcane_archer_mana_regen_penalty]
+  [TYPE: Internal]
+  
+[NAME: Armor_penetration_bonus]
+  [TYPE: Internal]
+  
+[NAME: Avoidance]
+  [TYPE: Internal]
+  
+[NAME: Bleeding]
+  [TYPE: Internal]
+  
+[NAME: Combo_attack_internal]
+  [TYPE: Internal]
+  
+[NAME: Crane_style]
+  [TYPE: Internal]
+  
+[NAME: Critical_chance_bonus]
+  [TYPE: Internal]
+  
+[NAME: Critical_magnitude_bonus]
+  [TYPE: Internal]
+  
+[NAME: Damage_over_time]
+  [TYPE: Internal]
+  [IMMUNE: None]
+  
+[NAME: Dodge_bonus]
+  [TYPE: Internal]
+
+[NAME: Dodge_penalty]
+  [TYPE: Internal]
+  [IMMUNE: None]  
+
+[NAME: Dragon_style]
+  [TYPE: Internal]
+  
+[NAME: DR_bonus]
+  [TYPE: Internal]
+  
+[NAME: DR_penalty]
+  [TYPE: Internal]
+  [IMMUNE: None]
+  
+[NAME: Elemental_resistance_arcane]
+  [TYPE: Internal]
+  
+[NAME: Elemental_resistance_cold]
+  [TYPE: Internal]
+ 
+[NAME: Elemental_resistance_electric]
+  [TYPE: Internal]
+  
+[NAME: Elemental_resistance_fire]
+  [TYPE: Internal]
+  
+[NAME: Elemental_vulnerability]
+  [TYPE: Internal]
+  [IMMUNE: None]
+ 
+[NAME: Hidden]
+  [TYPE: Internal]
+  
+[NAME: Hidden_double_cunning]
+  [TYPE: Internal]
+ 
+[NAME: HP_buffer]
+  [TYPE: Internal]
+
+[NAME: Increased_movement_AP_cost]
+  [TYPE: Internal]
+  
+[NAME: Magic_resist_bonus]
+  [TYPE: Internal]
+
+[NAME: Magic_resist_penalty]
+  [TYPE: Internal]
+  
+[NAME: Melee_accuracy_bonus]
+  [TYPE: Internal]
+  
+[NAME: Melee_accuracy_penalty]
+  [TYPE: Internal]
+  [IMMUNE: None]
+  
+[NAME: Melee_dodge_bonus]
+  [TYPE: Internal]
+  
+[NAME: Melee_force_bonus]
+  [TYPE: Internal]
+  
+[NAME: Might_bonus]
+  [TYPE: Internal]
+  
+[NAME: Movement_speed_penalty]
+  [TYPE: Internal]
+  [IMMUNE: Boss]
+  
+[NAME: No_turn]
+  [TYPE: Internal]
+  [IMMUNE: Boss]
+  
+[NAME: On_hit_cripple_weapon]
+  [TYPE: Internal]
+  
+[NAME: On_hit_frost_weapon]
+  [TYPE: Internal]
+  
+[NAME: On_hit_stun]
+  [TYPE: Internal]
+  
+[NAME: On_hit_spell_failure]
+  [TYPE: Internal]
+  
+[NAME: On_hit_suppressing_weapon]
+  [TYPE: Internal]
+  
+[NAME: Overall_damage_bonus]
+  [TYPE: Internal]
+  
+[NAME: Overall_damage_penalty]
+  [TYPE: Internal]
+  
+[NAME: Panther_style]
+  [TYPE: Internal]
+  
+[NAME: Poison_tolerance_bonus]
+  [TYPE: Internal]
+
+[NAME: Poison_tolerance_penalty]
+  [TYPE: Internal]
+  
+[NAME: Potion_effect_bonus]
+  [TYPE: Internal]
+  
+[NAME: Prepare_melee_dodge_counterattack]
+  [TYPE: Internal]
+  
+[NAME: Ranged_accuracy_bonus]
+  [TYPE: Internal]
+  
+[NAME: Ranged_accuracy_penalty]
+  [TYPE: Internal]
+  [IMMUNE: None]
+
+[NAME: Ranged_critical_magnitude_bonus]
+  [TYPE: Internal]
+  
+[NAME: Ranged_dodge_bonus]
+  [TYPE: Internal]
+  
+[NAME: Ranged_force_bonus]
+  [TYPE: Internal]
+  
+[NAME: Recover_HP_percent]
+  [TYPE: Internal]
+  
+[NAME: Redirect_melee_attacks]
+  [TYPE: Internal]
+  
+[NAME: Reduced_stealth_AP_cost]
+  [TYPE: Internal]
+  
+[NAME: Reduced_missile_range]
+  [TYPE: Internal]
+  
+[NAME: Refund_mana_on_cast]
+  [TYPE: Internal]
+  
+[NAME: Send_empathy_damage_to_summon]
+  [TYPE: Internal]
+  
+[NAME: Set_maximum_stealth_break_chance]
+  [TYPE: Internal]
+  
+[NAME: Set_movement_AP_cost]
+  [TYPE: Internal]
+  
+[NAME: Snake_style]
+  [TYPE: Internal]
+  
+[NAME: Sneak_bonus]
+  [TYPE: Internal]
+  
+[NAME: Sneak_penalty]
+  [TYPE: Internal]
+  
+[NAME: Spellpower_bonus]
+  [TYPE: Internal]
+  
+[NAME: Spellpower_penalty]
+  [TYPE: Internal]
+  [IMMUNE: None]
+
+[NAME: Spell_failure_chance]
+  [TYPE: Internal]
+  [IMMUNE: Boss]  
+	
+[NAME: Target_ranged_accuracy_bonus]
+  [TYPE: Internal]
+  
+[NAME: Target_ranged_dodge_bonus]
+  [TYPE: Internal]
+
+[NAME: Target_ranged_dodge_penalty_marksman]
+  [TYPE: Internal]
+  
+[NAME: Tiger_style]
+  [TYPE: Internal]
+  
+[NAME: Trap_evade_bonus]
+  [TYPE: Internal]
+  
+[NAME: Trap_evade_penalty]
+  [TYPE: Internal]
+  [IMMUNE: Boss]
+	
+[NAME: Weapon_damage_bonus]
+  [TYPE: Internal]
+	
+	
+	
+	
+	
+	
+	
+	
