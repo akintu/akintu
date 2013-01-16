@@ -74,7 +74,122 @@ class Person(object):
 		    return selfSizeNum < otherSizeNum
 		elif smallerThan == False:
 		    return selfSizeNum > otherSizeNum
-            
+       
+    def usingWeapon(self, weaponType):
+        """Returns True if the passed Weapon type matches the type of
+        weapon this Person is using or is a superset of that type.
+        Inputs:
+          self
+          weaponType = "Sword", "Club", "Shortbow", "Longbow", "Bow",
+                       "Crossbow", "Axe", "Polearm", "Ranged", "Melee",
+                       "Shuriken", "Mage Weapon", "Sling", "Knife"
+        Outputs:
+          True or False"""
+        acceptList = [weaponType]
+		if weaponType == "Melee":
+		    acceptList.extend(["Sword", "Club", "Axe", "Polearm",
+			                   "Mage Weapon", "Knife"])
+		elif weaponType == "Ranged":
+		    acceptList.extend(["Longbow", "Shortbow", "Sling", "Crossbow",
+			                   "Shuriken"])
+		elif weaponType == "Bow":
+		    acceptList.extend(["Longbow", "Shortbow"])
+	    return self.equipment.equippedWeapon.type in acceptList
+        
+	def usingArmor(self, armorLevel):
+	    """Returns True if the passed armorLevel matches the armor level
+		the Person has currently equipped.
+		Inputs:
+		  self
+		  armorLevel = "Heavy", "Medium", "Light", "Robes"
+		Outputs:
+		  True or False"""
+		return self.equipment.armorLevel == armorLevel
+		
+	def usingShield(self, shieldType):
+	    """Returns True if the passed shieldType matches the kind of 
+		shield the Person has currently equipped.
+		Inputs:
+		  self
+		  shieldType = "Heavy", "Medium", "Any", "None"
+		Outputs:
+		  True or False"""
+		shield = self.equipment.equippedShield
+		if shieldType == "Any":
+		    return shield is not None
+		elif shieldType == "None":
+		    return shield is None
+		elif shield == None:
+		    return False
+		else 
+		    return shield.type == shieldType
+		
+	def usingWeaponStyle(self, style):
+	    """Returns True if this Person is using (equipping) the given 
+		weapon style.  Monsters are considered to be using no weapons.
+		This will always return False in their case.
+		Inputs: 
+		  self
+		  style = "Dual" (Two weapons), 
+		          "Dual Same Type" (Two weapons that are also the same 
+				                    weaponType)
+				  "Two Handed" (One weapon that requires both hands)
+				  "Single" (One weapon that requires one hand and the
+				            other hand is empty)
+				  "Single and Shield" (One weapon that requires one hand
+				                       and a shield)
+		Outputs:
+		  True or False"""
+		style.replace("-", " ") 
+		handOne = self.equipment.equippedWeapon
+		handTwo = self.equipment.equippedOffHand
+		  
+		if (style == "Dual Same Type" and 
+		   handOne is not None and 
+		   handTwo is not None):
+		    return handOne.type == handTwo.type
+        if (style == "Dual"):
+		    return (handOne is not None and handTwo is not None)
+		if (style == "Two Handed"):
+		    return (handOne is not None and handTwo == "Occupied")
+		if (style == "Single"):
+		    return (handOne is not None and handTwo is None)
+		if (style == "Single and Shield"):
+		    return (handOne is not None and self.usingShield("Any"))
+		# And for the monsters...
+		return False
+		
+	def getNumberOfStackedStatus(self, statusName):
+	    """Returns the integer number of the status indicated currently
+		present on the player.  Will simply return 0 if no such 'stacks' of
+		the status are present at all.
+		Inputs:
+		  self
+		  statusName = the internal name of the status effect to look for
+		Ouputs:
+		  A non-negative integer"""
+		statusObject = None
+		for item in self.statusList:
+		    if statusName == str(item):
+			    statusObject = item
+		if statusObject is None:
+		    return 0
+		else:
+		    return statusObject.stacks
+		
+	def canReach(self, target, tilesAllowed):
+	    """Returns True if it is possible to walk from self's current location
+		to the target's location within the allowed number of tiles.
+		Inputs:
+		  self
+		  target = Location of destination
+		  tilesAllowed = non-negative integer of how many tiles can be used
+		                 to reach the target location.
+		Outputs:
+		  True or False"""
+		pass #TODO: Requires path-finding
+		
+	
 
 
 
