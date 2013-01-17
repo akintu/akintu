@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import sys
+from Person import *
 
 class PlayerCharacter(object):
    def __init__(self):
@@ -91,15 +92,10 @@ class PlayerCharacter(object):
 	   self._equipmentTrapEvade = None
 	   self._statusTrapEvade = None
 	   
-	   # self._location
-	   # self._direction
-	   
-	   self._cooldownList = None
-	   self._statusList = None
+
 	   
 	   # Intrinsic properties (read-only)
-	   self._growthType = None
-	   self._size = None 
+	   self._growthType = None 
 	   self._characterClass = None
 	   
 	   # Class specific properties

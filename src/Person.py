@@ -3,6 +3,109 @@
 import sys
 
 class Person(object):
+    def __init__(self):
+	    self._location = None # Tile
+		self._directionFacing = None
+		self._team = None #TODO: Move to parent class
+		self._size = None
+	    self._cooldownList = None
+	    self._statusList = None
+		self._owner = None
+		self._minionList = None
+		
+	@property
+	def location(self):
+	    """The Tile beneath the Person"""
+		return self._AP
+		
+	@location.setter
+	def location(self, tile):
+	    """Tile must be unoccupied or no change will result."""
+	    if tile.isOccupied():
+		    return
+	    else:
+		    self._location = tile
+		
+	@property
+	def directionFacing(self):
+	    """The direction this Person is facing."""
+		return self._directionFacing
+		
+	@directionFacing.setter
+	def directionFacing(self, direction):
+	    """Possible values:
+		     "UP"
+			 "DOWN"
+			 "LEFT"
+			 "RIGHT" """
+		direction = direction.upper()
+		possibleValues = ["UP", "DOWN", "LEFT", "RIGHT"]
+		if direction in possibleValues:
+		    self._directionFacing = direction
+	
+	@property
+	def size(self):
+	    """The size of this person.  Does not necessarily indicate how many
+		tiles it fills up."""
+		return self._size
+		
+	@size.setter
+	def size(self, s):
+	    """Possible values:
+		    "Small"
+			"Medium"
+			"Large"
+			"Huge" """
+		s = capitalize(s)
+		possibleValues = ["Small", "Medium", "Large", "Huge"]
+		if s in possibleValues:
+		    self._size = s
+			
+	@property
+	def cooldownList(self):
+	    """A list of cooldown tuples of form [String, int].  These are used
+		to indicate which abilities cannot be used until 'int' more turns
+		have passed."""
+		return self._cooldownList
+		
+	@cooldownList.setter
+	def cooldownList(self, list):
+	    """May be used to change the cooldown list... may not want this function."""
+		#TODO
+		self._cooldownList = list
+		
+	@property 
+	def statusList(self):
+	    """A list of all display Statuses currently active on this target."""
+		return self._statusList
+		
+	@statusList.setter
+	def statusList(self, list):
+	    """May be used to change the cooldown list... may not want this function."""
+		#TODO
+		self._statusList = list  
+	
+	@property
+	def owner(self):
+	    return self._owner
+		
+	@owner.setter(self, value):
+	    """Possible values:
+		     None (Usually the case)
+			 PlayerCharacter pc (If a summon/guardian)
+			 Monster m (If a minion of a monster)"""
+		if (value is None) or (value.isinstance(Person):
+		    self._owner = value
+		# TODO, if not None, set the link the other direction as well.
+			
+	@property
+	def minionList(self):
+	    return self._minionList
+		
+	@minionList.setter
+	def minionList(self, value):
+	    self._minionList = value
+	
     def resource(self, type, quantity):
 	    """Returns True if the Person has at least 'quantity' of the resource.
 		Inputs:
@@ -233,8 +336,141 @@ class Person(object):
 			
 		return True
 		
+	def isClass(self, className):
+	    """Returns True if this person has a character class of name
+		'className'.
+		Inputs: 
+		  self
+		  className = The name of the class to check against.
+		Outputs:
+		  True or False"""
+	    return (str(self.characterClass) == className)
 	
+	def hasAdjacentFreeSpace(self):
+	    """Returns True if this person has at least one connecting
+		tile (at its location) that is not occupied.
+		Inputs:
+		  self
+		Outputs:
+		  True or False"""
+		xCoord = self.location.x
+		yCoord = self.location.y
+		adjacentCoords = ([[xCoord + 1, yCoord], [xCoord + 1, yCoord + 1]
+		                   [xCoord + 1, yCoord - 1], [xCoord, yCoord + 1]
+						   [xCoord - 1, yCoord - 1], [xCoord - 1, yCoord]
+						   [xCoord, yCoord - 1], [xCoord - 1, yCoord + 1]])
+					   
+		for coords in adjacentCoords:
+		    if Terrain.getTile(coords[0], coords[1]).isWalkable:
+			    return True
+        return False				
+		# TODO Write Terrain.getLocation(x, y) method.				   
+	
+	def hasWeaponEnchant(self):
+	    """Returns True if any wepaon enchantment cast by a spellsword is
+		present on the weapon(s) of this Person.
+		Inputs: 
+		  self
+		Outputs:
+		  True or False"""
+		#TODO: Add status class and modify status classifications (external)
+        for status in self.statusList:
+            if "Weapon Enchantment" in status.categoryList:
+                return True
+        return False
+		
+	def hasStatus(self, statusName):
+	    """Returns True if this person has a status with a display name
+		matching the given 'statusName'.
+		Inputs:
+		  self
+		  statusName = The name of the status to look for
+		Outputs:
+		  True or False"""
+		for item in self.statusList:
+		    if (statusName == str(item)):
+			    return True
+		return False
+		
+	# usingAnimalStyle method is identical to hasStatus but needs to
+	# function out of combat as well.  TODO
+	
+	def isSummon(self):
+	    """Returns True if this Person is a Guardian summoned by a 
+		Sorcerer playercharacter.
+		Inputs:
+		  self
+		Outputs:
+		  True or False"""
+		return (self.owner is not None)
 
-
+    def haveSummon(self):
+        """Returns True if this Person is a Sorcerer and has a
+        Guardian active.
+        Inputs:
+          self
+        Outputs:
+          True or False"""
+		# "and minionList" = contains something
+        if self.isClass("Sorcerer") and self.minionList:
+            return True
+		return False
+	
+	def getMeleeFacingEnemy(self):
+	    """Returns the enemy as a Person directly in front of 
+		this Person.  If there is not an enemy in front of this
+		Person, it will return None instead.
+		Inputs:
+		  self
+		Outputs:
+		  Person -- enemy directly in front
+		  None -- if no enemy is directly in front""" 
+	    x = self.location.x
+		y = self.location.y
+	    direction = self.directionFacing
+	    location = None
+		if(direction == "UP"):
+		    location = Location(x, y + 1)
+		elif(direction == "DOWN"):
+		    location = Location(x, y - 1)
+		elif(direction == "LEFT"):
+		    location = Location(x - 1, y)
+		elif(direction == "RIGHT"):
+		    location = Location(x + 1, y)
+		
+		possibleEnemy = Terrain.getObjectAt(location)
+		if (isinstance(possibleEnemy, Person) and
+		    possibleEnemy.team == "Monsters"):
+		    return possibleEnemy
+		else:
+	        return None
+  
+	def getMostRecentStatus(self, category): #Rename?
+		"""Returns the most recent Status object applied to this Person
+		or None if no Statuses are on this Person.
+		Inputs:
+		  self
+		  category = a string representing the category of status effect
+		             to look for.  Possible values include:
+					 "Buff", "Debuff", "Magical", "Physical", 
+					 "Weapon Enchantment", "Threading", "Stealth",
+					 "DR Debuff"
+		Outputs:
+		  Status object or None"""
+		matches = []
+		for status in self.statusList:
+		    if (status.category == category):
+			    matches.append(status)
+		# Get the last element as it will be the last one applied.
+		if matches:
+		    return matches[-1]
+		else:
+		    return None
 			
+	
+		
+		
+		
+		
+		
 		
