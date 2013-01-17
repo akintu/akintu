@@ -12,11 +12,11 @@ class Person(object):
 		Outputs:
 		  True or False"""
 		if type == "AP":
-		    return self.AP >= quantity
+		    return (self.AP >= quantity)
 		if type == "MP":
-		    return self.MP >= quantity
+		    return (self.MP >= quantity)
         if type == "HP":
-            return self.HP >= quantity
+            return (self.HP >= quantity)
         raise TypeError("Attempted to use an invalid resource type.")
 		
 		
@@ -38,7 +38,7 @@ class Person(object):
 		horizontalDistance = selfLoc.x - otherLoc.x
 		veritcalDistance = selfLoc.y - otherLoc.y
 		totalDistance = max(horizontalDistance, verticalDistance)
-		return range >= totalDistance
+		return (range >= totalDistance)
 		   
 		   
 	def onCooldown(self, abilityName):
@@ -49,7 +49,7 @@ class Person(object):
 		  abilityNAme = The name of the ability being checked
 		Outputs:
 		  True or False"""
-		return abilityName in self.cooldownList
+		return (abilityName in self.cooldownList)
 		  
 		  
 	def sizeCompare(self, size, smallerThan):
@@ -65,15 +65,15 @@ class Person(object):
 		otherSizeNum = None
 		possibleSizes = ["Small", "Medium", "Large", "Huge"]
 		selfSizeNum = possibleSizes.index(self.size)
-		if size in possibleSizes:
+		if (size in possibleSizes):
 		    otherSizeNum = possibleSizes.index(size)
 		else
             raise TypeError("Attempted to compare with an invalid size.")
 		
-		if smallerThan == True:
-		    return selfSizeNum < otherSizeNum
-		elif smallerThan == False:
-		    return selfSizeNum > otherSizeNum
+		if (smallerThan == True):
+		    return (selfSizeNum < otherSizeNum)
+		elif (smallerThan == False):
+		    return (selfSizeNum > otherSizeNum)
        
     def usingWeapon(self, weaponType):
         """Returns True if the passed Weapon type matches the type of
@@ -94,7 +94,8 @@ class Person(object):
 			                   "Shuriken"])
 		elif weaponType == "Bow":
 		    acceptList.extend(["Longbow", "Shortbow"])
-	    return self.equipment.equippedWeapon.type in acceptList
+	    return (self.equipment.equippedWeapon.type in acceptList or
+		        self.equipment.equippedOffHand.type in acceptList)
         
 	def usingArmor(self, armorLevel):
 	    """Returns True if the passed armorLevel matches the armor level
@@ -104,7 +105,7 @@ class Person(object):
 		  armorLevel = "Heavy", "Medium", "Light", "Robes"
 		Outputs:
 		  True or False"""
-		return self.equipment.armorLevel == armorLevel
+		return (self.equipment.armorLevel == armorLevel)
 		
 	def usingShield(self, shieldType):
 	    """Returns True if the passed shieldType matches the kind of 
@@ -115,14 +116,14 @@ class Person(object):
 		Outputs:
 		  True or False"""
 		shield = self.equipment.equippedShield
-		if shieldType == "Any":
-		    return shield is not None
-		elif shieldType == "None":
-		    return shield is None
-		elif shield == None:
+		if (shieldType == "Any"):
+		    return (shield is not None)
+		elif (shieldType == "None"):
+		    return (shield is None)
+		elif (shield == None):
 		    return False
-		else 
-		    return shield.type == shieldType
+		else: 
+		    return (shield.type == shieldType)
 		
 	def usingWeaponStyle(self, style):
 	    """Returns True if this Person is using (equipping) the given 
@@ -170,9 +171,9 @@ class Person(object):
 		  A non-negative integer"""
 		statusObject = None
 		for item in self.statusList:
-		    if statusName == str(item):
+		    if (statusName == str(item)):
 			    statusObject = item
-		if statusObject is None:
+		if (statusObject is None):
 		    return 0
 		else:
 		    return statusObject.stacks
@@ -189,8 +190,50 @@ class Person(object):
 		  True or False"""
 		pass #TODO: Requires path-finding
 		
+	def inStealth(self):
+	    """Returns True if this Person has any form of stealth other than 
+		invisibility.
+		Inputs:
+		  self
+		Outputs:
+		  True or False"""
+		stealthList = ["Stealth", "Shadow Walk", "Conceal"]
+		for item in self.statusList:
+		    if (str(item) in stealthList):
+			    return True
+		return False	
+		
+	def inBackstabPosition(self, target, rangedBackstab=False):
+	    """Returns True if this Person is behind the target, including behind
+		diagonals.  If rangedBackstab is False, as it is by default, the player
+		must also be in melee range."""
+		targetFacing = target.directionFacing
+		# TODO: Are we including diagnoal facing directions?
+		xDifference = self.location.x - target.location.x
+		yDifference = self.location.y - target.location.y
+		
+		if(not rangedBackstab):
+		    if (abs(xDifference) > 1) or (abs(yDifference) > 1):
+			    return False
+		
+		if(targetFacing == "DOWN"):
+		    if (yDifference <= 0) or (abs(xDifference) > yDifference):
+			    return False
+		elif(targetFacing == "UP"):
+		    if (yDifference >= 0) or (abs(xDifference) > yDifference):
+			    return False
+		elif(targetFacing == "LEFT"):
+		    if (xDifference <= 0) or (abs(yDifference) > xDifference):
+			    return False
+		elif(targetFacing == "RIGHT"):
+		    if (xDifference >= 0) or (abs(yDifference) > xDifference):
+			    return False
+		else:
+		    raise TypeError("Invalid Directional Argument Given.")
+			
+		return True
+		
 	
-
 
 
 			
