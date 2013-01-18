@@ -110,6 +110,8 @@
   [INTERNAL: Dodge_bonus]
     [MAGNITUDE: 0]
 	
+# This ability needs help: Weapon Enhance -- TODO
+
 [NAME: Weapon Enhance]
   [TYPE: Display]
   [ELEMENT: None]
@@ -561,8 +563,7 @@
     [MAGNITUDE: 10]
   [INTERNAL: On_hit_stun]
     [CHANCE: Rare]
-	[CONDIITONAL: Using Ranged Weapon]
-	[CONDITIONAL: Target not Huge]
+	[CONDITIONAL: Using Ranged Weapon && Target not Huge]
 	
 [NAME: Poison Thorn Trap]
   [TYPE: Display]
@@ -613,20 +614,20 @@
     [MAGNITUDE: 2]
   # Encode the minimum of 4 tiles somewhere?? TODO
 
-[NAME: Mage Hunting]
-  [TYPE: Display]
-  [ELEMENT: Arcane]
-  [INTERNAL: Ranged_accuracy_bonus]
-    [MAGNITUDE: 2]
-  [INTERNAL: Overall_damage_bonus]
-    [MAGNITUDE: 10]
-  [CONDTIONAL: Target MP > 0]
-  [INTERNAL: On_hit_spell_failure]
-    [CHANCE: Frequent]
-	[MAGNITUDE: 8]
-    # Duration 3 turns, where to encode?
-  # This ability requires different syntax rules than the others and thus is broken.
-  # I need to fix this once I am a bit further along... TODO
+#[NAME: Mage Hunting]
+#  [TYPE: Display]
+#  [ELEMENT: Arcane]
+#  [INTERNAL: Ranged_accuracy_bonus]
+#    [MAGNITUDE: 2]
+#  [INTERNAL: Overall_damage_bonus]
+#    [MAGNITUDE: 10]
+#  [CONDITIONAL: Target MP > 0]
+#  [INTERNAL: On_hit_spell_failure]
+#    [CHANCE: Frequent]
+#	 [MAGNITUDE: 8]
+# Duration 3 turns, where to encode?
+# This ability requires different syntax rules than the others and thus is broken.
+# I need to fix this once I am a bit further along... TODO
   
 [NAME: Mighty Favor]
   [TYPE: Display]
@@ -756,10 +757,10 @@
 [NAME: Bait]
   [TYPE: Display]
   [ELEMENT: None]
+  [REMOVED_ON: Melee Counterattack Complete]
   [INTERNAL: Melee_dodge_bonus]
     [MAGNITUDE: 10]
   [INTERNAL: Prepare_melee_dodge_counterattack]
-	[REMOVED_ON: Melee Counterattack]
 	[MAGNITUDE: 0]
   [INTERNAL: Overall_damage_bonus]
     [CONDITIONAL: Using Crane Style]
@@ -810,14 +811,14 @@
   [ELEMENT: Arcane]
   [INTERNAL: Weapon_damage_bonus]
     [MAGNITUDE: 2]
-  [CONDITIONAL: Using Bow || Using Crossbow]
+    [CONDITIONAL: Using Bow || Using Crossbow]
   
-[NAME: Arcane Threading]
+[NAME: Improved Arcane Threading]
   [TYPE: Display]
   [ELEMENT: Arcane]
   [INTERNAL: Weapon_damage_bonus]
     [MAGNITUDE: 5]
-  [CONDITIONAL: Using Bow || Using Crossbow]
+    [CONDITIONAL: Using Bow || Using Crossbow]
   
 [NAME: Electric Threading]
   [TYPE: Display]

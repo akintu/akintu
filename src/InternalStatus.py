@@ -6,7 +6,8 @@ class InternalStatus(object):
     def __init__(self):
 	    self._name = None
 		# self._parentStatus = None ... is this needed?
-		self._immunity = None		
+		self._immunity = None
+        self._magnitude = None # inherit from parent if 0.		
 		self._applyEffect = None
         self._unapplyEffect = None
 	    self._upkeepApply = None
