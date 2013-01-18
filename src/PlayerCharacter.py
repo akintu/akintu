@@ -66,6 +66,10 @@ class PlayerCharacter(object):
 	   self._equipmentDR = None
 	   self._statusDR = None
 	   
+	   self._baseForce = None # Default is 100 (no percent modified)
+	   self._equipmentForce = None # Will be a percent as an int
+	   self._statusForce = None # Also an int "percent"
+	   
 	   self._baseMagicResist = None
 	   self._equipmentMagicResist = None
 	   self._statusMagicResist = None
@@ -84,9 +88,17 @@ class PlayerCharacter(object):
 	   self._equipmentMight = None
 	   self._statusMight = None
 	   
-	   self._basePoisonTolerance = None
-	   self._equipmentPoisonTolerance = None
-	   self._statusPoisonTolerance = None
+	   self._baseMovementTiles = None
+	   self._equipmentMovementTiles = None
+	   self._statusMovementTiles = None
+	   
+	   # TODO: getter/setter movementTiles
+	   
+	   self._baseOverallDamageBonus = None # default 0%
+	   self._equipmentOverallDamageBonus = None # Typically/always 0?
+	   self._statusOverallDamageBonus = None
+	   
+	   # TODO: getter/setter overallDamageBonus
 	   
 	   self._basePoisonRatingBonus = None
 	   self._equipmentPoisonRatingBonus = None
@@ -94,14 +106,35 @@ class PlayerCharacter(object):
 	   
 	   # TODO: Getters/setters for poisonratingbonus
 	   
+	   self._basePoisonTolerance = None
+	   self._equipmentPoisonTolerance = None
+	   self._statusPoisonTolerance = None	   
+	   
+	   self._basePotionEffect = None # default = 100% before Sorc.
+	   self._equipmentPotionEffect = None
+	   self._statusPotionEffect = None
+	   
+	   # TODO: getter/setter for potionEffect
+	   
 	   self._baseRangedAccuracy = None
 	   self._equipmentRangedAccuracy = None
 	   self._statusRangedAccuracy = None
 	   
+	   self._baseRangedCriticalMagnitude = None
+	   self._equipmentRangedCriticalMagnitude = None
+	   self._statusRangedCriticalMagnitude = None
+	   
+	   # TODO: ranged crit mag g/s
+	   
 	   self._baseRangedDodge = None
 	   self._equipmentRangedDodge = None
-	   self._statusRangedDodge = None	   
+	   self._statusRangedDodge = None	  
+
+       self._baseRangedForce = None # Default is 100 (no percent modified)
+	   self._equipmentRangedForce = None # Will be a percent as an int
+	   self._statusRangedForce = None # Also an int "percent"	   
 	   
+	   # TODO; G/s for ranged force
 	   # TODO: Getters/setters for ranged dodge
 	   
 	   self._baseSneak = None
@@ -150,8 +183,10 @@ class PlayerCharacter(object):
 	   # TODO: Write method lowerElementalResistance(element, magnitude)
 	   # TODO: Write method raiseElementalResistance(element, magnitude)
 	   # TODO: Write method applyHPBuffer(magnitude)
-	   # TODO: Movement AP cost, melee attack AP cost, ranged attack AP cost
-	   
+	   # TODO: Movement AP cost, melee attack AP cost, ranged attack AP cost, movementAPOverride default -1
+	   # TODO: spellFailureChance default = 0
+	   # TODO: Write method applyOnHitMod(name, *args)
+	   # TODO: Write method removeOnHitMod(name)
 	   
 	   # Intrinsic properties (read-only)
 	   self._growthType = None 
@@ -164,6 +199,10 @@ class PlayerCharacter(object):
 	   # self._arcaneArcherManaRegenHigh
 	   # self._arcaneArcherManaRegenLow
 	   # self._avoidanceChance
+	   # self._abilityAPModsList [["AbilityName", -2], [...]]
+	   # self._spellMPModsList [["SpellName", -1], [...]]
+	   # self._empathyToSummon 
+	   # self._stealthBreakMaxOverride Default 100
 	   
 	# Resources (AP, MP, HP)
 	   

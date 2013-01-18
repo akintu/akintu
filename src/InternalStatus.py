@@ -7,12 +7,12 @@ class InternalStatus(object):
 	    self._name = None
 		# self._parentStatus = None ... is this needed?
 		self._immunity = None		
-		self.applyEffect = None
-        self.unapplyEffect = None
+		self._applyEffect = None
+        self._unapplyEffect = None
+	    self._upkeepApply = None
+        # Element??
 	
 	# TODO attribute getters/setters
-	
-	
 	
 	applyFunctionDict = /
         (#'AI_attack_nearby' : 
@@ -51,7 +51,59 @@ class InternalStatus(object):
 		 'Melee_accuracy_bonus': lambda target, magnitude: target.statusMeleeAccuracy += magnitude,
 		 'Melee_accuracy_penalty': lambda target, magnitude: target.statusMeleeAccuracy -= magnitude,
 		 'Melee_dodge_bonus': lambda target, magnitude: target.statusMeleeDodge += magnitude,
+		 'Melee_force_bonus': lambda target, magnitude: target.statusForce += magnitude,
+		 'Might_bonus': lambda target, magnitude: target.statusMight += magnitude,
+		 'Movement_speed_penalty': lambda target, magnitude: target.movementTiles -= magnitude, # Monsters
+		 'No_turn': lambda target, magnitude: target.AP = 0, 
+		 'On_hit_cripple_weapon': lambda target, chance, conditional, magnitude: /
+		                          target.applyOnHitMod('On_hit_cripple_weapon', conditional, chance, magnitude, 'Movement_speed_penalty'),
+		 'On_hit_frost_weapon': lambda target, chance, conditional, magnitude1, magnitude2: /
+		                          target.applyOnHitMod('On_hit_frost_weapon', conditional, chance, magnitude1, 'Movement_speed_penalty',  
+								                        magnitude2, 'Dodge_penalty'),
+		 'On_hit_stun': lambda target, chance, conditional: /
+		                  target.applyOnHitMod('On_hit_stun', conditional, chance, 0, 'No_turn'),
+		 #'On_hit_spell_failure': TODO
+		 'On_hit_suppressing_weapon': lambda target, chance, conditional, magnitude1, magnitude2, magnitude3: /
+                                       target.applyOnHitMod('On_hit_suppressing_weapon', conditional, chance, magnitude1, 'Melee_accuracy_penalty',
+                                                             magnitude2, 'Ranged_accuracy_penalty', magnitude3, 'Attack_power_penalty'),
+		 'Overall_damage_bonus': lambda target, magnitude: target.statusOverallDamageBonus += magnitude, 													 
+		 'Overall_damage_penalty': lambda target, magnitude: target.statusOverallDamageBonus -= magnitude,
+		 'Panther_style': None, 
+         'Poison_tolerance_bonus': lambda target, magnitude: target.statusPoisonTolerance += magnitude, 						
+		 'Poison_tolerance_penalty': lambda target, magnitude: target.statusPoisonTolerance -= magnitude, 
+		 'Potion_effect_bonus': lambda target, magnitude: target.statusPotionEffect += magnitude,
+		 'Prepare_melee_dodge_counterattack': None,
+		 'Ranged_accuracy_bonus': lambda target, magnitude: target.statusRangedAccuracy += magnitude,
+		 'Ranged_accuracy_penalty': lambda target, magnitude: target.statusRangedAccuracy -= magnitude,
+		 'Ranged_critical_magnitude_bonus': lambda target, magnitude: target.statusRangedCriticalMagnitude += magnitude,
+		 'Ranged_dodge_bonus': lambda target, magnitude: target.statusRangedDodge += magnitude, 
+		 'Ranged_force_bonus': lambda target, magnitude: target.statusRangedForce += magnitude,
+		 'Recover_HP_percent': lambda target, magnitude: target.HP += (target.totalHP * magnitude / 100),
+		 'Redirect_melee_attacks': None, # Include magnitude How?
+		 'Reduced_stealth_AP_cost': lambda target, magnitude: target.abilityAPModsList.extend([['Stealth', -magnitude], 
+		                                                                                      ['Shadow Walk', -magnitude],
+																							  ['Conceal', -magnitude]])
+		 'Reduced_missile_range': lambda target, magnitude: target.missleRange -= magnitude, #Monster only
+		 'Refund_mana_on_cast' : None,
+		 'Send_empathy_damage_to_summon' : lambda target, magnitude: target.empathyToSummon = magnitude,
+		 'Set_maximum_stealth_break_chance': lambda target, magnitude: target.stealthBreakMaxOverride = magnitude, 
+		 'Set_movement_AP_cost': lambda target, magnitude: target.movementAPOverride = magnitude,
+		 'Snake_style': None,
+		 'Sneak_bonus': lambda target, magnitude: target.statusSneak += magnitude,
+		 'Sneak_penalty': lambda target, magnitude: target.statusSneak -= magnitude,
+		 'Spellpower_bonus': lambda target, magnitude: target.statusSpellpower += magnitude,
+		 'Spellpower_penalty': lambda target, magnitude: target.statusSpellpower -= magnitude,
+		 'Spell_failure_chance': lambda target, magnitude: target.spellFailureChance += magnitude,
+		 #'Target_ranged_accuracy_bonus':
+		 #'Target_ranged_dodge_bonus':
+		 #'Target_ranged_dodge_penalty_marksman':
+		 'Tiger_style': None,
+		 'Trap_evade_bonus': lambda target, magnitude: target.statusTrapEvade += magnitude,
+		 'Trap_evade_penalty': lambda target, magnitude: target.statusTrapEvade -= magnitude
+		 #'Weapon_damage_bonus': lambda target, magnitude, element: 
 		)
+		
+		
 		
 	unapplyFunctionDict = /
 	    (#'AI_attack_nearby' : 
@@ -89,139 +141,52 @@ class InternalStatus(object):
 		 'Melee_accuracy_bonus': lambda target, magnitude: target.statusMeleeAccuracy -= magnitude,
 		 'Melee_accuracy_penalty': lambda target, magnitude: target.statusMeleeAccuracy += magnitude,
 		 'Melee_dodge_bonus': lambda target, magnitude: target.statusMeleeDodge -= magnitude,
-		 
+		 'Melee_force_bonus': lambda target, magnitude: target.statusForce -= magnitude,
+		 'Might_bonus': lambda target, magnitude: target.statusMight -= magnitude,
+		 'Movement_speed_penalty': lambda target, magnitude: target.movementTiles += magnitude, # Monsters
+		 'No_turn': None,
+		 'On_hit_cripple_weapon': lambda target: target.removeOnHitMod('On_hit_cripple_weapon'),
+		 'On_hit_frost_weapon': lambda target: target.removeOnHitMod('On_hit_frost_weapon'),
+		 'On_hit_stun': lambda target: target.removeOnHitMod('On_hit_stun'),
+		 #'On_hit_spell_failure':
+		 'On_hit_suppressing_weapon': lambda target: target.removeOnHitMod('On_hit_suppressing_weapon'),
+		 'Overall_damage_bonus': lambda target, magnitude: target.statusOverallDamageBonus -= magnitude, 	
+		 'Overall_damage_penalty': lambda target, magnitude: target.statusOverallDamageBonus += magnitude,
+		 'Panther_style': None,
+		 'Poison_tolerance_bonus': lambda target, magnitude: target.statusPoisonTolerance -= magnitude,
+		 'Poison_tolerance_penalty': lambda target, magnitude: target.statusPoisonTolerance += magnitude,
+		 'Potion_effect_bonus': lambda target, magnitude: target.statusPotionEffect -= magnitude,
+		 'Prepare_melee_dodge_counterattack': None,
+		 'Ranged_accuracy_bonus': lambda target, magnitude: target.statusRangedAccuracy -= magnitude,
+		 'Ranged_accuracy_penalty': lambda target, magnitude: target.statusRangedAccuracy += magnitude,
+		 'Ranged_critical_magnitude_bonus': lambda target, magnitude: target.statusRangedCriticalMagnitude -= magnitude,
+		 'Ranged_dodge_bonus': lambda target, mangitude: target.statusRangedDodge -= magnitude,
+		 'Ranged_force_bonus': lambda target, magnitude: target.statusRangedForce -= magnitude,
+		 'Recover_HP_percent': None, 
+		 'Redirect_melee_attacks': None,
+		 #'Reduced_stealth_AP_cost': lambda target, magnitude: /
+		 #                             target.abilityAPModsList.remove(['Shadow Walk', -magnitude]).remove(['Conceal', -magnitude]).remove(['Stealth', -magnitude])
+		 'Reduced_missile_range': lambda target, magnitude: target.missleRange += magnitude,
+		 'Refund_mana_on_cast': None,
+		 'Send_empathy_damage_to_summon' : lambda target, magnitude: target.empathyToSummon = 0,
+		 'Set_maximum_stealth_break_chance': lambda target, magnitude: target.stealthBreakMaxOverride = 100,
+		 'Set_movement_AP_cost': lambda target, magnitude: target.movementAPOverride = -1,
+		 'Snake_style': None,
+		 'Sneak_bonus': lambda target, magnitude: target.statusSneak -= magnitude,
+		 'Sneak_penalty': lambda target, magnitude: target.statusSneak += magnitude,
+		 'Spellpower_bonus': lambda target, magnitude: target.statusSpellpower -= magnitude,
+		 'Spellpower_penalty': lambda target, magnitude: target.statusSpellpower += magnitude,
+		 'Spell_failure_chance': lambda target, magnitude: target.spellFailureChance -= magnitude,
+		 #'Target_ranged_accuracy_bonus':
+		 #'Target_ranged_dodge_bonus':
+		 #'Target_ranged_dodge_penalty_marksman':
+		 'Tiger_style': None,
+		 'Trap_evade_bonus': lambda target, magnitude: target.statusTrapEvade -= magnitude,
+		 'Trap_evade_penalty': lambda target, magnitude: target.statusTrapEvade += magnitude
+		 #'Weapon_damage_bonus': lambda target, magnitude, element: 
         )
   
   
-  
-  # [NAME: Melee_force_bonus]
-  # [TYPE: Internal]
-  
-# [NAME: Might_bonus]
-  # [TYPE: Internal]
-  
-# [NAME: Movement_speed_penalty]
-  # [TYPE: Internal]
-  # [IMMUNE: Boss]
-  
-# [NAME: No_turn]
-  # [TYPE: Internal]
-  # [IMMUNE: Boss]
-  
-# [NAME: On_hit_cripple_weapon]
-  # [TYPE: Internal]
-  
-# [NAME: On_hit_frost_weapon]
-  # [TYPE: Internal]
-  
-# [NAME: On_hit_stun]
-  # [TYPE: Internal]
-  
-# [NAME: On_hit_spell_failure]
-  # [TYPE: Internal]
-  
-# [NAME: On_hit_suppressing_weapon]
-  # [TYPE: Internal]
-  
-# [NAME: Overall_damage_bonus]
-  # [TYPE: Internal]
-  
-# [NAME: Overall_damage_penalty]
-  # [TYPE: Internal]
-  
-# [NAME: Panther_style]
-  # [TYPE: Internal]
-  
-# [NAME: Poison_tolerance_bonus]
-  # [TYPE: Internal]
 
-# [NAME: Poison_tolerance_penalty]
-  # [TYPE: Internal]
-  
-# [NAME: Potion_effect_bonus]
-  # [TYPE: Internal]
-  
-# [NAME: Prepare_melee_dodge_counterattack]
-  # [TYPE: Internal]
-  
-# [NAME: Ranged_accuracy_bonus]
-  # [TYPE: Internal]
-  
-# [NAME: Ranged_accuracy_penalty]
-  # [TYPE: Internal]
-  # [IMMUNE: None]
 
-# [NAME: Ranged_critical_magnitude_bonus]
-  # [TYPE: Internal]
-  
-# [NAME: Ranged_dodge_bonus]
-  # [TYPE: Internal]
-  
-# [NAME: Ranged_force_bonus]
-  # [TYPE: Internal]
-  
-# [NAME: Recover_HP_percent]
-  # [TYPE: Internal]
-  
-# [NAME: Redirect_melee_attacks]
-  # [TYPE: Internal]
-  
-# [NAME: Reduced_stealth_AP_cost]
-  # [TYPE: Internal]
-  
-# [NAME: Reduced_missile_range]
-  # [TYPE: Internal]
-  
-# [NAME: Refund_mana_on_cast]
-  # [TYPE: Internal]
-  
-# [NAME: Send_empathy_damage_to_summon]
-  # [TYPE: Internal]
-  
-# [NAME: Set_maximum_stealth_break_chance]
-  # [TYPE: Internal]
-  
-# [NAME: Set_movement_AP_cost]
-  # [TYPE: Internal]
-  
-# [NAME: Snake_style]
-  # [TYPE: Internal]
-  
-# [NAME: Sneak_bonus]
-  # [TYPE: Internal]
-  
-# [NAME: Sneak_penalty]
-  # [TYPE: Internal]
-  
-# [NAME: Spellpower_bonus]
-  # [TYPE: Internal]
-  
-# [NAME: Spellpower_penalty]
-  # [TYPE: Internal]
-  # [IMMUNE: None]
-
-# [NAME: Spell_failure_chance]
-  # [TYPE: Internal]
-  # [IMMUNE: Boss]  
 	
-# [NAME: Target_ranged_accuracy_bonus]
-  # [TYPE: Internal]
-  
-# [NAME: Target_ranged_dodge_bonus]
-  # [TYPE: Internal]
-
-# [NAME: Target_ranged_dodge_penalty_marksman]
-  # [TYPE: Internal]
-  
-# [NAME: Tiger_style]
-  # [TYPE: Internal]
-  
-# [NAME: Trap_evade_bonus]
-  # [TYPE: Internal]
-  
-# [NAME: Trap_evade_penalty]
-  # [TYPE: Internal]
-  # [IMMUNE: Boss]
-	
-# [NAME: Weapon_damage_bonus]
-  # [TYPE: Internal]

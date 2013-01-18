@@ -463,8 +463,8 @@
   [TYPE: Display]
   [ELEMENT: Arcane]
   [INTERNAL: Refund_mana_on_cast]
-	[TRIGGERED_BY: Spell Cast Resisted]
-	  [CONDITIONAL: Spel Mana Cost > 4]
+	[TRIGGERED_BY: Spell Cast Resisted] # Hardcoded, do not change.
+	  [CONDITIONAL: Spel Mana Cost > 4] # Hardcoded, do not change.
 	[MAGNITUDE: 5] # 5 MP recovered
 
 # Display Effects -- Anarchist
