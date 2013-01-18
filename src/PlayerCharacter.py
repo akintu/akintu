@@ -52,6 +52,12 @@ class PlayerCharacter(object):
 	   self._equipmentCriticalChance = None
 	   self._statusCriticalChance = None
 	   
+	   self._baseCriticalMagnitude = None
+	   self._equipmentCriticalMagnitude = None
+	   self._statusCriticalMagnitude = None
+	   
+	   # TODO: crit mag getters/setters
+	   
 	   self._baseDodge = None
 	   self._equipmentDodge = None
 	   self._statusDodge = None
@@ -68,6 +74,12 @@ class PlayerCharacter(object):
 	   self._equipmentMeleeAccuracy = None
 	   self._statusMeleeAccuracy = None
 	   
+	   self._baseMeleeDodge = None
+	   self._equipmentMeleeDodge = None
+	   self._statusMeleeDodge = None
+	   
+       # TODO: getter/setter melee dodge
+	   
 	   self._baseMight = None
 	   self._equipmentMight = None
 	   self._statusMight = None
@@ -76,9 +88,21 @@ class PlayerCharacter(object):
 	   self._equipmentPoisonTolerance = None
 	   self._statusPoisonTolerance = None
 	   
+	   self._basePoisonRatingBonus = None
+	   self._equipmentPoisonRatingBonus = None
+	   self._statusPoisonRatingBonus = None
+	   
+	   # TODO: Getters/setters for poisonratingbonus
+	   
 	   self._baseRangedAccuracy = None
 	   self._equipmentRangedAccuracy = None
 	   self._statusRangedAccuracy = None
+	   
+	   self._baseRangedDodge = None
+	   self._equipmentRangedDodge = None
+	   self._statusRangedDodge = None	   
+	   
+	   # TODO: Getters/setters for ranged dodge
 	   
 	   self._baseSneak = None
 	   self._equipmentSneak = None
@@ -92,7 +116,42 @@ class PlayerCharacter(object):
 	   self._equipmentTrapEvade = None
 	   self._statusTrapEvade = None
 	   
-
+	   # Elemental Resistances
+	   
+	   self._baseArcaneResistance = None
+	   self._equipmentArcaneResistance = None
+	   self._statusArcaneResistance = None
+	   
+	   self._baseColdResistance = None
+	   self._equipmentColdResistance = None
+	   self._statusColdResistance = None
+	   
+	   self._baseDivineResistance = None
+	   self._equipmentDivineResistance = None
+	   self._statusDivineResistance = None
+	   
+	   self._baseElectricResistance = None
+	   self._equipmentElectricResistance = None
+	   self._statusElectricResistance = None
+	   
+	   self._baseFireResistance = None
+	   self._equipmentFireResistance = None
+	   self._statusFireResistance = None
+	   
+	   self._basePoisonResistance = None
+	   self._equipmentPoisonResistance = None
+	   self._statusPoisonResistance = None
+	   
+	   self._baseShadowResistance = None
+	   self._equipmentShadowResistance = None
+	   self._statusShadowResistance = None
+	   
+	   # TODO: All elemental resistance setters/getters
+	   # TODO: Write method lowerElementalResistance(element, magnitude)
+	   # TODO: Write method raiseElementalResistance(element, magnitude)
+	   # TODO: Write method applyHPBuffer(magnitude)
+	   # TODO: Movement AP cost, melee attack AP cost, ranged attack AP cost
+	   
 	   
 	   # Intrinsic properties (read-only)
 	   self._growthType = None 
@@ -101,7 +160,10 @@ class PlayerCharacter(object):
 	   # Class specific properties
 	   # self._ninjaStyle
 	   # self._activeSummon
-	   #
+	   # self._arcaneArcherManaRegenBase
+	   # self._arcaneArcherManaRegenHigh
+	   # self._arcaneArcherManaRegenLow
+	   # self._avoidanceChance
 	   
 	# Resources (AP, MP, HP)
 	   
@@ -888,7 +950,7 @@ class PlayerCharacter(object):
 		Dodge is determined by DEX, equipment that boosts Dodge,
 		"static" abililties that boost Dodge, and "dynamic"
 		statuses that boost or reduce Dodge.  Does not include
-		rangedDodge (even when relevant.)
+		rangedDodge or meleeDodge (even when relevant.)
 		"""
 		return equipmentDodge + statusDodge + baseDodge
 			
