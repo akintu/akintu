@@ -1,0 +1,249 @@
+# Monsters.txt
+#
+# File will first be used as a drawing board for monster types and later will be used to house exact data for every monster.
+#
+
+# Stats common to all monsters:
+# HP
+# MP (0 if not included)
+# Movement/Turn (in tiles)
+# DR
+# Magic Resist
+# Poison Tolerance
+# Dodge
+# Melee Accuracy (individual attacks will also have accuracy.  This is a flat bonus to each, or a 
+#                 penalty if it has been debuffed or something.)
+# Ranged Accuracy (ditto)
+# Elemental Resistances (if not listed is 0% for each)
+# Attack Power (typically 100% but can be buffed/debuffed to give a % modifier to the damage of all
+#                non-spell attacks.)
+# Size
+
+# ..Grouping Points..
+#
+# GP determines how much of a monster party is filled up by the presence of this monster.
+# A party can be formed of a small number of high GP monsters or a large number of small GP monsters.
+# With more players, the total GP of the groups will rise.
+#
+# Also the HP of the monsters will be multiplied when a group is present:
+#
+# 1 Player:  10 GP & 100% HP
+# 2 Players: 13 GP & 200% HP
+# 3 Players: 16 GP & 325% HP
+# 4 Players: 20 GP & 475% HP
+
+# Melee Attack (basic melee attack if default)
+# Ranged Attack (basic ranged attack if default)
+# Special Attack 1
+# Special Attack 2
+# Special Attack 3
+# Special Property 1
+# Special Property 2
+# Special Property 3
+# Spell 1
+# Spell 2
+# Spell 3
+# Attacks per turn (defaults to 1)
+
+Monster Ability Templates:
+  (other than basic attacks)
+  Weight: 1 to 300 (100 = basic attack)
+  Cooldown: 0 to 10 or -1 (-1 means it can only be used once in a fight)
+  Charge: 0 to 4 (# of turns until the attack is triggered.  Comes with an announcement message.)
+  Announce Message: String (The message displayed when the monster is charging an attack.)  
+  Restricts Movement: 0 to 100% (Whether using this ability prevents 
+                                 the monster from moving by some amount that turn.)
+  Effect: The effect of the ability??
+  
+Accurate Attack:
+  Cooldown: 1
+  Accuracy: +40%
+  Effect: None
+  
+Big Hit:
+  Cooldown: 2
+  Charge: 1
+  Announce Message: "$MONSTER is looking angry."
+  Accuracy: +20%
+  Effect: Double Damage
+  
+Protection:
+  Cooldown: 5
+  Effect: +30 DR
+    Duration: 5 Turns
+	
+Magic Protection:
+  Cooldown: 5
+  Effect: +30% MR
+  Effect: +5% all Elemental Resistance except Arcane
+    Duration: 5 Turns
+  
+Big Element:
+  Cooldown: 2
+  Charge: 2
+  Announce Message: "$MONSTER is building energy."
+  Accuracy: +20%
+  Effect: 2.5x Damage
+  
+Big Element(group):
+  Cooldown: 2
+  Charge: 2
+  Announce Message: "$Monster is charging energy."
+  Accuracy: +20%
+  Effect: 1.5x Damage, radius 4
+  
+Arcane Hex:
+  Cooldown: 3
+  Effect: Debuff that lowers might by 20 and causes a 15% chance to fail casting spells.
+    Duration: 3 Turns
+	
+Slow Blast:
+  Cooldown: 5
+  Charge: 3
+  Announce Message: "$Monster begins to glow a sickly shade of green."
+  Effect: Always hits, AoE 4 tiles radius, Poison elemental damage with a high rating,
+          also causes -1 movement tile for 5 turns to everyone it hits.
+  
+##########################
+  
+Template: Big Hit Monster
+  HP: Medium
+  MV: Medium-Slow
+  DR: Low
+  MR: None
+  PT: Low
+  DG: Low
+  ACC: Above Average
+  E.Resists: None - Few
+  Size: Medium/Large
+  Default Attack: Melee
+  Special Attack: Big Hit
+  GP: 6
+  
+Template: Horde Critter
+  HP: Very Low
+  MV: Fast
+  DR: None
+  MR: Low
+  PT: Low-Medium
+  DG: High
+  ACC: Average
+  E.Resists: Few
+  Size: Small
+  Default Attack: Melee
+  GP: 2
+  
+Template: Frail Archer
+  HP: Very Low
+  MV: Slow
+  DR: None-Low
+  MR: Low
+  PT: Low
+  DG: Low
+  ACC: High
+  E.Resists: Few
+  Size: Small-Medium
+  Default Attack: Ranged
+  Special Attack: Accurate Attack
+  GP: 3
+  
+Template: Defender
+  HP: High
+  MV: Slow-Medium
+  DR: High
+  MR: Low
+  PT: Medium
+  DG: Low
+  ACC: Medium-Low
+  E.Resists: Some
+  Size: Medium
+  Default Attack: Melee
+  GP: 4
+  Special Attack: Protection  
+
+Template: Ranged Magic Defender
+  HP: High
+  MV: Slow-Medium
+  DR: Low
+  MR: High
+  PT: Medium
+  DG: Low
+  ACC: Medium
+  E.Resists: Many
+  Size: Medium
+  Default Attack: Ranged Elemental
+  GP: 4
+  Special Attack: Magic Protection
+  
+Template: Basic Caster
+  HP: Medium-Low
+  MV: Medium
+  DR: Low
+  MR: High
+  PT: Low
+  DG: Low-Medium
+  ACC: Low
+  E.Resists: Few
+  Size: Small-Medium
+  Default Attack: Melee (weak)
+    Weight: 1
+  GP: 5
+  Spell 1: Singe
+    Weight: 150
+  Spell 2: Chill
+    Weight: 100
+  Spell 3: Flicker of Life
+    Weight: 75
+	
+Template: Defensive Caster
+  HP: Medium-High
+  MV: Slow
+  DR: Medium-Low
+  MR: Medium-High
+  PT: None
+  DG: Medium
+  ACC: Low
+  E.Resists: Some
+  Size: Medium
+  Default Attack: Melee (weak)
+    Weight: 1
+  GP: 4
+  Spell 1: Flicker of Life
+    Weight: 125
+  Spell 2: Mystic Shield
+    Weight: 100
+  Spell 3: Stone Guard
+    Weight: 50
+	
+Template: Glass Cannon Elemental Ranged
+  HP: Very Low
+  MV: Fast
+  DR: Low
+  MR: Low
+  PT: Low
+  DG: Medium
+  ACC: Medium
+  E.Resists: Some
+  Size: Small-Medium
+  Default Attack: Ranged Elemental
+  GP: 4
+  Special Attack 1: Big Fire (single)
+    Weight: 100
+  Special Attack 2: Big Fire (group)
+    Weight: 75  
+  
+Template: Walking Bomb
+  HP: Low
+  MV: Slow
+  DR: Medium
+  MR: Low
+  PT: Medium
+  DG: Medium
+  ACC: High
+  E.Resists: Many
+  Size: Small-Large
+  Default Attack: Melee Elemental (very strong)
+  GP: 4
+  
+  
+  
