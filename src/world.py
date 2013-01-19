@@ -14,7 +14,7 @@ class World(object):
     def __init__(self, seed):
         self.seed = seed
 
-    def generate_tile(self, x, y):
+    def generate_pane(self, x, y):
         pass
 
 
