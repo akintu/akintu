@@ -15,6 +15,7 @@ class InternalStatus(object):
 	
 	# TODO attribute getters/setters
 	
+	
 	applyFunctionDict = /
         (#'AI_attack_nearby' : 
 	     #'AI_flee' :
