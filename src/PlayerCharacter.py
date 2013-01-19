@@ -56,8 +56,6 @@ class PlayerCharacter(object):
 	   self._equipmentCriticalMagnitude = None
 	   self._statusCriticalMagnitude = None
 	   
-	   # TODO: crit mag getters/setters
-	   
 	   self._baseDodge = None
 	   self._equipmentDodge = None
 	   self._statusDodge = None
@@ -70,6 +68,8 @@ class PlayerCharacter(object):
 	   self._equipmentForce = None # Will be a percent as an int
 	   self._statusForce = None # Also an int "percent"
 	   
+	   # TODO: Force g/s
+	   
 	   self._baseMagicResist = None
 	   self._equipmentMagicResist = None
 	   self._statusMagicResist = None
@@ -81,8 +81,6 @@ class PlayerCharacter(object):
 	   self._baseMeleeDodge = None
 	   self._equipmentMeleeDodge = None
 	   self._statusMeleeDodge = None
-	   
-       # TODO: getter/setter melee dodge
 	   
 	   self._baseMight = None
 	   self._equipmentMight = None
@@ -123,8 +121,6 @@ class PlayerCharacter(object):
 	   self._baseRangedCriticalMagnitude = None
 	   self._equipmentRangedCriticalMagnitude = None
 	   self._statusRangedCriticalMagnitude = None
-	   
-	   # TODO: ranged crit mag g/s
 	   
 	   self._baseRangedDodge = None
 	   self._equipmentRangedDodge = None
@@ -718,6 +714,60 @@ class PlayerCharacter(object):
         if value >= 0:
 		    self._baseMeleeAccuracy = value	
          		
+	@property
+	def totalMeleeDodge(self):
+	    """
+		MeleeDodge is bonus dodge granted from static abilities, magical
+		equipment bonuses, and dynamic abilities/statuses.  It is normally zero
+		as it is added to Dodge but is not very common.  It is not included in
+		the normal totalDodge, so it will need to be added manually on the event
+		of a melee incoming attack.
+		"""
+		return equipmentMeleeDodge + statusMeleeDodge + baseMeleeDodge
+	
+	@property
+	def equipmentMeleeDodge(self):
+	    """
+		The MeleeDodge granted from any magical equipment bonuses.
+		Will not automatically update.
+		"""
+		return self._equipmentMeleeDodge
+	
+	@equipmentMeleeDodge.setter
+	def equipmentMeleeDodge(self, value):
+	    """
+		int value: should be the total meleeDodge given from equipment on
+		"""
+		self._equipmentMeleeDodge = value
+	
+	@property
+	def statusMeleeDodge(self):
+	    """
+		The MeleeDodge gained or lost from the sum of statuses.
+		"""
+		return self._statusMeleeDodge
+	
+	@statusMeleeDodge.setter
+	def statusMeleeDodge(self, value):
+	    """
+		int value: should be the total meleeDodge given from statuses.
+		"""
+		self._statusMeleeDodge = value
+	
+    @property
+	def baseMeleeDodge(self):
+	    """
+		The MeleeDodge granted from static abilities.
+		"""
+		return self._baseMeleeDodge
+		
+	@baseMeleeDodge.setter
+	def baseMeleeDodge(self, value):
+	    """
+		int value: should be whatever the static ability bonus is, or zero.
+		"""
+		self._baseMeleeDodge = value
+		
     @property
 	def totalRangedAccuracy(self):
 	    """
@@ -771,6 +821,63 @@ class PlayerCharacter(object):
         if value >= 0:
 		    self._baseRangedAccuracy = value			
 
+	@property
+	def totalRangedCriticalMagnitude(self):
+	    """
+		Ranged critical magnitude is bonus only, that is, it is 100 by default
+		and the % is MULTIPLIED with the normal critical magnitude.  
+        
+        This stat itself is 100 + each component bonus to RCM.
+        """
+        return (100 + equipmentRangedCriticalMagnitude +
+                statusRangedCriticalMagnitude + baseRangedCriticalMagnitude)   		
+			
+	@property
+	def equipmentRangedCriticalMagnitude(self):
+	    """
+		Any ranged critical magnitude granted from any magical equipment
+		currently equipped.  
+		Will not automatically update.
+		"""
+		return self._equipmentRangedCriticalMagnitude
+			
+	@equipmentRangedCriticalMagnitude.setter:
+	def equipmentRangedCriticalMagnitude(self, value):
+	    """
+		int value: should be the total ranged critical magnitude from equipment
+		on, if any.
+		"""
+		self._equipmentRangedCriticalMagnitude = value
+		
+	@property
+	def statusRangedCriticalMagnitude(self):
+	    """
+		The ranged crit mag from statuses, if any.
+		"""
+		return self._statusRangedCriticalMagnitude
+	
+	@statusRangedCriticalMagnitude.setter
+	def statusRangedCriticalMagnitude(self, value):
+	    """
+		int value: should be the total % ranged crit mag from statuses.
+		"""
+		self._statusRangedCriticalMagnitude = value
+		
+	@property
+	def baseRangedCriticalMagnitude(self):
+	    """
+		The ranged crit mag from static abilities. 0 by default.
+		"""
+		return self._baseRangedCriticalMagnitude
+		
+	@baseRangedCriticalMagnitude.setter
+	def baseRangedCriticalMagnitude(self, value):
+	    """
+		int value: should be a % bonus from static abilities only.
+		  will mostly be 0.
+		"""
+		self._baseRangedCriticalMagnitude = value
+			
     @property
 	def totalSpellpower(self):
 	    """
@@ -877,6 +984,71 @@ class PlayerCharacter(object):
         """
         if value >= 0:
 		    self._baseCriticalChance = value			
+			
+	 @property
+	def totalCriticalMagnitude(self):
+	    """
+		CriticalMagnitude is determined by weapon critical multiplier and any magical
+		bonuses from equipment toward critical magnitude, 
+		"static" abililties that boost CriticalMagnitude, and "dynamic"
+		statuses that boost or reduce CriticalMagnitude.  Bonuses to critical magnitude
+		from the different sources are multiplicative with a rating of 100 = to 
+		a neutral multiplier of 100%.  The result is, the total is adjusted so it is
+		the exact float/int to multiply the damage by upon a critical hit with no
+		further division.
+		"""
+		return (equipmentCriticalMagnitude/100 * baseCriticalMagnitude/100 *
+                (100 + statusCriticalMagnitude/100))		
+			
+	@property
+	def equipmentCriticalMagnitude(self):
+	    """
+		The CriticalMagnitude granted from both the base critical multiplier of the 
+		currently equipped weapon and any magical bonuses from equipment further
+		boosting it.
+		
+		Will not automatically update.
+		"""
+		return self._equipmentCriticalMagnitude
+		
+	@equipmentCriticalMagnitude.setter
+	def equipmentCriticalMagnitude(self, value):
+	    """
+		float value: should be the total criticalMagnitude given from equipment on
+		             base level = the 'critical multiplier' of the weapon
+		"""
+		self._equipmentCriticalMagnitude = value
+			
+	@property
+	def statusCriticalMagnitude(self):
+	    """
+		The CriticalMagnitude gained or lost from the sum of statuses.
+		"""
+		return self._statusCriticalMagnitude
+		
+	@statusCriticalMagnitude.setter
+	def statusCriticalMagnitude(self, value):
+	    """
+		float value: should be the total criticalMagnitude given from statuses.
+		             base level = 0
+		"""
+		self._statusCriticalMagnitude = value
+		
+	@property
+	def baseCriticalMagnitude(self):
+	    """
+	    The CriticalMagnitude granted from any "static" abilities
+		"""
+		return self._baseCriticalMagnitude
+		
+	@baseCriticalMagnitude.setter
+	def baseCriticalMagnitude(self, value):
+	    """
+		float value: should be 100 + any static Ability Bonus
+		             must be non-negative
+        """
+        if value >= 0:
+		    self._baseCriticalMagnitude = value		
 			
     @property
 	def totalMagicResist(self):

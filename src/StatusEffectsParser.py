@@ -33,17 +33,17 @@ class StatusEffectsParser(object):
     # Paths by State:  
 	#   Expecting Name        --> Expecting Type    --> Expecting Element OR Expecting Immune
     #   Expecting Immune      --> Expecting Name
-    #   Expecting Element     --> Top Level Display --> Expecting Magnitude OR Top Level Display
+    #   Expecting Element     --> Top Level         --> Expecting Magnitude OR Top Level
 	#   Expecting Magnitude   --> Expecting Any OR Expecting Magnitude
-	#   Expecting Any         --> Expecting Any OR Top Level Display OR Expecting Name
+	#   Expecting Any         --> Expecting Any OR Top Level OR Expecting Name
     #
 	# Valid Ordered Tags:
 	#    NAME*                      --> Expecting Type
 	#    TYPE*                      --> Expecting Element OR Expecting Immune
-	#    ELEMENT*                   --> Top Level Display
+	#    ELEMENT*                   --> Top Level
 	#
 	# Valid Top Level Tags (as of this writing anyway...):
-	#    REMOVED_ON                 --> Top Level Display
+	#    REMOVED_ON                 --> Top Level
 	#    INTERNAL*                  --> Expecting Magnitude
 	#
 	# Valid Internal Tags:
