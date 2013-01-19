@@ -31,7 +31,6 @@ class Game(object):
                 if event.type == QUIT:
                     sys.exit(0)
                 if event.type == KEYDOWN:
-                    print event.key
                     if event.key == K_ESCAPE:
                         sys.exit(0)
                     elif event.key == K_LEFT:
