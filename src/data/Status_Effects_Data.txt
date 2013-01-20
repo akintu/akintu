@@ -31,6 +31,9 @@
 # they are not dispelled after a set period of time, but instead rely on certain activities to remove
 # them.
 #
+# The CATEGORY tag (not currently in use) will assign category to the ability to indicate things such as
+# whether an ability is considered a buff or debuff or a spellsword enchantment etc.
+#
 
 # Display Effects -- Tier 1 Spells
 
@@ -106,30 +109,30 @@
   [TYPE: Display]
   [ELEMENT: None]
   [INTERNAL: Sneak_bonus]
-    [MAGNITDUE: 0]
+    [MAGNITUDE: 0]
   [INTERNAL: Dodge_bonus]
     [MAGNITUDE: 0]
 	
 # This ability needs help: Weapon Enhance -- TODO
 
-[NAME: Weapon Enhance]
-  [TYPE: Display]
-  [ELEMENT: None]
-  [INTERNAL: Melee_accuracy_bonus]
-    [MAGNITUDE: 3]
-	[SCALE: 0.07]
-  [INTERNAL: Ranged_accuracy_bonus]
-    [MAGNITUDE: 3]
-	[SCALE: 0.07]
-  [INTERNAL: Critical_magnitude_bonus]
-    [MAGNITUDE: 5]
-	[SCALE: 0.05]
-  [INTERNAL: Armor_penetration_bonus]
-    [MAGNITUDE: 3]
-	[SCALE: 0.07]
-  [INTERNAL: Critical_chance_bonus]
-    [MAGNITUDE: 1]
-	[SCALE: 0.035]
+#[NAME: Weapon Enhance]
+#  [TYPE: Display]
+#  [ELEMENT: None]
+#  [INTERNAL: Melee_accuracy_bonus]
+#   [MAGNITUDE: 3]
+#	[SCALE: 0.07]
+#  [INTERNAL: Ranged_accuracy_bonus]
+#    [MAGNITUDE: 3]
+#	[SCALE: 0.07]
+#  [INTERNAL: Critical_magnitude_bonus]
+#    [MAGNITUDE: 5]
+#	[SCALE: 0.05]
+#  [INTERNAL: Armor_penetration_bonus]
+#    [MAGNITUDE: 3]
+#	[SCALE: 0.07]
+#  [INTERNAL: Critical_chance_bonus]
+#    [MAGNITUDE: 1]
+#	[SCALE: 0.035]
 	
 [NAME: Flaming Weapon]
   [TYPE: Display]
@@ -203,17 +206,17 @@
   [INTERNAL: DR_penalty]
     [MAGNITUDE: 10]
 
-[NAME: Frost Weapon]
-  [TYPE: Display]
-  [ELEMENT: Cold]
-  [INTERNAL: Weapon_damage_bonus]
-    [MAGNITUDE: 0]
-  [INTERNAL: On_hit_frost_weapon]
-    [CHANCE: Unlikely]
-	[INTERNAL: Movement_speed_penalty]
-	  [MAGNITUDE: 25]
-	[INTERNAL: Dodge_penalty]
-	  [MAGNITUDE: 4]
+#[NAME: Frost Weapon]
+#  [TYPE: Display]
+#  [ELEMENT: Cold]
+#  [INTERNAL: Weapon_damage_bonus]
+#    [MAGNITUDE: 0]
+#  [INTERNAL: On_hit_frost_weapon]
+#    [CHANCE: Unlikely]
+#	[INTERNAL: Movement_speed_penalty]
+#	  [MAGNITUDE: 25]
+#	[INTERNAL: Dodge_penalty]
+#	  [MAGNITUDE: 4]
 	
 # Display Effects -- Fighter Skills
 
@@ -350,7 +353,8 @@
     [MAGNITUDE: 5]
   [INTERNAL: Target_ranged_dodge_bonus]
     [MAGNITUDE: 7]
-	# As is, will not display which target the bonuses are given against.	
+
+# As is, will not display which target the bonuses are given against.	
 	
 [NAME: Shock Factor Attack Penalty]
   [TYPE: Display]
@@ -446,9 +450,8 @@
     [MAGNITUDE: 5]
   [INTERNAL: DR_bonus]
     [CONDITIONAL: Using Shield]
-	[REMOVE_ON: Unequip Shield]
 	[MAGNITUDE: 3]
-  [REMOVE_ON: MP > 15%]
+  [REMOVED_ON: MP > 15%]
   
 [NAME: Improved Martial Mode]
   [TYPE: Display]
@@ -457,17 +460,18 @@
     [MAGNITUDE: 7]
   [INTERNAL: DR_bonus]
     [CONDITIONAL: Using Shield]
-	[REMOVE_ON: Unequip Shield]
 	[MAGNITUDE: 3]
-  [REMOVE_ON: MP > 20%] 
+  [REMOVED_ON: MP > 20%] 
 
-[NAME: Rebound]
-  [TYPE: Display]
-  [ELEMENT: Arcane]
-  [INTERNAL: Refund_mana_on_cast]
-	[TRIGGERED_BY: Spell Cast Resisted] # Hardcoded, do not change.
-	  [CONDITIONAL: Spel Mana Cost > 4] # Hardcoded, do not change.
-	[MAGNITUDE: 5] # 5 MP recovered
+# Bug/Exploit when equipping shield at time of martial mode activation...
+  
+#[NAME: Rebound]
+#  [TYPE: Display]
+#  [ELEMENT: Arcane]
+#  [INTERNAL: Refund_mana_on_cast]
+#	[TRIGGERED_BY: Spell Cast Resisted] # Hardcoded, do not change.
+#	  [CONDITIONAL: Spel Mana Cost > 4] # Hardcoded, do not change.
+#	[MAGNITUDE: 5] # 5 MP recovered
 
 # Display Effects -- Anarchist
 
@@ -493,24 +497,24 @@
 	
 # Display Effects -- Marksman Skills
 
-[NAME: Suppressing Fire]
-  [TYPE: Display]
-  [ELEMENT: None]
-  [INTERNAL: On_hit_suppressing_weapon]
-    [CHANCE: 100]
-    [INTERNAL: Melee_accuracy_penalty]
-      [MAGNITUDE: 5]
-    [INTERNAL: Ranged_accuracy_penalty]
-      [MAGNITUDE: 5]
-    [INTERNAL: Attack_power_penalty]
-      [MAGNITUDE: 5]
-  [INTERNAL: On_hit_cripple_weapon]
-    [CHANCE: Rare]
-    [CONDITIONAL: Using Shortbow || Using Sling || Using Crossbow]
-	[INTERNAL: Movement_speed_penalty]
-      [MAGNITUDE: 25]
-  [INTERNAL: Overall_damage_penalty]
-    [MAGNITUDE: 15]
+#[NAME: Suppressing Fire]
+#  [TYPE: Display]
+#  [ELEMENT: None]
+#  [INTERNAL: On_hit_suppressing_weapon]
+#    [CHANCE: 100]
+#    [INTERNAL: Melee_accuracy_penalty]
+#      [MAGNITUDE: 5]
+#    [INTERNAL: Ranged_accuracy_penalty]
+#      [MAGNITUDE: 5]
+#    [INTERNAL: Attack_power_penalty]
+#      [MAGNITUDE: 5]
+#  [INTERNAL: On_hit_cripple_weapon]
+#    [CHANCE: Rare]
+#    [CONDITIONAL: Using Shortbow || Using Sling || Using Crossbow]
+#	[INTERNAL: Movement_speed_penalty]
+#      [MAGNITUDE: 25]
+#  [INTERNAL: Overall_damage_penalty]
+#    [MAGNITUDE: 15]
 
 [NAME: Smoking Projectile]
   [TYPE: Display]
@@ -562,6 +566,7 @@
   [INTERNAL: Applied_poison_rating_bonus]
     [MAGNITUDE: 10]
   [INTERNAL: On_hit_stun]
+    [MAGNITUDE: 0]
     [CHANCE: Rare]
 	[CONDITIONAL: Using Ranged Weapon && Target not Huge]
 	
@@ -857,7 +862,7 @@
   [ELEMENT: None]
   [INTERNAL: Spellpower_bonus]
     [MAGNITUDE: 6]
-  [ELEMENT: Dodge_penalty]
+  [INTERNAL: Dodge_penalty]
     [MAGNITUDE: 5]
 	
 [NAME: Weary Bolt]
