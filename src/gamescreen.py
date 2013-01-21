@@ -16,6 +16,7 @@ class GameScreen(object):
 
     def __init__(self):
         self.screen = pygame.display.set_mode((1024, 640))
+        pygame.display.set_caption('Akintu r01')
         self.background = pygame.Surface((1024, 640))
         self.world = dict()
         self.images = dict()
