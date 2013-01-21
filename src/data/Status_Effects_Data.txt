@@ -332,6 +332,16 @@
   [INTERNAL: Hidden]
     [MAGNITUDE: 0]
 	
+[NAME: Chain Grasp]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Movement_speed_penalty]
+    [MAGNITUDE: 25]
+  [INTERNAL: Spell_failure_chance]
+    [MAGNITUDE: 5]
+  [INTERNAL: Dodge_penalty]
+    [MAGNITUDE: 5]
+	
 [NAME: Agile Position]
   [TYPE: Display]
   [ELEMENT: None]

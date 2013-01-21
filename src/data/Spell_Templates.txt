@@ -970,24 +970,21 @@ Combat.modifyresource(source, "AP", -7)
 [ACT]
 Combat.addStatus(source, "Gather", duration=1)
 
-#[TAGS]
-#  [NAME: Apply Salve]
-#  [CLASS: Wizard]
-#  [LEVEL: 2]
-#  [TARGET: Ally]
-#[/TAGS]
-#Apply Salve:
-#[REQ]
-#resource(source, "AP", 7)
-#!onCooldown(source, "Apply Salve")
-#inRange(source, target, 1)
-# // Has Potion??? TODO
-#[RES]
-#Combat.modifyresource(source, "AP", -7)
-#Combat.applyCooldown(source, "Apply Salve", 1)
-#[ACT]
-# todo!
-#
+[TAGS]
+  [NAME: Reverse Hex]
+  [CLASS: Wizard]
+  [LEVEL: 2]
+  [TARGET: Ally]
+[/TAGS]
+[REQ]
+resource(source, "AP", 10)
+!onCooldown(source, "Reverse Hex")
+inRange(source, target, 1)
+[RES]
+Combat.modifyresource(source, "AP", -10)
+Combat.applyCooldown(source, "Reverse Hex", 5)
+[ACT]
+Combat.removeStatusOfType(target, "debuff")
 
 [TAGS]
   [NAME: Spell Sight]
@@ -1079,23 +1076,21 @@ Combat.weaponAttack(source, target, hit, criticalDamageMod=(2 - (0.5 * usingWeap
 
 # Needs to be replaced with something else! TODO
 [TAGS]
-  [NAME: Swipe Potion]
+  [NAME: Chain Grasp]
   [CLASS: Thief]
   [LEVEL: 1]
-  [BREAKS_STEALTH: 0]
 [/TAGS]
 [REQ]
-resource(source, "AP", 3)
-inRange(source, target, 1)
-!onCooldown(source, "Swipe Potion")
-hasPotion(target)
+resource(source, "AP", 6)
+inRange(source, target, 4)
+!onCooldown(source, "Chain Grasp")
 [RES]
-Combat.modifyresource(source, "AP", -3)
-Combat.applyCooldown(source, "Swipe Potion", 2)
+Combat.modifyresource(source, "AP", -6)
+Combat.applyCooldown(source, "Chain Grasp", 7)
 [HIT]
-Dice.rollSuccess(source.totalCunning - target.totalCunning)
+Dice.rollSuccess(min((source.totalCunning - target.totalCunning) * 9), 90)
 [ACT]
-Combat.stealPotion(source, target, hitValue=hit)
+Combat.addStatus(target, "Chain Grasp", duration=3, hitValue=hit, chance=sizeCompare(target, "Huge", smallerThan=True))
 
 [TAGS]
   [NAME: Disarm Trap]

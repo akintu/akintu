@@ -8,10 +8,10 @@ class Person(object):
         self._directionFacing = None
         self._team = None #TODO: Move to parent class
         self._size = None
-        self._cooldownList = None
-        self._statusList = None
+        self._cooldownList = []
+        self._statusList = []
         self._owner = None
-        self._minionList = None
+        self._minionList = []
         
     @property
     def location(self):
@@ -188,6 +188,7 @@ class Person(object):
                        "Shuriken", "Mage Weapon", "Sling", "Knife"
         Outputs:
           True or False"""
+        weaponType = weaponType.capitalize().strip()
         acceptList = [weaponType]
         if weaponType == "Melee":
             acceptList.extend(["Sword", "Club", "Axe", "Polearm",

@@ -40,6 +40,17 @@ class Dice(object):
     def roll(minimum, maximum):
         """Returns an integer somewhere between the minimum and maximum (as an integer)."""
         return random.int(minimum, maximum)
+        
+    @staticmethod
+    def rollBeneath(targetRoll):
+        """rolls between [1 and 100]  If the roll is <= chanceOfSuccess, 
+           returns True, otherwise False.
+           Inputs:
+             chanceOfSuccess -- int from 1 to 100
+           Outputs:
+             True or False """
+        return random.int(1,100) <= targetRoll
+            
     
     @staticmethod
     def chanceFromSize(target, sizeRules, defaultChance=0):
