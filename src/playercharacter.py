@@ -64,11 +64,9 @@ class PlayerCharacter(object):
        self._equipmentDR = None
        self._statusDR = None
        
-       self._baseForce = None # Default is 100 (no percent modified)
-       self._equipmentForce = None # Will be a percent as an int
-       self._statusForce = None # Also an int "percent"
-       
-       # TODO: Force g/s
+       #self._baseForce = None `Does not exist?
+       self._equipmentForce = None
+       self._statusForce = None
        
        self._baseMagicResist = None
        self._equipmentMagicResist = None
@@ -1368,6 +1366,41 @@ class PlayerCharacter(object):
         int value: should be only static Ability Bonus
         """
         self._baseDR = value            
+        
+    @property
+    def totalForce(self):
+        """
+        float -- The total Force multiplier used with Might to determine used might.
+        """
+        return (statusForce * equipmentForce / 100)
+        
+    @property
+    def equipmentForce(self):
+        """
+        int -- The primary source for Force.
+        """
+        return self._equipmentForce
+        
+    @equipmentForce.setter
+    def equipmentForce(self, value):
+        """
+        Should be an int.  That is, 125% Force = 125 not 1.25
+        """
+        self._equipmentForce = value
+        
+    @property
+    def statusForce(self):
+        """
+        The amount Force is modified by an ability.
+        """
+        return self._statusForce
+        
+    @statusForce.setter
+    def statusForce(self, value):
+        """
+        Should be an int for the percent.
+        """
+        self._statusForce = value
         
     @property
     def totalArmorPenetration(self):
