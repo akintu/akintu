@@ -751,7 +751,7 @@ Combat.calcHit(source, getMeleeFacingEnemy(source), "Physical")
 [ACT]
 Combat.weaponAttack(source, getMeleeFacingEnemy(source), hit, overallDamageMod=1.2)
 Combat.modifyResource(enemy, HP, 0 - Combat.calcDamage(source, target, min=(source.totalDR * 0.4 * usingArmor("Heavy")),
-                      max=(source.totalDR * 0.4 * usingArmor("Heavy")), element=Bludgeoning, hitValue=hit))
+                      max=(source.totalDR * 0.4 * usingArmor("Heavy")), element="Bludgeoning", hitValue=hit))
 
 # Ranger Abilities
 					  

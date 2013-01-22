@@ -3,6 +3,12 @@
 import sys
 import dice
 
+class IncompleteMethodCall(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
+
 class Combat(object):
     def __init__(self):
         pass
@@ -181,20 +187,20 @@ class Combat(object):
             "Normal Hit" (Standard outcome for successful attacks)
             "Critical Hit" (Possible outcome for successful physical attacks and magical attacks
                             although most of the latter ignore whether the spell was a critical or not.)"""
-        type = type.capitalize().strip().replace(" ", "-")
+        type = type.capitalize().strip().replace("-", " ")
         if (type == "Physical"):
             return Combat.physicalHitMechanics(source, target, modifier, critMod, ignoreMeleeBowPenalty)
         
         if (type == "Magical"):
             return Combat.magicalHitMechanics(source, target)
             
-        if (type == "Magical-Poison" or type == "Poison-Magical"):
+        if (type == "Magical Poison" or type == "Poison Magical"):
             if (Combat.poisonHitMechanics(source, target, rating) == "Normal Hit"):
                 return Combat.magicalHitMechanics(source, target)
             else:
                 return "Miss"
         
-        if (type == "Physical-Poison" or type == "Poison-Physical"):
+        if (type == "Physical Poison" or type == "Poison Physical"):
             if (Combat.poisonHitMechanics(source, target, rating) == "Normal Hit"):
                 return Combat.physicalHitMechanics(source, target, modifier, critMod, ignoreMeleeBowPenalty)
             else:
@@ -207,6 +213,265 @@ class Combat(object):
             raise NotImplementedError("This method does not yet support the Trap type.")
             
         raise TypeError("Unknown Attack Type: " + type + " .")            
-          
-          
+        
+    @staticmethod
+    def addStatus(target, status, duration, magnitude=0, chance=1, 
+                  overwrite=True, partial=False, critical=False,
+                  hitValue="Normal Hit", min=0, max=0, relativeTarget=None,
+                  applier=None, scalesWith=None, scaleFactor=0, charges=0):
+        """Method is used to apply a Status to a target Person.  The properties
+        needed to create and apply the status are mostly provided by default parameters
+        and in most cases, they can be ignored.
+        Inputs: (optional parameters indicated by a star)
+          target -- Person; the target of the Status
+          status -- string; the name of the status to apply
+          duration -- int; the number of turns this status should last, if the status
+                           is intended to last indefinitely, the duration should be
+                           set to -1.
+          magnitude -- int*; the power of the status.  It is not used by many statuses.
+                            if it is not needed, it can be kept at its default value of
+                            zero.
+          chance -- float*; the chance this status will be applied at all.  It defaults
+                            to 1, which indicates a 100% chance of application.  This 
+                            parameter was included to aid with the logic of the data files.
+          overwrite -- boolean*; whether or not this Status should be overwritten by 
+                                 a Status of the same exact type.  It should typically be
+                                 kept at its default value of True, but if it is a status
+                                 that needs to 'stack', it should be False.
+          partial -- boolean*; whether or not this Status will be ignored should the 
+                               hitValue be "Partially Resisted".  If True and the 
+                               hitValue is "Partially Resisted", this method will have
+                               no effect.
+          critical -- boolean*; whether or not this Status requires a hitValue of
+                                "Critical Hit" in order to take effect.  Defaults to 
+                                False.
+          hitValue -- hit type string*; defaults to "Normal Hit".  If the value is provided
+                               and is "Miss", the method will have no effect.  Otherwise it
+                               may only have varied behavior if either the critical or 
+                               partial booleans are set to True.
+          min -- int*; some Statuses require a range of values to be supplied.  If this is
+                       the case, this should be a non-negative value.
+          max -- int*; some Statuses require a range of values to be supplied.  If this is
+                       the case, this should be a non-negative value greater than 'min'.
+          relativeTarget -- Person*; a few Statuses reference another Person as a relative
+                            target that also has some linked behavior applied.  Should almost
+                            always be left as None however.
+          applier -- Person*; some Statuses require information from the person that applied
+                              the status, such as bonusElementalDamage modifying the exact
+                              damage of a DoT.  Otherwise this should be left as None.
+          scalesWith -- string attribute*; if an applier is specified, this should be the
+                              attribute type that should be read from the applier to determine
+                              some scaling property.  Possible values are:
+                              "Strength", "Cunning", "Spellpower"
+          scaleFactor -- float*; a non-negative value that indicates how much the scaling attribute
+                              should influence the values of this Status. Should only be used in
+                              conjunction with 'applier' and 'scalesWith'.
+          charges -- int*; some statuses have a number of charges until they expire instead of 
+                           a duration.  Is set to a default of zero if not time based.
+        Outputs:
+          None"""
+        if(hitValue == "Miss" or (hitValue == "Partially Resisted" and partial = True)):
+            return
+        if(hitValue != "Critical Hit" and critical = True):
+            return
+        if(Dice.rollSuccess(100 * chance) == False):
+            return
+        # Need the Status class created in order to continue.  TODO
+        pass
+    
+        
+    @staticmethod
+    def removeStatus(target, statusName):
+        """Removes a specific status effect from a given Person.
+        Inputs: 
+          target -- Person
+          statusName -- the name of a status effect to remove
+        Outputs:
+          None"""
+        statusName = statusName.capitalize().strip()
+        matchingStatus = None
+        for stat in target.statusList:
+            if str(stat) == statusName:
+                matchingStatus = target.statusList
+                break
+        if matchingStatus:
+            target.statusList.remove(matchingStatus)
+            
+    @staticmethod
+    def removeStealth(target):
+        """Removes any form of stealth (other than invisibility) from
+        the given Person.
+        Inputs: 
+          target -- Person
+        Outputs:
+          None"""
+        removeStatus(target, "Stealth")
+        removeStatus(target, "Conceal")
+        removeStatus(target, "Shadow Walk")
+    
+    
+    @staticmethod
+    def knockback(target, sourceOfImpact, distance, ignoreResistance=False, didHit=True)
+        """Moves the target via 'knockback' a set number of tiles away from the source of 
+        impact.
+        Inputs: 
+          target -- Person to move
+          sourceOfImpact -- Tile from which the knockback originated
+          distance -- int number of tiles to move
+          ignoreResistance -- (optional) if True, will not roll to see if the resistance of
+                              the Person causes him to remain unaffected by the knockback
+          didHit -- (optional) boolean; used to determine if this method should do anything.
+                    was included to allow simpler logic in the data files."""
+        if not didHit:
+            return
+        pass
+        # TODO
+        
+    @staticmethod
+    def calcDamage(source, target, min, max, element, hitValue, partial=1, critical=1, scalesWith=None, scaleFactor=0):
+        """Computes the amount of damage that should be dealt to the target after considering all bonuses and penalties
+        to the attack that caused this method to be called such as source elemental damage bonuses or target vulnerabilities.
+        Does not actually apply any damage to anything.
+        Inputs:
+          source -- Person; attacker
+          target -- Person; victim
+          min -- int; the minimum base damage to roll
+          max -- int; the maximum base damage to roll; if less than min, will be set to min
+          element -- string; the elemental type of the attack.  Possible values:
+                     "Fire", "Cold", "Electric", "Poison", "Divine", "Shadow", "Arcane",
+                     "Bludegoning", "Piercing", "Slashing"
+          hitValue -- hitType string; Possible values:
+                     "Miss", "Normal Hit", "Partially Resisted", "Critical Hit"
+          partial -- (optional) float, non-negative; the amount to multiply the damage by if the attack 
+                     was partially resisted
+          critical -- (optional) float, non-negative; the amount to multiply the damage by if the attack
+                     was a critical hit
+          scalesWith -- (optional) string attribute; the attribute to use if the attack scales with an attriute's value
+                      possible values:
+                      "Strength", "Cunning", "Spellpower"
+          scaleFactor -- (optional) float, non-negative; the amount to multiply the base damage by per point of the
+                         scaling attribute.  If the scaling attribute is not specified but this is given an non-zero
+                         value, it will raise an IncompleteMethodCall Error.
+        Outputs:
+          non-negative int representing the damage that should be dealt to the target"""
+        # Massage input.
+        element = element.strip().capitalize()
+        hitValue = hitValue.strip().capitalize()
+        if scalesWith:
+            scalesWith = scalesWith.strip().capitalize()
+        
+        # Actual method:
+        if hitValue == "Miss":
+            return 0
+       
+        if max < min:
+            max = min
+        dieRoll = Dice.roll(min, max)
+        
+        if scalesWith == "Strength":
+            dieRoll *= 1 + (source.totalStrength * scaleFactor)
+        elif scalesWith == "Cunning":
+            dieRoll *= 1 + (source.totalCunning * scaleFactor)
+        elif scalesWith == "Spellpower":
+            dieRoll *= 1 + (source.totalSpellpower * scaleFactor)
+        elif scalesWith not None:
+            raise TypeError("calcDamage cannot be called with scaling attribute: " + scalesWith + " .")
+        
+        if hitValue == "Critical Hit":
+            dieRoll *= critical
+        elif hitValue == "Partially Resisted":
+            dieRoll *= partial
+            
+        # TODO Worry about resistances above 80% that are reduced by any amount by some ability...
+        if element == "Fire":
+            dieRoll *= 1 + (source.totalFireBonusDamage / 100)
+            dieRoll *= 1 - (target.totalFireResistance / 100)
+        elif element == "Cold":
+            dieRoll *= 1 + (source.totalColdBonusDamage / 100)
+            dieRoll *= 1 - (target.totalColdResistance / 100)           
+        elif element == "Electric":
+            dieRoll *= 1 + (source.totalElectricBonusDamage / 100)
+            dieRoll *= 1 - (target.totalElectricResistance / 100)
+        elif element == "Poison":
+            dieRoll *= 1 + (source.totalPoisonBonusDamage / 100)
+            dieRoll *= 1 - (target.totalPoisonResistance / 100)    
+        elif element == "Shadow":
+            dieRoll *= 1 + (source.totalShadowBonusDamage / 100)
+            dieRoll *= 1 - (target.totalShadowResistance / 100)
+        elif element == "Divine":
+            dieRoll *= 1 + (source.totalDivineBonusDamage / 100)
+            dieRoll *= 1 - (target.totalDivineResistance / 100)
+        elif element == "Arcane":
+            dieRoll *= 1 + (source.totalArcaneBonusDamage / 100)
+            dieRoll *= 1 - (target.totalArcaneResistance / 100)
+        elif element == "Bludgeoning":
+            dieRoll *= 1 - (target.totalBludgeoningResistance / 100)
+        elif element == "Piercing":
+            dieRoll *= 1 - (target.totalPiercingResistance / 100)
+        elif element == "Slashing":
+            dieRoll *= 1 - (target.totalSlashingResistance / 100)
+        else:
+            raise TypeError("Encountered an unknown element: " + element + " .")
+
+        if dieRoll < 0:
+            dieRoll = 0
+        return dieRoll.round()
+        
+    @staticmethod
+    def weaponAttack(source, target, hitType, forceMod=1, criticalDamageMod=1, armorPenetrationMod=0,
+                     elementOverride=None, noCounter=False, overallDamageMod=1, mightMod=0, 
+                     ignoreOnHitEffects=False, poisonRatingMod=0):
+        """Performs a weapon attack against the target from the source.  Calls actually apply the damage
+        to the target, unlike 'callDamage()'.
+        Inputs: (optional values indicated by a *)
+          source -- Person; attacker
+          target -- Person; victim
+          hitType -- string; possbile values: "Miss", "Normal Hit", "Critical Hit"
+          forceMod -- float*; the amount to multiply the weapon's Force by for this attack
+          criticalDamageMod -- float*; the amount to multiply the attack's critical damage by
+          armorPenetrationMod -- int*; the amount of armor penetration added to this attack
+          elementOverride -- string*; if this attack's native elemental types are to be ignored, this
+                             field should be one of the elements.  All damage dealt by this attack will
+                             be converted to that type before application.
+          noCounter -- boolean*; if set, this will prevent any immediate counterattacks
+          overallDamageMod -- float*; the amount to multiply the end result of this damage by.
+          mightMod -- int*; the amount of bonus might applied to this attack
+          ignoreOnHitEffects -- boolean*; if set, this attack will not trigger listeners waiting for
+                                a weapon attack or apply any weapon's on-hit effects.
+          poisonRatingMod -- int; the amount to boost the poison rating of this attack by for any added
+                                  'applied' poisons.
+        Outputs:
+          None"""
+        pass #TODO
+        
+        
+    @staticmethod
+    def setMovementCost(target, newCost, numberOfMoves=1, duration=-1, inStealth=False):
+        """Sets the AP cost of the next move of the target Person to the specified value.
+        By default, this will only apply to the next movement.
+        Inputs:
+          target -- Person; the target whose movement cost we are adjusting
+          newCost -- int; a non-negative value to assign the AP cost of movement to.
+          numberOfMoves* -- int; the number of moves at this adjusted AP cost.  Once 
+                           expired, this method will reset the AP movement cost to its
+                           default value.  If this is to be time based and not based
+                           on the number of movements, this parameter should be set
+                           to -1.
+          duration -- int*; the number of turns this AP cost should be assigned to the target.
+                           By default, it is -1 which indicates it is not based on the 
+                           number of turns, but rather the number of movements.
+          inStealth -- boolean*; If set, will cause the AP cost to reset to its default value
+                                 upon exiting stealth.
+        Outputs:
+          None"""
+        pass #TODO
+        
+    
+        
+                     
+                     
+        
+    
+    
+        
           

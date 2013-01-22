@@ -185,9 +185,6 @@ void endTurn(Combat cls, Person player)
 
 void modifyThreat(Combat cls, Person source, Person target, float threatAdjustment)
 
-void stealPotion(Combat cls, Person reciever, Person victim)
-  // removes a stealable potion from the victim if it is carrying one, and gives it to the reciever.  Is only used to steal a potion from monster-characters.
-
 void removeStatusOfType(Combat cls, Person target, StatusCategory category, boolean removeAll=False)
   // See: getMostRecentStatus for a listing of Status Categories.
 

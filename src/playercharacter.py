@@ -176,6 +176,8 @@ class PlayerCharacter(object):
        # TODO: All elemental resistance setters/getters
        # TODO: Write method lowerElementalResistance(element, magnitude)
        # TODO: Write method raiseElementalResistance(element, magnitude)
+       # TODO: Write all elemental bonus damage attributes such as:
+       # self._baseFireBonusDamage = None  Where 25 would equal 25% bonus damage, so the default should be 0.
        
        # TODO: Write method applyHPBuffer(magnitude)
        # TODO: Movement AP cost, melee attack AP cost, ranged attack AP cost, movementAPOverride default -1
@@ -1320,7 +1322,12 @@ class PlayerCharacter(object):
         statuses that boost or reduce DR.
         
         Damage Reduction will not be lowered beneath 0%
-        in this variable.
+        in this variable.  
+        
+        Damage Reduction WILL be raised
+        above 80% in this variable if asked to.  It is the
+        viewer's repsonsibility to adjust downward after 
+        considering any armor penetration.
         """
         return max(0, equipmentDR + statusDR + baseDR)
             
