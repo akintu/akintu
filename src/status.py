@@ -9,8 +9,8 @@ class Status(object):
         self.categoryList = None
         self.turnsLeft = None
         self.internalList = None
-        #self._recurring = None #boolean
         self.persistent = None #boolean
+        self.categoryList = None
         
         self._loadedFromFile = False
         # TODO: where should we indicate persistence?

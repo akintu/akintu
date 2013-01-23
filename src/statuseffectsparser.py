@@ -3,7 +3,7 @@
 import sys
 import re
 import status
-import internalStatus
+import internalstatus
 
 class InvalidDataFileSyntax(Exception):
     def __init__(self, value):
@@ -22,8 +22,8 @@ class StatusEffectsParser(object):
           "Expecting Element" -- currently parsing a display status on the top
              level, expecting an element.
           "Top Level" -- Just read element, expecting any top level tags.
-          "Expecting Immune" -- currently parsing an internal 
-             definition.
+          "Expecting Recurring" -- currently parsing an internal defnition.
+          "Expecting Immune" -- currently parsing an internal definition.
           "Expecting Magnitude" -- currently parsing a display status' 
              internal effect but haven't read the required magnitude field yet
           "Expecting Any" -- current parsing a display status' internal
@@ -34,8 +34,8 @@ class StatusEffectsParser(object):
         self.displayStatusList = []
     
     # Paths by State:  
-    #   Expecting Name        --> Expecting Type    --> Expecting Element OR Expecting Immune
-    #   Expecting Immune      --> Expecting Name
+    #   Expecting Name        --> Expecting Type    --> Expecting Element OR Expecting Recurring
+    #   Expecting Recurring   --> Expecting Immune  --> Expecting Name  
     #   Expecting Element     --> Top Level         --> Expecting Magnitude OR Top Level OR Expecting Name
     #   Expecting Magnitude   --> Expecting Any OR Expecting Magnitude
     #   Expecting Any         --> Expecting Any OR Top Level OR Expecting Name
@@ -57,7 +57,16 @@ class StatusEffectsParser(object):
     #    MIN                        --> Expecting Magnitude OR Expecting Any
     #    MAX                        --> Expecting Magnitude OR Expecting Any
     #
+    # Valid Definition Tags:
+    #    IMMUNE                     --> Expecting Name
+    #    RECURRING                  --> Definition Level
+    #
+    #
+    
     # Note: *'d Items are required.
+    
+    
+    #~Do Not Modify This Line: START INTERNAL~
     
     def parseAll(self, fileName):
         nameTag = re.compile("(?:\[NAME: )(.*)(?:\])", re.I)
@@ -72,6 +81,7 @@ class StatusEffectsParser(object):
         minTag = re.compile("(?:\[MIN: )(.*)(?:\])", re.I)
         maxTag = re.compile("(?:\[MAX: )(.*)(?:\])", re.I)
         categoryTag = re.compile("(?:\[CATEGORY: )(.*)(?:\])", re.I)
+        recurringTag = rec.compile("?:\[RECURRING: )(.*)(?:\])", re.I)
         
         f = open('./data/Status_Effects_Data.txt', 'r')
         
@@ -81,6 +91,7 @@ class StatusEffectsParser(object):
         name = None
         type = None 
         immune = None
+        recurring = None
         element = None
         internalNameList = None
         internalList = None
@@ -90,6 +101,7 @@ class StatusEffectsParser(object):
         chanceList = None
         minList = None
         maxList = None
+        allInternalHusks = set()
         
         for line in f:
             line = line.strip()
@@ -98,6 +110,7 @@ class StatusEffectsParser(object):
                 name = "Undefined"
                 type = "Undefined" 
                 immune = "Undefined"
+                recurring = "Undefined"
                 element = "Undefined"
                 internalNameList = []
                 internalList = []
@@ -119,15 +132,21 @@ class StatusEffectsParser(object):
                     self.state = "Expecting Element"
                     continue
                 elif(type == "Internal"):
-                    self.state = "Expecting Immune"
+                    self.state = "Expecting Recurring"
                     continue
+                    
+            if(self.state == "Expecting Recurring"):
+                recurring = recurringTag.match(line).group(1)
+                self.state = "Expecting Immune"
+                continue
                     
             if(self.state == "Expecting Immune"):
                 if(StatusEffectsParser.isEmptyText(line)):
                     immune = "None"
                 else:
                     immune = immuneTag.match(line).group(1)
-                # TODO: Worry about actually making use of immunities!?
+                iStatus = internalstatus.InternalStatus(name, recurring, immune)
+                allInternalHusks.add(iStatus)
                 self.state = "Expecting Name"
                 continue
                 
@@ -142,10 +161,12 @@ class StatusEffectsParser(object):
                 # REMOVED_ON
                 if(StatusEffectsParser.isEmptyText(line)):
                     for i in range(len(internalNameList)):
-                        intern = internalStatus.InternalStatus()
-                        intern.populateFromFile(internalNameList[i], magnitudeList[i], conditionalList[i], 
-                                                chanceList[i], minList[i], maxList[i])
-                        internalList.append(intern)       
+                        iStatus = None
+                        for husk in allInternalHusks:
+                            if husk.name == internalNameList[i].name:
+                                iStatus = husk.cloneWithDetails(magnitudeList[i], conditionalList[i],
+                                                                chanceList[i], minList[i], maxList[i])
+                        internalList.append(iStatus)       
                     displayStatus = status.Status()
                     displayStatus.populateFromFile(name, element, categoryList, internalList)
                     self.displayStatusList.append(displayStatus)
