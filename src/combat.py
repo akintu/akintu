@@ -309,6 +309,22 @@ class Combat(object):
         removeStatus(target, "Conceal")
         removeStatus(target, "Shadow Walk")
     
+    @staticmethod
+    def removeStatusOfType(target, category, removeAll=False):
+        """Removes a random status from the given 'category' from the target.
+        Alternatively, if 'removeAll' is set, it will remove all statuses that
+        fit within the category given.
+        Inputs:
+          target -- Person; the character to remove status(es) from
+          category -- string; a status category identifying a set of statuses
+                      possible values: TODO
+          removeAll -- boolean*; if set, will remove all statuses belonging to
+                       the given category instead of a single random status 
+                       belonging to the category
+        Output:
+          None"""
+        pass #TODO
+    
     
     @staticmethod
     def knockback(target, sourceOfImpact, distance, ignoreResistance=False, didHit=True)
@@ -466,11 +482,80 @@ class Combat(object):
           None"""
         pass #TODO
         
+    @staticmethod
+    def movePlayer(target, destination, instant=False):
+        """Will move the player character from its current location to the given
+        destination tile.  By default, will show the moving animation.
+        Inputs:
+          target -- Person; the Person to move
+          destination -- Tile; the location to move the target to
+          instant -- boolean*; if set, the moving animation will not be displayed
+                               and the player will immediately be sent to the Tile.
+        Outputs:
+          None"""
+        pass #TODO
+        
+    @staticmethod
+    def endTurn(player):
+        """Will end the turn of the given player-character.
+        Inputs:
+          player -- Person; the player whose turn will be ended
+        Outputs:
+          None"""
+        pass #TODO
+        
+    @staticmethod
+    def modifyThreat(source, target, threatAdjustment):
+        """Alters the threat of the given source toward the target specified by 
+        multiplying the existing level by threatAdjustment.
+        Inputs:
+          source -- Person; the monster whose threat level will be modified
+          target -- Person; the player to which the monster will have an adjusted
+                    threat level
+          threadAdjustment -- float; the amount to mulitply the threat level by
+        Outputs:
+          None"""
+        pass #TODO
+        
+    @staticmethod
+    def unsummonGuardian(target):
+        """Removes the current guardian of the player from the battlefield.
+        The player will not incur an HP loss.
+        Inputs:
+          target -- Person; owner of the guardian
+        Outputs:
+          None"""
+        pass #TODO
+
+    @staticmethod
+    def summonGuardian(owner, name):
+        """Create a Sorcerer-type Guardian on a nearby tile with the given
+        name.
+        Inputs:
+          owner -- Person; the Sorcerer performing the summon
+          name -- string; the name of the particular summon, must match an 
+                  actual summon's name
+        Outputs:
+          None"""
+    pass #TODO
     
-        
-                     
-                     
-        
+    @staticmethod
+    def disarmTrap(thief, trap, wasSuccessful):
+        """Disarm the trap specified with the thief and his allies gaining
+        experience.  If wasSuccessful is False, simply return with no effect.
+        Inputs:
+          thief -- Person; the thief disarming the trap
+          trap -- Trap; the trap being disarmed
+          wasSuccessful -- boolean*; If False, will cause this method to do 
+                           nothing.  It was included to simplify data file
+                           logic and possibly for extension later with 
+                           'critical failure' type penalties etc.
+        Outputs:
+          None"""
+    pass #TODO
+    
+    
+    
     
     
         
