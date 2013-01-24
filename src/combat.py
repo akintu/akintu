@@ -127,7 +127,7 @@ class Combat(object):
         if (source.usingWeapon("Ranged")):
             #Ranged attack
             if(source.inRange(target, 1) and not ignoreMeleeBowPenalty):
-                #Ranged attack with penalty TODO
+                #Ranged attack with penalty 20% miss chance TODO
                 #Passives alter how this functions? TODO
             #Ranged attack not in melee, or it doesn't matter.
             defense = target.totalDodge + target.totalRangedDodge

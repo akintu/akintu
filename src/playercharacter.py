@@ -64,7 +64,7 @@ class PlayerCharacter(object):
        self._equipmentDR = None
        self._statusDR = None
        
-       #self._baseForce = None `Does not exist?
+       #self._baseForce = N\A
        self._equipmentForce = None
        self._statusForce = None
        
@@ -88,29 +88,21 @@ class PlayerCharacter(object):
        self._equipmentMovementTiles = None
        self._statusMovementTiles = None
        
-       # TODO: getter/setter movementTiles
-       
-       self._baseOverallDamageBonus = None # default 0%
-       self._equipmentOverallDamageBonus = None # Typically/always 0?
+       self._baseOverallDamageBonus = None
+       self._equipmentOverallDamageBonus = None
        self._statusOverallDamageBonus = None
-       
-       # TODO: getter/setter overallDamageBonus
        
        self._basePoisonRatingBonus = None
        self._equipmentPoisonRatingBonus = None
        self._statusPoisonRatingBonus = None
        
-       # TODO: Getters/setters for poisonratingbonus
-       
        self._basePoisonTolerance = None
        self._equipmentPoisonTolerance = None
        self._statusPoisonTolerance = None      
        
-       self._basePotionEffect = None # default = 100% before Sorc.
+       self._basePotionEffect = None
        self._equipmentPotionEffect = None
        self._statusPotionEffect = None
-       
-       # TODO: getter/setter for potionEffect
        
        self._baseRangedAccuracy = None
        self._equipmentRangedAccuracy = None
@@ -124,12 +116,9 @@ class PlayerCharacter(object):
        self._equipmentRangedDodge = None
        self._statusRangedDodge = None     
 
-       self._baseRangedForce = None # Default is 100 (no percent modified)
-       self._equipmentRangedForce = None # Will be a percent as an int
-       self._statusRangedForce = None # Also an int "percent"      
-       
-       # TODO; G/s for ranged force
-       # TODO: Getters/setters for ranged dodge
+       self._baseRangedForce = None
+       self._equipmentRangedForce = None
+       self._statusRangedForce = None   
        
        self._baseSneak = None
        self._equipmentSneak = None
@@ -173,7 +162,6 @@ class PlayerCharacter(object):
        self._equipmentShadowResistance = None
        self._statusShadowResistance = None
        
-       # TODO: All elemental resistance setters/getters
        # TODO: Write method lowerElementalResistance(element, magnitude)
        # TODO: Write method raiseElementalResistance(element, magnitude)
        # TODO: Write all elemental bonus damage attributes such as:
@@ -610,60 +598,7 @@ class PlayerCharacter(object):
             
     # Derived Attributes
     
-    @property
-    def totalMight(self):
-        """
-        Might is determined by Strength, equipment that boosts Might,
-        possible "static" abililties that boost Might, and "dynamic"
-        statuses that boost or reduce Might.
-        """
-        return equipmentMight + statusMight + baseMight
-            
-    @property
-    def equipmentMight(self):
-        """
-        The Might granted from any magical equipment currently on.
-        Will not automatically update.
-        """
-        return self._equipmentMight
-        
-    @equipmentMight.setter
-    def equipmentMight(self, value):
-        """
-        int value: should be the total might given from equipment on
-        """
-        self._equipmentMight = value
-            
-    @property
-    def statusMight(self):
-        """
-        The Might gained or lost from the sum of statuses.
-        """
-        return self._statusMight
-        
-    @statusMight.setter
-    def statusMight(self, value):
-        """
-        int value: should be the total might given from statuses.
-        """
-        self._statusMight = value
-        
-    @property
-    def baseMight(self):
-        """
-        The Might granted from Strength and any "static" abilities
-        """
-        return self._baseMight
-        
-    @baseMight.setter
-    def baseMight(self, value):
-        """
-        int value: should be max(0, (Strength - 10)) + static ability might
-        """
-        if value >= 0:
-            self._baseMight = value
-            
-    @property
+@property
     def totalMeleeAccuracy(self):
         """
         MeleeAccuracy is determined by STR, DEX, equipment that boosts MeleeAccuracy,
@@ -769,6 +704,168 @@ class PlayerCharacter(object):
         int value: should be whatever the static ability bonus is, or zero.
         """
         self._baseMeleeDodge = value
+    
+    @property
+    def totalMight(self):
+        """
+        Might is determined by Strength, equipment that boosts Might,
+        possible "static" abililties that boost Might, and "dynamic"
+        statuses that boost or reduce Might.
+        """
+        return equipmentMight + statusMight + baseMight
+            
+    @property
+    def equipmentMight(self):
+        """
+        The Might granted from any magical equipment currently on.
+        Will not automatically update.
+        """
+        return self._equipmentMight
+        
+    @equipmentMight.setter
+    def equipmentMight(self, value):
+        """
+        int value: should be the total might given from equipment on
+        """
+        self._equipmentMight = value
+            
+    @property
+    def statusMight(self):
+        """
+        The Might gained or lost from the sum of statuses.
+        """
+        return self._statusMight
+        
+    @statusMight.setter
+    def statusMight(self, value):
+        """
+        int value: should be the total might given from statuses.
+        """
+        self._statusMight = value
+        
+    @property
+    def baseMight(self):
+        """
+        The Might granted from Strength and any "static" abilities
+        """
+        return self._baseMight
+        
+    @baseMight.setter
+    def baseMight(self, value):
+        """
+        int value: should be max(0, (Strength - 10)) + static ability might
+        """
+        if value >= 0:
+            self._baseMight = value
+           
+    @property
+    def totalMovementTiles(self):
+        """
+        The number of tiles this character can move in a single movement-AP cost.
+        Will almost always be 2
+        Cannot be reduced below 1.
+        """
+        return min(self._baseMovementTiles + self._equipmentMovementTiles + 
+               self._statusMovementTiles, 1)
+            
+    @property
+    def baseMovementTiles(self):
+        """
+        As of Akintu tier 4, will always be exactly 2.
+        """
+        return self._baseMovementTiles
+        
+    @baseMovementTiles.setter
+    def baseMovementTiles(self, value):
+        """
+        int Tiles
+        """
+        self._baseMovementTiles = value
+        
+    @property
+    def equipmentMovementTiles(self):
+        """It should be ultra-rare for an item to modify this."""
+        return self._eqiupmentMovementTiles
+        
+    @equipmentMovementTiles.setter
+    def equipmentMovementTiles(self, value):
+        self._equipmentMovementTiles = value
+        
+    @property
+    def statusMovementTiles(self):
+        return self._statusMovementTiles
+        
+    @statusMovementTiles.setter
+    def statusMovementTiles(self, value):
+        self._statusMovementTiles = value
+       
+    @property
+    def totalOverallDamageBonus(self):
+        """ Should be 0 for 0% by default.
+            Would be 14 for 14% (not 1.14)
+        """
+        return self._baseOverallDamageBonus + self._equipmentOverallDamageBonus +
+               self._statusOverallDamageBonus
+               
+    @property
+    def baseOverallDamageBonus(self):
+        """ Should almost always be 0 for 0%."""
+        return self._baseOverallDamageBonus
+        
+    @baseOverallDamageBonus.setter
+    def baseOverallDamageBonus(self, value):
+        """ Set to ints not floats."""
+        self._baseOverallDamageBonus = value
+        
+    @property
+    def eqiupmentOverallDamageBonus(self):
+        return self._equipmentOverallDamageBonus
+        
+    @equipmentOverallDamageBonus.setter
+    def equipmentOverallDamageBonus(self, value):
+        self._equipmentOverallDamageBonus = value
+        
+    @property
+    def statusOverallDamageBonus(self):
+        return self._statusOverallDamageBonus
+        
+    @statusOverallDamageBonus.setter
+    def statusOverallDamageBonus(self, value):
+        return self._statusOverallDamageBonus
+        
+    @property
+    def totalPoisonRatingBonus(self):
+        """ The bonus applied to any applied poison, or any ability
+        that has a poison effect that uses the poison rating roll 
+        (which is almost all of them other than weapon elemental damage.)
+        """
+        return self._basePoisonRatingBonus + self.equipmentPoisonRatingBonus +
+               self._statusPoisonRatingBonus
+    
+    @property
+    def basePoisonRatingBonus(self):
+        """ int """
+        return self._basePoisonRatingBonus
+        
+    @basePoisonRatingBonus.setter
+    def basePoisonRatingBonus(self, value):
+       self._basePoisonRatingBonus = value
+       
+    @property
+    def equipmentPoisonRatingBonus(self):
+        return self._equipmentPoisonRatingBonus
+        
+    @equipmentPoisonRatingBonus.setter
+    def equipmentPoisonRatingBonus(self, value):
+        self._equipmentPoisonRatingBonus = value
+        
+    @property
+    def statusPoisonRatingBonus(self):
+        return self._statusPoisonRatingBonus
+        
+    @statusPoisonRatingBonus.setter
+    def statusPoisonRatingBonus(self, value):
+        self._statusPoisonRatingBonus = value
         
     @property
     def totalRangedAccuracy(self):
@@ -1158,6 +1255,43 @@ class PlayerCharacter(object):
             self._basePoisonTolerance = value   
             
     @property
+    def totalPotionEffect(self):
+        """
+        An int representing how much healing and mana potions are
+        augmented.  Starts at 100 but is increased by many possible
+        factors, especially Sorcery."""
+        return self._basePotionEffect + self._equipmentPotionEffect +
+               self._statusPotionEffect
+               
+    @property
+    def basePotionEffect(self):
+        """An int starting at 100 that indicates 100%"""
+        return self._basePotionEffect
+        
+    @basePotionEffect.setter
+    def basePotionEffect(self, value):
+        """The contribution from SOR should be max(0, (SOR - 10) * 5)
+        or in other words, 5% per point of SOR beyond 10 but no penalty
+        given for SOR less than 10."""
+        self._basePotionEffect = value
+        
+    @property
+    def equipmentPotionEffect(self):
+        return self._equipmentPotionEffect
+        
+    @equipmentPotionEffect.setter
+    def equipmentPotionEffect(self, value):
+        self._equipmentPotionEffect = value
+        
+    @property
+    def statusPotionEffect(self):
+        return self._statusPotionEffect
+        
+    @statusPotionEffect.setter
+    def statusPotionEffect(self, value):
+        self._statusPotionEffect = value
+            
+    @property
     def totalDodge(self):
         """
         Dodge is determined by DEX, equipment that boosts Dodge,
@@ -1462,6 +1596,80 @@ class PlayerCharacter(object):
         self._baseArmorPenetration = value      
     
     @property
+    def totalRangedDodge(self):
+        """ Is only the bonus dodge given against ranged attacks.  
+        Needs to be manually added to the dodge total."""
+        return self._baseRangedDodge + self._equipmentRangedDodge +
+               self._statusRangedDodge
+               
+    @property
+    def baseRangedDodge(self):
+        return self._baseRangedDodge
+
+    @baseRangedDodge.setter
+    def baseRangedDodge(self, value):
+        """Should be 0 unless some passive abilities boost it."""
+        self._baseRangedDodge = value
+
+    @property
+    def equipmentRangedDodge(self):
+        return self._equipmentRangedDodge
+        
+    @eqiupmentRangedDodge.setter
+    def equipmentRangedDodge(self, value):
+        self._eqiupmentRangedDodge = value
+        
+    @property
+    def statusRangedDodge(self):
+        return self._statusRangedDodge
+        
+    @statusRangedDodge.setter
+    def statusRangedDodge(self, value):
+        self._statusRangedDodge = value
+    
+    @property
+    def totalRangedForce(self):
+        """
+        Ranged force is determined primarily by the weapon being used, but
+        could also be affected by some special statuses and maybe even passive
+        abilities.
+        """
+        return self._baseRangedForce * (self._equipmentRangedForce / 100) * 
+               (1 + self._statusRangedForce)
+               
+    @property
+    def equipmentRangedForce(self):
+        """
+        The ranged force granted from a ranged weapon equipped.  May also
+        be benefitted from a magical property on it.
+        """
+        return self._equipmentRangedForce
+        
+    @equipmentRangedForce.setter
+    def equipmentRangedForce(self, value):
+        """
+        int value: should be the percent such that 125% would be 125 etc.
+        """
+        self._equipmentRangedForce = value
+        
+    @property
+    def statusRangedForce(self):
+        return self._statusRangedForce
+        
+    @statusRangedForce.setter
+    def statusRangedForce(self, value):
+        self._statusRangedForce = value
+        
+    @property
+    def baseRangedForce(self):
+        return self._baseRangedForce
+        
+    @baseRangedForce.setter
+    def baseRangedFroce(self, value):
+        """ The default value here should be 100 """
+        self._baseRangedForce = value
+    
+    @property
     def totalSneak(self):
         """
         Sneak is determined by CUN, equipment that boosts Sneak,
@@ -1520,10 +1728,271 @@ class PlayerCharacter(object):
         """
         return self._growthType
         
+        
+    # Elemental Properties
     
+    @property
+    def totalArcaneResistance(self):
+        """The percent (as an int) of incoming Arcane damage that will be ignored.
+        May be reduced below zero by certain abilities.  Old game rules may have 
+        this listed as a separate 'elemental vulnerability' but those abilities that
+        mention such need to be updated/replaced as the distinction is being
+        eliminated.
         
+        Elemental Resistances above 80% should not have an effect beyond 80% but
+        that logic is not encoded here.  Thus values greater than 80 may be 
+        returned."""
+        return self._baseArcaneResistance + self._equipmentArcaneResistance +
+               self._statusArcaneResistance
+               
+    @property
+    def baseArcaneResistance(self):
+        return self._baseArcaneResistance
         
+    @baseArcaneResistance.setter
+    def baseArcaneReistance(self, value):
+        self._baseArcaneResistance = value
         
+    @property
+    def equipmentArcaneResistance(self):
+        return self._equipmentArcaneResistance
+        
+    @equipmentArcaneResistance.setter
+    def equipmentArcaneResistance(self, value):
+        self._equipmentArcaneResistance = value
+        
+    @property
+    def statusArcaneResistance(self):
+        return self._statusArcaneResistance
     
+    @statusArcaneResistance.setter
+    def statusArcaneResistance(self, value):
+        return self._statusArcaneResistance
         
+    @property
+    def totalColdResistance(self):
+        """The percent (as an int) of incoming Cold damage that will be ignored.
+        May be reduced below zero by certain abilities.  Old game rules may have 
+        this listed as a separate 'elemental vulnerability' but those abilities that
+        mention such need to be updated/replaced as the distinction is being
+        eliminated.
+        
+        Elemental Resistances above 80% should not have an effect beyond 80% but
+        that logic is not encoded here.  Thus values greater than 80 may be 
+        returned."""
+        return self._baseColdResistance + self._equipmentColdResistance +
+               self._statusColdResistance
+               
+    @property
+    def baseColdResistance(self):
+        return self._baseColdResistance
+        
+    @baseColdResistance.setter
+    def baseColdReistance(self, value):
+        self._baseColdResistance = value
+        
+    @property
+    def equipmentColdResistance(self):
+        return self._equipmentColdResistance
+        
+    @equipmentColdResistance.setter
+    def equipmentColdResistance(self, value):
+        self._equipmentColdResistance = value
+        
+    @property
+    def statusColdResistance(self):
+        return self._statusColdResistance
     
+    @statusColdResistance.setter
+    def statusColdResistance(self, value):
+        return self._statusColdResistance   
+        
+    @property
+    def totalDivineResistance(self):
+        """The percent (as an int) of incoming Divine damage that will be ignored.
+        May be reduced below zero by certain abilities.  Old game rules may have 
+        this listed as a separate 'elemental vulnerability' but those abilities that
+        mention such need to be updated/replaced as the distinction is being
+        eliminated.
+        
+        Elemental Resistances above 80% should not have an effect beyond 80% but
+        that logic is not encoded here.  Thus values greater than 80 may be 
+        returned."""
+        return self._baseDivineResistance + self._equipmentDivineResistance +
+               self._statusDivineResistance
+               
+    @property
+    def baseDivineResistance(self):
+        return self._baseDivineResistance
+        
+    @baseDivineResistance.setter
+    def baseDivineReistance(self, value):
+        self._baseDivineResistance = value
+        
+    @property
+    def equipmentDivineResistance(self):
+        return self._equipmentDivineResistance
+        
+    @equipmentDivineResistance.setter
+    def equipmentDivineResistance(self, value):
+        self._equipmentDivineResistance = value
+        
+    @property
+    def statusDivineResistance(self):
+        return self._statusDivineResistance
+    
+    @statusDivineResistance.setter
+    def statusDivineResistance(self, value):
+        return self._statusDivineResistance   
+    
+    @property
+    def totalElectricResistance(self):
+        """The percent (as an int) of incoming Electric damage that will be ignored.
+        May be reduced below zero by certain abilities.  Old game rules may have 
+        this listed as a separate 'elemental vulnerability' but those abilities that
+        mention such need to be updated/replaced as the distinction is being
+        eliminated.
+        
+        Elemental Resistances above 80% should not have an effect beyond 80% but
+        that logic is not encoded here.  Thus values greater than 80 may be 
+        returned."""
+        return self._baseElectricResistance + self._equipmentElectricResistance +
+               self._statusElectricResistance
+               
+    @property
+    def baseElectricResistance(self):
+        return self._baseElectricResistance
+        
+    @baseElectricResistance.setter
+    def baseElectricReistance(self, value):
+        self._baseElectricResistance = value
+        
+    @property
+    def equipmentElectricResistance(self):
+        return self._equipmentElectricResistance
+        
+    @equipmentElectricResistance.setter
+    def equipmentElectricResistance(self, value):
+        self._equipmentElectricResistance = value
+        
+    @property
+    def statusElectricResistance(self):
+        return self._statusElectricResistance
+    
+    @statusElectricResistance.setter
+    def statusElectricResistance(self, value):
+        return self._statusElectricResistance   
+    
+    @property
+    def totalFireResistance(self):
+        """The percent (as an int) of incoming Fire damage that will be ignored.
+        May be reduced below zero by certain abilities.  Old game rules may have 
+        this listed as a separate 'elemental vulnerability' but those abilities that
+        mention such need to be updated/replaced as the distinction is being
+        eliminated.
+        
+        Elemental Resistances above 80% should not have an effect beyond 80% but
+        that logic is not encoded here.  Thus values greater than 80 may be 
+        returned."""
+        return self._baseFireResistance + self._equipmentFireResistance +
+               self._statusFireResistance
+               
+    @property
+    def baseFireResistance(self):
+        return self._baseFireResistance
+        
+    @baseFireResistance.setter
+    def baseFireReistance(self, value):
+        self._baseFireResistance = value
+        
+    @property
+    def equipmentFireResistance(self):
+        return self._equipmentFireResistance
+        
+    @equipmentFireResistance.setter
+    def equipmentFireResistance(self, value):
+        self._equipmentFireResistance = value
+        
+    @property
+    def statusFireResistance(self):
+        return self._statusFireResistance
+    
+    @statusFireResistance.setter
+    def statusFireResistance(self, value):
+        return self._statusFireResistance   
+    
+    @property
+    def totalPoisonResistance(self):
+        """The percent (as an int) of incoming Poison damage that will be ignored.
+        May be reduced below zero by certain abilities.  Old game rules may have 
+        this listed as a separate 'elemental vulnerability' but those abilities that
+        mention such need to be updated/replaced as the distinction is being
+        eliminated.
+        
+        Elemental Resistances above 80% should not have an effect beyond 80% but
+        that logic is not encoded here.  Thus values greater than 80 may be 
+        returned."""
+        return self._basePoisonResistance + self._equipmentPoisonResistance +
+               self._statusPoisonResistance
+               
+    @property
+    def basePoisonResistance(self):
+        return self._basePoisonResistance
+        
+    @basePoisonResistance.setter
+    def basePoisonReistance(self, value):
+        self._basePoisonResistance = value
+        
+    @property
+    def equipmentPoisonResistance(self):
+        return self._equipmentPoisonResistance
+        
+    @equipmentPoisonResistance.setter
+    def equipmentPoisonResistance(self, value):
+        self._equipmentPoisonResistance = value
+        
+    @property
+    def statusPoisonResistance(self):
+        return self._statusPoisonResistance
+    
+    @statusPoisonResistance.setter
+    def statusPoisonResistance(self, value):
+        return self._statusPoisonResistance   
+    
+    @property
+    def totalShadowResistance(self):
+        """The percent (as an int) of incoming Shadow damage that will be ignored.
+        May be reduced below zero by certain abilities.  Old game rules may have 
+        this listed as a separate 'elemental vulnerability' but those abilities that
+        mention such need to be updated/replaced as the distinction is being
+        eliminated.
+        
+        Elemental Resistances above 80% should not have an effect beyond 80% but
+        that logic is not encoded here.  Thus values greater than 80 may be 
+        returned."""
+        return self._baseShadowResistance + self._equipmentShadowResistance +
+               self._statusShadowResistance
+               
+    @property
+    def baseShadowResistance(self):
+        return self._baseShadowResistance
+        
+    @baseShadowResistance.setter
+    def baseShadowReistance(self, value):
+        self._baseShadowResistance = value
+        
+    @property
+    def equipmentShadowResistance(self):
+        return self._equipmentShadowResistance
+        
+    @equipmentShadowResistance.setter
+    def equipmentShadowResistance(self, value):
+        self._equipmentShadowResistance = value
+        
+    @property
+    def statusShadowResistance(self):
+        return self._statusShadowResistance
+    
+    @statusShadowResistance.setter
+    def statusShadowResistance(self, value):
+        return self._statusShadowResistance   
