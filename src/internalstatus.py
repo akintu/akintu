@@ -152,7 +152,7 @@ def HP_buffer_method(self, target, magnitude):
     target.applyHPBuffer(magnitude)
 
 def Increased_movement_AP_cost_method(self, target, magnitude):
-    target.movementAPCost += magnitude
+    target.statusMovementAPCost += magnitude
 
 def Magic_resist_bonus_method(self, target, magnitude):
     target.statusMagicResist += magnitude
@@ -248,7 +248,7 @@ def Set_maximum_stealth_break_chance_method(self, target, magnitude):
     target.stealthBreakMaxOverride = magnitude
 
 def Set_movement_AP_cost_method(self, target, magnitude):
-    target.movementAPOverride = magnitude
+    target.overrideMovementAPCost = magnitude
 
 def Snake_style_method(self):
     pass
@@ -361,7 +361,7 @@ def HP_buffer_method_reverse(self):
     pass
 
 def Increased_movement_AP_cost_method_reverse(self, target, magnitude):
-    target.movementAPCost -= magnitude
+    target.statusMovementAPCost -= magnitude
 
 def Magic_resist_bonus_method_reverse(self, target, magnitude):
     target.statusMagicResist -= magnitude
@@ -460,7 +460,7 @@ def Set_maximum_stealth_break_chance_method_reverse(self, target, magnitude):
     target.stealthBreakMaxOverride = 100
 
 def Set_movement_AP_cost_method_reverse(self, target, magnitude):
-    target.movementAPOverride = -1
+    target.overrideMovementAPCost = -1
 
 def Snake_style_method_reverse(self):
     pass

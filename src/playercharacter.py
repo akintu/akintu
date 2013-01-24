@@ -162,14 +162,37 @@ class PlayerCharacter(object):
        self._equipmentShadowResistance = None
        self._statusShadowResistance = None
        
-       # TODO: Write method lowerElementalResistance(element, magnitude)
-       # TODO: Write method raiseElementalResistance(element, magnitude)
-       # TODO: Write all elemental bonus damage attributes such as:
-       # self._baseFireBonusDamage = None  Where 25 would equal 25% bonus damage, so the default should be 0.
+       # Elemental Bonus Damages
+       
+       self._baseArcaneBonusDamage = None
+       self._equipmentArcaneBonusDamage = None
+       self._statusArcaneBonusDamage = None
+       
+       self._baseColdBonusDamage = None
+       self._equipmentColdBonusDamage = None
+       self._statusColdBonusDamage = None
+       
+       self._baseDivineBonusDamage = None
+       self._equipmentDivineBonusDamage = None
+       self._statusDivineBonusDamage = None
+       
+       self._baseElectricBonusDamage = None
+       self._equipmentElectricBonusDamage = None
+       self._statusElectricBonusDamage = None
+       
+       self._baseFireBonusDamage = None
+       self._equipmentFireBonusDamage = None
+       self._statusFireBonusDamage = None
+       
+       self._basePoisonBonusDamage = None
+       self._equipmentPoisonBonusDamage = None
+       self._statusPoisonBonusDamage = None
+       
+       self._baseShadowBonusDamage = None
+       self._equipmentShadowBonusDamage = None
+       self._statusShadowBonusDamage = None
        
        # TODO: Write method applyHPBuffer(magnitude)
-       # TODO: Movement AP cost, melee attack AP cost, ranged attack AP cost, movementAPOverride default -1
-       # TODO: spellFailureChance default = 0
        # TODO: Write method applyOnHitMod(name, *args)
        # TODO: Write method removeOnHitMod(name)
        
@@ -178,6 +201,19 @@ class PlayerCharacter(object):
        self._characterClass = None
        
        # Class specific properties and weird things:
+       
+       self._baseMovementAPCost = None
+       self._equipmentMovementAPCost = None
+       self._overrideMovementAPCost = None
+       self._statusMovementAPCost = None
+       
+       self._baseMeleeAttackAPCost = None
+       
+       self._baseRangedAttackAPCost = None
+       
+       self._statusSpellFailureChance = None
+       
+       
        # self._ninjaStyle
        # self._activeSummon
        # self._arcaneArcherManaRegenBase
@@ -1729,7 +1765,7 @@ class PlayerCharacter(object):
         return self._growthType
         
         
-    # Elemental Properties
+    # Elemental Resistances
     
     @property
     def totalArcaneResistance(self):
@@ -1996,3 +2032,376 @@ class PlayerCharacter(object):
     @statusShadowResistance.setter
     def statusShadowResistance(self, value):
         return self._statusShadowResistance   
+
+    # Elemental Bonus Damages
+    
+    @property
+    def totalArcaneBonusDamage(self):
+        """int, a value of 45 would indicate +45% damage dealt via Arcane attacks."""
+        return self._baseArcaneBonusDamage +
+               self._eqiupmentArcaneBonusDamage +
+               self._statusArcaneBonusDamage
+    
+    @property
+    def baseArcaneBonusDamage(self):
+        return self._baseArcaneBonusDamage
+        
+    @baseArcaneBonusDamage.setter
+    def baseArcaneBonusDamage(self, value):
+        self._baseArcaneBonusDamage = value
+        
+    @property
+    def equipmentArcaneBonusDamage(self):
+        return self._equipmentArcaneBonusDamage
+        
+    @equipmentArcaneBonusDamage.setter
+    def equipmentArcaneBonusDamage(self, value):
+        self._equipmentArcaneBonusDamage = value
+        
+    @property
+    def statusArcaneBonusDamage(self):
+        return self._statusArcaneBonusDamage
+        
+    @statusArcaneBonusDamage.setter
+    def statusArcaneBonusDamage(self, value):
+        self._statusArcaneBonusDamage = value
+        
+    @property
+    def totalColdBonusDamage(self):
+        """int, a value of 45 would indicate +45% damage dealt via Cold attacks."""
+        return self._baseColdBonusDamage +
+               self._eqiupmentColdBonusDamage +
+               self._statusColdBonusDamage
+    
+    @property
+    def baseColdBonusDamage(self):
+        return self._baseColdBonusDamage
+        
+    @baseColdBonusDamage.setter
+    def baseColdBonusDamage(self, value):
+        self._baseColdBonusDamage = value
+        
+    @property
+    def equipmentColdBonusDamage(self):
+        return self._equipmentColdBonusDamage
+        
+    @equipmentColdBonusDamage.setter
+    def equipmentColdBonusDamage(self, value):
+        self._equipmentColdBonusDamage = value
+        
+    @property
+    def statusColdBonusDamage(self):
+        return self._statusColdBonusDamage
+        
+    @statusColdBonusDamage.setter
+    def statusColdBonusDamage(self, value):
+        self._statusColdBonusDamage = value
+        
+    @property
+    def totalDivineBonusDamage(self):
+        """int, a value of 45 would indicate +45% damage dealt via Divine attacks."""
+        return self._baseDivineBonusDamage +
+               self._eqiupmentDivineBonusDamage +
+               self._statusDivineBonusDamage
+    
+    @property
+    def baseDivineBonusDamage(self):
+        return self._baseDivineBonusDamage
+        
+    @baseDivineBonusDamage.setter
+    def baseDivineBonusDamage(self, value):
+        self._baseDivineBonusDamage = value
+        
+    @property
+    def equipmentDivineBonusDamage(self):
+        return self._equipmentDivineBonusDamage
+        
+    @equipmentDivineBonusDamage.setter
+    def equipmentDivineBonusDamage(self, value):
+        self._equipmentDivineBonusDamage = value
+        
+    @property
+    def statusDivineBonusDamage(self):
+        return self._statusDivineBonusDamage
+        
+    @statusDivineBonusDamage.setter
+    def statusDivineBonusDamage(self, value):
+        self._statusDivineBonusDamage = value
+
+    @property
+    def totalElectricBonusDamage(self):
+        """int, a value of 45 would indicate +45% damage dealt via Electric attacks."""
+        return self._baseElectricBonusDamage +
+               self._eqiupmentElectricBonusDamage +
+               self._statusElectricBonusDamage
+    
+    @property
+    def baseElectricBonusDamage(self):
+        return self._baseElectricBonusDamage
+        
+    @baseElectricBonusDamage.setter
+    def baseElectricBonusDamage(self, value):
+        self._baseElectricBonusDamage = value
+        
+    @property
+    def equipmentElectricBonusDamage(self):
+        return self._equipmentElectricBonusDamage
+        
+    @equipmentElectricBonusDamage.setter
+    def equipmentElectricBonusDamage(self, value):
+        self._equipmentElectricBonusDamage = value
+        
+    @property
+    def statusElectricBonusDamage(self):
+        return self._statusElectricBonusDamage
+        
+    @statusElectricBonusDamage.setter
+    def statusElectricBonusDamage(self, value):
+        self._statusElectricBonusDamage = value
+        
+    @property
+    def totalFireBonusDamage(self):
+        """int, a value of 45 would indicate +45% damage dealt via Fire attacks."""
+        return self._baseFireBonusDamage +
+               self._eqiupmentFireBonusDamage +
+               self._statusFireBonusDamage
+    
+    @property
+    def baseFireBonusDamage(self):
+        return self._baseFireBonusDamage
+        
+    @baseFireBonusDamage.setter
+    def baseFireBonusDamage(self, value):
+        self._baseFireBonusDamage = value
+        
+    @property
+    def equipmentFireBonusDamage(self):
+        return self._equipmentFireBonusDamage
+        
+    @equipmentFireBonusDamage.setter
+    def equipmentFireBonusDamage(self, value):
+        self._equipmentFireBonusDamage = value
+        
+    @property
+    def statusFireBonusDamage(self):
+        return self._statusFireBonusDamage
+        
+    @statusFireBonusDamage.setter
+    def statusFireBonusDamage(self, value):
+        self._statusFireBonusDamage = value    
+   
+    @property
+    def totalPoisonBonusDamage(self):
+        """int, a value of 45 would indicate +45% damage dealt via Poison attacks."""
+        return self._basePoisonBonusDamage +
+               self._eqiupmentPoisonBonusDamage +
+               self._statusPoisonBonusDamage
+    
+    @property
+    def basePoisonBonusDamage(self):
+        return self._basePoisonBonusDamage
+        
+    @basePoisonBonusDamage.setter
+    def basePoisonBonusDamage(self, value):
+        self._basePoisonBonusDamage = value
+        
+    @property
+    def equipmentPoisonBonusDamage(self):
+        return self._equipmentPoisonBonusDamage
+        
+    @equipmentPoisonBonusDamage.setter
+    def equipmentPoisonBonusDamage(self, value):
+        self._equipmentPoisonBonusDamage = value
+        
+    @property
+    def statusPoisonBonusDamage(self):
+        return self._statusPoisonBonusDamage
+        
+    @statusPoisonBonusDamage.setter
+    def statusPoisonBonusDamage(self, value):
+        self._statusPoisonBonusDamage = value
+        
+    @property
+    def totalShadowBonusDamage(self):
+        """int, a value of 45 would indicate +45% damage dealt via Shadow attacks."""
+        return self._baseShadowBonusDamage +
+               self._eqiupmentShadowBonusDamage +
+               self._statusShadowBonusDamage
+    
+    @property
+    def baseShadowBonusDamage(self):
+        return self._baseShadowBonusDamage
+        
+    @baseShadowBonusDamage.setter
+    def baseShadowBonusDamage(self, value):
+        self._baseShadowBonusDamage = value
+        
+    @property
+    def equipmentShadowBonusDamage(self):
+        return self._equipmentShadowBonusDamage
+        
+    @equipmentShadowBonusDamage.setter
+    def equipmentShadowBonusDamage(self, value):
+        self._equipmentShadowBonusDamage = value
+        
+    @property
+    def statusShadowBonusDamage(self):
+        return self._statusShadowBonusDamage
+        
+    @statusShadowBonusDamage.setter
+    def statusShadowBonusDamage(self, value):
+        self._statusShadowBonusDamage = value
+        
+    # Class specific and miscellaneous
+    
+    @property
+    def totalMovementAPCost(self):
+        """The AP cost to move up to the number of tiles listed
+        in the movementTiles variable.  This can never be
+        reduced below 0.
+        
+        This variable uses the combination of the three typical
+        components: base, equipment, and status, but it also
+        checks to see if the override value is not -1.  When it
+        is a valid value, that value will be returned instead."""
+        if self._overrideMovementAPCost >= 0:
+            return self._overrideMovementAPCost
+        else:
+            return max(self._baseMovementAPCost + 
+                       self._equipmentMovementAPCost +
+                       self._statusMovementAPCost, 0)
+    
+    @property
+    def baseMovementAPCost(self):
+        return self._baseMovementAPCost
+        
+    @baseMovementAPCost.setter
+    def baseMovementAPCost(self, value):
+        self._baseMovementAPCost = value
+        
+    @property
+    def equipmentMovementAPCost(self):
+        return self._eqiupmentMovementAPCost
+        
+    @equipmentMovementAPCost.setter
+    def equipmentMovementAPCost(self, value):
+        self._equipmentMovementAPCost = value
+        
+    @property
+    def overrideMovementAPCost(self):
+        return self._overrideMovementAPCost
+        
+    @overrideMovementAPCost.setter
+    def overrideMovementAPCost(self, value):
+        """A negative value is used to indicate that this value should be
+        ignored. If a negative value is assigned, it will always be 
+        set to exactly -1."""
+        if value < 0:
+            value = -1
+        self._overrideMovementAPCost = value
+        
+    @property
+    def statusMovementAPCost(self):
+        return self._statusMovementAPCost
+        
+    @statusMovementAPCost.setter
+    def statusMovementAPCost(self, value):
+        self._statusMovementAPCost = value
+        
+    @property
+    def totalMeleeAttackAPCost(self):
+        """Is comprised only of the value given at character creation.
+        This public access is given only to avoid inconsistency with the
+        way other variables are accessed."""
+        return self._totalMeleeAttackAPCost
+        
+    @property
+    def baseMeleeAttackAPCost(self):
+        """Should never be modified after character creation."""
+        return self._baseMeleeAttackAPCost
+        
+    @baseMeleeAttackAPCost.setter
+    def baseMeleeAttackAPCost(self, value):
+        """Should never be modified after character creation."""
+        self._baseMeleeAttackAPCost = value
+        
+    @property
+    def totalRangedAttackAPCost(self):
+        """Is comprised only of the value given at character creation.
+        This public access is given only to avoid inconsistency with the
+        way other variables are accessed."""
+        return self._baseRangedAttackAPCost
+        
+    @property
+    def baseRangedAttackAPCost(self):
+        """Should never be modified after character creation."""
+        return self._baseRangedAttackAPCost
+        
+    @baseRangedAttackAPCost.setter
+    def baseRangedAttackAPCost(self, value):
+        """Should never be modified after character creation."""
+        self._baseRangedAttackAPCost = value
+    
+    @property
+    def totalSpellFailureChance(self):
+       """Is comprised of only the status value, but the accessor pattern
+       is preserved for consistency."""
+       return self._statusSpellFailureChance
+       
+    @property
+    def statusSpellFailureChance(self):
+        """ An int that represents a percent."""
+        return self._statusSpellFailureChance
+        
+    @statusSpellFailureChance.setter
+    def statusSpellFailureChance(self, value):
+        self._statusSpellFailureChance = value
+    
+    # Methods
+    
+    def lowerElementalResistance(elementName, magnitude):
+        elementName = elementName.strip().capitalize()
+        if elementName == "Fire":
+            self.statusFireResistance -= magnitude
+        elif elementName == "Cold":
+            self.statusColdResistance -= magnitude
+        elif elementName == "Electric":
+            self.statusElectricResistance -= magnitude
+        elif elementName == "Poison":
+            self.statusPoisonResistance -= magnitude
+        elif elementName == "Divine":
+            self.statusDivineResistance -= magnitude
+        elif elementName == "Shadow":
+            self.statusShadowResistance -= magnitude
+        elif elementName == "Arcane":
+            self.statusArcaneResistance -= magnitude
+        elif:
+            if elementName in ['Bludgeoning', 'Piercing', 'Slashing']:
+                raise TypeError("Physical type: " + elementName + " is not allowed in this method.")
+            else:
+                raise TypeError("Unkown Element used: " + elementName + " .")
+        
+    def raiseElementalResistance(elementName, magnitude):
+        elementName = elementName.strip().capitalize()
+        if elementName == "Fire":
+            self.statusFireResistance += magnitude
+        elif elementName == "Cold":
+            self.statusColdResistance += magnitude
+        elif elementName == "Electric":
+            self.statusElectricResistance += magnitude
+        elif elementName == "Poison":
+            self.statusPoisonResistance += magnitude
+        elif elementName == "Divine":
+            self.statusDivineResistance += magnitude
+        elif elementName == "Shadow":
+            self.statusShadowResistance += magnitude
+        elif elementName == "Arcane":
+            self.statusArcaneResistance += magnitude
+        elif:
+            if elementName in ['Bludgeoning', 'Piercing', 'Slashing']:
+                raise TypeError("Physical type: " + elementName + " is not allowed in this method.")
+            else:
+                raise TypeError("Unkown Element used: " + elementName + " .")        
+            
+    
+        
