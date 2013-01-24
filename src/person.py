@@ -275,7 +275,7 @@ class Person(object):
           A non-negative integer"""
         statusObject = None
         for item in self.statusList:
-            if (statusName == str(item)):
+            if (statusName == item.displayName):
                 statusObject = item
         if (statusObject is None):
             return 0

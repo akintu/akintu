@@ -81,7 +81,7 @@ class StatusEffectsParser(object):
         minTag = re.compile("(?:\[MIN: )(.*)(?:\])", re.I)
         maxTag = re.compile("(?:\[MAX: )(.*)(?:\])", re.I)
         categoryTag = re.compile("(?:\[CATEGORY: )(.*)(?:\])", re.I)
-        recurringTag = rec.compile("?:\[RECURRING: )(.*)(?:\])", re.I)
+        recurringTag = re.compile("(?:\[RECURRING: )(.*)(?:\])", re.I)
         
         f = open('./data/Status_Effects_Data.txt', 'r')
         
@@ -163,12 +163,12 @@ class StatusEffectsParser(object):
                     for i in range(len(internalNameList)):
                         iStatus = None
                         for husk in allInternalHusks:
-                            if husk.name == internalNameList[i].name:
+                            if husk.name == internalNameList[i]:
                                 iStatus = husk.cloneWithDetails(magnitudeList[i], conditionalList[i],
                                                                 chanceList[i], minList[i], maxList[i])
                         internalList.append(iStatus)       
                     displayStatus = status.Status()
-                    displayStatus.populateFromFile(name, element, categoryList, internalList)
+                    displayStatus.populate(name, element, categoryList, internalList)
                     self.displayStatusList.append(displayStatus)
                     self.state = "Expecting Name"
                     continue
@@ -230,7 +230,8 @@ if __name__ == "__main__":
     for s in parser.displayStatusList:
         print (s.displayName + ":")
         for i in range(len(s.internalList)):
-            print ("    Internal= " + s.internalList[i].name)
+            if s.internalList[i]:
+                print ("    Internal= " + s.internalList[i].name)
     print("Number of loaded statuses: " + str(len(parser.displayStatusList)))
     
                         

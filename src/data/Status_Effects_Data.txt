@@ -34,6 +34,327 @@
 # The CATEGORY tag (not currently in use) will assign category to the ability to indicate things such as
 # whether an ability is considered a buff or debuff or a spellsword enchantment etc.
 #
+# The RECURRING tag uses either True or False to determine if this Internal property needs to be reapplied 
+# during the upkeep phase of each turn.
+#
+
+
+# Internal Effects -- Must be listed before Display Effects
+	
+#[NAME: AI_attack_nearby]
+#  [TYPE: Internal]
+#  [RECURRING: False]
+#  [IMMUNE: Strong]
+
+#[NAME: AI_flee]
+#  [TYPE: Internal]
+#  [RECURRING: False]
+#  [IMMUNE: Boss]
+  
+[NAME: Applied_poison_rating_bonus]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Attack_power_bonus]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Attack_power_penalty]
+  [TYPE: Internal]
+  [RECURRING: False]
+  [IMMUNE: None]
+  
+[NAME: Arcane_archer_mana_regen_penalty]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Armor_penetration_bonus]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Avoidance]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Bleeding]
+  [TYPE: Internal]
+  [RECURRING: True]
+  
+[NAME: Combo_attack_internal]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Crane_style]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Critical_chance_bonus]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Critical_magnitude_bonus]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Damage_over_time]
+  [TYPE: Internal]
+  [RECURRING: True]
+  [IMMUNE: None]
+  
+[NAME: Dodge_bonus]
+  [TYPE: Internal]
+  [RECURRING: False]
+
+[NAME: Dodge_penalty]
+  [TYPE: Internal]
+  [RECURRING: False]
+  [IMMUNE: None]  
+
+[NAME: Dragon_style]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: DR_bonus]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: DR_penalty]
+  [TYPE: Internal]
+  [RECURRING: False]
+  [IMMUNE: None]
+  
+[NAME: Elemental_resistance_arcane]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Elemental_resistance_cold]
+  [TYPE: Internal]
+  [RECURRING: False]
+ 
+[NAME: Elemental_resistance_electric]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Elemental_resistance_fire]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Elemental_vulnerability]
+  [TYPE: Internal]
+  [RECURRING: False]
+  [IMMUNE: None]
+ 
+[NAME: Hidden]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Hidden_double_cunning]
+  [TYPE: Internal]
+  [RECURRING: False]
+ 
+[NAME: HP_buffer]
+  [TYPE: Internal]
+  [RECURRING: False]
+
+[NAME: Increased_movement_AP_cost]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Magic_resist_bonus]
+  [TYPE: Internal]
+  [RECURRING: False]
+
+[NAME: Magic_resist_penalty]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Melee_accuracy_bonus]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Melee_accuracy_penalty]
+  [TYPE: Internal]
+  [RECURRING: False]
+  [IMMUNE: None]
+  
+[NAME: Melee_dodge_bonus]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Melee_force_bonus]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Might_bonus]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Movement_speed_penalty]
+  [TYPE: Internal]
+  [RECURRING: False]
+  [IMMUNE: Boss]
+  
+[NAME: No_turn]
+  [TYPE: Internal]
+  [RECURRING: False]
+  [IMMUNE: Boss]
+  
+[NAME: On_hit_cripple_weapon]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: On_hit_frost_weapon]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: On_hit_stun]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+#[NAME: On_hit_spell_failure]
+#  [TYPE: Internal]
+#  [RECURRING: False]
+  
+[NAME: On_hit_suppressing_weapon]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Overall_damage_bonus]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Overall_damage_penalty]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Panther_style]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Poison_tolerance_bonus]
+  [TYPE: Internal]
+  [RECURRING: False]
+
+[NAME: Poison_tolerance_penalty]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Potion_effect_bonus]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Prepare_melee_dodge_counterattack]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Ranged_accuracy_bonus]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Ranged_accuracy_penalty]
+  [TYPE: Internal]
+  [RECURRING: False]
+  [IMMUNE: None]
+
+[NAME: Ranged_critical_magnitude_bonus]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Ranged_dodge_bonus]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Ranged_force_bonus]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Recover_HP_percent]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+#[NAME: Redirect_melee_attacks]
+#  [TYPE: Internal]
+#  [RECURRING: False]
+  
+[NAME: Reduced_stealth_AP_cost]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Reduced_missile_range]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Refund_mana_on_cast]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Send_empathy_damage_to_summon]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Set_maximum_stealth_break_chance]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Set_movement_AP_cost]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Snake_style]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Sneak_bonus]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Sneak_penalty]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Spellpower_bonus]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Spellpower_penalty]
+  [TYPE: Internal]
+  [RECURRING: False]
+  [IMMUNE: None]
+
+[NAME: Spell_failure_chance]
+  [TYPE: Internal]
+  [RECURRING: False]
+  [IMMUNE: Boss]  
+	
+#[NAME: Target_ranged_accuracy_bonus]
+#  [TYPE: Internal]
+#  [RECURRING: False]
+  
+#[NAME: Target_ranged_dodge_bonus]
+#  [TYPE: Internal]
+#  [RECURRING: False]
+
+#[NAME: Target_ranged_dodge_penalty_marksman]
+#  [TYPE: Internal]
+#  [RECURRING: False]
+  
+[NAME: Tiger_style]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Trap_evade_bonus]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Trap_evade_penalty]
+  [TYPE: Internal]
+  [RECURRING: False]
+  [IMMUNE: Boss]
+	
+[NAME: Weapon_damage_bonus]
+  [TYPE: Internal]
+  [RECURRING: False]
+
 
 # Display Effects -- Tier 1 Spells
 
@@ -354,15 +675,15 @@
   [INTERNAL: Dodge_penalty]
     [MAGNITUDE: 10]
 	
-[NAME: Far-Sighted Focus]
-  [TYPE: Display]
-  [ELEMENT: None]
-  [INTERNAL: Dodge_penalty]
-    [MAGNITUDE: 2]
-  [INTERNAL: Target_ranged_accuracy_bonus]
-    [MAGNITUDE: 5]
-  [INTERNAL: Target_ranged_dodge_bonus]
-    [MAGNITUDE: 7]
+#[NAME: Far-Sighted Focus]
+#  [TYPE: Display]
+#  [ELEMENT: None]
+#  [INTERNAL: Dodge_penalty]
+#    [MAGNITUDE: 2]
+#  [INTERNAL: Target_ranged_accuracy_bonus]
+#    [MAGNITUDE: 5]
+#  [INTERNAL: Target_ranged_dodge_bonus]
+#    [MAGNITUDE: 7]
 
 # As is, will not display which target the bonuses are given against.	
 	
@@ -393,11 +714,11 @@
   [INTERNAL: DR_bonus]
     [MAGNITUDE: 5]
 	
-[NAME: True Friend Protection]
-  [TYPE: Display]
-  [ELEMENT: None]
-  [INTERNAL: Redirect_melee_attacks]
-    [MAGNITUDE: 90]
+#[NAME: True Friend Protection]
+#  [TYPE: Display]
+#  [ELEMENT: None]
+#  [INTERNAL: Redirect_melee_attacks]
+#    [MAGNITUDE: 90]
 
 # Display Effects -- Dragoon Skills
 
@@ -538,11 +859,11 @@
   [INTERNAL: Ranged_accuracy_penalty]
     [MAGNITUDE: 10]
 	
-[NAME: Beacon Trap]
-  [TYPE: Display]
-  [ELEMENT: None]
-  [INTERNAL: Target_ranged_dodge_penalty_marksman]
-    [MAGNITUDE: 15]
+#[NAME: Beacon Trap]
+#  [TYPE: Display]
+#  [ELEMENT: None]
+#  [INTERNAL: Target_ranged_dodge_penalty_marksman]
+#    [MAGNITUDE: 15]
 	
 # Display Effects -- Druid Skills
 
@@ -1017,324 +1338,7 @@
   [INTERNAL: Stun_internal]
     [MAGNITUDE: 0]
 	
-# Internal Effects
 
-~Do Not Modify This Line: START INTERNAL~
-	
-	
-[NAME: AI_attack_nearby]
-  [TYPE: Internal]
-  [RECURRING: False]
-  [IMMUNE: Strong]
-
-[NAME: AI_flee]
-  [TYPE: Internal]
-  [RECURRING: False]
-  [IMMUNE: Boss]
-  
-[NAME: Applied_poison_rating_bonus]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Attack_power_bonus]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Attack_power_penalty]
-  [TYPE: Internal]
-  [RECURRING: False]
-  [IMMUNE: None]
-  
-[NAME: Arcane_archer_mana_regen_penalty]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Armor_penetration_bonus]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Avoidance]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Bleeding]
-  [TYPE: Internal]
-  [RECURRING: True]
-  
-[NAME: Combo_attack_internal]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Crane_style]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Critical_chance_bonus]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Critical_magnitude_bonus]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Damage_over_time]
-  [TYPE: Internal]
-  [RECURRING: True]
-  [IMMUNE: None]
-  
-[NAME: Dodge_bonus]
-  [TYPE: Internal]
-  [RECURRING: False]
-
-[NAME: Dodge_penalty]
-  [TYPE: Internal]
-  [RECURRING: False]
-  [IMMUNE: None]  
-
-[NAME: Dragon_style]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: DR_bonus]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: DR_penalty]
-  [TYPE: Internal]
-  [RECURRING: False]
-  [IMMUNE: None]
-  
-[NAME: Elemental_resistance_arcane]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Elemental_resistance_cold]
-  [TYPE: Internal]
-  [RECURRING: False]
- 
-[NAME: Elemental_resistance_electric]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Elemental_resistance_fire]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Elemental_vulnerability]
-  [TYPE: Internal]
-  [RECURRING: False]
-  [IMMUNE: None]
- 
-[NAME: Hidden]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Hidden_double_cunning]
-  [TYPE: Internal]
-  [RECURRING: False]
- 
-[NAME: HP_buffer]
-  [TYPE: Internal]
-  [RECURRING: False]
-
-[NAME: Increased_movement_AP_cost]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Magic_resist_bonus]
-  [TYPE: Internal]
-  [RECURRING: False]
-
-[NAME: Magic_resist_penalty]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Melee_accuracy_bonus]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Melee_accuracy_penalty]
-  [TYPE: Internal]
-  [RECURRING: False]
-  [IMMUNE: None]
-  
-[NAME: Melee_dodge_bonus]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Melee_force_bonus]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Might_bonus]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Movement_speed_penalty]
-  [TYPE: Internal]
-  [RECURRING: False]
-  [IMMUNE: Boss]
-  
-[NAME: No_turn]
-  [TYPE: Internal]
-  [RECURRING: False]
-  [IMMUNE: Boss]
-  
-[NAME: On_hit_cripple_weapon]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: On_hit_frost_weapon]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: On_hit_stun]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: On_hit_spell_failure]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: On_hit_suppressing_weapon]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Overall_damage_bonus]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Overall_damage_penalty]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Panther_style]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Poison_tolerance_bonus]
-  [TYPE: Internal]
-  [RECURRING: False]
-
-[NAME: Poison_tolerance_penalty]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Potion_effect_bonus]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Prepare_melee_dodge_counterattack]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Ranged_accuracy_bonus]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Ranged_accuracy_penalty]
-  [TYPE: Internal]
-  [RECURRING: False]
-  [IMMUNE: None]
-
-[NAME: Ranged_critical_magnitude_bonus]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Ranged_dodge_bonus]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Ranged_force_bonus]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Recover_HP_percent]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Redirect_melee_attacks]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Reduced_stealth_AP_cost]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Reduced_missile_range]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Refund_mana_on_cast]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Send_empathy_damage_to_summon]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Set_maximum_stealth_break_chance]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Set_movement_AP_cost]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Snake_style]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Sneak_bonus]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Sneak_penalty]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Spellpower_bonus]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Spellpower_penalty]
-  [TYPE: Internal]
-  [RECURRING: False]
-  [IMMUNE: None]
-
-[NAME: Spell_failure_chance]
-  [TYPE: Internal]
-  [RECURRING: False]
-  [IMMUNE: Boss]  
-	
-[NAME: Target_ranged_accuracy_bonus]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Target_ranged_dodge_bonus]
-  [TYPE: Internal]
-  [RECURRING: False]
-
-[NAME: Target_ranged_dodge_penalty_marksman]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Tiger_style]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Trap_evade_bonus]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Trap_evade_penalty]
-  [TYPE: Internal]
-  [RECURRING: False]
-  [IMMUNE: Boss]
-	
-[NAME: Weapon_damage_bonus]
-  [TYPE: Internal]
-  [RECURRING: False]
 	
 	
 	

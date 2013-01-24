@@ -2,6 +2,7 @@
 
 import sys
 import dice
+import status as displaystatus
 
 class IncompleteMethodCall(Exception):
     def __init__(self, value):
@@ -274,15 +275,35 @@ class Combat(object):
             return
         if(hitValue != "Critical Hit" and critical = True):
             return
-        if(Dice.rollSuccess(100 * chance) == False):
+        if(Dice.rollSuccess(100 * chance) == "Miss"):
             return
-        # Need the Status class created in order to continue.  TODO
-        pass
+        dStatus = None
+        # Clean this up TODO: masterlists?
+        for display in masterlists.displayStatusList:
+            if display.displayName == status:
+                dStatus = display
+        dStatus = dStatus.cloneWithDetails(magnitude, duration, min, max, charges)
+        
+        for display in target.statusList:
+            if display.displayName == dStatus.displayName:
+                if overwrite:
+                    display.stacks += 1
+                else:
+                    removeStatus(target, display.displayName)
+                    target.statusList.append(dStatus)
+                    dStatus.activate(target)
+        
+        # Haven't figured out what to do with these yet, TODO
+        # relativeTarget,
+        # applier, scalesWith, scaleFactor
+        
+        # Haven't figured out what to do with immunity either! TODO
     
         
     @staticmethod
     def removeStatus(target, statusName):
         """Removes a specific status effect from a given Person.
+        Will simply do nothing if the status is not found.
         Inputs: 
           target -- Person
           statusName -- the name of a status effect to remove
@@ -291,7 +312,7 @@ class Combat(object):
         statusName = statusName.capitalize().strip()
         matchingStatus = None
         for stat in target.statusList:
-            if str(stat) == statusName:
+            if stat.displayName == statusName:
                 matchingStatus = target.statusList
                 break
         if matchingStatus:
@@ -305,9 +326,9 @@ class Combat(object):
           target -- Person
         Outputs:
           None"""
-        removeStatus(target, "Stealth")
-        removeStatus(target, "Conceal")
-        removeStatus(target, "Shadow Walk")
+        Combat.removeStatus(target, "Stealth")
+        Combat.removeStatus(target, "Conceal")
+        Combat.removeStatus(target, "Shadow Walk")
     
     @staticmethod
     def removeStatusOfType(target, category, removeAll=False):
@@ -323,8 +344,20 @@ class Combat(object):
                        belonging to the category
         Output:
           None"""
-        pass #TODO
-    
+        removalCandidates = []
+        for dStatus in target.statusList:
+            if category in dStatus.caterogyList:
+                removalCandidates.add(dStatus)
+        
+        if removalCandidates:
+            if removeAll:
+                for dStatus in removalCandidates:
+                    Combat.removeStatus(target, dStatus.displayName)
+            else:
+                # Does this work for roll(0,0) ? TODO
+                choice = Dice.roll(0, len(removalCandidates) - 1)
+                Combat.removeStatus(target, removalCandidates[choice].displayName)
+        
     
     @staticmethod
     def knockback(target, sourceOfImpact, distance, ignoreResistance=False, didHit=True)
@@ -480,7 +513,10 @@ class Combat(object):
                                  upon exiting stealth.
         Outputs:
           None"""
-        pass #TODO
+        if newCost < 0:
+            return
+        pass
+        #TODO
         
     @staticmethod
     def movePlayer(target, destination, instant=False):
