@@ -196,10 +196,17 @@ class PlayerCharacter(object):
        # TODO: Write method removeOnHitMod(name)
        
        # Intrinsic properties (read-only)
+       
        self._growthType = None 
        self._characterClass = None
        
        # Class specific properties and weird things:
+       
+       self._arcaneArcherManaRegenLow = None
+       self._arcaneArcherManaRegenHigh = None
+       self._arcaneArcherManaRegenBase = None
+       
+       self._avoidanceChance = None
        
        self._HPBufferList = None
        
@@ -210,23 +217,17 @@ class PlayerCharacter(object):
        
        self._baseMeleeAttackAPCost = None
        
+       self._ninjaStyle = None
+       
        self._baseRangedAttackAPCost = None
        
        self._statusSpellFailureChance = None
        
-       
-       
-       # self._ninjaStyle
        # self._activeSummon
-       # self._arcaneArcherManaRegenBase
-       # self._arcaneArcherManaRegenHigh
-       # self._arcaneArcherManaRegenLow
-       # self._avoidanceChance
        # self._abilityAPModsList [["AbilityName", -2], [...]]
        # self._spellMPModsList [["SpellName", -1], [...]]
        # self._empathyToSummon 
        # self._stealthBreakMaxOverride Default 100
-       # self._HPBufferList format: [['name', 50 ], ...] ?
        
     # Resources (AP, MP, HP)
        
@@ -2257,6 +2258,48 @@ class PlayerCharacter(object):
     # Class specific and miscellaneous
     
     @property
+    def totalAvoidanceChance(self):
+        """The chance to avoid (not dodge) an attack
+        usually due to stealth/concealment."""
+        return self._avoidanceChance
+        
+    @property
+    def avoidanceChance(self):
+        """The chance to avoid (not dodge) an attack
+        usually due to stealth/concealment."""
+        return self._avoidanceChance
+        
+    @avoidanceChance.setter
+    def avoidanceChance(self, value):
+        """Should be a non-negative int."""
+        if value >= 0:
+            self._avoidanceChance = value
+
+    @property
+    def arcaneArcherManaRegenBase(self):
+        return self._arcaneArcherManaRegenBase
+    
+    @arcaneArcherManaRegenBase.setter
+    def arcaneArcherManaRegenBase(self, value):
+        self._arcaneArcherManaRegenBase = value
+        
+    @property
+    def arcaneArcherManaRegenHigh(self):
+        return self._arcaneArcherManaRegenHigh
+    
+    @arcaneArcherManaRegenHigh.setter
+    def arcaneArcherManaRegenHigh(self, value):
+        self._arcaneArcherManaRegenHigh = value
+        
+    @property
+    def arcaneArcherManaRegenLow(self):
+        return self._arcaneArcherManaRegenLow
+    
+    @arcaneArcherManaRegenLow.setter
+    def arcaneArcherManaRegenLow(self, value):
+        self._arcaneArcherManaRegenLow = value
+
+    @property
     def HPBufferList(self):
         """The list of any HP buffers that should absorb damage before
         continuing on to lower the person's actual HP.
@@ -2271,8 +2314,6 @@ class PlayerCharacter(object):
     @HPBufferList.setter
     def HPBufferList(self, value):
         self._HPBufferList = value
-    
-    # self._HPBufferList = None
     
     @property
     def totalMovementAPCost(self):
@@ -2344,6 +2385,21 @@ class PlayerCharacter(object):
     def baseMeleeAttackAPCost(self, value):
         """Should never be modified after character creation."""
         self._baseMeleeAttackAPCost = value
+        
+    @property
+    def ninjaStyle(self):
+        """The Style this Ninja is currently using.  If this playercharacter
+        is not a Ninja, it should always be None."""
+        return self._ninjaStyle
+        
+    @ninjaStyle.setter
+    def ninjaStyle(self, value):
+        """The Style this Ninja is currently using.  If this playercharacter
+        is not a Ninja, it should always be None."""
+        if self.characterClass != "Ninja":
+            return
+        elif value in ["Tiger", "Panther", "Snake", "Crane", "Dragon"]:
+            self._ninjaStyle = value
         
     @property
     def totalRangedAttackAPCost(self):
