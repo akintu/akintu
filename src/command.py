@@ -1,9 +1,9 @@
 '''
-Class for communicating map synch actions
+Class for communicating map sync actions
 '''
 
 class Command:
-	def __init__(self, target, location, action, details)
+	def __init__(self, target, location, action, details):
 		self.target = target
 		self.location = location
 		self.action = action
