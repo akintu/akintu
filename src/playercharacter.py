@@ -192,7 +192,6 @@ class PlayerCharacter(object):
        self._equipmentShadowBonusDamage = None
        self._statusShadowBonusDamage = None
        
-       # TODO: Write method applyHPBuffer(magnitude)
        # TODO: Write method applyOnHitMod(name, *args)
        # TODO: Write method removeOnHitMod(name)
        
@@ -201,6 +200,8 @@ class PlayerCharacter(object):
        self._characterClass = None
        
        # Class specific properties and weird things:
+       
+       self._HPBufferList = None
        
        self._baseMovementAPCost = None
        self._equipmentMovementAPCost = None
@@ -212,6 +213,7 @@ class PlayerCharacter(object):
        self._baseRangedAttackAPCost = None
        
        self._statusSpellFailureChance = None
+       
        
        
        # self._ninjaStyle
@@ -2255,6 +2257,24 @@ class PlayerCharacter(object):
     # Class specific and miscellaneous
     
     @property
+    def HPBufferList(self):
+        """The list of any HP buffers that should absorb damage before
+        continuing on to lower the person's actual HP.
+        
+        The format for an HPBuffer element is: ['bufferName', '100', '4']
+        Where the name of this buff is bufferName, 
+        the amount of HP to absorb is 100,
+        and the turns left is 4.
+        """
+        return self._HPBufferList
+        
+    @HPBufferList.setter
+    def HPBufferList(self, value):
+        self._HPBufferList = value
+    
+    # self._HPBufferList = None
+    
+    @property
     def totalMovementAPCost(self):
         """The AP cost to move up to the number of tiles listed
         in the movementTiles variable.  This can never be
@@ -2403,5 +2423,45 @@ class PlayerCharacter(object):
             else:
                 raise TypeError("Unkown Element used: " + elementName + " .")        
             
-    
+    def applyHPBuffer(self, bufferName, HPMagnitude, turnsToLive):
+        """Adds a new HPBuffer to the character, or refreshes an existing one with the same name.
+        Inputs:
+          bufferName -- string; The name of the status that granted this buffer.
+          HPMagnitude -- int > 0; The amount of HP this buffer should be able to absorb.
+          turnsToLive -- int > 0;The number of turns this buffer should stay active.
+        Outputs:
+          None"""
+        if HPMagnitude <=0 or turnsToLive <=0:
+            return
+            
+        oldBuffer = None
+        for buff in self.HPBufferList:
+            if buff[0] == bufferName:
+                oldBuffer = buff
+        if oldBuffer:
+            oldBuffer[1] = HPMagnitude
+            oldBuffer[2] += turnsToLive
+        else:
+            self.HPBuffer.append([bufferName, HPMagnitude, turnsToLive])
+            
+    def unapplyHPBuffer(self, bufferName, turnsToLive):
+        """Removes an existing HPBuffer from the list or reduces the time left to live
+        on a buffer that was placed by multiple identically named abiliites.
+        Inputs:
+          bufferName -- string; the name of the status that granted this buffer.
+          turnsToLive -- int > 0; the number of turns the buffer originally had to live.
+        Outputs:
+          None"""
+        if turnsToLive <= 0:
+            return
+        for buff in self.HPBufferList:
+            if buff[0] == bufferName:
+                buff[2] -= turnsToLive
+                if buff[2] <= 0:
+                    self.HPBufferList.remove(buff)
         
+        
+        
+        
+                        
+         

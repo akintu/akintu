@@ -573,7 +573,7 @@ class Combat(object):
                   actual summon's name
         Outputs:
           None"""
-    pass #TODO
+        pass #TODO
     
     @staticmethod
     def disarmTrap(thief, trap, wasSuccessful):
@@ -588,9 +588,34 @@ class Combat(object):
                            'critical failure' type penalties etc.
         Outputs:
           None"""
-    pass #TODO
+        pass #TODO
     
-    
+    @staticmethod
+    def lowerHP(target, amount):
+        """Used to actually lower the amount of HP a Person has.  May kill that person.
+        Will attempt to use any HP buffer first and may be interrupted by listeners.
+        Inputs:
+          target -- Person; the person taking damage
+          amount -- the final amount to deal to the target
+        Outputs: 
+          None"""
+        remaining = amount
+        while( target.HPBufferList ):
+            current = target.HPBufferList[0]
+            if remaining > current[1]:
+                remaining -= current[1]
+                target.HPBufferList.remove(current)
+            elif remaining < current[1]:
+                current[1] -= remaining
+                return
+            elif remaining == current[1]:
+                target.HPBufferList.remove(current)
+                return
+        target.totalHP -= remaining
+        # Plenty of listeners here TODO
+        
+            
+        
     
     
     

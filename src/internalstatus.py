@@ -48,6 +48,7 @@ class InternalStatus(object):
         # Known only from loaded data file instantiation:
         self.conditional = None
         self.chance = 100
+        self.parentName = None
         
         # May only be known at apply time:
         self.magnitude = None # inherit magnitude from caller if 0.      
@@ -56,7 +57,7 @@ class InternalStatus(object):
         
         # Element??
             
-    def cloneWithDetails(self, magnitude, conditional, chance, min, max):
+    def cloneWithDetails(self, magnitude, conditional, chance, min, max, parent):
         """Returns a Status with 'ready-to-use' values based off of a previously defined InternalStatus."""
         cloneStatus = InternalStatus(self.name, self.recurring, self.immunity)
         cloneStatus.magnitude = magnitude
@@ -64,6 +65,7 @@ class InternalStatus(object):
         cloneStatus.chance = chance
         cloneStatus.min = min
         cloneStatus.max = max
+        cloneStatus.parentName = parent
         return cloneStatus
 
 
@@ -148,8 +150,8 @@ def Hidden_method(self):
 def Hidden_double_cunning_method(self):
     pass
 
-def HP_buffer_method(self, target, magnitude):
-    target.applyHPBuffer(magnitude)
+def HP_buffer_method(self, target, magnitude, duration, name):
+    target.applyHPBuffer(name, magnitude, duration)
 
 def Increased_movement_AP_cost_method(self, target, magnitude):
     target.statusMovementAPCost += magnitude
@@ -357,8 +359,8 @@ def Hidden_method_reverse(self):
 def Hidden_double_cunning_method_reverse(self):
     pass
 
-def HP_buffer_method_reverse(self):
-    pass
+def HP_buffer_method_reverse(self, target, magnitude, name, duration):
+    target.unapplyHPBuffer(name, duration)
 
 def Increased_movement_AP_cost_method_reverse(self, target, magnitude):
     target.statusMovementAPCost -= magnitude
@@ -568,7 +570,6 @@ applyFunctionDict = {
         # 'On_hit_spell_failure': TODO
         # 'Redirect_melee_attacks': None, # Include magnitude How?
         #'Weapon_damage_bonus': lambda target, magnitude, element: 
-        # clear HP buffer?
         #'Target_ranged_accuracy_bonus':
         #'Target_ranged_dodge_bonus':
         #'Target_ranged_dodge_penalty_marksman':
@@ -600,7 +601,7 @@ unapplyFunctionDict = {
     'Elemental_vulnerability' : Elemental_vulnerability_method_reverse,
     'Hidden' : None,
     'Hidden_double_cunning' : None,
-    'HP_buffer' : None,
+    'HP_buffer' : HP_buffer_method_reverse,
     'Increased_movement_AP_cost' : Increased_movement_AP_cost_method_reverse,
     'Magic_resist_bonus' : Magic_resist_bonus_method_reverse,
     'Magic_resist_penalty' : Magic_resist_penalty_method_reverse,
