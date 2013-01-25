@@ -76,6 +76,10 @@
   [TYPE: Internal]
   [RECURRING: False]
   
+[NAME: Awareness_penalty]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
 [NAME: Bleeding]
   [TYPE: Internal]
   [RECURRING: True]
@@ -193,6 +197,10 @@
   [TYPE: Internal]
   [RECURRING: False]
   [IMMUNE: Boss]
+  
+[NAME: Movement_tiles_penalty]
+  [TYPE: Internal]
+  [RECURRING: False]
   
 [NAME: No_turn]
   [TYPE: Internal]
@@ -1329,6 +1337,21 @@
   [ELEMENT: None]
   [INTERNAL: Dodge_bonus]
     [MAGNITUDE: 0]
+
+# Display Effects -- Hostile Traps
+
+[NAME: Hostile Trap Slow]
+  [TYPE: Display]
+  [ELEMENT: Cold]
+  [INTERNAL: Movement_tiles_penalty]
+    [MAGNITUDE: 0]
+	
+[NAME: Hostile Trap Blind]
+  [TYPE: Display]
+  [ELEMENT: Electric]
+  [INTERNAL: Awareness_penalty]
+    [MAGNITUDE: 0]
+	
 	
 # Display Effects -- Common
 

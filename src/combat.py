@@ -92,8 +92,8 @@ class Combat(object):
           defense -- int probably magicResist
         Outputs:
           Any Hit type string"""
-        offense *= random.uniform(0.75, 1.00)
-        defense *= random.uniform(0.75, 1.00)
+        offense *= Dice.rollFloat(0.75, 1.00)
+        defense *= Dice.rollFloat(0.75, 1.00)
         if(offense <= 3 * defense):
             # Spell fails Listener TODO
             return "Miss"
@@ -114,8 +114,8 @@ class Combat(object):
           defense -- int probably poison tolerance
         Outputs:
           "Normal Hit" or "Miss" """
-        offense *= random.uniform(0.5, 1.0)
-        defense *= random.uniform(0.5, 1.0)
+        offense *= Dice.rollFloat(0.5, 1.0)
+        defense *= Dice.rollFloat(0.5, 1.0)
         if(offense >= defense):
             return "Normal Hit"
         else:
@@ -432,26 +432,35 @@ class Combat(object):
             dieRoll *= partial
             
         # TODO Worry about resistances above 80% that are reduced by any amount by some ability...
+        if source.isinstance(Person):
+            if element == "Fire":
+                dieRoll *= 1 + (source.totalFireBonusDamage / 100)
+            elif element == "Cold":
+                dieRoll *= 1 + (source.totalColdBonusDamage / 100)         
+            elif element == "Electric":
+                dieRoll *= 1 + (source.totalElectricBonusDamage / 100)
+            elif element == "Poison":
+                dieRoll *= 1 + (source.totalPoisonBonusDamage / 100)    
+            elif element == "Shadow":
+                dieRoll *= 1 + (source.totalShadowBonusDamage / 100)
+            elif element == "Divine":
+                dieRoll *= 1 + (source.totalDivineBonusDamage / 100)
+            elif element == "Arcane":
+                dieRoll *= 1 + (source.totalArcaneBonusDamage / 100)
+
         if element == "Fire":
-            dieRoll *= 1 + (source.totalFireBonusDamage / 100)
             dieRoll *= 1 - (target.totalFireResistance / 100)
         elif element == "Cold":
-            dieRoll *= 1 + (source.totalColdBonusDamage / 100)
             dieRoll *= 1 - (target.totalColdResistance / 100)           
         elif element == "Electric":
-            dieRoll *= 1 + (source.totalElectricBonusDamage / 100)
             dieRoll *= 1 - (target.totalElectricResistance / 100)
         elif element == "Poison":
-            dieRoll *= 1 + (source.totalPoisonBonusDamage / 100)
             dieRoll *= 1 - (target.totalPoisonResistance / 100)    
         elif element == "Shadow":
-            dieRoll *= 1 + (source.totalShadowBonusDamage / 100)
             dieRoll *= 1 - (target.totalShadowResistance / 100)
         elif element == "Divine":
-            dieRoll *= 1 + (source.totalDivineBonusDamage / 100)
             dieRoll *= 1 - (target.totalDivineResistance / 100)
         elif element == "Arcane":
-            dieRoll *= 1 + (source.totalArcaneBonusDamage / 100)
             dieRoll *= 1 - (target.totalArcaneResistance / 100)
         elif element == "Bludgeoning":
             dieRoll *= 1 - (target.totalBludgeoningResistance / 100)
@@ -461,7 +470,7 @@ class Combat(object):
             dieRoll *= 1 - (target.totalSlashingResistance / 100)
         else:
             raise TypeError("Encountered an unknown element: " + element + " .")
-
+            
         if dieRoll < 0:
             dieRoll = 0
         return dieRoll.round()

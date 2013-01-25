@@ -1,0 +1,112 @@
+# Trap_Data.txt
+# 
+# Contains data about "overworld" or rather, "hostile" traps that exist both in and
+# out of combat.  
+#
+# Stats are given at a "per level" basis and a "base", where a trap rating of 2 + 3L
+# and a level of 6 indicate that a level 6 trap of that type has a rating of 20.  
+# If the result is a decimal, it should be rounded.
+#
+
+# This stat should be updated when any weight is added/subtracted but it is not code.
+# Total Rarity weight in the pool: 39
+
+[NAME: Bear Trap]
+[TRAP RATING: 5 + 1L]
+[RARITY WEIGHT: 12]
+[EFFECT A: Damage]
+  [ELEMENT: Slashing]
+  [MIN: 5 + 2L]
+  [MAX: 15 + 5L]
+[EFFECT B: None]
+[EFFECT C: None]
+
+[NAME: Snake Pit]
+[TRAP RATING: 7 + 2L]
+[RARITY WEIGHT: 5]
+[EFFECT A: Damage]
+  [WEIGHT MOD MEDIUM: 25]
+  [WEIGHT MOD HEAVY: 40]
+  [ELEMENT: Bludgeoning]
+  [MIN: 2 + 2L]
+  [MAX: 8 + 4L]
+[EFFECT B: Toxin]
+  [POISON RATING: 20 + 4L]
+  [DURATION: 5]
+[EFFECT C: None]
+
+# Does not currently include summoning snakes...
+
+# Trap Door TODO
+
+[NAME: Standard Dart Trap]
+[TRAP RATING: 7 + 2L]
+[RARITY WEIGHT: 10]
+[EFFECT A: Damage]
+  [QUANTITY: 5]
+  [ELEMENT: Piercing]
+  [MIN: 1 + 1L]
+  [MAX: 4 + 3L]
+[EFFECT B: None]
+[EFFECT C: None]
+
+[NAME: Poisonous Dart Trap]
+[TRAP RATING: 7 + 2L]
+[RARITY WEIGHT: 2]
+[EFFECT A: Damage]
+  [QUANTITY: 5]
+  [ELEMENT: Piercing]
+  [MIN: 1 + 1L]
+  [MAX: 4 + 3L]
+[EFFECT B: Toxin]
+  [POISON RATING: 8 + 2L]
+  [DURATION: 5]
+[EFFECT C: None]
+
+[NAME: Fire Trap]
+[TRAP RATING: 8 + 2L]
+[RARITY WEIGHT: 5]
+[EFFECT A: Damage]
+  [ELEMENT: Fire]
+  [MIN: 8 + 3L]
+  [MAX: 20 + 6L]
+[EFFECT B: None]
+[EFFECT C: None]
+
+[NAME: Ice Trap]
+[TRAP RATING: 15 + 3L]
+[RARITY WEIGHT: 2]
+[EFFECT A: Damage]
+  [ELEMENT: Cold]
+  [MIN: 4 + 1.5L]
+  [MAX: 10 + 3L]
+[EFFECT B: Lower Movement Tiles]
+  [MAGNITUDE: 1]
+  [DURATION: 5]
+[EFFECT C: None]
+
+[NAME: Lightning Trap]
+[TRAP RATING: 8 + 2L]
+[RARITY WEIGHT: 2]
+[EFFECT A: Damage]
+  [ELEMENT: Electric]
+  [MIN: 5 + 2L]
+  [MAX: 14 + 4L]
+[EFFECT B: Blindness]
+  [MAGNITUDE: 50]
+  [DURATION: 20]
+[EFFECT C: None]
+
+# Magnitude of Blindness indicates a % loss of Awareness (and vision?)
+
+# Quicksand
+
+[NAME: Mana Siphon]
+[TRAP RATING: 25 + 5L]
+[RARITY WEIGHT: 1]
+[EFFECT A: Mana Loss]
+  [MAGNITUDE: 100]
+[EFFECT B: None]
+[EFFECT C: None]
+
+# Cursed Ground

@@ -42,6 +42,10 @@ class Dice(object):
         return random.int(minimum, maximum)
         
     @staticmethod
+    def rollFloat(minFloat, maxFloat):
+        return random.uniform(minFloat, maxFloat)
+        
+    @staticmethod
     def rollBeneath(targetRoll):
         """rolls between [1 and 100]  If the roll is <= chanceOfSuccess, 
            returns True, otherwise False.
@@ -73,6 +77,22 @@ class Dice(object):
             return True
         else
             return False
+    
+    @staticmethod
+    def rollTrapHit(target, trap):
+        """Determines if the target is hit by the trap, or if he evades it.
+        Inputs:
+          target -- Person; the victim of the trap
+          trap -- Trap; the trap that is being triggered
+        Outputs:
+          "Evaded" -- The trap failed to harm the target.
+          "Hit" -- The trap successfully hit the target."""
+        adjustedEva = target.totalTrapEvade * random.uniform(0.5, 1.0)
+        adjustedRating = trap.trapRating * random.uniform(0.5, 1.0)
+        if adjustedEva >= adjustedRating:
+            return "Evaded"
+        else:
+            return "Hit"
     
     @staticmethod
     def rollPresetChance(source, target, chance):

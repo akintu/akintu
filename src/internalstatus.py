@@ -87,6 +87,9 @@ def Armor_penetration_bonus_method(self, target, magnitude):
 def Avoidance_method(self, target, magnitude):
     target.avoidanceChance = magnitude
 
+def Awareness_penalty_method(self, target, magnitude):
+    target.statusAwareness -= magnitude
+    
 def Bleeding_method(self, target, magnitude):
     target.HP -= (target.HP * magnitude / 100)
 
@@ -178,8 +181,11 @@ def Might_bonus_method(self, target, magnitude):
     target.statusMight += magnitude
 
 def Movement_speed_penalty_method(self, target, magnitude):
-    target.movementTiles -= magnitude
+    target.movementTiles *= (100 - magnitude)/100
 
+def Movement_tiles_penalty_method(self, target, magnitude):
+    target.movementTiles -= magnitude
+    
 def No_turn_method(self, target, magnitude):
     target.AP = 0
 
@@ -278,8 +284,6 @@ def Trap_evade_bonus_method(self, target, magnitude):
 
 def Trap_evade_penalty_method(self, target, magnitude):
     target.statusTrapEvade -= magnitude
-
-
   
 def Applied_poison_rating_bonus_method_reverse(self, target, magnitude):
     target.equipmentPoisonRatingBonus -= magnitude
@@ -299,6 +303,9 @@ def Armor_penetration_bonus_method_reverse(self, target, magnitude):
 def Avoidance_method_reverse(self, target, magnitude):
     target.avoidanceChance = 0
 
+def Awareness_penalty_method_reverse(self, target, magnitude):
+    target.statusAwareness += magnitude
+    
 def Bleeding_method_reverse(self):
     pass
 
@@ -387,8 +394,11 @@ def Might_bonus_method_reverse(self, target, magnitude):
     target.statusMight -= magnitude
 
 def Movement_speed_penalty_method_reverse(self, target, magnitude):
-    target.movementTiles += magnitude
+    target.movementTiles /= (100 - magnitude)/100
 
+def Movement_tiles_penalty_method_reverse(self, target, magnitude):
+    target.movementTiles += magnitude
+    
 def No_turn_method_reverse(self):
     pass
 
@@ -498,6 +508,7 @@ applyFunctionDict = {
     'Arcane_archer_mana_regen_penalty' : Arcane_archer_mana_regen_penalty_method,
     'Armor_penetration_bonus' : Armor_penetration_bonus_method,
     'Avoidance' : Avoidance_method,
+    'Awareness_penalty' : Awareness_penalty_method,
     'Bleeding' : Bleeding_method,
     'Combo_attack_internal' : None,
     'Crane_style' : None,
@@ -529,6 +540,7 @@ applyFunctionDict = {
     'Melee_force_bonus' : Melee_force_bonus_method,
     'Might_bonus' : Might_bonus_method,
     'Movement_speed_penalty' : Movement_speed_penalty_method,
+    'Movement_tiles_penalty' : Movement_tiles_penalty_method,
     'No_turn' : No_turn_method,
     'On_hit_cripple_weapon' : On_hit_cripple_weapon_method,
     'On_hit_frost_weapon' : On_hit_frost_weapon_method,
@@ -581,6 +593,7 @@ unapplyFunctionDict = {
     'Arcane_archer_mana_regen_penalty' : Arcane_archer_mana_regen_penalty_method_reverse,
     'Armor_penetration_bonus' : Armor_penetration_bonus_method_reverse,
     'Avoidance' : Avoidance_method_reverse,
+    'Awareness_penalty' : Awareness_penalty_method_reverse,
     'Bleeding' : None,
     'Combo_attack_internal' : None,
     'Crane_style' : None,
@@ -611,6 +624,7 @@ unapplyFunctionDict = {
     'Melee_force_bonus' : Melee_force_bonus_method_reverse,
     'Might_bonus' : Might_bonus_method_reverse,
     'Movement_speed_penalty' : Movement_speed_penalty_method_reverse,
+    'Movement_tiles_penalty' : Movement_tiles_penalty_method_reverse,
     'No_turn' : None,
     'On_hit_cripple_weapon' : On_hit_cripple_weapon_method_reverse,
     'On_hit_frost_weapon' : On_hit_frost_weapon_method_reverse,
