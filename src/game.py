@@ -22,6 +22,7 @@ class Game(object):
         self.pane, imagedict = self.world.get_pane((0,0))
 
         # TEST code
+        self.screen.update_images(imagedict)
         self.screen.set_pane(self.pane)
         location = self.screen.add_player("Colton", None)
         self.player = ["Colton", location]
