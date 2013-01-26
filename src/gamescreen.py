@@ -48,7 +48,7 @@ class GameScreen(object):
             # Draw the tile background
             if not self.images.has_key(tile.image):
                 self.images[tile.image] = \
-                    pygame.image.load(tile.image).convert_alpha().convert()
+                    pygame.image.load(tile.image).convert_alpha()
             tileimage = self.images[tile.image]
             self.background.blit(tileimage, (i*TILE_SIZE, j*TILE_SIZE))
 
@@ -56,7 +56,7 @@ class GameScreen(object):
             for ent in tile.entities:
                 if not self.images.has_key(ent.image):
                     self.images[ent.image] = \
-                        pygame.image.load(ent.image).convert_alpha().convert()
+                        pygame.image.load(ent.image).convert_alpha()
                 entimage = self.images[ent.image]
                 self.background.blit(entimage, (i*TILE_SIZE, j*TILE_SIZE))
         self.screen.blit(self.background, [0, 0])
