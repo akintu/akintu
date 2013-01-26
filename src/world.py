@@ -8,7 +8,7 @@ from PIL import Image
 from const import*
 
 grassimage = os.path.join("res", "images", "background", "grass.png")
-rockimage = os.path.join("res", "images", "rock1.png")
+rockimage = os.path.join("res", "images", "rock.png")
 
 class World(object):
     '''
@@ -29,7 +29,7 @@ class World(object):
         tiles = dict()
         for i in range(PANE_X):
             for j in range(PANE_Y):
-                tiles[(i, j)] = background.gettile((i, j))
+                tiles[(i, j)] = Tile(background.getimage((i, j)), True)
         
         return (Pane(self.seed, location, tiles), background.images)
 
@@ -43,7 +43,7 @@ class Pane(object):
 
     def __init__(self, seed, location, tiles, startpoint = None):
         self.tiles = tiles
-        #self.tiles[(10,10)].entities.append(Entity(rockimage, False))
+        self.tiles[(10,10)].entities.append(Entity(rockimage, False))
         if not startpoint:
             self.startpoint = (0, 0)
         else:
@@ -62,7 +62,7 @@ class Entity(object):
 
 class BackgroundTiles(object):
     def __init__(self, path):
-        self.tiles = dict()
+        self.tile_id = dict()
         self.images = dict()
         self.backimage = Image.open(path)
         self.x = self.backimage.size[0]/TILE_SIZE
@@ -72,14 +72,14 @@ class BackgroundTiles(object):
             curry = 0
             for j in range(self.y):
                 id = "background_" + str(i) + "_" + str(j)
-                self.tiles[(i, j)] = Tile(id, True)
+                self.tile_id[(i, j)] = id
                 self.images[id] = self.backimage.crop(
                     (currx, curry, currx + TILE_SIZE, curry + TILE_SIZE))
                 
                 curry += TILE_SIZE
             currx += TILE_SIZE
             
-    def gettile(self, location):
+    def getimage(self, location):
         i = location[0] % self.x
         j = location[1] % self.y
-        return self.tiles[(i, j)]
+        return self.tile_id[(i, j)]
