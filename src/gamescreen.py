@@ -7,15 +7,15 @@ from pygame.locals import *
 
 import os
 import sys
+from PIL import Image
 
-# TEST
-sys.path.append("test")
-from testworld import *
+from world import *
 
 class GameScreen(object):
 
     def __init__(self):
         self.screen = pygame.display.set_mode((1024, 640))
+        pygame.display.set_caption('Akintu r01')
         self.background = pygame.Surface((1024, 640))
         self.world = dict()
         self.images = dict()
@@ -25,9 +25,20 @@ class GameScreen(object):
             self.world[(i, j)] = None
         pygame.display.flip()
 
+
+    def update_images(self, imagedict):
+        for key, val in imagedict.iteritems():
+            mode = val.mode
+            size = val.size
+            data = val.tostring()
+            assert mode in 'RGB', 'RGBA'
+            self.images[key] = pygame.image.fromstring(data, size, mode).convert()
+
+
     def set_pane(self, pane):
         self.pane = pane
         self.draw_world()
+
 
     def draw_world(self):
         for i,j in [(i, j) for i in range(32) for j in range(20)]:
@@ -35,29 +46,34 @@ class GameScreen(object):
             if(self.images.has_key(tile.image)):
                 tileimage = self.images[tile.image]
             else:
-                self.images[tile.image] = pygame.image.load(tile.image)
+                self.images[tile.image] = pygame.image.load(tile.image).convert()
                 tileimage = self.images[tile.image]
             self.background.blit(tileimage, (i*32, j*32))
         self.screen.blit(self.background, [0, 0])
         pygame.display.update()
+
 
     def add_player(self, playerid, player):
         self.players[playerid] = PlayerSprite("test/knight.png", self.pane.startpoint)
         self.playersgroup.add(self.players[playerid])
         return self.pane.startpoint
 
+
     def remove_player(self, playerid):
         self.playersgroup.remove(self.players[playerid])
         self.players.pop(playerid)
 
+
     def update_player(self, playerid, location):
         self.players[playerid].newest_coord = location
+
 
     def update(self):
         self.playersgroup.update()
         rectlist = self.playersgroup.draw(self.screen)
         pygame.display.update(rectlist)
         self.playersgroup.clear(self.screen, self.background)
+
 
 
 class PlayerSprite(pygame.sprite.DirtySprite):
@@ -68,6 +84,7 @@ class PlayerSprite(pygame.sprite.DirtySprite):
         self.current_coord = None
         self.newest_coord = startpoint
         self.rect.topleft = [x*32 for x in startpoint]
+
 
     def update(self):
         if self.current_coord != self.newest_coord:
