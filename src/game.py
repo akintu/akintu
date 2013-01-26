@@ -53,6 +53,12 @@ class Game(object):
 
     def passable(self, newloc):
         tupleloc = tuple(newloc)
-        if self.pane.tiles.has_key(tupleloc) and self.pane.tiles[tupleloc].passable:
-            return True
-        return False
+        if not self.pane.tiles.has_key(tupleloc):
+            return False
+        if not self.pane.tiles[tupleloc].passable:
+            return False
+            tile = self.pane.tiles[tupleloc]
+            for ent in tile.entities:
+                if not ent.passable:
+                    return False
+        return True
