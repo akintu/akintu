@@ -17,7 +17,7 @@ class Game(object):
     def __init__(self):
         # Set up game engine
         self.screen = GameScreen()
-        self.world = World()
+        self.world = World("CorrectHorseStapleBattery")
 
         self.pane, imagedict = self.world.get_pane((0,0))
 
