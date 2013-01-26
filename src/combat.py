@@ -525,8 +525,8 @@ class Combat(object):
           None"""
         if newCost < 0:
             return
-        pass
-        #TODO
+        target.overrideMovementAPCost = newCost
+        #TODO -- trigger duration/number of moves/break on stealth??
         
     @staticmethod
     def movePlayer(target, destination, instant=False):
@@ -598,7 +598,10 @@ class Combat(object):
                            'critical failure' type penalties etc.
         Outputs:
           None"""
-        pass #TODO
+        if not wasSuccessful:
+            return
+        pass 
+        #TODO
     
     @staticmethod
     def lowerHP(target, amount):
