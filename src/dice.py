@@ -75,7 +75,7 @@ class Dice(object):
                 chance = rule[1]
         if random.random() <= chance:
             return True
-        else
+        else:
             return False
     
     @staticmethod

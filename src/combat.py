@@ -31,7 +31,7 @@ class Combat(object):
             target.MP += value
         elif type == "HP":
             target.HP += value
-        else
+        else:
             raise TypeError("Type: " + type + " is not valid.  Proper values are: 'HP', 'MP', or 'AP'.")
     
     @staticmethod
@@ -129,7 +129,8 @@ class Combat(object):
             if(source.inRange(target, 1) and not ignoreMeleeBowPenalty):
                 #Ranged attack with penalty 20% miss chance TODO
                 #Passives alter how this functions? TODO
-            #Ranged attack not in melee, or it doesn't matter.
+                #Ranged attack not in melee, or it doesn't matter.
+                pass
             defense = target.totalDodge + target.totalRangedDodge
             offense = source.totalRangedAccuracy + modifier
             hitDuple = Combat.calcPhysicalHitChance(offense, defense)    
@@ -271,9 +272,9 @@ class Combat(object):
                            a duration.  Is set to a default of zero if not time based.
         Outputs:
           None"""
-        if(hitValue == "Miss" or (hitValue == "Partially Resisted" and partial = True)):
+        if(hitValue == "Miss" or (hitValue == "Partially Resisted" and partial == True)):
             return
-        if(hitValue != "Critical Hit" and critical = True):
+        if(hitValue != "Critical Hit" and critical == True):
             return
         if(Dice.rollSuccess(100 * chance) == "Miss"):
             return
@@ -360,7 +361,7 @@ class Combat(object):
         
     
     @staticmethod
-    def knockback(target, sourceOfImpact, distance, ignoreResistance=False, didHit=True)
+    def knockback(target, sourceOfImpact, distance, ignoreResistance=False, didHit=True):
         """Moves the target via 'knockback' a set number of tiles away from the source of 
         impact.
         Inputs: 
@@ -423,7 +424,7 @@ class Combat(object):
             dieRoll *= 1 + (source.totalCunning * scaleFactor)
         elif scalesWith == "Spellpower":
             dieRoll *= 1 + (source.totalSpellpower * scaleFactor)
-        elif scalesWith not None:
+        elif scalesWith is not None:
             raise TypeError("calcDamage cannot be called with scaling attribute: " + scalesWith + " .")
         
         if hitValue == "Critical Hit":

@@ -65,9 +65,6 @@ class StatusEffectsParser(object):
     
     # Note: *'d Items are required.
     
-    
-    #~Do Not Modify This Line: START INTERNAL~
-    
     def parseAll(self, fileName):
         nameTag = re.compile("(?:\[NAME: )(.*)(?:\])", re.I)
         typeTag = re.compile("(?:\[TYPE: )(.*)(?:\])", re.I)
@@ -83,7 +80,7 @@ class StatusEffectsParser(object):
         categoryTag = re.compile("(?:\[CATEGORY: )(.*)(?:\])", re.I)
         recurringTag = re.compile("(?:\[RECURRING: )(.*)(?:\])", re.I)
         
-        f = open('./data/Status_Effects_Data.txt', 'r')
+        f = open(fileName, 'r')
         
         # Initialize fields to undefined/default values.
         # Up to six internals are allowed.  The number of initialized values will need to be changed
@@ -227,7 +224,7 @@ class StatusEffectsParser(object):
         
 if __name__ == "__main__":
     parser = StatusEffectsParser()
-    parser.parseAll("Status_Effects_Data.txt")
+    parser.parseAll("./data/Status_Effects_Data.txt")
     for s in parser.displayStatusList:
         print (s.displayName + ":")
         for i in range(len(s.internalList)):

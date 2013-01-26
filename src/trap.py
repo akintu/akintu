@@ -20,19 +20,36 @@ class Trap(object):
             if t.name == trapTemplateName:
                 template = t
         if template:
-            self.name = t.name
+            self.name = template.name
             self.level = level
-            self.trapRating = t.trapRating[0] + t.trapRating[1] * level
-            self.rarity = t.rarity
-            self.effectA = effectList[0]
-            self.effectB = effectList[1]
-            self.effectC = effectList[2]
+            self.trapRating = round(template.trapRating[0] + template.trapRating[1] * level)
+            self.rarity = template.rarity
+            self.effectA = template.effectA
+            self.effectB = template.effectB
+            self.effectC = template.effectC
         else:
             TypeError("Template Type: " + trapTemplateName + " not found.")
         
+    def triggerAllEffects(self, target):
+        """Call to trigger all effects on the target.  Will attempt to
+        affect the target, but the target still has its trap evade which
+        will be rolled which can negate one or more effects."""
+        if (self.effectA):
+            self.triggerEffect(target, **self.effectA)
+        if (self.effectB):
+            self.triggerEffect(target, **self.effectB)
+        if (self.effectC):
+            self.triggerEffect(target, **self.effectC)
         
-    def triggerEffect(self, target, name=None, element=None, min=0, max=0, pRating=0, duration=0
+    def triggerEffect(self, target, name=None, element=None, min=0, max=0, pRating=0, duration=0,
                       quantity=1, magnitude=0, wModHeavy=0, wModMedium=0, wModLight=0):
+        if(min != 0):
+            min = round(min[0] + min[1] * self.level)
+        if(max != 0):
+            max = round(max[0] + max[1] * self.level)
+        if(pRating != 0):
+            pRating = round(pRating[0] + pRating[1] * self.level)
+                      
         if name == "Damage":
             self.dealDamage(target, element, min, max, quantity, wModHeavy, wModMedium, wModLight)
         if name == "Toxin":
@@ -79,8 +96,6 @@ class Trap(object):
         
 class TrapTemplate(object):
     allTemplates = []
-    
-    functionTemplates = []
     
     def __init__(self, name, trapRating, rarity, effectList):
         self.name = name
