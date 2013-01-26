@@ -9,18 +9,18 @@ import os
 import sys
 
 from gamescreen import GameScreen
+from world import *
 
-# TEST
-sys.path.append("test")
-from testworld import *
 
 class Game(object):
     def __init__(self):
         # Set up game engine
         self.screen = GameScreen()
+        self.world = World()
+
+        self.pane, imagedict = self.world.get_pane((0,0))
 
         # TEST code
-        self.pane = Pane((0,0))
         self.screen.set_pane(self.pane)
         location = self.screen.add_player("Colton", None)
         self.player = ["Colton", location]
