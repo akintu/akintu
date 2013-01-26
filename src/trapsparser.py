@@ -17,7 +17,7 @@ class TrapsParser(object):
           "Expecting Rating"
           "Expecting Rarity"
           "Expecting Effect A"
-          "Epecting Parameters A"
+          "Expecting Parameters A"
           "Expecting Parameters B"
           "Expecting Parameters C"
           """
