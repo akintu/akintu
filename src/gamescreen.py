@@ -9,6 +9,7 @@ import os
 import sys
 from PIL import Image
 
+from const import *
 from world import *
 
 class GameScreen(object):
@@ -21,7 +22,7 @@ class GameScreen(object):
         self.images = dict()
         self.players = dict()
         self.playersgroup = pygame.sprite.RenderUpdates()
-        for i,j in [(i, j) for i in range(32) for j in range(20)]:
+        for i,j in [(i, j) for i in range(PANE_X) for j in range(PANE_Y)]:
             self.world[(i, j)] = None
         pygame.display.flip()
 
@@ -41,14 +42,14 @@ class GameScreen(object):
 
 
     def draw_world(self):
-        for i,j in [(i, j) for i in range(32) for j in range(20)]:
+        for i,j in [(i, j) for i in range(PANE_X) for j in range(PANE_Y)]:
             tile = self.pane.tiles[(i, j)]
             if(self.images.has_key(tile.image)):
                 tileimage = self.images[tile.image]
             else:
                 self.images[tile.image] = pygame.image.load(tile.image).convert()
                 tileimage = self.images[tile.image]
-            self.background.blit(tileimage, (i*32, j*32))
+            self.background.blit(tileimage, (i*TILE_SIZE, j*TILE_SIZE))
         self.screen.blit(self.background, [0, 0])
         pygame.display.update()
 
@@ -83,10 +84,10 @@ class PlayerSprite(pygame.sprite.DirtySprite):
         self.rect = self.image.get_rect()
         self.current_coord = None
         self.newest_coord = startpoint
-        self.rect.topleft = [x*32 for x in startpoint]
+        self.rect.topleft = [x*TILE_SIZE for x in startpoint]
 
 
     def update(self):
         if self.current_coord != self.newest_coord:
             self.current_coord = self.newest_coord
-            self.rect.topleft = [x*32 for x in self.newest_coord]
+            self.rect.topleft = [x*TILE_SIZE for x in self.newest_coord]

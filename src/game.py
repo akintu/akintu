@@ -8,6 +8,7 @@ from pygame.locals import *
 import os
 import sys
 
+from const import *
 from gamescreen import GameScreen
 from world import *
 
