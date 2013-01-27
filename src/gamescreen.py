@@ -12,6 +12,7 @@ from PIL import Image
 from const import *
 from world import *
 
+
 class GameScreen(object):
 
     def __init__(self):
@@ -83,6 +84,11 @@ class GameScreen(object):
         rectlist = self.playersgroup.draw(self.screen)
         pygame.display.update(rectlist)
         self.playersgroup.clear(self.screen, self.background)
+
+
+    def set_fps(self, fps):
+        if SHOW_FPS:
+            pygame.display.set_caption("%s %d" % (CAPTION, fps))
 
 
 

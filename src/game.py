@@ -12,6 +12,8 @@ from const import *
 from gamescreen import GameScreen
 from world import *
 
+clock = pygame.time.Clock()
+
 
 class Game(object):
     def __init__(self):
@@ -19,7 +21,7 @@ class Game(object):
         self.screen = GameScreen()
         self.world = World("CorrectHorseStapleBattery")
 
-        self.pane, imagedict = self.world.get_pane((0,0))
+        self.pane, imagedict = self.world.get_pane((0, 0))
 
         # TEST code
         self.screen.update_images(imagedict)
@@ -27,7 +29,16 @@ class Game(object):
         location = self.screen.add_player("Colton", None)
         self.player = ["Colton", location]
 
+        fps_counter = 0
+        fps = 0
+
         while True:
+            clock.tick()
+            fps_counter += 1
+            if fps_counter > fps:
+                fps = clock.get_fps()
+                self.screen.set_fps(fps)
+                fps_counter = 0
             pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
             for event in pygame.event.get():
                 if event.type == QUIT:
@@ -53,7 +64,7 @@ class Game(object):
 
     def passable(self, newloc):
         tupleloc = tuple(newloc)
-        if not self.pane.tiles.has_key(tupleloc):
+        if not tupleloc in self.pane.tiles:
             return False
         if not self.pane.tiles[tupleloc].passable:
             return False
