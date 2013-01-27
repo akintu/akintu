@@ -162,6 +162,14 @@ class PlayerCharacter(object):
        self._equipmentShadowResistance = None
        self._statusShadowResistance = None
        
+       # Physical Damage Resistances
+       
+       self.totalBludegoningResistance = None
+       self.totalPiercingResistance = None
+       self.totalSlashingResistance = None
+       
+       # TODO: G/S for physical damage resistances
+       
        # Elemental Bonus Damages
        
        self._baseArcaneBonusDamage = None

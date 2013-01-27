@@ -481,7 +481,7 @@ class Combat(object):
                      elementOverride=None, noCounter=False, overallDamageMod=1, mightMod=0, 
                      ignoreOnHitEffects=False, poisonRatingMod=0):
         """Performs a weapon attack against the target from the source.  Calls actually apply the damage
-        to the target, unlike 'callDamage()'.
+        to the target, unlike 'calcDamage()'.
         Inputs: (optional values indicated by a *)
           source -- Person; attacker
           target -- Person; victim
@@ -501,8 +501,43 @@ class Combat(object):
                                   'applied' poisons.
         Outputs:
           None"""
-        pass #TODO
+        if hitType == "Miss":
+            # Enemy still counters TODO
+            return
+            
+        weaponOne = source.eqiupment.equippedWeapon
+        weaponTwo = None
+        if not source.usingWeaponStyle("Dual"):
+            pass
+        else:
+            weaponTwo = source.equipment.equippedOffHand
+            #TODO Dual wielding
+
+        effectiveForce = source.totalForce * forceMod
+        if( source.usingWeapon(ranged) ):
+            effectiveForce *= source.totalRangedForce / 100
+        effectiveMight = round(Dice.rollFloat(0.5, 1.0) * (source.totalMight + mightMod) * (effectiveForce / 100))
+           
+        effectiveDR = min(80, max(0, target.totalDR - (armorPenetrationMod + source.totalArmorPenetration)))
         
+        outgoingDamage = Dice.roll(weaponOne.damageMin, weaponOne.damageMax) * (1 - (effectiveDR / 100))
+        outgoingDamage *= overallDamageMod
+        
+        if hitType == "Critical Hit":
+            outgoingDamage += outgoingDamage * criticalDamageMod * weaponOne.criticalMultiplier / 100
+            
+        if weaponOne.damageType == "Bludgeoning":
+            outgoingDamage *= (1 - (target.totalBludgeoningResistance / 100))
+        elif weaponOne.damageType == "Piercing":
+            outgoingDamage *= (1 - (target.totalPiercingResistance / 100))
+        elif weaponOne.damageType == "Slashing":
+            outgoingDamage *= (1 - (target.totalSlashingResistance / 100))
+        # TODO: Deal with dual-type weapons
+        
+        # TODO: worry about poisonRating, other elemental damage, counterattacks, on-hit-effects,
+        # TODO: and elementalOverride.        
+        
+        target.lowerHP(outgoingDamage)
         
     @staticmethod
     def setMovementCost(target, newCost, numberOfMoves=1, duration=-1, inStealth=False):

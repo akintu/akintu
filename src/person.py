@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import sys
+import equipment as eq
 
 class Person(object):
     def __init__(self):
