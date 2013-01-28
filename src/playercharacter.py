@@ -1,244 +1,258 @@
 #!/usr/bin/python
 
 import sys
-from Person import *
+from person import *
 
 class PlayerCharacter(object):
-   def __init__(self):
+    def __init__(self):
    
        # Resources
-       self._AP = None
-       self._totalAP = None
-       self._HP = None
-       self._totalHP = None
-       self._MP = None
-       self._totalMP = None
-       
-       # Primary Attributes
-       self._baseConstitution = None
-       self._equipmentConstitution = None
-       self._statusConstitution = None
-       
-       self._baseCunning = None
-       self._equipmentCunning = None
-       self._statusCunning = None     
+         self._AP = None
+         self._totalAP = None
+         self._HP = None
+         self._totalHP = None
+         self._MP = None
+         self._totalMP = None
+         
+         # Primary Attributes
+         self._baseConstitution = None
+         self._equipmentConstitution = None
+         self._statusConstitution = None
+         
+         self._baseCunning = None
+         self._equipmentCunning = None
+         self._statusCunning = None      
 
-       self._baseDexterity = None
-       self._equipmentDexterity = None
-       self._statusDexterity = None    
+         self._baseDexterity = None
+         self._equipmentDexterity = None
+         self._statusDexterity = None     
 
-       self._basePiety = None
-       self._equipmentPiety = None
-       self._statusPiety = None 
-       
-       self._baseSorcery = None
-       self._equipmentSorcery = None
-       self._statusSorcery = None
+         self._basePiety = None
+         self._equipmentPiety = None
+         self._statusPiety = None 
+         
+         self._baseSorcery = None
+         self._equipmentSorcery = None
+         self._statusSorcery = None
 
-       self._baseStrength = None
-       self._equipmentStrength = None
-       self._statusStrength = None
-      
-       # Derived Attributes
-       self._baseArmorPenetration = None
-       self._equipmentArmorPenetration = None
-       self._statusArmorPenetration = None
-       
-       self._baseAwareness = None
-       self._equipmentAwareness = None
-       self._statusAwareness = None
-       
-       self._baseCriticalChance = None
-       self._equipmentCriticalChance = None
-       self._statusCriticalChance = None
-       
-       self._baseCriticalMagnitude = None
-       self._equipmentCriticalMagnitude = None
-       self._statusCriticalMagnitude = None
-       
-       self._baseDodge = None
-       self._equipmentDodge = None
-       self._statusDodge = None
-       
-       self._baseDR = None
-       self._equipmentDR = None
-       self._statusDR = None
-       
-       #self._baseForce = N\A
-       self._equipmentForce = None
-       self._statusForce = None
-       
-       self._baseMagicResist = None
-       self._equipmentMagicResist = None
-       self._statusMagicResist = None
-       
-       self._baseMeleeAccuracy = None
-       self._equipmentMeleeAccuracy = None
-       self._statusMeleeAccuracy = None
-       
-       self._baseMeleeDodge = None
-       self._equipmentMeleeDodge = None
-       self._statusMeleeDodge = None
-       
-       self._baseMight = None
-       self._equipmentMight = None
-       self._statusMight = None
-       
-       self._baseMovementTiles = None
-       self._equipmentMovementTiles = None
-       self._statusMovementTiles = None
-       
-       self._baseOverallDamageBonus = None
-       self._equipmentOverallDamageBonus = None
-       self._statusOverallDamageBonus = None
-       
-       self._basePoisonRatingBonus = None
-       self._equipmentPoisonRatingBonus = None
-       self._statusPoisonRatingBonus = None
-       
-       self._basePoisonTolerance = None
-       self._equipmentPoisonTolerance = None
-       self._statusPoisonTolerance = None      
-       
-       self._basePotionEffect = None
-       self._equipmentPotionEffect = None
-       self._statusPotionEffect = None
-       
-       self._baseRangedAccuracy = None
-       self._equipmentRangedAccuracy = None
-       self._statusRangedAccuracy = None
-       
-       self._baseRangedCriticalMagnitude = None
-       self._equipmentRangedCriticalMagnitude = None
-       self._statusRangedCriticalMagnitude = None
-       
-       self._baseRangedDodge = None
-       self._equipmentRangedDodge = None
-       self._statusRangedDodge = None     
+         self._baseStrength = None
+         self._equipmentStrength = None
+         self._statusStrength = None
+        
+         # Derived Attributes
+         self._baseArmorPenetration = None
+         self._equipmentArmorPenetration = None
+         self._statusArmorPenetration = None
+         
+         self._baseAwareness = None
+         self._equipmentAwareness = None
+         self._statusAwareness = None
+         
+         self._baseCriticalChance = None
+         self._equipmentCriticalChance = None
+         self._statusCriticalChance = None
+         
+         self._baseCriticalMagnitude = None
+         self._equipmentCriticalMagnitude = None
+         self._statusCriticalMagnitude = None
+         
+         self._baseDodge = None
+         self._equipmentDodge = None
+         self._statusDodge = None
+         
+         self._baseDR = None
+         self._equipmentDR = None
+         self._statusDR = None
+         
+         #self._baseForce = N\A
+         self._equipmentForce = None
+         self._statusForce = None
+         
+         self._baseMagicResist = None
+         self._equipmentMagicResist = None
+         self._statusMagicResist = None
+         
+         self._baseMeleeAccuracy = None
+         self._equipmentMeleeAccuracy = None
+         self._statusMeleeAccuracy = None
+         
+         self._baseMeleeDodge = None
+         self._equipmentMeleeDodge = None
+         self._statusMeleeDodge = None
+         
+         self._baseMight = None
+         self._equipmentMight = None
+         self._statusMight = None
+         
+         self._baseMovementTiles = None
+         self._equipmentMovementTiles = None
+         self._statusMovementTiles = None
+         
+         self._baseOverallDamageBonus = None
+         self._equipmentOverallDamageBonus = None
+         self._statusOverallDamageBonus = None
+         
+         self._basePoisonRatingBonus = None
+         self._equipmentPoisonRatingBonus = None
+         self._statusPoisonRatingBonus = None
+         
+         self._basePoisonTolerance = None
+         self._equipmentPoisonTolerance = None
+         self._statusPoisonTolerance = None        
+         
+         self._basePotionEffect = None
+         self._equipmentPotionEffect = None
+         self._statusPotionEffect = None
+         
+         self._baseRangedAccuracy = None
+         self._equipmentRangedAccuracy = None
+         self._statusRangedAccuracy = None
+         
+         self._baseRangedCriticalMagnitude = None
+         self._equipmentRangedCriticalMagnitude = None
+         self._statusRangedCriticalMagnitude = None
+         
+         self._baseRangedDodge = None
+         self._equipmentRangedDodge = None
+         self._statusRangedDodge = None      
 
-       self._baseRangedForce = None
-       self._equipmentRangedForce = None
-       self._statusRangedForce = None   
-       
-       self._baseSneak = None
-       self._equipmentSneak = None
-       self._statusSneak = None
-       
-       self._baseSpellpower = None
-       self._equipmentSpellpower = None
-       self._statusSpellpower = None
-       
-       self._baseTrapEvade = None
-       self._equipmentTrapEvade = None
-       self._statusTrapEvade = None
-       
-       # Elemental Resistances
-       
-       self._baseArcaneResistance = None
-       self._equipmentArcaneResistance = None
-       self._statusArcaneResistance = None
-       
-       self._baseColdResistance = None
-       self._equipmentColdResistance = None
-       self._statusColdResistance = None
-       
-       self._baseDivineResistance = None
-       self._equipmentDivineResistance = None
-       self._statusDivineResistance = None
-       
-       self._baseElectricResistance = None
-       self._equipmentElectricResistance = None
-       self._statusElectricResistance = None
-       
-       self._baseFireResistance = None
-       self._equipmentFireResistance = None
-       self._statusFireResistance = None
-       
-       self._basePoisonResistance = None
-       self._equipmentPoisonResistance = None
-       self._statusPoisonResistance = None
-       
-       self._baseShadowResistance = None
-       self._equipmentShadowResistance = None
-       self._statusShadowResistance = None
-       
-       # Physical Damage Resistances
-       
-       self.totalBludegoningResistance = None
-       self.totalPiercingResistance = None
-       self.totalSlashingResistance = None
-       
-       # TODO: G/S for physical damage resistances
-       
-       # Elemental Bonus Damages
-       
-       self._baseArcaneBonusDamage = None
-       self._equipmentArcaneBonusDamage = None
-       self._statusArcaneBonusDamage = None
-       
-       self._baseColdBonusDamage = None
-       self._equipmentColdBonusDamage = None
-       self._statusColdBonusDamage = None
-       
-       self._baseDivineBonusDamage = None
-       self._equipmentDivineBonusDamage = None
-       self._statusDivineBonusDamage = None
-       
-       self._baseElectricBonusDamage = None
-       self._equipmentElectricBonusDamage = None
-       self._statusElectricBonusDamage = None
-       
-       self._baseFireBonusDamage = None
-       self._equipmentFireBonusDamage = None
-       self._statusFireBonusDamage = None
-       
-       self._basePoisonBonusDamage = None
-       self._equipmentPoisonBonusDamage = None
-       self._statusPoisonBonusDamage = None
-       
-       self._baseShadowBonusDamage = None
-       self._equipmentShadowBonusDamage = None
-       self._statusShadowBonusDamage = None
-       
-       # TODO: Write method applyOnHitMod(name, *args)
-       # TODO: Write method removeOnHitMod(name)
-       
-       # Intrinsic properties (read-only)
-       
-       self._growthType = None 
-       self._characterClass = None
-       
-       # Class specific properties and weird things:
-       
-       self._arcaneArcherManaRegenLow = None
-       self._arcaneArcherManaRegenHigh = None
-       self._arcaneArcherManaRegenBase = None
-       
-       self._avoidanceChance = None
-       
-       self._HPBufferList = None
-       
-       self._baseMovementAPCost = None
-       self._equipmentMovementAPCost = None
-       self._overrideMovementAPCost = None
-       self._statusMovementAPCost = None
-       
-       self._baseMeleeAttackAPCost = None
-       
-       self._ninjaStyle = None
-       
-       self._baseRangedAttackAPCost = None
-       
-       self._statusSpellFailureChance = None
-       
-       # self._activeSummon
-       # self._abilityAPModsList [["AbilityName", -2], [...]]
-       # self._spellMPModsList [["SpellName", -1], [...]]
-       # self._empathyToSummon 
-       # self._stealthBreakMaxOverride Default 100
-       
+         self._baseRangedForce = None
+         self._equipmentRangedForce = None
+         self._statusRangedForce = None    
+         
+         self._baseSneak = None
+         self._equipmentSneak = None
+         self._statusSneak = None
+         
+         self._baseSpellpower = None
+         self._equipmentSpellpower = None
+         self._statusSpellpower = None
+         
+         self._baseTrapEvade = None
+         self._equipmentTrapEvade = None
+         self._statusTrapEvade = None
+         
+         # Elemental Resistances
+         
+         self._baseArcaneResistance = None
+         self._equipmentArcaneResistance = None
+         self._statusArcaneResistance = None
+         
+         self._baseColdResistance = None
+         self._equipmentColdResistance = None
+         self._statusColdResistance = None
+         
+         self._baseDivineResistance = None
+         self._equipmentDivineResistance = None
+         self._statusDivineResistance = None
+         
+         self._baseElectricResistance = None
+         self._equipmentElectricResistance = None
+         self._statusElectricResistance = None
+         
+         self._baseFireResistance = None
+         self._equipmentFireResistance = None
+         self._statusFireResistance = None
+         
+         self._basePoisonResistance = None
+         self._equipmentPoisonResistance = None
+         self._statusPoisonResistance = None
+         
+         self._baseShadowResistance = None
+         self._equipmentShadowResistance = None
+         self._statusShadowResistance = None
+         
+         # Physical Damage Resistances
+         
+         self.totalBludegoningResistance = None
+         self.totalPiercingResistance = None
+         self.totalSlashingResistance = None
+         
+         # TODO: G/S for physical damage resistances
+         
+         # Elemental Bonus Damages
+         
+         self._baseArcaneBonusDamage = None
+         self._equipmentArcaneBonusDamage = None
+         self._statusArcaneBonusDamage = None
+         
+         self._baseColdBonusDamage = None
+         self._equipmentColdBonusDamage = None
+         self._statusColdBonusDamage = None
+         
+         self._baseDivineBonusDamage = None
+         self._equipmentDivineBonusDamage = None
+         self._statusDivineBonusDamage = None
+         
+         self._baseElectricBonusDamage = None
+         self._equipmentElectricBonusDamage = None
+         self._statusElectricBonusDamage = None
+         
+         self._baseFireBonusDamage = None
+         self._equipmentFireBonusDamage = None
+         self._statusFireBonusDamage = None
+         
+         self._basePoisonBonusDamage = None
+         self._equipmentPoisonBonusDamage = None
+         self._statusPoisonBonusDamage = None
+         
+         self._baseShadowBonusDamage = None
+         self._equipmentShadowBonusDamage = None
+         self._statusShadowBonusDamage = None
+         
+         # TODO: Write method applyOnHitMod(name, *args)
+         # TODO: Write method removeOnHitMod(name)
+         
+         # Intrinsic properties
+         
+         self.growthType = None 
+         self.characterClass = None
+         self.baseClass = None
+         self.secondaryClass = None
+         self.armorTolerance = None
+         
+         # Class specific properties and weird things:
+         
+         self._arcaneArcherManaRegenLow = None
+         self._arcaneArcherManaRegenHigh = None
+         self._arcaneArcherManaRegenBase = None
+         
+         self._avoidanceChance = None
+         
+         self._HPBufferList = None
+         
+         self._baseMovementAPCost = None
+         self._equipmentMovementAPCost = None
+         self._overrideMovementAPCost = None
+         self._statusMovementAPCost = None
+         
+         self._baseMeleeAttackAPCost = None
+         
+         self._ninjaStyle = None
+         
+         self._baseRangedAttackAPCost = None
+         
+         self._statusSpellFailureChance = None
+         
+         # self._activeSummon
+         # self._abilityAPModsList [["AbilityName", -2], [...]]
+         # self._spellMPModsList [["SpellName", -1], [...]]
+         # self._empathyToSummon 
+         # self._stealthBreakMaxOverride Default 100
+         
+         # Levelup stats
+         self.levelupStrength = None
+         self.levelupCunning = None
+         self.levelupSorcery = None
+         self.levelupPiety = None
+         self.levelupConstitution = None
+         self.levelupHP = None
+         self.levelupMP = None
+         self.skillLevels = None
+         self.spellLevels = None
+          
     # Resources (AP, MP, HP)
-       
+    
     @property
     def AP(self):
         """The current Action Points of a PlayerCharacter"""
@@ -645,7 +659,7 @@ class PlayerCharacter(object):
             
     # Derived Attributes
     
-@property
+    @property
     def totalMeleeAccuracy(self):
         """
         MeleeAccuracy is determined by STR, DEX, equipment that boosts MeleeAccuracy,
@@ -851,8 +865,8 @@ class PlayerCharacter(object):
         """ Should be 0 for 0% by default.
             Would be 14 for 14% (not 1.14)
         """
-        return self._baseOverallDamageBonus + self._equipmentOverallDamageBonus +
-               self._statusOverallDamageBonus
+        return (self._baseOverallDamageBonus + self._equipmentOverallDamageBonus +
+               self._statusOverallDamageBonus)
                
     @property
     def baseOverallDamageBonus(self):
@@ -865,7 +879,7 @@ class PlayerCharacter(object):
         self._baseOverallDamageBonus = value
         
     @property
-    def eqiupmentOverallDamageBonus(self):
+    def equipmentOverallDamageBonus(self):
         return self._equipmentOverallDamageBonus
         
     @equipmentOverallDamageBonus.setter
@@ -886,8 +900,8 @@ class PlayerCharacter(object):
         that has a poison effect that uses the poison rating roll 
         (which is almost all of them other than weapon elemental damage.)
         """
-        return self._basePoisonRatingBonus + self.equipmentPoisonRatingBonus +
-               self._statusPoisonRatingBonus
+        return (self._basePoisonRatingBonus + self.equipmentPoisonRatingBonus +
+               self._statusPoisonRatingBonus)
     
     @property
     def basePoisonRatingBonus(self):
@@ -987,7 +1001,7 @@ class PlayerCharacter(object):
         """
         return self._equipmentRangedCriticalMagnitude
             
-    @equipmentRangedCriticalMagnitude.setter:
+    @equipmentRangedCriticalMagnitude.setter
     def equipmentRangedCriticalMagnitude(self, value):
         """
         int value: should be the total ranged critical magnitude from equipment
@@ -1131,7 +1145,7 @@ class PlayerCharacter(object):
         if value >= 0:
             self._baseCriticalChance = value            
             
-     @property
+    @property
     def totalCriticalMagnitude(self):
         """
         CriticalMagnitude is determined by weapon critical multiplier and any magical
@@ -1307,8 +1321,8 @@ class PlayerCharacter(object):
         An int representing how much healing and mana potions are
         augmented.  Starts at 100 but is increased by many possible
         factors, especially Sorcery."""
-        return self._basePotionEffect + self._equipmentPotionEffect +
-               self._statusPotionEffect
+        return (self._basePotionEffect + self._equipmentPotionEffect +
+               self._statusPotionEffect)
                
     @property
     def basePotionEffect(self):
@@ -1646,8 +1660,8 @@ class PlayerCharacter(object):
     def totalRangedDodge(self):
         """ Is only the bonus dodge given against ranged attacks.  
         Needs to be manually added to the dodge total."""
-        return self._baseRangedDodge + self._equipmentRangedDodge +
-               self._statusRangedDodge
+        return (self._baseRangedDodge + self._equipmentRangedDodge +
+               self._statusRangedDodge)
                
     @property
     def baseRangedDodge(self):
@@ -1662,7 +1676,7 @@ class PlayerCharacter(object):
     def equipmentRangedDodge(self):
         return self._equipmentRangedDodge
         
-    @eqiupmentRangedDodge.setter
+    @equipmentRangedDodge.setter
     def equipmentRangedDodge(self, value):
         self._eqiupmentRangedDodge = value
         
@@ -1681,8 +1695,8 @@ class PlayerCharacter(object):
         could also be affected by some special statuses and maybe even passive
         abilities.
         """
-        return self._baseRangedForce * (self._equipmentRangedForce / 100) * 
-               (1 + self._statusRangedForce)
+        return (self._baseRangedForce * (self._equipmentRangedForce / 100) * 
+               (1 + self._statusRangedForce))
                
     @property
     def equipmentRangedForce(self):
@@ -1789,8 +1803,8 @@ class PlayerCharacter(object):
         Elemental Resistances above 80% should not have an effect beyond 80% but
         that logic is not encoded here.  Thus values greater than 80 may be 
         returned."""
-        return self._baseArcaneResistance + self._equipmentArcaneResistance +
-               self._statusArcaneResistance
+        return (self._baseArcaneResistance + self._equipmentArcaneResistance +
+               self._statusArcaneResistance)
                
     @property
     def baseArcaneResistance(self):
@@ -1827,8 +1841,8 @@ class PlayerCharacter(object):
         Elemental Resistances above 80% should not have an effect beyond 80% but
         that logic is not encoded here.  Thus values greater than 80 may be 
         returned."""
-        return self._baseColdResistance + self._equipmentColdResistance +
-               self._statusColdResistance
+        return (self._baseColdResistance + self._equipmentColdResistance +
+               self._statusColdResistance)
                
     @property
     def baseColdResistance(self):
@@ -1865,8 +1879,8 @@ class PlayerCharacter(object):
         Elemental Resistances above 80% should not have an effect beyond 80% but
         that logic is not encoded here.  Thus values greater than 80 may be 
         returned."""
-        return self._baseDivineResistance + self._equipmentDivineResistance +
-               self._statusDivineResistance
+        return (self._baseDivineResistance + self._equipmentDivineResistance +
+               self._statusDivineResistance)
                
     @property
     def baseDivineResistance(self):
@@ -1903,8 +1917,8 @@ class PlayerCharacter(object):
         Elemental Resistances above 80% should not have an effect beyond 80% but
         that logic is not encoded here.  Thus values greater than 80 may be 
         returned."""
-        return self._baseElectricResistance + self._equipmentElectricResistance +
-               self._statusElectricResistance
+        return (self._baseElectricResistance + self._equipmentElectricResistance +
+               self._statusElectricResistance)
                
     @property
     def baseElectricResistance(self):
@@ -1941,8 +1955,8 @@ class PlayerCharacter(object):
         Elemental Resistances above 80% should not have an effect beyond 80% but
         that logic is not encoded here.  Thus values greater than 80 may be 
         returned."""
-        return self._baseFireResistance + self._equipmentFireResistance +
-               self._statusFireResistance
+        return (self._baseFireResistance + self._equipmentFireResistance +
+               self._statusFireResistance)
                
     @property
     def baseFireResistance(self):
@@ -1979,8 +1993,8 @@ class PlayerCharacter(object):
         Elemental Resistances above 80% should not have an effect beyond 80% but
         that logic is not encoded here.  Thus values greater than 80 may be 
         returned."""
-        return self._basePoisonResistance + self._equipmentPoisonResistance +
-               self._statusPoisonResistance
+        return (self._basePoisonResistance + self._equipmentPoisonResistance +
+               self._statusPoisonResistance)
                
     @property
     def basePoisonResistance(self):
@@ -2017,8 +2031,8 @@ class PlayerCharacter(object):
         Elemental Resistances above 80% should not have an effect beyond 80% but
         that logic is not encoded here.  Thus values greater than 80 may be 
         returned."""
-        return self._baseShadowResistance + self._equipmentShadowResistance +
-               self._statusShadowResistance
+        return (self._baseShadowResistance + self._equipmentShadowResistance +
+               self._statusShadowResistance)
                
     @property
     def baseShadowResistance(self):
@@ -2049,9 +2063,9 @@ class PlayerCharacter(object):
     @property
     def totalArcaneBonusDamage(self):
         """int, a value of 45 would indicate +45% damage dealt via Arcane attacks."""
-        return self._baseArcaneBonusDamage +
+        return (self._baseArcaneBonusDamage +
                self._eqiupmentArcaneBonusDamage +
-               self._statusArcaneBonusDamage
+               self._statusArcaneBonusDamage)
     
     @property
     def baseArcaneBonusDamage(self):
@@ -2080,9 +2094,9 @@ class PlayerCharacter(object):
     @property
     def totalColdBonusDamage(self):
         """int, a value of 45 would indicate +45% damage dealt via Cold attacks."""
-        return self._baseColdBonusDamage +
+        return (self._baseColdBonusDamage +
                self._eqiupmentColdBonusDamage +
-               self._statusColdBonusDamage
+               self._statusColdBonusDamage)
     
     @property
     def baseColdBonusDamage(self):
@@ -2111,9 +2125,9 @@ class PlayerCharacter(object):
     @property
     def totalDivineBonusDamage(self):
         """int, a value of 45 would indicate +45% damage dealt via Divine attacks."""
-        return self._baseDivineBonusDamage +
+        return (self._baseDivineBonusDamage +
                self._eqiupmentDivineBonusDamage +
-               self._statusDivineBonusDamage
+               self._statusDivineBonusDamage)
     
     @property
     def baseDivineBonusDamage(self):
@@ -2142,9 +2156,9 @@ class PlayerCharacter(object):
     @property
     def totalElectricBonusDamage(self):
         """int, a value of 45 would indicate +45% damage dealt via Electric attacks."""
-        return self._baseElectricBonusDamage +
+        return (self._baseElectricBonusDamage +
                self._eqiupmentElectricBonusDamage +
-               self._statusElectricBonusDamage
+               self._statusElectricBonusDamage)
     
     @property
     def baseElectricBonusDamage(self):
@@ -2173,9 +2187,9 @@ class PlayerCharacter(object):
     @property
     def totalFireBonusDamage(self):
         """int, a value of 45 would indicate +45% damage dealt via Fire attacks."""
-        return self._baseFireBonusDamage +
+        return (self._baseFireBonusDamage +
                self._eqiupmentFireBonusDamage +
-               self._statusFireBonusDamage
+               self._statusFireBonusDamage)
     
     @property
     def baseFireBonusDamage(self):
@@ -2204,9 +2218,9 @@ class PlayerCharacter(object):
     @property
     def totalPoisonBonusDamage(self):
         """int, a value of 45 would indicate +45% damage dealt via Poison attacks."""
-        return self._basePoisonBonusDamage +
+        return (self._basePoisonBonusDamage +
                self._eqiupmentPoisonBonusDamage +
-               self._statusPoisonBonusDamage
+               self._statusPoisonBonusDamage)
     
     @property
     def basePoisonBonusDamage(self):
@@ -2235,9 +2249,9 @@ class PlayerCharacter(object):
     @property
     def totalShadowBonusDamage(self):
         """int, a value of 45 would indicate +45% damage dealt via Shadow attacks."""
-        return self._baseShadowBonusDamage +
+        return (self._baseShadowBonusDamage +
                self._eqiupmentShadowBonusDamage +
-               self._statusShadowBonusDamage
+               self._statusShadowBonusDamage)
     
     @property
     def baseShadowBonusDamage(self):
@@ -2459,7 +2473,7 @@ class PlayerCharacter(object):
             self.statusShadowResistance -= magnitude
         elif elementName == "Arcane":
             self.statusArcaneResistance -= magnitude
-        elif:
+        else:
             if elementName in ['Bludgeoning', 'Piercing', 'Slashing']:
                 raise TypeError("Physical type: " + elementName + " is not allowed in this method.")
             else:
@@ -2481,7 +2495,7 @@ class PlayerCharacter(object):
             self.statusShadowResistance += magnitude
         elif elementName == "Arcane":
             self.statusArcaneResistance += magnitude
-        elif:
+        else:
             if elementName in ['Bludgeoning', 'Piercing', 'Slashing']:
                 raise TypeError("Physical type: " + elementName + " is not allowed in this method.")
             else:

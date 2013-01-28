@@ -90,12 +90,13 @@ class Person(object):
     def owner(self):
         return self._owner
         
-    @owner.setter(self, value):
+    @owner.setter
+    def owner(self, value):
         """Possible values:
              None (Usually the case)
              PlayerCharacter pc (If a summon/guardian)
              Monster m (If a minion of a monster)"""
-        if (value is None) or (value.isinstance(Person):
+        if ((value is None) or (value.isinstance(Person))):
             self._owner = value
         # TODO, if not None, set the link the other direction as well.
             
@@ -171,7 +172,7 @@ class Person(object):
         selfSizeNum = possibleSizes.index(self.size)
         if (size in possibleSizes):
             otherSizeNum = possibleSizes.index(size)
-        else
+        else:
             raise TypeError("Attempted to compare with an invalid size.")
         
         if (smallerThan == True):
