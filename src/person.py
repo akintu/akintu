@@ -3,186 +3,209 @@
 import sys
 import equipment as eq
 
+class IncompleteDataInitialization(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
+
 class Person(object):
-    def __init__(self):
-        self._location = None # Tile
-        self._directionFacing = None
+
+    ERROR = "INITIALIZATION_FAILURE"
+
+    @staticmethod
+    def setFrom(argDict, variableName, defaultValue):
+        if( (variableName not in argDict) or (argDict[variableName] == "None") ):
+            if defaultValue == Person.ERROR:
+                raise IncompleteDataInitialization( "The parameter: " + variableName + " must be specified, but isn't."
+            else:
+                return defaultValue
+        else:
+            return argDict[variableName]
+
+            
+    def __init__(self, argDict):
+        self._location = None # TODO: Move to parent class
+        self._directionFacing = None # Move this to parent class as well?
         self._team = None #TODO: Move to parent class
-        self._size = None
         self._cooldownList = []
         self._statusList = []
-        self._owner = None
         self._minionList = []
+        self._owner = None # Move to parent class?
+        
+        self._title = Person.setFrom(argDict, 'name', Person.ERROR)
+        self._size = Person.setFrom(argDict, 'size', 'Medium')
         
         # Resources
-        self._AP = None
-        self._totalAP = None
-        self._HP = None
-        self._totalHP = None
-        self._MP = None
-        self._totalMP = None
+        self._AP = 20
+        self._totalAP = 20
+        self._baseHP = Person.setFrom(argDict, 'startingHP', Person.ERROR)
+        self._HP = self.totalHP
+        self._baseMP = Person.setFrom(Person.setFrom(argDict, 'startingMP', 0)
+        self._MP = self.totalMP
+
         
         # Primary Attributes
-        self._baseConstitution = None
-        self._equipmentConstitution = None
-        self._statusConstitution = None
+        self._baseConstitution = Person.setFrom(argDict, 'startingConstitution', 0)
+        self._equipmentConstitution = 0
+        self._statusConstitution = 0
         
-        self._baseCunning = None
-        self._equipmentCunning = None
-        self._statusCunning = None      
+        self._baseCunning = Person.setFrom(argDict, 'startignCunning', 0)
+        self._equipmentCunning = 0
+        self._statusCunning = 0      
         
-        self._baseDexterity = None
-        self._equipmentDexterity = None
-        self._statusDexterity = None     
+        self._baseDexterity = Person.setFrom(argDict, 'startingDexterity', 0)
+        self._equipmentDexterity = 0
+        self._statusDexterity = 0     
 
-        self._basePiety = None
-        self._equipmentPiety = None
-        self._statusPiety = None 
+        self._basePiety = Person.setFrom(argDict, 'startingPiety', 0)
+        self._equipmentPiety = 0
+        self._statusPiety = 0 
          
-        self._baseSorcery = None
-        self._equipmentSorcery = None
-        self._statusSorcery = None
+        self._baseSorcery = Person.setFrom(argDict, 'startingSorcery', 0)
+        self._equipmentSorcery = 0
+        self._statusSorcery = 0
 
-        self._baseStrength = None
-        self._equipmentStrength = None
-        self._statusStrength = None
+        self._baseStrength = Person.setFrom(argDict, 'startingStrength', 0)
+        self._equipmentStrength = 0
+        self._statusStrength = 0
         
-        self._baseArmorPenetration = None
-        self._equipmentArmorPenetration = None
-        self._statusArmorPenetration = None
+        self._baseArmorPenetration = Person.setFrom(argDict, 'startingArmorPenetration')
+        self._equipmentArmorPenetration = 0
+        self._statusArmorPenetration = 0
         
-        self._baseAwareness = None
-        self._equipmentAwareness = None
-        self._statusAwareness = None
+        self._baseAwareness = Person.setFrom(argDict, 'startingAwareness', 0)
+        self._equipmentAwareness = 0
+        self._statusAwareness = 0
         
-        self._baseCriticalChance = None
-        self._equipmentCriticalChance = None
-        self._statusCriticalChance = None
+        self._baseCriticalChance = Person.setFrom(argDict, 'startingCriticalChance', 0)
+        self._equipmentCriticalChance = 0
+        self._statusCriticalChance = 0
         
-        self._baseCriticalMagnitude = None
-        self._equipmentCriticalMagnitude = None
-        self._statusCriticalMagnitude = None
+        self._baseCriticalMagnitude = Person.setFrom(argDict, 'startingCriticalMagnitude', 0)
+        self._equipmentCriticalMagnitude = 0
+        self._statusCriticalMagnitude = 0
         
-        self._baseDodge = None
-        self._equipmentDodge = None
-        self._statusDodge = None
+        self._baseDodge = Person.setFrom(argDict, 'startingDexterity', 0)
+        self._equipmentDodge = 0
+        self._statusDodge = 0
         
-        self._baseDR = None
-        self._equipmentDR = None
-        self._statusDR = None
+        self._baseDR = Person.setFrom(argDict, 'startingDR', 0)
+        self._equipmentDR = 0
+        self._statusDR = 0
         
-        #self._baseForce = N\A
-        self._equipmentForce = None
-        self._statusForce = None
+        # No such thing as 'base' force.
+        # TODO: Consider moving these two to the Weapon class.
+        self._equipmentForce = 0
+        self._statusForce = 0
         
-        self._baseMagicResist = None
-        self._equipmentMagicResist = None
-        self._statusMagicResist = None
+        self._baseMagicResist = Person.setFrom(argDict, 'startingPiety', 0)
+        self._equipmentMagicResist = 0
+        self._statusMagicResist = 0
         
-        self._baseMeleeAccuracy = None
-        self._equipmentMeleeAccuracy = None
-        self._statusMeleeAccuracy = None
+        self._baseMeleeAccuracy = Person.setFrom(argDict, 'startingMeleeAccuracy', 0)
+        self._equipmentMeleeAccuracy = 0
+        self._statusMeleeAccuracy = 0
          
-        self._baseMeleeDodge = None
-        self._equipmentMeleeDodge = None
-        self._statusMeleeDodge = None
+        self._baseMeleeDodge = Person.setFrom(argDict, 'startingMeleeDodge', 0)
+        self._equipmentMeleeDodge = 0
+        self._statusMeleeDodge = 0
          
-        self._baseMight = None
-        self._equipmentMight = None
-        self._statusMight = None
+        self._baseMight = Person.setFrom(argDict, 'startingMight', 0)) 
+        self._equipmentMight = 0
+        self._statusMight = 0
         
-        self._baseMovementTiles = None
-        self._equipmentMovementTiles = None
-        self._statusMovementTiles = None
+        self._baseMovementTiles = Person.setFrom(argDict, 'movementTiles', 2)
+        self._equipmentMovementTiles = 0
+        self._statusMovementTiles = 0
         
-        self._basePoisonTolerance = None
-        self._equipmentPoisonTolerance = None
-        self._statusPoisonTolerance = None  
+        self._basePoisonTolerance = Person.setFrom(argDict, 'startingPoisonTolerance', 0)
+        self._equipmentPoisonTolerance = 0
+        self._statusPoisonTolerance = 0  
         
-        self._baseRangedAccuracy = None
-        self._equipmentRangedAccuracy = None
-        self._statusRangedAccuracy = None
+        self._baseRangedAccuracy = Person.setFrom(argDict, 'startingRangedAccuracy', 0)
+        self._equipmentRangedAccuracy = 0
+        self._statusRangedAccuracy = 0
         
-        self._baseRangedCriticalMagnitude = None
-        self._equipmentRangedCriticalMagnitude = None
-        self._statusRangedCriticalMagnitude = None
+        self._baseRangedCriticalMagnitude = Person.setFrom(argDict, 'startingRangedCriticalMagnitude', 0)
+        self._equipmentRangedCriticalMagnitude = 0
+        self._statusRangedCriticalMagnitude = 0
         
-        self._baseRangedDodge = None
-        self._equipmentRangedDodge = None
-        self._statusRangedDodge = None      
+        self._baseRangedDodge = Person.setFrom(argDict, 'startingRangedDodge', 0)
+        self._equipmentRangedDodge = 0
+        self._statusRangedDodge = 0      
         
-        self._baseRangedForce = None
-        self._equipmentRangedForce = None
-        self._statusRangedForce = None    
+        self._baseRangedForce = Person.setFrom(argDict, 'startingRangedForce', 0)
+        self._equipmentRangedForce = 0
+        self._statusRangedForce = 0    
         
-        self._baseSneak = None
-        self._equipmentSneak = None
-        self._statusSneak = None
+        self._baseSneak = Person.setFrom(argDict, 'startingSneak', 0)
+        self._equipmentSneak = 0
+        self._statusSneak = 0
         
-        self._baseSpellpower = None
-        self._equipmentSpellpower = None
-        self._statusSpellpower = None
+        self._baseSpellpower = Person.setFrom(argDict, 'startingSpellpower', 0)
+        self._equipmentSpellpower = 0
+        self._statusSpellpower = 0
         
-        self._baseTrapEvade = None
-        self._equipmentTrapEvade = None
-        self._statusTrapEvade = None
+        self._baseTrapEvade = Person.setFrom(argDict, 'startingTrapEvade', 0)
+        self._equipmentTrapEvade = 0
+        self._statusTrapEvade = 0
         
-        self._baseArcaneResistance = None
-        self._equipmentArcaneResistance = None
-        self._statusArcaneResistance = None
+        self._baseArcaneResistance = Person.setFrom(argDict, 'startingArcaneResistance', 0)
+        self._equipmentArcaneResistance = 0
+        self._statusArcaneResistance = 0
         
-        self._baseColdResistance = None
-        self._equipmentColdResistance = None
-        self._statusColdResistance = None
+        self._baseColdResistance = Person.setFrom(argDict, 'startingColdResistance', 0)
+        self._equipmentColdResistance = 0
+        self._statusColdResistance = 0
         
-        self._baseDivineResistance = None
-        self._equipmentDivineResistance = None
-        self._statusDivineResistance = None
+        self._baseDivineResistance = Person.setFrom(argDict, 'startingDivineResistance', 0)
+        self._equipmentDivineResistance = 0
+        self._statusDivineResistance = 0
         
-        self._baseElectricResistance = None
-        self._equipmentElectricResistance = None
-        self._statusElectricResistance = None
+        self._baseElectricResistance = Person.setFrom(argDict, 'startingElectricResistance', 0)
+        self._equipmentElectricResistance = 0
+        self._statusElectricResistance = 0
         
-        self._baseFireResistance = None
-        self._equipmentFireResistance = None
-        self._statusFireResistance = None
+        self._baseFireResistance = Person.setFrom(argDict, 'startingFireResistance', 0)
+        self._equipmentFireResistance = 0
+        self._statusFireResistance = 0
         
-        self._basePoisonResistance = None
-        self._equipmentPoisonResistance = None
-        self._statusPoisonResistance = None
+        self._basePoisonResistance = Person.setFrom(argDict, 'startingPoisonResistance', 0)
+        self._equipmentPoisonResistance = 0
+        self._statusPoisonResistance = 0
         
-        self._baseShadowResistance = None
-        self._equipmentShadowResistance = None
-        self._statusShadowResistance = None
+        self._baseShadowResistance = Person.setFrom(argDict, 'startingShadowResistance', 0)
+        self._equipmentShadowResistance = 0
+        self._statusShadowResistance = 0
         
         # Physical Damage Resistances
          
-        self._baseBludegoningResistance = None
-        self._equipmentBludegoningResistance = None
-        self._statusBludegoningResistance = None
+        self._baseBludgeoningResistance = Person.setFrom(argDict, 'startingBludgeoningResistance', 0)
+        self._equipmentBludegoningResistance = 0
+        self._statusBludegoningResistance = 0
         
-        self._basePiercingResistance = None
-        self._equipmentPiercingResistance = None
-        self._statusPiercingResistance = None
+        self._basePiercingResistance = Person.setFrom(argDict, 'startingPiercingResistance', 0)
+        self._equipmentPiercingResistance = 0
+        self._statusPiercingResistance = 0
         
-        self._baseSlashingResistance = None
-        self._equipmentSlashingResistance = None
-        self._statusSlashingResistance = None
+        self._baseSlashingResistance = Person.setFrom(argDict, 'startingSlashingResistance', 0)
+        self._equipmentSlashingResistance = 0
+        self._statusSlashingResistance = 0
         
-        self._avoidanceChance = None
+        self._avoidanceChance = 0
         
-        self._HPBufferList = None
+        self._HPBufferList = []
         
-        self._baseMovementAPCost = None
-        self._equipmentMovementAPCost = None
-        self._overrideMovementAPCost = None
-        self._statusMovementAPCost = None
+        self._baseMovementAPCost = Person.setFrom(argDict, 'moveAP', Person.ERROR)
+        self._equipmentMovementAPCost = 0
+        self._overrideMovementAPCost = -1
+        self._statusMovementAPCost = 0
         
-        self._baseMeleeAttackAPCost = None
+        self._baseMeleeAttackAPCost = Person.setFrom(argDict, 'meleeAP', Person.ERROR)
+        self._baseRangedAttackAPCost = Person.setFrom(argDict, 'rangedAP', Person.ERROR)
         
-        self._baseRangedAttackAPCost = None
-        
-        self._statusSpellFailureChance = None
+        self._statusSpellFailureChance = 0
     
     @property
     def totalRangedAttackAPCost(self):
@@ -691,7 +714,8 @@ class Person(object):
         statuses that boost or reduce Dodge.  Does not include
         rangedDodge or meleeDodge (even when relevant.)
         """
-        return (self._equipmentDodge + 
+        return (self.totalDexterity + 
+                self._equipmentDodge + 
                 self._statusDodge + 
                 self._baseDodge)
             
@@ -745,7 +769,9 @@ class Person(object):
         "static" abililties that boost TrapEvade, and "dynamic"
         statuses that boost or reduce TrapEvade.
         """
-        return (self._equipmentTrapEvade + 
+        return (self.totalCunning +
+                self.totalDexterity +
+                self._equipmentTrapEvade + 
                 self._statusTrapEvade + 
                 self._baseTrapEvade)
             
@@ -799,7 +825,8 @@ class Person(object):
         "static" abililties that boost Awareness, and "dynamic"
         statuses that boost or reduce Awareness.
         """
-        return (self._equipmentAwareness + 
+        return (self.totalCunning +
+                self._equipmentAwareness + 
                 self._statusAwareness + 
                 self._baseAwareness)
             
@@ -950,7 +977,8 @@ class Person(object):
         "static" abililties that boost ArmorPenetration, and "dynamic"
         statuses that boost or reduce ArmorPenetration.
         """
-        return (self._equipmentArmorPenetration + 
+        return (max(0, (self.totalCunning - 10) * 0.25) +
+                self._equipmentArmorPenetration + 
                 self._statusArmorPenetration + 
                 self._baseArmorPenetration)
             
@@ -1078,7 +1106,8 @@ class Person(object):
         "static" abililties that boost Sneak, and "dynamic"
         statuses that boost or reduce Sneak.
         """
-        return (self._equipmentSneak + 
+        return (max(0, self.totalCunning - 10) +
+                self._equipmentSneak + 
                 self._statusSneak + 
                 self._baseSneak)
             
@@ -1133,7 +1162,8 @@ class Person(object):
         "static" abililties that boost MagicResist, and "dynamic"
         statuses that boost or reduce MagicResist.
         """
-        return (self._equipmentMagicResist + 
+        return (self.totalCunning + 
+                self._equipmentMagicResist + 
                 self._statusMagicResist + 
                 self._baseMagicResist)
             
@@ -1187,7 +1217,8 @@ class Person(object):
         "static" abililties that boost PoisonTolerance, and "dynamic"
         statuses that boost or reduce PoisonTolerance.
         """
-        return (self._equipmentPoisonTolerance + 
+        return (max(0, self.totalConstitution - 10) +
+                self._equipmentPoisonTolerance + 
                 self._statusPoisonTolerance + 
                 self._basePoisonTolerance)
             
@@ -1243,7 +1274,8 @@ class Person(object):
         "static" abililties that boost RangedAccuracy, and "dynamic"
         statuses that boost or reduce RangedAccuracy.
         """
-        return (self._equipmentRangedAccuracy + 
+        return (self.totalDexterity + 
+                self._equipmentRangedAccuracy + 
                 self._statusRangedAccuracy + 
                 self._baseRangedAccuracy)
             
@@ -1357,7 +1389,8 @@ class Person(object):
         "static" abililties that boost Spellpower, and "dynamic"
         statuses that boost or reduce Spellpower.
         """
-        return (self._equipmentSpellpower + 
+        return (self.totalSorcery + 
+                self._equipmentSpellpower + 
                 self._statusSpellpower + 
                 self._baseSpellpower)
             
@@ -1413,7 +1446,8 @@ class Person(object):
         statuses that boost or reduce CriticalChance.  This does not factor in
         extra critical chance from accuracy beyond 100%
         """
-        return (self._equipmentCriticalChance + 
+        return (max(0, (self.totalCunning - 10) * 0.5) +
+                self._equipmentCriticalChance + 
                 self._statusCriticalChance + 
                 self._baseCriticalChance)
             
@@ -1534,7 +1568,9 @@ class Person(object):
         "static" abililties that boost MeleeAccuracy, and "dynamic"
         statuses that boost or reduce MeleeAccuracy.
         """
-        return (self._equipmentMeleeAccuracy + 
+        return (self.totalDexterity * 0.5 +
+                self.totalStrength * 0.5 +
+                self._equipmentMeleeAccuracy + 
                 self._statusMeleeAccuracy + 
                 self._baseMeleeAccuracy)
             
@@ -1645,7 +1681,8 @@ class Person(object):
         possible "static" abililties that boost Might, and "dynamic"
         statuses that boost or reduce Might.
         """
-        return (self._equipmentMight + 
+        return (max(0, self.totalStrength - 10) +
+                self._equipmentMight + 
                 self._statusMight + 
                 self._baseMight)
             
@@ -1700,7 +1737,7 @@ class Person(object):
         Will almost always be 2
         Cannot be reduced below 1.
         """
-        return min(self._baseMovementTiles + self._equipmentMovementTiles + 
+        return max(self._baseMovementTiles + self._equipmentMovementTiles + 
                self._statusMovementTiles, 1)
             
     @property
@@ -1739,7 +1776,6 @@ class Person(object):
     def totalDexterity(self):
         """Should always equal base + equipment + status Dexterity, except
         when that equation would reduce it to a non-positive value."""
-        MINIMUM = 1
         return max(MINIMUM, 
                    self._baseDexterity + 
                    self._equipmentDexterity + 
@@ -1793,7 +1829,6 @@ class Person(object):
     def totalStrength(self):
         """Should always equal base + equipment + status Strength, except
         when that equation would reduce it to a non-positive value."""
-        MINIMUM = 1
         return max(MINIMUM, 
                    self._baseStrength + 
                    self._equipmentStrength + 
@@ -1847,7 +1882,6 @@ class Person(object):
     def totalCunning(self):
         """Should always equal base + equipment + status Cunning, except
         when that equation would reduce it to a non-positive value."""
-        MINIMUM = 1
         return max(MINIMUM, 
                    self._baseCunning + 
                    self._equipmentCunning + 
@@ -1901,7 +1935,6 @@ class Person(object):
     def totalSorcery(self):
         """Should always equal base + equipment + status Sorcery, except
         when that equation would reduce it to a non-positive value."""
-        MINIMUM = 1
         return max(MINIMUM, 
                    self._baseSorcery + 
                    self._equipmentSorcery + 
@@ -1955,7 +1988,6 @@ class Person(object):
     def totalPiety(self):
         """Should always equal base + equipment + status Piety, except
         when that equation would reduce it to a non-positive value."""
-        MINIMUM = 1
         return max(MINIMUM, 
                    self._basePiety + 
                    self._equipmentPiety + 
@@ -2009,7 +2041,6 @@ class Person(object):
     def totalConstitution(self):
         """Should always equal base + equipment + status Constitution, except
         when that equation would reduce it to a non-positive value."""
-        MINIMUM = 1
         return max(MINIMUM, 
                    self._baseConstitution + 
                    self._equipmentConstitution + 
@@ -2060,10 +2091,7 @@ class Person(object):
             self_.baseConstitution = value  
             
     # Derived Attributes
-        
-        
-        
-        
+          
     @property
     def AP(self):
         """The current Action Points of a PlayerCharacter"""
@@ -2108,17 +2136,18 @@ class Person(object):
     def totalHP(self):
         """The maximum HP of the player.  Is determined by eqiupment,
         skills, statuses, and base attributes."""
-        return self._totalHP
+        if self.Constitution == 0:
+            return self._baseHP
+        else:
+            return self.baseHP + (self.Constitution - 10) * 4
     
-    @totalHP.setter
-    def totalHP(self, value):
-        """Automatically restricts the current HP to the new maximum
-        if necessary."""
-        if value < 1:
-            value = 1
-        self._totalHP = value   
-        if HP > self.totalHP:
-            HP = self.totalHP        
+    @property
+    def baseHP(self):
+        return self._baseHP
+        
+    @baseHP.setter
+    def baseHP(self, value):
+        self._baseHP = value
     
     @property
     def MP(self):
@@ -2138,26 +2167,24 @@ class Person(object):
     def totalMP(self):
         """The maximum MP of the player.  Is determined by class, level,
         equipment, skills, statuses, and base attributes."""
-        return self._totalMP
+        if( self.totalPiety == 0 ):
+            return self._baseMP
+        else:
+            return self._baseMP + (Piety - 10) * 4
         
-    @totalMP.setter
-    def totalMP(self, value):
-        """Will automatically restrict the current MP to the new maximum
-        if necessary."""
-        if value < 0:
-            value = 0
-        if self.growthType == "Non-Caster":
-            self._totalMP = 0
-            return
+    @property
+    def baseMP(self):
+        return self._baseMP
         
-        self._totalMP = value
-        if MP > totalMP:
-            MP = totalMP
+    @baseMP.setter
+    def baseMP(self, value):
+        self._baseMP = value
         
     @property
     def location(self):
         """The Tile beneath the Person"""
-        return self._AP
+        return None
+        # TODO -- need to get the tile.
         
     @location.setter
     def location(self, tile):
@@ -2189,18 +2216,6 @@ class Person(object):
         """The size of this person.  Does not necessarily indicate how many
         tiles it fills up."""
         return self._size
-        
-    @size.setter
-    def size(self, s):
-        """Possible values:
-            "Small"
-            "Medium"
-            "Large"
-            "Huge" """
-        s = capitalize(s)
-        possibleValues = ["Small", "Medium", "Large", "Huge"]
-        if s in possibleValues:
-            self._size = s
             
     @property
     def cooldownList(self):
@@ -2460,10 +2475,10 @@ class Person(object):
             if (abs(xDifference) > 1) or (abs(yDifference) > 1):
                 return False
         
-        if(targetFacing == "DOWN"):
+        if(targetFacing == "UP"):
             if (yDifference <= 0) or (abs(xDifference) > yDifference):
                 return False
-        elif(targetFacing == "UP"):
+        elif(targetFacing == "DOWN"):
             if (yDifference >= 0) or (abs(xDifference) > yDifference):
                 return False
         elif(targetFacing == "LEFT"):
@@ -2570,9 +2585,9 @@ class Person(object):
         y = self.location.y
         direction = self.directionFacing
         location = None
-        if(direction == "UP"):
+        if(direction == "DOWN"):
             location = Location(x, y + 1)
-        elif(direction == "DOWN"):
+        elif(direction == "UP"):
             location = Location(x, y - 1)
         elif(direction == "LEFT"):
             location = Location(x - 1, y)

@@ -25,16 +25,21 @@ class CCTemplatesParser(object):
     @staticmethod
     def getFromText(file, currentLine, tag):
         if( currentLine == "" ): 
-            # This is EOF
+            # An empty string indicates the EOF.
             return "EOF"
         currentLine = currentLine.strip()
         while( sep.StatusEffectsParser.isEmptyText(currentLine) ):
             currentLine = file.readline().strip()
         if( tag.match(currentLine) ):
-            return tag.match(currentLine).group(1)
+            value = tag.match(currentLine).group(1)
+            try:
+                value = int(value)
+            except ValueError:
+                pass
+            return value
         else:
             print "Parsing Error: " + currentLine
-            return "BLARGH!"
+            return "ERROR!"
             
     def parseAllRaces(self, fileName):
         nameTag = re.compile("(?:\[NAME: )(.*)(?:\])", re.I)
