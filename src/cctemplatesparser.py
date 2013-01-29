@@ -18,8 +18,11 @@ class CCTemplatesParser(object):
           """
         self.state = "Expecting Name"
         self.NUM_CHARACTER_CLASSES = 16
+        self.NUM_RACES = 6
     
     characterClassTemplates = []
+    races = []
+    characterRacePairings = []
     
     @staticmethod
     def getFromText(file, currentLine, tag):
@@ -32,10 +35,50 @@ class CCTemplatesParser(object):
         if( tag.match(currentLine) ):
             return tag.match(currentLine).group(1)
         else:
-            return "Parsing Error: " + currentLine
+            print "Parsing Error: " + currentLine
+            return "BLARGH!"
             
+    def parseAllRaces(self, fileName):
+        nameTag = re.compile("(?:\[NAME: )(.*)(?:\])", re.I)
+        startingAwarenessTag = re.compile("(?:\[STARTING_AWARENESS: )(.*)(?:\])", re.I)
+        startingConstitutionTag = re.compile("(?:\[STARTING_CON: )(.*)(?:\])", re.I)
+        startingCunningTag = re.compile("(?:\[STARTING_CUN: )(.*)(?:\])", re.I)
+        startingDROutsideTag = re.compile("(?:\[STARTING_DAMAGE_REDUCTION_OUTSIDE: )(.*)(?:\])", re.I)
+        startingDexterityTag = re.compile("(?:\[STARTING_DEX: )(.*)(?:\])", re.I)
+        startingHPTag = re.compile("(?:\[STARTING_HP: )(.*)(?:\])", re.I)
+        startingMagicResistTag =  re.compile("(?:\[STARTING_MAGIC_RESIST: )(.*)(?:\])", re.I)
+        startingMPTag = re.compile("(?:\[STARTING_MP: )(.*)(?:\])", re.I)
+        startingPietyTag = re.compile("(?:\[STARTING_PIE: )(.*)(?:\])", re.I)
+        startingPoisonToleranceTag = re.compile("(?:\[STARTING_POISON_TOLERANCE: )(.*)(?:\])", re.I)
+        startingRangedAccuracyTag = re.compile("(?:\[STARTING_RANGED_ACCURACY: )(.*)(?:\])", re.I)
+        startingSneakTag = re.compile("(?:\[STARTING_SNEAK: )(.*)(?:\])", re.I)
+        startingSorceryTag = re.compile("(?:\[STARTING_SOR: )(.*)(?:\])", re.I)
+        startingStrengthTag = re.compile("(?:\[STARTING_STR: )(.*)(?:\])", re.I)
+        
+        with open(fileName, 'r') as f:
+            for i in range(self.NUM_RACES):
+                raceDict = {}
+                raceDict['name'] = CCTemplatesParser.getFromText(f, f.readline(), nameTag)
+                raceDict['startingAwareness'] = CCTemplatesParser.getFromText(f, f.readline(), startingAwarenessTag)
+                raceDict['startingConstitution'] = CCTemplatesParser.getFromText(f, f.readline(), startingConstitutionTag)
+                raceDict['startingCunning'] = CCTemplatesParser.getFromText(f, f.readline(), startingCunningTag)
+                raceDict['startingDROutside'] = CCTemplatesParser.getFromText(f, f.readline(), startingDROutsideTag)
+                raceDict['startingDexterity'] = CCTemplatesParser.getFromText(f, f.readline(), startingDexterityTag)
+                raceDict['startingHP'] = CCTemplatesParser.getFromText(f, f.readline(), startingHPTag)
+                raceDict['startingMagicResist'] = CCTemplatesParser.getFromText(f, f.readline(), startingMagicResistTag)
+                raceDict['startingMP'] = CCTemplatesParser.getFromText(f, f.readline(), startingMPTag)
+                raceDict['startingPiety'] = CCTemplatesParser.getFromText(f, f.readline(), startingPietyTag)
+                raceDict['startingPoisonTolerance'] = CCTemplatesParser.getFromText(f, f.readline(), startingPoisonToleranceTag)
+                raceDict['startingRangedAccuracy'] = CCTemplatesParser.getFromText(f, f.readline(), startingRangedAccuracyTag)
+                raceDict['startingSneak'] = CCTemplatesParser.getFromText(f, f.readline(), startingSneakTag)
+                raceDict['startingSorcery'] = CCTemplatesParser.getFromText(f, f.readline(), startingSorceryTag)
+                raceDict['startingStrength'] = CCTemplatesParser.getFromText(f, f.readline(), startingStrengthTag)    
+                CCTemplatesParser.races.append(raceDict)
+                
     
-    def parseAll(self, fileName):
+                
+    
+    def parseAllCC(self, fileName):
         nameTag = re.compile("(?:\[NAME: )(.*)(?:\])", re.I)
         baseCCTag = re.compile("(?:\[BASE_CLASS: )(.*)(?:\])", re.I)
         secondaryCCTag = re.compile("(?:\[SEC_CLASS: )(.*)(?:\])", re.I)
@@ -96,18 +139,38 @@ class CCTemplatesParser(object):
                 ccDict['levelupHP'] = CCTemplatesParser.getFromText(f, f.readline(), levelupHPTag)
                 ccDict['levelupMP'] = CCTemplatesParser.getFromText(f, f.readline(), levelupMPTag)
                 CCTemplatesParser.characterClassTemplates.append(ccDict)
-                
-        f.close()        
+                 
+    def combineRaceAndClass(self):
+        comboDict = {}
+        for ccDict in CCTemplatesParser.characterClassTemplates:
+            for raceDict in CCTemplatesParser.races:
+                comboDict = {}
+                comboDict['name'] = raceDict['name'] + " " + ccDict['name']
+                comboDict = self.combineNotName(ccDict, raceDict, comboDict)
+                CCTemplatesParser.characterRacePairings.append(comboDict)
+    
+     
+    def combineNotName(self, dictA, dictB, resultDict):
+        for keyA in dictA:
+            for keyB in dictB:
+                if (keyA != "name") and (keyA == keyB):
+                    resultDict[keyA] = int(dictA[keyA]) + int(dictB[keyB])
+                elif keyB not in dictA.keys():
+                    resultDict[keyB] = dictB[keyB]
+                elif keyA not in dictB.keys():
+                    resultDict[keyA] = dictA[keyA]
+        return resultDict
+
         
 if __name__ == "__main__":
     parser = CCTemplatesParser()
-    parser.parseAll("./data/Character_Class_Data.txt")
-    for ccDict in CCTemplatesParser.characterClassTemplates:
-        print ccDict['name']
-        print ccDict['skillGrowth']
-        print ccDict['moveAP']
-        print ccDict['levelupMP']
-    
-                
+    parser.parseAllCC("./data/Character_Class_Data.txt")
+    parser.parseAllRaces("./data/Race_Data.txt")
+    parser.combineRaceAndClass()
+    for combo in CCTemplatesParser.characterRacePairings:
+        for k in combo.keys():
+            print k + " : " + str(combo[k])
+        print "\n"
+
         
         

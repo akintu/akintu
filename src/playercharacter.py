@@ -164,11 +164,17 @@ class PlayerCharacter(object):
          
          # Physical Damage Resistances
          
-         self.totalBludegoningResistance = None
-         self.totalPiercingResistance = None
-         self.totalSlashingResistance = None
+         self._baseBludegoningResistance = None
+         self._equipmentBludegoningResistance = None
+         self._statusBludegoningResistance = None
          
-         # TODO: G/S for physical damage resistances
+         self._basePiercingResistance = None
+         self._equipmentPiercingResistance = None
+         self._statusPiercingResistance = None
+         
+         self._baseSlashingResistance = None
+         self._equipmentSlashingResistance = None
+         self._statusSlashingResistance = None
          
          # Elemental Bonus Damages
          
@@ -234,6 +240,8 @@ class PlayerCharacter(object):
          
          self._statusSpellFailureChance = None
          
+         self.DROutside = None
+         
          # self._activeSummon
          # self._abilityAPModsList [["AbilityName", -2], [...]]
          # self._spellMPModsList [["SpellName", -1], [...]]
@@ -250,7 +258,14 @@ class PlayerCharacter(object):
          self.levelupMP = None
          self.skillLevels = None
          self.spellLevels = None
-          
+         
+         # Just includes the name
+         self.spellList = []
+         self.abilityList = []
+         
+         # Trait list of form, [["Bully", 3], ["Courage", 2]...] where the int is the rank.
+         self.traitList = []
+         
     # Resources (AP, MP, HP)
     
     @property
@@ -260,8 +275,8 @@ class PlayerCharacter(object):
         
     @AP.setter
     def AP(self, value):
-        if value > totalAP: 
-            value = totalAP
+        if value > self._totalAP: 
+            value = self._totalAP
         self._AP = value
     
     @property
@@ -287,8 +302,8 @@ class PlayerCharacter(object):
     
     @HP.setter
     def HP(self, value):
-        if value > totalHP:
-            value = totalHP
+        if value > self._totalHP:
+            value = self._totalHP
         if value < 0:
             value = 0
         self._HP = value            
@@ -306,8 +321,8 @@ class PlayerCharacter(object):
         if value < 1:
             value = 1
         self._totalHP = value   
-        if HP > totalHP:
-            HP = totalHP        
+        if HP > self.totalHP:
+            HP = self.totalHP        
     
     @property
     def MP(self):
@@ -336,7 +351,7 @@ class PlayerCharacter(object):
         if value < 0:
             value = 0
         if self.growthType == "Non-Caster":
-            totalMP = 0
+            self._totalMP = 0
             return
         
         self._totalMP = value
@@ -351,7 +366,9 @@ class PlayerCharacter(object):
         when that equation would reduce it to a non-positive value."""
         MINIMUM = 1
         return max(MINIMUM, 
-                   baseDexterity + equipmentDexterity + statusDexterity) 
+                   self._baseDexterity + 
+                   self._equipmentDexterity + 
+                   self._statusDexterity) 
     
     @property
     def equipmentDexterity(self):
@@ -403,7 +420,9 @@ class PlayerCharacter(object):
         when that equation would reduce it to a non-positive value."""
         MINIMUM = 1
         return max(MINIMUM, 
-                   baseStrength + equipmentStrength + statusStrength)
+                   self._baseStrength + 
+                   self._equipmentStrength + 
+                   self._statusStrength)
 
     @property
     def equipmentStrength(self):
@@ -455,7 +474,9 @@ class PlayerCharacter(object):
         when that equation would reduce it to a non-positive value."""
         MINIMUM = 1
         return max(MINIMUM, 
-                   baseCunning + equipmentCunning + statusCunning)
+                   self._baseCunning + 
+                   self._equipmentCunning + 
+                   self._statusCunning)
 
     @property
     def equipmentCunning(self):
@@ -507,7 +528,9 @@ class PlayerCharacter(object):
         when that equation would reduce it to a non-positive value."""
         MINIMUM = 1
         return max(MINIMUM, 
-                   baseSorcery + equipmentSorcery + statusSorcery)
+                   self._baseSorcery + 
+                   self._equipmentSorcery + 
+                   self._statusSorcery)
 
     @property
     def equipmentSorcery(self):
@@ -559,7 +582,9 @@ class PlayerCharacter(object):
         when that equation would reduce it to a non-positive value."""
         MINIMUM = 1
         return max(MINIMUM, 
-                   basePiety + equipmentPiety + statusPiety)
+                   self._basePiety + 
+                   self._equipmentPiety + 
+                   self._statusPiety)
 
     @property
     def equipmentPiety(self):
@@ -611,7 +636,9 @@ class PlayerCharacter(object):
         when that equation would reduce it to a non-positive value."""
         MINIMUM = 1
         return max(MINIMUM, 
-                   baseConstitution + equipmentConstitution + statusConstitution)
+                   self._baseConstitution + 
+                   self._equipmentConstitution + 
+                   self._statusConstitution)
 
     @property
     def equipmentConstitution(self):
@@ -666,7 +693,9 @@ class PlayerCharacter(object):
         "static" abililties that boost MeleeAccuracy, and "dynamic"
         statuses that boost or reduce MeleeAccuracy.
         """
-        return equipmentMeleeAccuracy + statusMeleeAccuracy + baseMeleeAccuracy
+        return (self._equipmentMeleeAccuracy + 
+                self._statusMeleeAccuracy + 
+                self._baseMeleeAccuracy)
             
     @property
     def equipmentMeleeAccuracy(self):
@@ -721,7 +750,9 @@ class PlayerCharacter(object):
         the normal totalDodge, so it will need to be added manually on the event
         of a melee incoming attack.
         """
-        return equipmentMeleeDodge + statusMeleeDodge + baseMeleeDodge
+        return (self._equipmentMeleeDodge + 
+                self._statusMeleeDodge + 
+                self._baseMeleeDodge)
     
     @property
     def equipmentMeleeDodge(self):
@@ -773,7 +804,9 @@ class PlayerCharacter(object):
         possible "static" abililties that boost Might, and "dynamic"
         statuses that boost or reduce Might.
         """
-        return equipmentMight + statusMight + baseMight
+        return (self._equipmentMight + 
+                self._statusMight + 
+                self._baseMight)
             
     @property
     def equipmentMight(self):
@@ -935,7 +968,9 @@ class PlayerCharacter(object):
         "static" abililties that boost RangedAccuracy, and "dynamic"
         statuses that boost or reduce RangedAccuracy.
         """
-        return equipmentRangedAccuracy + statusRangedAccuracy + baseRangedAccuracy
+        return (self._equipmentRangedAccuracy + 
+                self._statusRangedAccuracy + 
+                self._baseRangedAccuracy)
             
     @property
     def equipmentRangedAccuracy(self):
@@ -989,8 +1024,10 @@ class PlayerCharacter(object):
         
         This stat itself is 100 + each component bonus to RCM.
         """
-        return (100 + equipmentRangedCriticalMagnitude +
-                statusRangedCriticalMagnitude + baseRangedCriticalMagnitude)        
+        return (100 + 
+                self._equipmentRangedCriticalMagnitude +
+                self._statusRangedCriticalMagnitude + 
+                self._baseRangedCriticalMagnitude)        
             
     @property
     def equipmentRangedCriticalMagnitude(self):
@@ -1045,7 +1082,9 @@ class PlayerCharacter(object):
         "static" abililties that boost Spellpower, and "dynamic"
         statuses that boost or reduce Spellpower.
         """
-        return equipmentSpellpower + statusSpellpower + baseSpellpower
+        return (self._equipmentSpellpower + 
+                self._statusSpellpower + 
+                self._baseSpellpower)
             
     @property
     def equipmentSpellpower(self):
@@ -1099,7 +1138,9 @@ class PlayerCharacter(object):
         statuses that boost or reduce CriticalChance.  This does not factor in
         extra critical chance from accuracy beyond 100%
         """
-        return equipmentCriticalChance + statusCriticalChance + baseCriticalChance
+        return (self._equipmentCriticalChance + 
+                self._statusCriticalChance + 
+                self._baseCriticalChance)
             
     @property
     def equipmentCriticalChance(self):
@@ -1157,8 +1198,9 @@ class PlayerCharacter(object):
         the exact float/int to multiply the damage by upon a critical hit with no
         further division.
         """
-        return (equipmentCriticalMagnitude/100 * baseCriticalMagnitude/100 *
-                (100 + statusCriticalMagnitude/100))        
+        return (self._equipmentCriticalMagnitude/100 * 
+                self._baseCriticalMagnitude/100 *
+                (100 + self._statusCriticalMagnitude/100))        
             
     @property
     def equipmentCriticalMagnitude(self):
@@ -1217,7 +1259,9 @@ class PlayerCharacter(object):
         "static" abililties that boost MagicResist, and "dynamic"
         statuses that boost or reduce MagicResist.
         """
-        return equipmentMagicResist + statusMagicResist + baseMagicResist
+        return (self._equipmentMagicResist + 
+                self._statusMagicResist + 
+                self._baseMagicResist)
             
     @property
     def equipmentMagicResist(self):
@@ -1269,7 +1313,9 @@ class PlayerCharacter(object):
         "static" abililties that boost PoisonTolerance, and "dynamic"
         statuses that boost or reduce PoisonTolerance.
         """
-        return equipmentPoisonTolerance + statusPoisonTolerance + basePoisonTolerance
+        return (self._equipmentPoisonTolerance + 
+                self._statusPoisonTolerance + 
+                self._basePoisonTolerance)
             
     @property
     def equipmentPoisonTolerance(self):
@@ -1360,7 +1406,9 @@ class PlayerCharacter(object):
         statuses that boost or reduce Dodge.  Does not include
         rangedDodge or meleeDodge (even when relevant.)
         """
-        return equipmentDodge + statusDodge + baseDodge
+        return (self._equipmentDodge + 
+                self._statusDodge + 
+                self._baseDodge)
             
     @property
     def equipmentDodge(self):
@@ -1412,7 +1460,9 @@ class PlayerCharacter(object):
         "static" abililties that boost TrapEvade, and "dynamic"
         statuses that boost or reduce TrapEvade.
         """
-        return equipmentTrapEvade + statusTrapEvade + baseTrapEvade
+        return (self._equipmentTrapEvade + 
+                self._statusTrapEvade + 
+                self._baseTrapEvade)
             
     @property
     def equipmentTrapEvade(self):
@@ -1464,7 +1514,9 @@ class PlayerCharacter(object):
         "static" abililties that boost Awareness, and "dynamic"
         statuses that boost or reduce Awareness.
         """
-        return equipmentAwareness + statusAwareness + baseAwareness
+        return (self._equipmentAwareness + 
+                self._statusAwareness + 
+                self._baseAwareness)
             
     @property
     def equipmentAwareness(self):
@@ -1524,7 +1576,9 @@ class PlayerCharacter(object):
         viewer's repsonsibility to adjust downward after 
         considering any armor penetration.
         """
-        return max(0, equipmentDR + statusDR + baseDR)
+        return max(0, self._equipmentDR + 
+                      self._statusDR + 
+                      self._baseDR)
             
     @property
     def equipmentDR(self):
@@ -1574,7 +1628,7 @@ class PlayerCharacter(object):
         """
         float -- The total Force multiplier used with Might to determine used might.
         """
-        return (statusForce * equipmentForce / 100)
+        return (self._statusForce * self._equipmentForce / 100)
         
     @property
     def equipmentForce(self):
@@ -1611,7 +1665,9 @@ class PlayerCharacter(object):
         "static" abililties that boost ArmorPenetration, and "dynamic"
         statuses that boost or reduce ArmorPenetration.
         """
-        return equipmentArmorPenetration + statusArmorPenetration + baseArmorPenetration
+        return (self._equipmentArmorPenetration + 
+                self._statusArmorPenetration + 
+                self._baseArmorPenetration)
             
     @property
     def equipmentArmorPenetration(self):
@@ -1737,7 +1793,9 @@ class PlayerCharacter(object):
         "static" abililties that boost Sneak, and "dynamic"
         statuses that boost or reduce Sneak.
         """
-        return equipmentSneak + statusSneak + baseSneak
+        return (self._equipmentSneak + 
+                self._statusSneak + 
+                self._baseSneak)
             
     @property
     def equipmentSneak(self):
@@ -2058,6 +2116,99 @@ class PlayerCharacter(object):
     def statusShadowResistance(self, value):
         return self._statusShadowResistance   
 
+    # Physical "Element" Resistance:
+    
+    @property
+    def totalBludgeoningResistance(self):
+        return (self._baseBludgeoningResistance +
+                self._equipmentBludgeoningResistance +
+                self._statusBludgeoningResistance)
+    
+    @property
+    def baseBludgeoningResistance(self):
+        return self._baseBludgeoningResistance
+        
+    @baseBludgeoningResistance.setter
+    def baseBludgeoningResistance(self, value):
+        self._baseBludgeoningResistance = value
+        
+    @property
+    def eqiupmentBludgeoningResistance(self):
+        return self._equipmentBludgeoningResistance
+    
+    @eqiupmentBludgeoningResistance.setter
+    def equipmentBludgeoningResistance(self, value):     
+        self._equipmentBludgeoningResistance = value
+        
+    @property
+    def statusBludgeoningResistance(self):
+        return self._statusBludgeoningResistance
+        
+    @statusBludgeoningResistance.setter
+    def statusBludgeoningResistance(self, value):
+        self._statusBludgeoningResistance = value
+
+    @property
+    def totalPiercingResistance(self):
+        return (self._basePiercingResistance +
+                self._equipmentPiercingResistance +
+                self._statusPiercingResistance)
+    
+    @property
+    def basePiercingResistance(self):
+        return self._basePiercingResistance
+        
+    @basePiercingResistance.setter
+    def basePiercingResistance(self, value):
+        self._basePiercingResistance = value
+        
+    @property
+    def eqiupmentPiercingResistance(self):
+        return self._equipmentPiercingResistance
+    
+    @eqiupmentPiercingResistance.setter
+    def equipmentPiercingResistance(self, value):     
+        self._equipmentPiercingResistance = value
+        
+    @property
+    def statusPiercingResistance(self):
+        return self._statusPiercingResistance
+        
+    @statusPiercingResistance.setter
+    def statusPiercingResistance(self, value):
+        self._statusPiercingResistance = value
+
+    @property
+    def totalSlashingResistance(self):
+        return (self._baseSlashingResistance +
+                self._equipmentSlashingResistance +
+                self._statusSlashingResistance)
+    
+    @property
+    def baseSlashingResistance(self):
+        return self._baseSlashingResistance
+        
+    @baseSlashingResistance.setter
+    def baseSlashingResistance(self, value):
+        self._baseSlashingResistance = value
+        
+    @property
+    def eqiupmentSlashingResistance(self):
+        return self._equipmentSlashingResistance
+    
+    @eqiupmentSlashingResistance.setter
+    def equipmentSlashingResistance(self, value):     
+        self._equipmentSlashingResistance = value
+        
+    @property
+    def statusSlashingResistance(self):
+        return self._statusSlashingResistance
+        
+    @statusSlashingResistance.setter
+    def statusSlashingResistance(self, value):
+        self._statusSlashingResistance = value
+        
+        
     # Elemental Bonus Damages
     
     @property
