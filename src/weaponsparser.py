@@ -3,7 +3,7 @@
 import sys
 import re
 import equipment
-import statuseffectsparser
+import statuseffectsparser as sep
 
 
 
@@ -78,7 +78,7 @@ class WeaponsParser(object):
                 gold = None
                 weight = None
                 wRange = None
-                if( statuseffectsparser.StatusEffectsParser.isEmptyText(line) ):
+                if( sep.StatusEffectsParser.isEmptyText(line) ):
                     continue
                 name = nameTag.match(line).group(1)
                 self.state = "Expecting Type"
@@ -151,7 +151,7 @@ class WeaponsParser(object):
                 WeaponsParser.weaponList.append(weapon)
                 continue
                 
-            raise statuseffectsparser.InvalidDataFileSyntax("Unknown Tag: " + line + " .")
+            raise sep.InvalidDataFileSyntax("Unknown Tag: " + line + " .")
                     
         f.close()
         

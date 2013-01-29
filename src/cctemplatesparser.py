@@ -5,8 +5,6 @@ import re
 import playercharacter
 import statuseffectsparser as sep
 
-
-
 class CCTemplatesParser(object):
 
     def __init__(self):
