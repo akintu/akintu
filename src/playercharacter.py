@@ -1,74 +1,89 @@
 #!/usr/bin/python
 
 import sys
-from person import *
+import person as p
 
-class PlayerCharacter(object):
-    def __init__(self):  
+class PlayerCharacter(Person):
+    def __init__(self, argDict):  
+        
+        self._baseOverallDamageBonus = p.Person.setFrom(argDict, 'startingOverallDamageBonus', 0)
+        self._equipmentOverallDamageBonus = 0
+        self._statusOverallDamageBonus = 0
          
-        self._baseOverallDamageBonus = None
-        self._equipmentOverallDamageBonus = None
-        self._statusOverallDamageBonus = None
+        self._basePoisonRatingBonus = p.Person.setFrom(argDict, 'startingPoisonRatingBonus', 0)
+        self._equipmentPoisonRatingBonus = 0
+        self._statusPoisonRatingBonus = 0    
          
-        self._basePoisonRatingBonus = None
-        self._equipmentPoisonRatingBonus = None
-        self._statusPoisonRatingBonus = None      
-         
-        self._basePotionEffect = None
-        self._equipmentPotionEffect = None
-        self._statusPotionEffect = None
+        self._basePotionEffect = p.Person.setFrom(argDict, 'startingPotionEffect', 0)
+        self._equipmentPotionEffect = 0
+        self._statusPotionEffect = 0
 
+        self._baseJewleryEffect = p.Person.setFrom(argDict, 'startingJewleryEffect', 0)
+        
         # Elemental Bonus Damages
         
-        self._baseArcaneBonusDamage = None
-        self._equipmentArcaneBonusDamage = None
-        self._statusArcaneBonusDamage = None
+        self._baseArcaneBonusDamage = p.Person.setFrom(argDict, 'startingArcaneBonusDamage', 0)
+        self._equipmentArcaneBonusDamage = 0
+        self._statusArcaneBonusDamage = 0
         
-        self._baseColdBonusDamage = None
-        self._equipmentColdBonusDamage = None
-        self._statusColdBonusDamage = None
+        self._baseColdBonusDamage = p.Person.setFrom(argDict, 'startingColdBonusDamage', 0)
+        self._equipmentColdBonusDamage = 0
+        self._statusColdBonusDamage = 0
         
-        self._baseDivineBonusDamage = None
-        self._equipmentDivineBonusDamage = None
-        self._statusDivineBonusDamage = None
+        self._baseDivineBonusDamage = p.Person.setFrom(argDict, 'startingDivineBonusDamage', 0)
+        self._equipmentDivineBonusDamage = 0
+        self._statusDivineBonusDamage = 0
         
-        self._baseElectricBonusDamage = None
-        self._equipmentElectricBonusDamage = None
-        self._statusElectricBonusDamage = None
+        self._baseElectricBonusDamage = p.Person.setFrom(argDict, 'startingElectricBonusDamage', 0)
+        self._equipmentElectricBonusDamage = 0
+        self._statusElectricBonusDamage = 0
         
-        self._baseFireBonusDamage = None
-        self._equipmentFireBonusDamage = None
-        self._statusFireBonusDamage = None
+        self._baseFireBonusDamage = p.Person.setFrom(argDict, 'startingFireBonusDamage', 0)
+        self._equipmentFireBonusDamage = 0
+        self._statusFireBonusDamage = 0
         
-        self._basePoisonBonusDamage = None
-        self._equipmentPoisonBonusDamage = None
-        self._statusPoisonBonusDamage = None
+        self._basePoisonBonusDamage = p.Person.setFrom(argDict, 'startingPoisonBonusDamage', 0)
+        self._equipmentPoisonBonusDamage = 0
+        self._statusPoisonBonusDamage = 0
         
-        self._baseShadowBonusDamage = None
-        self._equipmentShadowBonusDamage = None
-        self._statusShadowBonusDamage = None
+        self._baseShadowBonusDamage = p.Person.setFrom(argDict, 'startingShadowBonusDamage', 0)
+        self._equipmentShadowBonusDamage = 0
+        self._statusShadowBonusDamage = 0
          
         # TODO: Write method applyOnHitMod(name, *args)
         # TODO: Write method removeOnHitMod(name)
          
         # Intrinsic properties
          
-        self.growthType = None 
-        self.characterClass = None
-        self.baseClass = None
-        self.secondaryClass = None
-        self.armorTolerance = None
-         
+        self.growthType = p.Person.setFrom(argDict, 'skillGrowth', p.Person.ERROR) 
+        
+        title = p.Person.setFrom(argDict, 'name', p.Person.ERROR)
+        self.race = title.split(' ', 1)[0]
+        self.characterClass = title.split(' ', 1)[1]
+        
+        self.baseClass = p.Person.setFrom(argDict, 'baseCC', p.Person.ERROR)
+        self.secondaryClass = p.Person.setFrom(argDict, 'secondaryCC', p.Person.ERROR)
+        self.armorTolerance = p.Person.setFrom(argDict, 'armorTolerance', p.Person.ERROR)
+        
         # Class specific properties and weird things:
-         
+        
+            
         self._arcaneArcherManaRegenLow = None
         self._arcaneArcherManaRegenHigh = None
         self._arcaneArcherManaRegenBase = None
-         
+        if (self.characterClass == "Arcane Archer"):
+            self._arcaneArcherManaRegenLow = 4
+            self._arcaneArcherManaRegenBase = 6
+            self._arcaneArcherManaRegenHigh = 7
+        
+        # The starting (default?) style for Ninjas is the 'Tiger' style.
         self._ninjaStyle = None
+        if (self.characterClass == "Ninja"):
+            self._ninjaStyle = "Tiger" # TODO: Apply Tiger passives on startup.
 
+        # Worry about whether we are 'outside' or not in the Combat class, perhaps? TODO
         self.DROutside = None
-         
+        
         # self._activeSummon
         # self._abilityAPModsList [["AbilityName", -2], [...]]
         # self._spellMPModsList [["SpellName", -1], [...]]
@@ -76,28 +91,57 @@ class PlayerCharacter(object):
         # self._stealthBreakMaxOverride Default 100
         
         # Levelup stats
-        self.levelupStrength = None
-        self.levelupCunning = None
-        self.levelupSorcery = None
-        self.levelupPiety = None
-        self.levelupConstitution = None
-        self.levelupHP = None
-        self.levelupMP = None
+        self.levelupStrength = p.Person.setFrom(argDict, 'levelupStrength', p.Person.ERROR)
+        self.levelupCunning = p.Person.setFrom(argDict, 'levelupCunning', p.Person.ERROR)
+        self.levelupSorcery = p.Person.setFrom(argDict, 'levelupSorcery', p.Person.ERROR)
+        self.levelupPiety = p.Person.setFrom(argDict, 'levelupPiety', p.Person.ERROR)
+        self.levelupConstitution = p.Person.setFrom(argDict, 'levelupConstitution', p.Person.ERROR)
+        self.levelupHP = p.Person.setFrom(argDict, 'levelupHP', p.Person.ERROR)
+        self.levelupMP = p.Person.setFrom(argDict, 'levelupMP', p.Person.ERROR)
+       
         self.skillLevels = None
         self.spellLevels = None
+        if self.growthType == "Caster":
+            self.skillLevels = [1, 4, 8, 12, 16, 20]
+            self.spellLevels = {1 : 3, 2 : 1,
+                                3 : 2, 4 : 1,
+                                5 : 2, 6 : 1,
+                                7 : 2, 8 : 1, 
+                                9 : 2, 10 : 1,
+                                11 : 2, 12 : 1,
+                                13 : 2, 14 : 1,
+                                15 : 2, 16 : 1,
+                                17 : 2, 18 : 1,
+                                19 : 2, 20 :1}
+        elif self.growthType == "Hybrid":
+            self.skillLevels = [1, 3, 6, 9, 12, 15, 18, 20]
+            self.spellLevels = {1 : 1, 2 : 1, 3 : 1, 4 : 1, 5 : 1,
+                                6 : 1, 7 : 1, 8 : 1, 9 : 1, 10 : 1,
+                                11 : 1, 12 : 1, 13 : 1, 14 : 1, 
+                                15 : 1, 16 : 1, 17 : 1, 18 : 1,
+                                19 : 1, 20 : 1}
+        elif self.growthType == "Non-Caster":
+            self.skillLevels = [1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
+            self.spellLevels = {}
         
         # Just includes the name
         self.spellList = []
+        spellOne = p.Person.setFrom(argDict, 'spellOne', None)
+        if spellOne:
+            self.spellList.append(spellOne)
+        spellTwo = p.Person.setFrom(argDict, 'spellTwo', None)
+        if spellTwo:
+            self.spellList.append(spellTwo)
+        spellThree = p.Person.setFrom(argDict, 'spellThree', None)
+        if spellThree:
+            self.spellList.append(spellThree)
+        
         self.abilityList = []
         
         # Trait list of form, [["Bully", 3], ["Courage", 2]...] where the int is the rank.
         self.traitList = []
         
     # Resources (AP, MP, HP)
-    
-    
-    
-    
        
     @property
     def totalOverallDamageBonus(self):
@@ -173,8 +217,10 @@ class PlayerCharacter(object):
         An int representing how much healing and mana potions are
         augmented.  Starts at 100 but is increased by many possible
         factors, especially Sorcery."""
-        return (self._basePotionEffect + self._equipmentPotionEffect +
-               self._statusPotionEffect)
+        return (max(0, (self.totalSorcery - 10) * 5) +
+                self._basePotionEffect + 
+                self._equipmentPotionEffect +
+                self._statusPotionEffect)
     
     @property
     def basePotionEffect(self):
@@ -204,13 +250,26 @@ class PlayerCharacter(object):
     def statusPotionEffect(self, value):
         self._statusPotionEffect = value    
 
+    @property
+    def totalJewleryEffect(self):
+        return (100 +
+                max(0, (self.totalSorcery - 10)) * 5 +
+                self._baseJewleryEffect)
+
+    @property
+    def baseJewleryEffect(self):
+        return self._baseJewleryEffect
+
+    @baseJewleryEffect.setter
+    def baseJewleryEffect(self, value):
+        self._baseJewleryEffect = value    
+        
     # Intrinsic Properties
     @property
     def growthType(self):
         """The skill growth type.  One of "Caster", "Hybrid", or "Non-Caster".
         """
         return self._growthType
-        
         
     # Elemental Bonus Damages
     
