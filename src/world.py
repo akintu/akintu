@@ -4,11 +4,10 @@ World generation tools and representation
 
 import os
 
-from PIL import Image
 from const import*
+from sprites import*
 
-grassimage = os.path.join("res", "images", "background", "grass.png")
-rockimage = os.path.join("res", "images", "rock.png")
+
 
 class World(object):
     '''
@@ -23,16 +22,20 @@ class World(object):
 
     def get_pane(self, location, position = None):
         # TODO: use seed to generate pane and tiles on pane
-        imagespath = os.path.join("res", "images", "background")
-        backgroundimage = os.path.join(imagespath, "grass2.jpg")
-        background = BackgroundTiles(backgroundimage)
+
+        background = crop_helper(GRASS2)
+        trees = SpriteSheet(TREES)
+        images = dict(background.images.items() + trees.images.items())
         tiles = dict()
         for i in range(PANE_X):
             for j in range(PANE_Y):
                 tiles[(i, j)] = Tile(background.getimage((i, j)), True)
+                tmp = trees.get_random_entity(RAND_TREES)
+                if tmp:
+                    tiles[(i, j)].entities.append(Entity(tmp, False))
         
-        return (Pane(self.seed, location, tiles), background.images)
-
+        return (Pane(self.seed, location, tiles), images)
+                
 class Pane(object):
     '''
     Represents a single screen of the world
@@ -46,10 +49,12 @@ class Pane(object):
         for x in range(PANE_X):
             for y in range(PANE_Y):
                 if x == 0 or x == PANE_X-1 or y == 0 or y == PANE_Y-1:
+                    del self.tiles[(x,y)].entities[:]
                     self.tiles[(x,y)].entities.append(Entity(rockimage, False))
-        
-        del self.tiles[(0,PANE_Y/2)].entities[:]    #LEFT
-        del self.tiles[(PANE_X/2, 0)].entities[:]   #TOP
+
+        # Removes the 4 entrance locations
+        del self.tiles[(0,PANE_Y/2)].entities[:]        #LEFT
+        del self.tiles[(PANE_X/2, 0)].entities[:]       #TOP
         del self.tiles[(PANE_X-1,PANE_Y/2)].entities[:] #RIGHT
         del self.tiles[(PANE_X/2,PANE_Y-1)].entities[:] #BOTTOM
         
@@ -69,26 +74,4 @@ class Entity(object):
         self.image = image
         self.passable = passable
 
-class BackgroundTiles(object):
-    def __init__(self, path):
-        self.tile_id = dict()
-        self.images = dict()
-        self.backimage = Image.open(path)
-        self.x = self.backimage.size[0]/TILE_SIZE
-        self.y = self.backimage.size[1]/TILE_SIZE
-        currx = 0
-        for i in range(self.x):
-            curry = 0
-            for j in range(self.y):
-                id = "background_" + str(i) + "_" + str(j)
-                self.tile_id[(i, j)] = id
-                self.images[id] = self.backimage.crop(
-                    (currx, curry, currx + TILE_SIZE, curry + TILE_SIZE))
-                
-                curry += TILE_SIZE
-            currx += TILE_SIZE
-            
-    def getimage(self, location):
-        i = location[0] % self.x
-        j = location[1] % self.y
-        return self.tile_id[(i, j)]
+        
