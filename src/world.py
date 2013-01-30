@@ -24,15 +24,19 @@ class World(object):
         # TODO: use seed to generate pane and tiles on pane
 
         background = crop_helper(GRASS2)
-        trees = SpriteSheet(TREES)
-        images = dict(background.images.items() + trees.images.items())
+        treesheet = SpriteSheet(TREES, self.seed + str(location))
+        rocksheet = SpriteSheet(ROCKS, self.seed + str(location))
+        images = dict(background.images.items() + treesheet.images.items() + rocksheet.images.items())
         tiles = dict()
         for i in range(PANE_X):
             for j in range(PANE_Y):
                 tiles[(i, j)] = Tile(background.getimage((i, j)), True)
-                tmp = trees.get_random_entity(RAND_TREES)
-                if tmp:
-                    tiles[(i, j)].entities.append(Entity(tmp, False))
+                tree = treesheet.get_random_entity(str((i,j)), RAND_TREES)
+                rock = rocksheet.get_random_entity(str((i,j)), RAND_ROCKS)
+                if tree:
+                    tiles[(i, j)].entities.append(Entity(tree, False))
+                if rock:
+                    tiles[(i, j)].entities.append(Entity(rock, False))
         
         return (Pane(self.seed, location, tiles), images)
                 

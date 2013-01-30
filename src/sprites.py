@@ -7,7 +7,7 @@ import random
 
 from PIL import Image
 grassimage = os.path.join("res", "images", "background", "grass.png")
-rockimage = os.path.join("res", "images", "rock1.png")
+rockimage = os.path.join("res", "images", "rocks1.png")
 tree_sheet = os.path.join("res", "images", "trees1.png")
 
 def crop_helper(const):
@@ -17,6 +17,7 @@ class Crop(object):
     def __init__(self, pathDIR, name, tilesize, cropsize = None, size = None):
         if not cropsize:
             cropsize = tilesize
+        self.name = name
         self.tile_id = dict()
         self.images = dict()
         path = os.path.join(pathDIR, name)
@@ -46,12 +47,15 @@ class Crop(object):
         return self.tile_id[(i, j)]
         
 class SpriteSheet(object):
-    def __init__(self, sheet):
+    def __init__(self, sheet, seed):
         self.images = dict()
         self.sheet = crop_helper(sheet)
         self.images = self.sheet.images
+        self.name = self.sheet.name
+        self.seed = seed
         
-    def get_random_entity(self, percentage):
+    def get_random_entity(self, seed, percentage):
+        random.seed(self.seed + self.name + seed)
         i = random.randrange(self.sheet.x / percentage)
         j = random.randrange(self.sheet.y / percentage)
         image = None
