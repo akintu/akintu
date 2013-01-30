@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import sys
+import entity as en
 import equipment as eq
 
 class IncompleteDataInitialization(Exception):
@@ -9,15 +10,15 @@ class IncompleteDataInitialization(Exception):
     def __str__(self):
         return repr(self.value)
 
-class Person(object):
+class Person(en.Entity):
 
     ERROR = "INITIALIZATION_FAILURE"
-
+    
     @staticmethod
     def setFrom(argDict, variableName, defaultValue):
         if( (variableName not in argDict) or (argDict[variableName] == "None") ):
             if defaultValue == Person.ERROR:
-                raise IncompleteDataInitialization( "The parameter: " + variableName + " must be specified, but isn't."
+                raise IncompleteDataInitialization( "The parameter: " + variableName + " must be specified, but isn't.")
             else:
                 return defaultValue
         else:
@@ -25,9 +26,7 @@ class Person(object):
 
             
     def __init__(self, argDict):
-        self._location = None # TODO: Move to parent class
-        self._directionFacing = None # Move this to parent class as well?
-        self._team = None #TODO: Move to parent class
+        e.Entity.__init__(self)
         self._cooldownList = []
         self._statusList = []
         self._minionList = []
@@ -35,16 +34,7 @@ class Person(object):
         
         self._title = Person.setFrom(argDict, 'name', Person.ERROR)
         self._size = Person.setFrom(argDict, 'size', 'Medium')
-        
-        # Resources
-        self._AP = 20
-        self._totalAP = 20
-        self._baseHP = Person.setFrom(argDict, 'startingHP', Person.ERROR)
-        self._HP = self.totalHP
-        self._baseMP = Person.setFrom(Person.setFrom(argDict, 'startingMP', 0)
-        self._MP = self.totalMP
 
-        
         # Primary Attributes
         self._baseConstitution = Person.setFrom(argDict, 'startingConstitution', 0)
         self._equipmentConstitution = 0
@@ -70,7 +60,15 @@ class Person(object):
         self._equipmentStrength = 0
         self._statusStrength = 0
         
-        self._baseArmorPenetration = Person.setFrom(argDict, 'startingArmorPenetration')
+        # Resources
+        self._AP = 20
+        self._totalAP = 20
+        self._baseHP = Person.setFrom(argDict, 'startingHP', Person.ERROR)
+        self._HP = self.totalHP
+        self._baseMP = Person.setFrom(argDict, 'startingMP', 0)
+        self._MP = self.totalMP
+        
+        self._baseArmorPenetration = Person.setFrom(argDict, 'startingArmorPenetration', 0)
         self._equipmentArmorPenetration = 0
         self._statusArmorPenetration = 0
         
@@ -111,7 +109,7 @@ class Person(object):
         self._equipmentMeleeDodge = 0
         self._statusMeleeDodge = 0
          
-        self._baseMight = Person.setFrom(argDict, 'startingMight', 0)) 
+        self._baseMight = Person.setFrom(argDict, 'startingMight', 0)
         self._equipmentMight = 0
         self._statusMight = 0
         
@@ -1776,8 +1774,7 @@ class Person(object):
     def totalDexterity(self):
         """Should always equal base + equipment + status Dexterity, except
         when that equation would reduce it to a non-positive value."""
-        return max(MINIMUM, 
-                   self._baseDexterity + 
+        return max(self._baseDexterity + 
                    self._equipmentDexterity + 
                    self._statusDexterity) 
     
@@ -1829,10 +1826,9 @@ class Person(object):
     def totalStrength(self):
         """Should always equal base + equipment + status Strength, except
         when that equation would reduce it to a non-positive value."""
-        return max(MINIMUM, 
-                   self._baseStrength + 
-                   self._equipmentStrength + 
-                   self._statusStrength)
+        return (self._baseStrength + 
+                self._equipmentStrength + 
+                self._statusStrength)
 
     @property
     def equipmentStrength(self):
@@ -1882,10 +1878,9 @@ class Person(object):
     def totalCunning(self):
         """Should always equal base + equipment + status Cunning, except
         when that equation would reduce it to a non-positive value."""
-        return max(MINIMUM, 
-                   self._baseCunning + 
-                   self._equipmentCunning + 
-                   self._statusCunning)
+        return (self._baseCunning + 
+                self._equipmentCunning + 
+                self._statusCunning)
 
     @property
     def equipmentCunning(self):
@@ -1935,10 +1930,9 @@ class Person(object):
     def totalSorcery(self):
         """Should always equal base + equipment + status Sorcery, except
         when that equation would reduce it to a non-positive value."""
-        return max(MINIMUM, 
-                   self._baseSorcery + 
-                   self._equipmentSorcery + 
-                   self._statusSorcery)
+        return (self._baseSorcery + 
+                self._equipmentSorcery + 
+                self._statusSorcery)
 
     @property
     def equipmentSorcery(self):
@@ -1988,10 +1982,9 @@ class Person(object):
     def totalPiety(self):
         """Should always equal base + equipment + status Piety, except
         when that equation would reduce it to a non-positive value."""
-        return max(MINIMUM, 
-                   self._basePiety + 
-                   self._equipmentPiety + 
-                   self._statusPiety)
+        return (self._basePiety + 
+                self._equipmentPiety + 
+                self._statusPiety)
 
     @property
     def equipmentPiety(self):
@@ -2041,10 +2034,9 @@ class Person(object):
     def totalConstitution(self):
         """Should always equal base + equipment + status Constitution, except
         when that equation would reduce it to a non-positive value."""
-        return max(MINIMUM, 
-                   self._baseConstitution + 
-                   self._equipmentConstitution + 
-                   self._statusConstitution)
+        return (self._baseConstitution + 
+                self._equipmentConstitution + 
+                self._statusConstitution)
 
     @property
     def equipmentConstitution(self):
@@ -2136,10 +2128,10 @@ class Person(object):
     def totalHP(self):
         """The maximum HP of the player.  Is determined by eqiupment,
         skills, statuses, and base attributes."""
-        if self.Constitution == 0:
+        if self.totalConstitution == 0:
             return self._baseHP
         else:
-            return self.baseHP + (self.Constitution - 10) * 4
+            return self.baseHP + (self.totalConstitution - 10) * 4
     
     @property
     def baseHP(self):
@@ -2170,7 +2162,7 @@ class Person(object):
         if( self.totalPiety == 0 ):
             return self._baseMP
         else:
-            return self._baseMP + (Piety - 10) * 4
+            return self._baseMP + (self.totalPiety - 10) * 4
         
     @property
     def baseMP(self):

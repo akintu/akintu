@@ -164,12 +164,14 @@ class CCTemplatesParser(object):
                     resultDict[keyA] = dictA[keyA]
         return resultDict
 
-        
+    def parseAll(self, ccFileName, raceFileName):
+        self.parseAllCC(ccFileName)
+        self.parseAllRaces(raceFileName)
+        self.combineRaceAndClass()
+    
 if __name__ == "__main__":
     parser = CCTemplatesParser()
-    parser.parseAllCC("./data/Character_Class_Data.txt")
-    parser.parseAllRaces("./data/Race_Data.txt")
-    parser.combineRaceAndClass()
+    parser.parseAll("./data/Character_Class_Data.txt", "./data/Race_Data.txt")
     for combo in CCTemplatesParser.characterRacePairings:
         for k in combo.keys():
             print k + " : " + str(combo[k])

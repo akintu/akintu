@@ -3,8 +3,19 @@
 import sys
 import person as p
 
-class PlayerCharacter(Person):
+class PlayerCharacter(p.Person):
+
+    expRequiredForLevel = {1 : 100, 2 : 250, 3 : 500, 4 : 900, 5 : 1700}
+    demoExpRequiredForLevel = {1 : 10, 2 : 25, 3 : 50, 4 : 90, 5 : 170}
+    LEVEL_MAX = 5
+    
     def __init__(self, argDict):  
+        p.Person.__init__(self, argDict)
+        
+        self.team = "Players"
+        
+        self.level = 1
+        self._experience = 0
         
         self._baseOverallDamageBonus = p.Person.setFrom(argDict, 'startingOverallDamageBonus', 0)
         self._equipmentOverallDamageBonus = 0
@@ -52,10 +63,11 @@ class PlayerCharacter(Person):
          
         # TODO: Write method applyOnHitMod(name, *args)
         # TODO: Write method removeOnHitMod(name)
+        # TODO: Write method hasExtraLengthBuffs() ?
          
         # Intrinsic properties
          
-        self.growthType = p.Person.setFrom(argDict, 'skillGrowth', p.Person.ERROR) 
+        self._growthType = p.Person.setFrom(argDict, 'skillGrowth', p.Person.ERROR) 
         
         title = p.Person.setFrom(argDict, 'name', p.Person.ERROR)
         self.race = title.split(' ', 1)[0]
@@ -141,8 +153,64 @@ class PlayerCharacter(Person):
         # Trait list of form, [["Bully", 3], ["Courage", 2]...] where the int is the rank.
         self.traitList = []
         
-    # Resources (AP, MP, HP)
-       
+    
+    def gainLevelUp(self):
+        """Start the levelup process for acquiring a new level.  May need to
+        be integrated with another UI class to make decisions later TODO.
+        Inputs:
+            None
+        Outputs:
+            None"""
+        # Gain stats
+        self._baseStrength += self.levelupStrength 
+        self._baseCunning += self.levelupCunning
+        self._baseSorcery += self.levelupSorcery
+        self._basePiety += self.levelupPiety
+        self._baseConstitution += self.levelupConstitution
+        self._baseHP += self.levelupHP
+        self._baseMP += self.levelupMP
+        
+        # Select/Gain Trait: TODO
+        # Gain Combo Abilities: TODO
+        # Select/Gain Skill: TODO
+        # Select/Gain Spell(s): TODO
+    
+    @property
+    def experience(self):
+        return self._experience
+        
+    def addExperience(self, amount):
+        """" Adds the given amount of experience to the character.
+        If the character is at the max level, this will not increase the 
+        experience of the character.
+        This method will return the new current level of the player. 
+        The experience added will never be enough to cause more than one level up.
+        In the event that enough experience is given to cause multiple levelups, the
+        experience gain will be capped at one point shy of the *next* level.
+        Inputs:
+            amount -- int > 0; how much exp is gained.
+        Outputs:
+            int; new current level of playercharacter"""
+        if amount <= 0 or self.level == PlayerCharacter.LEVEL_MAX:
+            return self.level
+        if self.level == PlayerCharacter.LEVEL_MAX - 1:
+            expForNext = PlayerCharacter.expRequiredForLevel[self.level + 1]
+            self._experience += amount
+            if self._experience >= expForNext:
+                self._experience = expForNext
+                self.level += 1
+            return self.level
+        else:
+            expForNext = PlayerCharacter.expRequiredForLevel[self.level + 1]
+            expForSecondNext = PlayerCharacter.expRequiredForLevel[self.level + 2]
+            self._experience += amount
+            if self._experience >= expForSecondNext:
+                self._experience = expForSecondNext - 1
+            if self._experience >= expForNext:
+                self.level += 1
+            return self.level                
+        #TODO: Demo mode
+    
     @property
     def totalOverallDamageBonus(self):
         """ Should be 0 for 0% by default.
