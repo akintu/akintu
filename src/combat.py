@@ -504,13 +504,15 @@ class Combat(object):
         if hitType == "Miss":
             # Enemy still counters TODO
             return
-            
-        weaponOne = source.eqiupment.equippedWeapon
+        
+        # Include unarmed attacks TODO
+        # Monsters don't have 'equippedItem' objects, TODO
+        weaponOne = source.equippedItem.equippedWeapon
         weaponTwo = None
         if not source.usingWeaponStyle("Dual"):
             pass
         else:
-            weaponTwo = source.equipment.equippedOffHand
+            weaponTwo = source.equippedItem.equippedOffHand
             #TODO Dual wielding
 
         effectiveForce = source.totalForce * forceMod

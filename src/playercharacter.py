@@ -2,6 +2,7 @@
 
 import sys
 import person as p
+import equippeditems
 
 class PlayerCharacter(p.Person):
 
@@ -101,6 +102,10 @@ class PlayerCharacter(p.Person):
         # self._spellMPModsList [["SpellName", -1], [...]]
         # self._empathyToSummon 
         # self._stealthBreakMaxOverride Default 100
+        
+        # include starting equipment in this initializer. TODO
+        
+        self.equippedItems = equippeditems.EquippedItems(None)
         
         # Levelup stats
         self.levelupStrength = p.Person.setFrom(argDict, 'levelupStrength', p.Person.ERROR)

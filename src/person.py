@@ -2345,8 +2345,8 @@ class Person(en.Entity):
                                "Shuriken"])
         elif weaponType == "Bow":
             acceptList.extend(["Longbow", "Shortbow"])
-        return (self.equipment.equippedWeapon.type in acceptList or
-                self.equipment.equippedOffHand.type in acceptList)
+        return (self.equippedItems.equippedWeapon.type in acceptList or
+                self.equippedItems.equippedOffHand.type in acceptList)
         
     def usingArmor(self, armorLevel):
         """Returns True if the passed armorLevel matches the armor level
@@ -2356,7 +2356,7 @@ class Person(en.Entity):
           armorLevel = "Heavy", "Medium", "Light", "Robes"
         Outputs:
           True or False"""
-        return (self.equipment.armorLevel == armorLevel)
+        return (self.equippedItems.armorLevel == armorLevel)
         
     def usingShield(self, shieldType):
         """Returns True if the passed shieldType matches the kind of 
@@ -2366,7 +2366,7 @@ class Person(en.Entity):
           shieldType = "Heavy", "Medium", "Any", "None"
         Outputs:
           True or False"""
-        shield = self.equipment.equippedShield
+        shield = self.equippedItems.equippedShield
         if (shieldType == "Any"):
             return (shield is not None)
         elif (shieldType == "None"):
@@ -2393,8 +2393,8 @@ class Person(en.Entity):
         Outputs:
           True or False"""
         style.replace("-", " ") 
-        handOne = self.equipment.equippedWeapon
-        handTwo = self.equipment.equippedOffHand
+        handOne = self.equippedItems.equippedWeapon
+        handTwo = self.equippedItems.equippedOffHand
           
         if (style == "Dual Same Type" and 
            handOne is not None and 
