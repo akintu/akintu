@@ -1,23 +1,15 @@
 # Monsters.txt
 #
-# File will first be used as a drawing board for monster types and later will be used to house exact data for every monster.
+# File will first be used as a drawing board for monster types and some rules.
 #
 
-# Stats common to all monsters:
-# HP
-# MP (0 if not included)
-# Movement/Turn (in tiles)
-# DR
-# Magic Resist
-# Poison Tolerance
-# Dodge
-# Melee Accuracy (individual attacks will also have accuracy.  This is a flat bonus to each, or a 
-#                 penalty if it has been debuffed or something.)
-# Ranged Accuracy (ditto)
-# Elemental Resistances (if not listed is 0% for each)
-# Attack Power (typically 100% but can be buffed/debuffed to give a % modifier to the damage of all
-#                non-spell attacks.)
-# Size
+# Considerations for Monsters:
+#
+# Monsters do not have Constitution -- their "HP" is their absolute total HP.
+# Monsters do not have Might or Force (although they do have Strength).
+# Monsters cannot deal physical critical hits (but their spells can crit if it is a critcal-spell.)
+# Monsters do not have Piety (but they may have MP and they do have magic resist).
+# Monsters do not have Sorcery (but they do have Spellpower).
 
 # ..Grouping Points..
 #
@@ -28,22 +20,14 @@
 # Also the HP of the monsters will be multiplied when a group is present:
 #
 # 1 Player:  10 GP & 100% HP
-# 2 Players: 13 GP & 200% HP
-# 3 Players: 16 GP & 325% HP
-# 4 Players: 20 GP & 475% HP
+# 2 Players: 13 GP & 150% HP
+# 3 Players: 16 GP & 200% HP
+# 4 Players: 20 GP & 250% HP
 
-# Melee Attack (basic melee attack if default)
-# Ranged Attack (basic ranged attack if default)
 # Special Attack 1
 # Special Attack 2
 # Special Attack 3
-# Special Property 1
-# Special Property 2
-# Special Property 3
-# Spell 1
-# Spell 2
-# Spell 3
-# Attacks per turn (defaults to 1)
+# Special Property
 
 Monster Ability Templates:
   (other than basic attacks)

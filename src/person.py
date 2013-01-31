@@ -1930,9 +1930,12 @@ class Person(en.Entity):
     def totalSorcery(self):
         """Should always equal base + equipment + status Sorcery, except
         when that equation would reduce it to a non-positive value."""
-        return (self._baseSorcery + 
-                self._equipmentSorcery + 
-                self._statusSorcery)
+        if self._baseSorcery == 0:
+            return 0
+        else:
+            return (self._baseSorcery + 
+                    self._equipmentSorcery + 
+                    self._statusSorcery)
 
     @property
     def equipmentSorcery(self):
@@ -2162,7 +2165,8 @@ class Person(en.Entity):
         if( self.totalPiety == 0 ):
             return self._baseMP
         else:
-            return self._baseMP + (self.totalPiety - 10) * 4
+            return max(0, self._baseMP + (self.totalPiety - 10) * 4)
+        # TODO Fix non-casters showing mana.
         
     @property
     def baseMP(self):
@@ -2408,6 +2412,8 @@ class Person(en.Entity):
             return (handOne is not None and handTwo is None)
         if (style == "Single and Shield"):
             return (handOne is not None and self.usingShield("Any"))
+        if (style == "Bare"):
+            return (handOne is None and (handTwo is None or handTwo.type == "Shield"))
         # And for the monsters...
         return False
         
