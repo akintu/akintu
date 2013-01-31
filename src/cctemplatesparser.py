@@ -8,13 +8,7 @@ import statuseffectsparser as sep
 class CCTemplatesParser(object):
 
     def __init__(self):
-        """Prepares the parser.  
-        Possible states are:
-          "Expecting Name" -- not currently parsing an object, 
-             may have just finished parsing an object.
-          "Expecting..."
-          """
-        self.state = "Expecting Name"
+        """Prepares the parser."""
         self.NUM_CHARACTER_CLASSES = 16
         self.NUM_RACES = 6
     
