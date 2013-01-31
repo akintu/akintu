@@ -3,14 +3,33 @@
 import sys
 import dice
 import combat
+import entity as e
 
-class Equipment(object):
+class Equipment(e.Entity):
+
+    ERROR = "INITIALIZATION_FAILURE"
+    
+    @staticmethod
+    def setFrom(argDict, variableName, defaultValue):
+        if( (variableName not in argDict) or (argDict[variableName] == "None") ):
+            if defaultValue == Person.ERROR:
+                raise IncompleteDataInitialization( "The parameter: " + variableName + " must be specified, but isn't.")
+            else:
+                return defaultValue
+        else:
+            return argDict[variableName]
 
     def __init__(self, name, goldValue, weight):
+        e.Entity.__init__(self)
         self.name = name
         self.goldValue = goldValue
         self.weight = weight
         self.identifier = "TODO"    
+    
+class Armor(Equipment):
+    def __init__(self, argDict):
+        Equipment.__init__(self, argDict['name'], argDict['goldValue'], argDict['weight'])
+        # TODO
     
         
 class Weapon(Equipment):

@@ -3,8 +3,9 @@
 import sys
 import dice
 import combat
+import entity as e
 
-class Trap(object):
+class Trap(e.Entity):
     trapTemplates = []
     
     @staticmethod
@@ -15,6 +16,7 @@ class Trap(object):
     
     def __init__(self, trapTemplateName, level):
         """Constructor for Hostile traps (overworld traps)"""
+        e.Entity.__init__(self)
         template = None
         for t in trapTemplates:
             if t.name == trapTemplateName:

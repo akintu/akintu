@@ -604,6 +604,20 @@ class PlayerCharacter(p.Person):
         elif value in ["Tiger", "Panther", "Snake", "Crane", "Dragon"]:
             self._ninjaStyle = value
         
+    @property
+    def inventoryWeight(self):
+        """How much all of the inventory items weigh, in pounds."""
+        pass
+        # TODO
+        
+    @property
+    def inventoryCapacity(self):
+        """How much the player can fit in his inventory."""
+        # TODO: Worry about how +Strength and +Capacity gear could allow you to carry more than your capacity.
+        if self.totalStrength <= 15:
+            return 8 * self.totalStrength
+        else:
+            return 120 + (self.totalStrength - 15) * 12
     
         
         
