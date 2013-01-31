@@ -582,7 +582,7 @@ Combat.modifyresource(source, "AP", -9)
 [HIT]
 Combat.calcHit(source, target, "Physical", modifier=-5)
 [ACT]
-Combat.weaponAttack(source, target, hit, forceMod=1.5)
+Combat.basicAttack(source, target, hit, forceMod=1.5)
 
 [TAGS]
   [NAME: Brace]
@@ -627,7 +627,7 @@ Combat.modifyresource(source, "AP", -3)
 [HIT]
 Combat.calcHit(source, target, "Physical", modifier=-10)
 [ACT]
-Combat.weaponAttack(source, target, hit, forceMod=0.5)
+Combat.basicAttack(source, target, hit, forceMod=0.5)
 
 [TAGS]
   [NAME: Precise Blow]
@@ -643,7 +643,7 @@ Combat.modifyresource(source, "AP", -7)
 [HIT]
 Combat.calcHit(source, target, "Physical", modifier=4)
 [ACT]
-Combat.weaponAttack(source, target, hit)
+Combat.basicAttack(source, target, hit)
 
 [TAGS]
   [NAME: Thrust]
@@ -661,7 +661,7 @@ Combat.applyCooldown(source, "Thrust", 1)
 [HIT]
 Combat.calcHit(source, target, "Physical")
 [ACT]
-Combat.weaponAttack(source, target, hit, elementOverride="Piercing")
+Combat.basicAttack(source, target, hit, elementOverride="Piercing")
 
 [TAGS]
   [NAME: Clobber]
@@ -677,7 +677,7 @@ Combat.modifyresource(source, "AP", -10)
 [HIT]
 Combat.calcHit(source, target, "Physical", modifier=-3)
 [ACT]
-Combat.weaponAttack(source, target, hit, armorPenetrationMod=5)
+Combat.basicAttack(source, target, hit, armorPenetrationMod=5)
 Combat.addStatus(target, "Stun", duration=1, chance = (0.2 * sizeCompare(target, LARGE, smallerThan=True)), hitValue=hit)
 
 [TAGS]
@@ -727,7 +727,7 @@ Combat.modifyresource(source, "AP", -6)
 [HIT]
 Combat.calcHit(source, target, "Physical", modifier=(getNumberOfStackedStatus(source, "Combo Attack") - 2), critMod=getNumberOfStackedStatus(source, "Combo Attack"))
 [ACT]
-Combat.weaponAttack(source, target, hit, overallDamageMod=1.1, criticalDamageMod=( 1 + (3 * getNumberOfStackedStatus(source, "Combo Attack")/100) ))
+Combat.basicAttack(source, target, hit, overallDamageMod=1.1, criticalDamageMod=( 1 + (3 * getNumberOfStackedStatus(source, "Combo Attack")/100) ))
 Combat.addStatus(source, "Combo Attack", duration=1, overwrite=False)  
 
 [TAGS]
@@ -749,7 +749,7 @@ Combat.movePlayer(source, target)
 [HIT]
 Combat.calcHit(source, getMeleeFacingEnemy(source), "Physical")
 [ACT]
-Combat.weaponAttack(source, getMeleeFacingEnemy(source), hit, overallDamageMod=1.2)
+Combat.basicAttack(source, getMeleeFacingEnemy(source), hit, overallDamageMod=1.2)
 Combat.modifyResource(enemy, HP, 0 - Combat.calcDamage(source, target, min=(source.totalDR * 0.4 * usingArmor("Heavy")),
                       max=(source.totalDR * 0.4 * usingArmor("Heavy")), element="Bludgeoning", hitValue=hit))
 
@@ -769,7 +769,7 @@ Combat.modifyResource(source, AP -7)
 [HIT]
 Combat.calcHit(source, target, "Physical", modifier=6)
 [ACT]
-Combat.weaponAttack(source, target, hit)
+Combat.basicAttack(source, target, hit)
 
 [TAGS]
   [NAME: Shrapnel Trap]
@@ -851,7 +851,7 @@ Combat.modifyresource(source, "AP", -3)
 [HIT]
 Combat.calcHit(source, target, "Physical", modifier=-8)
 [ACT]
-Combat.weaponAttack(source, target, hit)
+Combat.basicAttack(source, target, hit)
 
 [TAGS]
   [NAME: Ranger's Aim]
@@ -900,7 +900,7 @@ Combat.modifyresource(source, "AP", -10)
 [HIT]
 Combat.calcHit(source, target, "Physical", modifier=-3)
 [ACT]
-Combat.weaponAttack(source, target, hit, overallDamageMod=0.75)
+Combat.basicAttack(source, target, hit, overallDamageMod=0.75)
 Combat.addStatus(source, "Defensive Slash", duration=2, hitValue=hit)
 
 [TAGS]
@@ -918,11 +918,11 @@ Combat.applyCooldown(source, "Double-Shot", 1)
 [HIT]
 Combat.calcHit(source, target, "Physical", critMod=(0-source.totalCritChance)
 [ACT]
-Combat.weaponAttack(source, target, hit, overallDamageMod=1.05)
+Combat.basicAttack(source, target, hit, overallDamageMod=1.05)
 [HIT]
 Combat.calcHit(source, target, "Physical", critMod=(0-source.totalCritChance)
 [ACT]
-Combat.weaponAttack(source, target, hit, overallDamageMod=1.05)
+Combat.basicAttack(source, target, hit, overallDamageMod=1.05)
 
 [TAGS]
   [NAME: Tar Trap]
@@ -1072,7 +1072,7 @@ Combat.applyCooldown(source, "Backstab", 2)
 Combat.calcHit(source, target, "Physical", modifier=((5 + (4 * usingWeapon(source, "Sword"))) * !usingWeaponStyle(source, "Dual")), 
                critMod=(50 - (usingWeapon(source, "Sword") * 25)))
 [ACT]
-Combat.weaponAttack(source, target, hit, criticalDamageMod=(2 - (0.5 * usingWeapon(source, "Sword"))))
+Combat.basicAttack(source, target, hit, criticalDamageMod=(2 - (0.5 * usingWeapon(source, "Sword"))))
 
 # Needs to be replaced with something else! TODO
 [TAGS]
@@ -1126,7 +1126,7 @@ Combat.applyCooldown(source, "Hit and Run", 2)
 [HIT]
 Combat.calcHit(source, target, "Physical")
 [ACT]
-Combat.weaponAttack(source, target, hit, noCounter=True)
+Combat.basicAttack(source, target, hit, noCounter=True)
 knockback(source, target.location, 2, ignoreResistance=True)
 
 [TAGS]
@@ -1191,7 +1191,7 @@ Combat.applyCooldown(source, "All or Nothing", 2)
 [HIT]
 Combat.calcHit(source, target, "Physical", modifier=-22, critMod=80)
 [ACT]
-Combat.weaponAttack(source, target, hit, overallDamageMod=1.3)
+Combat.basicAttack(source, target, hit, overallDamageMod=1.3)
 
 [TAGS]
   [NAME: Redirect]
@@ -1224,7 +1224,7 @@ Combat.applyCooldown(source, "Dirty Shot", 3)
 [HIT]
 Combat.calcHit(source, target, "Physical")
 [ACT]
-Combat.weaponAttack(source, target, hit, mightMod=(source.totalCunning / 2))
+Combat.basicAttack(source, target, hit, mightMod=(source.totalCunning / 2))
 Combat.addStatus(target, "Stun", 1, chance=Dice.rollPresetChance(source, target, "Occasional"))
 
 [TAGS]
@@ -1277,7 +1277,7 @@ Combat.applyCooldown(source, "Shield Bash", 3)
 [HIT]
 Combat.calcHit(source, target, "Physical")
 [ACT]
-Combat.weaponAttack(source, target, hit, elementOverride="bludgeoning", overallDamageMod=0.3)
+Combat.basicAttack(source, target, hit, elementOverride="bludgeoning", overallDamageMod=0.3)
 Combat.addStatus(target, "Stun", duration=1, chance=chanceFromSize(target, [["Large", 0.3], ["Huge", 0]], defaultChance=0.8)) 
 
 [TAGS]
@@ -1307,8 +1307,8 @@ Combat.modifyresource(source, "AP", -8)
 [HIT]
 Combat.calcHit(source, Terrain.getConeTargets(source, distance=1, degrees=180, selectMonsters=True), "Physical", modifier=-5)
 [ACT]
-Combat.weaponAttack(source, targetSet.remove(getMeleeFacingEnemy(source)), hit, overallDamageMod=0.3, ignoreOnHitEffects=True)
-Combat.weaponAttack(source, getMeleeFacingEnemy(source), hit, overallDamageMod=(0.8 + 0.2 * usingWeapon(source, "Axe"))
+Combat.basicAttack(source, targetSet.remove(getMeleeFacingEnemy(source)), hit, overallDamageMod=0.3, ignoreOnHitEffects=True)
+Combat.basicAttack(source, getMeleeFacingEnemy(source), hit, overallDamageMod=(0.8 + 0.2 * usingWeapon(source, "Axe"))
 
 # Dragoon Combination Abilities
 
@@ -1331,8 +1331,8 @@ Combat.applyCooldown(source, "Jump Attack", 2)
 Combat.calcHit(source, target, "Physical")
 [ACT]
 Combat.movePlayer(source, Terrain.getRandomAdjacentFreeSpace(target), instant=True)
-Combat.weaponAttack(source, target, hit, overallDamageMod=2)
-Combat.weaponAttack(source, Terrain.getAOETargets(source.location, radius=1, selectMonsters=True), 
+Combat.basicAttack(source, target, hit, overallDamageMod=2)
+Combat.basicAttack(source, Terrain.getAOETargets(source.location, radius=1, selectMonsters=True), 
                     "Normal Hit", overallDamageMod=0.15, elementOverride="Bludgeoning", ignoreOnHitEffects=True)
 
 [TAGS]
@@ -1355,8 +1355,8 @@ Combat.applyCooldown(source, "Faster Jump Attack", 2)
 Combat.calcHit(source, target, "Physical")
 [ACT]
 Combat.movePlayer(source, Terrain.getRandomAdjacentFreeSpace(target), instant=True)
-Combat.weaponAttack(source, target, hit, overallDamageMod=2)
-Combat.weaponAttack(source, Terrain.getAOETargets(source.location, radius=1, selectMonsters=True), 
+Combat.basicAttack(source, target, hit, overallDamageMod=2)
+Combat.basicAttack(source, Terrain.getAOETargets(source.location, radius=1, selectMonsters=True), 
                     "Normal Hit", overallDamageMod=0.15, elementOverride="Bludgeoning", ignoreOnHitEffects=True)
 	
 [TAGS]
@@ -1379,8 +1379,8 @@ Combat.applyCooldown(source, "Faster Jump Attack 2", 1)
 Combat.calcHit(source, target, "Physical")
 [ACT]
 Combat.movePlayer(source, Terrain.getRandomAdjacentFreeSpace(target), instant=True)
-Combat.weaponAttack(source, target, hit, overallDamageMod=2)
-Combat.weaponAttack(source, Terrain.getAOETargets(source.location, radius=1, selectMonsters=True), 
+Combat.basicAttack(source, target, hit, overallDamageMod=2)
+Combat.basicAttack(source, Terrain.getAOETargets(source.location, radius=1, selectMonsters=True), 
                     "Normal Hit", overallDamageMod=0.15, elementOverride="Bludgeoning", ignoreOnHitEffects=True)
 	
 [TAGS]
@@ -1403,8 +1403,8 @@ Combat.applyCooldown(source, "Crushing Jump Attack", 1)
 Combat.calcHit(source, target, "Physical")
 [ACT]
 Combat.movePlayer(source, Terrain.getRandomAdjacentFreeSpace(target), instant=True)
-Combat.weaponAttack(source, target, hit, overallDamageMod=2.5)
-Combat.weaponAttack(source, Terrain.getAOETargets(source.location, radius=1, selectMonsters=True), 
+Combat.basicAttack(source, target, hit, overallDamageMod=2.5)
+Combat.basicAttack(source, Terrain.getAOETargets(source.location, radius=1, selectMonsters=True), 
                     "Normal Hit", overallDamageMod=0.2, elementOverride="Bludgeoning", ignoreOnHitEffects=True)
 Combat.addStatus(target, "Stun", duration=1, chance=Dice.min(Dice.rollPresetChance(source, target, "Rare"), 
                                                              Dice.chanceFromSize(target, [["Huge", 0]], 1))) 
@@ -1428,8 +1428,8 @@ Combat.applyCooldown(source, "Restful Jump Attack", 1)
 Combat.calcHit(source, target, "Physical")
 [ACT]
 Combat.movePlayer(source, Terrain.getRandomAdjacentFreeSpace(target), instant=True)
-Combat.weaponAttack(source, target, hit, overallDamageMod=2.5)
-Combat.weaponAttack(source, Terrain.getAOETargets(source.location, radius=1, selectMonsters=True), 
+Combat.basicAttack(source, target, hit, overallDamageMod=2.5)
+Combat.basicAttack(source, Terrain.getAOETargets(source.location, radius=1, selectMonsters=True), 
                     "Normal Hit", overallDamageMod=0.2, elementOverride="Bludgeoning", ignoreOnHitEffects=True)
 Combat.addStatus(target, "Stun", duration=1, chance=Dice.min(Dice.rollPresetChance(source, target, "Rare"), 
                                                              Dice.chanceFromSize(target, [["Huge", 0]], 1))) 
@@ -1451,7 +1451,7 @@ Combat.modifyresource(source, "AP", -11)
 Terrain.getForwardDiagonalTargets(source.location, selectMonsters=True)
 calcHit(source, targetSet, "Physical")
 [ACT]
-Combat.weaponAttack(source, targetSet, hitSet, forceMod=1.2, criticalDamageMod=1.05)
+Combat.basicAttack(source, targetSet, hitSet, forceMod=1.2, criticalDamageMod=1.05)
 
 [TAGS]
   [NAME: Long Reach]
@@ -1467,7 +1467,7 @@ Combat.modifyresource(source, "AP", -7)
 [HIT]
 calcHit(source, target, "Physical")
 [ACT]
-Combat.weaponAttack(source, target, hit, noCounter=True)
+Combat.basicAttack(source, target, hit, noCounter=True)
 
 [TAGS]
   [NAME: Spear-Pierce]
@@ -1483,7 +1483,7 @@ Combat.modifyresource(source, "AP", -10)
 [HIT]
 calcHit(source, target, "Physical", modifier=-2)
 [ACT]
-Combat.weaponAttack(source, target, hit)
+Combat.basicAttack(source, target, hit)
 Combat.addStatus(target, "Spear-Pierce", duration=3, hitValue=hit, chance=Dice.rollPresetChance(source, target, "Reliable"))
 
 # Barbarian Unique Abilities
@@ -1538,7 +1538,7 @@ Combat.modifyresource(source, "HP", -(source.totalHP * 0.05))
 [HIT]
 Combat.calcHit(source, target, "Physical", critMod=1)
 [ACT]
-Combat.weaponAttack(source, target, hit, forceMod=1.5)
+Combat.basicAttack(source, target, hit, forceMod=1.5)
 
 [TAGS]
   [NAME: Desperate Strike]
@@ -1555,7 +1555,7 @@ Combat.modifyresource(source, "AP", -12)
 [HIT]
 Combat.calcHit(source, target, "Physical", modifier=10, critMod=20)
 [ACT]
-Combat.weaponAttack(source, target, hit, forceMod=2.5, armorPenetrationMod=10)
+Combat.basicAttack(source, target, hit, forceMod=2.5, armorPenetrationMod=10)
 Combat.addStatus(target, "Stun", duration=1, hitValue=hit, chance=Dice.rollPresetChance(source, target, "Occasional"))
 
 [TAGS]
@@ -1590,7 +1590,7 @@ Combat.applyCooldown(source, "Crush Armor", 3)
 [HIT]
 Combat.calcHit(source, target, "Physical", modifier=(5 * resource(source, "HP", source.totalHP * 0.75 + 1))
 [ACT]
-Combat.weaponAttack(source, target, hit, overallDamageMod=(0.75 + 0.25 * ((usingWeaponStyle(source, "Dual-Same-Type") || usingWeaponStyle(source, "Two-Handed")) && usingWeapon(source, "Club")))) 
+Combat.basicAttack(source, target, hit, overallDamageMod=(0.75 + 0.25 * ((usingWeaponStyle(source, "Dual-Same-Type") || usingWeaponStyle(source, "Two-Handed")) && usingWeapon(source, "Club")))) 
 Combat.addStatus(target, "Crush Armor", duration=3, hitValue=hit)
 
 [TAGS]
@@ -1657,7 +1657,7 @@ Combat.applyCooldown(source, "Splash Magic", 2)
 [HIT]
 Combat.calcHit(source, target, "Physical")
 [ACT]
-Combat.weaponAttack(source, target, hit)
+Combat.basicAttack(source, target, hit)
 Combat.modifyResource(Terrain.getAOETargets(target.location, radius=1, selectMonsters=True, includeCenter=False), HP, 
                          (0 - Combat.calcDamage(source, Terrain.getAOETargets(target.location, 1, True, False), 
 						                        min=Dice.scale(source.totalCunning, 3, 0.33), max=0,
@@ -1694,7 +1694,7 @@ Combat.modifyresource(source, "AP", -5)
 Combat.applyCooldown(source, "Follow up", 1)
 [HIT]
 Combat.calcHit(source, target, "Physical")
-Combat.weaponAttack(source, target, hit)
+Combat.basicAttack(source, target, hit)
 
 [TAGS]
   [NAME: Face Shot]
@@ -1711,7 +1711,7 @@ Combat.modifyresource(source, "AP", -9)
 [HIT]
 Combat.calcHit(source, target, "Physical", ignoreMeleeBowPenalty=True, critMod=5)
 [ACT]
-Combat.weaponAttack(source, target, hit, criticalDamageMod=1.15)
+Combat.basicAttack(source, target, hit, criticalDamageMod=1.15)
 
 [TAGS]
   [NAME: Anarchist Shrapnel Trap]
@@ -1872,7 +1872,7 @@ Combat.applyCooldown(source, "Cusp of Escape", 1)
 [HIT]
 Combat.calcHit(source, target, "Physical", modifier=10, critMod=5)
 [ACT]
-Combat.weaponAttack(source, target, hit)
+Combat.basicAttack(source, target, hit)
 
 [TAGS]
   [NAME: Hot Arrow]
@@ -1890,7 +1890,7 @@ Combat.applyCooldown(source, "Hot Arrow", 1)
 [HIT]
 Combat.calcHit(source, target, "Physical", modifier=-1)
 [ACT]
-Combat.weaponAttack(source, target, hit)
+Combat.basicAttack(source, target, hit)
 Combat.modifyresource(target, "HP", Combat.calcDamage(source, target, min=3, max=0, element="Fire", hitValue=hit))
 
 [TAGS]
@@ -1909,7 +1909,7 @@ Combat.applyCooldown(source, "Hot Bullet", 1)
 [HIT]
 Combat.calcHit(source, target, "Physical")
 [ACT]
-Combat.weaponAttack(source, target, hit, criticalDamageMod=1.1)
+Combat.basicAttack(source, target, hit, criticalDamageMod=1.1)
 Combat.modifyresource(target, "HP", Combat.calcDamage(source, target, min=8, max=0, element="Fire", hitValue=hit))
 
 [TAGS]
@@ -1974,7 +1974,7 @@ Combat.applyCooldown(source, "Deep Wound", 1)
 [HIT]
 Combat.calcHit(source, target, "Physical")
 [ACT]
-Combat.weaponAttack(source, target, hit, poisonRatingMod=5)
+Combat.basicAttack(source, target, hit, poisonRatingMod=5)
 Combat.addStatus(target, "Deep Wound", duration=5)
 
 [TAGS]
@@ -1991,7 +1991,7 @@ Combat.modifyresource(source, "AP", -7)
 [HIT]
 Combat.calcHit(source, target, "Physical")
 [ACT]
-Combat.weaponAttack(source, target, hit, criticalDamageMod=1.1)
+Combat.basicAttack(source, target, hit, criticalDamageMod=1.1)
 Combat.addStatus(target, "Painful Shot", duration=5, chance=(Dice.rollPresetChance(source, target, "Occasional") * isHit(hit, "Normal Hit")))
 
 [TAGS]
@@ -2057,7 +2057,7 @@ Combat.modifyresource(source, "AP", -8)
 [HIT]
 Combat.calcHit(source, target, "Physical")
 [ACT]
-Combat.weaponAttack(source, target, hit, forceMod=1.1)
+Combat.basicAttack(source, target, hit, forceMod=1.1)
 [HIT]
 Combat.calcHit(source, target, "Poison", rating=Dice.scale(source.totalCunning, 25, 0.008))
 [ACT]
@@ -2250,7 +2250,7 @@ Combat.modifyresource(source, "AP", -10)
 [HIT]
 Combat.calcHit(source, target, "Physical")
 [ACT]
-Combat.addStatus(target, "Seeping Darkness", duration=7, hitValue=hit, magnitude=(Combat.weaponAttack(source, target, hit, overallDamageMod=0.5) / 2))
+Combat.addStatus(target, "Seeping Darkness", duration=7, hitValue=hit, magnitude=(Combat.basicAttack(source, target, hit, overallDamageMod=0.5) / 2))
 
 # Shadow Abilities
 
@@ -2292,7 +2292,7 @@ Combat.applyCooldown(source, "Bleeding Backstab", 2)
 Combat.calcHit(source, target, "Physical", modifier=((5 + (4 * usingWeapon(source, "Sword"))) * !usingWeaponStyle(source, "Dual")), 
                critMod=(50 - (usingWeapon(source, "Sword") * 25)))
 [ACT]
-Combat.weaponAttack(source, target, hit, criticalDamageMod=(2 - (0.5 * usingWeapon(source, "Sword"))))
+Combat.basicAttack(source, target, hit, criticalDamageMod=(2 - (0.5 * usingWeapon(source, "Sword"))))
 Combat.addStatus(target, "Bleeding Backstab", duration=2, hitValue=hit)
 
 [TAGS]
@@ -2315,7 +2315,7 @@ Combat.applyCooldown(source, "Stunning Backstab", 2)
 Combat.calcHit(source, target, "Physical", modifier=((5 + (4 * usingWeapon(source, "Sword"))) * !usingWeaponStyle(source, "Dual")), 
                critMod=(50 - (usingWeapon(source, "Sword") * 25)))
 [ACT]
-Combat.weaponAttack(source, target, hit, criticalDamageMod=(2 - (0.5 * usingWeapon(source, "Sword"))))
+Combat.basicAttack(source, target, hit, criticalDamageMod=(2 - (0.5 * usingWeapon(source, "Sword"))))
 Combat.addStatus(target, "Bleeding Backstab", duration=2, hitValue=hit)
 Combat.addStatus(target, "Stun", duration=1, hitValue=hit, 
                  chance=Dice.max(Dice.rollPresetChance(source, target, "Occasional"), Dice.chanceFromSize(target, [["Small", 0.25]], 0)))
@@ -2337,7 +2337,7 @@ Combat.applyCooldown(source, "Rear Assault", 1)
 [HIT]
 Combat.calcHit(source, target, "Physical", modifier=-14, critMod=(50 - (usingWeapon(source, "Sword") * 25)))
 [ACT]
-Combat.weaponAttack(source, target, hit, criticalDamageMod=(2 - 0.5 * usingWeapon(source, "Sword")))
+Combat.basicAttack(source, target, hit, criticalDamageMod=(2 - 0.5 * usingWeapon(source, "Sword")))
 
 [TAGS]
   [NAME: Quick with a Crossbow]
@@ -2355,7 +2355,7 @@ Combat.applyCooldown(source, "Quick with a Crossbow", 1)
 [HIT]
 Combat.calcHit(source, target, "Physical", modifier=1, critMod=1)
 [ACT]
-Combat.weaponAttack(source, target, hit)
+Combat.basicAttack(source, target, hit)
 
 [TAGS]
   [NAME: Stealth Recovery]
@@ -2389,7 +2389,7 @@ Combat.modifyresource(source, "AP", -6)
 Combat.calcHit(source, target, "Physical", modifier=-4, critMod=(15 * Dice.max(hasStatus(source, "Stealthy Sudden Flurry"), inStealth(source))))
 [ACT]
 Combat.addStatus(source, "Stealthy Sudden Flurry", duration=1, chance=inStealth(source))
-Combat.weaponAttack(source, target, hit, overallDamageMod=(0.85 + 0.4 * hasStatus(source, "Sudden Flurry")))
+Combat.basicAttack(source, target, hit, overallDamageMod=(0.85 + 0.4 * hasStatus(source, "Sudden Flurry")))
 Combat.addStatus(source, "Sudden Flurry", duration=1)
 Combat.addStatus(target, "Sudden Flurry Surprise", duration=1, chance=Dice.chanceFromSize(target, [["Small", 0.85], ["Huge", 0.05]], 
                                                                                         defaultChance=Dice.rollPresetChance(source, target, "Occasional")))
@@ -2414,7 +2414,7 @@ Combat.applyCooldown(source, "Hidden Shot", 2)
 [HIT]
 Combat.calcHit(source, target, "Physical")
 [ACT]
-Combat.weaponAttack(source, target, hit, criticalDamageMod=1.1)
+Combat.basicAttack(source, target, hit, criticalDamageMod=1.1)
 
 [TAGS]
   [NAME: Visible Attack]
@@ -2432,7 +2432,7 @@ Combat.applyCooldown(source, "Visible Attack", 2)
 [HIT]
 Combat.calcHit(source, target, "Physical", modifier=3)
 [ACT]
-Combat.weaponAttack(source, target, hit)
+Combat.basicAttack(source, target, hit)
 
 [TAGS]
   [NAME: Sneaky Sneaky]
@@ -2469,7 +2469,7 @@ Combat.applyCooldown(source, "Cautious Shot", 1)
 [HIT]
 Combat.calcHit(source, target, "Physical")
 [ACT]
-Combat.weaponAttack(source, target, hit, overallDamageMod=0.5)
+Combat.basicAttack(source, target, hit, overallDamageMod=0.5)
 
 [TAGS]
   [NAME: Massive Shot]
@@ -2488,7 +2488,7 @@ Combat.applyCooldown(source, "Massive Shot", 4)
 [HIT]
 Combat.calcHit(source, target, "Physical", modifier=2)
 [ACT]
-Combat.weaponAttack(source, target, hit, forceMod=1.3, criticalDamageMod=4.5)
+Combat.basicAttack(source, target, hit, forceMod=1.3, criticalDamageMod=4.5)
 Combat.addStatus(source, "Massive Shot", duration=8, overwrite=False)
 
 [TAGS]
@@ -2509,7 +2509,7 @@ Combat.applyCooldown(source, "Risky Shot", 2)
 [HIT]
 Combat.calcHit(source, target, "Physical", critMod=15)
 [ACT]
-Combat.weaponAttack(source, target, hit)
+Combat.basicAttack(source, target, hit)
 Combat.addStatus(target, "Risky Shot", duration=5, critical=True, hitValue=hit)
 
 # Ninja Abilities
@@ -2547,7 +2547,7 @@ Combat.applyCooldown(source, "Blind Strike", 1)
 [HIT]
 Combat.calcHit(source, target, "Physical")
 [ACT]
-Combat.weaponAttack(source, target, hit, overallDamageMod=1.2)
+Combat.basicAttack(source, target, hit, overallDamageMod=1.2)
 
 [TAGS]
   [NAME: Pin]
@@ -2563,7 +2563,7 @@ Combat.modifyresource(source, "AP", -3)
 [HIT]
 Combat.calcHit(source, target, "Physical", modifier=-5)
 [ACT]
-Combat.weaponAttack(source, target, hit, overallDamageMod=0.3)
+Combat.basicAttack(source, target, hit, overallDamageMod=0.3)
 Combat.addStatus(target, "Pin", duration=1, chance=Dice.chanceFromSize(target, [["Small", 0.2], ["Medium", 0.2]]))
 
 [TAGS]
@@ -2583,7 +2583,7 @@ Combat.applyCooldown(source, "Follow-through", 1)
 [HIT]
 Combat.calcHit(source, target, "Physical")
 [ACT]
-Combat.weaponAttack(source, target, hit, forceMod=1.4)
+Combat.basicAttack(source, target, hit, forceMod=1.4)
 Combat.knockback(target, source.location, distance=1, didHit=isHit(hit, "Normal Hit"))
 
 [TAGS]
@@ -2615,7 +2615,7 @@ Combat.modifyresource(source, "AP", -5)
 [HIT]
 Combat.calcHit(source, target, "Physical", modifier=1)
 [ACT]
-Combat.weaponAttack(source, target, hit, overallDamageMod=0.7)
+Combat.basicAttack(source, target, hit, overallDamageMod=0.7)
 
 [TAGS]
   [NAME: Urgency Attack]
@@ -2633,7 +2633,7 @@ Combat.modifyresource(source, "AP", -9)
 [HIT]
 Combat.calcHit(source, target, "Physical", modifier=-2)
 [ACT]
-Combat.weaponAttack(source, target, hit, overallDamageMod=2.1)
+Combat.basicAttack(source, target, hit, overallDamageMod=2.1)
 
 [TAGS]
   [NAME: Whittle Away]
@@ -2649,7 +2649,7 @@ Combat.modifyresource(source, "AP", -10)
 [HIT]
 Combat.calcHit(source, target, "Physical", modifier=(3 + (usingAnimalStyle(source, "Crane") || usingAnimalStyle(source, "Snake")) * 2))
 [ACT]
-Combat.weaponAttack(source, target, hit, overallDamageMod=(0.9 + 0.1 * usingAnimalStyle(source, "Tiger")))
+Combat.basicAttack(source, target, hit, overallDamageMod=(0.9 + 0.1 * usingAnimalStyle(source, "Tiger")))
 Combat.addStatus(target, "Whittle Away", duration=3, chance=(Dice.rollPresetChance(source, target, "Frequent") || (Dice.chanceFromSize(target, [["Large", 0.05], ["Huge", 0.18]]))))
 
 [TAGS]
@@ -2686,7 +2686,7 @@ Combat.applyCooldown(source, "Buffer Strike", 3)
 [HIT]
 Combat.calcHit(source, target, "Physical", modifier=3)
 [ACT]
-Combat.weaponAttack(source, target, hit)
+Combat.basicAttack(source, target, hit)
 Combat.addStatus(source, "Buffer Strike", duration=4, magnitude=(10 + source.totalSpellpower / 15), hitValue=hit)
 
 [TAGS]
@@ -2773,7 +2773,7 @@ Combat.applyCooldown(source, "Triple-charged Arrow", 3)
 [HIT]
 Combat.calcHit(source, target, "Physical")
 [ACT]
-Combat.weaponAttack(source, target, hit)
+Combat.basicAttack(source, target, hit)
 Combat.modifyResource(source, "MP", 8)
 # Recovers 3 times the mana it otherwise would; the 1x is still supplied via the passive ability.
 
@@ -2807,7 +2807,7 @@ Combat.applyCooldown(source, "Warp Shot", 2)
 [HIT]
 Combat.calcHit(source, target, "Physical", modifier=-2)
 [ACT]
-Combat.weaponAttack(source, target, hit)
+Combat.basicAttack(source, target, hit)
 Combat.addStatus(target, "Warp Shot", duration=2, chance=sizeCompare(target, "Huge", smallerThan=True))
 Combat.knockback(target, source.location, distance=1, didHit=(isHit(hit, "Normal Hit") && sizeCompare(target, "Huge", smallerThan=True)))
 
@@ -2870,7 +2870,7 @@ Combat.modifyresource(source, "AP", -5)
 [HIT]
 Combat.calcHit(source, target, "Physical")
 [ACT]
-Combat.weaponAttack(source, target, hit)
+Combat.basicAttack(source, target, hit)
 Combat.addStatus(target, "Weary Bolt", duration=3, overwrite=False)
 
 [TAGS]
@@ -2888,7 +2888,7 @@ Combat.applyCooldown(source, "Curious Drain", 1)
 [HIT]
 Combat.calcHit(source, target, "Physical", modifier=-4)
 [ACT]
-Combat.weaponAttack(source, target, hit)
+Combat.basicAttack(source, target, hit)
 Combat.addStatus(source, "Curious Drain", duration=4, hitValue=hit)
 Combat.addStatus(target, "Curiously Sluggish", duration=4, hitValue=hit)
 
@@ -2908,7 +2908,7 @@ Combat.applyCooldown(source, "Scar Cut", 1)
 [HIT]
 Combat.calcHit(source, target, "Physical", modifier=20)
 [ACT]
-Combat.weaponAttack(source, target, hit, overallDamageMod=0.3)
+Combat.basicAttack(source, target, hit, overallDamageMod=0.3)
 
 # Sorceror Abilities
 

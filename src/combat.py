@@ -3,6 +3,7 @@
 import sys
 import dice
 import status as displaystatus
+import playercharacter as pc
 
 class IncompleteMethodCall(Exception):
     def __init__(self, value):
@@ -477,9 +478,27 @@ class Combat(object):
         return dieRoll.round()
         
     @staticmethod
+    def basicAttack(source, target, hitType, **params):
+        if source.isinstance(pc.PlayerCharacter):
+            if source.usingWeaponStyle("Dual"):
+                originalCounterStatus = params['noCounter']
+                params['noCounter'] = True
+                weaponAttack(source, target, hitType[0], **params)
+                params['noCounter'] = originalCounterStatus
+                weaponAttack(source, target, hitType[1], **params)
+            elif source.usingWeaponStyle("Bare"):
+                pass
+                # barehands: TODO
+            else:
+                weaponAttack(source, target, hitType[0], **params)
+        else:
+            pass
+            # Monster Attack: TODO
+        
+    @staticmethod
     def weaponAttack(source, target, hitType, forceMod=1, criticalDamageMod=1, armorPenetrationMod=0,
                      elementOverride=None, noCounter=False, overallDamageMod=1, mightMod=0, 
-                     ignoreOnHitEffects=False, poisonRatingMod=0):
+                     ignoreOnHitEffects=False, poisonRatingMod=0, backstab=False, hand="Right"):
         """Performs a weapon attack against the target from the source.  Calls actually apply the damage
         to the target, unlike 'calcDamage()'.
         Inputs: (optional values indicated by a *)

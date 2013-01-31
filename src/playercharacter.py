@@ -90,6 +90,7 @@ class PlayerCharacter(p.Person):
             self._arcaneArcherManaRegenBase = 6
             self._arcaneArcherManaRegenHigh = 7
         
+        
         # The starting (default?) style for Ninjas is the 'Tiger' style.
         self._ninjaStyle = None
         if (self.characterClass == "Ninja"):
@@ -589,6 +590,23 @@ class PlayerCharacter(p.Person):
     @arcaneArcherManaRegenLow.setter
     def arcaneArcherManaRegenLow(self, value):
         self._arcaneArcherManaRegenLow = value
+        
+    @property
+    def tricksterAttackManaRegen(self):
+        if self.characterClass = "Trickster":
+            if self.usingWeaponStyle("Dual"):
+                return 3
+            else:
+                return 2
+        else:
+            return 0
+    
+    @property
+    def tricksterDodgeManaRegen(self):
+        return self.level * 2 + 18
+        
+    @property
+    def 
         
     @property
     def ninjaStyle(self):

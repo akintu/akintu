@@ -685,7 +685,7 @@
 [LEVEL: 1]
 [TYPE: Dynamic]
   [TRIGGERED_BY: Player Dodges]
-  [IMMEDIATE: Restore Trickster MP] # 18 + Level * 2 MP
+  [IMMEDIATE: Restore Trickster MP] 18 + Level * 2 MP
   
 [NAME: Infuriating Blows]
 [CLASS: Trickster]

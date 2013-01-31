@@ -1037,18 +1037,28 @@
 # [Has|Does not have] Guardian
 	
 # ~~ Broadcasts ~~ (Not including some Conditionals which may double as broadcasts?)
-# [Incoming|Outgoing] [Physical|Melee|Ranged|Magical|Any] Attack [Hit|Complete|in Range NUMBER|Critical Hit]
-# [Starting|Ending] Player Turn
-# [un]Equipping [Normal|Heavy|Any] Shield
-# [un]Equipping [Robe|Light|Medium|Heavy|any] Armor
-# [Incoming|Outgoing] Spell Cast [Complete]
-# [Monster|Player] [triggers|hit by] trap [complete]
-# Player Trap Removed
-# [Incoming|Outgoing] Damage
-# [Incoming|Outgoing] Status Applied
-# Placing trap [not] on Enemy [complete]
-# Unlucky Stealth Break
-# [Player|Enemy] [Dodges|Partially Resists|Fully Resists] or [...]
+# Attack Broadcast
+#   [Incoming|Outgoing] [Melee|Ranged|Any] Attack [in Range NUMBER]* [Hit|Complete|Critical Hit]*
+# Turn Broadcast
+#   [Starting|Ending] Player Turn
+# Equip Broadcast
+#   [un]Equipping [Normal|Heavy|Any|Robe|Light|Medium|Heavy]* [Shield|Armor]
+# Spell Broadcast
+#   [Incoming|Outgoing] Spell Cast [Complete]*
+# Trap Broadcast 
+#   [Monster|Player] [triggers|hit by] trap [complete]*
+# Global Trap Broadcast
+#   Player Trap Removed
+# Damage Broadcast
+#   [Incoming|Outgoing] Damage
+# Status Broadcast
+#   [Incoming|Outgoing] Status Applied
+# Anarchist Trap Broadcast
+#   Placing trap [not]* on Enemy [complete]*
+# Stealth Broadcast
+#   Unlucky Stealth Break
+# Resist Broadcast
+#   [Player|Enemy] [Dodges|Partially Resists|Fully Resists] [or]* [Dodges|Partially Resists|Fully Resists]*
 
 	
 	
