@@ -77,7 +77,7 @@ class EquippedItems(object):
         Outputs:
           A List of the equipment that was displaced (even if it was only one
           piece.)"""
-        if newPiece.isinstance(equipment.Weapon):
+        if newPiece.isinstance(equipment.Weapon) or newPiece.type == "Shield":
             return _equipWeapon(self, newPiece, hand)
         if newPiece.type == "Finger":
             return _equipRing(self, newPiece, hand)
@@ -88,10 +88,19 @@ class EquippedItems(object):
         if hand == "Main":
             hand = "Right"
         elif hand == "Off" or hand == "Off-Hand":
-            hand = "Left"       
+            hand = "Left"
+            
+        handsUsed = None
+        if newPiece.isinstance(equipment.Weapon):
+            handsUsed = newPiece.handsRequired
+        else: 
+            # Shield
+            handsUsed = "One-Handed"
+            hand = "Left"
+        
         oldPieceOne = None
         oldPieceTwo = None
-        if newPiece.handsRequired == "Two-Handed" or newPiece.handsRequired == "One-Handed Exclusive":
+        if handsUsed == "Two-Handed" or handsUsed == "One-Handed Exclusive":
             # Case 1&2: Main hand full or empty, Off-hand empty
             if not self._allGear['Off Hand']:
                 oldPieceOne = self._allGear['Main Hand']
@@ -107,10 +116,10 @@ class EquippedItems(object):
                 oldPieceTwo = self._allGear['Off Hand']
                 self._allGear['Main Hand'] = newPiece
                 self._allGear['Off Hand'] = None        
-        elif newPiece.handsRequired == "One-Handed" and hand == "Right":
-            oldPieceOne = self._allGear['Main Hand']:
+        elif handsUsed == "One-Handed" and hand == "Right":
+            oldPieceOne = self._allGear['Main Hand']
             self._allGear['Main Hand'] = newPiece
-        elif newPiece.handsRequired == "One-Handed" and hand == "Left":
+        elif handsUsed == "One-Handed" and hand == "Left":
             oldPieceOne = self._allGear['Off Hand']
             self._allGear['Off Hand'] = newPiece
             if self._allGear['Main Hand'].type == "One-Handed Exclusive" or self._allGear['Main Hand'].type == "Two-Handed":

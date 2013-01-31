@@ -3,6 +3,7 @@
 import sys
 import person as p
 import equippeditems
+import equipment
 
 class PlayerCharacter(p.Person):
 
@@ -619,9 +620,22 @@ class PlayerCharacter(p.Person):
         else:
             return 120 + (self.totalStrength - 15) * 12
     
-        
-        
-        
-        
+    def equip(self, newPiece):
+        """Equips a piece of gear, and places any replaced gear in the inventory."""
+        oldPiece = self.equippedItems.equip(newPiece)
+        if newPiece.isinstance(equipment.Armor):
+            self.equipmentDR += newPiece.DR
+            self.equipmentStealth += newPiece.stealthMod
+            self.equipmentDodge += newPiece.dodgeMod
+        if oldPiece and oldPiece.isinstance(equipment.Armor):
+            self.equipmentDR -= oldPiece.DR
+            self.equipmentStealth -= oldPiece.stealthMod
+            self.equipmentDodge -= oldPiece.dodgeMod
+            # TODO: Place in inventory
+        if newPiece.isinstance(equipment.Weapon):
+            pass
+        if oldPiece and oldPiece.isinstance(equipment.Weapon):
+            pass
+        # TODO: Magical bonuses
                         
          
