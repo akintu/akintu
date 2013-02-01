@@ -1,9 +1,9 @@
 #!/usr/bin/python
 
 import sys
-import person as p
 import equippeditems
 import equipment
+import person as p
 
 class PlayerCharacter(p.Person):
 
@@ -593,7 +593,7 @@ class PlayerCharacter(p.Person):
         
     @property
     def tricksterAttackManaRegen(self):
-        if self.characterClass = "Trickster":
+        if self.characterClass == "Trickster":
             if self.usingWeaponStyle("Dual"):
                 return 3
             else:
@@ -604,9 +604,6 @@ class PlayerCharacter(p.Person):
     @property
     def tricksterDodgeManaRegen(self):
         return self.level * 2 + 18
-        
-    @property
-    def 
         
     @property
     def ninjaStyle(self):

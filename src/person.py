@@ -2,7 +2,6 @@
 
 import sys
 import entity as en
-import equipment as eq
 
 class IncompleteDataInitialization(Exception):
     def __init__(self, value):
@@ -26,7 +25,7 @@ class Person(en.Entity):
 
             
     def __init__(self, argDict):
-        e.Entity.__init__(self)
+        en.Entity.__init__(self)
         self._cooldownList = []
         self._statusList = []
         self._minionList = []
@@ -61,7 +60,7 @@ class Person(en.Entity):
         self._statusStrength = 0
         
         # Resources
-        self._AP = 20
+        self._AP = Person.setFrom(argDict, 'AP', 20)
         self._totalAP = 20
         self._baseHP = Person.setFrom(argDict, 'startingHP', Person.ERROR)
         self._HP = self.totalHP
@@ -2185,10 +2184,7 @@ class Person(en.Entity):
     @location.setter
     def location(self, tile):
         """Tile must be unoccupied or no change will result."""
-        if tile.isOccupied():
-            return
-        else:
-            self._location = tile
+        self._location = tile
         
     @property
     def directionFacing(self):
@@ -2202,6 +2198,8 @@ class Person(en.Entity):
              "DOWN"
              "LEFT"
              "RIGHT" """
+        if not direction:
+            return
         direction = direction.upper()
         possibleValues = ["UP", "DOWN", "LEFT", "RIGHT"]
         if direction in possibleValues:
