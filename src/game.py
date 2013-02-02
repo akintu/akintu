@@ -16,7 +16,6 @@ from world import *
 import sys
 clock = pygame.time.Clock()
 
-
 class Game(object):
     def __init__(self):
         if len(sys.argv) == 1:
@@ -40,7 +39,6 @@ class Game(object):
         location = self.screen.add_player("Colton", None)
         self.player = ["Colton", location]
 
-        
         reactor.callInThread(self.game_loop)
         #reactor.run()
         self.game_loop()
@@ -50,7 +48,7 @@ class Game(object):
         fps = 0
 
         while True:
-            clock.tick()
+            clock.tick(120)
             fps_counter += 1
             if fps_counter > fps:
                 fps = clock.get_fps()
