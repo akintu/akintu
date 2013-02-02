@@ -104,13 +104,13 @@ class World(object):
                 tree = treesheet.get_random_entity(str((i,j)), RAND_TREES)
                 rock = rocksheet.get_random_entity(str((i,j)), RAND_ROCKS)
                 if tree:
-                    #tiles[(i, j)].entities.append(Entity(tree, False))
-                    tmp = Entity(tree, False)
-                    tiles[(i, j)].entities[hash(tmp)] = tmp
+                    tiles[(i, j)].entities.append(Entity(tree, False))
+                    # tmp = Entity(tree, False)
+                    # tiles[(i, j)].entities[hash(tmp)] = tmp
                 if rock:
-                    #tiles[(i, j)].entities.append(Entity(rock, False))
-                    tmp = Entity(rock, False)
-                    tiles[(i, j)].entities[hash(tmp)] = tmp
+                    tiles[(i, j)].entities.append(Entity(rock, False))
+                    # tmp = Entity(rock, False)
+                    # tiles[(i, j)].entities[hash(tmp)] = tmp
         
         return (Pane(self.seed, location, tiles), images)
                 
@@ -132,8 +132,7 @@ class Pane(object):
             
 class Tile(object):
     def __init__(self, image = grassimage, passable = True):
-        #self.entities = []
-        self.entities = dict()
+        self.entities = []
         self.image = image
         self.passable = passable
         
