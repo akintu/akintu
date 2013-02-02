@@ -50,18 +50,7 @@ class Pane(object):
 
     def __init__(self, seed, location, tiles, startpoint = None):
         self.tiles = tiles
-        for x in range(PANE_X):
-            for y in range(PANE_Y):
-                if x == 0 or x == PANE_X-1 or y == 0 or y == PANE_Y-1:
-                    del self.tiles[(x,y)].entities[:]
-                    self.tiles[(x,y)].entities.append(Entity(rockimage, False))
 
-        # Removes the 4 entrance locations
-        del self.tiles[(0,PANE_Y/2)].entities[:]        #LEFT
-        del self.tiles[(PANE_X/2, 0)].entities[:]       #TOP
-        del self.tiles[(PANE_X-1,PANE_Y/2)].entities[:] #RIGHT
-        del self.tiles[(PANE_X/2,PANE_Y-1)].entities[:] #BOTTOM
-        
         if not startpoint:
             self.startpoint = (16, 10)
         else:
