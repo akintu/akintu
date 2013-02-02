@@ -27,7 +27,7 @@ class ServerData(Protocol):
 
     def dataReceived(self, data):
         data = cPickle.loads(data)
-        pprint(data)
+        print(self.port, data)
         self.factory.queue.put((self.port, data))
         if data == 'q': #Find some other abort mechanism
             self.factory.shutdown()

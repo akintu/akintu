@@ -22,7 +22,7 @@ def readKey(CDF):
 
 if sys.argv[1].lower() == "host":
     SDF = ServerDataFactory()
-    reactor.callLater(5, SDF.send, 0, "Hi @ " + str(time.time()))
+    #reactor.callLater(5, SDF.send, 0, "Hi @ " + str(time.time()))
     #reactor.callInThread(printQ, SDF)
     reactor.listenTCP(1337, SDF)
     reactor.run()
