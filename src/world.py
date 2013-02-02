@@ -34,13 +34,9 @@ class World(object):
                 tree = treesheet.get_random_entity(str((i,j)), RAND_TREES)
                 rock = rocksheet.get_random_entity(str((i,j)), RAND_ROCKS)
                 if tree:
-                    #tiles[(i, j)].entities.append(Entity(tree, False))
-                    tmp = Entity(tree, False)
-                    tiles[(i, j)].entities[hash(tmp)] = tmp
+                    tiles[(i, j)].entities.append(Entity(tree, False))
                 if rock:
-                    #tiles[(i, j)].entities.append(Entity(rock, False))
-                    tmp = Entity(rock, False)
-                    tiles[(i, j)].entities[hash(tmp)] = tmp
+                    tiles[(i, j)].entities.append(Entity(rock, False))
         
         return (Pane(self.seed, location, tiles), images)
                 
