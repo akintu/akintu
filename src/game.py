@@ -7,16 +7,30 @@ from pygame.locals import *
 
 import os
 import sys
+import threading
 
+from network import *
 from const import *
 from gamescreen import GameScreen
 from world import *
-
+import sys
 clock = pygame.time.Clock()
 
 
 class Game(object):
     def __init__(self):
+    
+        args = len(sys.argv)
+        print(args)
+        if args == 1:
+            ipaddress = "localhost"
+            server = True
+            threading.Thread(target=start_server, args=(1337))
+        else:
+            ipaddress = sys.argv[1]
+            server = False
+            threading.Thread(target=start_client, args=(ipaddress, 1337))
+            
         # Set up game engine
         self.screen = GameScreen()
         self.world = World("CorrectHorseStapleBattery")
@@ -74,3 +88,6 @@ class Game(object):
             if not ent.passable:
                 return False
         return True
+
+    def switch_panes(self, location, startpoint):
+        pass
