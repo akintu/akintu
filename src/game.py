@@ -23,13 +23,15 @@ class Game(object):
         args = len(sys.argv)
         print(args)
         if args == 1:
+            SDF = ServerDataFactory()
             ipaddress = "localhost"
             server = True
-            threading.Thread(target=start_server, args=(1337))
+            threading.Thread(target=start_server, args=(SDF, 1337))
         else:
+            CDF = ClientDataFactory()
             ipaddress = sys.argv[1]
             server = False
-            threading.Thread(target=start_client, args=(ipaddress, 1337))
+            threading.Thread(target=start_client, args=(CDF, ipaddress, 1337))
             
         # Set up game engine
         self.screen = GameScreen()

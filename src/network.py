@@ -10,8 +10,7 @@ import cPickle
 import sys
 from pprint import pprint
 
-def start_server(port):
-    SDF = ServerDataFactory()
+def start_server(SDF, port):
     #reactor.callInThread(printQ, SDF)
     reactor.listenTCP(port, SDF)
     print("Starting server")
@@ -67,8 +66,7 @@ class ServerDataFactory(Factory):
         print("Server shutdown")
 
 
-def start_client(ip, port):
-    CDF = ClientDataFactory()
+def start_client(CDF, ip, port):
     reactor.connectTCP(ip, port, CDF)
     #reactor.callInThread(readKey, CDF)
     reactor.run()
