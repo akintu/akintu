@@ -12,8 +12,6 @@ import sys
 from pprint import pprint
 
 def start_server(SDF, port):
-    #reactor.callInThread(printQ, SDF)
-    print("Starting server")
     reactor.listenTCP(port, SDF)
 
 class ServerData(Protocol):
@@ -30,14 +28,11 @@ class ServerData(Protocol):
         print('Lost connection.  Reason:' + str(reason))
         if self.factory.clients.has_key(self.port):
             del self.factory.clients[self.port]
-        self.factory.shutdown()
 
     def dataReceived(self, data):
         data = cPickle.loads(data)
         print(self.port, data)
         self.factory.queue.put((self.port, data))
-        if data == 'q': #Find some other abort mechanism
-            self.factory.shutdown()
 
 class ServerDataFactory(Factory):
     '''
@@ -58,17 +53,8 @@ class ServerDataFactory(Factory):
             for port, protocol in self.clients.iteritems():
                 protocol.transport.write(data)
 
-    def shutdown(self):
-        for port, protocol in self.clients.iteritems():
-            protocol.transport.loseConnection()
-        if reactor.running:
-            reactor.stop()
-        print("Server shutdown")
-
-
 def start_client(CDF, ip, port):
     reactor.connectTCP(ip, port, CDF)
-    #reactor.callInThread(readKey, CDF)
         
 class ClientData(Protocol):
     '''
@@ -103,12 +89,6 @@ class ClientDataFactory(Factory):
     def send(self, data):
         data = cPickle.dumps(data)
         self.server.transport.write(data)
-
-    def shutdown(self):
-        self.server.transport.loseConnection()
-        if reactor.running:
-            reactor.stop()
-        print("Connection to server closed.")
 
     def clientConnectionLost(self, connector, reason):
         pprint(reason)
