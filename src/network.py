@@ -12,8 +12,8 @@ from pprint import pprint
 
 def start_server(SDF, port):
     #reactor.callInThread(printQ, SDF)
-    reactor.listenTCP(port, SDF)
     print("Starting server")
+    reactor.listenTCP(port, SDF)
     reactor.run()
 
 class ServerData(Protocol):

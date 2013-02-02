@@ -1,4 +1,5 @@
 from network import *
+import threading
 import sys
 import time
 
@@ -24,8 +25,8 @@ if sys.argv[1].lower() == "host":
     SDF = ServerDataFactory()
     #reactor.callLater(5, SDF.send, 0, "Hi @ " + str(time.time()))
     #reactor.callInThread(printQ, SDF)
-    reactor.listenTCP(1337, SDF)
-    reactor.run()
+    t1 = threading.Thread(target=start_server, args=(SDF, 1337))
+    t1.start()
     print("Reactor stopped")
 elif sys.argv[1].lower() == "client":
     CDF = ClientDataFactory()
