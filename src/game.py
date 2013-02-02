@@ -24,13 +24,13 @@ class Game(object):
         if len(sys.argv) == 1:
             self.server = True
             self.SDF = ServerDataFactory()
-            reactor.listenTCP(port, SDF)
+            reactor.listenTCP(1337, self.SDF)
         else:
             self.serverip = sys.argv[1]
 
         #Always start a client, if you are the server, you serve yourself.
         self.CDF = ClientDataFactory()
-        reactor.connectTCP(self.serverip, 1337, CDF)
+        reactor.connectTCP(self.serverip, 1337, self.CDF)
 
         # Set up game engine
         self.screen = GameScreen()
