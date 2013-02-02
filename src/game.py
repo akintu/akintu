@@ -19,14 +19,11 @@ clock = pygame.time.Clock()
 
 class Game(object):
     def __init__(self):
-    
-        args = len(sys.argv)
-        print(args)
-        if args == 1:
+        if len(sys.argv) == 1:
             SDF = ServerDataFactory()
-            ipaddress = "localhost"
-            server = True
-            threading.Thread(target=start_server, args=(SDF, 1337))
+            t1 = threading.Thread(target=start_server, args=(SDF, 1337))
+            t1.start()
+            pprint(threading.enumerate())
         else:
             CDF = ClientDataFactory()
             ipaddress = sys.argv[1]
