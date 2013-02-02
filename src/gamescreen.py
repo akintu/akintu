@@ -28,16 +28,13 @@ class GameScreen(object):
         pygame.display.flip()
 
 
-    def update_images(self, imagedict):
+    def set_pane(self, pane, imagedict):
         for key, val in imagedict.iteritems():
             mode = val.mode
             size = val.size
             data = val.tostring()
             assert mode in 'RGB', 'RGBA'
             self.images[key] = pygame.image.fromstring(data, size, mode).convert()
-
-
-    def set_pane(self, pane):
         self.pane = pane
         self.draw_world()
 
