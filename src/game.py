@@ -36,6 +36,8 @@ class Game(object):
             fps_counter += 1
             if fps_counter > fps:
                 fps = clock.get_fps()
+                if(fps >= 1000000000):
+                    fps = 0
                 self.screen.set_fps(fps)
                 fps_counter = 0
             pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
