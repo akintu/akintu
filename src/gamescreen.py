@@ -88,7 +88,7 @@ class GameScreen(object):
 
     def set_fps(self, fps):
         if SHOW_FPS:
-            pygame.display.set_caption("%s %d" % (CAPTION, fps))
+            pygame.display.set_caption("%s %s" % (CAPTION, str(fps)))
 
 
 

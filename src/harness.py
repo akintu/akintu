@@ -29,7 +29,7 @@ if sys.argv[1].lower() == "host":
     print("Reactor stopped")
 elif sys.argv[1].lower() == "client":
     CDF = ClientDataFactory()
-    ic = reactor.connectTCP("localhost", 1337, CDF)
+    ic = reactor.connectTCP(sys.argv[2], 1337, CDF)
     reactor.callInThread(readKey, CDF)
     reactor.run()
     print("Reactor stopped")
