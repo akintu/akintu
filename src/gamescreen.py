@@ -33,8 +33,11 @@ class GameScreen(object):
             mode = val.mode
             size = val.size
             data = val.tostring()
-            assert mode in 'RGB', 'RGBA'
-            self.images[key] = pygame.image.fromstring(data, size, mode).convert()
+            if mode == 'RGBA':
+                self.images[key] = pygame.image.fromstring(data, size, mode).convert_alpha()
+            else:
+                #assert mode in 'RGB', 'RGBA'
+                self.images[key] = pygame.image.fromstring(data, size, mode).convert()
         self.pane = pane
         self.draw_world()
 
