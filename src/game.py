@@ -86,7 +86,7 @@ class Game(object):
         if not self.pane.tiles[tupleloc].passable:
             return False
         tile = self.pane.tiles[tupleloc]
-        for ent in tile.entities:
+        for key, ent in tile.entities.iteritems():
             if not ent.passable:
                 return False
         return True
