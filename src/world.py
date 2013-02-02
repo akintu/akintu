@@ -68,7 +68,6 @@ class Entity(object):
         self.image = image
         self.passable = passable
 
-=======
 '''
 World generation tools and representation
 '''
