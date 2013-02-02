@@ -8,6 +8,7 @@ from pygame.locals import *
 import os
 import sys
 import threading
+import command
 
 from network import *
 from const import *
@@ -18,15 +19,17 @@ clock = pygame.time.Clock()
 
 class Game(object):
     def __init__(self):
+        self.serverip = "localhost"
+        self.server = False
         if len(sys.argv) == 1:
             self.server = True
             self.SDF = ServerDataFactory()
             reactor.callInThread(start_server, self.SDF, 1337)
         else:
-            self.server = False
-            self.CDF = ClientDataFactory()
-            ipaddress = sys.argv[1]
-            reactor.callInThread(start_client, self.CDF, ipaddress, 1337)
+            self.serverip = sys.argv[1]
+        #Always start a client, if you are the server, you serve yourself.
+        self.CDF = ClientDataFactory()
+        reactor.callInThread(start_client, self.CDF, self.serverip, 1337)
             
         # Set up game engine
         self.screen = GameScreen()
@@ -38,11 +41,21 @@ class Game(object):
         self.screen.set_pane(self.pane, imagedict)
         location = self.screen.add_player("Colton", None)
         self.player = ["Colton", location]
-
+        
+        LoopingCall(self.server_loop).start(.0001)
         tick = LoopingCall(self.game_loop)
         tick.start(1.0 / DESIRED_FPS)
         
         reactor.run()
+        
+    def server_loop(self):
+        #Check queue
+        while not SDF.queue.empty():
+            command = SDF.queue.get()
+            
+        #Verify command requests
+        
+        #Send Reply
 
     def game_loop(self):
         fps = clock.get_fps()
@@ -84,3 +97,5 @@ class Game(object):
 
     def switch_panes(self, location, startpoint):
         pass
+    
+        

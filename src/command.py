@@ -8,18 +8,20 @@ def enum(**enums):
 InventoryActions = enum(PICKUP = 1, PUTDOWN = 2)
 
 class Command:
-    def __init__(self, hash, location, action):
-        self.hash = hash
+    def __init__(self, index, location, action):
+        self.index = index
         self.location = location
         self.action = action
         
 class Action(object):
-    pass
-    
+    def __init__(self):
+        pass
+        
 class MoveAction(Action):
     def __init__(self, dest):
+        super(MoveAction,self).__init__()
         self.dest = dest
-        
+    
 class InventoryAction(Action):
     def __init__(self, action, item_hash):
         self.action = action
