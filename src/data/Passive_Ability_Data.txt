@@ -36,8 +36,8 @@
 [CLASS: Barbarian]
 [LEVEL: 1]
 [TYPE: Static]
-  [ATTRIBUTE_PENALTY: Magic Resist]
-    [MAGNITUDE: 3]
+  [ATTRIBUTE_BONUS: Magic Resist]
+    [MAGNITUDE: -3]
 
 [NAME: Mighty Weapon]
 [CLASS: Barbarian]
@@ -72,18 +72,19 @@
 [CLASS: Barbarian]
 [LEVEL: 3]
 [TYPE: Static]
-  [ATTRIBUTE_PENALTY: Magic Resist]
-    [MAGNITUDE: 3]
+  [ATTRIBUTE_BONUS: Magic Resist]
+    [MAGNITUDE: -3]
 	
 [NAME: Stunning Recovery]
 [CLASS: Barbarian]
 [LEVEL: 4]
 [TYPE: Dynamic]
   [TRIGGERED_BY: Player Stunned]
-    [CONDITIONAL: Player does not have Status "Stunning Recovery"]
-  [APPLY_STATUS: "Stunning Recovery"]
+    [CONDITIONAL: Player does not have Status Stunning Recovery]
+  [APPLY_STATUS: Stunning Recovery]
 	[MAGNITUDE: 5]
-	[DURATION: 1] # Should expire almost immediately.
+	[DURATION: 1] 
+	# Should expire almost immediately.
 
 [NAME: Walk it Off]
 [CLASS: Barbarian]
@@ -136,12 +137,9 @@
 [NAME: Direct Counterattack]
 [CLASS: Weaponmaster]
 [LEVEL: 1]
-[TYPE: Dynamic]
-  [TRIGGERED_BY: Incoming Melee Attack Complete]
-    [CONDITIONAL: Attack is Counterattackable]
-	[CONDITIONAL: Facing exactly in front]
-	[CONDITIONAL: Does not have ability "Direct Counterattack 2"]
-  [INTERRUPT: Counterattack]
+[TYPE: Static]
+  [ATTRIBUTE_BONUS: Counterattack Arc]
+    [MAGNITUDE: 30]
 
 [NAME: Shield Counter]
 [CLASS: Weaponmaster]
@@ -178,12 +176,9 @@
 [NAME: Direct Counterattack 2]
 [CLASS: Weaponmaster]
 [LEVEL: 4]
-[TYPE: Dynamic]
-  [TRIGGERED_BY: Incoming Melee Attack Complete]
-    [CONDITIONAL: Attack is Counterattackable]
-	[CONDITIONAL: Facing exactly in front or front-diagonal]
-	[CONDITIONAL: Does not have ability "Direct Counterattack 3"]
-  [INTERRUPT: Counterattack]
+[TYPE: Static]
+  [ATTRIBUTE_BONUS: Counterattack Arc]
+    [MAGNITUDE: 90]
   
 [NAME: Two-Weapon Glancing]
 [CLASS: Weaponmaster]
@@ -200,7 +195,7 @@
 [LEVEL: 5]
 [TYPE: Dynamic]
   [TRIGGERED_BY: Incoming Status Applied]
-    [CONDITIONAL: Status is "Bleeding"]
+    [CONDITIONAL: Status is Bleeding]
 	[CONDITIONAL: Probability 50]
   [INTERRUPT: Remove Status]
 
@@ -241,20 +236,20 @@
 [LEVEL: 3]
 [TYPE: Dynamic]
   [TRIGGERED_BY: Outgoing Physical Attack Critical Hit]
-    [CONDITIONAL: Player has Status of Type "Enchantment"]
+    [CONDITIONAL: Player has Status of Type Enchantment]
 	[CONDITIONAL: Using two-handed weapon]
   [ATTRIBUTE_BONUS: Critical Hit Flat Holy Damage Bonus]
     [MAGNITUDE: 15]  
 	
-[NAME: Blades of Reduction]
-[CLASS: Spellsword]
-[LEVEL: 4]
-[TYPE: Dynamic]
-  [TRIGGERED_BY: Outgoing Physical Attack Hit]
-    [CONDITIONAL: Using Slashing Weapon]
-	[CONDITIONAL: Enemy does not have Status "Blades of Reduction"]
-    [CONDITIONAL: Probability "Reliable"]
-  [INTERRUPT: Add Status "Blades of Reduction" to Enemy duration -1] # Entire battle
+#[NAME: Blades of Reduction]
+#[CLASS: Spellsword]
+#[LEVEL: 4]
+#[TYPE: Dynamic]
+#  [TRIGGERED_BY: Outgoing Physical Attack Hit]
+#    [CONDITIONAL: Using Slashing Weapon]
+#	[CONDITIONAL: Enemy does not have Status Blades of Reduction]
+#    [CONDITIONAL: Probability Reliable]
+#  [INTERRUPT: Add Status Blades of Reduction to Enemy duration -1] # Entire battle
   
 # Anarchist Passives
 
@@ -285,8 +280,9 @@
 [TYPE: Dynamic]
   [TRIGGERED_BY: Monster hit by trap]
     [CONDITIONAL: Trap does not deal damage]
-  [APPLY_STATUS: "Celebrate Misfortune"]
-    [DURATION: 3] # Duration will decrement shortly after being applied.
+  [APPLY_STATUS: Celebrate Misfortune]
+    [DURATION: 3] 
+	# Duration will decrement shortly after being applied.
 	
 # Marskman Passives
 
@@ -344,7 +340,7 @@
 [LEVEL: 4]
 [TYPE: Dynamic]
   [TRIGGERED_BY: Incoming Status Applied]
-    [CONDITIONAL: Status is "Stun"]
+    [CONDITIONAL: Status is Stun]
 	[CONDITIONAL: Probability 75]
   [INTERRUPT: Remove Status]
   
@@ -353,7 +349,7 @@
 [LEVEL: 4]
 [TYPE: Dynamic]
   [TRIGGERED_BY: Incoming Ranged Attack Hit]
-  [APPLY_STATUS: "Superior Training"]
+  [APPLY_STATUS: Superior Training]
     [MAGNITUDE: 2]
 	[DURATION: 2] # Will decrement almost immediately
 	
@@ -399,7 +395,7 @@
     [MAGNITUDE: 3]
   [ATTRIBUTE_BONUS: Poison Tolerance]
     [MAGNITUDE: 2]
-  [ATTRIBUTE_BONUS: Trap Rating Bonus]
+  [ATTRIBUTE_BONUS: Bonus Trap Rating]
     [MAGNITUDE: 1]
 
 # Tactician Passives
@@ -435,10 +431,10 @@
   [ATTRIBUTE_BONUS: Spellpower]
     [MAGNITUDE: 1]
 [TYPE: Static]
-  [ATTRIBUTE_BONUS: Trap Rating Bonus]
+  [ATTRIBUTE_BONUS: Bonus Trap Rating]
     [MAGNITUDE: 3]
-  [ATTRIBUTE_PENALTY: Awareness]
-    [MAGNITUDE: 1]  
+  [ATTRIBUTE_BONUS: Awareness]
+    [MAGNITUDE: -1]  
 	
 # Assassin Abilities
 
@@ -480,7 +476,7 @@
 [LEVEL: 6]
 [TYPE: Dynamic]
   [TRIGGERED_BY: Unlucky Stealth Break]
-  [APPLY_STATUS: "Panic Step"]
+  [APPLY_STATUS: Panic Step]
     [MAGNITUDE: 4]
 	[DURATION: 1]
 
@@ -532,12 +528,12 @@
 [NAME: Hide in Peril]
 [CLASS: Shadow]
 [LEVEL: 4]
-[TYPE: Static]
+[TYPE: Dynamic]
   [TRIGGERED_BY: Incoming Physical Attack Complete]
     [CONDITIONAL: Damage is greater than 39% of Maximum HP]
 	[CONDITIONAL: Not in Stealth]
 	[CONDITIONAL: Probability 75]
-  [INTERRUPT: Enter Stealth]
+  [APPLY_STATUS: Shadow Walk]
   
 [NAME: Shadow-Melder]
 [CLASS: Shadow]
@@ -564,9 +560,9 @@
 [TYPE: Dynamic]
   [TRIGGERED_BY: Outgoing Melee Attack Hit]
   [CASE: Ability AP Cost Greater than 4]
-    [IMMEDIATE: Restore 10 MP]
+    [INTERRUPT: Restore 10 MP]
   [CASE: Ability AP Cost Less than 5]
-    [IMMEDIATE: Restore 6 MP]
+    [INTERRUPT: Restore 6 MP]
 	
 [NAME: Dire Mana]
 [CLASS: Battlemage]
@@ -574,7 +570,7 @@
 [TYPE: Dynamic]
   [TRIGGERED_BY: Incoming Damage]
     [CONDITIONAL: Damage is at least 15% of Maximum HP]
-  [IMMEDIATE: Restore 10% of Maximum MP]
+  [INTERRUPT: Restore 10% of Maximum MP]
   
 [NAME: Mystical Accuracy]
 [CLASS: Battlemage]
@@ -642,7 +638,7 @@
 [TYPE: Dynamic]	  
   [TRIGGERED_BY: Outgoing Spell Cast]
     [CONDITIONAL: Ability Range Less than 4 Tiles]
-  [APPLY_STATUS: "Refraction"]
+  [APPLY_STATUS: Refraction]
     [MAGNITUDE: 5]
     [DURATION: 2]
 
@@ -654,12 +650,9 @@
 [TYPE: Dynamic]
   [TRIGGERED_BY: Outgoing Ranged Attack]
     [CONDITIONAL: Using bow or crossbow]
-  [CASE: Ability costs more than 6 AP]
-    [INTERRUPT: Restore 7 MP]
-  [CASE: Ability costs less than 6 AP]
-    [INTERRUPT: Restore 4 MP]  
-  [CASE: Ability costs exactly 6 AP]
-    [INTERRUPT: Restore 6 MP]
+  [REMOVED_ON: Outgoing Ranged Attack Complete]
+  [ATTRIBUTE_BONUS: Arcane Archer Mana Regen]
+    [MAGNITUDE: 1]
 	
 [NAME: Mystical Research]
 [CLASS: Arcane Archer]
@@ -685,7 +678,7 @@
 [LEVEL: 1]
 [TYPE: Dynamic]
   [TRIGGERED_BY: Player Dodges]
-  [IMMEDIATE: Restore Trickster MP] 18 + Level * 2 MP
+  [INTERRUPT: Restore Trickster MP] 18 + Level * 2 MP
   
 [NAME: Infuriating Blows]
 [CLASS: Trickster]
@@ -693,9 +686,9 @@
 [TYPE: Dynamic]
   [TRIGGERED_BY: Outgoing Physical Attack Hit]
   [CASE: Using two weapons]
-    [IMMEDIATE: Restore 3 MP]
+    [INTERRUPT: Restore 3 MP]
   [CASE: not Using two weapons]
-    [IMMEDIATE: Restore 2 MP]
+    [INTERRUPT: Restore 2 MP]
 
 [NAME: Double Dodge]
 [CLASS: Trickster]
@@ -703,7 +696,7 @@
 [TYPE: Dynamic]
   [TRIGGERED_BY: Player Dodges]
     [CONDITIONAL: is Monster Turn]
-  [APPLY_STATUS: "Double Dodge"]
+  [APPLY_STATUS: Double Dodge]
     [MAGNITUDE: 5]
     [DURATION: 1] # Should be removed at end of monster turn
 	[STACKS_ALLOWED: 3]
@@ -745,9 +738,9 @@
 [TYPE: Dynamic]
   [TRIGGERED_BY: Outgoing Guardian Attack Hit]
   [CASE: was Ranged]
-    [IMMEDIATE: Restore 5 Owner MP]
+    [INTERRUPT: Restore 5 Owner MP]
   [CASE: was Melee]
-    [IMMEDIATE: Restore 8 Owner MP]
+    [INTERRUPT: Restore 8 Owner MP]
 
 [NAME: Vicarious Mana Defense]
 [CLASS: Sorcerer]
@@ -756,14 +749,14 @@
   [TRIGGERED_BY: Incoming Guardian Attack Hit]
   [TRIGGERED_BY: Incoming Guardian Spell Hit]
     [CONDITIONAL: Spell was Hostile]
-  [IMMEDIATE: Restore 10 Owner MP]
+  [INTERRUPT: Restore 10 Owner MP]
  
 [NAME: Slowly Rejuvenate]
 [CLASS: Sorcerer]
 [LEVEL: 1]
 [TYPE: Dynamic]
   [TRIGGERED_BY: Starting Player Turn]
-  [IMMEDIATE: Restore 1% of Max MP]
+  [INTERRUPT: Restore 1% of Max MP]
   
 [NAME: Synergy Casting]
 [CLASS: Sorcerer]

@@ -516,8 +516,10 @@ class Combat(object):
           mightMod -- int*; the amount of bonus might applied to this attack
           ignoreOnHitEffects -- boolean*; if set, this attack will not trigger listeners waiting for
                                 a weapon attack or apply any weapon's on-hit effects.
-          poisonRatingMod -- int; the amount to boost the poison rating of this attack by for any added
+          poisonRatingMod -- int*; the amount to boost the poison rating of this attack by for any added
                                   'applied' poisons.
+          backstab -- boolean*; was this attack a backstab?
+          hand -- string*; which hand is attacking ("Right" or "Left")
         Outputs:
           None"""
         if hitType == "Miss":

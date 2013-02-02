@@ -19,6 +19,8 @@ class PlayerCharacter(p.Person):
         self.level = 1
         self._experience = 0
         
+        self.goldFind = p.Person.setFrom(argDict, 'startingGoldFind', 0)
+        
         self._baseOverallDamageBonus = p.Person.setFrom(argDict, 'startingOverallDamageBonus', 0)
         self._equipmentOverallDamageBonus = 0
         self._statusOverallDamageBonus = 0
@@ -63,6 +65,16 @@ class PlayerCharacter(p.Person):
         self._equipmentShadowBonusDamage = 0
         self._statusShadowBonusDamage = 0
          
+        # Spell School Resists
+        self.baneResist = p.Person.setFrom(argDict, 'startingBaneResist', 0)
+        self.enchantmentResist = p.Person.setFrom(argDict, 'startingEnchantmentResist', 0)
+        self.mentalResist = p.Person.setFrom(argDict, 'startingMentalResist', 0)
+        self.mysticResist = p.Person.setFrom(argDict, 'startingMysticResist', 0)
+        self.naturalResist = p.Person.setFrom(argDict, 'startingNaturalResist', 0)
+        self.primalResist = p.Person.setFrom(argDict, 'startingPrimalResist', 0)
+        self.illusionResist = p.Person.setFrom(argDict, 'startingIllusionResist', 0)
+                
+        
         # TODO: Write method applyOnHitMod(name, *args)
         # TODO: Write method removeOnHitMod(name)
         # TODO: Write method hasExtraLengthBuffs() ?
@@ -81,7 +93,7 @@ class PlayerCharacter(p.Person):
         
         # Class specific properties and weird things:
         
-            
+        # --- Arcane Archer ---
         self._arcaneArcherManaRegenLow = None
         self._arcaneArcherManaRegenHigh = None
         self._arcaneArcherManaRegenBase = None
@@ -89,25 +101,54 @@ class PlayerCharacter(p.Person):
             self._arcaneArcherManaRegenLow = 4
             self._arcaneArcherManaRegenBase = 6
             self._arcaneArcherManaRegenHigh = 7
+        self.arcaneArcherManaRegenFactor = 1
         
+        # --- Marksman ---
+        # Weapon range is not factored in, we need to fix that.
+        self._bonusRange = 0
+        self.longbowAccuracyPenaltyReduction = 0
         
+        # --- Ninja ---
         # The starting (default?) style for Ninjas is the 'Tiger' style.
         self._ninjaStyle = None
         if (self.characterClass == "Ninja"):
             self._ninjaStyle = "Tiger" # TODO: Apply Tiger passives on startup.
 
+        # --- Kahajit Race ---
         # Worry about whether we are 'outside' or not in the Combat class, perhaps? TODO
         self.DROutside = None
         
+        # --- Ranger classes ---
+        self._bonusTrapDamage = 0
+        self._bonusTrapRating = 0
+        self.bonusPoisonRating = 0
+        self.meleeRangedAttackPenaltyReduction = 0
+        
+        # --- Sorceror ---
         # self._activeSummon
+        # self._empathyToSummon 
+        
+        # --- Other ---
         # self._abilityAPModsList [["AbilityName", -2], [...]]
         # self._spellMPModsList [["SpellName", -1], [...]]
-        # self._empathyToSummon 
+        self.knockbackResistance = 0
+        
+        # --- Thief classes ---
         # self._stealthBreakMaxOverride Default 100
+        self._canLockpick = False
+        self.trapDisarmBonus = 0
+        
+        # --- Weaponmaster ---
+        self.weaponAttackArc = 0
+          # Possible Values = 30, 90, 180, 270, 360
+        
+        # --- Wizard classes ---
+        self.healingBonus = 0
         
         # include starting equipment in this initializer. TODO
-        
         self.equippedItems = equippeditems.EquippedItems(None)
+        self._baseInventoryCapacity = p.Person.setFrom(argDict, 'startingInventoryCapacity', 0)
+                
         
         # Levelup stats
         self.levelupStrength = p.Person.setFrom(argDict, 'levelupStrength', p.Person.ERROR)
@@ -155,10 +196,12 @@ class PlayerCharacter(p.Person):
         if spellThree:
             self.spellList.append(spellThree)
         
-        self.abilityList = []
+        self.abilities = []
         
         # Trait list of form, [["Bully", 3], ["Courage", 2]...] where the int is the rank.
-        self.traitList = []
+        self.traits = []
+        
+        self.listeners = []
         
     
     def gainLevelUp(self):
@@ -590,7 +633,18 @@ class PlayerCharacter(p.Person):
     @arcaneArcherManaRegenLow.setter
     def arcaneArcherManaRegenLow(self, value):
         self._arcaneArcherManaRegenLow = value
-        
+    
+    @property
+    def canLockpick(self):
+        return self._canLockpick
+    
+    @canLockpick.setter
+    def canLockpick(self, value):
+        if value == 1 or value == True:
+            self._canLockpick = True
+        else:
+            self._canLockpick = False
+    
     @property
     def tricksterAttackManaRegen(self):
         if self.characterClass == "Trickster":
@@ -605,6 +659,31 @@ class PlayerCharacter(p.Person):
     def tricksterDodgeManaRegen(self):
         return self.level * 2 + 18
         
+    @property
+    def bonusRange(self):
+        return self._bonusRange
+        
+    @bonusRange.setter
+    def bonusRange(self, value):
+        self._bonusRange = value
+        
+    @property
+    def bonusTrapDamage(self):
+        return self._bonusTrapDamage
+        
+    @bonusTrapDamage.setter
+    def bonusTrapDamage(self, value):
+        self._bonusTrapDamage = value
+    
+    @property
+    def bonusTrapRating(self):
+        return self._bonusTrapRating
+        
+    @bonusTrapRating.setter
+    def bonusTrapRating(self, value):
+        self._bonusTrapRating = value
+
+    
     @property
     def ninjaStyle(self):
         """The Style this Ninja is currently using.  If this playercharacter
@@ -631,9 +710,9 @@ class PlayerCharacter(p.Person):
         """How much the player can fit in his inventory."""
         # TODO: Worry about how +Strength and +Capacity gear could allow you to carry more than your capacity.
         if self.totalStrength <= 15:
-            return 8 * self.totalStrength
+            return 8 * self.totalStrength + self._baseInventoryCapacity
         else:
-            return 120 + (self.totalStrength - 15) * 12
+            return 120 + (self.totalStrength - 15) * 12 + self._baseInventoryCapacity
     
     def equip(self, newPiece):
         """Equips a piece of gear, and places any replaced gear in the inventory."""

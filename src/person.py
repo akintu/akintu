@@ -203,6 +203,8 @@ class Person(en.Entity):
         self._baseRangedAttackAPCost = Person.setFrom(argDict, 'rangedAP', Person.ERROR)
         
         self._statusSpellFailureChance = 0
+        
+        self.listeners = []
     
     @property
     def totalRangedAttackAPCost(self):

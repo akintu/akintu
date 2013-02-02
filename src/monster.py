@@ -40,6 +40,8 @@ class Monster(p.Person):
         self.attackMaxDamage = Monster.setFrom(argDict, 'attackMax')
         self.attackRange = Monster.setFrom(argDict, 'attackRange')
         
+        
+        
     def adjustMaxHP(self, numberOfPlayers):
         if numberOfPlayers == 1:
             pass
