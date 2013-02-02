@@ -36,11 +36,11 @@ class World(object):
                 if tree:
                     #tiles[(i, j)].entities.append(Entity(tree, False))
                     tmp = Entity(tree, False)
-                    tiles[(i, j)].entities[id(tmp)] = tmp
+                    tiles[(i, j)].entities[hash(tmp)] = tmp
                 if rock:
                     #tiles[(i, j)].entities.append(Entity(rock, False))
                     tmp = Entity(rock, False)
-                    tiles[(i, j)].entities[id(tmp)] = tmp
+                    tiles[(i, j)].entities[hash(tmp)] = tmp
         
         return (Pane(self.seed, location, tiles), images)
                 
