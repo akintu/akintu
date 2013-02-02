@@ -39,39 +39,30 @@ class Game(object):
         location = self.screen.add_player("Colton", None)
         self.player = ["Colton", location]
 
-        reactor.callInThread(self.game_loop)
-        #reactor.run()
-        self.game_loop()
+        tick = LoopingCall(self.game_loop)
+        tick.start(1.0 / DESIRED_FPS)
+        
+        reactor.run()
 
     def game_loop(self):
-        fps_counter = 0
-        fps = 0
-
-        while True:
-            clock.tick(120)
-            fps_counter += 1
-            if fps_counter > fps:
-                fps = clock.get_fps()
-                if(fps >= 1000000000):
-                    fps = 0
-                self.screen.set_fps(fps)
-                fps_counter = 0
-            pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
-            for event in pygame.event.get():
-                if event.type == QUIT:
-                    sys.exit(0)
-                if event.type == KEYDOWN:
-                    if event.key == K_ESCAPE:
-                        sys.exit(0)
-                    elif event.key == K_LEFT:
-                        self.move_player(-1, 0)
-                    elif event.key == K_RIGHT:
-                        self.move_player(1, 0)
-                    elif event.key == K_UP:
-                        self.move_player(0, -1)
-                    elif event.key == K_DOWN:
-                        self.move_player(0, 1)
-            self.screen.update()
+        fps = clock.get_fps()
+        self.screen.set_fps(fps)
+        pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                reactor.stop()
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    reactor.stop()
+                elif event.key == K_LEFT:
+                    self.move_player(-1, 0)
+                elif event.key == K_RIGHT:
+                    self.move_player(1, 0)
+                elif event.key == K_UP:
+                    self.move_player(0, -1)
+                elif event.key == K_DOWN:
+                    self.move_player(0, 1)
+        self.screen.update()
 
     def move_player(self, dx, dy):
         newloc = (self.player[1][0] + dx, self.player[1][1] + dy)

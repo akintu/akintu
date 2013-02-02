@@ -11,6 +11,8 @@ TILE_SIZE = 32
 PANE_X = 32
 PANE_Y = 20
 
+DESIRED_FPS = 120
+
 #Coverage Percentage (.1 = 10%)
 RAND_TREES = .20 
 RAND_ROCKS = .1
