@@ -20,15 +20,14 @@ clock = pygame.time.Clock()
 class Game(object):
     def __init__(self):
         if len(sys.argv) == 1:
-            SDF = ServerDataFactory()
-            t1 = threading.Thread(target=start_server, args=(SDF, 1337))
-            t1.start()
-            pprint(threading.enumerate())
+            self.server = True
+            self.SDF = ServerDataFactory()
+            reactor.callInThread(start_server, self.SDF, 1337)
         else:
-            CDF = ClientDataFactory()
+            self.server = False
+            self.CDF = ClientDataFactory()
             ipaddress = sys.argv[1]
-            server = False
-            threading.Thread(target=start_client, args=(CDF, ipaddress, 1337))
+            reactor.callInThread(start_client, self.CDF, ipaddress, 1337)
             
         # Set up game engine
         self.screen = GameScreen()
@@ -41,6 +40,12 @@ class Game(object):
         location = self.screen.add_player("Colton", None)
         self.player = ["Colton", location]
 
+        
+        reactor.callInThread(self.game_loop)
+        #reactor.run()
+        self.game_loop()
+
+    def game_loop(self):
         fps_counter = 0
         fps = 0
 
@@ -83,7 +88,7 @@ class Game(object):
         if not self.pane.tiles[tupleloc].passable:
             return False
         tile = self.pane.tiles[tupleloc]
-        for key, ent in tile.entities.iteritems():
+        for ent in tile.entities:
             if not ent.passable:
                 return False
         return True

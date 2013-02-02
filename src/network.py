@@ -14,7 +14,6 @@ def start_server(SDF, port):
     #reactor.callInThread(printQ, SDF)
     print("Starting server")
     reactor.listenTCP(port, SDF)
-    reactor.run()
 
 class ServerData(Protocol):
     '''
@@ -69,7 +68,6 @@ class ServerDataFactory(Factory):
 def start_client(CDF, ip, port):
     reactor.connectTCP(ip, port, CDF)
     #reactor.callInThread(readKey, CDF)
-    reactor.run()
         
 class ClientData(Protocol):
     '''
