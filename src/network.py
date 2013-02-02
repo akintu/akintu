@@ -11,9 +11,6 @@ import cPickle
 import sys
 from pprint import pprint
 
-def start_server(SDF, port):
-    reactor.listenTCP(port, SDF)
-
 class ServerData(Protocol):
     '''
     Server protocol
@@ -53,9 +50,6 @@ class ServerDataFactory(Factory):
             for port, protocol in self.clients.iteritems():
                 protocol.transport.write(data)
 
-def start_client(CDF, ip, port):
-    reactor.connectTCP(ip, port, CDF)
-        
 class ClientData(Protocol):
     '''
     Client protocol

@@ -24,13 +24,14 @@ class Game(object):
         if len(sys.argv) == 1:
             self.server = True
             self.SDF = ServerDataFactory()
-            reactor.callInThread(start_server, self.SDF, 1337)
+            reactor.listenTCP(port, SDF)
         else:
             self.serverip = sys.argv[1]
+
         #Always start a client, if you are the server, you serve yourself.
         self.CDF = ClientDataFactory()
-        reactor.callInThread(start_client, self.CDF, self.serverip, 1337)
-            
+        reactor.connectTCP(self.serverip, 1337, CDF)
+
         # Set up game engine
         self.screen = GameScreen()
         self.world = World("CorrectHorseStapleBattery")
@@ -43,8 +44,7 @@ class Game(object):
         self.player = ["Colton", location]
         
         LoopingCall(self.server_loop).start(.0001)
-        tick = LoopingCall(self.game_loop)
-        tick.start(1.0 / DESIRED_FPS)
+        LoopingCall(self.game_loop).start(1.0 / DESIRED_FPS)
         
         reactor.run()
         
