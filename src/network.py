@@ -7,7 +7,14 @@ from twisted.internet import reactor
 
 import Queue
 import cPickle
+import sys
 from pprint import pprint
+
+def start_server(port):
+    SDF = ServerDataFactory()
+    #reactor.callInThread(printQ, SDF)
+    reactor.listenTCP(port, SDF)
+    reactor.run()
 
 class ServerData(Protocol):
     '''
@@ -59,6 +66,12 @@ class ServerDataFactory(Factory):
         print("Server shutdown")
 
 
+def start_client(ip, port):
+    CDF = ClientDataFactory()
+    reactor.connectTCP(ip, port, CDF)
+    #reactor.callInThread(readKey, CDF)
+    reactor.run()
+        
 class ClientData(Protocol):
     '''
     Client protocol
