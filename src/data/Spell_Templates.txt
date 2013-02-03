@@ -298,7 +298,7 @@ resource(source, "AP", 9)
 inRange(source, target, 8)
 !onCooldown(source, "Burst")
 [RES]
-Combat.modifyResource(source, MP -12)
+Combat.modifyResource(source, "MP", -12)
 Combat.modifyresource(source, "AP", -9)
 Combat.applyCooldown(source, "Burst", 1)
 [HIT]
@@ -336,9 +336,9 @@ Combat.addStatus(source, "Identification", 5, 5)
 [/TAGS]
 [REQ]
 resource(source, "MP", 8)
-resource(source, AP 5)
+resource(source, "AP", 5)
 [RES]
-Combat.modifyResource(source, MP -8)
+Combat.modifyResource(source, "MP", -8)
 Combat.modifyresource(source, "AP", -5)
 [ACT]
 Combat.addStatus(source, "Hovering Shield", 5, applier=source, scalesWith="Spellpower", scaleFactor=0.008)
@@ -415,8 +415,7 @@ inRange(source, target, 6)
 Combat.modifyresource(source, "MP", -8)
 Combat.modifyresource(source, "AP", -10)
 [ACT]
-Combat.addStatus(target, "Elemental Boon", duration=Dice.scale(source.totalSpellpower, 6, 0.003, cap=7), 
-                 applier=source, scalesWith="Spellpower", scaleFactor=0.007)
+Combat.addStatus(target, "Elemental Boon", duration=Dice.scale(source.totalSpellpower, 6, 0.003, cap=7), applier=source, scalesWith="Spellpower", scaleFactor=0.007)
 
 [TAGS]
   [NAME: Torrent]
@@ -437,8 +436,7 @@ Combat.applyCooldown(source, "Torrent", 2)
 Terrain.getLineTargets(source.location, target.location, selectMonsters=True, selectFirstOnly=True)
 Combat.calcHit(source, target, "Magical")
 [ACT]
-Combat.modifyresource(target, "HP", 0 - Combat.calcDamage(source, target, min=10, max=35, element="Cold", 
-                      hitValue=hit, scalesWith="Spellpower", scaleFactor=0.014))
+Combat.modifyresource(target, "HP", 0 - Combat.calcDamage(source, target, min=10, max=35, element="Cold", hitValue=hit, scalesWith="Spellpower", scaleFactor=0.014))
 knockback(target, source.location, distance=5, didHit=(isHit(hit, "Normal Hit") and sizeCompare(target, "Huge", smallerThan=True)))
 
 [TAGS]
@@ -460,8 +458,7 @@ Combat.applyCooldown(source, "Lightning Bolt", 1)
 Terrain.getLineTargets(source.location, target.location, selectMonsters=True, selectFirstOnly=False)
 Combat.calcHit(source, targetSet, "Magical")
 [ACT]
-Combat.modifyresource(target, "HP", 0 - Combat.calcDamage(source, target, min=5, max=33, element="Electric", 
-                      hitValue=hit, scalesWith="Spellpower", partial=0.5, critical=1.3, scaleFactor=0.005))
+Combat.modifyresource(target, "HP", 0 - Combat.calcDamage(source, target, min=5, max=33, element="Electric", hitValue=hit, scalesWith="Spellpower", partial=0.5, critical=1.3, scaleFactor=0.005))
 					  
 [TAGS]
   [NAME: Suggest Cowardice]
@@ -557,8 +554,7 @@ inRange(source, target, 3)
 Combat.modifyresource(source, "MP", -12)
 Combat.modifyresource(source, "AP", -8)
 [ACT]
-Combat.addStatus(target, "Frost Weapon", duration=Dice.scale(source.totalSpellpower, 3, 0.03, cap=7), 
-                 min=2, max=5, applier=source, scalesWith="Spellpower", scaleFactor=0.019)
+Combat.addStatus(target, "Frost Weapon", duration=Dice.scale(source.totalSpellpower, 3, 0.03, cap=7), min=2, max=5, applier=source, scalesWith="Spellpower", scaleFactor=0.019)
 
 # Fighter Skills
 
@@ -744,8 +740,7 @@ Combat.movePlayer(source, target)
 Combat.calcHit(source, getMeleeFacingEnemy(source), "Physical")
 [ACT]
 Combat.basicAttack(source, getMeleeFacingEnemy(source), hit, overallDamageMod=1.2)
-Combat.modifyResource(enemy, HP, 0 - Combat.calcDamage(source, target, min=(source.totalDR * 0.4 * usingArmor("Heavy")),
-                      max=(source.totalDR * 0.4 * usingArmor("Heavy")), element="Bludgeoning", hitValue=hit))
+Combat.modifyResource(enemy, HP, 0 - Combat.calcDamage(source, target, min=(source.totalDR * 0.4 * usingArmor("Heavy")), max=(source.totalDR * 0.4 * usingArmor("Heavy")), element="Bludgeoning", hitValue=hit))
 
 # Ranger Abilities
 					  
@@ -780,9 +775,7 @@ Combat.modifyresource(source, "AP", -5)
 Combat.applyCooldown(source, "Shrapnel Trap", 1)
 [ACT]
 Terrain.removeTrap(source.location)
-Terrain.addTrap("Shrapnel Trap", source.location, minDamage=Dice.scale(source.totalCunning, 5, 0.014), 
-                maxDamage=Dice.scale(source.totalCunning, 12, 0.014), trapRating=Dice.scale(source.totalCunning, 13, 0.015),
-				applier=source) 
+Terrain.addTrap("Shrapnel Trap", source.location, minDamage=Dice.scale(source.totalCunning, 5, 0.014), maxDamage=Dice.scale(source.totalCunning, 12, 0.014), trapRating=Dice.scale(source.totalCunning, 13, 0.015),applier=source) 
 
 [TAGS]
   [NAME: Tunnel Vision]
@@ -877,8 +870,7 @@ Combat.modifyresource(source, "AP", -5)
 Combat.applyCooldown(source, "Boulder-Pit Trap", 1)
 [ACT]
 Terrain.removeTrap(source.location)
-Terrain.addTrap("Boulder-Pit Trap", location=source.location, minDamage=Dice.scale(source.totalCunning, 3, 0.02), 
-                maxDamage=Dice.scale(source.totalCunning, 8, 0.02), trapRating=Dice.scale(source.totalCunning, 25, 0.006), applier=source)
+Terrain.addTrap("Boulder-Pit Trap", location=source.location, minDamage=Dice.scale(source.totalCunning, 3, 0.02), maxDamage=Dice.scale(source.totalCunning, 8, 0.02), trapRating=Dice.scale(source.totalCunning, 25, 0.006), applier=source)
 
 [TAGS]
   [NAME: Defensive Slash]
@@ -1326,8 +1318,7 @@ Combat.calcHit(source, target, "Physical")
 [ACT]
 Combat.movePlayer(source, Terrain.getRandomAdjacentFreeSpace(target), instant=True)
 Combat.basicAttack(source, target, hit, overallDamageMod=2)
-Combat.basicAttack(source, Terrain.getAOETargets(source.location, radius=1, selectMonsters=True), 
-                    "Normal Hit", overallDamageMod=0.15, elementOverride="Bludgeoning", ignoreOnHitEffects=True)
+Combat.basicAttack(source, Terrain.getAOETargets(source.location, radius=1, selectMonsters=True), "Normal Hit", overallDamageMod=0.15, elementOverride="Bludgeoning", ignoreOnHitEffects=True)
 
 [TAGS]
   [NAME: Faster Jump Attack]
@@ -1350,8 +1341,7 @@ Combat.calcHit(source, target, "Physical")
 [ACT]
 Combat.movePlayer(source, Terrain.getRandomAdjacentFreeSpace(target), instant=True)
 Combat.basicAttack(source, target, hit, overallDamageMod=2)
-Combat.basicAttack(source, Terrain.getAOETargets(source.location, radius=1, selectMonsters=True), 
-                    "Normal Hit", overallDamageMod=0.15, elementOverride="Bludgeoning", ignoreOnHitEffects=True)
+Combat.basicAttack(source, Terrain.getAOETargets(source.location, radius=1, selectMonsters=True), "Normal Hit", overallDamageMod=0.15, elementOverride="Bludgeoning", ignoreOnHitEffects=True)
 	
 [TAGS]
   [NAME: Faster Jump Attack 2]
@@ -1374,8 +1364,7 @@ Combat.calcHit(source, target, "Physical")
 [ACT]
 Combat.movePlayer(source, Terrain.getRandomAdjacentFreeSpace(target), instant=True)
 Combat.basicAttack(source, target, hit, overallDamageMod=2)
-Combat.basicAttack(source, Terrain.getAOETargets(source.location, radius=1, selectMonsters=True), 
-                    "Normal Hit", overallDamageMod=0.15, elementOverride="Bludgeoning", ignoreOnHitEffects=True)
+Combat.basicAttack(source, Terrain.getAOETargets(source.location, radius=1, selectMonsters=True), "Normal Hit", overallDamageMod=0.15, elementOverride="Bludgeoning", ignoreOnHitEffects=True)
 	
 [TAGS]
   [NAME: Crushing Jump Attack]
@@ -1398,10 +1387,8 @@ Combat.calcHit(source, target, "Physical")
 [ACT]
 Combat.movePlayer(source, Terrain.getRandomAdjacentFreeSpace(target), instant=True)
 Combat.basicAttack(source, target, hit, overallDamageMod=2.5)
-Combat.basicAttack(source, Terrain.getAOETargets(source.location, radius=1, selectMonsters=True), 
-                    "Normal Hit", overallDamageMod=0.2, elementOverride="Bludgeoning", ignoreOnHitEffects=True)
-Combat.addStatus(target, "Stun", duration=1, chance=Dice.min(Dice.rollPresetChance(source, target, "Rare"), 
-                                                             Dice.chanceFromSize(target, [["Huge", 0]], 1))) 
+Combat.basicAttack(source, Terrain.getAOETargets(source.location, radius=1, selectMonsters=True), "Normal Hit", overallDamageMod=0.2, elementOverride="Bludgeoning", ignoreOnHitEffects=True)
+Combat.addStatus(target, "Stun", duration=1, chance=Dice.min(Dice.rollPresetChance(source, target, "Rare"), Dice.chanceFromSize(target, [["Huge", 0]], 1))) 
 
 [TAGS]
   [NAME: Restful Jump Attack]
@@ -1423,10 +1410,8 @@ Combat.calcHit(source, target, "Physical")
 [ACT]
 Combat.movePlayer(source, Terrain.getRandomAdjacentFreeSpace(target), instant=True)
 Combat.basicAttack(source, target, hit, overallDamageMod=2.5)
-Combat.basicAttack(source, Terrain.getAOETargets(source.location, radius=1, selectMonsters=True), 
-                    "Normal Hit", overallDamageMod=0.2, elementOverride="Bludgeoning", ignoreOnHitEffects=True)
-Combat.addStatus(target, "Stun", duration=1, chance=Dice.min(Dice.rollPresetChance(source, target, "Rare"), 
-                                                             Dice.chanceFromSize(target, [["Huge", 0]], 1))) 
+Combat.basicAttack(source, Terrain.getAOETargets(source.location, radius=1, selectMonsters=True), "Normal Hit", overallDamageMod=0.2, elementOverride="Bludgeoning", ignoreOnHitEffects=True)
+Combat.addStatus(target, "Stun", duration=1, chance=Dice.min(Dice.rollPresetChance(source, target, "Rare"), Dice.chanceFromSize(target, [["Huge", 0]], 1))) 
 Combat.addStatus(source, "Restful Jump Attack", duration=1)
 Combat.removeStatusOfType(source, "DR Debuff", removeAll=True)
 															 
@@ -1652,10 +1637,7 @@ Combat.applyCooldown(source, "Splash Magic", 2)
 Combat.calcHit(source, target, "Physical")
 [ACT]
 Combat.basicAttack(source, target, hit)
-Combat.modifyResource(Terrain.getAOETargets(target.location, radius=1, selectMonsters=True, includeCenter=False), HP, 
-                         (0 - Combat.calcDamage(source, Terrain.getAOETargets(target.location, 1, True, False), 
-						                        min=Dice.scale(source.totalCunning, 3, 0.33), max=0,
-					                            element=AbilityUtils.getSplashMagicAbilityElement(source), hitValue=hit)))						 
+Combat.modifyResource(Terrain.getAOETargets(target.location, radius=1, selectMonsters=True, includeCenter=False), HP, (0 - Combat.calcDamage(source, Terrain.getAOETargets(target.location, 1, True, False), min=Dice.scale(source.totalCunning, 3, 0.33), max=0,element=AbilityUtils.getSplashMagicAbilityElement(source), hitValue=hit)))						 
 
 [TAGS]
   [NAME: Rebound]
@@ -1722,9 +1704,7 @@ Combat.modifyresource(source, "AP", -5)
 Combat.applyCooldown(source, "Anarchist Shrapnel Trap", 1)
 [ACT]
 Terrain.removeTrap(source.location)
-Terrain.addTrap("Shrapnel Trap", target.location, minDamage=Dice.scale(source.totalCunning, 5, 0.014), 
-                maxDamage=Dice.scale(source.totalCunning, 12, 0.014), trapRating=Dice.scale(source.totalCunning, 13, 0.015),
-				applier=source) 
+Terrain.addTrap("Shrapnel Trap", target.location, minDamage=Dice.scale(source.totalCunning, 5, 0.014), maxDamage=Dice.scale(source.totalCunning, 12, 0.014), trapRating=Dice.scale(source.totalCunning, 13, 0.015),applier=source) 
 Terrain.detonateTrapChaos(target.location, source) 
 
 [TAGS]
@@ -1790,9 +1770,7 @@ Combat.modifyresource(source, "AP", -5)
 Combat.applyCooldown(source, "Explosive Trap", 2)
 [ACT]
 Terrain.removeTrap(target.location)
-Terrain.addTrap("Explosive Trap", target.location, minDamage=Dice.scale(source.totalCunning, 5, 0.01), 
-                         maxDamage=Dice.scale(source.totalCunning, 10, 0.01), trapRating=Dice.scale(source.totalCunning, 25, 0.01), 
-						 splashDamPercent=0.75, splashRadius=1)
+Terrain.addTrap("Explosive Trap", target.location, minDamage=Dice.scale(source.totalCunning, 5, 0.01), maxDamage=Dice.scale(source.totalCunning, 10, 0.01), trapRating=Dice.scale(source.totalCunning, 25, 0.01), splashDamPercent=0.75, splashRadius=1)
 Terrain.detonateTrapChaos(target.location, source, reduceDamage=False)
 
 [TAGS]
@@ -1810,8 +1788,7 @@ Combat.modifyresource(source, "AP", -5)
 Combat.applyCooldown(source, "Anarchist Boulder-Pit Trap", 1)
 [ACT]
 Terrain.removeTrap(source.location)
-Terrain.addTrap("Boulder-Pit Trap", location=source.location, minDamage=Dice.scale(source.totalCunning, 3, 0.02), 
-                maxDamage=Dice.scale(source.totalCunning, 8, 0.02), trapRating=Dice.scale(source.totalCunning, 25, 0.006), applier=source)
+Terrain.addTrap("Boulder-Pit Trap", location=source.location, minDamage=Dice.scale(source.totalCunning, 3, 0.02), maxDamage=Dice.scale(source.totalCunning, 8, 0.02), trapRating=Dice.scale(source.totalCunning, 25, 0.006), applier=source)
 Terrain.detonateTrapChaos(target.location, source)
 
 [TAGS]
@@ -1827,9 +1804,7 @@ resource(source, "AP", 10)
 Combat.modifyresource(source, "AP", -10)
 Combat.applyCooldown(source, "Grab Bag", 2)
 [ACT]
-Combat.modifyResource(Terrain.getAOETargets(source.location, radius=1, selectMonsters=True, includeCenter=False), HP, 
-                      0-Combat.calcDamage(source, Terrain.getAOETargets(source.location, 1, True, False), scale(source.totalCunning, 2, 0.01), scale(source.totalCunning, 20, 0.01),
-					                    element="Piercing", hitValue="Normal Hit"))
+Combat.modifyResource(Terrain.getAOETargets(source.location, radius=1, selectMonsters=True, includeCenter=False), HP, 0-Combat.calcDamage(source, Terrain.getAOETargets(source.location, 1, True, False), scale(source.totalCunning, 2, 0.01), scale(source.totalCunning, 20, 0.01),element="Piercing", hitValue="Normal Hit"))
 
 [TAGS]
   [NAME: Anarchist Tar Trap]
@@ -2034,8 +2009,7 @@ Combat.modifyresource(source, "AP", -5)
 Combat.applyCooldown(source, "Poison Thorn Trap", 1)
 [ACT]
 Terrain.removeTrap(source.location)
-Terrain.addTrap("Poison Thorn Trap", location=source.location, trapRating=Dice.scale(source.totalCunning, 18, 0.011), minDamage=5, maxDamage=10,
-                applier=source)  
+Terrain.addTrap("Poison Thorn Trap", location=source.location, trapRating=Dice.scale(source.totalCunning, 18, 0.011), minDamage=5, maxDamage=10,applier=source)  
 
 [TAGS]
   [NAME: Lethargic Shot]
@@ -2055,8 +2029,7 @@ Combat.basicAttack(source, target, hit, forceMod=1.1)
 [HIT]
 Combat.calcHit(source, target, "Poison", rating=Dice.scale(source.totalCunning, 25, 0.008))
 [ACT]
-Combat.addStatus(target, "Lethargic Shot", duration=3, chance=isHit(Combat.calcHit(source, target, "Poison", 
-                                                                                   rating=Dice.scale(source.totalCunning, 25, 0.008).isHit("Normal Hit"))))
+Combat.addStatus(target, "Lethargic Shot", duration=3, chance=isHit(Combat.calcHit(source, target, "Poison", rating=Dice.scale(source.totalCunning, 25, 0.008).isHit("Normal Hit"))))
 													
 # Tactician Abilities
 
@@ -2132,8 +2105,7 @@ resource(source, "AP", 5)
 Combat.modifyresource(source, "AP", -5)
 [ACT]
 Terrain.removeTrap(source.location)
-Terrain.addTrap("Magical Dampening Trap", location=source.location, magnitude=Dice.scale(source.totalSpellpower, 6, 0.014), 
-                trapRating=Dice.scale(source.totalCunning, 30, 0.008), applier=source)
+Terrain.addTrap("Magical Dampening Trap", location=source.location, magnitude=Dice.scale(source.totalSpellpower, 6, 0.014), trapRating=Dice.scale(source.totalCunning, 30, 0.008), applier=source)
 
 [TAGS]
   [NAME: Nearsighted Trap]
@@ -2283,8 +2255,7 @@ usingWeapon(source, "Sword") || usingWeapon(source, "Knife")
 Combat.modifyresource(source, "AP", -10)
 Combat.applyCooldown(source, "Bleeding Backstab", 2)
 [HIT]
-Combat.calcHit(source, target, "Physical", modifier=((5 + (4 * usingWeapon(source, "Sword"))) * !usingWeaponStyle(source, "Dual")), 
-               critMod=(50 - (usingWeapon(source, "Sword") * 25)))
+Combat.calcHit(source, target, "Physical", modifier=((5 + (4 * usingWeapon(source, "Sword"))) * !usingWeaponStyle(source, "Dual")), critMod=(50 - (usingWeapon(source, "Sword") * 25)))
 [ACT]
 Combat.basicAttack(source, target, hit, criticalDamageMod=(2 - (0.5 * usingWeapon(source, "Sword"))))
 Combat.addStatus(target, "Bleeding Backstab", duration=2, hitValue=hit)
@@ -2306,13 +2277,11 @@ usingWeapon(source, "Sword") || usingWeapon(source, "Knife")
 Combat.modifyresource(source, "AP", -10)
 Combat.applyCooldown(source, "Stunning Backstab", 2)
 [HIT]
-Combat.calcHit(source, target, "Physical", modifier=((5 + (4 * usingWeapon(source, "Sword"))) * !usingWeaponStyle(source, "Dual")), 
-               critMod=(50 - (usingWeapon(source, "Sword") * 25)))
+Combat.calcHit(source, target, "Physical", modifier=((5 + (4 * usingWeapon(source, "Sword"))) * !usingWeaponStyle(source, "Dual")), critMod=(50 - (usingWeapon(source, "Sword") * 25)))
 [ACT]
 Combat.basicAttack(source, target, hit, criticalDamageMod=(2 - (0.5 * usingWeapon(source, "Sword"))))
 Combat.addStatus(target, "Bleeding Backstab", duration=2, hitValue=hit)
-Combat.addStatus(target, "Stun", duration=1, hitValue=hit, 
-                 chance=Dice.max(Dice.rollPresetChance(source, target, "Occasional"), Dice.chanceFromSize(target, [["Small", 0.25]], 0)))
+Combat.addStatus(target, "Stun", duration=1, hitValue=hit, chance=Dice.max(Dice.rollPresetChance(source, target, "Occasional"), Dice.chanceFromSize(target, [["Small", 0.25]], 0)))
 
 [TAGS]
   [NAME: Rear Assault]
@@ -2385,8 +2354,7 @@ Combat.calcHit(source, target, "Physical", modifier=-4, critMod=(15 * Dice.max(h
 Combat.addStatus(source, "Stealthy Sudden Flurry", duration=1, chance=inStealth(source))
 Combat.basicAttack(source, target, hit, overallDamageMod=(0.85 + 0.4 * hasStatus(source, "Sudden Flurry")))
 Combat.addStatus(source, "Sudden Flurry", duration=1)
-Combat.addStatus(target, "Sudden Flurry Surprise", duration=1, chance=Dice.chanceFromSize(target, [["Small", 0.85], ["Huge", 0.05]], 
-                                                                                        defaultChance=Dice.rollPresetChance(source, target, "Occasional")))
+Combat.addStatus(target, "Sudden Flurry Surprise", duration=1, chance=Dice.chanceFromSize(target, [["Small", 0.85], ["Huge", 0.05]], defaultChance=Dice.rollPresetChance(source, target, "Occasional")))
 
 # Assassin Abilities
 
@@ -2769,7 +2737,6 @@ Combat.calcHit(source, target, "Physical")
 [ACT]
 Combat.basicAttack(source, target, hit)
 Combat.modifyResource(source, "MP", 8)
-# Recovers 3 times the mana it otherwise would; the 1x is still supplied via the passive ability.
 
 [TAGS]
   [NAME: Electric Threading]

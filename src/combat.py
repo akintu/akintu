@@ -682,10 +682,22 @@ class Combat(object):
             elif remaining == current[1]:
                 target.HPBufferList.remove(current)
                 return
-        target.totalHP -= remaining
+        Combat.modifyResource(target, "HP", remaining)
         # Plenty of listeners here TODO
         
-            
+    @staticmethod
+    def healTarget(source, target, amount):
+        """Used to actually perform healing to the target from the source.
+        Cannot 'overheal' or refill an HP buffer.
+        Inputs:
+          source -- Person; the person performing the healer
+          target -- Person; the person receiving the healing, may be the same as the source.
+          amount -- int; the amount of HP to restore
+        Outputs:
+          None"""
+        total = round(amount * (1 + source.healingBonus/100))
+        # Listeners here? TODO
+        Combat.modifyResource(target, "HP", total)
         
     
     
