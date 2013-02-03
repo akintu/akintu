@@ -28,8 +28,8 @@ class PassiveAbility(object):
             'level' : 2,
             'type' : 'dynamic',
             'action' : PassiveAbility.applyMightyWeapon,
-            'onString' : 'Outgoing Melee Attack',
-            'offString' : 'Outgoing Melee Attack Complete'
+            'onStringList' : ['Outgoing Melee Attack'],
+            'offStringList' : ['Outgoing Melee Attack Complete']
             }
         },
         {'Mighty Weapon':
@@ -38,8 +38,8 @@ class PassiveAbility(object):
             'level' : 2,
             'type' : 'dynamic',
             'action' : PassiveAbility.applyTwoWeaponTargeting,
-            'onString' : 'Outgoing Melee Attack',
-            'offString' : 'Outgoing Melee Attack Complete'
+            'onStringList' : ['Outgoing Melee Attack'],
+            'offStringList' : ['Outgoing Melee Attack Complete']
             }
         },
         
@@ -52,8 +52,8 @@ class PassiveAbility(object):
             'level' : 1,
             'type' : 'dynamic',
             'action' : PassiveAbility.applyCloseRangedMagic,
-            'onString' : 'Outgoing Spell Cast',
-            'offString' : 'Outgoing Spell Cast Complete'
+            'onStringList' : ['Outgoing Spell Cast'],
+            'offStringList' : ['Outgoing Spell Cast Complete']
             }
         },
         {'Mana Attack':
@@ -62,8 +62,8 @@ class PassiveAbility(object):
             'level' : 1,
             'type' : 'dynamic',
             'action' : PassiveAbility.applyManaAttack,
-            'onString' : 'Outgoing Melee Attack Hit',
-            'offString' : None
+            'onStringList' : ['Outgoing Melee Attack Hit'],
+            'offStringList' : []
             }
         },
         {'Dire Mana':
@@ -72,8 +72,8 @@ class PassiveAbility(object):
             'level' : 1,
             'type' : 'dynamic',
             'action' : PassiveAbility.applyDireMana,
-            'onString' : Incoming Damage,
-            'offString' : None
+            'onStringList' : ['Incoming Damage'],
+            'offStringList' : []
             }
         },
         {'Mystical Accuracy':
@@ -90,8 +90,8 @@ class PassiveAbility(object):
             'level' : 1,
             'type' : 'dynamic',
             'action' : PassiveAbility.applyMysticalShieldUse,
-            'onString' : 'Incoming Physical Attack',
-            'offString' : 'Incoming Physical Attack Complete'
+            'onStringList' : ['Incoming Melee Attack', 'Incoming Ranged Attack'],
+            'offStringList' : ['Incoming Melee Attack Complete', 'Incoming Ranged Attack Complete']
             }
         },
         {'Rapid Retreat':
@@ -100,8 +100,8 @@ class PassiveAbility(object):
             'level' : 2,
             'type' : 'dynamic',
             'action' : PassiveAbility.applyRapidRetreat,
-            'onString' : 'Starting Player Turn',
-            'offString' : 'Ending Player Turn'
+            'onStringList' : ['Starting Player Turn'],
+            'offStringList' : ['Ending Player Turn']
             }
         }
         
@@ -116,17 +116,17 @@ class PassiveAbility(object):
         self.level = content['level']        
         self.type = content['type']
         self.action = content['action']
-        self.onString = None
-        self.offString = None
+        self.onStringList = None
+        self.offStringList = None
         if self.type == 'dynamic':
-            self.onString = content['onString']
-            self.offString = content['offString']
+            self.onStringList = content['onStringList']
+            self.offStringList = content['offStringList']
             self.registerListener()
         if self.type == 'static':
             self.action(self.owner)
         
     def registerListener(self):
-        newListener = listener.Listener(self.owner, self.onString, self.action, self.offString)
+        newListener = listener.Listener(self.owner, self.onStringList, self.action, self.offStringList)
         owner.listeners.append(newListener)
         
     @staticmethod
@@ -138,7 +138,7 @@ class PassiveAbility(object):
         target.baseMagicResist -= 3
         
     @staticmethod
-    def applyMightyWeapon(target, reverse=False):
+    def applyMightyWeapon(target, reverse=False, other=None):
         if not reverse:
             if target.usingWeaponStyle("Two-Handed"):
                 target.baseMight += 6
@@ -147,7 +147,7 @@ class PassiveAbility(object):
                 target.baseMight -= 6
     
     @staticmethod
-    def applyTwoWeaponTargeting(target, reverse=False):
+    def applyTwoWeaponTargeting(target, reverse=False, other=None):
         if not reverse:
             if target.usingWeaponStyle("Dual"):
                 target.baseMeleeAccuracy += 2
@@ -156,7 +156,7 @@ class PassiveAbility(object):
                 target.baseMeleeAccuracy -= 2
                 
     @staticmethod
-    def applyCloseRangedMagic(target, spell, reverse=False):
+    def applyCloseRangedMagic(target, reverse=False, spell):
         if not reverse:
             if spell.range < 4:
                 target.baseSpellpower += 7
@@ -165,7 +165,7 @@ class PassiveAbility(object):
                 target.baseSpellpower -= 7
                 
     @staticmethod
-    def applyManaAttack(target, reverse=False):
+    def applyManaAttack(target, reverse=False, other=None):
         if not reverse:
             target.MP += 9
         else:
@@ -173,7 +173,7 @@ class PassiveAbility(object):
             
     #TODO: DamageBroadcast
     @staticmethod
-    def applyDireMana(target, damageAmount, reverse=False):
+    def applyDireMana(target, reverse=False, damageAmount=0):
         if not reverse:
             if damageAmount >= target.maxHP * 0.15:
                 target.MP += target.totalMP * 0.10
@@ -185,7 +185,7 @@ class PassiveAbility(object):
         target.baseMeleeAccuracy += 3
             
     @staticmethod
-    def applyMysticalShieldUse(target, reverse=False):
+    def applyMysticalShieldUse(target, reverse=False, other=None):
         if not reverse:
             if target.usingShield("Any"):
                 target.baseDR += 3
@@ -194,7 +194,7 @@ class PassiveAbility(object):
                 target.baseDR -= 3
                 
     @staticmethod
-    def applyRapidRetreat(target, reverse=False):
+    def applyRapidRetreat(target, reverse=False, other=None):
         if not reverse:
             if target.HP < target.totalHP * 0.20:
                 target.overrideMovementAPCost = 2
