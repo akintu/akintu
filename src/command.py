@@ -8,26 +8,23 @@ def enum(**enums):
 InventoryActions = enum(PICKUP = 1, PUTDOWN = 2)
 
 class Command:
-    def __init__(self, index, location, action):
-        self.index = index
-        self.location = location
-        self.action = action
-        
-class Action(object):
-    def __init__(self):
+    def __init__(self):#, hash, location, action):
         pass
+        # self.hash = index
+        # self.location = location
+        # self.action = action
         
-class MoveAction(Action):
-    def __init__(self, dest):
-        super(MoveAction,self).__init__()
+class MovePlayer(Command):
+    def __init__(self, playerport, dest):
+        #super(MovePlayer,self).__init__()
         self.dest = dest
     
-class InventoryAction(Action):
+class InventoryAction(Command):
     def __init__(self, action, item_hash):
         self.action = action
         self.item_hash = item_hash
         
-class AbilityAction(Action):
+class AbilityAction(Command):
     def __init__(self, ability, targetLocation):
         self.ability = ability
         self.targetLocation = targetLocation

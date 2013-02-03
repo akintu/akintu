@@ -57,6 +57,7 @@ class ClientData(Protocol):
     def connectionMade(self):
         self.factory.server = self
         print("Connected to server on " + str(self.transport.getPeer()))
+        self.factory.port = self.transport.getPeer().port
         pass #Send avatar creation command
 
     def connectionLost(self, reason):

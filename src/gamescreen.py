@@ -64,10 +64,10 @@ class GameScreen(object):
         pygame.display.update()
 
 
-    def add_player(self, playerid, player):
-        self.players[playerid] = PlayerSprite("test/knight.png", self.pane.startpoint)
+    def add_player(self, playerid, player, position):
+        self.players[playerid] = PlayerSprite("test/knight.png", position)
         self.playersgroup.add(self.players[playerid])
-        return self.pane.startpoint
+        #return self.pane.startpoint
 
 
     def remove_player(self, playerid):
@@ -105,4 +105,4 @@ class PlayerSprite(pygame.sprite.DirtySprite):
     def update(self):
         if self.current_coord != self.newest_coord:
             self.current_coord = self.newest_coord
-            self.rect.topleft = [x*TILE_SIZE for x in self.newest_coord]
+            self.rect.topleft = [x*TILE_SIZE for x in self.newest_coord.tile]

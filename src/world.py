@@ -122,13 +122,15 @@ class Pane(object):
         tiles: Dictionary of coordinate tuples (e.g. (0,1)) to tile objects
     '''
 
-    def __init__(self, seed, location, tiles, startpoint = None):
+    def __init__(self, seed, location, tiles):#, startpoint = None):
+        self.seed = seed
         self.tiles = tiles
+        self.location = location
 
-        if not startpoint:
-            self.startpoint = (16, 10)
-        else:
-            self.startpoint = startpoint
+        # if not startpoint:
+            # self.startpoint = (16, 10)
+        # else:
+            # self.startpoint = startpoint
             
 class Tile(object):
     def __init__(self, image = grassimage, passable = True):
