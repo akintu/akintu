@@ -42,7 +42,7 @@ class Game(object):
         self.player = ["Colton", location]
         
         if self.server:
-            LoopingCall(self.server_loop).start(.0001)
+            LoopingCall(self.server_loop).start(0)
         LoopingCall(self.game_loop).start(1.0 / DESIRED_FPS)
         
         reactor.run()
