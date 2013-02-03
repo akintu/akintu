@@ -100,8 +100,7 @@ Combat.modifyresource(source, "AP", -7)
 [HIT]
 Combat.calcHit(source, target, "Magical")
 [ACT]
-Combat.modifyresource(target, "HP", 0-Combat.calcDamage(source, target, min=2, max=9, element="Fire", 
-                      hitValue=hit, critical=1.2, partial=0.5, scalesWith="Spellpower", scaleFactor=0.05))
+Combat.modifyresource(target, "HP", 0-Combat.calcDamage(source, target, min=2, max=9, element="Fire", hitValue=hit, critical=1.2, partial=0.5, scalesWith="Spellpower", scaleFactor=0.05))
 
 [TAGS]
   [NAME: Chill]
@@ -119,8 +118,7 @@ Combat.modifyresource(source, "AP", -6)
 [HIT]
 Combat.calcHit(source, target, "Magical")
 [ACT]
-Combat.modifyresource(target, "HP", 0 - Combat.calcDamage(source, target, min=1, max=12, element="Cold", 
-                      hitValue=hit, scalesWith="Spellpower", scaleFactor=0.01))
+Combat.modifyresource(target, "HP", 0 - Combat.calcDamage(source, target, min=1, max=12, element="Cold", hitValue=hit, scalesWith="Spellpower", scaleFactor=0.01))
 Combat.addStatus(target, "Chill", duration=2, magnitude=Dice.scale(source.totalSpellpower, 5, 0.012), hitValue=hit, chance=Dice.rollPresetChance(source, target, "Frequent"))
 
 [TAGS]
@@ -141,8 +139,7 @@ Combat.applyCooldown(source, "Shock", 1)
 [HIT]
 Combat.calcHit(source, target, "Magical")
 [ACT]
-Combat.modifyresource(target, "HP", 0 - Combat.calcDamage(source, target, min=15, max=22, element="Electric", 
-                      hitValue=hit, scalesWith="Spellpower", scaleFactor=0.014))
+Combat.modifyresource(target, "HP", 0 - Combat.calcDamage(source, target, min=15, max=22, element="Electric", hitValue=hit, scalesWith="Spellpower", scaleFactor=0.014))
 
 [TAGS]
   [NAME: Suggest Laziness]
@@ -307,14 +304,12 @@ Combat.applyCooldown(source, "Burst", 1)
 [HIT]
 Combat.calcHit(source, Terrain.getAOETargets(target, radius=1, selectMonsters=True, includeCenter=False), "Magical")
 [ACT]
-Combat.modifyresource(target, "HP", 0 - Combat.calcDamage(source, target, min=5, max=6, element="Arcane", 
-                      hitValue=hit, scalesWith="Spellpower", scaleFactor=0.005))
+Combat.modifyresource(target, "HP", 0 - Combat.calcDamage(source, target, min=5, max=6, element="Arcane", hitValue=hit, scalesWith="Spellpower", scaleFactor=0.005))
 Combat.knockback(Terrain.getAOETargets(target, radius=1, selectMonsters=True, includeCenter=False), target.location, distance=1)
 [HIT]
 Combat.calcHit(source, target, "Magical")
 [ACT]
-Combat.modifyresource(target, "HP", 0 - Combat.calcDamage(source, target, min=10, max=12, element="Arcane", 
-                      hitValue=hit, scalesWith="Spellpower", scaleFactor=0.005))
+Combat.modifyresource(target, "HP", 0 - Combat.calcDamage(source, target, min=10, max=12, element="Arcane", hitValue=hit, scalesWith="Spellpower", scaleFactor=0.005))
 
 [TAGS]
   [NAME: Identification]
@@ -323,7 +318,6 @@ Combat.modifyresource(target, "HP", 0 - Combat.calcDamage(source, target, min=10
   [SPELL_SCHOOL: Mystic]
   [TARGET: None]
 [/TAGS]
-# Needs out of combat use...
 [REQ]
 resource(source, "MP", 5)
 resource(source, "AP", 5)
