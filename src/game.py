@@ -67,14 +67,22 @@ class Game(object):
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     reactor.stop()
-                elif event.key == K_LEFT:
-                    self.move_player(4, 1)#-1, 0)
-                elif event.key == K_RIGHT:
-                    self.move_player(6, 1)#1, 0)
-                elif event.key == K_UP:
-                    self.move_player(8, 1)#0, -1)
-                elif event.key == K_DOWN:
-                    self.move_player(2, 1)#0, 1)
+                elif event.key in [K_LEFT, K_KP4, K_h]:
+                    self.move_player(4, 1)
+                elif event.key in [K_RIGHT, K_KP6, K_l]:
+                    self.move_player(6, 1)
+                elif event.key in [K_UP, K_KP8, K_k]:
+                    self.move_player(8, 1)
+                elif event.key in [K_DOWN, K_KP2, K_j]:
+                    self.move_player(2, 1)
+                elif event.key in [K_KP7, K_y]: #UP LEFT
+                    self.move_player(7, 1)
+                elif event.key in[K_KP9, K_u]: #UP RIGHT
+                    self.move_player(9, 1)
+                elif event.key in [K_KP3, K_n]: #DOWN RIGHT
+                    self.move_player(3, 1)
+                elif event.key in [K_KP1, K_b]: #DOWN LEFT
+                    self.move_player(1, 1)
         self.screen.update()
 
     def move_player(self, direction, distance):
@@ -99,7 +107,7 @@ class Game(object):
         return True
 
     def switch_panes(self, location):
-        self.pane, imagedict = self.world.get_pane(location.pane)#, location.tile)
+        self.pane, imagedict = self.world.get_pane(location.pane)
 
         self.screen.set_pane(self.pane, imagedict)
     
