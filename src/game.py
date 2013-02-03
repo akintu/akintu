@@ -58,6 +58,7 @@ class Game(object):
         #Send Reply
 
     def game_loop(self):
+        clock.tick()
         fps = clock.get_fps()
         self.screen.set_fps(fps)
         pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])

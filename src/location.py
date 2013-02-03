@@ -8,6 +8,10 @@ class Location(object):
         self.pane = pane
         self.tile = tile
         
+    # So it turns out __repr__ is like toString()
+    def __repr__(self):
+        return "(%s, %s)" % (self.pane, self.tile)
+        
     def move(self, direction, distance):
         '''
         Direction is number based (with diagonals)

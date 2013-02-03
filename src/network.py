@@ -29,10 +29,7 @@ class ServerData(Protocol):
 
     def dataReceived(self, data):
         data = cPickle.loads(data)
-        if isinstance(data, MovePlayer):
-            print(self.port, data.dest.pane, data.dest.tile)
-        else:
-            print(self.port, data)
+        print(self.port, data)
         self.factory.queue.put((self.port, data))
 
 class ServerDataFactory(Factory):

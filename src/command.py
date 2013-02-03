@@ -17,7 +17,11 @@ class Command:
 class MovePlayer(Command):
     def __init__(self, playerport, dest):
         #super(MovePlayer,self).__init__()
+        self.playerport = playerport
         self.dest = dest
+        
+    def __repr__(self):
+        return "(%s, %s)" % (self.playerport, self.dest)
     
 class InventoryAction(Command):
     def __init__(self, action, item_hash):
