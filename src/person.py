@@ -939,7 +939,9 @@ class Person(en.Entity):
         """
         float -- The total Force multiplier used with Might to determine used might.
         """
-        return (self._statusForce * self._equipmentForce / 100)
+        return (self._statusForce/100 + self._equipmentForce / 100)
+        
+    # TODO: Verify that force is not being treated as a float...
         
     @property
     def equipmentForce(self):

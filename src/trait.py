@@ -20,7 +20,7 @@ class Trait(object):
             'type' : 'dynamic',
             'action' : Trait.applyPreparation,
             'onStringList' : ['Starting Player Turn'],
-            'offStringList' : ['Outgoing Physical Attack Complete']
+            'offStringList' : ['Outgoing Melee Attack Complete', 'Outgoing Ranged Attack Complete']
             }
         },
         {'Tank':
@@ -28,8 +28,8 @@ class Trait(object):
             'class' : 'Fighter',
             'type' : 'dynamic',
             'action' : Trait.applyTank,
-            'onStringList' : ['Incoming Physical Attack'],
-            'offStringList' : ['Incoming Physical Attack Complete']
+            'onStringList' : ['Incoming Melee Attack', 'Incoming Ranged Attack'],
+            'offStringList' : ['Incoming Melee Attack Complete', 'Incoming Ranged Attack Complete']
             }
         },
         {'Fencer':
@@ -49,11 +49,42 @@ class Trait(object):
             'onStringList' : ['Incoming Melee Attack', 'Incoming Ranged Attack'],
             'offStringList' : ['Incoming Melee Attack Complete', 'Incoming Ranged Attack Complete']
             }
+        },
+        {'Bully':
+            {
+            'class' : 'Fighter',
+            'type' : 'dynamic',
+            'action' : Trait.applyBully,
+            'onStringList' : ['Outgoing Melee Attack', 'Outgoing Ranged Attack'],
+            'offStringList' : ['Outgoing Melee Attack Complete', 'Outgoing Ranged Attack Complete']
+            }
+        },
+        {'Boldness':
+            {
+            'class' : 'Fighter',
+            'type' : 'dynamic',
+            'action' : Trait.applyBoldness,
+            'onStringList' : ['Outgoing Melee Attack', 'Outgoing Ranged Attack'],
+            'offStringList' : ['Outoing Melee Attack Complete', 'Outgoing Ranged Attack Complete']
+            }
+        },
+        {'Well-Traveled':
+            {
+            'class' : 'Fighter',
+            'type' : 'static',
+            'action' : Trait.applyWellTraveled,
+            }
+        },
+        {'Hammer and Anvil':
+            {
+            'class' : 'Fighter',
+            'type' : 'dynamic',
+            'action' : Trait.applyHammerAndAnvil,
+            'onStringList' : ['Outgoing Melee Attack'],
+            'offStringList' : ['Outgoing Melee Attack Complete']
+            }
         }
     }
-
-# TODO: Make sure broadcasts broadcast with multiple messages. (Such as incoming melee attack as well as incoming any attack.)
-    
 
     def __init__(self, name, owner):
 	    self.name = name
@@ -62,13 +93,16 @@ class Trait(object):
         self.requiredClass = content['class']    
         self.type = content['type']
         self.action = content['action']
+        self.rank = 1
         self.onStringList = None
         self.offStringList = None
         if self.type == 'dynamic':
             self.onStringList = content['onString']
             self.offStringList = content['offString']
             self.registerListener()
-        self.rank = 1
+        else: 
+            self.action(self.owner)
+
         
     def advanceTier(self):
         if self.rank == 4:
@@ -229,4 +263,138 @@ class Trait(object):
                 target.knockbackResistance -= 100
                 target.statusRangedDodge -= 4            
          
+    @staticmethod
+    def applyBully(target, reverse=False, victim=None):
+        if not target.usingWeaponStyle("Two-Handed") or victim.size == "Large" or victim.size == "Huge":
+            return
+        tRank = Trait.getTraitRank(target, "Bully")
+        if not reverse:
+            if tRank == 1:
+                target.statusForce += 5
+                target.statusMeleeAccuracy += 2
+                target.statusRangedAccuracy += 2
+                target.statusCriticalChance += 0.5
+            elif tRank == 2:
+                target.statusForce += 10
+                target.statusMeleeAccuracy += 3
+                target.statusRangedAccuracy += 3
+                target.statusCriticalChance += 1
+            elif tRank == 3:
+                target.statusForce += 15
+                target.statusMeleeAccuracy += 4
+                target.statusRangedAccuracy += 4
+                target.statusCriticalChance += 1.5
+            elif tRank == 4:
+                target.statusForce += 25
+                target.statusMeleeAccuracy += 5
+                target.statusRangedAccuracy += 5
+                target.statusCriticalChance += 2
+        else:
+            if tRank == 1:
+                target.statusForce -= 5
+                target.statusMeleeAccuracy -= 2
+                target.statusRangedAccuracy -= 2
+                target.statusCriticalChance -= 0.5
+            elif tRank == 2:
+                target.statusForce -= 10
+                target.statusMeleeAccuracy -= 3
+                target.statusRangedAccuracy -= 3
+                target.statusCriticalChance -= 1
+            elif tRank == 3:
+                target.statusForce -= 15
+                target.statusMeleeAccuracy -= 4
+                target.statusRangedAccuracy -= 4
+                target.statusCriticalChance -= 1.5
+            elif tRank == 4:
+                target.statusForce -= 25
+                target.statusMeleeAccuracy -= 5
+                target.statusRangedAccuracy -= 5
+                target.statusCriticalChance -= 2        
+                
+    @staticmethod
+    def applyBoldness(target, reverse=False, victim=None):
+        if victim.size == "Small" or victim.size == "Medium":
+            return
+        tRank = Trait.getTraitRank(target, "Boldness")
+        if not reverse:
+            if victim.size == "Large":
+                if tRank == 1:
+                    target.statusForce += 5
+                if tRank == 2:
+                    target.statusForce += 10
+                if tRank == 3:
+                    target.statusForce += 15
+                if tRank == 4:
+                    target.statusForce += 20
+            elif victim.size == "Huge":
+                if tRank == 1:
+                    target.statusForce += 15
+                if tRank == 2:
+                    target.statusForce += 30
+                if tRank == 3:
+                    target.statusForce += 45
+                if tRank == 4:
+                    target.statusForce += 60
+        else:
+            if victim.size == "Large":
+                if tRank == 1:
+                    target.statusForce -= 5
+                if tRank == 2:
+                    target.statusForce -= 10
+                if tRank == 3:
+                    target.statusForce -= 15
+                if tRank == 4:
+                    target.statusForce -= 20
+            elif victim.size == "Huge":
+                if tRank == 1:
+                    target.statusForce -= 15
+                if tRank == 2:
+                    target.statusForce -= 30
+                if tRank == 3:
+                    target.statusForce -= 45
+                if tRank == 4:
+                    target.statusForce -= 60        
     
+    @staticmethod    
+    def applyWellTraveled(target):
+        tRank = Trait.getTraitRank(target, "Well-Traveled")
+        if tRank == 1:
+            target._baseInventoryCapacity += 15
+            target.baseFireResistance += 1
+            target.baseColdResistance += 1
+        if tRank == 2:
+            target._baseInventoryCapacity += 15
+            target.baseFireResistance += 1
+            target.baseColdResistance += 1
+        if tRank == 3:
+            target._baseInventoryCapacity += 15
+            target.baseFireResistance += 1
+            target.baseColdResistance += 1
+        if tRank == 4:
+            target._baseInventoryCapacity += 25
+            target.baseFireResistance += 2
+            target.baseColdResistance += 2            
+        
+    @staticmethod
+    def applyHammerAndAnvil(target, reverse=False, victim=None):
+        # TODO: if target has back against wall...
+        tRank = Trait.getTraitRank(target, "Hammer and Anvil")
+        if not reverse: 
+            if tRank == 1:
+                target.baseOverallDamageBonus += 5
+            elif tRank == 2:
+                target.baseOverallDamageBonus += 10
+            elif tRank == 3:
+                target.baseOverallDamageBonus += 15
+            elif tRank == 4:
+                target.baseOverallDamageBonus += 20
+        else:
+            if tRank == 1:
+                target.baseOverallDamageBonus -= 5
+            elif tRank == 2:
+                target.baseOverallDamageBonus -= 10
+            elif tRank == 3:
+                target.baseOverallDamageBonus -= 15
+            elif tRank == 4:
+                target.baseOverallDamageBonus -= 20
+                
