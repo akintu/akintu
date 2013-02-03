@@ -99,7 +99,7 @@ class PlayerSprite(pygame.sprite.DirtySprite):
         self.rect = self.image.get_rect()
         self.current_coord = None
         self.newest_coord = startpoint
-        self.rect.topleft = [x*TILE_SIZE for x in startpoint]
+        self.rect.topleft = [x*TILE_SIZE for x in startpoint.tile]
 
 
     def update(self):

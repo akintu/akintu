@@ -38,10 +38,11 @@ class Game(object):
         
         location = Location((0,0), (PANE_X/2, PANE_Y/2))
         self.switch_panes(location)
-        position = self.screen.add_player("Colton", None, location.tile)
+        position = self.screen.add_player("Colton", None, location)
         self.player = ["Colton", location]
         
-        LoopingCall(self.server_loop).start(.0001)
+        if self.server:
+            LoopingCall(self.server_loop).start(.0001)
         LoopingCall(self.game_loop).start(1.0 / DESIRED_FPS)
         
         reactor.run()
@@ -49,8 +50,8 @@ class Game(object):
         
     def server_loop(self):
         #Check queue
-        while not SDF.queue.empty():
-            command = SDF.queue.get()
+        while not self.SDF.queue.empty():
+            command = self.SDF.queue.get()
             
         #Verify command requests
         
@@ -70,13 +71,10 @@ class Game(object):
                     self.move_player(4, 1)#-1, 0)
                 elif event.key == K_RIGHT:
                     self.move_player(6, 1)#1, 0)
-                    self.CDF.send("right")
                 elif event.key == K_UP:
                     self.move_player(8, 1)#0, -1)
-                    self.CDF.send("up")
                 elif event.key == K_DOWN:
                     self.move_player(2, 1)#0, 1)
-                    self.CDF.send("down")
         self.screen.update()
 
     def move_player(self, direction, distance):

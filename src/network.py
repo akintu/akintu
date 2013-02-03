@@ -9,6 +9,7 @@ from twisted.internet.task import LoopingCall
 import Queue
 import cPickle
 import sys
+from command import *
 from pprint import pprint
 
 class ServerData(Protocol):
@@ -29,6 +30,8 @@ class ServerData(Protocol):
     def dataReceived(self, data):
         data = cPickle.loads(data)
         print(self.port, data)
+        if isinstance(data, MovePlayer):
+            print(self.port, data.dest.pane, data.dest.tile)
         self.factory.queue.put((self.port, data))
 
 class ServerDataFactory(Factory):
