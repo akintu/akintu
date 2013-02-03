@@ -24,6 +24,8 @@ class AttackBroadcast(Brodcast):
             self.message += "in range " + str(self.inRange) + " "
         if self.suffix:
             self.message += self.suffix
+            
+        self.otherPerson = argDict['otherPerson']
     
 class SpellBroadcast(Broadcast):
     def __init__(self, argDict):
@@ -31,10 +33,10 @@ class SpellBroadcast(Broadcast):
         
         self.direction = argDict['direction']
         self.suffix = argDict['suffix']
-        self.spell = argDict['spell']
-        
+
         self.message = (self.direction + " Spell Cast"
         if self.suffix:
             self.message += " " + self.suffix
         
+        self.spell = argDict['spell']
         

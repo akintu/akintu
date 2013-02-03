@@ -122,6 +122,8 @@ class PassiveAbility(object):
             self.onString = content['onString']
             self.offString = content['offString']
             self.registerListener()
+        if self.type == 'static':
+            self.action(self.owner)
         
     def registerListener(self):
         newListener = listener.Listener(self.owner, self.onString, self.action, self.offString)

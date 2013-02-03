@@ -173,7 +173,6 @@ class EquippedItems(object):
     def equippedNeck(self):
         return self._allGear['Neck']
         
-    # TODO: Consider moving this to the PlayerCharacter class.
     @property
     def totalArmorGrade(self):
         ag = 0
@@ -189,7 +188,18 @@ class EquippedItems(object):
             ag += self.allGear['Feet'].armorGrade
         return ag
         
-    
+    @property
+    def armorLevel(self):
+        grade = self.totalArmorGrade()
+        if grade == 0:
+            return "Robes"
+        if 0 < grade and grade <= 8:
+            return "Light"
+        if 8 < grade and grade <= 20:
+            return "Medium"
+        if 20 < grade:
+            return "Heavy"
+            
         
         
         

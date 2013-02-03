@@ -131,7 +131,7 @@ class PlayerCharacter(p.Person):
         # --- Other ---
         # self._abilityAPModsList [["AbilityName", -2], [...]]
         # self._spellMPModsList [["SpellName", -1], [...]]
-        self.knockbackResistance = 0
+        self.knockbackResistance = 0 # Amount above 100 is treated as 100.
         
         # --- Thief classes ---
         # self._stealthBreakMaxOverride Default 100
@@ -202,6 +202,10 @@ class PlayerCharacter(p.Person):
         self.traits = []
         
         self.listeners = []
+        
+        self.attacksPerformed = [0,0] 
+        # TODO: Need to update attacksPerformed each turn.  The previous turn's number of attacks is in position 0, this turn's
+        # in position 1.  Need to also shift those at the end of each turn...        
         
     
     def gainLevelUp(self):
