@@ -14,9 +14,9 @@ class Command:
         # self.location = location
         # self.action = action
         
-class MovePlayer(Command):
+class MovePerson(Command):
     def __init__(self, playerport, dest):
-        #super(MovePlayer,self).__init__()
+        #super(MovePerson,self).__init__()
         self.playerport = playerport
         self.dest = dest
         

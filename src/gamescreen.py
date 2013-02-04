@@ -21,8 +21,8 @@ class GameScreen(object):
         self.background = pygame.Surface((1024, 640))
         self.world = dict()
         self.images = dict()
-        self.players = dict()
-        self.playersgroup = pygame.sprite.RenderUpdates()
+        self.persons = dict()
+        self.personsgroup = pygame.sprite.RenderUpdates()
         for i,j in [(i, j) for i in range(PANE_X) for j in range(PANE_Y)]:
             self.world[(i, j)] = None
         pygame.display.flip()
@@ -64,26 +64,26 @@ class GameScreen(object):
         pygame.display.update()
 
 
-    def add_player(self, playerid, player, position):
-        self.players[playerid] = PlayerSprite("test/knight.png", position)
-        self.playersgroup.add(self.players[playerid])
+    def add_person(self, personid, person, position):
+        self.persons[personid] = PersonSprite("test/knight.png", position)
+        self.personsgroup.add(self.persons[personid])
         #return self.pane.startpoint
 
 
-    def remove_player(self, playerid):
-        self.playersgroup.remove(self.players[playerid])
-        self.players.pop(playerid)
+    def remove_person(self, personid):
+        self.personsgroup.remove(self.persons[personid])
+        self.persons.pop(personid)
 
 
-    def update_player(self, playerid, location):
-        self.players[playerid].newest_coord = location
+    def update_person(self, personid, location):
+        self.persons[personid].newest_coord = location
 
 
     def update(self):
-        self.playersgroup.update()
-        rectlist = self.playersgroup.draw(self.screen)
+        self.personsgroup.update()
+        rectlist = self.personsgroup.draw(self.screen)
         pygame.display.update(rectlist)
-        self.playersgroup.clear(self.screen, self.background)
+        self.personsgroup.clear(self.screen, self.background)
 
 
     def set_fps(self, fps):
@@ -92,7 +92,7 @@ class GameScreen(object):
 
 
 
-class PlayerSprite(pygame.sprite.DirtySprite):
+class PersonSprite(pygame.sprite.DirtySprite):
     def __init__(self, image, startpoint):
         pygame.sprite.DirtySprite.__init__(self)
         self.image = pygame.image.load(image)

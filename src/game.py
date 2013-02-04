@@ -28,7 +28,7 @@ class Game(object):
         else:
             self.serverip = sys.argv[1]
 
-        #Always start a client, if you are the server, you serve yourself.
+        # Always start a client, if you are the server, you serve yourself.
         self.CDF = ClientDataFactory()
         reactor.connectTCP(self.serverip, 1337, self.CDF)
 
@@ -38,8 +38,8 @@ class Game(object):
         
         location = Location((0,0), (PANE_X/2, PANE_Y/2))
         self.switch_panes(location)
-        position = self.screen.add_player("Colton", None, location)
-        self.player = ["Colton", location]
+        position = self.screen.add_person("Colton", None, location)
+        self.person = ["Colton", location]
         
         if self.server:
             LoopingCall(self.server_loop).start(0)
@@ -69,31 +69,31 @@ class Game(object):
                 if event.key == K_ESCAPE:
                     reactor.stop()
                 elif event.key in [K_LEFT, K_KP4, K_h]:
-                    self.move_player(4, 1)
+                    self.move_person(4, 1)
                 elif event.key in [K_RIGHT, K_KP6, K_l]:
-                    self.move_player(6, 1)
+                    self.move_person(6, 1)
                 elif event.key in [K_UP, K_KP8, K_k]:
-                    self.move_player(8, 1)
+                    self.move_person(8, 1)
                 elif event.key in [K_DOWN, K_KP2, K_j]:
-                    self.move_player(2, 1)
+                    self.move_person(2, 1)
                 elif event.key in [K_KP7, K_y]: #UP LEFT
-                    self.move_player(7, 1)
+                    self.move_person(7, 1)
                 elif event.key in[K_KP9, K_u]: #UP RIGHT
-                    self.move_player(9, 1)
+                    self.move_person(9, 1)
                 elif event.key in [K_KP3, K_n]: #DOWN RIGHT
-                    self.move_player(3, 1)
+                    self.move_person(3, 1)
                 elif event.key in [K_KP1, K_b]: #DOWN LEFT
-                    self.move_player(1, 1)
+                    self.move_person(1, 1)
         self.screen.update()
 
-    def move_player(self, direction, distance):
-        newloc = self.player[1].move(direction, distance)#(self.player[1][1][0] + dx, self.player[1][1][1] + dy)
+    def move_person(self, direction, distance):
+        newloc = self.person[1].move(direction, distance)#(self.person[1][1][0] + dx, self.person[1][1][1] + dy)
         if self.passable(newloc):
-            self.CDF.send(MovePlayer(self.CDF.port, newloc))
-            if self.player[1].pane != newloc.pane:
+            self.CDF.send(MovePerson(self.CDF.port, newloc))
+            if self.person[1].pane != newloc.pane:
                 self.switch_panes(newloc)
-            self.player[1] = newloc
-            self.screen.update_player(self.player[0], self.player[1])
+            self.person[1] = newloc
+            self.screen.update_person(self.person[0], self.person[1])
 
     def passable(self, newloc):
         tupleloc = newloc.tile
