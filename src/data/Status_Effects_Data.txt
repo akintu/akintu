@@ -375,12 +375,15 @@
     [MAGNITUDE: 0]
   [INTERNAL: Magic_resist_bonus]
     [MAGNITUDE: 0]
-
+  [CATEGORY: Buff]
+	
 [NAME: Mystic Shield]
   [TYPE: Display]
   [ELEMENT: Arcane]
   [INTERNAL: HP_buffer]
     [MAGNITUDE: 0]
+  [CATEGORY: Buff]	
+  
 
 [NAME: Stone Guard]
   [TYPE: Display]
@@ -389,18 +392,21 @@
     [MAGNITUDE: 0]
   [INTERNAL: Poison_tolerance_bonus]
     [MAGNITUDE: 0]
+  [CATEGORY: Buff]
 
 [NAME: Chill]
   [TYPE: Display]
   [ELEMENT: Cold]
   [INTERNAL: Dodge_penalty]
     [MAGNITUDE: 0]
+  [CATEGORY: Debuff]
 
 [NAME: Suggest Laziness]
   [TYPE: Display]
   [ELEMENT: None]
   [INTERNAL: AI_attack_nearby]
     [MAGNITUDE: 0]
+  [CATEGORY: Debuff]
     
 [NAME: Stutter]
   [TYPE: Display]
@@ -409,6 +415,7 @@
     [MAGNITUDE: 10]
   [INTERNAL: Spellpower_penalty]
     [MAGNITUDE: 0]
+  [CATEGORY: Debuff]
 
 [NAME: Cloud Vision]
   [TYPE: Display]
@@ -417,6 +424,7 @@
     [MAGNITUDE: 0]
   [INTERNAL: Ranged_accuracy_penalty]
     [MAGNITUDE: 0]
+  [CATEGORY: Debuff]
 	
 [NAME: Haunt]
   [TYPE: Display]
@@ -441,6 +449,7 @@
     [MAGNITUDE: 0]
   [INTERNAL: Dodge_bonus]
     [MAGNITUDE: 0]
+  [CATEGORY: Buff]
 	
 [NAME: Weapon Enhance Striking]
   [TYPE: Display]
@@ -451,19 +460,24 @@
     [MAGNITUDE: 0]
   [INTERNAL: Armor_penetration_bonus]
     [MAGNITUDE: 0]
-
+  [CATEGORY: Buff]
+	
 [NAME: Weapon Enhance Punishing]
   [TYPE: Display]
   [ELEMENT: None]
   [INTERNAL: Critical_magnitude_bonus]
     [MAGNITUDE: 0]
+  [CATEGORY: Weapon Enchantment]
+  [CATEGORY: Buff]
    
 [NAME: Weapon Enhance Precision]
   [TYPE: Display]
   [ELEMENT: None]
   [INTERNAL: Critical_chance_bonus]
     [MAGNITUDE: 0]
-	
+  [CATEGORY: Buff]
+  [CATEGORY: Weapon Enchantment]
+  
 [NAME: Flaming Weapon]
   [TYPE: Display]
   [ELEMENT: Fire]
@@ -471,6 +485,8 @@
     [MAGNITUDE: 0]
 	[MIN: 0]
 	[MAX: 0]
+  [CATEGORY: Buff]
+  [CATEGORY: Weapon Enchantment]
 	
 # Display Effects -- Tier 2 Spells
 	
@@ -479,12 +495,14 @@
   [ELEMENT: Arcane]
   [INTERNAL: Spellpower_bonus]
     [MAGNITUDE: 0]
+  [CATEGORY: Buff]
 	
 [NAME: Hovering Shield]
   [TYPE: Display]
   [ELEMENT: Arcane]
   [INTERNAL: Ranged_dodge_bonus]
     [MAGNITUDE: 0]
+  [CATEGORY: Buff]
 	
 [NAME: Fright]
   [TYPE: Display]
@@ -493,6 +511,7 @@
     [MAGNITUDE: 20]
   [INTERNAL: Attack_power_penalty]
     [MAGNITUDE: 5]
+  [CATEGORY: Debuff]
 
 [NAME: Infection]
   [TYPE: Display]
@@ -503,22 +522,24 @@
 	[MAX: 0]
   [INTERNAL: Poison_tolerance_penalty]
     [MAGNITUDE: 5]
-	
+  
 [NAME: Elemental Boon]
   [TYPE: Display]
-  [ELEMENT: None]
+  [ELEMENT: Fire]
   [INTERNAL: Elemental_resistance_fire]
     [MAGNITUDE: 0]
   [INTERNAL: Elemental_resistance_cold]
     [MAGNITUDE: 0]
   [INTERNAL: Elemental_resistance_electric]
     [MAGNITUDE: 0]
+  [CATEGORY: Buff] 
 	
 [NAME: Suggest Cowardice]
   [TYPE: Display]
   [ELEMENT: None]
   [INTERNAL: AI_flee]
     [MAGNITUDE: 0]
+  [CATEGORY: Debuff]
 	
 [NAME: Smoke Screen]
   [TYPE: Display]
@@ -526,15 +547,16 @@
   [INTERNAL: Dodge_bonus]
     [MAGNITUDE: 10]
   [INTERNAL: Elemental_vulnerability]
-    [MAGNITUDE: 10]
+    [MAGNITUDE: 10] 
 	
 [NAME: Shrink]
   [TYPE: Display]
-  [ELEMENT: None]
+  [ELEMENT: Divine]
   [INTERNAL: Attack_power_penalty]
     [MAGNITUDE: 10]
   [INTERNAL: DR_penalty]
     [MAGNITUDE: 10]
+  [CATEGORY: Debuff]
 
 #[NAME: Frost Weapon]
 #  [TYPE: Display]
@@ -555,6 +577,7 @@
   [ELEMENT: None]
   [INTERNAL: Dodge_bonus]
     [MAGNITUDE: 5]
+  [CATEGORY: Buff]
 	
 [NAME: Wound Leg]
   [TYPE: Display]
@@ -563,6 +586,7 @@
     [MAGNITUDE: 15]
   [INTERNAL: Movement_speed_penalty]
     [MAGNITUDE: 50]
+  [CATEGORY: Debuff]
 	
 [NAME: Wound Arm]
   [TYPE: Display]
@@ -573,6 +597,7 @@
     [MAGNITUDE: 6]
   [INTERNAL: Attack_power_penalty]
     [MAGNITUDE: 10]
+  [CATEGORY: Debuff]
 	
 [NAME: Combo Attack]
   [TYPE: Display]
@@ -593,6 +618,7 @@
     [MAGNITUDE: 8]
   [INTERNAL: Dodge_penalty]
     [MAGNITUDE: 8]
+  [CATEGORY: Buff]
 	
 [NAME: Ranger's Aim]
   [TYPE: Display]
@@ -603,12 +629,14 @@
     [MAGNITUDE: 5]
   [INTERNAL: Critical_chance_bonus]
     [MAGNITUDE: 1]
+  [CATEGORY: Buff]
 	
 [NAME: Defensive Slash]
   [TYPE: Display]
   [ELEMENT: None]
   [INTERNAL: Dodge_bonus]
     [MAGNITUDE: 10]
+  [CATEGORY: Buff]
 	
 [NAME: Tar Trap]
   [TYPE: Display]
@@ -617,6 +645,7 @@
     [MAGNITUDE: 20]
   [INTERNAL: Attack_power_penalty]
     [MAGNITUDE: 5]
+  [CATEGORY: Debuff]
 
 # Display Effects -- Wizard Skills
 
@@ -627,12 +656,14 @@
     [MAGNITUDE: 10]
   [INTERNAL: Magic_resist_bonus]
     [MAGNITUDE: 3]
+  [CATEGORY: Buff]
 
 [NAME: Gather]
   [TYPE: Display]
   [ELEMENT: Arcane]
   [INTERNAL: Spellpower_bonus]
     [MAGNITUDE: 5]
+  [CATEGORY: Buff]
 	
 [NAME: Spell Sight]
   [TYPE: Display]
@@ -643,12 +674,14 @@
     [MAGNITUDE: 3]
   [INTERNAL: Ranged_accuracy_bonus]
     [MAGNITUDE: 5]
+  [CATEGORY: Buff]
 
 [NAME: Runic Dust]
   [TYPE: Display]
   [ELEMENT: Arcane]
   [INTERNAL: Magic_resist_penalty]
     [MAGNITUDE: 0]
+  [CATEGORY: Debuff]
 
 # Display Effects -- Thief Skills
 
@@ -661,6 +694,7 @@
     [MAGNITUDE: 15]
   [INTERNAL: Hidden]
     [MAGNITUDE: 0]
+  [CATEGORY: Stealth]
 	
 [NAME: Chain Grasp]
   [TYPE: Display]
@@ -671,18 +705,21 @@
     [MAGNITUDE: 5]
   [INTERNAL: Dodge_penalty]
     [MAGNITUDE: 5]
+  [CATEGORY: Debuff]
 	
 [NAME: Agile Position]
   [TYPE: Display]
   [ELEMENT: None]
   [INTERNAL: Dodge_bonus]
     [MAGNITUDE: 12]
+  [CATEGORY: Debuff]
 	
 [NAME: Feint]
   [TYPE: Display]
   [ELEMENT: None]
   [INTERNAL: Dodge_penalty]
     [MAGNITUDE: 10]
+  [CATEGORY: Debuff]
 	
 #[NAME: Far-Sighted Focus]
 #  [TYPE: Display]
@@ -701,12 +738,14 @@
   [ELEMENT: None]
   [INTERNAL: Attack_power_penalty]
     [MAGNITUDE: 15]
+  [CATEGORY: Debuff]
 
 [NAME: Shock Factor Spell Failure]
   [TYPE: Display]
   [ELEMENT: None]
   [INTERNAL: Spell_failure_chance]
     [MAGNITUDE: 5]
+  [CATEGORY: Debuff]
 
 # Display Effects -- Weapon Master Skills
 
@@ -716,6 +755,7 @@
   [INTERNAL: Ignore_ranged_attacks]
     [MAGNITUDE: 20]
   [REMOVED_ON: Shield Unequipped]
+  [CATEGORY: Buff]
   
 [NAME: True Friend]
   [TYPE: Display]
@@ -742,6 +782,7 @@
   [ELEMENT: None]
   [INTERNAL: DR_bonus]
     [MAGNITUDE: 10]
+  [CATEGORY: Buff]
 	
 # Display Effects -- Barbarian Skills
 
@@ -753,6 +794,7 @@
   [INTERNAL: Critical_magnitude]
     [MAGNITUDE: 50]
   [REMOVED_ON: HP > 75%]
+  [CATEGORY: Buff] 
 	
 [NAME: Improved Berserker Rage]
   [TYPE: Display]
@@ -762,24 +804,28 @@
   [INTERNAL: Critical_magnitude]
     [MAGNITUDE: 70]
   [REMOVED_ON: HP > 75%]
+  [CATEGORY: Buff]
  
 [NAME: Blood of the Ancients]
   [TYPE: Display]
   [ELEMENT: None]
   [INTERNAL: DR_penalty]
     [MAGNITUDE: 5]
+  [CATEGORY: Debuff]
 	
 [NAME: Crush Armor]
   [TYPE: Display]
   [ELEMENT: None]
   [INTERNAL: DR_penalty]
     [MAGNITUDE: 15]
+  [CATEGORY: Debuff] 
 	
 [NAME: Guzzle]
   [TYPE: Display]
   [ELEMENT: None]
   [INTERNAL: Potion_effect_bonus]
     [MAGNITUDE: 30]
+  [CATEGORY: Buff]
 	
 # Display Effects -- Spellsword
 
@@ -792,6 +838,7 @@
     [CONDITIONAL: Using Shield]
 	[MAGNITUDE: 3]
   [REMOVED_ON: MP > 15%]
+  [CATEGORY: Buff] 
   
 [NAME: Improved Martial Mode]
   [TYPE: Display]
@@ -802,7 +849,8 @@
     [CONDITIONAL: Using Shield]
 	[MAGNITUDE: 3]
   [REMOVED_ON: MP > 20%] 
-
+  [CATEGORY: Buff]
+  
 # Bug/Exploit when equipping shield at time of martial mode activation...
   
 #[NAME: Rebound]
@@ -828,12 +876,14 @@
     [MAGNITUDE: 5]
   [INTERNAL: Trap_evade_bonus]
     [MAGNITUDE: 10]
+  [CATEGORY: Debuff] 
 	
 [NAME: Harmless Grin]
   [TYPE: Display]
   [ELEMENT: None]
   [INTERNAL: Trap_evade_penalty]
     [MAGNITUDE: 12]
+  [CATEGORY: Debuff] 
 	
 # Display Effects -- Marksman Skills
 
@@ -867,6 +917,7 @@
     [MAGNITUDE: 10]
   [INTERNAL: Ranged_accuracy_penalty]
     [MAGNITUDE: 10]
+  [CATEGORY: Debuff] 
 	
 #[NAME: Beacon Trap]
 #  [TYPE: Display]
@@ -887,6 +938,7 @@
   [ELEMENT: None]
   [INTERNAL: Attack_power_penalty]
     [MAGNITUDE: 10]
+  [CATEGORY: Debuff]
 	
 [NAME: Poisonous Touch]
   [TYPE: Display]
@@ -909,6 +961,7 @@
     [MAGNITUDE: 0]
     [CHANCE: Rare]
 	[CONDITIONAL: Using Ranged Weapon && Target not Huge]
+  [CATEGORY: Buff] 
 	
 [NAME: Poison Thorn Trap]
   [TYPE: Display]
@@ -927,6 +980,7 @@
     [MAGNITUDE: 5]
   [INTERNAL: Accuracy_penalty]
     [MAGNITUDE: 2]
+  [CATEGORY: Debuff]
 	
 # Display Effects -- Tactician
 
@@ -937,6 +991,7 @@
     [MAGNITUDE: 0]
   [INTERNAL: Ranged_accuracy_bonus]
     [MAGNITUDE: 0]
+  [CATEGORY: Buff]
 	
 [NAME: Improved Accuracy Favor]
   [TYPE: Display]
@@ -945,18 +1000,21 @@
     [MAGNITUDE: 0]
   [INTERNAL: Ranged_accuracy_bonus]
     [MAGNITUDE: 0] 
+  [CATEGORY: Buff]
 	
 [NAME: Magical Dampening Trap]
   [TYPE: Display]
   [ELEMENT: Arcane]
   [INTERNAL: Spellpower_penalty]
     [MAGNITUDE: 0]
+  [CATEGORY: Debuff]
 	
 [NAME: Nearsighted Trap]
   [TYPE: Display]
   [ELEMENT: Arcane]
   [INTERNAL: Reduced_missile_range]
     [MAGNITUDE: 2]
+  [CATEGORY: Debuff]
   # Encode the minimum of 4 tiles somewhere?? TODO
 
 #[NAME: Mage Hunting]
@@ -979,6 +1037,7 @@
   [ELEMENT: Arcane]
   [INTERNAL: Might_bonus]
     [MAGNITUDE: 0]
+  [CATEGORY: Buff]
 	
 # Display Effects -- Nightblade
 	
@@ -987,6 +1046,7 @@
   [ELEMENT: Shadow]
   [INTERNAL: Weapon_damage_bonus]
     [MAGNITUDE: 0]
+  [CATEGORY: Buff]
 	
 [NAME: Seeping Darkness]
   [TYPE: Display]
@@ -1005,13 +1065,14 @@
     [MAGNITUDE: 6]
   [INTERNAL: Avoidance]
     [MAGNITUDE: 15]
+  [CATEGORY: Stealth]
 
 [NAME: Sudden Flurry]
   [TYPE: Display]
   [ELEMENT: None]
   [INTERNAL: Sudden_flurry_internal]
     [MAGNITUDE: 0]
-
+	
 [NAME: Stealthy Sudden Flurry]
   [TYPE: Display]
   [ELEMENT: None]
@@ -1025,6 +1086,7 @@
     [MAGNITUDE: 100]
   [INTERNAL: Dodge_penalty]
     [MAGNITUDE: 4]
+  [CATEGORY: Debuff]
 	
 # Display Effects -- Assassin
 
@@ -1038,12 +1100,14 @@
   [INTERNAL: Critical_magnitude_bonus]
     [MAGNITUDE: 10]
   [REMOVED_ON: Stealth Removed]
+  [CATEGORY: Buff]
   
 [NAME: Massive Shot]
   [TYPE: Display]
   [ELEMENT: None]
   [INTERNAL: Sneak_penalty]
     [MAGNITUDE: 5]
+  [CATEGORY: Debuff]
 	
 [NAME: Risky Shot]
   [TYPE: Display]
@@ -1062,6 +1126,7 @@
     [MAGNITUDE: 40]
   [INTERNAL: Set_maximum_stealth_break_chance]
     [MAGNITUDE: 40]
+  [CATEGORY: Stealth]
 
 [NAME: Southern Tiger Style]
   [TYPE: Display]
@@ -1098,6 +1163,7 @@
   [ELEMENT: None]
   [INTERNAL: Movement_speed_penalty]
     [MAGNITUDE: 100]
+  [CATEGORY: Debuff]
 
 [NAME: Bait]
   [TYPE: Display]
@@ -1125,6 +1191,7 @@
   [ELEMENT: None]
   [INTERNAL: Attack_power_penalty]
     [MAGNITUDE: 15]
+  [CATEGORY: Debuff]
 	
 # Display Effects -- Battlemage
 
@@ -1133,6 +1200,7 @@
   [ELEMENT: Arcane]
   [INTERNAL: HP_buffer]
     [MAGNITUDE: 0]
+  [CATEGORY: Buff]
 	
 [NAME: Inner Might]
   [TYPE: Display]
@@ -1140,6 +1208,7 @@
   [INTERNAL: Might_bonus]
     [MAGNITUDE: 0]
   [REMOVED_ON: MP < 75%]
+  [CATEGORY: Buff]
   
 [NAME: Deflecting Rod]
   [TYPE: Display]
@@ -1148,6 +1217,7 @@
     [MAGNITUDE: 4]
   [INTERNAL: Elemental_resistance_electric]
     [MAGNITUDE: 10]
+  [CATEGORY: Buff]
 	
 # Display Effects -- Arcane Archer Skills
 
@@ -1157,6 +1227,8 @@
   [INTERNAL: Weapon_damage_bonus]
     [MAGNITUDE: 2]
     [CONDITIONAL: Using Bow || Using Crossbow]
+  [CATEGORY: Buff]
+  [CATEGORY: Threading]
   
 [NAME: Improved Arcane Threading]
   [TYPE: Display]
@@ -1164,6 +1236,8 @@
   [INTERNAL: Weapon_damage_bonus]
     [MAGNITUDE: 5]
     [CONDITIONAL: Using Bow || Using Crossbow]
+  [CATEGORY: Buff]
+  [CATEGORY: Threading]
   
 [NAME: Electric Threading]
   [TYPE: Display]
@@ -1172,12 +1246,15 @@
     [MAGNITUDE: 0]
 	[MIN: 1]
 	[MAX: 8]
+  [CATEGORY: Buff]
+  [CATEGORY: Threading]
 	
 [NAME: Warp Shot]
   [TYPE: Display]
   [ELEMENT: None]
   [INTERNAL: Movement_speed_penalty]
     [MAGNITUDE: 50]
+  [CATEGORY: Debuff]
 	
 [NAME: Precision Threading]
   [TYPE: Display]
@@ -1188,6 +1265,8 @@
     [MAGNITUDE: 3]
   [INTERNAL: Arcane_archer_mana_regen_penalty]
     [MAGNITUDE: 2]
+  [CATEGORY: Buff]
+  [CATEGORY: Threading]
 	
 # Display Effects -- Trickster Skills
 	
@@ -1196,6 +1275,7 @@
   [ELEMENT: None]
   [INTERNAL: Dodge_bonus]
     [MAGNITUDE: 3]
+  [CATEGORY: Buff]
 	
 [NAME: Risky Focus]
   [TYPE: Display]
@@ -1204,24 +1284,28 @@
     [MAGNITUDE: 6]
   [INTERNAL: Dodge_penalty]
     [MAGNITUDE: 5]
+  [CATEGORY: Buff]
 	
 [NAME: Weary Bolt]
   [TYPE: Display]
   [ELEMENT: None]
   [INTERNAL: Attack_power_penalty]
     [MAGNITUDE: 5]
+  [CATEGORY: Debuff]
 	
 [NAME: Curious Drain]
   [TYPE: Display]
   [ELEMENT: None]
   [INTERNAL: Dodge_bonus]
     [MAGNITUDE: 8]
+  [CATEGORY: Buff]
 	
 [NAME: Curiously Sluggish]
   [TYPE: Display]
   [ELEMENT: None]
   [INTERNAL: Dodge_penalty]
     [MAGNITUDE: 8]
+  [CATEGORY: Debuff]
 	
 # Display Effects -- Sorcerer Skills
 	
@@ -1234,6 +1318,7 @@
     [MAGNITUDE: 3]
   [INTERNAL: Attack_power_bonus]
     [MAGNITUDE: 10]
+  [CATEGORY: Buff]
 
 [NAME: Empathy Shell]
   [TYPE: Display]
@@ -1250,24 +1335,28 @@
   [ELEMENT: None]
   [INTERNAL: Dodge_penalty]
     [MAGNITUDE: 0]
+  [CATEGORY: Debuff]
 	
 [NAME: Follow-up Expert Accuracy]
   [TYPE: Display]
   [ELEMENT: None]
   [INTERNAL: Ranged_accuracy_bonus]
     [MAGNITUDE: 0]
+  [CATEGORY: Buff]
 
 [NAME: Follow-up Expert Force]
   [TYPE: Display]
   [ELEMENT: None]
   [INTERNAL: Ranged_force_bonus]
     [MAGNITUDE: 0]
+  [CATEGORY: Buff]
 	
 [NAME: Trap Sadism]
   [TYPE: Display]
   [ELEMENT: None]
   [INTERNAL: Critical_damage_bonus]
     [MAGNITUDE: 0]
+  [CATEGORY: Buff]
 
 # Display Effects -- Barbarian Passives
 
@@ -1284,6 +1373,7 @@
   [ELEMENT: Arcane]
   [INTERNAL: Magic_resist_penalty]
     [MAGNITUDE: 3]
+  [CATEGORY: Debuff]
 	
 # Display Effects -- Anarchist Passives
 
@@ -1296,6 +1386,7 @@
     [MAGNITUDE: 10]
   [INTERNAL: Ranged_force_bonus]
     [MAGNITUDE: 10]
+  [CATEGORY: Buff]
 
 # Display Effects -- Marksman Passives
 
@@ -1306,6 +1397,7 @@
     [MAGNITUDE: 0]
   [INTERNAL: Melee_accuracy]
     [MAGNITUDE: 0]
+  [CATEGORY: Buff]
 	
 # Display Effects -- Assassin Passives
 
@@ -1314,6 +1406,7 @@
   [ELEMENT: None]
   [INTERNAL: Dodge_bonus]
     [MAGNITUDE: 0]
+  [CATEGORY: Buff]
 	
 # Display Effects -- Shadow Passives
 
@@ -1330,6 +1423,7 @@
   [ELEMENT: Arcane]
   [INTERNAL: DR_bonus]
     [MAGNITUDE: 0]
+  [CATEGORY: Buff]
 	
 # Display Effects -- Trickster Passives
 
@@ -1338,6 +1432,7 @@
   [ELEMENT: None]
   [INTERNAL: Dodge_bonus]
     [MAGNITUDE: 0]
+  [CATEGORY: Buff]
 
 # Display Effects -- Hostile Traps
 
@@ -1346,13 +1441,14 @@
   [ELEMENT: Cold]
   [INTERNAL: Movement_tiles_penalty]
     [MAGNITUDE: 0]
+  [CATEGORY: Debuff]
 	
 [NAME: Hostile Trap Blind]
   [TYPE: Display]
   [ELEMENT: Electric]
   [INTERNAL: Awareness_penalty]
     [MAGNITUDE: 0]
-	
+  [CATEGORY: Debuff]
 	
 # Display Effects -- Common
 

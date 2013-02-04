@@ -240,8 +240,6 @@ Status getMostRecentStatus(Person self, StatusCategory category)
   // Status Categories:
   // "Debuff"     (Any Harmful)
   // "Buff"       (Any Beneficial)
-  // "Magical"    (Caused by a Spell or magical monster ability)
-  // "Physical"   (Not magical)
   // "Weapon Enchantment" (Caused by a Spellsword weapon enchantment spell)
   // "Threading"  (Caused by an Arcane Archer self-buff)
   // "Stealth"    (Any stealth ability excluding invisibility)
