@@ -4,6 +4,7 @@ import sys
 import dice
 import status as displaystatus
 import playercharacter as pc
+import broadcast
 
 class IncompleteMethodCall(Exception):
     def __init__(self, value):
@@ -192,6 +193,7 @@ class Combat(object):
                             although most of the latter ignore whether the spell was a critical or not.)"""
         type = type.capitalize().strip().replace("-", " ")
         if (type == "Physical"):
+            Combat._shoutAttackStart(source, target)
             return Combat.physicalHitMechanics(source, target, modifier, critMod, ignoreMeleeBowPenalty)
         
         if (type == "Magical"):
@@ -204,6 +206,7 @@ class Combat(object):
                 return "Miss"
         
         if (type == "Physical Poison" or type == "Poison Physical"):
+            Combat._shoutAttackStart(source, target)
             if (Combat.poisonHitMechanics(source, target, rating) == "Normal Hit"):
                 return Combat.physicalHitMechanics(source, target, modifier, critMod, ignoreMeleeBowPenalty)
             else:
@@ -279,6 +282,9 @@ class Combat(object):
             return
         if(Dice.rollSuccess(100 * chance) == "Miss"):
             return
+        
+        Combat._shoutStatusApplied(target, status)
+        
         dStatus = None
         # Clean this up TODO: masterlists?
         for display in masterlists.displayStatusList:
@@ -486,15 +492,13 @@ class Combat(object):
                 weaponAttack(source, target, hitType[0], **params)
                 params['noCounter'] = originalCounterStatus
                 weaponAttack(source, target, hitType[1], **params)
-            elif source.usingWeaponStyle("Bare"):
-                pass
-                # barehands: TODO
             else:
                 weaponAttack(source, target, hitType[0], **params)
         else:
             pass
             # Monster Attack: TODO
         
+    
     @staticmethod
     def weaponAttack(source, target, hitType, forceMod=1, criticalDamageMod=1, armorPenetrationMod=0,
                      elementOverride=None, noCounter=False, overallDamageMod=1, mightMod=0, 
@@ -522,10 +526,14 @@ class Combat(object):
           hand -- string*; which hand is attacking ("Right" or "Left")
         Outputs:
           None"""
+        Combat._shoutAttackHit(source, target, hitType)
+        
         if hitType == "Miss":
-            # Enemy still counters TODO
+            # Enemy still counters
+            Combat._shoutAttackComplete(source, target, noCounter) 
             return
         
+        # TODO: Barehands...
         weaponOne = source.equippedItem.equippedWeapon
         weaponTwo = None
         if not source.usingWeaponStyle("Dual"):
@@ -558,6 +566,7 @@ class Combat(object):
         # TODO: and elementalOverride.        
         
         target.lowerHP(outgoingDamage)
+        Combat._shoutAttackComplete(source, target, noCounter) 
         
     @staticmethod
     def setMovementCost(target, newCost, numberOfMoves=1, duration=-1, inStealth=False):
@@ -671,6 +680,8 @@ class Combat(object):
           None"""
         if amount <= 0:
             return
+        Combat._shoutDamage(target, amount)
+            
         remaining = amount
         while( target.HPBufferList ):
             current = target.HPBufferList[0]
@@ -700,8 +711,66 @@ class Combat(object):
         # Listeners here? TODO
         Combat.modifyResource(target, "HP", total)
         
+    @staticmethod
+    def _shoutAttackStart(source, target):
+        direction = "Outgoing"
+        hearer = source
+        otherParty = target
+        if source.team == "Monsters":
+            direction = "Incoming"
+            otherParty = source
+            hearer = target
+        attackType = "Ranged"
+        if source.usingWeapon("Melee"):
+            attackType = "Melee"
+        bundle = {'direction' : direction, 'type' : attackType, 'otherPerson' : otherParty}
+        bc = broadcast.AttackBroadcast(bundle)
+        bc.shout(hearer)
     
-    
-    
+    @staticmethod
+    def _shoutAttackHit(source, target, hitType):
+        direction = "Outgoing"
+        hearer = source
+        otherParty = target
+        if source.team == "Monsters":
+            direction = "Incoming"
+            otherParty = source
+            hearer = target
+        attackType = "Ranged"
+        if source.usingWeapon("Melee"):
+            attackType = "Melee"
+        bundle = {'direction' : direction, 'type' : attackType, 'otherPerson' : otherParty, 'suffix' : hitType}
+        bc = broadcast.AttackBroadcast(bundle)
+        bc.shout(hearer)
         
-          
+    @staticmethod
+    def _shoutAttackComplete(source, target, noCounter):
+        direction = "Outgoing"
+        hearer = source
+        otherParty = target
+        if source.team == "Monsters":
+            direction = "Incoming"
+            otherParty = source
+            hearer = target
+        attackType = "Ranged"
+        if source.usingWeapon("Melee"):
+            attackType = "Melee"
+        bundle = {'direction' : direction, 'type' : attackType, 'otherPerson' : otherParty, 'suffix' : 'Complete', 'noCounter' : noCounter}
+        bc = broadcast.AttackBroadcast(bundle)
+        bc.shout(hearer)
+        
+    @staticmethod
+    def _shoutDamage(target, amount):
+        direction = "Incoming"
+        if target.team == "Monsters":
+            direction = "Outgoing"
+        bundle = {'direction' : direction, 'amount' : amount}
+        bc = broadcast.DamageBroadcast(bundle)
+        bc.shout(target)
+        
+    @staticmethod
+    def _shoutStatusApplied(target, statusName):
+        if target.team != "Players":
+            return
+        bc = broadcast.StatusBroadcast({'statusName' : statusName})
+        bc.shout(target)

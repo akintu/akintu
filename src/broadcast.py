@@ -26,7 +26,11 @@ class AttackBroadcast(Broadcast):
             self.message += self.suffix
             
         self.otherPerson = argDict['otherPerson']
-    
+        self.noCounter = False
+        if 'noCounter' in argDict:
+            self.noCounter = argDict['noCounter']
+        
+        
 class SpellBroadcast(Broadcast):
     def __init__(self, argDict):
         Broadcast.__init__(self)
@@ -39,4 +43,21 @@ class SpellBroadcast(Broadcast):
             self.message += " " + self.suffix
         
         self.spell = argDict['spell']
+        
+class DamageBroadcast(Broadcast):
+    def __init__(self, argDict):
+        Broadcast.__init__(self)
+        
+        self.direction = argDict['direction']
+        self.message = self.direction + " Damage"
+        self.amount = argDict['amount']
+        
+class StatusBroadcast(Broadcast):
+    def __init__(self, argDict):
+        Broadcast.__init__(self)
+
+        self.message = "Incoming Status Applied"
+        self.statusName = argDict['statusName']
+        
+        
         

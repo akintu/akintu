@@ -444,7 +444,7 @@
 [LEVELUP_MP: 5]
 
 
-[NAME: Battlemage]
+[NAME: Battle Mage]
 [BASE_CLASS: Wizard]
 [SEC_CLASS: Fighter]
 

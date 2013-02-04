@@ -60,9 +60,11 @@ class Spell(object):
                 Combat.applyCooldown(self.owner, self.name, self.cooldown)
             spellSuccess = Dice.rollSuccess(100 - self.owner.statusSpellFailureChance)
             if spellSuccess:
+                self._shoutSpellCast(self.owner, target)
                 self.action(self, target)
                 if self.targetType != "friendly" and self.targetType != "self":
                     Combat.removeStealth(self.owner)
+                self._shoutSpellCastComplete(self.owner, target)
             else:
                 return
                 # TODO, notify of spell failure?
@@ -383,4 +385,54 @@ class Spell(object):
         'cooldown' : None
         }
         
-    }       
+        
+    }      
+
+    def _shoutSpellCast(self, source, target):
+        s = self
+        direction = None
+        double = None
+        hearer = None
+        if source.team == "Players" and target.team != "Players":
+            direction = "Outgoing"
+            hearer = source
+        elif source.team == "Monsters" and target.team == "Players":
+            direction = "Incoming"
+            hearer = target
+        elif source.team == "Players" and target.team == "Players":
+            direction = "Outgoing"
+            double = "Incoming"
+            hearer = source
+        bundle = {'direction' : direction, 'suffix' : None, 'spell' : s}
+        bc = broadcast.SpellBroadcast(bundle)
+        bc.shout(hearer)
+        if double:
+            bundle = {'direction' : double, 'suffix' : None, 'spell' : s)
+            bc = broadcast.SpellBroadcast(bundle)
+            hearer = source
+            bc.shout(hearer)
+        
+    def _shoutSpellCastComplete(self, source, target):
+        s = self
+        direction = None
+        double = None
+        hearer = None
+        if source.team == "Players" and target.team != "Players":
+            direction = "Outgoing"
+            hearer = source
+        elif source.team == "Monsters" and target.team == "Players":
+            direction = "Incoming"
+            hearer = target
+        elif source.team == "Players" and target.team == "Players":
+            direction = "Outgoing"
+            double = "Incoming"
+            hearer = source
+        bundle = {'direction' : direction, 'suffix' : 'Complete', 'spell' : s}
+        bc = broadcast.SpellBroadcast(bundle)
+        bc.shout(hearer)
+        if double:
+            bundle = {'direction' : double, 'suffix' : 'Complete', 'spell' : s)
+            bc = broadcast.SpellBroadcast(bundle)
+            hearer = source
+            bc.shout(hearer)    
+    

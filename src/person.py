@@ -425,7 +425,7 @@ class Person(en.Entity):
         return self._baseColdResistance
         
     @baseColdResistance.setter
-    def baseColdReistance(self, value):
+    def baseColdResistance(self, value):
         self._baseColdResistance = value
         
     @property
@@ -2373,8 +2373,17 @@ class Person(en.Entity):
                                "Shuriken"])
         elif weaponType == "Bow":
             acceptList.extend(["Longbow", "Shortbow"])
-        return (self.equippedItems.equippedWeapon.type in acceptList or
-                self.equippedItems.equippedOffHand.type in acceptList)
+        
+        if self.team == "Monsters":
+            wep = None
+            if self.attackRange == 1:
+                wep = "Sword"
+            else:
+                wep = "Bow"
+            return wep in acceptList
+        else:
+            return (self.equippedItems.equippedWeapon.type in acceptList or
+                    self.equippedItems.equippedOffHand.type in acceptList)
         
     def usingArmor(self, armorLevel):
         """Returns True if the passed armorLevel matches the armor level

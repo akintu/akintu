@@ -5,6 +5,8 @@ import equippeditems
 import equipment
 import person as p
 import spell
+import passiveability
+import ability
 
 class PlayerCharacter(p.Person):
 
@@ -203,8 +205,22 @@ class PlayerCharacter(p.Person):
             self.spellList.append(spellThree)
         
         self.abilities = []
+        for abil in ability.Ability.allAbilities:
+            current = ability.Ability.allAbilities[abil]
+            if current['class'] == self.baseClass or current['class'] == self.secondaryClass or current['class'] == self.characterClass:
+                if current['level'] == 1:
+                    newAbil = ability.Ability(abil, self)
+                    self.abilities.append(newAbil)
+                
+        self.passiveAbilities = []
+        for pAbil in passiveability.PassiveAbility.allContentByName:
+            current = passiveability.PassiveAbility.allContentByName[pAbil]
+            if current['class'] == self.baseClass or current['class'] == self.secondaryClass or current['class'] == self.characterClass:       
+                if current['level'] == 1:
+                    newPAbil = passiveability.PassiveAbility(pAbil, self)
+                    self.passiveAbilities.append(newPAbil)
         
-        # Trait list of form, [["Bully", 3], ["Courage", 2]...] where the int is the rank.
+        
         self.traits = []
         
         self.listeners = []
