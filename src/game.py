@@ -97,16 +97,18 @@ class Game(object):
             self.screen.update_person(self.person[0], self.person[1])
 
     def passable(self, newloc):
+        temppane = self.pane
+        if self.player[1].pane != newloc.pane:
+            temppane = self.world.get_pane(newloc.pane)[0]
         tupleloc = newloc.tile
-        if not tupleloc in self.pane.tiles:
+        if not tupleloc in temppane.tiles:
             return False
-        if newloc.pane == self.person[1].pane:
-            if not self.pane.tiles[tupleloc].passable:
+        if not temppane.tiles[tupleloc].passable:
+            return False
+        tile = temppane.tiles[tupleloc]
+        for ent in tile.entities:
+            if not ent.passable:
                 return False
-            tile = self.pane.tiles[tupleloc]
-            for ent in tile.entities:
-                if not ent.passable:
-                    return False
         return True
 
     def switch_panes(self, location):
