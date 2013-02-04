@@ -100,12 +100,13 @@ class Game(object):
         tupleloc = newloc.tile
         if not tupleloc in self.pane.tiles:
             return False
-        if not self.pane.tiles[tupleloc].passable:
-            return False
-        tile = self.pane.tiles[tupleloc]
-        for ent in tile.entities:
-            if not ent.passable:
+        if newloc.pane == self.person[1].pane:
+            if not self.pane.tiles[tupleloc].passable:
                 return False
+            tile = self.pane.tiles[tupleloc]
+            for ent in tile.entities:
+                if not ent.passable:
+                    return False
         return True
 
     def switch_panes(self, location):
