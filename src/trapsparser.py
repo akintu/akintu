@@ -22,8 +22,8 @@ class TrapsParser(object):
           "Expecting Parameters C"
           """
         self.state = "Expecting Name"
-    
-    trapTemplateList = []
+        
+        self.trapTemplateList = []
     
     # Paths by State:  
     #   Expecting Name              --> Expecting Rating   --> Expecting Rarity
@@ -166,7 +166,7 @@ class TrapsParser(object):
                         for key, val in effectList[i].iteritems():
                             effectList[i][key] = TrapsParser.reformatRanges(val)
                     tTemplate = TrapTemplate(name, tRating, rarity, effectList)
-                    TrapsParser.trapTemplateList.append(tTemplate)
+                    self.trapTemplateList.append(tTemplate)
                 elif( elementTag.match(line) ):
                     effectList[2]['element'] = elementTag.match(line).group(1)
                 elif( minTag.match(line) ):
@@ -192,6 +192,7 @@ class TrapsParser(object):
             raise InvalidDataFileSyntax("Unkown or misplaced Tag: " + line + " in " + fileName)
             
         f.close()
+        return self.trapTemplateList
         
     @staticmethod    
     def isEmptyText(text):
@@ -214,7 +215,7 @@ class TrapsParser(object):
 if __name__ == "__main__":
     parser = TrapsParser()
     parser.parseAll("./data/Trap_Data.txt")
-    for template in TrapsParser.trapTemplateList:
+    for template in parser.trapTemplateList:
         print template.name
         print template.trapRating
         print template.rarity

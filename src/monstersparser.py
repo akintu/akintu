@@ -6,10 +6,10 @@ import monster
 import statuseffectsparser as sep
 
 class MonstersParser(object):
-    allMonsters = []
+
     def __init__(self):
-        pass
-    
+        self.allMonsters = []
+
     @staticmethod
     def getFromText(file, currentLine, tag):
         if( currentLine == "" ): 
@@ -106,13 +106,14 @@ class MonstersParser(object):
                 mDict['specialProperty'] = MonstersParser.getFromText(f, f.readline(), specialPropertyTag)
                 mDict['startingSpellpower'] = MonstersParser.getFromText(f, f.readline(), spellpowerTag)
                 mDict['startingStrength'] = MonstersParser.getFromText(f, f.readline(), strengthTag)
-                MonstersParser.allMonsters.append(mDict)
+                self.allMonsters.append(mDict)
         
-
+        return self.allMonsters.append(mDict)
+    
 if __name__ == "__main__":
     parser = MonstersParser()
     parser.parseAll("./data/Monster_Data.txt")
-    for monster in MonstersParser.allMonsters:
+    for monster in self.allMonsters:
         for k in monster.keys():
             print k + " : " + str(monster[k])
         print "\n"

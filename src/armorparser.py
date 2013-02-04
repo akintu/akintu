@@ -16,8 +16,8 @@ class ArmorParser(object):
     def __init__(self):
         """Prepares the parser."""
         self.MAX_ARMORS = 24
+        self.armorList = []
     
-    armorList = []
     
     @staticmethod
     def getFromText(file, currentLine, tag):
@@ -73,12 +73,14 @@ class ArmorParser(object):
                 armorDict['type'] = ArmorParser.getFromText(f, f.readline(), typeTag)
                 armorDict['grade'] = ArmorParser.getFromText(f, f.readline(), gradeTag)
                 armorDict['weight'] = ArmorParser.getFromText(f, f.readline(), weightTag)
-                ArmorParser.armorList.append(armorDict)
-
+                self.armorList.append(armorDict)
+        
+        return self.armorList
+                
 if __name__ == "__main__":
     parser = ArmorParser()
     parser.parseAll("./data/Armor_Data.txt")
-    for armorDict in ArmorParser.armorList:
+    for armorDict in parser.armorList:
         for k in armorDict.keys():
             print k + " : " + str(armorDict[k])
         print "\n"

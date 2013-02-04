@@ -27,8 +27,8 @@ class WeaponsParser(object):
           "Expecting Range"
           """
         self.state = "Expecting Name"
-    
-    weaponList = []
+        
+        self.weaponList = []
     
     def parseAll(self, fileName):
         nameTag = re.compile("(?:\[NAME: )(.*)(?:\])", re.I)
@@ -148,17 +148,18 @@ class WeaponsParser(object):
                 self.state = "Expecting Name"
                 weapon = equipment.Weapon(name, gold, weight, wType, wepClass, dBase, dGrad, dType,
                                 force, crit, bonusTendencyList, bonusMod, wRange)
-                WeaponsParser.weaponList.append(weapon)
+                self.weaponList.append(weapon)
                 continue
                 
             raise sep.InvalidDataFileSyntax("Unknown Tag: " + line + " .")
                     
         f.close()
+        return self.weaponList
         
 if __name__ == "__main__":
     parser = WeaponsParser()
     parser.parseAll("./data/Weapon_Data.txt")
-    for wep in WeaponsParser.weaponList:
+    for wep in parser.weaponList:
         print wep.name
         print wep.criticalMultiplier
         print wep.goldValue

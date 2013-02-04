@@ -4,6 +4,7 @@ import sys
 import re
 import playercharacter
 import statuseffectsparser as sep
+import theorycraft
 
 class CCTemplatesParser(object):
 
@@ -11,10 +12,10 @@ class CCTemplatesParser(object):
         """Prepares the parser."""
         self.NUM_CHARACTER_CLASSES = 16
         self.NUM_RACES = 6
+        self.combos = []
     
     characterClassTemplates = []
     races = []
-    characterRacePairings = []
     
     @staticmethod
     def getFromText(file, currentLine, tag):
@@ -144,7 +145,7 @@ class CCTemplatesParser(object):
                 comboDict = {}
                 comboDict['name'] = raceDict['name'] + " " + ccDict['name']
                 comboDict = self.combineNotName(ccDict, raceDict, comboDict)
-                CCTemplatesParser.characterRacePairings.append(comboDict)
+                self.combos.append(comboDict)
     
      
     def combineNotName(self, dictA, dictB, resultDict):
@@ -162,11 +163,12 @@ class CCTemplatesParser(object):
         self.parseAllCC(ccFileName)
         self.parseAllRaces(raceFileName)
         self.combineRaceAndClass()
+        return self.combos
     
 if __name__ == "__main__":
     parser = CCTemplatesParser()
     parser.parseAll("./data/Character_Class_Data.txt", "./data/Race_Data.txt")
-    for combo in CCTemplatesParser.characterRacePairings:
+    for combo in parser.combos:
         for k in combo.keys():
             print k + " : " + str(combo[k])
         print "\n"
