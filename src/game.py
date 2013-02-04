@@ -7,15 +7,16 @@ from pygame.locals import *
 
 import os
 import sys
+
 from command import *
 from location import *
-
 from network import *
 from const import *
 from gamescreen import GameScreen
 from world import *
-import sys
+
 clock = pygame.time.Clock()
+
 
 class Game(object):
     def __init__(self):
@@ -35,26 +36,24 @@ class Game(object):
         # Set up game engine
         self.screen = GameScreen()
         self.world = World("CorrectHorseStapleBattery")
-        
-        location = Location((0,0), (PANE_X/2, PANE_Y/2))
+
+        location = Location((0, 0), (PANE_X/2, PANE_Y/2))
         self.switch_panes(location)
-        position = self.screen.add_person("Colton", None, location)
         self.person = ["Colton", location]
-        
+
         if self.server:
             LoopingCall(self.server_loop).start(0)
         LoopingCall(self.game_loop).start(1.0 / DESIRED_FPS)
-        
+
         reactor.run()
-        
-        
+
     def server_loop(self):
         #Check queue
         while not self.SDF.queue.empty():
             command = self.SDF.queue.get()
-            
+
         #Verify command requests
-        
+
         #Send Reply
 
     def game_loop(self):
@@ -76,18 +75,18 @@ class Game(object):
                     self.move_person(8, 1)
                 elif event.key in [K_DOWN, K_KP2, K_j]:
                     self.move_person(2, 1)
-                elif event.key in [K_KP7, K_y]: #UP LEFT
+                elif event.key in [K_KP7, K_y]:  # UP LEFT
                     self.move_person(7, 1)
-                elif event.key in[K_KP9, K_u]: #UP RIGHT
+                elif event.key in[K_KP9, K_u]:  # UP RIGHT
                     self.move_person(9, 1)
-                elif event.key in [K_KP3, K_n]: #DOWN RIGHT
+                elif event.key in [K_KP3, K_n]:  # DOWN RIGHT
                     self.move_person(3, 1)
-                elif event.key in [K_KP1, K_b]: #DOWN LEFT
+                elif event.key in [K_KP1, K_b]:  # DOWN LEFT
                     self.move_person(1, 1)
         self.screen.update()
 
     def move_person(self, direction, distance):
-        newloc = self.person[1].move(direction, distance)#(self.person[1][1][0] + dx, self.person[1][1][1] + dy)
+        newloc = self.person[1].move(direction, distance)
         if self.passable(newloc):
             self.CDF.send(MovePerson(self.CDF.port, newloc))
             if self.person[1].pane != newloc.pane:
@@ -111,5 +110,3 @@ class Game(object):
         self.pane, imagedict = self.world.get_pane(location.pane)
 
         self.screen.set_pane(self.pane, imagedict)
-    
-        
