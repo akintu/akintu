@@ -48,7 +48,84 @@ class Ability(object):
             'checkFunction' : None
             'breakStealth' : 100            
             }
+        },
+        {'Quick Strike':
+            {
+            'level' : 2,
+            'class' : 'Fighter',
+            'HPCost' : 0,
+            'APCost' : 3,
+            'range' : 1,
+            'target' : 'hostile',
+            'action' : _quickStrike,
+            'cooldown' : None,
+            'checkFunction' : _quickStrikeCheck,
+            'breakStealth' : 100
+            }
+        },
+        {'Precise Blow':
+            {
+            'level' : 2,
+            'class' : 'Fighter',
+            'HPCost' : 0,
+            'APCost' : 7,
+            'range' : 1,
+            'target' : 'hostile',
+            'action' : _preciseBlow,
+            'cooldown' : None,
+            'checkFunction' : _preciseBlowCheck,
+            'breakStealth' : 100
+            }
+        },
+        
+        
+        
+        
+        {'Magic Guard':
+            {
+            'level' : 1,
+            'class' : 'Wizard',
+            'HPCost' : 0,
+            'APCost' : 3,
+            'range' : 0,
+            'target' : 'self',
+            'action' : _magicGuard,
+            'cooldown' : None,
+            'checkFunction' : None,
+            'breakStealth' : 0
+            }
+        },
+        {'Gather':
+            {
+            'level' : 2,
+            'class' : 'Wizard',
+            'HPCost' : 0,
+            'APCost' : 7,
+            'range' : 0,
+            'target' : 'self',
+            'action' : _gather,
+            'cooldown' : None,
+            'checkFunction' : None,
+            'breakStealth' : 100
+            }
+        },
+        {'Reverse Hex':
+            {
+            'level' : 2,
+            'class' : 'Wizard',
+            'HPCost' : 0,
+            'APCost' : 10,
+            'range' : 1,
+            'target' : 'friendly',
+            'action' : _reverseHex,
+            'cooldown' : 5,
+            'checkFunction' : None,
+            'breakStealth' : 100
+            }
         }
+            '
+        
+        
     }
     
     def __init__(self, name, owner):
@@ -136,4 +213,39 @@ class Ability(object):
         numberOfMoves = 1
         Combat.setMovementCost(target, newCost, numberOfMoves)
         
+    def _quickStrike(self, target):
+        source = self.owner
+        hit = Combat.calcHit(source, target, "Physical", modifier=-10)
+        Combat.basicAttack(source, target, hit, forceMod=0.5)
+        
+    def _quickStrikeCheck(self, target):
+        if self.owner.usingWeapon("Melee"):
+            return (True, "")
+        return (False, self.name + " requires a Melee weapon.")
+        
+    def _preciseBlow(self, target):
+        source = self.owner
+        hit = Combat.calcHit(source, target, "Physical", modifier=4)
+        Combat.basicAttack(source, target, hit)
+        
+    def _preciseBlowCheck(self, target):
+        if self.owner.usingWeapon("Melee"):
+            return (True, "")
+        return (False, self.name + " requires a Melee weapon.")
+        
+    def _magicGuard(self, target):
+        source = self.owner
+        duration = 1
+        Combat.addStatus(source, self.name, duration)
+        Combat.endTurn(source)
+        
+    def _gather(self, target):
+        source = self.owner
+        duration = 1
+        Combat.addStatus(source, self.name, duration)
+        
+    def _reverseHex(self, target):
+        Combat.removeStatusOfType(target, "debuff")
+        
+    
         
