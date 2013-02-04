@@ -6,131 +6,11 @@ import dice
 
 class Ability(object):
     
-    allAbilities = {
-        {'Mighty Blow':
-            {
-            'level' : 1,
-            'class' : 'Fighter',
-            'HPCost' : 0,
-            'APCost' : 9',
-            'range' : 1,
-            'target' : 'hostile',
-            'action' : _mightyBlow,
-            'cooldown' : None,
-            'checkFunction' : _mightyBlowCheck
-            'breakStealth' : 100
-            }
-        },
-        {'Brace':
-            {
-            'level' : 1,
-            'class' : 'Fighter',
-            'HPCost' : 0,
-            'APCost' : 2,
-            'range' : 0,
-            'target' : 'self',
-            'action' : _brace,
-            'cooldown' : None,
-            'checkFunction' : None
-            'breakStealth' : 100
-            }
-        },
-        {'Dash':
-            {
-            'level' : 1,
-            'class' : 'Fighter',
-            'HPCost' : 0,
-            'APCost' : 2,
-            'range' : 0,
-            'target' : 'self',
-            'action' : _dash,
-            'cooldown' : None,  
-            'checkFunction' : None
-            'breakStealth' : 100            
-            }
-        },
-        {'Quick Strike':
-            {
-            'level' : 2,
-            'class' : 'Fighter',
-            'HPCost' : 0,
-            'APCost' : 3,
-            'range' : 1,
-            'target' : 'hostile',
-            'action' : _quickStrike,
-            'cooldown' : None,
-            'checkFunction' : _quickStrikeCheck,
-            'breakStealth' : 100
-            }
-        },
-        {'Precise Blow':
-            {
-            'level' : 2,
-            'class' : 'Fighter',
-            'HPCost' : 0,
-            'APCost' : 7,
-            'range' : 1,
-            'target' : 'hostile',
-            'action' : _preciseBlow,
-            'cooldown' : None,
-            'checkFunction' : _preciseBlowCheck,
-            'breakStealth' : 100
-            }
-        },
-        
-        
-        
-        
-        {'Magic Guard':
-            {
-            'level' : 1,
-            'class' : 'Wizard',
-            'HPCost' : 0,
-            'APCost' : 3,
-            'range' : 0,
-            'target' : 'self',
-            'action' : _magicGuard,
-            'cooldown' : None,
-            'checkFunction' : None,
-            'breakStealth' : 0
-            }
-        },
-        {'Gather':
-            {
-            'level' : 2,
-            'class' : 'Wizard',
-            'HPCost' : 0,
-            'APCost' : 7,
-            'range' : 0,
-            'target' : 'self',
-            'action' : _gather,
-            'cooldown' : None,
-            'checkFunction' : None,
-            'breakStealth' : 100
-            }
-        },
-        {'Reverse Hex':
-            {
-            'level' : 2,
-            'class' : 'Wizard',
-            'HPCost' : 0,
-            'APCost' : 10,
-            'range' : 1,
-            'target' : 'friendly',
-            'action' : _reverseHex,
-            'cooldown' : 5,
-            'checkFunction' : None,
-            'breakStealth' : 100
-            }
-        }
-            '
-        
-        
-    }
+    
     
     def __init__(self, name, owner):
         self.name = name
-	    info = Ability.allAbilities[name]
+        info = Ability.allAbilities[name]
         self.level = info['level']
         self.HPCost = info['HPCost']
         self.APCost = info['APCost']
@@ -167,7 +47,7 @@ class Ability(object):
         if self.targetType == "friendly" and self.owner.team != target.team:
             return (False, "Cannot target hostile with beneficial ability.")
         # Do we need any check for AoE spells?
-        if self.range < (Location.calcDistance(self.owner.location, target.location))
+        if self.range < (Location.calcDistance(self.owner.location, target.location)):
             return (False, "Target is out of range.")
         # TODO calcDistance is a placeholder function
         if self.name in self.owner.cooldownList:
@@ -175,12 +55,15 @@ class Ability(object):
         return (True, "")
         
         
-     def use(self, target):
+    def use(self, target):
         ''' Uses the given ability on or around the given target Person (Location?)
         Performs a check if this is possible, but this is not where the canUse
         check should be made.  If caught here, it will raise an exception!'''
         if self.canUse(target)[0]:
-            Combat.modifyResource(self.owner, "HP", -self.HPCost)
+            hpLoss = self.HPCost
+            if "Percent" in str(self.HPCost):
+                hpLoss = round(int(self.HPCost.split(" ")[0]) / 100 * self.owner.totalHP)
+            Combat.modifyResource(self.owner, "HP", -hpLoss)
             Combat.modifyResource(self.owner, "AP", -self.APCost)
             if self.cooldown:
                 Combat.applyCooldown(self.owner, self.name, self.cooldown)
@@ -247,5 +130,212 @@ class Ability(object):
     def _reverseHex(self, target):
         Combat.removeStatusOfType(target, "debuff")
         
-    
+    def _berserkerRage(self, target):
+        duration = 6
+        Combat.addStatus(self.owner, self.name, duration)
         
+    def _berserkerRageCheck(self, target):
+        source = self.owner
+        if source.HP <= source.totalHP * 0.75:
+            return (True, "")
+        return (False, "Too much HP to use " + self.name)
+        
+    def _sacrificialStrike(self, target):
+        source = self.owner
+        hit = Combat.calcHit(source, target, "Physical", critMod=1)
+        Combat.basicAttack(source, target, hit, forceMod=1.5)
+    
+    def _sacrificialStrikeCheck(self, target):
+        source = self.owner
+        if source.totalHP < source.totalHP * 0.05 + 1:
+            return (False, "Insufficient HP to use " + self.name)
+        if source.usingWeapon("Melee"):
+            return (True, "")
+        else: 
+            return (False, self.name + " requires a melee weapon.")
+        
+    def _bufferStrike(self, target):
+        source = self.owner
+        hit = Combat.calcHit(source, target, "Phsyical", modifier=3)
+        Combat.basicAttack(source, target, hit)
+        duration = 4
+        magnitude = round(10 + source.totalSpellpower / 15)
+        Combat.addStatus(source, self.name, magnitude, hitValue=hit)
+    
+    def _bufferStrikeCheck(self, target):
+        source = self.owner
+        if source.usingWeapon("Melee"):
+            return (True, "")
+        else:
+            return (False, self.name + " requires a melee weapon.")
+        
+    allAbilities = {
+        'Mighty Blow':
+        {
+        'level' : 1,
+        'class' : 'Fighter',
+        'HPCost' : 0,
+        'APCost' : 9,
+        'range' : 1,
+        'target' : 'hostile',
+        'action' : _mightyBlow,
+        'cooldown' : None,
+        'checkFunction' : _mightyBlowCheck,
+        'breakStealth' : 100
+        },
+        
+        'Brace':
+        {
+        'level' : 1,
+        'class' : 'Fighter',
+        'HPCost' : 0,
+        'APCost' : 2,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _brace,
+        'cooldown' : None,
+        'checkFunction' : None,
+        'breakStealth' : 100
+        },
+        
+        'Dash':
+        {
+        'level' : 1,
+        'class' : 'Fighter',
+        'HPCost' : 0,
+        'APCost' : 2,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _dash,
+        'cooldown' : None,  
+        'checkFunction' : None,
+        'breakStealth' : 100            
+        },
+        
+        'Quick Strike':
+        {
+        'level' : 2,
+        'class' : 'Fighter',
+        'HPCost' : 0,
+        'APCost' : 3,
+        'range' : 1,
+        'target' : 'hostile',
+        'action' : _quickStrike,
+        'cooldown' : None,
+        'checkFunction' : _quickStrikeCheck,
+        'breakStealth' : 100
+        },
+        
+        'Precise Blow':
+        {
+        'level' : 2,
+        'class' : 'Fighter',
+        'HPCost' : 0,
+        'APCost' : 7,
+        'range' : 1,
+        'target' : 'hostile',
+        'action' : _preciseBlow,
+        'cooldown' : None,
+        'checkFunction' : _preciseBlowCheck,
+        'breakStealth' : 100
+        },
+        
+        
+        
+        
+        
+        'Magic Guard':
+        {
+        'level' : 1,
+        'class' : 'Wizard',
+        'HPCost' : 0,
+        'APCost' : 3,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _magicGuard,
+        'cooldown' : None,
+        'checkFunction' : None,
+        'breakStealth' : 0
+        },
+        
+        'Gather':
+        {
+        'level' : 2,
+        'class' : 'Wizard',
+        'HPCost' : 0,
+        'APCost' : 7,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _gather,
+        'cooldown' : None,
+        'checkFunction' : None,
+        'breakStealth' : 100
+        },
+        
+        'Reverse Hex':
+        {
+        'level' : 2,
+        'class' : 'Wizard',
+        'HPCost' : 0,
+        'APCost' : 10,
+        'range' : 1,
+        'target' : 'friendly',
+        'action' : _reverseHex,
+        'cooldown' : 5,
+        'checkFunction' : None,
+        'breakStealth' : 100
+        },
+        
+        
+        
+        
+        
+        'Berserker Rage':
+        {
+        'level' : 1,
+        'class' : 'Barbarian',
+        'HPCost': 0,
+        'APCost' : 8,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _berserkerRage,
+        'cooldown' : 5,
+        'checkFunction': _berserkerRageCheck,
+        'breakStealth' : 100
+        },
+        
+        'Sacrificial Strike':
+        {
+        'level' : 2,
+        'class' : 'Barbarian',
+        'HPCost' : '5 Percent',
+        'APCost' : 5,
+        'range' : 1,
+        'target' : 'hostile',
+        'action' : _sacrificialStrike,
+        'cooldown' : None,
+        'checkFunction' : _sacrificialStrikeCheck,
+        'breakStealth' : 100
+        },
+        
+            
+        
+        
+        'Buffer Strike':
+        {
+        'level' : 2,
+        'class' : 'Battle Mage',
+        'HPCost' : 0,
+        'APCost' : 10,
+        'range' : 1,
+        'target' : 'hostile',
+        'action' : _bufferStrike,
+        'cooldown' : 3,
+        'checkFunction' : _bufferStrikeCheck,
+        'breakStealth' : 100
+        }
+        
+            
+            
+
+    }

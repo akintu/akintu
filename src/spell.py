@@ -6,208 +6,15 @@ import dice
 
 class Spell(object):
 
-    allSpells = {
-        {'Arcane Dart':
-            {
-            'tier' : 1,
-            'school' : 'Mystic',
-            'MPCost' : 2,
-            'APCost' : 5',
-            'range' : 8,
-            'target' : 'hostile',
-            'action' : _arcaneDart,
-            'cooldown' : None
-            }
-        },
-        {'Arcane Ward':
-            {
-            'tier' : 1,
-            'school' : 'Mystic',
-            'MPCost' : 7,
-            'APCost' : 9,
-            'range' : 0,
-            'target' : 'self',
-            'action' : _arcaneWard,
-            'cooldown' : None
-            }
-        },
-        {'Mystic Shield':
-            {
-            'tier' : 1,
-            'school' : 'Mystic',
-            'MPCost' : 15,
-            'APCost' : 12,
-            'range' : 0,
-            'target' : 'self',
-            'action' : _mysticShield,
-            'cooldown' : 4
-            }
-        },
-        {'Flicker of Life':
-            {
-            'tier' : 1,
-            'school' : 'Natural',
-            'MPCost' : 15,
-            'APCost' : 9,
-            'range' : 6,
-            'target' : 'friendly',
-            'action' : _flickerOfLife,
-            'cooldown' : None
-            }
-        },
-        {'Stone Guard':
-            {
-            'tier' : 1,
-            'school' : 'Natural',
-            'MPCost' : 15,
-            'APCost' : 9,
-            'range' : 4,
-            'target' : 'friendly',
-            'action' : _stoneGuard,
-            'cooldown' : None
-            }
-        },
-        {'Singe':
-            {
-            'tier' : 1,
-            'school' : 'Primal',
-            'MPCost' : 6,
-            'APCost' : 7,
-            'range' : 7,
-            'target' : 'hostile',
-            'action' : _singe,
-            'cooldown' : None
-            }
-        },
-        {'Chill':
-            {
-            'tier' : 1,
-            'school' : 'Primal',
-            'MPCost' : 10,
-            'APCost' : 6,
-            'range' : 6,
-            'target' : 'hostile',
-            'action' : _chill,
-            'cooldown' : None
-            }
-        },
-        {'Shock':
-            {
-            'tier' : 1,
-            'school' : 'Primal',
-            'MPCost' : 13,
-            'APCost' : 7,
-            'range' : 2,
-            'target' : 'hostile',
-            'action' : _shock,
-            'cooldown' : 1
-            }
-        },
-        {'Suggest Laziness':
-            {
-            'tier' : 1,
-            'school' : 'Mental',
-            'MPCost' : 5,
-            'APCost' : 5,
-            'range' : 12,
-            'target' : 'hostile',
-            'action' : _suggestLaziness,
-            'cooldown' : None
-            }
-        },
-        {'Stutter':
-            {
-            'tier' : 1,
-            'school' : 'Mental',
-            'MPCost' : 14,
-            'APCost' : 9,
-            'range' : 6,
-            'target' : 'hostile',
-            'action' : _stutter,
-            'cooldown' : None
-            }
-        },
-        {'Cloud Vision':
-            {
-            'tier' : 1,
-            'school' : 'Bane',
-            'MPCost' : 9,
-            'APCost' : 9,
-            'range' : 6,
-            'target' : 'hostile',
-            'action' : _cloudVision,
-            'cooldown' : None
-            }
-        },
-        {'Haunt':
-            {
-            'tier' : 1,
-            'school' : 'Bane',
-            'MPCost' : 20,
-            'APCost' : 11,
-            'range' : 5,
-            'target' : 'hostile',
-            'action' : _haunt,
-            'cooldown' : 3
-            }
-        },
-        {'Zone of Silence':
-            {
-            'tier' : 1,
-            'school' : 'Illusion',
-            'MPCost' : 20,
-            'APCost' : 6,
-            'range' : 3,
-            'target' : 'terrain',
-            'action' : _zoneOfSilence,
-            'cooldown' : None
-            }
-        },
-        {'Blurry':
-            {
-            'tier' : 1,
-            'school' : 'Illusion',
-            'MPCost' : 6,
-            'APCost' : 3,
-            'range' : 0,
-            'target' : 'self',
-            'action' : _blurry,
-            'cooldown' : None
-            }
-        },
-        {'Weapon Enhance':
-            {
-            'tier' : 1,
-            'school' : 'Enchantment',
-            'MPCost' : 9,
-            'APCost' : 5,
-            'range' : 3,
-            'target' : 'friendly',
-            'action' : _weaponEnhance,
-            'cooldown' : None
-            }
-        },
-        {'Flaming Weapon':
-            {
-            'tier' : 1,
-            'school' : 'Enchantment',
-            'MPCost' : 12,
-            'APCost' : 8,
-            'range' : 3,
-            'target' : 'friendly',
-            'action' : _flamingWeapon,
-            'cooldown' : None
-            }
-        }
-    }       
     
-            
+    
+ 
 
     def __init__(self, name, owner):
         self.name = name
-	    info = Spell.allSpells[name]
+        info = Spell.allSpells[name]
         self.tier = info['tier']
-		self.school = info['school']
+        self.school = info['school']
         self.MPCost = info['MPCost']
         self.APCost = info['APCost']
         self.range = info['range']
@@ -234,7 +41,7 @@ class Spell(object):
         if self.targetType == "friendly" and self.owner.team != target.team:
             return (False, "Cannot target hostile with beneficial spell.")
         # Do we need any check for AoE spells?
-        if self.range < (Location.calcDistance(self.owner.location, target.location))
+        if self.range < (Location.calcDistance(self.owner.location, target.location)):
             return (False, "Target is out of range.")
         # TODO calcDistance is a placeholder function
         if self.name in self.owner.cooldownList:
@@ -383,3 +190,197 @@ class Spell(object):
     
 
     
+    allSpells = {
+        'Arcane Dart':
+        {
+        'tier' : 1,
+        'school' : 'Mystic',
+        'MPCost' : 2,
+        'APCost' : 5,
+        'range' : 8,
+        'target' : 'hostile',
+        'action' : _arcaneDart,
+        'cooldown' : None
+        },
+        
+        'Arcane Ward':
+        {
+        'tier' : 1,
+        'school' : 'Mystic',
+        'MPCost' : 7,
+        'APCost' : 9,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _arcaneWard,
+        'cooldown' : None
+        },
+        
+        'Mystic Shield':
+        {
+        'tier' : 1,
+        'school' : 'Mystic',
+        'MPCost' : 15,
+        'APCost' : 12,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _mysticShield,
+        'cooldown' : 4
+        },
+        
+        'Flicker of Life':
+        {
+        'tier' : 1,
+        'school' : 'Natural',
+        'MPCost' : 15,
+        'APCost' : 9,
+        'range' : 6,
+        'target' : 'friendly',
+        'action' : _flickerOfLife,
+        'cooldown' : None
+        },
+        
+        'Stone Guard':
+        {
+        'tier' : 1,
+        'school' : 'Natural',
+        'MPCost' : 15,
+        'APCost' : 9,
+        'range' : 4,
+        'target' : 'friendly',
+        'action' : _stoneGuard,
+        'cooldown' : None
+        },
+        
+        'Singe':
+        {
+        'tier' : 1,
+        'school' : 'Primal',
+        'MPCost' : 6,
+        'APCost' : 7,
+        'range' : 7,
+        'target' : 'hostile',
+        'action' : _singe,
+        'cooldown' : None
+        },
+        
+        'Chill':
+        {
+        'tier' : 1,
+        'school' : 'Primal',
+        'MPCost' : 10,
+        'APCost' : 6,
+        'range' : 6,
+        'target' : 'hostile',
+        'action' : _chill,
+        'cooldown' : None
+        },
+        
+        'Shock':
+        {
+        'tier' : 1,
+        'school' : 'Primal',
+        'MPCost' : 13,
+        'APCost' : 7,
+        'range' : 2,
+        'target' : 'hostile',
+        'action' : _shock,
+        'cooldown' : 1
+        },
+        
+        'Suggest Laziness':
+        {
+        'tier' : 1,
+        'school' : 'Mental',
+        'MPCost' : 5,
+        'APCost' : 5,
+        'range' : 12,
+        'target' : 'hostile',
+        'action' : _suggestLaziness,
+        'cooldown' : None
+        },
+        
+        'Stutter':
+        {
+        'tier' : 1,
+        'school' : 'Mental',
+        'MPCost' : 14,
+        'APCost' : 9,
+        'range' : 6,
+        'target' : 'hostile',
+        'action' : _stutter,
+        'cooldown' : None
+        },
+        
+        'Cloud Vision':
+        {
+        'tier' : 1,
+        'school' : 'Bane',
+        'MPCost' : 9,
+        'APCost' : 9,
+        'range' : 6,
+        'target' : 'hostile',
+        'action' : _cloudVision,
+        'cooldown' : None
+        },
+        
+        'Haunt':
+        {
+        'tier' : 1,
+        'school' : 'Bane',
+        'MPCost' : 20,
+        'APCost' : 11,
+        'range' : 5,
+        'target' : 'hostile',
+        'action' : _haunt,
+        'cooldown' : 3
+        },
+        
+        'Zone of Silence':
+        {
+        'tier' : 1,
+        'school' : 'Illusion',
+        'MPCost' : 20,
+        'APCost' : 6,
+        'range' : 3,
+        'target' : 'terrain',
+        'action' : _zoneOfSilence,
+        'cooldown' : None
+        },
+    
+        'Blurry':
+        {
+        'tier' : 1,
+        'school' : 'Illusion',
+        'MPCost' : 6,
+        'APCost' : 3,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _blurry,
+        'cooldown' : None
+        },
+        
+        'Weapon Enhance':
+        {
+        'tier' : 1,
+        'school' : 'Enchantment',
+        'MPCost' : 9,
+        'APCost' : 5,
+        'range' : 3,
+        'target' : 'friendly',
+        'action' : _weaponEnhance,
+        'cooldown' : None
+        },
+        
+        'Flaming Weapon':
+        {
+        'tier' : 1,
+        'school' : 'Enchantment',
+        'MPCost' : 12,
+        'APCost' : 8,
+        'range' : 3,
+        'target' : 'friendly',
+        'action' : _flamingWeapon,
+        'cooldown' : None
+        }
+        
+    }       

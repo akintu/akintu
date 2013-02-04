@@ -5,111 +5,11 @@ import listener
 
 class PassiveAbility(object):
     
-    allContentByName = {
-        {'Cold Endurance': 
-            {
-            'class' : 'Barbarian',
-            'level' : 1,
-            'type' : 'static',
-            'action' : PassiveAbility.applyColdEndurance
-            }
-        },            
-        {'Magical Vulnerability':
-            {
-            'class' : 'Barbarian',
-            'level' : 1,
-            'type' : 'static',
-            'action' : PassiveAbility.applyMagicalVulnerability
-            }
-        },
-        {'Mighty Weapon':
-            {
-            'class' : 'Barbarian',
-            'level' : 2,
-            'type' : 'dynamic',
-            'action' : PassiveAbility.applyMightyWeapon,
-            'onStringList' : ['Outgoing Melee Attack'],
-            'offStringList' : ['Outgoing Melee Attack Complete']
-            }
-        },
-        {'Mighty Weapon':
-            {
-            'class' : 'Barbarian',
-            'level' : 2,
-            'type' : 'dynamic',
-            'action' : PassiveAbility.applyTwoWeaponTargeting,
-            'onStringList' : ['Outgoing Melee Attack'],
-            'offStringList' : ['Outgoing Melee Attack Complete']
-            }
-        },
-        
-        
-        
-        
-        {'Close-Ranged Magic':
-            {
-            'class' : 'Battle Mage',
-            'level' : 1,
-            'type' : 'dynamic',
-            'action' : PassiveAbility.applyCloseRangedMagic,
-            'onStringList' : ['Outgoing Spell Cast'],
-            'offStringList' : ['Outgoing Spell Cast Complete']
-            }
-        },
-        {'Mana Attack':
-            {
-            'class' : 'Battle Mage',
-            'level' : 1,
-            'type' : 'dynamic',
-            'action' : PassiveAbility.applyManaAttack,
-            'onStringList' : ['Outgoing Melee Attack Hit'],
-            'offStringList' : []
-            }
-        },
-        {'Dire Mana':
-            {
-            'class' : 'Battle Mage',
-            'level' : 1,
-            'type' : 'dynamic',
-            'action' : PassiveAbility.applyDireMana,
-            'onStringList' : ['Incoming Damage'],
-            'offStringList' : []
-            }
-        },
-        {'Mystical Accuracy':
-            {
-            'class' : 'Battle Mage',
-            'level' : 1,
-            'type' : 'static',
-            'action' : PassiveAbility.applyMysticalAccuracy
-            }
-        },
-        {'Mystical Shield Use':
-            {
-            'class' : 'Battle Mage',
-            'level' : 1,
-            'type' : 'dynamic',
-            'action' : PassiveAbility.applyMysticalShieldUse,
-            'onStringList' : ['Incoming Melee Attack', 'Incoming Ranged Attack'],
-            'offStringList' : ['Incoming Melee Attack Complete', 'Incoming Ranged Attack Complete']
-            }
-        },
-        {'Rapid Retreat':
-            {
-            'class' : 'Battle Mage',
-            'level' : 2,
-            'type' : 'dynamic',
-            'action' : PassiveAbility.applyRapidRetreat,
-            'onStringList' : ['Starting Player Turn'],
-            'offStringList' : ['Ending Player Turn']
-            }
-        }
-        
-    }
+
     
     
     def __init__(self, name, owner):
-	    self.name = name
+        self.name = name
         self.owner = owner
         content = PassiveAbility.allContentByName[name]
         self.requiredClass = content['class']
@@ -156,7 +56,7 @@ class PassiveAbility(object):
                 target.baseMeleeAccuracy -= 2
                 
     @staticmethod
-    def applyCloseRangedMagic(target, reverse=False, spell):
+    def applyCloseRangedMagic(target, reverse=False, spell=None):
         if not reverse:
             if spell.range < 4:
                 target.baseSpellpower += 7
@@ -201,12 +101,112 @@ class PassiveAbility(object):
         else:
             target.overrideMovementAPCost = -1
             
-
+    allContentByName = {
+        'Cold Endurance': 
+            {
+            'class' : 'Barbarian',
+            'level' : 1,
+            'type' : 'static',
+            'action' : applyColdEndurance
+            }
+        ,            
+        'Magical Vulnerability':
+            {
+            'class' : 'Barbarian',
+            'level' : 1,
+            'type' : 'static',
+            'action' : applyMagicalVulnerability
+            }
+        ,
+        'Mighty Weapon':
+            {
+            'class' : 'Barbarian',
+            'level' : 2,
+            'type' : 'dynamic',
+            'action' : applyMightyWeapon,
+            'onStringList' : ['Outgoing Melee Attack'],
+            'offStringList' : ['Outgoing Melee Attack Complete']
+            }
+        ,
+        'Mighty Weapon':
+            {
+            'class' : 'Barbarian',
+            'level' : 2,
+            'type' : 'dynamic',
+            'action' : applyTwoWeaponTargeting,
+            'onStringList' : ['Outgoing Melee Attack'],
+            'offStringList' : ['Outgoing Melee Attack Complete']
+            }
+        ,
+        
+        
+        
+        
+        'Close-Ranged Magic':
+            {
+            'class' : 'Battle Mage',
+            'level' : 1,
+            'type' : 'dynamic',
+            'action' : applyCloseRangedMagic,
+            'onStringList' : ['Outgoing Spell Cast'],
+            'offStringList' : ['Outgoing Spell Cast Complete']
+            }
+        ,
+        'Mana Attack':
+            {
+            'class' : 'Battle Mage',
+            'level' : 1,
+            'type' : 'dynamic',
+            'action' : applyManaAttack,
+            'onStringList' : ['Outgoing Melee Attack Hit'],
+            'offStringList' : []
+            }
+        ,
+        'Dire Mana':
+            {
+            'class' : 'Battle Mage',
+            'level' : 1,
+            'type' : 'dynamic',
+            'action' : applyDireMana,
+            'onStringList' : ['Incoming Damage'],
+            'offStringList' : []
+            }
+        ,
+        'Mystical Accuracy':
+            {
+            'class' : 'Battle Mage',
+            'level' : 1,
+            'type' : 'static',
+            'action' : applyMysticalAccuracy
+            }
+        ,
+        'Mystical Shield Use':
+            {
+            'class' : 'Battle Mage',
+            'level' : 1,
+            'type' : 'dynamic',
+            'action' : applyMysticalShieldUse,
+            'onStringList' : ['Incoming Melee Attack', 'Incoming Ranged Attack'],
+            'offStringList' : ['Incoming Melee Attack Complete', 'Incoming Ranged Attack Complete']
+            }
+        ,
+        'Rapid Retreat':
+            {
+            'class' : 'Battle Mage',
+            'level' : 2,
+            'type' : 'dynamic',
+            'action' : applyRapidRetreat,
+            'onStringList' : ['Starting Player Turn'],
+            'offStringList' : ['Ending Player Turn']
+            }
+        
+        
+    }
 
 
                 
     
     
         
-		
-		
+        
+        
