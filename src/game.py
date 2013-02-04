@@ -40,6 +40,7 @@ class Game(object):
         location = Location((0, 0), (PANE_X/2, PANE_Y/2))
         self.switch_panes(location)
         self.person = ["Colton", location]
+        self.screen.add_person(self.person[0], None, self.person[1])
 
         if self.server:
             LoopingCall(self.server_loop).start(0)
@@ -91,6 +92,7 @@ class Game(object):
             self.CDF.send(MovePerson(self.CDF.port, newloc))
             if self.person[1].pane != newloc.pane:
                 self.switch_panes(newloc)
+                self.screen.add_person(self.person[0], None, self.person[1])
             self.person[1] = newloc
             self.screen.update_person(self.person[0], self.person[1])
 
@@ -108,5 +110,4 @@ class Game(object):
 
     def switch_panes(self, location):
         self.pane, imagedict = self.world.get_pane(location.pane)
-
         self.screen.set_pane(self.pane, imagedict)

@@ -28,6 +28,10 @@ class GameScreen(object):
         pygame.display.flip()
 
     def set_pane(self, pane, imagedict):
+        # Remove all persons
+        for personid in list(self.persons):
+            self.personsgroup.remove(self.persons[personid])
+            self.persons.pop(personid)
         for key, val in imagedict.iteritems():
             mode = val.mode
             size = val.size
