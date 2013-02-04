@@ -10,7 +10,7 @@ class Broadcast(object):
         for ear in target.listeners:
             ear.hear(self)
     
-class AttackBroadcast(Brodcast):
+class AttackBroadcast(Broadcast):
     def __init__(self, argDict):
         Broadcast.__init__(self)
         
@@ -19,7 +19,7 @@ class AttackBroadcast(Brodcast):
         self.inRange = argDict['inRange']
         self.suffix = argDict['suffix']
         
-        self.message = (self.direction + " " + self.type + " Attack "
+        self.message = (self.direction + " " + self.type + " Attack ")
         if self.inRange:
             self.message += "in range " + str(self.inRange) + " "
         if self.suffix:
@@ -34,7 +34,7 @@ class SpellBroadcast(Broadcast):
         self.direction = argDict['direction']
         self.suffix = argDict['suffix']
 
-        self.message = (self.direction + " Spell Cast"
+        self.message = (self.direction + " Spell Cast")
         if self.suffix:
             self.message += " " + self.suffix
         

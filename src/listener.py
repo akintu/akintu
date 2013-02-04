@@ -14,18 +14,18 @@ class Listener(object):
         for string in self.onStringList:
             if string == bCast.message.strip():
                 if bCast.isinstance(broadcast.SpellBroadcast):
-                    self.action(self.host, reverse=False, bCast.spell)
+                    self.action(self.host, reverse=False, spell=bCast.spell)
                     return
                 elif bCast.isinstance(broadcast.AttackBroadcast):
-                    self.action(self.host, reverse=False, bCast.otherPerson)
+                    self.action(self.host, reverse=False, other=bCast.otherPerson)
                     return
         for string in self.offStringList:
             if string == bCast.message.strip():
                 if bCast.isinstance(broadcast.SpellBroadcast):
-                    self.action(self.host, reverse=True, bCast.spell)
+                    self.action(self.host, reverse=True, spell=bCast.spell)
                     return
                 elif bCast.isinstance(broadcast.AttackBroadcast):
-                    self.action(self.host, reverse=True, bCast.otherPerson)
+                    self.action(self.host, reverse=True, other=bCast.otherPerson)
                     return                
             
         

@@ -4,6 +4,7 @@ import sys
 import equippeditems
 import equipment
 import person as p
+import spell
 
 class PlayerCharacter(p.Person):
 
@@ -184,16 +185,21 @@ class PlayerCharacter(p.Person):
             self.skillLevels = [1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
             self.spellLevels = {}
         
-        # Just includes the name
         self.spellList = []
-        spellOne = p.Person.setFrom(argDict, 'spellOne', None)
-        if spellOne:
+        
+        spellOneName = p.Person.setFrom(argDict, 'spellOne', None)
+        if spellOneName:
+            spellOne = spell.Spell(spellOneName, self)
             self.spellList.append(spellOne)
-        spellTwo = p.Person.setFrom(argDict, 'spellTwo', None)
-        if spellTwo:
+            
+        spellTwoName = p.Person.setFrom(argDict, 'spellTwo', None)
+        if spellTwoName:
+            spellTwo = spell.Spell(spellTwoName, self)
             self.spellList.append(spellTwo)
-        spellThree = p.Person.setFrom(argDict, 'spellThree', None)
-        if spellThree:
+            
+        spellThreeName = p.Person.setFrom(argDict, 'spellThree', None)
+        if spellThreeName:
+            spellThree = spell.Spell(spellThreeName, self)
             self.spellList.append(spellThree)
         
         self.abilities = []

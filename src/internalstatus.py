@@ -93,10 +93,10 @@ def Awareness_penalty_method(self, target, magnitude):
 def Bleeding_method(self, target, magnitude):
     target.HP -= (target.HP * magnitude / 100)
 
-def Combo_attack_internal_method(self):
+def Combo_attack_internal_method(self, target, magnitude):
     pass
 
-def Crane_style_method(self):
+def Crane_style_method(self, target, magnitude):
     pass
 
 def Critical_chance_bonus_method(self, target, magnitude):
@@ -114,7 +114,7 @@ def Dodge_bonus_method(self, target, magnitude):
 def Dodge_penalty_method(self, target, magnitude):
     target.statusDodge -= magnitude
 
-def Dragon_style_method(self):
+def Dragon_style_method(self, target, magnitude):
     pass
 
 def DR_bonus_method(self, target, magnitude):
@@ -147,10 +147,10 @@ def Elemental_resistance_shadow_method(self, target, magnitude):
 def Elemental_vulnerability_method(self, target, magnitude, minimum, maximum, element):
     target.lowerElementalResistance(element, magnitude)
 
-def Hidden_method(self):
+def Hidden_method(self, target, magnitude):
     pass
 
-def Hidden_double_cunning_method(self):
+def Hidden_double_cunning_method(self, target, magnitude):
     pass
 
 def HP_buffer_method(self, target, magnitude, duration, name):
@@ -207,7 +207,7 @@ def Overall_damage_bonus_method(self, target, magnitude):
 def Overall_damage_penalty_method(self, target, magnitude):
     target.statusOverallDamageBonus -= magnitude
 
-def Panther_style_method(self):
+def Panther_style_method(self, target, magnitude):
     pass
 
 def Poison_tolerance_bonus_method(self, target, magnitude):
@@ -219,7 +219,7 @@ def Poison_tolerance_penalty_method(self, target, magnitude):
 def Potion_effect_bonus_method(self, target, magnitude):
     target.statusPotionEffect += magnitude
 
-def Prepare_melee_dodge_counterattack_method(self):
+def Prepare_melee_dodge_counterattack_method(self, target, magnitude):
     pass
 
 def Ranged_accuracy_bonus_method(self, target, magnitude):
@@ -246,7 +246,7 @@ def Reduced_stealth_AP_cost_method(self, target, magnitude):
 def Reduced_missile_range_method(self, target, magnitude):
     target.missleRange -= magnitude
 
-def Refund_mana_on_cast_method(self):
+def Refund_mana_on_cast_method(self, target, magnitude):
     pass
 
 def Send_empathy_damage_to_summon_method(self, target, magnitude):
@@ -258,7 +258,7 @@ def Set_maximum_stealth_break_chance_method(self, target, magnitude):
 def Set_movement_AP_cost_method(self, target, magnitude):
     target.overrideMovementAPCost = magnitude
 
-def Snake_style_method(self):
+def Snake_style_method(self, target, magnitude):
     pass
 
 def Sneak_bonus_method(self, target, magnitude):
@@ -276,7 +276,7 @@ def Spellpower_penalty_method(self, target, magnitude):
 def Spell_failure_chance_method(self, target, magnitude):
     target.spellFailureChance += magnitude
 
-def Tiger_style_method(self):
+def Tiger_style_method(self, target, magnitude):
     pass
 
 def Trap_evade_bonus_method(self, target, magnitude):
@@ -284,7 +284,7 @@ def Trap_evade_bonus_method(self, target, magnitude):
 
 def Trap_evade_penalty_method(self, target, magnitude):
     target.statusTrapEvade -= magnitude
-  
+    
 def Applied_poison_rating_bonus_method_reverse(self, target, magnitude):
     target.equipmentPoisonRatingBonus -= magnitude
 
@@ -306,13 +306,13 @@ def Avoidance_method_reverse(self, target, magnitude):
 def Awareness_penalty_method_reverse(self, target, magnitude):
     target.statusAwareness += magnitude
     
-def Bleeding_method_reverse(self):
+def Bleeding_method_reverse(self, target, magnitude):
     pass
 
-def Combo_attack_internal_method_reverse(self):
+def Combo_attack_internal_method_reverse(self, target, magnitude):
     pass
 
-def Crane_style_method_reverse(self):
+def Crane_style_method_reverse(self, target, magnitude):
     pass
 
 def Critical_chance_bonus_method_reverse(self, target, magnitude):
@@ -321,7 +321,7 @@ def Critical_chance_bonus_method_reverse(self, target, magnitude):
 def Critical_magnitude_bonus_method_reverse(self, target, magnitude):
     target.statusCriticalMagnitude -= magnitude
 
-def Damage_over_time_method_reverse(self):
+def Damage_over_time_method_reverse(self, target, magnitude):
     pass
 
 def Dodge_bonus_method_reverse(self, target, magnitude):
@@ -330,7 +330,7 @@ def Dodge_bonus_method_reverse(self, target, magnitude):
 def Dodge_penalty_method_reverse(self, target, magnitude):
     target.statusDodge += magnitude
 
-def Dragon_style_method_reverse(self):
+def Dragon_style_method_reverse(self, target, magnitude):
     pass
 
 def DR_bonus_method_reverse(self, target, magnitude):
@@ -360,10 +360,10 @@ def Elemental_resistance_shadow_method_reverse(self, target, magnitude):
 def Elemental_vulnerability_method_reverse(self, target, magnitude, element):
     target.raiseElementalResistance(element, magnitude)
 
-def Hidden_method_reverse(self):
+def Hidden_method_reverse(self, target, magnitude):
     pass
 
-def Hidden_double_cunning_method_reverse(self):
+def Hidden_double_cunning_method_reverse(self, target, magnitude):
     pass
 
 def HP_buffer_method_reverse(self, target, magnitude, name, duration):
@@ -399,19 +399,19 @@ def Movement_speed_penalty_method_reverse(self, target, magnitude):
 def Movement_tiles_penalty_method_reverse(self, target, magnitude):
     target.movementTiles += magnitude
     
-def No_turn_method_reverse(self):
+def No_turn_method_reverse(self, target, magnitude):
     pass
 
-def On_hit_cripple_weapon_method_reverse(self, target):
+def On_hit_cripple_weapon_method_reverse(self, target, magnitude):
     target.removeOnHitMod('On_hit_cripple_weapon')
 
-def On_hit_frost_weapon_method_reverse(self, target):
+def On_hit_frost_weapon_method_reverse(self, target, magnitude):
     target.removeOnHitMod('On_hit_frost_weapon')
 
-def On_hit_stun_method_reverse(self, target):
+def On_hit_stun_method_reverse(self, target, magnitude):
     target.removeOnHitMod('On_hit_stun')
 
-def On_hit_suppressing_weapon_method_reverse(self, target):
+def On_hit_suppressing_weapon_method_reverse(self, target, magnitude):
     target.removeOnHitMod('On_hit_suppressing_weapon')
 
 def Overall_damage_bonus_method_reverse(self, target, magnitude):
@@ -420,7 +420,7 @@ def Overall_damage_bonus_method_reverse(self, target, magnitude):
 def Overall_damage_penalty_method_reverse(self, target, magnitude):
     target.statusOverallDamageBonus += magnitude
 
-def Panther_style_method_reverse(self):
+def Panther_style_method_reverse(self, target, magnitude):
     pass
 
 def Poison_tolerance_bonus_method_reverse(self, target, magnitude):
@@ -432,7 +432,7 @@ def Poison_tolerance_penalty_method_reverse(self, target, magnitude):
 def Potion_effect_bonus_method_reverse(self, target, magnitude):
     target.statusPotionEffect -= magnitude
 
-def Prepare_melee_dodge_counterattack_method_reverse(self):
+def Prepare_melee_dodge_counterattack_method_reverse(self, target, magnitude):
     pass
 
 def Ranged_accuracy_bonus_method_reverse(self, target, magnitude):
@@ -450,10 +450,10 @@ def Ranged_dodge_bonus_method_reverse(self, target, mangitude):
 def Ranged_force_bonus_method_reverse(self, target, magnitude):
     target.statusRangedForce -= magnitude
 
-def Recover_HP_percent_method_reverse(self):
+def Recover_HP_percent_method_reverse(self, target, magnitude):
     pass
 
-def Redirect_melee_attacks_method_reverse(self):
+def Redirect_melee_attacks_method_reverse(self, target, magnitude):
     pass
 
 def Reduced_stealth_AP_cost_method_reverse(self, target, magnitude):
@@ -462,7 +462,7 @@ def Reduced_stealth_AP_cost_method_reverse(self, target, magnitude):
 def Reduced_missile_range_method_reverse(self, target, magnitude):
     target.missleRange += magnitude
 
-def Refund_mana_on_cast_method_reverse(self):
+def Refund_mana_on_cast_method_reverse(self, target, magnitude):
     pass
 
 def Send_empathy_damage_to_summon_method_reverse(self, target, magnitude):
@@ -474,7 +474,7 @@ def Set_maximum_stealth_break_chance_method_reverse(self, target, magnitude):
 def Set_movement_AP_cost_method_reverse(self, target, magnitude):
     target.overrideMovementAPCost = -1
 
-def Snake_style_method_reverse(self):
+def Snake_style_method_reverse(self, target, magnitude):
     pass
 
 def Sneak_bonus_method_reverse(self, target, magnitude):
@@ -492,7 +492,7 @@ def Spellpower_penalty_method_reverse(self, target, magnitude):
 def Spell_failure_chance_method_reverse(self, target, magnitude):
     target.spellFailureChance -= magnitude
 
-def Tiger_style_method_reverse(self):
+def Tiger_style_method_reverse(self, target, magnitude):
     pass
 
 def Trap_evade_bonus_method_reverse(self, target, magnitude):

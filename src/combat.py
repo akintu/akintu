@@ -526,19 +526,16 @@ class Combat(object):
             # Enemy still counters TODO
             return
         
-        # Include unarmed attacks TODO
-        # Monsters don't have 'equippedItem' objects, TODO
         weaponOne = source.equippedItem.equippedWeapon
         weaponTwo = None
         if not source.usingWeaponStyle("Dual"):
             pass
         else:
             weaponTwo = source.equippedItem.equippedOffHand
-            #TODO Dual wielding
 
         effectiveForce = source.totalForce * forceMod
         if( source.usingWeapon(ranged) ):
-            effectiveForce *= source.totalRangedForce / 100
+            effectiveForce *= 1 + (source.totalRangedForce / 100)
         effectiveMight = round(Dice.rollFloat(0.5, 1.0) * (source.totalMight + mightMod) * (effectiveForce / 100))
            
         effectiveDR = min(80, max(0, target.totalDR - (armorPenetrationMod + source.totalArmorPenetration)))
@@ -584,6 +581,8 @@ class Combat(object):
         if newCost < 0:
             return
         target.overrideMovementAPCost = newCost
+        target.overrideMovements = numberOfMoves
+        target.overrideMovementTurns = duration
         #TODO -- trigger duration/number of moves/break on stealth??
         
     @staticmethod
@@ -670,6 +669,8 @@ class Combat(object):
           amount -- the final amount to deal to the target
         Outputs: 
           None"""
+        if amount <= 0:
+            return
         remaining = amount
         while( target.HPBufferList ):
             current = target.HPBufferList[0]

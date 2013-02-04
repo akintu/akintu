@@ -197,6 +197,8 @@ class Person(en.Entity):
         self._baseMovementAPCost = Person.setFrom(argDict, 'moveAP', Person.ERROR)
         self._equipmentMovementAPCost = 0
         self._overrideMovementAPCost = -1
+        self._overrideMovementTurns = -1
+        self._overrideMovements = -1
         self._statusMovementAPCost = 0
         
         self._baseMeleeAttackAPCost = Person.setFrom(argDict, 'meleeAP', Person.ERROR)
@@ -265,7 +267,7 @@ class Person(en.Entity):
         components: base, equipment, and status, but it also
         checks to see if the override value is not -1.  When it
         is a valid value, that value will be returned instead."""
-        if self._overrideMovementAPCost >= 0:
+        if self._overrideMovementAPCost >= 0 and (self._overrideMovementTurns > 0 or self._overrideMovements > 0):
             return self._overrideMovementAPCost
         else:
             return max(self._baseMovementAPCost + 
@@ -300,6 +302,26 @@ class Person(en.Entity):
         if value < 0:
             value = -1
         self._overrideMovementAPCost = value
+        
+    @property
+    def overrideMovementTurns(self):
+        return self._overrideMovementTurns
+        
+    @overrideMovementTurns.setter
+    def overrideMovementTurns(self, value):
+        if value < 0:
+            value = -1
+        self._overrideMovementTurns = value
+        
+    @property
+    def overrideMovements(self):
+        return self._overrideMovements
+        
+    @overrideMovements.setter
+    def overrideMovements(self, value):
+        if value < 0:
+            value = -1
+        self.overrideMovements = value
         
     @property
     def statusMovementAPCost(self):
