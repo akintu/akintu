@@ -6,13 +6,14 @@ from twisted.internet.protocol import Factory, Protocol
 from twisted.internet.error import ConnectionLost
 from twisted.internet import reactor
 from twisted.internet.task import LoopingCall
+from twisted.protocols.basic import LineReceiver
 
 import Queue
 import cPickle
 import sys
 from command import *
 
-class ServerData(Protocol):
+class ServerData(LineReceiver):
     '''
     Server protocol
     '''
@@ -31,7 +32,7 @@ class ServerData(Protocol):
         if self.factory.clients.has_key(self.port):
             del self.factory.clients[self.port]
 
-    def dataReceived(self, data):
+    def lineReceived(self, data):
         data = cPickle.loads(data)
         print("Server recv from " + str(self.port) + "> " + str(data))
         self.factory.queue.put((self.port, data))
@@ -50,19 +51,18 @@ class ServerDataFactory(Factory):
     def send(self, port, data):
         data = cPickle.dumps(data)
         if self.clients.has_key(port):
-            self.clients[port].transport.write(data)
+            self.clients[port].sendLine(data)
         elif port == 0:
             for port, protocol in self.clients.iteritems():
-                protocol.transport.write(data)
+                protocol.sendLine(data)
 
-class ClientData(Protocol):
+class ClientData(LineReceiver):
     '''
     Client protocol
     '''
     def connectionMade(self):
         self.factory.server = self
         print("Connected to server on " + str(self.transport.getPeer()))
-        pass #Send avatar creation command
 
     def connectionLost(self, reason):
         if reason.type is ConnectionLost:
@@ -72,7 +72,7 @@ class ClientData(Protocol):
         if reactor.running:
             reactor.stop()
 
-    def dataReceived(self, data):
+    def lineReceived(self, data):
         data = cPickle.loads(data)
         if self.factory.port is None:
             self.factory.port = data
@@ -94,7 +94,7 @@ class ClientDataFactory(Factory):
 
     def send(self, data):
         data = cPickle.dumps(data)
-        self.server.transport.write(data)
+        self.server.sendLine(data)
 
     def clientConnectionLost(self, connector, reason):
         if reason.type is ConnectionLost:
