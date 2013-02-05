@@ -136,6 +136,9 @@ class PlayerCharacter(p.Person):
         # self._abilityAPModsList [["AbilityName", -2], [...]]
         # self._spellMPModsList [["SpellName", -1], [...]]
         self.knockbackResistance = 0 # Amount above 100 is treated as 100.
+        self._equipmentIdentification = 0
+        self._statusIdentification = 0
+        self._equipmentShopBonus = 0
         
         # --- Thief classes ---
         # self._stealthBreakMaxOverride Default 100
@@ -152,6 +155,7 @@ class PlayerCharacter(p.Person):
         # include starting equipment in this initializer. TODO
         self.equippedItems = equippeditems.EquippedItems(None)
         self._baseInventoryCapacity = p.Person.setFrom(argDict, 'startingInventoryCapacity', 0)
+        self._equipmentCarryingCapacity = 0
         self.inventory = inventory.Inventory()
                 
         
@@ -662,6 +666,26 @@ class PlayerCharacter(p.Person):
         self._arcaneArcherManaRegenLow = value
     
     @property
+    def totalIdentification(self):
+        return self.totalSorcery + self.equipmentIdentification + self.statusIdentification
+        
+    @property
+    def equipmentIdentification(self):
+        return self._equipmentIdentification
+        
+    @equipmentIdentification.setter
+    def equipmentIdentification(self, value):
+        self._equipmentIdentification = value
+        
+    @property
+    def statusIdentification(self):
+        return self._statusIdentification
+        
+    @statusIdentification.setter
+    def statusIdentification(self, value):
+        self._statusIdentification = value
+    
+    @property
     def canLockpick(self):
         return self._canLockpick
     
@@ -737,9 +761,29 @@ class PlayerCharacter(p.Person):
         """How much the player can fit in his inventory."""
         # TODO: Worry about how +Strength and +Capacity gear could allow you to carry more than your capacity.
         if self.totalStrength <= 15:
-            return 8 * self.totalStrength + self._baseInventoryCapacity
+            return 8 * self.totalStrength + self._baseInventoryCapacity + self._equipmentCarryingCapacity
         else:
-            return 120 + (self.totalStrength - 15) * 12 + self._baseInventoryCapacity
+            return 120 + (self.totalStrength - 15) * 12 + self._baseInventoryCapacity + self._equipmentCarryingCapacity
+    
+    @property
+    def equipmentCarryingCapacity(self):
+        return self._equipmentCarryingCapacity
+        
+    @equipmentCarryingCapacity.setter
+    def equipmentCarryingCapacity(self, value):
+        self._equipmentCarryingCapacity = value
+    
+    @property
+    def totalShopBonus(self):
+        return min(40, max(0, (self.totalCunning - 10) * 0.5 + self.equipmentShopBonus))
+        
+    @property
+    def equipmentShopBonus(self):
+        return self._equipmentShopBonus
+    
+    @equipmentShopBonus.setter
+    def equipmentShopBonus(self, value):
+        self._equipmentShopBonus = value
     
     def equip(self, newPiece):
         """Equips a piece of gear, and places any replaced gear in the inventory."""
@@ -759,6 +803,6 @@ class PlayerCharacter(p.Person):
             elif oldPiece.isinstance(equipment.Weapon):
                 pass
             self.inventory.allItems.append(oldPiece)
-        
+        # TODO: Is this working for unequipping two weapons?
         # TODO: Check to see if weight capacity has changed?            
          

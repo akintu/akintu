@@ -63,6 +63,8 @@ class Armor(Equipment):
             self.bonusTendencyList.append(bonusSix)
             
         self.identifier = "TODO: " + self.name
+        
+        self.DRBonus = 0
             
     @staticmethod
     def convertToGradePoints(grade, type):
@@ -105,6 +107,9 @@ class Weapon(Equipment):
         self.bonusMod = bonusMod
         self.range = range
         self.identifier = "TODO: " + self.name
+        
+        self.damageMinBonus = 0
+        self.damageMaxBonus = 0
         
     def cloneWithMagicalProperties(self, propertyList):
         """Method applys magical properties to a clone of the item according 

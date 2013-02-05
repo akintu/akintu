@@ -61,11 +61,19 @@ class Person(en.Entity):
         
         # Resources
         self._AP = Person.setFrom(argDict, 'AP', 20)
-        self._totalAP = 20
+        self._baseAP = 20
+        self._equipmentAP = 0
+        
         self._baseHP = Person.setFrom(argDict, 'startingHP', Person.ERROR)
         self._HP = self.totalHP
+        self._equipmentHP = 0
+        self.HPRegen = Person.setFrom(argDict, 'HPRegen', 0)
+        # TODO: Implement both kinds of regen.
+        
         self._baseMP = Person.setFrom(argDict, 'startingMP', 0)
         self._MP = self.totalMP
+        self._equipmentMP = 0
+        self.MPRegen = Person.setFrom(argDict, 'MPRegen', 0)
         
         self._baseArmorPenetration = Person.setFrom(argDict, 'startingArmorPenetration', 0)
         self._equipmentArmorPenetration = 0
@@ -2125,18 +2133,31 @@ class Person(en.Entity):
     
     @property
     def totalAP(self):
+        return self._baseAP + max(5, self._equipmentAP)
+        
+    @property
+    def equipmentAP(self):
+        return self._equipmentAP
+        
+    @equipmentAP.setter
+    def equipmentAP(self, value):
+        ''' Value should not exceed +5 per item. '''
+        self._equipmentAP += value
+    
+    @property
+    def baseAP(self):
         """A value for the adjusted total AP for the player.
         this value can change only by equipping magical eqiupment
         that improves the max AP of a player."""
-        return self._maximumAP
+        return self._baseAP
         
-    @totalAP.setter
-    def totalAP(self, value):
+    @baseAP.setter
+    def baseAP(self, value):
         if value > 25: 
             value = 25
         if value < 0: 
             value = 0
-        self._totalAP = value       
+        self._baseAP = value       
     
     @property
     def HP(self):
@@ -2159,7 +2180,15 @@ class Person(en.Entity):
         if self.totalConstitution == 0:
             return self._baseHP
         else:
-            return self.baseHP + (self.totalConstitution - 10) * 4
+            return self.baseHP + (self.totalConstitution - 10) * 4 + self._equipmentHP
+    
+    @property
+    def equipmentHP(self):
+        return self._equipmentHP
+        
+    @equipmentHP.setter
+    def equipmentHP(self, value):
+        self._equipmentHP = value
     
     @property
     def baseHP(self):
@@ -2190,7 +2219,7 @@ class Person(en.Entity):
         if( self.totalPiety == 0 ):
             return self._baseMP
         else:
-            return max(0, self._baseMP + (self.totalPiety - 10) * 4)
+            return max(0, self._baseMP + (self.totalPiety - 10) * 4 + self.equipmentMP)
         # TODO Fix non-casters showing mana.
         
     @property
@@ -2200,6 +2229,14 @@ class Person(en.Entity):
     @baseMP.setter
     def baseMP(self, value):
         self._baseMP = value
+        
+    @property
+    def equipmentMP(self):
+        return self._equipmentMP
+        
+    @equipmentMP.setter
+    def equipmentMP(self, value):
+        self._equipmentMP = value
         
     @property
     def location(self):
