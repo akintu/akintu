@@ -137,6 +137,8 @@ class Game(object):
                 self.switch_panes(newloc)
                 self.screen.add_person(index, None, self.people[index][0])
             self.people[index][0] = newloc
+            if self.player['index'] == index:
+                self.player['location'] = newloc
             self.screen.update_person(index, self.people[index][0])
 
     def passable(self, newloc):
