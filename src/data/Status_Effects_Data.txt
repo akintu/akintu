@@ -1450,6 +1450,40 @@
     [MAGNITUDE: 0]
   [CATEGORY: Debuff]
 	
+# Magical Weapon Effects
+
+[NAME: Acidic Magic Weapon]
+  [TYPE: Display]
+  [ELEMENT: Poison]
+  [INTERNAL: DR_penalty]
+    [MAGNITUDE: 10]
+	
+[NAME: Holy Magic Weapon]
+  [TYPE: Display]
+  [ELEMENT: Divine]
+  [INTERNAL: Elemental_vulnerability]
+    [MAGNITUDE: 20]
+	
+[NAME: Ignite Magic Weapon]
+  [TYPE: Display]
+  [ELEMENT: Fire]
+  [INTERNAL: Damage_over_time]
+    [MAGNITUDE: 0]
+	
+[NAME: Slowing Magic Weapon]
+  [TYPE: Display]
+  [ELEMENT: Arcane]
+  [INTERNAL: Movement_speed_penalty]
+    [MAGNITUDE: 50]
+	
+[NAME: Toxic Magic Weapon]
+  [TYPE: Display]
+  [ELEMENT: Poison]
+  [INTERNAL: Attack_power_penalty]
+    [MAGNITUDE: 10]
+  [INTERNAL: Damage_over_time]
+    [MAGNITUDE: 0]
+	
 # Display Effects -- Common
 
 [NAME: Stun]
@@ -1458,7 +1492,11 @@
   [INTERNAL: Stun_internal]
     [MAGNITUDE: 0]
 	
-
+[NAME: Bleeding]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Bleeding]
+    [MAGNITUDE: 0]
 	
 	
 	
