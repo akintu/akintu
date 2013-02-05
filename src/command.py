@@ -10,22 +10,31 @@ InventoryActions = enum(PICKUP = 1, PUTDOWN = 2)
 class Command:
     def __init__(self):#, hash, location, action):
         pass
-        # self.hash = index
-        # self.location = location
-        # self.action = action
+        
+    def __repr__(self):
+        result = "(" + self.__class__.__name__ + ": ["
+        for attr, val in self.__dict__.iteritems():
+            result += attr + ": " + str(val) + " "
+        result += "])"
+        return result
         
 class CreatePerson(Command):
-    def __init__(self, location):
+    def __init__(self, index, location):
+        self.index = index
         self.location = location
         
 class MovePerson(Command):
-    def __init__(self, playerport, dest):
-        #super(MovePerson,self).__init__()
-        self.playerport = playerport
+    def __init__(self, index, dest):
+        self.index = index
         self.dest = dest
         
-    def __repr__(self):
-        return "(%s, %s)" % (self.playerport, self.dest)
+class RemovePerson(Command):
+    def __init__(self, index):
+        self.index = index
+        
+class UpdateIndex(Command):
+    def __init__(self, index):
+        self.index = index
     
 class InventoryAction(Command):
     def __init__(self, action, item_hash):
