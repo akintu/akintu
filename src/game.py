@@ -17,7 +17,6 @@ from world import *
 
 clock = pygame.time.Clock()
 
-
 class Game(object):
     def __init__(self):
         self.serverip = "localhost"
@@ -33,23 +32,14 @@ class Game(object):
         self.CDF = ClientDataFactory()
         reactor.connectTCP(self.serverip, 1337, self.CDF)
 
-        # Set up game engine
-        self.screen = GameScreen()
-        self.world = World("CorrectHorseStapleBattery")
-
-        location = Location((0, 0), (PANE_X/2, PANE_Y/2))
-        self.switch_panes(location)
-        self.person = ["Colton", location]
-        self.screen.add_person(self.person[0], None, self.person[1])
-
         if self.server:
             LoopingCall(self.server_loop).start(0)
-        LoopingCall(self.game_loop).start(1.0 / DESIRED_FPS)
+        self.setup = LoopingCall(self.setup_game)
+        self.setup.start(0)
 
         reactor.run()
-
+        
     def server_loop(self):
-        #Check queue
         while not self.SDF.queue.empty():
             command = self.SDF.queue.get()
 
@@ -57,10 +47,35 @@ class Game(object):
 
         #Send Reply
 
+    def setup_game(self):
+        if not self.CDF.port:
+            return
+    
+        # Set up game engine
+        self.screen = GameScreen()
+        self.world = World("CorrectHorseStapleBattery")
+        
+        location = Location((0, 0), (PANE_X/2, PANE_Y/2))
+        self.switch_panes(location)
+        self.people = [[location]]
+        self.screen.add_person(0, None, self.people[0][0])
+        
+        self.setup.stop()
+        LoopingCall(self.game_loop).start(1.0 / DESIRED_FPS)
+        
     def game_loop(self):
         clock.tick()
         fps = clock.get_fps()
         self.screen.set_fps(fps)
+        self.check_queue()
+        self.handle_events()
+        self.screen.update()
+        
+    def check_queue(self):
+        while not self.CDF.queue.empty():
+            command = self.CDF.queue.get()
+            
+    def handle_events(self):
         pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -84,23 +99,22 @@ class Game(object):
                     self.move_person(3, 1)
                 elif event.key in [K_KP1, K_b]:  # DOWN LEFT
                     self.move_person(1, 1)
-        self.screen.update()
 
     def move_person(self, direction, distance):
-        newloc = self.person[1].move(direction, distance)
+        newloc = self.people[0][0].move(direction, distance)
         if self.passable(newloc):
             self.CDF.send(MovePerson(self.CDF.port, newloc))
-            if self.person[1].pane != newloc.pane:
+            if self.people[0][0].pane != newloc.pane:
                 self.switch_panes(newloc)
-                self.screen.add_person(self.person[0], None, self.person[1])
-            self.person[1] = newloc
-            self.screen.update_person(self.person[0], self.person[1])
+                self.screen.add_person(0, None, self.people[0][0])
+            self.people[0][0] = newloc
+            self.screen.update_person(0, self.people[0][0])
 
     def passable(self, newloc):
         tupleloc = newloc.tile
         if not tupleloc in self.pane.tiles:
             return False
-        if newloc.pane == self.person[1].pane:
+        if newloc.pane == self.people[0][0].pane:
             if not self.pane.tiles[tupleloc].passable:
                 return False
             tile = self.pane.tiles[tupleloc]

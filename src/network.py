@@ -3,6 +3,7 @@ Network communication class
 '''
 
 from twisted.internet.protocol import Factory, Protocol
+from twisted.internet.error import ConnectionLost
 from twisted.internet import reactor
 from twisted.internet.task import LoopingCall
 
@@ -10,7 +11,6 @@ import Queue
 import cPickle
 import sys
 from command import *
-from pprint import pprint
 
 class ServerData(Protocol):
     '''
@@ -24,7 +24,10 @@ class ServerData(Protocol):
         self.factory.send(self.port, self.port)
 
     def connectionLost(self, reason):
-        print('Lost connection.  Reason:' + str(reason))
+        if reason.type is ConnectionLost:
+            print('ServerData lost connection to client on ' + str(self.port) + '.')
+        else:
+            print('ServerData lost connection to client on ' + str(self.port) + '.  Reason: ' + reason.getErrorMessage())
         if self.factory.clients.has_key(self.port):
             del self.factory.clients[self.port]
 
@@ -62,7 +65,12 @@ class ClientData(Protocol):
         pass #Send avatar creation command
 
     def connectionLost(self, reason):
-        print('Lost connection.  Reason:' + str(reason))
+        if reason.type is ConnectionLost:
+            print('ClientData lost connection.')
+        else:
+            print('ClientData lost connection.  Reason: ' + reason.getErrorMessage())
+        if reactor.running:
+            reactor.stop()
 
     def dataReceived(self, data):
         data = cPickle.loads(data)
@@ -88,8 +96,10 @@ class ClientDataFactory(Factory):
         self.server.transport.write(data)
 
     def clientConnectionLost(self, connector, reason):
-        pprint(reason)
-        print('Lost connection.  Reason:' + str(reason))
+        if reason.type is ConnectionLost:
+            print('ClientDataFactory lost connection.')
+        else:
+            print('ClientDataFactory lost connection.  Reason: ' + reason.getErrorMessage())
 
     def clientConnectionFailed(self, connector, reason):
-        print('Connection failed.  Reason:' + str(reason))
+        print('Connection failed.  Reason: ' + reason.getErrorMessage())
