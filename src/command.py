@@ -14,6 +14,10 @@ class Command:
         # self.location = location
         # self.action = action
         
+class CreatePerson(Command):
+    def __init__(self, location):
+        self.location = location
+        
 class MovePerson(Command):
     def __init__(self, playerport, dest):
         #super(MovePerson,self).__init__()
