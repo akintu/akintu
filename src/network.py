@@ -21,6 +21,7 @@ class ServerData(Protocol):
         if not self.factory.clients.has_key(self.port):
             print("Connection made with client on port #" + str(self.port))
             self.factory.clients[self.port] = self
+        self.factory.send(self.port, self.port)
 
     def connectionLost(self, reason):
         print('Lost connection.  Reason:' + str(reason))
@@ -58,7 +59,6 @@ class ClientData(Protocol):
     def connectionMade(self):
         self.factory.server = self
         print("Connected to server on " + str(self.transport.getPeer()))
-        self.factory.port = self.transport.getPeer().port
         pass #Send avatar creation command
 
     def connectionLost(self, reason):
@@ -66,10 +66,10 @@ class ClientData(Protocol):
 
     def dataReceived(self, data):
         data = cPickle.loads(data)
-        pprint(data)
-        self.factory.queue.put(data)
-        if data == 'q': #Find some other abort mechanism
-            self.factory.shutdown()
+        if self.factory.port is None:
+            self.factory.port = data
+        else:
+            self.factory.queue.put(data)
 
 class ClientDataFactory(Factory):
     '''
@@ -78,6 +78,7 @@ class ClientDataFactory(Factory):
     protocol = ClientData
     def __init__(self):
         self.queue = Queue.Queue()
+        self.port = None
 
     def startedConnecting(self, connector):
         print('Connecting to server...')

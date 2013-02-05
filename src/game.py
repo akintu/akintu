@@ -98,7 +98,7 @@ class Game(object):
 
     def passable(self, newloc):
         temppane = self.pane
-        if self.player[1].pane != newloc.pane:
+        if self.person[1].pane != newloc.pane:
             temppane = self.world.get_pane(newloc.pane)[0]
         tupleloc = newloc.tile
         if not tupleloc in temppane.tiles:
