@@ -20,11 +20,12 @@ clock = pygame.time.Clock()
 class Game(object):
     def __init__(self):
         self.serverip = "localhost"
-        self.server = False
         if len(sys.argv) == 1:
-            self.server = True
             self.SDF = ServerDataFactory()
             reactor.listenTCP(1337, self.SDF)
+            LoopingCall(self.server_loop).start(0)
+            self.players = {}  # {Port: Location} of all players
+            self.allPeople = {}  # {Pane: List()} containing lists of persons
         else:
             self.serverip = sys.argv[1]
 
@@ -32,8 +33,6 @@ class Game(object):
         self.CDF = ClientDataFactory()
         reactor.connectTCP(self.serverip, 1337, self.CDF)
 
-        if self.server:
-            LoopingCall(self.server_loop).start(0)
         self.setup = LoopingCall(self.setup_game)
         self.setup.start(0)
 
@@ -41,11 +40,31 @@ class Game(object):
         
     def server_loop(self):
         while not self.SDF.queue.empty():
-            command = self.SDF.queue.get()
-
-        #Verify command requests
-
-        #Send Reply
+            port, command = self.SDF.queue.get()
+            if isinstance(command, CreatePerson):
+                #Assume clients only send this when they want to create themselves
+                #Send new sprite to all clients, then give calling client everything on pane
+                
+                #if self.passable(command.location):
+                self.players[port] = command.location
+                
+                if command.location.pane not in self.allPeople:
+                    self.allPeople[command.location.pane] = list()
+                command.index = len(self.allPeople[command.location.pane])
+                self.allPeople[command.location.pane].append(command.location)
+                
+                for p, l in self.players.iteritems():
+                    if self.players[port].pane == l.pane:
+                        self.SDF.send(p, command)
+                
+                for i, l in enumerate(self.allPeople[command.location.pane]):
+                    self.SDF.send(port, CreatePerson(i, l))
+            if isinstance(command, MovePerson):
+                if self.passable(command.dest):
+                    self.allPeople[command.dest.pane][command.index] = command.dest
+                    for p, l in self.players.iteritems():
+                        if command.dest.pane == l.pane:
+                            self.SDF.send(p, command)
 
     def setup_game(self):
         if not self.CDF.port:
@@ -57,9 +76,10 @@ class Game(object):
         
         location = Location((0, 0), (PANE_X/2, PANE_Y/2))
         self.switch_panes(location)
-        self.people = [[location]]
-        self.screen.add_person(0, None, self.people[0][0])
-        
+        self.people = []
+        self.player = {'location': location, 'index': -1}
+        self.CDF.send(CreatePerson(None, location))
+
         self.setup.stop()
         LoopingCall(self.game_loop).start(1.0 / DESIRED_FPS)
         
@@ -74,6 +94,15 @@ class Game(object):
     def check_queue(self):
         while not self.CDF.queue.empty():
             command = self.CDF.queue.get()
+            if isinstance(command, CreatePerson):
+                if self.player['index'] == -1:
+                    self.player['index'] = command.index
+                else:
+                    self.people.append([command.location])
+                    self.screen.add_person(len(self.people) - 1, None, command.location)
+            if isinstance(command, MovePerson):
+                self.people[command.index][0] = command.dest
+                self.screen.update_person(command.index, command.dest)
             
     def handle_events(self):
         pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
@@ -84,37 +113,37 @@ class Game(object):
                 if event.key == K_ESCAPE:
                     reactor.stop()
                 elif event.key in [K_LEFT, K_KP4, K_h]:
-                    self.move_person(4, 1)
+                    self.move_person(self.player['index'], 4, 1)
                 elif event.key in [K_RIGHT, K_KP6, K_l]:
-                    self.move_person(6, 1)
+                    self.move_person(self.player['index'], 6, 1)
                 elif event.key in [K_UP, K_KP8, K_k]:
-                    self.move_person(8, 1)
+                    self.move_person(self.player['index'], 8, 1)
                 elif event.key in [K_DOWN, K_KP2, K_j]:
-                    self.move_person(2, 1)
+                    self.move_person(self.player['index'], 2, 1)
                 elif event.key in [K_KP7, K_y]:  # UP LEFT
-                    self.move_person(7, 1)
+                    self.move_person(self.player['index'], 7, 1)
                 elif event.key in[K_KP9, K_u]:  # UP RIGHT
-                    self.move_person(9, 1)
+                    self.move_person(self.player['index'], 9, 1)
                 elif event.key in [K_KP3, K_n]:  # DOWN RIGHT
-                    self.move_person(3, 1)
+                    self.move_person(self.player['index'], 3, 1)
                 elif event.key in [K_KP1, K_b]:  # DOWN LEFT
-                    self.move_person(1, 1)
+                    self.move_person(self.player['index'], 1, 1)
 
-    def move_person(self, direction, distance):
-        newloc = self.people[0][0].move(direction, distance)
+    def move_person(self, index, direction, distance):
+        newloc = self.people[index][0].move(direction, distance)
         if self.passable(newloc):
-            self.CDF.send(MovePerson(self.CDF.port, newloc))
-            if self.people[0][0].pane != newloc.pane:
+            self.CDF.send(MovePerson(index, newloc))
+            if self.people[index][0].pane != newloc.pane:
                 self.switch_panes(newloc)
-                self.screen.add_person(0, None, self.people[0][0])
-            self.people[0][0] = newloc
-            self.screen.update_person(0, self.people[0][0])
+                self.screen.add_person(index, None, self.people[index][0])
+            self.people[index][0] = newloc
+            self.screen.update_person(index, self.people[index][0])
 
     def passable(self, newloc):
         tupleloc = newloc.tile
         if not tupleloc in self.pane.tiles:
             return False
-        if newloc.pane == self.people[0][0].pane:
+        if newloc.pane == self.player['location'].pane:
             if not self.pane.tiles[tupleloc].passable:
                 return False
             tile = self.pane.tiles[tupleloc]
