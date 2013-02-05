@@ -3,6 +3,7 @@
 import sys
 import combat
 import dice
+import playercharacter
 
 class Spell(object):
 
@@ -61,7 +62,12 @@ class Spell(object):
             spellSuccess = Dice.rollSuccess(100 - self.owner.statusSpellFailureChance)
             if spellSuccess:
                 self._shoutSpellCast(self.owner, target)
-                self.action(self, target)
+                if self.targetType == "hostile" and self.owner.isinstance(PlayerCharacter):
+                    self.applySchoolResistance()
+                    self.action(self, target)
+                    self.unapplySchoolResistance()
+                else:
+                    self.action(self, target)
                 if self.targetType != "friendly" and self.targetType != "self":
                     Combat.removeStealth(self.owner)
                 self._shoutSpellCastComplete(self.owner, target)
@@ -71,6 +77,40 @@ class Spell(object):
         else:
             return 
             # TODO! Make this raise an exception rather than silently return.
+            
+    def applySchoolResistance(self):
+        hero = self.owner
+        if self.school = "Enchantment":
+            hero.magicResist += hero.enchantmentResist
+        elif self.school = "Bane":
+            hero.magicResist += hero.baneResist
+        elif self.school = "Mental":
+            hero.magicResist += hero.mentalResist
+        elif self.school = "Illusion":
+            hero.magicResist += hero.illusionResist
+        elif self.school = "Primal":
+            hero.magicResist += hero.primalResist
+        elif self.school = "Mystic":
+            hero.magicResist += hero.mysticResist
+        elif self.school = "Natural":
+            hero.magicResist += hero.naturalResist
+            
+    def unapplySchoolResistance(self):
+        hero = self.owner
+        if self.school = "Enchantment":
+            hero.magicResist -= hero.enchantmentResist
+        elif self.school = "Bane":
+            hero.magicResist -= hero.baneResist
+        elif self.school = "Mental":
+            hero.magicResist -= hero.mentalResist
+        elif self.school = "Illusion":
+            hero.magicResist -= hero.illusionResist
+        elif self.school = "Primal":
+            hero.magicResist -= hero.primalResist
+        elif self.school = "Mystic":
+            hero.magicResist -= hero.mysticResist
+        elif self.school = "Natural":
+            hero.magicResist -= hero.naturalResist
             
     def _arcaneDart(self, target):
         source = self.owner

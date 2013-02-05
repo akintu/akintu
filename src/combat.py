@@ -5,6 +5,7 @@ import dice
 import status as displaystatus
 import playercharacter as pc
 import broadcast
+import theorycraft
 
 class IncompleteMethodCall(Exception):
     def __init__(self, value):
@@ -286,8 +287,7 @@ class Combat(object):
         Combat._shoutStatusApplied(target, status)
         
         dStatus = None
-        # Clean this up TODO: masterlists?
-        for display in masterlists.displayStatusList:
+        for display in theorycraft.TheoryCraft.statuses:
             if display.displayName == status:
                 dStatus = display
         dStatus = dStatus.cloneWithDetails(magnitude, duration, min, max, charges)

@@ -7,6 +7,7 @@ import person as p
 import spell
 import passiveability
 import ability
+import inventory
 
 class PlayerCharacter(p.Person):
 
@@ -151,6 +152,7 @@ class PlayerCharacter(p.Person):
         # include starting equipment in this initializer. TODO
         self.equippedItems = equippeditems.EquippedItems(None)
         self._baseInventoryCapacity = p.Person.setFrom(argDict, 'startingInventoryCapacity', 0)
+        self.inventory = inventory.Inventory()
                 
         
         # Levelup stats
@@ -219,7 +221,6 @@ class PlayerCharacter(p.Person):
                 if current['level'] == 1:
                     newPAbil = passiveability.PassiveAbility(pAbil, self)
                     self.passiveAbilities.append(newPAbil)
-        
         
         self.traits = []
         
@@ -747,15 +748,17 @@ class PlayerCharacter(p.Person):
             self.equipmentDR += newPiece.DR
             self.equipmentStealth += newPiece.stealthMod
             self.equipmentDodge += newPiece.dodgeMod
-        if oldPiece and oldPiece.isinstance(equipment.Armor):
-            self.equipmentDR -= oldPiece.DR
-            self.equipmentStealth -= oldPiece.stealthMod
-            self.equipmentDodge -= oldPiece.dodgeMod
-            # TODO: Place in inventory
-        if newPiece.isinstance(equipment.Weapon):
+        elif newPiece.isisntance(equipment.Weapon):
             pass
-        if oldPiece and oldPiece.isinstance(equipment.Weapon):
-            pass
-        # TODO: Magical bonuses
-                        
+            # TODO: Magical bonuses
+        if oldPiece: 
+            if oldPiece.isinstance(equipment.Armor):
+                self.equipmentDR -= oldPiece.DR
+                self.equipmentStealth -= oldPiece.stealthMod
+                self.equipmentDodge -= oldPiece.dodgeMod
+            elif oldPiece.isinstance(equipment.Weapon):
+                pass
+            self.inventory.allItems.append(oldPiece)
+        
+        # TODO: Check to see if weight capacity has changed?            
          

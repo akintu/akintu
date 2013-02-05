@@ -200,7 +200,24 @@ class EquippedItems(object):
         if 20 < grade:
             return "Heavy"
             
-        
+    @property
+    def equippedWeight(self):
+        totalWeight = 0
+        if self._allGear['Head']:
+            totalWeight += self._allGear['Head'].weight
+        if self._allGear['Chest']:
+            totalWeight += self._allGear['Head'].weight
+        if self._allGear['Legs']:
+            totalWeight += self.allGear['Legs'].weight
+        if self._allGear['Hands']:
+            totalWeight += self.allGear['Hands'].weight
+        if self._allGear['Feet']:
+            totalWeight += self.allGear['Feet'].weight        
+        if self._allGear['Main Hand']:
+            totalWeight += self.allGear['Main Hand'].weight
+        if self._allGear['Off Hand']:
+            totalWeight += self.allGear['Off Hand'].weight
+        return totalWeight
         
         
     
