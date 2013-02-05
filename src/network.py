@@ -33,7 +33,7 @@ class ServerData(Protocol):
 
     def dataReceived(self, data):
         data = cPickle.loads(data)
-        print(self.port, data)
+        print("Server recv from " + str(self.port) + "> " + str(data))
         self.factory.queue.put((self.port, data))
 
 class ServerDataFactory(Factory):
@@ -77,6 +77,7 @@ class ClientData(Protocol):
         if self.factory.port is None:
             self.factory.port = data
         else:
+            print("Client recv> " + str(data))
             self.factory.queue.put(data)
 
 class ClientDataFactory(Factory):
