@@ -227,20 +227,13 @@ class MagicalProperty(object):
             raise TypeError("Cannot increase damage on item: " + str(self.item) + ".")
         if not reverse:
             item.damageMinBonus += self.count * item.gradientMin
-            item.damageMaxBonus += self.count * item.gradientMax
-        else:
-            # Should never be reversed?
-            item.damageMinBonus -= self.count * item.gradientMin
-            item.damageMaxBonus -= self.count * item.gradientMax        
+            item.damageMaxBonus += self.count * item.gradientMax     
     
     def _DR(self, owner, reverse=False):
         if self.item.DRGradientPoints = 0:
             raise TypeError("Cannot increase DR on item: " + str(self.item) + ".")
         if not reverse:
-            item.DRBonus += self.count * item.DRGradient
-        else:
-            # Should never be reversed?
-            item.DRBonus -= self.count * item.DRBonus
+            item.DR += self.count * item.DRGradient
     
     def _dexterity(self, owner, reverse=False):
         bonus = self.count

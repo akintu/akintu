@@ -77,11 +77,8 @@ class PlayerCharacter(p.Person):
         self.naturalResist = p.Person.setFrom(argDict, 'startingNaturalResist', 0)
         self.primalResist = p.Person.setFrom(argDict, 'startingPrimalResist', 0)
         self.illusionResist = p.Person.setFrom(argDict, 'startingIllusionResist', 0)
-                
-        
+                       
         self.onHitEffects = []
-        # TODO: Write method applyOnHitMod(name, *args)
-        # TODO: Write method removeOnHitEffect(name, count)
          
         # Intrinsic properties
          
@@ -118,7 +115,6 @@ class PlayerCharacter(p.Person):
         if (self.characterClass == "Ninja"):
             self._ninjaStyle = "Tiger" # TODO: Apply Tiger passives on startup.
         
-
         # --- Kahajit Race ---
         # Worry about whether we are 'outside' or not in the Combat class, perhaps? TODO
         self.DROutside = None
@@ -134,7 +130,7 @@ class PlayerCharacter(p.Person):
         # self._empathyToSummon 
         
         # --- Other ---
-        # self._abilityAPModsList [["AbilityName", -2], [...]]
+        # self._abilityAPModsList [["AbilityName", -2], [...]] I don't think we need these...
         # self._spellMPModsList [["SpellName", -1], [...]]
         self.knockbackResistance = 0 # Amount above 100 is treated as 100.
         self._equipmentIdentification = 0
@@ -158,7 +154,6 @@ class PlayerCharacter(p.Person):
         self._baseInventoryCapacity = p.Person.setFrom(argDict, 'startingInventoryCapacity', 0)
         self._equipmentCarryingCapacity = 0
         self.inventory = inventory.Inventory()
-                
         
         # Levelup stats
         self.levelupStrength = p.Person.setFrom(argDict, 'levelupStrength', p.Person.ERROR)
@@ -234,7 +229,6 @@ class PlayerCharacter(p.Person):
         self.attacksPerformed = [0,0] 
         # TODO: Need to update attacksPerformed each turn.  The previous turn's number of attacks is in position 0, this turn's
         # in position 1.  Need to also shift those at the end of each turn...        
-        
     
     def gainLevelUp(self):
         """Start the levelup process for acquiring a new level.  May need to
@@ -253,7 +247,15 @@ class PlayerCharacter(p.Person):
         self._baseMP += self.levelupMP
         
         # Select/Gain Trait: TODO
-        # Gain Combo Abilities: TODO
+        
+        self.abilities = []
+        for abil in ability.Ability.allAbilities:
+            current = ability.Ability.allAbilities[abil]
+            if current['class'] == self.characterClass:
+                if current['level'] == self.level:
+                    newAbil = ability.Ability(abil, self)
+                    self.abilities.append(newAbil)
+                    
         # Select/Gain Skill: TODO
         # Select/Gain Spell(s): TODO
     
@@ -792,17 +794,34 @@ class PlayerCharacter(p.Person):
             return True
         return False
     
+    def removeOnHitEffect(self, name, count):
+        for fx in self.onHitEffects:
+            if fx.name == name and fx.count == count:
+                self.onHitEffects.remove(fx)
+                return 
+                # Need to return immediately to remove exactly one fx.
+    
     def equip(self, newPiece):
         """Equips a piece of gear, and places any replaced gear in the inventory."""
-        oldPiece = self.equippedItems.equip(newPiece)
+        oldPieces = self.equippedItems.equip(newPiece)
+        oldPiece = oldPieces[0]
+        oldPiece2 = None
+        if len(oldPiece) > 1:
+            oldPiece2 = oldPieces[1]
+            
+        for prop in newPiece.propertyList:
+            prop.effect(self)   
         if newPiece.isinstance(equipment.Armor):
             self.equipmentDR += newPiece.DR
             self.equipmentStealth += newPiece.stealthMod
             self.equipmentDodge += newPiece.dodgeMod
         elif newPiece.isisntance(equipment.Weapon):
             pass
-            # TODO: Magical bonuses
-        if oldPiece: 
+            # Weapon stats are viewed on the weapon itself.
+            
+        if oldPiece:
+            for prop in oldPiece.propertyList:
+                prop.effect(self, reverse=True)   
             if oldPiece.isinstance(equipment.Armor):
                 self.equipmentDR -= oldPiece.DR
                 self.equipmentStealth -= oldPiece.stealthMod
@@ -810,6 +829,17 @@ class PlayerCharacter(p.Person):
             elif oldPiece.isinstance(equipment.Weapon):
                 pass
             self.inventory.allItems.append(oldPiece)
-        # TODO: Is this working for unequipping two weapons?
-        # TODO: Check to see if weight capacity has changed?            
+        if oldPiece2:
+            for prop in oldPiece2.propertyList:
+                prop.effect(self, reverse=True)         
+            if oldPiece2.isinstance(equipment.Armor):
+                self.equipmentDR -= oldPiece2.DR
+                self.equipmentStealth -= oldPiece2.stealthMod
+                self.equipmentDodge -= oldPiece2.dodgeMod
+            elif oldPiece2.isinstance(equipment.Weapon):
+                pass
+            self.inventory.allItems.append(oldPiece2)        
+        # TODO: Check to see if weight capacity has changed?
+
+        
          

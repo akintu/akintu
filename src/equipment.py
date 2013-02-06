@@ -92,6 +92,7 @@ class Armor(Equipment):
         if bonusSix:
             self.bonusTendencyList.append(bonusSix)
             
+        self.propertyList = []
         self.identifier = "TODO: " + self.name
         
         self.DRBonus = 0

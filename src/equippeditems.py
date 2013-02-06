@@ -19,7 +19,7 @@ class EquippedItems(object):
         self._moreRecentFinger = 'Left'
     
     def _equipArmor(self, newPiece):
-        oldPiece = None
+        oldPiece = []
         if newPiece.type == "Chest":
             oldPiece = self._allGear['Chest']
             self._allGear['Chest'] = newPiece
@@ -41,7 +41,7 @@ class EquippedItems(object):
         return [oldPiece]
     
     def _equipRing(self, newPiece, hand=None):
-        oldPiece = None
+        oldPiece = []
         if hand == "Left":
             oldPiece = self._allGear['Left Finger']
             self._allGear['Left Finger'] = newPiece
