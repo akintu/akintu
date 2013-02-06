@@ -79,6 +79,7 @@ class PlayerCharacter(p.Person):
         self.illusionResist = p.Person.setFrom(argDict, 'startingIllusionResist', 0)
                 
         
+        self.onHitEffects = []
         # TODO: Write method applyOnHitMod(name, *args)
         # TODO: Write method removeOnHitMod(name)
         # TODO: Write method hasExtraLengthBuffs() ?

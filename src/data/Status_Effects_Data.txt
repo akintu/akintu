@@ -1457,12 +1457,14 @@
   [ELEMENT: Poison]
   [INTERNAL: DR_penalty]
     [MAGNITUDE: 10]
+  [CATEGORY: Debuff]
 	
 [NAME: Holy Magic Weapon]
   [TYPE: Display]
   [ELEMENT: Divine]
   [INTERNAL: Elemental_vulnerability]
     [MAGNITUDE: 20]
+  [CATEGORY: Debuff]
 	
 [NAME: Ignite Magic Weapon]
   [TYPE: Display]
@@ -1475,6 +1477,7 @@
   [ELEMENT: Arcane]
   [INTERNAL: Movement_speed_penalty]
     [MAGNITUDE: 50]
+  [CATEGORY: Debuff]
 	
 [NAME: Toxic Magic Weapon]
   [TYPE: Display]
@@ -1484,6 +1487,55 @@
   [INTERNAL: Damage_over_time]
     [MAGNITUDE: 0]
 	
+[NAME: Weakening Fire Magic Weapon]
+  [TYPE: Display]
+  [ELEMENT: Fire]
+  [INTERNAL: Elemental_vulnerability]
+    [MAGNITUDE: 10]
+  [CATEGORY: Debuff]
+	
+[NAME: Weakening Cold Magic Weapon]
+  [TYPE: Display]
+  [ELEMENT: Cold]
+  [INTERNAL: Elemental_vulnerability]
+    [MAGNITUDE: 10]
+  [CATEGORY: Debuff]
+  
+[NAME: Weakening Electric Magic Weapon]
+  [TYPE: Display]
+  [ELEMENT: Electric]
+  [INTERNAL: Elemental_vulnerability]
+    [MAGNITUDE: 10]
+  [CATEGORY: Debuff]
+  
+[NAME: Weakening Poison Magic Weapon]
+  [TYPE: Display]
+  [ELEMENT: Poison]
+  [INTERNAL: Elemental_vulnerability]
+    [MAGNITUDE: 10]
+  [CATEGORY: Debuff]
+  
+[NAME: Weakening Divine Magic Weapon]
+  [TYPE: Display]
+  [ELEMENT: Divine]
+  [INTERNAL: Elemental_vulnerability]
+    [MAGNITUDE: 10]
+  [CATEGORY: Debuff]
+  
+[NAME: Weakening Shadow Magic Weapon]
+  [TYPE: Display]
+  [ELEMENT: Shadow]
+  [INTERNAL: Elemental_vulnerability]
+    [MAGNITUDE: 10]
+  [CATEGORY: Debuff]
+  
+[NAME: Weakening Arcane Magic Weapon]
+  [TYPE: Display]
+  [ELEMENT: Arcane]
+  [INTERNAL: Elemental_vulnerability]
+    [MAGNITUDE: 10]
+  [CATEGORY: Debuff]
+  
 # Display Effects -- Common
 
 [NAME: Stun]

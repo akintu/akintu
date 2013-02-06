@@ -4,8 +4,25 @@ import sys
 import dice
 
 class OnHitEffect(object):
-    def __init__(self):
-	    pass
+    def __init__(self, count, function, elementalDamageType=None):
+	    self.count = count
+        self.function = function,
+        self.element = elementalDamageType
+        if self.elementalDamageType in ['Bludgeoning', 'Slashing', 'Piercing']:
+            print "Invalid physical elemental damage type: " + self.elementalDamageType + "."
+        
+    def apply(self, source, target):
+        self.function(self.count, source, target)
+        
+    def applyElementalDamage(self, magnitude, source, target):
+        damage = 0
+        if self.elementalDamageType == "Poison":
+            damage = magnitude
+        elif self.elementalDamageType == "Divine":
+            damage = Dice.roll(magnitude, magnitude * 3)
+        else:
+            damage = Dice.roll(magnitude, magnitude * 2)
+        return [self.elementalDamageType, damage]
 		
     def applyAcidic(self, magnitude, source, target):
         # Magnitude determines chance.
@@ -88,7 +105,7 @@ class OnHitEffect(object):
         duration = 3
         magnitude = 15
         if Dice.rollBeneath(chance):
-            Combat.addStatus(taget, "Bleeding", duration, magnitude, overwrite=False)
+            Combat.addStatus(target, "Bleeding", duration, magnitude, overwrite=False)
         # TODO: Make different sources of bleeding stack.
         return None
         
@@ -114,5 +131,54 @@ class OnHitEffect(object):
             Combat.addStatus(target, "Toxic Magic Weapon", duration, damage)
         return None
     
+    def applyWeakeningFire(self, magnitude, source, target):
+        chance = magnitude
+        duration = 3
+        if Dice.rollBeneath(chance):
+            Combat.addStatus(target, "Weakening Fire Magic Weapon", duration)
+        return None
+        
+    def applyWeakeningCold(self, magnitude, source, target):
+        chance = magnitude
+        duration = 3
+        if Dice.rollBeneath(chance):
+            Combat.addStatus(target, "Weakening Cold Magic Weapon", duration)
+        return None        
+        
+    def applyWeakeningElectric(self, magnitude, source, target):
+        chance = magnitude
+        duration = 3
+        if Dice.rollBeneath(chance):
+            Combat.addStatus(target, "Weakening Electric Magic Weapon", duration)
+        return None
+        
+    def applyWeakeningPoison(self, magnitude, source, target):
+        chance = magnitude
+        duration = 3
+        if Dice.rollBeneath(chance):
+            Combat.addStatus(target, "Weakening Poison Magic Weapon", duration)
+        return None
+        
+    def applyWeakeningDivine(self, magnitude, source, target):
+        chance = magnitude
+        duration = 3
+        if Dice.rollBeneath(chance):
+            Combat.addStatus(target, "Weakening Divine Magic Weapon", duration)
+        return None
+        
+    def applyWeakeningShadow(self, magnitude, source, target):
+        chance = magnitude
+        duration = 3
+        if Dice.rollBeneath(chance):
+            Combat.addStatus(target, "Weakening Shadow Magic Weapon", duration)
+        return None
+        
+    def applyWeakeningArcane(self, magnitude, source, target):
+        chance = magnitude
+        duration = 3
+        if Dice.rollBeneath(chance):
+            Combat.addStatus(target, "Weakening Arcane Magic Weapon", duration)
+        return None
+        
     
     

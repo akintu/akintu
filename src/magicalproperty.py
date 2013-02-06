@@ -288,43 +288,71 @@ class MagicalProperty(object):
         bonusMin = self.count
         bonusMax = self.count * 2
         pass
-        #TODO: On Hit Effect Class
+        if not reverse:
+            hitEffect = onhiteffect.OnHitEffect(self.count, onhiteffect.applyElementalDamage, "Fire")
+            owner.onHitEffects.append(hitEffect)
+        else:
+            owner.unregisterOnHitEffect(self.count, onhiteffect.applyElementalDamage, "Fire")
 
     def _elementalDamageCold(self, owner, reverse=False):
         bonusMin = self.count
         bonusMax = self.count * 2
-        pass
-        #TODO: On Hit Effect Class
+        if not reverse:
+            hitEffect = onhiteffect.OnHitEffect(self.count, onhiteffect.applyElementalDamage, "Cold")
+            owner.onHitEffects.append(hitEffect)
+        else:
+            owner.unregisterOnHitEffect(self.count, onhiteffect.applyElementalDamage, "Cold")
+            # TODO Write unregisterOnHitEffect method in PlayerCharacter class.
         
     def _elementalDamageElectric(self, owner, reverse=False):
         bonusMin = self.count
         bonusMax = self.count * 2
         pass
-        #TODO: On Hit Effect Class
+        if not reverse:
+            hitEffect = onhiteffect.OnHitEffect(self.count, onhiteffect.applyElementalDamage, "Electric")
+            owner.onHitEffects.append(hitEffect)
+        else:
+            owner.unregisterOnHitEffect(self.count, onhiteffect.applyElementalDamage, "Electric")
 
     def _elementalDamagePoison(self, owner, reverse=False):
         bonusMin = self.count
         bonusMax = self.count
         pass
-        #TODO: On Hit Effect Class
+        if not reverse:
+            hitEffect = onhiteffect.OnHitEffect(self.count, onhiteffect.applyElementalDamage, "Poison")
+            owner.onHitEffects.append(hitEffect)
+        else:
+            owner.unregisterOnHitEffect(self.count, onhiteffect.applyElementalDamage, "Poison")
     
     def _elementalDamageShadow(self, owner, reverse=False):
         bonusMin = self.count
         bonusMax = self.count * 2
         pass
-        #TODO: On Hit Effect Class
+        if not reverse:
+            hitEffect = onhiteffect.OnHitEffect(self.count, onhiteffect.applyElementalDamage, "Shadow")
+            owner.onHitEffects.append(hitEffect)
+        else:
+            owner.unregisterOnHitEffect(self.count, onhiteffect.applyElementalDamage, "Shadow")
         
     def _elementalDamageDivine(self, owner, reverse=False):
         bonusMin = self.count
         bonusMax = self.count * 3
         pass
-        #TODO: On Hit Effect Class
+        if not reverse:
+            hitEffect = onhiteffect.OnHitEffect(self.count, onhiteffect.applyElementalDamage, "Divine")
+            owner.onHitEffects.append(hitEffect)
+        else:
+            owner.unregisterOnHitEffect(self.count, onhiteffect.applyElementalDamage, "Divine")
 
     def _elementalDamageArcane(self, owner, reverse=False):
         bonusMin = self.count
         bonusMax = self.count * 2
         pass
-        #TODO: On Hit Effect Class   
+        if not reverse:
+            hitEffect = onhiteffect.OnHitEffect(self.count, onhiteffect.applyElementalDamage, "Arcane")
+            owner.onHitEffects.append(hitEffect)
+        else:
+            owner.unregisterOnHitEffect(self.count, onhiteffect.applyElementalDamage, "Arcane")
         
     def _elementalResistanceFire(self, owner, reverse=False):
         bonus = self.count
