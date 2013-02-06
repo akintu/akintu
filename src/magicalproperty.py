@@ -3,6 +3,7 @@
 import sys
 import equipment
 import dice
+import onhiteffect
 
 class MagicalProperty(object):
 
@@ -18,8 +19,24 @@ class MagicalProperty(object):
         self.exclusion = argDict['exclusion']
         self.categories = argDict['categories']
         self.goldMod = argDict['goldMod']
-        self.count = count
+        self._count = count
+        self.item = item
+        
+        self.itemIsTwoHanded = False
+        if (item.isinstance(equipment.Weapon) and item.type == "Two Handed" or
+           item.type == "Two-Handed"):
+            self.itemIsTwoHanded = True
+                    
 
+    @property
+    def count(self):
+        if self.doubled and self.itemIsTwoHanded:
+            return min(self._count * 2, self.max)
+            
+    @count.setter
+    def count(self, value):
+        self._count = value
+            
     @staticmethod
     def generateProperties(item, ipScore):
         ''' Rolls a list of properties for a normal treasure chest,
@@ -32,6 +49,10 @@ class MagicalProperty(object):
         if not MagicalProperty.fullList:
             MagicalProperty.cacheList()
         ip = ipScore + item.bonusMod
+        if item.type == "Finger":
+            ip *= 2
+        elif item.type == "Neck": 
+            ip *= 3
         if ip <= 0:
             return []
         subList = MagicalProperty.getFilledList(item)
@@ -78,7 +99,7 @@ class MagicalProperty(object):
                     continue
                 currentProperty = chosenList[position]
                 thisIp = currentProperty.weight
-                if thisIp > ip or currentProperty.count == currentProperty.max:
+                if thisIp > ip or currentProperty.count >= currentProperty.max:
                     position += 1
                 else:
                     ip -= thisIp
@@ -512,7 +533,145 @@ class MagicalProperty(object):
         else:
             owner.equipmentSpellpower -= bonus
             
+    def _registerAcidic(self, owner, reverse=False):
+        if not reverse:
+            onHit = onhiteffect.OnHitEffect(self.count, onhiteffect.applyAcidic)
+            owner.onHitEffects.append(onHit)
+        else:
+            owner.removeOnHitEffect(self.name, self.count)
             
+    def _registerEvil(self, owner, reverse=False):
+        if not reverse:
+            onHit = onhiteffect.OnHitEffect(self.count, onhiteffect.applyEvil)
+            owner.onHitEffects.append(onHit)
+        else:
+            owner.removeOnHitEffect(self.name, self.count)
+         
+    def _registerHoly(self, owner, reverse=False):
+        if not reverse:
+            onHit = onhiteffect.OnHitEffect(self.count, onhiteffect.applyHoly)
+            owner.onHitEffects.append(onHit)
+        else:
+            owner.removeOnHitEffect(self.name, self.count)
+
+    def _registerIgnite(self, owner, reverse=False):
+        if not reverse:
+            onHit = onhiteffect.OnHitEffect(self.count, onhiteffect.applyIgnite)
+            owner.onHitEffects.append(onHit)
+        else:
+            owner.removeOnHitEffect(self.name, self.count)
+            
+    def _registerSlowing(self, owner, reverse=False):
+        if not reverse:
+            onHit = onhiteffect.OnHitEffect(self.count, onhiteffect.applySlowing)
+            owner.onHitEffects.append(onHit)
+        else:
+            owner.removeOnHitEffect(self.name, self.count)
+            
+    def _registerSpellhunger(self, owner, reverse=False):
+        if not reverse:
+            onHit = onhiteffect.OnHitEffect(self.count, onhiteffect.applySpellhunger)
+            owner.onHitEffects.append(onHit)
+        else:
+            owner.removeOnHitEffect(self.name, self.count)
+            
+    def _registerStunning(self, owner, reverse=False):
+        if not reverse:
+            onHit = onhiteffect.OnHitEffect(self.count, onhiteffect.applyStunning)
+            owner.onHitEffects.append(onHit)
+        else:
+            owner.removeOnHitEffect(self.name, self.count)
+            
+    def _registerMinorBleeding(self, owner, reverse=False):
+        if not reverse:
+            onHit = onhiteffect.OnHitEffect(self.count, onhiteffect.applyMinorBleeding)
+            owner.onHitEffects.append(onHit)
+        else:
+            owner.removeOnHitEffect(self.name, self.count)
+            
+    def _registerModerateBleeding(self, owner, reverse=False):
+        if not reverse:
+            onHit = onhiteffect.OnHitEffect(self.count, onhiteffect.applyModerateBleeding)
+            owner.onHitEffects.append(onHit)
+        else:
+            owner.removeOnHitEffect(self.name, self.count)
+            
+    def _registerSeriousBleeding(self, owner, reverse=False):
+        if not reverse:
+            onHit = onhiteffect.OnHitEffect(self.count, onhiteffect.applySeriousBleeding)
+            owner.onHitEffects.append(onHit)
+        else:
+            owner.removeOnHitEffect(self.name, self.count)   
+         
+    def _registerHealthSteal(self, owner, reverse=False):
+        if not reverse:
+            onHit = onhiteffect.OnHitEffect(self.count, onhiteffect.applyHealthSteal)
+            owner.onHitEffects.append(onHit)
+        else:
+            owner.removeOnHitEffect(self.name, self.count)
+            
+    def _registerManaSteal(self, owner, reverse=False):
+        if not reverse:
+            onHit = onhiteffect.OnHitEffect(self.count, onhiteffect.applyManaSteal)
+            owner.onHitEffects.append(onHit)
+        else:
+            owner.removeOnHitEffect(self.name, self.count)
+            
+    def _registerToxic(self, owner, reverse=False):
+        if not reverse:
+            onHit = onhiteffect.OnHitEffect(self.count, onhiteffect.applyToxic)
+            owner.onHitEffects.append(onHit)
+        else:
+            owner.removeOnHitEffect(self.name, self.count)
+            
+    def _registerWeakeningFire(self, owner, reverse=False):
+        if not reverse:
+            onHit = onhiteffect.OnHitEffect(self.count, onhiteffect.applyWeakeningFire)
+            owner.onHitEffects.append(onHit)
+        else:
+            owner.removeOnHitEffect(self.name, self.count)
+
+    def _registerWeakeningCold(self, owner, reverse=False):
+        if not reverse:
+            onHit = onhiteffect.OnHitEffect(self.count, onhiteffect.applyWeakeningCold)
+            owner.onHitEffects.append(onHit)
+        else:
+            owner.removeOnHitEffect(self.name, self.count)            
+            
+    def _registerWeakeningElectric(self, owner, reverse=False):
+        if not reverse:
+            onHit = onhiteffect.OnHitEffect(self.count, onhiteffect.applyWeakeningElectric)
+            owner.onHitEffects.append(onHit)
+        else:
+            owner.removeOnHitEffect(self.name, self.count)
+            
+    def _registerWeakeningPoison(self, owner, reverse=False):
+        if not reverse:
+            onHit = onhiteffect.OnHitEffect(self.count, onhiteffect.applyWeakeningPoison)
+            owner.onHitEffects.append(onHit)
+        else:
+            owner.removeOnHitEffect(self.name, self.count)
+            
+    def _registerWeakeningDivine(self, owner, reverse=False):
+        if not reverse:
+            onHit = onhiteffect.OnHitEffect(self.count, onhiteffect.applyWeakeningDivine)
+            owner.onHitEffects.append(onHit)
+        else:
+            owner.removeOnHitEffect(self.name, self.count)
+            
+    def _registerWeakeningShadow(self, owner, reverse=False):
+        if not reverse:
+            onHit = onhiteffect.OnHitEffect(self.count, onhiteffect.applyWeakeningShadow)
+            owner.onHitEffects.append(onHit)
+        else:
+            owner.removeOnHitEffect(self.name, self.count)
+            
+    def _registerWeakeningArcane(self, owner, reverse=False):
+        if not reverse:
+            onHit = onhiteffect.OnHitEffect(self.count, onhiteffect.applyWeakeningArcane)
+            owner.onHitEffects.append(onHit)
+        else:
+            owner.removeOnHitEffect(self.name, self.count)
             
     allProperties = {
         'AP':
@@ -615,8 +774,8 @@ class MagicalProperty(object):
             'goldMod' : 35
             },
         'Damage':
-            {
-            'weight' : 40,
+            {# TODO, apply on item generation, adjust gold value and remove from list. 
+            'weight' : 50,
             'cost' : 'Varies',
             'effect' : _damage,
             'max' : None,
@@ -626,8 +785,8 @@ class MagicalProperty(object):
             'goldMod' : 40
             },
         'DR':
-            {
-            'weight' : 40,
+            {# TODO, apply on item generation, adjust gold value and remove from list. 
+            'weight' : 50,
             'cost' : 'Varies',
             'effect' : _DR,
             'max' : None,
@@ -933,17 +1092,6 @@ class MagicalProperty(object):
             'categories' : ['Wizard'],
             'goldMod' : 50
             },
-        # 'Mana on Impact':
-            # {
-            # 'weight' : 8,
-            # 'cost' : 2,
-            # 'effect' : _manaOnImpact,
-            # 'max' : None,
-            # 'doubled' : False,
-            # 'exclusion' : 'Armor Only',
-            # 'categories' : ['Wizard'],
-            # 'goldMod' : 125
-            # },
         'Melee Accuracy':
             {
             'weight' : 10,
@@ -1097,10 +1245,225 @@ class MagicalProperty(object):
             'exclusion' : None,
             'categories' : ['Thief', 'Ranger'],
             'goldMod' : 12
+            },
+        'Acidic':
+            {
+            'weight' : 5,
+            'cost' : 2,
+            'effect' : _registerAcidic,
+            'max' : None,
+            'doubled' : False,
+            'exclusion' : 'Weapon Only',
+            'categories' : ['On Hit'],
+            'goldMod' : 12
+            },
+        'Evil':
+            {
+            'weight' : 2,
+            'cost' : 10,
+            'effect' : _registerEvil,
+            'max' : None,
+            'doubled' : False,
+            'exclusion' : 'Weapon Only',
+            'categories' : ['On Hit'],
+            'goldMod' : 180
+            },
+        'Holy':
+            {
+            'weight' : 2,
+            'cost' : 10,
+            'effect' : _registerHoly,
+            'max' : 30,
+            'doubled' : False,
+            'exclusion' : 'Weapon Only',
+            'categories' : ['On Hit'],
+            'goldMod' : 180
+            },
+        'Ignite':
+            {
+            'weight' : 5,
+            'cost' : 7,
+            'effect' : _registerIgnite,
+            'max' : None,
+            'doubled' : False,
+            'exclusion' : 'Weapon Only',
+            'categories' : ['On Hit'],
+            'goldMod' : 55
+            },
+        'Slowing':
+            {
+            'weight' : 5,
+            'cost' : 2,
+            'effect' : _registerSlowing,
+            'max' : None,
+            'doubled' : False,
+            'exclusion' : 'Weapon Only',
+            'categories' : ['On Hit'],
+            'goldMod' : 35
+            },
+        'Spellhunger':
+            {
+            'weight' : 5,
+            'cost' : 1,
+            'effect' : _registerSpellhunger,
+            'max' : None,
+            'doubled' : False,
+            'exclusion' : 'Weapon Only',
+            'categories' : ['On Hit'],
+            'goldMod' : 12
+            },
+        'Stunning':
+            {
+            'weight' : 5,
+            'cost' : 5,
+            'effect' : _registerStunning,
+            'max' : 20,
+            'doubled' : False,
+            'exclusion' : 'Weapon Only',
+            'categories' : ['On Hit'],
+            'goldMod': 45
+            },
+        'Minor Bleeding':
+            {
+            'weight' : 5,
+            'cost' : 2,
+            'effect' : _registerMinorBleeding,
+            'max' : None,
+            'doubled' : False,
+            'exclusion' : 'Weapon Only',
+            'categories' : ['On Hit'],
+            'goldMod' : 18
+            },
+        'Moderate Bleeding':
+            {
+            'weight' : 4,
+            'cost' : 5,
+            'effect' : _registerModerateBleeding,
+            'max' : None,
+            'doubled' : False,
+            'exclusion' : 'Weapon Only',
+            'categories' : ['On Hit'],
+            'goldMod' : 60
+            },
+        'Serious Bleeding':
+            {
+            'weight' : 3,
+            'cost' : 11,
+            'effect' : _registerSeriousBleeding,
+            'max' : None,
+            'doubled' : False,
+            'exclusion': 'Weapon Only',
+            'categories' : ['On Hit'],
+            'goldMod' : 200
+            },
+        'Health Steal':
+            {
+            'weight' : 5,
+            'cost' : 2,
+            'effect' : _registerHealthSteal,
+            'max' : None,
+            'doubled' : False,
+            'exclusion' : 'Weapon Only',
+            'categories' : ['On Hit'],
+            'goldMod' : 60
+            },
+        'Mana Steal':
+            {
+            'weight' : 5,
+            'cost' : 3,
+            'effect' : _registerManaSteal,
+            'max' : None,
+            'doubled' : False,
+            'exclusion' : Weapon Only',
+            'categories' : ['On Hit'],
+            'goldMod' : 50
+            },
+        'Toxic':
+            {
+            'weight' : 5,
+            'cost' : 3,
+            'effect' : _registerToxic,
+            'max' : None,
+            'doubled' : False,
+            'exclusion' : 'Weapon Only',
+            'categories' : ['On Hit'],
+            'goldMod' : 40
+            },
+        'Weakening: Fire':
+            {
+            'weight' : 4,
+            'cost' : 1,
+            'effect' : _registerWeakeningFire,
+            'max' : 100,
+            'doubled' : False,
+            'exclusion' : 'Weapon Only',
+            'categories' : ['On Hit'],
+            'goldMod' : 10
+            },
+        'Weakening: Cold':
+            {
+            'weight' : 4,
+            'cost' : 1,
+            'effect' : _registerWeakeningCold,
+            'max' : 100,
+            'doubled' : False,
+            'exclusion' : 'Weapon Only',
+            'categories' : ['On Hit'],
+            'goldMod' : 10
+            },
+        'Weakening: Electric':
+            {
+            'weight' : 4,
+            'cost' : 1,
+            'effect' : _registerWeakeningElectric,
+            'max' : 100,
+            'doubled' : False,
+            'exclusion' : 'Weapon Only',
+            'categories' : ['On Hit'],
+            'goldMod' : 10
+            },
+        'Weakening: Poison':
+            {
+            'weight' : 4,
+            'cost' : 1,
+            'effect' : _registerWeakeningPoison,
+            'max' : 100,
+            'doubled' : False,
+            'exclusion' : 'Weapon Only',
+            'categories' : ['On Hit'],
+            'goldMod' : 10
+            },        
+        'Weakening: Divine':
+            {
+            'weight' : 4,
+            'cost' : 1,
+            'effect' : _registerWeakeningDivine,
+            'max' : 100,
+            'doubled' : False,
+            'exclusion' : 'Weapon Only',
+            'categories' : ['On Hit'],
+            'goldMod' : 10
+            },
+        'Weakening: Shadow':
+            {
+            'weight' : 4,
+            'cost' : 1,
+            'effect' : _registerWeakeningShadow,
+            'max' : 100,
+            'doubled' : False,
+            'exclusion' : 'Weapon Only',
+            'categories' : ['On Hit'],
+            'goldMod' : 10
+            },
+        'Weakening: Arcane':
+            {
+            'weight' : 4,
+            'cost' : 1,
+            'effect' : _registerWeakeningArcane,
+            'max' : 100,
+            'doubled' : False,
+            'exclusion' : 'Weapon Only',
+            'categories' : ['On Hit'],
+            'goldMod' : 10
             }
-        
-            
-            
-            
-            
     }

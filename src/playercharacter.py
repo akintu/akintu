@@ -81,8 +81,7 @@ class PlayerCharacter(p.Person):
         
         self.onHitEffects = []
         # TODO: Write method applyOnHitMod(name, *args)
-        # TODO: Write method removeOnHitMod(name)
-        # TODO: Write method hasExtraLengthBuffs() ?
+        # TODO: Write method removeOnHitEffect(name, count)
          
         # Intrinsic properties
          
@@ -118,6 +117,7 @@ class PlayerCharacter(p.Person):
         self._ninjaStyle = None
         if (self.characterClass == "Ninja"):
             self._ninjaStyle = "Tiger" # TODO: Apply Tiger passives on startup.
+        
 
         # --- Kahajit Race ---
         # Worry about whether we are 'outside' or not in the Combat class, perhaps? TODO
@@ -785,6 +785,12 @@ class PlayerCharacter(p.Person):
     @equipmentShopBonus.setter
     def equipmentShopBonus(self, value):
         self._equipmentShopBonus = value
+    
+    @property
+    def hasExtraLengthBuffs(self):
+        if self.totalSorcery >= 50:
+            return True
+        return False
     
     def equip(self, newPiece):
         """Equips a piece of gear, and places any replaced gear in the inventory."""

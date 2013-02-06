@@ -4,6 +4,8 @@ import sys
 import dice
 import combat
 import entity as e
+import magicalproperty
+import copy
 
 class Equipment(e.Entity):
 
@@ -27,6 +29,34 @@ class Equipment(e.Entity):
         self.identifier = "TODO"
         self.bonusTendencyList = None        
     
+    def cloneWithMagicalProperties(self, propertyList):
+        """Method applys magical properties to a clone of the item according 
+        to the properties passed to it.  This method will not select which
+        properties are given.  This method WILL adjust the gold value,
+        possibly the damage Min and Max, and definitely the 'identifier'.
+        Inputs:
+          propertyList -- MagicalProperty[]; the list of properties to apply
+        Outputs:
+          Weapon"""
+        newIdentifier = self.name
+        goldModSum = 0
+        for property in propertyList:
+            goldModSum += property.goldMod * property.count
+            newIdentifier += " ; mProp: " + property.name + " count: " + property.count  
+
+        newCopy = copy.copy(self)
+        newCopy.goldValue = round(self.goldValue * (1 + goldModSum / 100))
+        newCopy.identifier = newIdentifier
+        for property in propertyList:
+            property.item = newCopy
+            if property.name == "Damage":
+                property.effect(None) # No 'Owner' needed, thus None is passed.
+            elif property.name == "DR":
+                property.effect(None) # No 'Owner' needed, thus None is passed.       
+        newPropertyList = [x for x in propertyList if x.name != "Damage" and x.name != "DR"]
+        newCopy.propertyList = newPropertyList
+        return newCopy
+        
 class Armor(Equipment):
     def __init__(self, argDict):
         Equipment.__init__(self, argDict['name'], argDict['goldValue'], argDict['weight'])
@@ -107,21 +137,13 @@ class Weapon(Equipment):
         self.bonusMod = bonusMod
         self.range = range
         self.identifier = "TODO: " + self.name
+        self.propertyList = []
         
         self.damageMinBonus = 0
         self.damageMaxBonus = 0
         
-    def cloneWithMagicalProperties(self, propertyList):
-        """Method applys magical properties to a clone of the item according 
-        to the properties passed to it.  This method will not select which
-        properties are given.  This method WILL adjust the gold value,
-        possibly the damage Min and Max, and definitely the 'identifier'.
-        Inputs:
-          propertyList -- MagicalProperty[]; the list of properties to apply
-        Outputs:
-          Weapon"""
-        pass 
-        #TODO
+
+        
         
         
         

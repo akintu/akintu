@@ -1,5 +1,6 @@
 # Armor_Data.txt
 # Includes encodings for armor without magical enchantments present.
+# Remember that the IP value for Rings is doubled in the code, and that the IP value for Amulets is tripled.
 
 [Name: Platemail Breastplate]
 [Bonus Mod: -4]
@@ -408,4 +409,38 @@
 [Type: Shield]
 [Grade: Medium]
 [Weight: 5]
+
+[Name: Ring]
+[Bonus Mod: 3]
+[Bonus Tendency: 1: None]
+[Bonus Tendency: 1: None]
+[Bonus Tendency: 1: None]
+[Bonus Tendency: 1: None]
+[Bonus Tendency: 1: None]
+[Bonus Tendency: 1: None]
+[Dodge Mod: 0]
+[DR: 0]
+[DR Gradient: 0,0]
+[Gold Value: 200]
+[Stealth Mod: 0]
+[Type: Finger]
+[Grade: Robes]
+[Weight: 0]
+
+[Name: Amulet]
+[Bonus Mod: 3]
+[Bonus Tendency: 1: None]
+[Bonus Tendency: 1: None]
+[Bonus Tendency: 1: None]
+[Bonus Tendency: 1: None]
+[Bonus Tendency: 1: None]
+[Bonus Tendency: 1: None]
+[Dodge Mod: 0]
+[DR: 0]
+[DR Gradient: 0,0]
+[Gold Value: 250]
+[Stealth Mod: 0]
+[Type: Neck]
+[Grade: Robes]
+[Weight: 0]
 

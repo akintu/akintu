@@ -532,41 +532,74 @@ class Combat(object):
             # Enemy still counters
             Combat._shoutAttackComplete(source, target, noCounter) 
             return
-        
         # TODO: Barehands...
-        weaponOne = source.equippedItem.equippedWeapon
-        weaponTwo = None
-        if not source.usingWeaponStyle("Dual"):
-            pass
-        else:
-            weaponTwo = source.equippedItem.equippedOffHand
-
+        wepon = source.equippedItem.equippedWeapon
         effectiveForce = source.totalForce * forceMod
         if( source.usingWeapon(ranged) ):
             effectiveForce *= 1 + (source.totalRangedForce / 100)
-        effectiveMight = round(Dice.rollFloat(0.5, 1.0) * (source.totalMight + mightMod) * (effectiveForce / 100))
-           
+        effectiveMight = round(Dice.rollFloat(0.5, 1.0) * (source.totalMight + mightMod) * (effectiveForce / 100))       
         effectiveDR = min(80, max(0, target.totalDR - (armorPenetrationMod + source.totalArmorPenetration)))
-        
-        outgoingDamage = Dice.roll(weaponOne.damageMin, weaponOne.damageMax) * (1 - (effectiveDR / 100))
+        outgoingDamage = (Dice.roll(weapon.damageMin + weapon.damageMinBonus, 
+                                    weapon.damageMax + weapon.damageMaxBonus) * 
+                         (1 - (effectiveDR / 100)))
         outgoingDamage *= overallDamageMod
         
         if hitType == "Critical Hit":
-            outgoingDamage += outgoingDamage * criticalDamageMod * weaponOne.criticalMultiplier / 100
-            
-        if weaponOne.damageType == "Bludgeoning":
-            outgoingDamage *= (1 - (target.totalBludgeoningResistance / 100))
-        elif weaponOne.damageType == "Piercing":
-            outgoingDamage *= (1 - (target.totalPiercingResistance / 100))
-        elif weaponOne.damageType == "Slashing":
-            outgoingDamage *= (1 - (target.totalSlashingResistance / 100))
-        # TODO: Deal with dual-type weapons
-        
-        # TODO: worry about poisonRating, other elemental damage, counterattacks, on-hit-effects,
-        # TODO: and elementalOverride.        
-        
-        target.lowerHP(outgoingDamage)
+            outgoingDamage += outgoingDamage * criticalDamageMod * weapon.criticalMultiplier / 100
+
+        elementalEffects = Combat.applyOnHitEffects(source, target)
+        if elementOverride:
+            # Treat all damage thus far as elemental.
+            elementalEffects.append([elementOverride, outgoingDamage])
+            outgoingDamage = 0
+        else:
+            if weapon.damageType == "Bludgeoning":
+                outgoingDamage *= (1 - (target.totalBludgeoningResistance / 100))
+            elif weapon.damageType == "Piercing":
+                outgoingDamage *= (1 - (target.totalPiercingResistance / 100))
+            elif weapon.damageType == "Slashing":
+                outgoingDamage *= (1 - (target.totalSlashingResistance / 100))
+        # TODO: Deal with dual-type weapons    
+        totalDamage = Combat.sumElementalEffects(elementalEffects, elementOverride) + outgoingDamage     
+     
+        target.lowerHP(totalDamage)
         Combat._shoutAttackComplete(source, target, noCounter) 
+        
+    @staticmethod
+    def sumElementalEffects(elementalEffects, overrideElement=None):
+        damSum = 0
+            for duple in elementalEffects:
+                if overrideElement:
+                    duple[0] = overrideElement
+                if duple[0] == "Arcane":
+                    currentDamage = round(duple[1] * (1 + source.totalArcaneBonusDamage / 100))
+                    currentDamage = round(currentDamage * (1 - target.totalArcaneResistance / 100))
+                    damSum += currentDamage
+                elif duple[0] == "Cold":
+                    currentDamage = round(duple[1] * (1 + source.totalColdBonusDamage / 100))
+                    currentDamage = round(currentDamage * (1 - target.totalColdResistance / 100))
+                    damSum += currentDamage                
+                elif duple[0] == "Divine":
+                    currentDamage = round(duple[1] * (1 + source.totalDivineBonusDamage / 100))
+                    currentDamage = round(currentDamage * (1 - target.totalDivineResistance / 100))
+                    damSum += currentDamage
+                elif duple[0] == "Electric":
+                    currentDamage = round(duple[1] * (1 + source.totalElectricBonusDamage / 100))
+                    currentDamage = round(currentDamage * (1 - target.totalElectricResistance / 100))
+                    damSum += currentDamage
+                elif duple[0] == "Fire":
+                    currentDamage = round(duple[1] * (1 + source.totalFireBonusDamage / 100))
+                    currentDamage = round(currentDamage * (1 - target.totalFireResistance / 100))
+                    damSum += currentDamage
+                elif duple[0] == "Poison":
+                    currentDamage = round(duple[1] * (1 + source.totalPoisonBonusDamage / 100))
+                    currentDamage = round(currentDamage * (1 - target.totalPoisonResistance / 100))
+                    damSum += currentDamage
+                elif duple[0] == "Shadow":
+                    currentDamage = round(duple[1] * (1 + source.totalShadowBonusDamage / 100))
+                    currentDamage = round(currentDamage * (1 - target.totalShadowResistance / 100))
+                    damSum += currentDamage
+        return damSum
         
     @staticmethod
     def setMovementCost(target, newCost, numberOfMoves=1, duration=-1, inStealth=False):
@@ -710,7 +743,17 @@ class Combat(object):
         total = round(amount * (1 + source.healingBonus/100))
         # Listeners here? TODO
         Combat.modifyResource(target, "HP", total)
-        
+     
+    @staticmethod
+    def elementalEffects = []
+        ee = []
+        for effect in source.onHitEffects:
+            if "On Hit" in effect.categories:
+                duple = effect.apply(source, target)
+                if duple:
+                    ee.append(duple)
+        return ee
+     
     @staticmethod
     def _shoutAttackStart(source, target):
         direction = "Outgoing"
