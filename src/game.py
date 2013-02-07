@@ -61,6 +61,8 @@ class Game(object):
                     self.SDF.send(port, CreatePerson(i, l))
             if isinstance(command, MovePerson):
                 if self.passable(command.dest):
+                    if command.dest.pane not in self.allPeople:
+                        self.allPeople[command.dest.pane] = list()
                     self.allPeople[command.dest.pane][command.index] = command.dest
                     for p, l in self.players.iteritems():
                         if command.dest.pane == l.pane:
@@ -146,7 +148,9 @@ class Game(object):
         if not tupleloc in self.pane.tiles:
             return False
         if newloc.pane == self.player['location'].pane:
-            if not self.pane.tiles[tupleloc].passable:
+            #if not self.pane.tiles[tupleloc].passable:
+            #print self.pane.is_tile_passable(newloc)
+            if not self.pane.is_tile_passable(newloc):
                 return False
             tile = self.pane.tiles[tupleloc]
             for ent in tile.entities:
@@ -155,5 +159,6 @@ class Game(object):
         return True
 
     def switch_panes(self, location):
+        #TODO we can add transitions here.
         self.pane, imagedict = self.world.get_pane(location.pane)
         self.screen.set_pane(self.pane, imagedict)
