@@ -29,15 +29,16 @@ class Equipment(e.Entity):
         self.identifier = "TODO"
         self.bonusTendencyList = None        
     
-    def cloneWithMagicalProperties(self, propertyList):
-        """Method applys magical properties to a clone of the item according 
-        to the properties passed to it.  This method will not select which
-        properties are given.  This method WILL adjust the gold value,
+    def cloneWithMagicalProperties(self, ip):
+        """Method applys random magical properties.  This method WILL adjust the gold value,
         possibly the damage Min and Max, and definitely the 'identifier'.
         Inputs:
-          propertyList -- MagicalProperty[]; the list of properties to apply
+          ip -- int; the number of item points to use when determining the magical properties
+                     of this item.
         Outputs:
-          Weapon"""
+          Equipment of the same type as was input (as self)"""
+        propertyList = magicalproperty.MagicalProperty.generateProperties(self, ip)
+          
         newIdentifier = self.name
         goldModSum = 0
         for property in propertyList:

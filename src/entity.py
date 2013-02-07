@@ -3,7 +3,7 @@
 import sys
 
 class Entity(object):
-    def __init__(self, team="Neutral", location=None, directionFacing=None, image=None):
+    def __init__(self, location=None, team="Neutral", directionFacing=None, image=None):
         self.location = location
         self.directionFacing = directionFacing
         team = team.capitalize()

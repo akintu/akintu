@@ -776,6 +776,7 @@
   [ELEMENT: None]
   [INTERNAL: Bleeding]
     [MAGNITUDE: 10]
+  [CATEGORY: Bleeding]
 	
 [NAME: Restful Jump Attack]
   [TYPE: Display]
@@ -930,7 +931,7 @@
 [NAME: Deep Wound]
   [TYPE: Display]
   [ELEMENT: None]
-  [INTERNAL: Bleed]
+  [INTERNAL: Bleeding]
     [MAGNITUDE: 10]
 	
 [NAME: Painful Shot]
@@ -1112,7 +1113,7 @@
 [NAME: Risky Shot]
   [TYPE: Display]
   [ELEMENT: None]
-  [INTERNAL: Bleed]
+  [INTERNAL: Bleeding]
     [MAGNITUDE: 5]
   [INTERNAL: Attack_power_penalty]
     [MAGNITUDE: 5]
@@ -1413,8 +1414,9 @@
 [NAME: Bleeding Backstab]
   [TYPE: Display]
   [ELEMENT: None]
-  [INTERNAL: Bleed]
+  [INTERNAL: Bleeding]
     [MAGNITUDE: 3]
+  [CATEGORY: Bleeding]
 	
 # Display Effects -- Battlemage Passives
 
@@ -1549,6 +1551,7 @@
   [ELEMENT: None]
   [INTERNAL: Bleeding]
     [MAGNITUDE: 0]
+  [CATEGORY: Bleeding]
 	
 	
 	

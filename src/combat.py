@@ -354,7 +354,7 @@ class Combat(object):
           None"""
         removalCandidates = []
         for dStatus in target.statusList:
-            if category in dStatus.caterogyList:
+            if category in dStatus.caterogyList or category == dStatus.element:
                 removalCandidates.add(dStatus)
         
         if removalCandidates:

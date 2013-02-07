@@ -841,5 +841,8 @@ class PlayerCharacter(p.Person):
             self.inventory.allItems.append(oldPiece2)        
         # TODO: Check to see if weight capacity has changed?
 
-        
+    
+    
+    
+    
          
