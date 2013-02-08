@@ -35,7 +35,7 @@ class ServerData(LineReceiver):
 
     def lineReceived(self, data):
         data = cPickle.loads(data)
-        print("Server recv from " + str(self.port) + "> " + str(data))
+        print("S " + str(self.port) + "> " + str(data))
         self.factory.queue.put((self.port, data))
 
 class ServerDataFactory(Factory):
@@ -78,7 +78,7 @@ class ClientData(LineReceiver):
         if self.factory.port is None:
             self.factory.port = data
         else:
-            print("Client recv> " + str(data))
+            print("Client> " + str(data))
             self.factory.queue.put(data)
 
 class ClientDataFactory(Factory):
