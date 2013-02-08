@@ -1,12 +1,16 @@
 #!/usr/bin/python
 
 import sys
-import dice
+from dice import *
+from combat import *
 
 class OnHitEffect(object):
     def __init__(self, count, function, elementalDamageType=None):
 	    self.count = count
-        self.function = function,
+        self.function = function
+        self.name = str(function).replace("apply", "")
+        if elementalDamageType:
+            self.name += " " + elementalDamageType
         self.element = elementalDamageType
         if self.elementalDamageType in ['Bludgeoning', 'Slashing', 'Piercing']:
             print "Invalid physical elemental damage type: " + self.elementalDamageType + "."
@@ -180,5 +184,20 @@ class OnHitEffect(object):
             Combat.addStatus(target, "Weakening Arcane Magic Weapon", duration)
         return None
         
+    def applyMageHunting(self, magnitude, source, target):
+        success = Dice.rollPreset(source, target, "Frequent")
+        if success and target.MP > 0:
+            duration = 3
+            Combat.addStatus(target, "Hunted", duration, magnitude)
+        return None
+
+    def applyFlatElementalDamage(self, magnitude, source, target):
+        return [self.element, magnitude]
+        
+    def applyFlamingWeapon(self, magnitude, source, target):
+        
+    
+    
+    
     
     

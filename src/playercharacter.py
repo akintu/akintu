@@ -796,7 +796,7 @@ class PlayerCharacter(p.Person):
     
     def removeOnHitEffect(self, name, count):
         for fx in self.onHitEffects:
-            if fx.name == name and fx.count == count:
+            if fx.name.lower() == name.lower() and fx.count == count:
                 self.onHitEffects.remove(fx)
                 return 
                 # Need to return immediately to remove exactly one fx.

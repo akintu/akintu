@@ -109,7 +109,8 @@ class Consumable(entity.Entity):
         bonus = 20 * (1 + user.totalPoisonBonusDamage/100)
         base = Consumable._calcWeaponAverageDamage(user.equippedItems.equippedWeapon)
         total = round(bonus/100 * base)
-        # TODO: Add poison bonus damage status effect.
+        duration = 8
+        Combat.addStatus(user, "Applied Basic Poison", duration, total)
         
     # Poisons go above
     # Scrolls, effusions, oils go here...

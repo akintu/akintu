@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import sys
+import onhiteffect
 
 # The lifetime of a Status object:
 #   1. Status is loaded into memory from the data file on game startup.
@@ -191,10 +192,13 @@ def No_turn_method(self, target, magnitude):
 
 def On_hit_cripple_weapon_method(target, chance, conditional, magnitude):
     target.applyOnHitMod('On_hit_cripple_weapon', conditional, chance, magnitude)
-
+    
 def On_hit_frost_weapon_method(target, chance, conditional, magnitude1, magnitude2):
     target.applyOnHitMod('On_hit_frost_weapon', conditional, chance, magnitude1, 'Movement_speed_penalty', magnitude2, 'Dodge_penalty')
 
+def On_hit_mage_hunting_method(self, target, magnitude):
+    target.onHitEffects.append(onhiteffect.OnHitEffect(magnitude, onhiteffect.OnHitEffect.applyMageHunting))
+    
 def On_hit_stun_method(target, chance, conditional):
     target.applyOnHitMod('On_hit_stun', conditional, chance, 0, 'No_turn')
 
@@ -284,6 +288,9 @@ def Trap_evade_bonus_method(self, target, magnitude):
 
 def Trap_evade_penalty_method(self, target, magnitude):
     target.statusTrapEvade -= magnitude
+    
+def Weapon_damage_bonus_method(self, target, magnitude):
+    target.onHitEffects.append(onhiteffect.OnHitEffect(magnitude, onhiteffect.OnHitEffect.applyFlatElementalDamage, self.element))
     
 def Applied_poison_rating_bonus_method_reverse(self, target, magnitude):
     target.equipmentPoisonRatingBonus -= magnitude
@@ -404,9 +411,12 @@ def No_turn_method_reverse(self, target, magnitude):
 
 def On_hit_cripple_weapon_method_reverse(self, target, magnitude):
     target.removeOnHitMod('On_hit_cripple_weapon')
-
+    
 def On_hit_frost_weapon_method_reverse(self, target, magnitude):
     target.removeOnHitMod('On_hit_frost_weapon')
+    
+def On_hit_mage_hunting_method_reverse(self, target, magnitude):
+    target.removeOnHitEffect("MageHunting", magnitude)
 
 def On_hit_stun_method_reverse(self, target, magnitude):
     target.removeOnHitMod('On_hit_stun')
@@ -501,6 +511,9 @@ def Trap_evade_bonus_method_reverse(self, target, magnitude):
 def Trap_evade_penalty_method_reverse(self, target, magnitude):
     target.statusTrapEvade += magnitude
 
+def Weapon_damage_bonus_method_reverse(self, target, magnitude):
+    target.removeOnHitEffect("FlatElementalDamage " + self.element, magnitude)
+    
 applyFunctionDict = {
     'Applied_poison_rating_bonus' : Applied_poison_rating_bonus_method,
     'Attack_power_bonus' : Attack_power_bonus_method,
@@ -544,6 +557,7 @@ applyFunctionDict = {
     'No_turn' : No_turn_method,
     'On_hit_cripple_weapon' : On_hit_cripple_weapon_method,
     'On_hit_frost_weapon' : On_hit_frost_weapon_method,
+    'On_hit_mage_hunting' : On_hit_mage_hunting_method,
     'On_hit_stun' : On_hit_stun_method,
     'On_hit_suppressing_weapon' : On_hit_suppressing_weapon_method,
     'Overall_damage_bonus' : Overall_damage_bonus_method,
@@ -574,17 +588,15 @@ applyFunctionDict = {
     'Tiger_style' : None,
     'Trap_evade_bonus' : Trap_evade_bonus_method,
     'Trap_evade_penalty' : Trap_evade_penalty_method,
-    'Weapon_damage_bonus' : None
+    'Weapon_damage_bonus' : Weapon_damage_bonus_method
 }
         
         #'AI_attack_nearby' : 
-        #'AI_flee' :
-        # 'On_hit_spell_failure': TODO
-        # 'Redirect_melee_attacks': None, # Include magnitude How?
-        #'Weapon_damage_bonus': lambda target, magnitude, element: 
+        #'AI_flee' : # Need decent AI to implement these...
+        # 'Redirect_melee_attacks': None, # Save this one for last?
         #'Target_ranged_accuracy_bonus':
         #'Target_ranged_dodge_bonus':
-        #'Target_ranged_dodge_penalty_marksman':
+        #'Target_ranged_dodge_penalty_marksman': # Probably replace these three...
         
 unapplyFunctionDict = {
     'Applied_poison_rating_bonus' : Applied_poison_rating_bonus_method_reverse,
@@ -659,7 +671,7 @@ unapplyFunctionDict = {
     'Tiger_style' : None,
     'Trap_evade_bonus' : Trap_evade_bonus_method_reverse,
     'Trap_evade_penalty' : Trap_evade_penalty_method_reverse,
-    'Weapon_damage_bonus' : None
+    'Weapon_damage_bonus' : Weapon_damage_bonus_method_reverse
 }
     
     

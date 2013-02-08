@@ -215,13 +215,17 @@
   [TYPE: Internal]
   [RECURRING: False]
   
+[NAME: On_hit_mage_hunting]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
 [NAME: On_hit_stun]
   [TYPE: Internal]
   [RECURRING: False]
   
-#[NAME: On_hit_spell_failure]
-#  [TYPE: Internal]
-#  [RECURRING: False]
+[NAME: On_hit_spell_failure]
+  [TYPE: Internal]
+  [RECURRING: False]
   
 [NAME: On_hit_suppressing_weapon]
   [TYPE: Internal]
@@ -483,8 +487,6 @@
   [ELEMENT: Fire]
   [INTERNAL: Weapon_damage_bonus]
     [MAGNITUDE: 0]
-	[MIN: 0]
-	[MAX: 0]
   [CATEGORY: Buff]
   [CATEGORY: Weapon Enchantment]
 	
@@ -1018,20 +1020,23 @@
   [CATEGORY: Debuff]
   # Encode the minimum of 4 tiles somewhere?? TODO
 
-#[NAME: Mage Hunting]
-#  [TYPE: Display]
-#  [ELEMENT: Arcane]
-#  [INTERNAL: Ranged_accuracy_bonus]
-#    [MAGNITUDE: 2]
-#  [INTERNAL: Overall_damage_bonus]
-#    [MAGNITUDE: 10]
-#  [CONDITIONAL: Target MP > 0]
-#  [INTERNAL: On_hit_spell_failure]
-#    [CHANCE: Frequent]
-#	 [MAGNITUDE: 8]
-# Duration 3 turns, where to encode?
-# This ability requires different syntax rules than the others and thus is broken.
-# I need to fix this once I am a bit further along... TODO
+[NAME: Mage Hunting]
+  [TYPE: Display]
+  [ELEMENT: Arcane]
+  [INTERNAL: Ranged_accuracy_bonus]
+    [MAGNITUDE: 2]
+  [INTERNAL: Overall_damage_bonus]
+    [MAGNITUDE: 10]
+  [INTERNAL: On_hit_mage_hunting]
+    [MAGNITUDE: 8]
+	
+# If the magnitude of on hit mage hunting is changed, also change the magnitude of Hunted's spell failure chance to match it.
+
+[NAME: Hunted]
+  [TYPE: Display]
+  [ELEMENT: Arcane]
+  [INTERNAL: Spell_failure_chance]
+    [MAGNITUDE: 8]
   
 [NAME: Mighty Favor]
   [TYPE: Display]
@@ -1553,7 +1558,17 @@
     [MAGNITUDE: 0]
   [CATEGORY: Bleeding]
 	
-	
+# Display Effects -- Applied Poisons
+
+[NAME: Applied Basic Poison]
+  [TYPE: Display]
+  [ELEMENT: Poison]
+  [INTERNAL: Weapon_damage]
+    [MAGNITUDE: 0]
+  [CATEGORY: Buff]
+  [CATEGORY: Applied Poison]
+  
+  
 	
 	
 	
