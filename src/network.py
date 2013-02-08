@@ -19,7 +19,7 @@ class ServerData(LineReceiver):
     '''
     def connectionMade(self):
         self.port = self.transport.getPeer().port
-        if not self.factory.clients.has_key(self.port):
+        if self.port not in self.factory.clients:
             print("Connection made with client on port #" + str(self.port))
             self.factory.clients[self.port] = self
         self.factory.send(self.port, self.port)
@@ -29,8 +29,9 @@ class ServerData(LineReceiver):
             print('ServerData lost connection to client on ' + str(self.port) + '.')
         else:
             print('ServerData lost connection to client on ' + str(self.port) + '.  Reason: ' + reason.getErrorMessage())
-        if self.factory.clients.has_key(self.port):
+        if self.port in self.factory.clients:
             del self.factory.clients[self.port]
+            self.factory.queue.put((self.port, Person(PersonActions.REMOVE, None, None)))
 
     def lineReceived(self, data):
         data = cPickle.loads(data)
@@ -50,7 +51,7 @@ class ServerDataFactory(Factory):
 
     def send(self, port, data):
         data = cPickle.dumps(data)
-        if self.clients.has_key(port):
+        if port in self.clients:
             self.clients[port].sendLine(data)
         elif port == 0:
             for port, protocol in self.clients.iteritems():
