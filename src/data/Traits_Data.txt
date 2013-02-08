@@ -1072,6 +1072,10 @@
 #
 # Resist Broadcast
 #   [Player|Enemy] [Dodges|Partially Resists|Fully Resists] [or]* [Dodges|Partially Resists|Fully Resists]*
+#
+# Resource Level Broadcast
+#   Player [HP|MP|AP] level changed.
+#
 
 	
 	

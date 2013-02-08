@@ -3,10 +3,9 @@
 import sys
 import combat
 import dice
+import listener
 
 class Ability(object):
-    
-    
     
     def __init__(self, name, owner):
         self.name = name
@@ -21,7 +20,6 @@ class Ability(object):
         self.checkFunction = info['checkFunction']
         self.breakStealth = info['breakStealth']
         self.owner = owner
-        
         
         
     def canUse(self, target):
@@ -154,6 +152,32 @@ class Ability(object):
         else: 
             return (False, self.name + " requires a melee weapon.")
         
+    # Spellsword
+    def _martialMode(self, target):
+        source = self.owner
+        duration = -1
+        Combat.addStatus(target, "Martial Mode", duration) 
+        newListener = listener.Listener(self, self.owner, self.onStringList, self._martialModeDisable, ['Player MP level changed'])
+        source.listeners.append(newListener)
+    
+    def _martialModeCheck(self, target):
+        source = self.owner
+        if source.MP > source.totalMP * 0.15:
+            return (False, "Too much MP remaining to use " + self.name)
+        else:
+            return (True, "")
+        
+    def _martialModeDisable(self, target, reverse, percent):
+        if percent > 0.15:
+            Combat.removeStatus(target, "Martial Mode")
+        toRemove = None
+        for x in target.listeners:
+            if x.action = self._martialModeDisable:
+                toRemove = x
+        if toRemove:
+            target.listeners.remove(toRemove)        
+        
+    # Battle Mage
     def _bufferStrike(self, target):
         source = self.owner
         hit = Combat.calcHit(source, target, "Phsyical", modifier=3)
@@ -318,7 +342,19 @@ class Ability(object):
         'breakStealth' : 100
         },
         
-            
+        'Martial Mode':
+        {
+        'level' : 2,
+        'class' : 'Spellsword',
+        'HPCost' : 0,
+        'APCost' : 1,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _martialMode,
+        'cooldown' : None,
+        'checkFunction' : _martialModeCheck,
+        'breakStealth' : 0
+        },
         
         
         'Buffer Strike':

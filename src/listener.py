@@ -26,6 +26,9 @@ class Listener(object):
                 elif bCast.isinstance(broadcast.StatusBroadcast):
                     self.action(self.callObject, self.host, reverse=False, statusName=bCast.statusName)
                     return
+                elif bCast.isinstance(broadcast.ResourceLevelBroadcast):
+                    self.action(self.callObject, self.host, reverse=False, percent = bCast.resourceLevel)
+                    return
         for string in self.offStringList:
             if string == bCast.message.strip():
                 if bCast.isinstance(broadcast.SpellBroadcast):
@@ -40,4 +43,9 @@ class Listener(object):
                 elif bCast.isinstance(broadcast.StatusBroadcast):
                     self.action(self.callObject, self.host, reverse=True, statusName=bCast.statusName)
                     return
+                elif bCast.isinstance(broadcast.ResourceLevelBroadcast):
+                    self.action(self.callObject, self.host, reverse=True)
+                    return
+                    
+                    
                     

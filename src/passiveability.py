@@ -49,7 +49,32 @@ class PassiveAbility(object):
         else:
             if target.usingWeaponStyle("Dual"):
                 target.baseMeleeAccuracy -= 2
+    
+    # Spellsword    
+    def applySeekerOfEnchantments(self, targer, reverse=False, spell=None):
+        if not reverse:
+            if spell.school == "Enchantment":
+                target.statusSpellpower += 6
+        else:
+            if spell.school == "Enchantment":
+                target.statusSepllpower -= 6
                 
+    def applyDuality(self, target):
+        target.baseDR += 1
+        target.baseMagicResist += 1
+        
+    def applyLastingEnchantment(self, target, reverse=False, spell=None):
+        if not reverse:
+            if spell.school == "Enchantment":
+                for buff in [x for x in target.statusList if x.name == spell.name]:
+                    buff.turnsLeft += 1
+        else:
+            pass
+            # Has no reverse.
+                    
+             
+                
+    # Battle Mage
     def applyCloseRangedMagic(self, target, reverse=False, spell=None):
         if not reverse:
             if spell.range < 4:
@@ -127,7 +152,31 @@ class PassiveAbility(object):
         },
         
         
-        
+        'Seeker of Enchantments':
+        {
+        'class' : 'Spellsword',
+        'level' : 1,
+        'type' : 'dynamic',
+        'action' : applySeekerOfEnchantments,
+        'onStringList' : ['Outgoing Spell Cast'],
+        'offStringList' : ['Outgoing Spell Cast Complete']
+        },
+        'Duality':
+        {
+        'class' : 'Spellsword',
+        'level' : 1,
+        'type' : 'static',
+        'action' : applyDuality
+        },
+        'Lasting Enchantment':
+        {
+        'class' : 'Spellsword',
+        'level' : 2,
+        'type' : 'dynamic',
+        'action' : applyLastingEnchantment,
+        'onStringList' : ['Outgoing Spell Cast Complete'],
+        'offStringList' : []
+        },
         
         
         'Close-Ranged Magic':

@@ -59,5 +59,14 @@ class StatusBroadcast(Broadcast):
         self.message = "Incoming Status Applied"
         self.statusName = argDict['statusName']
         
+class ResourceLevelBroadcast(Broadcast):
+    def __init__(self, argDict):
+        Broadcast.__init__(self)
+        
+        self.resourceType = argDict['resource']
+        self.resourceLevel = argDict['percent']
+        self.message = "Player " + self.resourceType + " level changed"
+        
+        
         
         

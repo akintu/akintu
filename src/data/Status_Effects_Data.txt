@@ -838,7 +838,6 @@
   [INTERNAL: Might_bonus]
     [MAGNITUDE: 5]
   [INTERNAL: DR_bonus]
-    [CONDITIONAL: Using Shield]
 	[MAGNITUDE: 3]
   [REMOVED_ON: MP > 15%]
   [CATEGORY: Buff] 
@@ -849,12 +848,9 @@
   [INTERNAL: Might_bonus]
     [MAGNITUDE: 7]
   [INTERNAL: DR_bonus]
-    [CONDITIONAL: Using Shield]
 	[MAGNITUDE: 3]
   [REMOVED_ON: MP > 20%] 
   [CATEGORY: Buff]
-  
-# Bug/Exploit when equipping shield at time of martial mode activation...
   
 #[NAME: Rebound]
 #  [TYPE: Display]

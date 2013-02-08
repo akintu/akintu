@@ -30,10 +30,14 @@ class Combat(object):
         type = type.upper()
         if type == "AP":
             target.AP += value
+            Combat._shoutResourceLevel(target, type, target.AP / target.totalAP)
         elif type == "MP":
             target.MP += value
+            if target.totalMP > 0:
+                Combat._shoutResourceLevel(target, type, target.MP / target.totalMP)
         elif type == "HP":
             target.HP += value
+            Combat._shoutResourceLevel(target, type, target.HP / target.totalHP)
         else:
             raise TypeError("Type: " + type + " is not valid.  Proper values are: 'HP', 'MP', or 'AP'.")
     
@@ -817,3 +821,12 @@ class Combat(object):
             return
         bc = broadcast.StatusBroadcast({'statusName' : statusName})
         bc.shout(target)
+        
+    @staticmethod
+    def _shoutResourceLevel(target, resourceType, resourcePercent):
+        if target.team != "Players":
+            return
+        bc = broadcast.ResourceLevelBroadcast({'resource' : resourceType, 'percent' : resourcePercent})
+        bc.shout(target)
+        
+    
