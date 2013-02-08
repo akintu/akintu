@@ -5,7 +5,7 @@ Class for communicating map sync actions
 def enum(**enums):
     return type('Enum', (), enums)
 
-PersonActions = enum(CREATE = 1, MOVE = 2, REMOVE = 3)
+PersonActions = enum(CREATE = 1, MOVE = 2, REMOVE = 3, RUN = 4)
 InventoryActions = enum(PICKUP = 1, PUTDOWN = 2)
 
 
