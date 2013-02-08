@@ -26,6 +26,7 @@ class PassiveAbility(object):
         newListener = listener.Listener(self, self.owner, self.onStringList, self.action, self.offStringList)
         self.owner.listeners.append(newListener)
         
+        
     
     def applyColdEndurance(self, target):
         target.baseColdResistance += 10
@@ -64,15 +65,24 @@ class PassiveAbility(object):
         target.baseMagicResist += 1
         
     def applyLastingEnchantment(self, target, reverse=False, spell=None):
-        if not reverse:
-            if spell.school == "Enchantment":
+        if spell.school == "Enchantment":
                 for buff in [x for x in target.statusList if x.name == spell.name]:
                     buff.turnsLeft += 1
+        # Has no reverse.
+            
+    def applyFocalPoint(self, target, reverse=False, other=None):
+        if not target.usingWeaponStyle("Two Handed"):
+            return
+        eStatus = None
+        for s in target.statusList:
+            if "Enchantment" in s.categoryList:
+                eStatus = s
+        if not eStatus:
+            return
         else:
-            pass
-            # Has no reverse.
-                    
-             
+            holyDamage = (round(15 * (1 + target.totalDivineBonusDamage / 100) *
+                                     (1 - other.totalDivineResistance / 100)))
+            Combat.lowerHP(other, holyDamage)
                 
     # Battle Mage
     def applyCloseRangedMagic(self, target, reverse=False, spell=None):
@@ -177,6 +187,15 @@ class PassiveAbility(object):
         'onStringList' : ['Outgoing Spell Cast Complete'],
         'offStringList' : []
         },
+        'Focal Point':
+        {
+        'class' : 'Spellsword',
+        'level' : 3,
+        'type' : 'dynamic',
+        'action' : applyFocalPoint,
+        'onStringList' : ['Outgoing Physical Attack Critical Hit'],
+        'offStringList' : []
+        }
         
         
         'Close-Ranged Magic':

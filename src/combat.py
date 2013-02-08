@@ -779,6 +779,8 @@ class Combat(object):
         direction = "Outgoing"
         hearer = source
         otherParty = target
+        if hitType != "Critical Hit":
+            hitType = ""
         if source.team == "Monsters":
             direction = "Incoming"
             otherParty = source
