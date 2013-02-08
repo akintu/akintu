@@ -65,14 +65,14 @@ class Person(en.Entity):
         self._equipmentAP = 0
         
         self._baseHP = Person.setFrom(argDict, 'startingHP', Person.ERROR)
-        self._HP = self.totalHP
         self._equipmentHP = 0
+        self._HP = self.totalHP
         self.HPRegen = Person.setFrom(argDict, 'HPRegen', 0)
         # TODO: Implement both kinds of regen.
         
         self._baseMP = Person.setFrom(argDict, 'startingMP', 0)
-        self._MP = self.totalMP
         self._equipmentMP = 0
+        self._MP = self.totalMP
         self.MPRegen = Person.setFrom(argDict, 'MPRegen', 0)
         
         self._baseArmorPenetration = Person.setFrom(argDict, 'startingArmorPenetration', 0)

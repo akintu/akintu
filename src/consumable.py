@@ -10,7 +10,7 @@ class Consumable(entity.Entity):
     AP_COST = 7
 
     def __init__(self, name, location=None):
-	    entity.Entity.__init__(self, location)
+        entity.Entity.__init__(self, location)
         self.name = name
         self.identifier = name
         self.weight = 1
@@ -141,7 +141,7 @@ class Consumable(entity.Entity):
             'goldValue' : 160,
             'level' : 6,
             'effect' : _moderateHealingPotion
-            {,
+            },
         # Other healing potions here
         'Basic Mana Potion' :
             {
@@ -236,5 +236,5 @@ class Consumable(entity.Entity):
             
             
             
-		
-		
+        
+        

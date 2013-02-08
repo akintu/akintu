@@ -80,36 +80,36 @@ class Spell(object):
             
     def applySchoolResistance(self):
         hero = self.owner
-        if self.school = "Enchantment":
+        if self.school == "Enchantment":
             hero.magicResist += hero.enchantmentResist
-        elif self.school = "Bane":
+        elif self.school == "Bane":
             hero.magicResist += hero.baneResist
-        elif self.school = "Mental":
+        elif self.school == "Mental":
             hero.magicResist += hero.mentalResist
-        elif self.school = "Illusion":
+        elif self.school == "Illusion":
             hero.magicResist += hero.illusionResist
-        elif self.school = "Primal":
+        elif self.school == "Primal":
             hero.magicResist += hero.primalResist
-        elif self.school = "Mystic":
+        elif self.school == "Mystic":
             hero.magicResist += hero.mysticResist
-        elif self.school = "Natural":
+        elif self.school == "Natural":
             hero.magicResist += hero.naturalResist
             
     def unapplySchoolResistance(self):
         hero = self.owner
-        if self.school = "Enchantment":
+        if self.school == "Enchantment":
             hero.magicResist -= hero.enchantmentResist
-        elif self.school = "Bane":
+        elif self.school == "Bane":
             hero.magicResist -= hero.baneResist
-        elif self.school = "Mental":
+        elif self.school == "Mental":
             hero.magicResist -= hero.mentalResist
-        elif self.school = "Illusion":
+        elif self.school == "Illusion":
             hero.magicResist -= hero.illusionResist
-        elif self.school = "Primal":
+        elif self.school == "Primal":
             hero.magicResist -= hero.primalResist
-        elif self.school = "Mystic":
+        elif self.school == "Mystic":
             hero.magicResist -= hero.mysticResist
-        elif self.school = "Natural":
+        elif self.school == "Natural":
             hero.magicResist -= hero.naturalResist
             
     def _arcaneDart(self, target):
@@ -447,7 +447,7 @@ class Spell(object):
         bc = broadcast.SpellBroadcast(bundle)
         bc.shout(hearer)
         if double:
-            bundle = {'direction' : double, 'suffix' : None, 'spell' : s)
+            bundle = {'direction' : double, 'suffix' : None, 'spell' : s}
             bc = broadcast.SpellBroadcast(bundle)
             hearer = source
             bc.shout(hearer)
@@ -471,7 +471,7 @@ class Spell(object):
         bc = broadcast.SpellBroadcast(bundle)
         bc.shout(hearer)
         if double:
-            bundle = {'direction' : double, 'suffix' : 'Complete', 'spell' : s)
+            bundle = {'direction' : double, 'suffix' : 'Complete', 'spell' : s}
             bc = broadcast.SpellBroadcast(bundle)
             hearer = source
             bc.shout(hearer)    

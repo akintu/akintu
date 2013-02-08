@@ -4,92 +4,11 @@ import sys
 import listener
 
 class Trait(object):
-    allContentByName = {
-        {'Parry': 
-            {
-            'class' : 'Fighter',
-            'type' : 'dynamic',
-            'action' : Trait.applyParry,
-            'onStringList' : ['Incoming Melee Attack'],
-            'offStringList' : ['Incoming Melee Attack Complete']
-            }
-        },
-        {'Preparation':
-            {
-            'class' : 'Fighter',
-            'type' : 'dynamic',
-            'action' : Trait.applyPreparation,
-            'onStringList' : ['Starting Player Turn'],
-            'offStringList' : ['Outgoing Melee Attack Complete', 'Outgoing Ranged Attack Complete']
-            }
-        },
-        {'Tank':
-            {
-            'class' : 'Fighter',
-            'type' : 'dynamic',
-            'action' : Trait.applyTank,
-            'onStringList' : ['Incoming Melee Attack', 'Incoming Ranged Attack'],
-            'offStringList' : ['Incoming Melee Attack Complete', 'Incoming Ranged Attack Complete']
-            }
-        },
-        {'Fencer':
-            {
-            'class' : 'Fighter',
-            'type' : 'dynamic',
-            'action' : Trait.applyFencer,
-            'onStringList' : ['Outgoing Melee Attack'],
-            'offStringList' : ['Outgoing Melee Attack Complete']
-            }
-        },
-        {'Shield Resilience':
-            {
-            'class' : 'Fighter',
-            'type' : 'dynamic',
-            'action' : Trait.applyShieldResilience,
-            'onStringList' : ['Incoming Melee Attack', 'Incoming Ranged Attack'],
-            'offStringList' : ['Incoming Melee Attack Complete', 'Incoming Ranged Attack Complete']
-            }
-        },
-        {'Bully':
-            {
-            'class' : 'Fighter',
-            'type' : 'dynamic',
-            'action' : Trait.applyBully,
-            'onStringList' : ['Outgoing Melee Attack', 'Outgoing Ranged Attack'],
-            'offStringList' : ['Outgoing Melee Attack Complete', 'Outgoing Ranged Attack Complete']
-            }
-        },
-        {'Boldness':
-            {
-            'class' : 'Fighter',
-            'type' : 'dynamic',
-            'action' : Trait.applyBoldness,
-            'onStringList' : ['Outgoing Melee Attack', 'Outgoing Ranged Attack'],
-            'offStringList' : ['Outoing Melee Attack Complete', 'Outgoing Ranged Attack Complete']
-            }
-        },
-        {'Well-Traveled':
-            {
-            'class' : 'Fighter',
-            'type' : 'static',
-            'action' : Trait.applyWellTraveled,
-            }
-        },
-        {'Hammer and Anvil':
-            {
-            'class' : 'Fighter',
-            'type' : 'dynamic',
-            'action' : Trait.applyHammerAndAnvil,
-            'onStringList' : ['Outgoing Melee Attack'],
-            'offStringList' : ['Outgoing Melee Attack Complete']
-            }
-        }
-    }
-
+    
     def __init__(self, name, owner):
-	    self.name = name
+        self.name = name
         self.owner = owner
-        content = Trait.allContentByName[name]
+        content = allContentByName[name]
         self.requiredClass = content['class']    
         self.type = content['type']
         self.action = content['action']
@@ -131,7 +50,7 @@ class Trait(object):
     @staticmethod
     def applyParry(target, reverse=False, attacker=None):
         #if target.facingAttacker() TODO
-        tRank = Trait.getTraitRank(target, "Parry"):
+        tRank = getTraitRank(target, "Parry")
         if not reverse:
             if tRank == 1:
                 target.statusDodge += 2
@@ -155,7 +74,7 @@ class Trait(object):
     def applyPreparation(target, reverse=False, other=None):
         if target.attacksPerformed[0] > 0:
             return
-        tRank = Trait.getTraitRank(target, "Preparation"):
+        tRank = getTraitRank(target, "Preparation")
         if not reverse:
             if tRank == 1:
                 target.statusMeleeAccuracy += 8
@@ -187,7 +106,7 @@ class Trait(object):
     def applyTank(target, reverse=False, other=None):
         if not target.usingArmor("Heavy"):
             return
-        tRank = Trait.getTraitRank(target, "Tank"):
+        tRank = getTraitRank(target, "Tank")
         if not reverse:
             if tRank == 1:
                 target.statusDR += 1
@@ -211,7 +130,7 @@ class Trait(object):
     def applyFencer(target, reverse=False, other=None):
         if not target.usingArmor("Medium"):
             return
-        tRank = Trait.getTraitRank(target, "Fencer"):
+        tRank = getTraitRank(target, "Fencer")
         if not reverse:
             if tRank == 1:
                 target.statusMeleeAccuracy += 2
@@ -235,7 +154,7 @@ class Trait(object):
     def applyShieldResilience(target, reverse=False, other=None):
         if not target.usingShield("Any"):
             return
-        tRank = Trait.getTraitRank(target, "Shield Resilience")
+        tRank = getTraitRank(target, "Shield Resilience")
         if not reverse:
             if tRank == 1:
                 target.knockbackResistance += 30
@@ -267,7 +186,7 @@ class Trait(object):
     def applyBully(target, reverse=False, victim=None):
         if not target.usingWeaponStyle("Two-Handed") or victim.size == "Large" or victim.size == "Huge":
             return
-        tRank = Trait.getTraitRank(target, "Bully")
+        tRank = getTraitRank(target, "Bully")
         if not reverse:
             if tRank == 1:
                 target.statusForce += 5
@@ -315,7 +234,7 @@ class Trait(object):
     def applyBoldness(target, reverse=False, victim=None):
         if victim.size == "Small" or victim.size == "Medium":
             return
-        tRank = Trait.getTraitRank(target, "Boldness")
+        tRank = getTraitRank(target, "Boldness")
         if not reverse:
             if victim.size == "Large":
                 if tRank == 1:
@@ -357,7 +276,7 @@ class Trait(object):
     
     @staticmethod    
     def applyWellTraveled(target):
-        tRank = Trait.getTraitRank(target, "Well-Traveled")
+        tRank = getTraitRank(target, "Well-Traveled")
         if tRank == 1:
             target._baseInventoryCapacity += 15
             target.baseFireResistance += 1
@@ -378,7 +297,7 @@ class Trait(object):
     @staticmethod
     def applyHammerAndAnvil(target, reverse=False, victim=None):
         # TODO: if target has back against wall...
-        tRank = Trait.getTraitRank(target, "Hammer and Anvil")
+        tRank = getTraitRank(target, "Hammer and Anvil")
         if not reverse: 
             if tRank == 1:
                 target.baseOverallDamageBonus += 5
@@ -397,4 +316,87 @@ class Trait(object):
                 target.baseOverallDamageBonus -= 15
             elif tRank == 4:
                 target.baseOverallDamageBonus -= 20
-                
+                    
+    
+    allContentByName = {
+        'Parry': 
+            {
+            'class' : 'Fighter',
+            'type' : 'dynamic',
+            'action' : applyParry,
+            'onStringList' : ['Incoming Melee Attack'],
+            'offStringList' : ['Incoming Melee Attack Complete']
+            }
+        ,
+        'Preparation':
+            {
+            'class' : 'Fighter',
+            'type' : 'dynamic',
+            'action' : applyPreparation,
+            'onStringList' : ['Starting Player Turn'],
+            'offStringList' : ['Outgoing Melee Attack Complete', 'Outgoing Ranged Attack Complete']
+            }
+        ,
+        'Tank':
+            {
+            'class' : 'Fighter',
+            'type' : 'dynamic',
+            'action' : applyTank,
+            'onStringList' : ['Incoming Melee Attack', 'Incoming Ranged Attack'],
+            'offStringList' : ['Incoming Melee Attack Complete', 'Incoming Ranged Attack Complete']
+            }
+        ,
+        'Fencer':
+            {
+            'class' : 'Fighter',
+            'type' : 'dynamic',
+            'action' : applyFencer,
+            'onStringList' : ['Outgoing Melee Attack'],
+            'offStringList' : ['Outgoing Melee Attack Complete']
+            }
+        ,
+        'Shield Resilience':
+            {
+            'class' : 'Fighter',
+            'type' : 'dynamic',
+            'action' : applyShieldResilience,
+            'onStringList' : ['Incoming Melee Attack', 'Incoming Ranged Attack'],
+            'offStringList' : ['Incoming Melee Attack Complete', 'Incoming Ranged Attack Complete']
+            }
+        ,
+        'Bully':
+            {
+            'class' : 'Fighter',
+            'type' : 'dynamic',
+            'action' : applyBully,
+            'onStringList' : ['Outgoing Melee Attack', 'Outgoing Ranged Attack'],
+            'offStringList' : ['Outgoing Melee Attack Complete', 'Outgoing Ranged Attack Complete']
+            }
+        ,
+        'Boldness':
+            {
+            'class' : 'Fighter',
+            'type' : 'dynamic',
+            'action' : applyBoldness,
+            'onStringList' : ['Outgoing Melee Attack', 'Outgoing Ranged Attack'],
+            'offStringList' : ['Outoing Melee Attack Complete', 'Outgoing Ranged Attack Complete']
+            }
+        ,
+        'Well-Traveled':
+            {
+            'class' : 'Fighter',
+            'type' : 'static',
+            'action' : applyWellTraveled,
+            }
+        ,
+        'Hammer and Anvil':
+            {
+            'class' : 'Fighter',
+            'type' : 'dynamic',
+            'action' : applyHammerAndAnvil,
+            'onStringList' : ['Outgoing Melee Attack'],
+            'offStringList' : ['Outgoing Melee Attack Complete']
+            }
+        
+    }
+

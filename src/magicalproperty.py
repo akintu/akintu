@@ -11,7 +11,7 @@ class MagicalProperty(object):
 
     def __init__(self, argDict, item, name, count=1):
         self.name = name
-	    self.weight = argDict['weight']
+        self.weight = argDict['weight']
         self.cost = argDict['cost']
         self.effect = argDict['effect']
         self.max = argDict['max']
@@ -135,17 +135,17 @@ class MagicalProperty(object):
         if item.isinstance(equipment.Armor):
             subList.extend([prop for prop in MagicalProperty.fullList 
                             if prop[1]['exclusion'] != "Weapon Only" and
-                            if prop[1]['exclusion'] != "Melee Weapon Only" and
-                            if prop[1]['exclusion'] != "Ranged Weapon Only"])
+                               prop[1]['exclusion'] != "Melee Weapon Only" and
+                               prop[1]['exclusion'] != "Ranged Weapon Only"])
         elif item.isinstance(equipment.Weapon):
             if item.range == 1:
-                subList.extend([prop for prop in MagicalProperty.fullList
-                                if prop[1]['exclusion'] != "Armor Only" and
-                                if prop[1]['exclusion'] != "Ranged Weapon Only"])
+                subList.extend([prop for prop in MagicalProperty.fullList if
+                                prop[1]['exclusion'] != "Armor Only" and
+                                prop[1]['exclusion'] != "Ranged Weapon Only"])
             else:
-                subList.extend([prop for prop in MagicalProperty.fullList
-                                if prop[1]['exclusion'] != "Armor Only" and
-                                if prop[1]['exclusion'] != "Melee Weapon Only"])
+                subList.extend([prop for prop in MagicalProperty.fullList if
+                                prop[1]['exclusion'] != "Armor Only" and
+                                prop[1]['exclusion'] != "Melee Weapon Only"])
         return subList                                
         
     @staticmethod
@@ -154,7 +154,7 @@ class MagicalProperty(object):
             for tendency in item.bonusTendencyList:
                 tName = tendency.split(",")[0]
                 tAmount = int(tendency.split(",")[1])
-                if tName == prop[0] or if tName in prop[1]['categories']:
+                if tName == prop[0] or tName in prop[1]['categories']:
                     prop[1]['weight'] = round(prop[1]['weight'] * (1 + tAmount / 100))
         return subList                    
         
@@ -166,7 +166,7 @@ class MagicalProperty(object):
         else:
             owner.equipmentAP -= APIncrease
         
-	def _allAccuracy(self, owner, reverse=False):
+    def _allAccuracy(self, owner, reverse=False):
         bonus = self.count * 2
         if not reverse:
             owner.equipmentMeleeAccuracy += bonus
@@ -223,14 +223,14 @@ class MagicalProperty(object):
             owner.equipmentCunning -= bonus
             
     def _damage(self, owner, reverse=False):
-        if self.item.gradientPoints = 0:
+        if self.item.gradientPoints == 0:
             raise TypeError("Cannot increase damage on item: " + str(self.item) + ".")
         if not reverse:
             item.damageMinBonus += self.count * item.gradientMin
             item.damageMaxBonus += self.count * item.gradientMax     
     
     def _DR(self, owner, reverse=False):
-        if self.item.DRGradientPoints = 0:
+        if self.item.DRGradientPoints == 0:
             raise TypeError("Cannot increase DR on item: " + str(self.item) + ".")
         if not reverse:
             item.DR += self.count * item.DRGradient
@@ -491,6 +491,13 @@ class MagicalProperty(object):
         else:
             owner.equipmentPotionEffect -= bonus
             
+    def _rangedAccuracy(self, owner, reverse=False):
+        bonus = self.count
+        if not reverse:
+            owner.equipmentRangedAccuracy += bonus
+        else:
+            owner.equipmentRangedAccuracy -= bonus
+           
     def _regenerationHP(self, owner, reverse=False):
         bonus = self.count
         if not reverse:
@@ -525,6 +532,19 @@ class MagicalProperty(object):
             owner.equipmentSpellpower += bonus
         else:
             owner.equipmentSpellpower -= bonus
+            
+    def _strength(self, owner, reverse=False):
+        bonus = self.count
+        if not reverse:
+            owner.equipmentStrength += bonus
+        else:
+            owner.equipmentStrength -= bonus
+
+    def _trapAvoidance(self, owner, reverse=False):
+        if not reverse:
+            owner.equipmentTrapEvade += self.count
+        else:
+            owner.equipmentTrapEvade -= self.count
             
     def _registerAcidic(self, owner, reverse=False):
         if not reverse:
@@ -665,6 +685,8 @@ class MagicalProperty(object):
             owner.onHitEffects.append(onHit)
         else:
             owner.removeOnHitEffect(self.name, self.count)
+            
+
             
     allProperties = {
         'AP':
@@ -1367,7 +1389,7 @@ class MagicalProperty(object):
             'effect' : _registerManaSteal,
             'max' : None,
             'doubled' : False,
-            'exclusion' : Weapon Only',
+            'exclusion' : 'Weapon Only',
             'categories' : ['On Hit'],
             'goldMod' : 50
             },

@@ -6,7 +6,7 @@ from combat import *
 
 class OnHitEffect(object):
     def __init__(self, count, function, elementalDamageType=None):
-	    self.count = count
+        self.count = count
         self.function = function
         self.name = str(function).replace("apply", "")
         if elementalDamageType:
@@ -27,7 +27,7 @@ class OnHitEffect(object):
         else:
             damage = Dice.roll(magnitude, magnitude * 2)
         return [self.elementalDamageType, damage]
-		
+        
     def applyAcidic(self, magnitude, source, target):
         # Magnitude determines chance.
         chance = magnitude
@@ -193,9 +193,6 @@ class OnHitEffect(object):
 
     def applyFlatElementalDamage(self, magnitude, source, target):
         return [self.element, magnitude]
-        
-    def applyFlamingWeapon(self, magnitude, source, target):
-        
     
     
     

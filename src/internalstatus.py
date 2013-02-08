@@ -640,6 +640,7 @@ unapplyFunctionDict = {
     'No_turn' : None,
     'On_hit_cripple_weapon' : On_hit_cripple_weapon_method_reverse,
     'On_hit_frost_weapon' : On_hit_frost_weapon_method_reverse,
+    'On_hit_mage_hunting' : On_hit_mage_hunting_method_reverse,
     'On_hit_stun' : On_hit_stun_method_reverse,
     'On_hit_suppressing_weapon' : On_hit_suppressing_weapon_method_reverse,
     'Overall_damage_bonus' : Overall_damage_bonus_method_reverse,

@@ -195,7 +195,7 @@ class PassiveAbility(object):
         'action' : applyFocalPoint,
         'onStringList' : ['Outgoing Physical Attack Critical Hit'],
         'offStringList' : []
-        }
+        },
         
         
         'Close-Ranged Magic':

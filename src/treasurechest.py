@@ -12,7 +12,7 @@ class TreasureChest(entity.Entity):
 
     def __init__(self, type, treasureLevel, location, ip=None):
         entity.Entity.__init__(self, location)
-	    if type.capitalize() not in ["Small", "Large", "Gilded"]:
+        if type.capitalize() not in ["Small", "Large", "Gilded"]:
             raise TypeError("Invalid Chest Type: " + type + ".")
         self.ip = ip
         if treasureLevel < 1:
@@ -46,18 +46,19 @@ class TreasureChest(entity.Entity):
             # Only Gold
             return [TreasureChest._selectGold(self.ip)]
         else:
+            pass
             # TODO: 1-3 Consumables and gold
     
     @staticmethod
     def _selectGear(givenIp):
         selectedItem = None
         giveWeapon = Dice.rollBeneath(40)
-            if giveWeapon:
-                baseWeaponSelection = Dice.roll(0, len(theorycraft.TheoryCraft.weapons) - 1)
-                selectedItem = theorycraft.TheoryCraft.weapons[baseWeaponSelection]
-            else:
-                baseArmorSelection = Dice.roll(0, len(theorycraft.TheoryCraft.armors) - 1)
-                selectedItem = theorycraft.TheoryCraft.armors[baseArmorSelection]
+        if giveWeapon:
+            baseWeaponSelection = Dice.roll(0, len(theorycraft.TheoryCraft.weapons) - 1)
+            selectedItem = theorycraft.TheoryCraft.weapons[baseWeaponSelection]
+        else:
+            baseArmorSelection = Dice.roll(0, len(theorycraft.TheoryCraft.armors) - 1)
+            selectedItem = theorycraft.TheoryCraft.armors[baseArmorSelection]
         return selectedItem.cloneWithMagicalProperties(givenIp)
         
     @staticmethod
@@ -84,4 +85,4 @@ class TreasureChest(entity.Entity):
     def _generateGildedTreasure(self, player):
         return []
         # TODO: Two pieces of class-approriate gear.
-		
+        

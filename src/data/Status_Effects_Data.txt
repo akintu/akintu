@@ -223,10 +223,6 @@
   [TYPE: Internal]
   [RECURRING: False]
   
-[NAME: On_hit_spell_failure]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
 [NAME: On_hit_suppressing_weapon]
   [TYPE: Internal]
   [RECURRING: False]

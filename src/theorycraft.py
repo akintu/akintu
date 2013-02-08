@@ -28,7 +28,7 @@ class TheoryCraft(object):
         TheoryCraft.monsters = parser.parseAll("./data/Monster_Data.txt")
         parser = cctemplatesparser.CCTemplatesParser()
         TheoryCraft.classes = parser.parseAll("./data/Character_Class_Data.txt", "./data/Race_Data.txt")
-        parser = armorparser.ArmorsParser()
+        parser = armorparser.ArmorParser()
         TheoryCraft.armorList = parser.parseAll("./data/Armor_Data.txt")
         parser = weaponsparser.WeaponsParser()
         TheoryCraft.weapons = parser.parseAll("./data/Weapon_Data.txt")

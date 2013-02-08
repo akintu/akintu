@@ -172,7 +172,7 @@ class Ability(object):
             Combat.removeStatus(target, "Martial Mode")
         toRemove = None
         for x in target.listeners:
-            if x.action = self._martialModeDisable:
+            if x.action == self._martialModeDisable:
                 toRemove = x
         if toRemove:
             target.listeners.remove(toRemove)        
