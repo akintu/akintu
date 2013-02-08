@@ -20,9 +20,13 @@ clock = pygame.time.Clock()
 
 class Game(object):
     def __init__(self):
-        self.serverip = "localhost"
         self.world = World("CorrectHorseStapleBattery")
-
+        self.keystate = 0
+        self.unacked_movement = 0
+        self.people = []
+        self.index = -1
+        
+        self.serverip = "localhost"
         if len(sys.argv) == 1:
             GameServer(self.world)
         else:
@@ -43,8 +47,7 @@ class Game(object):
         # Set up game engine
         self.screen = GameScreen()
 
-        self.people = []
-        self.index = -1
+
         self.CDF.send(Person(PersonActions.CREATE, None, Location((0, 0), (PANE_X/2, PANE_Y/2))))
         
         self.setup.stop()
@@ -74,10 +77,13 @@ class Game(object):
 
             ###### MovePerson ######
             if isinstance(command, Person) and command.action == PersonActions.MOVE:
-                self.people[command.index] = command.location
-                self.screen.update_person(command.index, command.location)
                 if self.index == command.index:
+                    self.unacked_movement -= 1
                     self.location = command.location
+                if self.index != command.index or self.unacked_movement == 0:
+                    self.people[command.index] = command.location
+                    self.screen.update_person(command.index, command.location)
+                    
 
             ###### RemovePerson ######
             if isinstance(command, Person) and command.action == PersonActions.REMOVE:
@@ -85,19 +91,27 @@ class Game(object):
                     self.index = -1
                     self.people = []
                 else:
+                    self.screen.remove_person(command.index)
+                    for i in range(command.index + 1, len(self.people)):
+                        self.screen.remove_person(i)
+                        self.screen.add_person(i - 1, None, self.people[i])
                     if command.index < self.index:
                         self.index -= 1
                     self.people.pop(command.index)
-                    self.screen.remove_person(command.index)
 
     def handle_events(self):
         pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
         for event in pygame.event.get():
             if event.type == QUIT:
                 reactor.stop()
+            if event.type == KEYUP:
+                if event.key in [K_LSHIFT, K_RSHIFT]:
+                    self.keystate = 0
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     reactor.stop()
+                elif event.key in [K_LSHIFT, K_RSHIFT]:
+                    self.keystate = event.key
                 elif event.key in [K_LEFT, K_KP4, K_h]:
                     self.move_person(4, 1)
                 elif event.key in [K_RIGHT, K_KP6, K_l]:
@@ -119,10 +133,14 @@ class Game(object):
         newloc = self.location.move(direction, distance)
         if (self.location.pane == newloc.pane and self.pane.is_tile_passable(newloc) and \
                 newloc.tile not in [x.tile for x in self.people]) or self.location.pane != newloc.pane:
-            self.CDF.send(Person(PersonActions.MOVE, self.index, newloc))
-            if self.location.pane == newloc.pane:
-                self.location = newloc
-                self.screen.update_person(self.index, self.location)
+            if self.keystate in [K_LSHIFT, K_RSHIFT]:
+                self.CDF.send(Person(PersonActions.RUN, self.index, direction))
+            else:
+                self.CDF.send(Person(PersonActions.MOVE, self.index, newloc))
+                self.unacked_movement += 1
+                if self.location.pane == newloc.pane:
+                    self.location = newloc
+                    self.screen.update_person(self.index, self.location)
 
     def switch_panes(self, location):
         #TODO we can add transitions here.

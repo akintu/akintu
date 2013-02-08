@@ -60,12 +60,15 @@ class GameServer():
                         for p, player in self.players.iteritems():
                             if self.players[port].location.pane == player.location.pane:
                                 self.SDF.send(p, command)
+                                if player.index > command.index:
+                                    player.index -= 1
 
                         #Update location
                         self.players[port].location = command.location
+                        self.players[port].index = len(self.people[command.location.pane])
 
                         #Add player to new pane lists
-                        command.index = len(self.people[command.location.pane])
+                        command.index = self.players[port].index
                         command.action = PersonActions.CREATE
                         self.people[command.location.pane].append(command.location)
 
@@ -82,8 +85,12 @@ class GameServer():
                     self.SDF.send(port, command)
 
             ###### RemovePerson ######
+            
+            # The server queues up this command when a client disconnects
             if isinstance(command, Person) and command.action == PersonActions.REMOVE:
                 command.index = self.players[port].index
+                print(command.index)
+                print(self.players[port].location.pane, self.people[self.players[port].location.pane])
                 self.people[self.players[port].location.pane].pop(command.index)
                 for p, player in self.players.iteritems():
                     if self.players[port].location.pane == player.location.pane:
