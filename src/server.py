@@ -44,10 +44,12 @@ class GameServer():
             ###### MovePerson ######
             if isinstance(command, Person) and command.action == PersonActions.MOVE:
                 self.load_panes(command)
-                if self.panes[command.location.pane].is_tile_passable(command.location):
+                if self.panes[command.location.pane].is_tile_passable(command.location) and \
+                        command.location.tile not in [x.tile for x in self.people[command.location.pane]]:
                     if self.players[port].location.pane == command.location.pane:
                         #Update location and broadcast
                         self.people[command.location.pane][command.index] = command.location
+                        self.players[port].location = command.location
                         for p, player in self.players.iteritems():
                             if command.location.pane == player.location.pane:
                                 self.SDF.send(p, command)
@@ -75,6 +77,9 @@ class GameServer():
                         # Send list of players to the issuing client
                         for i, l in enumerate(self.people[command.location.pane]):
                             self.SDF.send(port, Person(PersonActions.CREATE, i, l))
+                else:
+                    command.location = self.players[port].location
+                    self.SDF.send(port, command)
 
             ###### RemovePerson ######
             if isinstance(command, Person) and command.action == PersonActions.REMOVE:

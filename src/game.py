@@ -44,12 +44,9 @@ class Game(object):
         self.screen = GameScreen()
 
         self.people = []
-        self.location = Location((0, 0), (PANE_X/2, PANE_Y/2))
-        self.switch_panes(self.location)
-
-        self.index = -2
-        self.CDF.send(Person(PersonActions.CREATE, None, self.location))
-
+        self.index = -1
+        self.CDF.send(Person(PersonActions.CREATE, None, Location((0, 0), (PANE_X/2, PANE_Y/2))))
+        
         self.setup.stop()
         LoopingCall(self.game_loop).start(1.0 / DESIRED_FPS)
 
@@ -67,19 +64,20 @@ class Game(object):
 
             ###### CreatePerson ######
             if isinstance(command, Person) and command.action == PersonActions.CREATE:
-                self.people.append([command.location])
-                if self.index == -2:  # Game setup state, draw player
+                if self.index == -1:  # Pane setup, player already drawn
                     self.index = command.index
-                    self.screen.add_person(len(self.people) - 1, None, command.location)
-                elif self.index == -1:  # Pane setup, player already drawn
-                    self.index = command.index
-                elif self.index != command.index:  # Not player, always draw
+                    self.switch_panes(command.location)
+                    self.location = command.location
+                else:
+                    self.people.append(command.location)
                     self.screen.add_person(len(self.people) - 1, None, command.location)
 
             ###### MovePerson ######
             if isinstance(command, Person) and command.action == PersonActions.MOVE:
-                self.people[command.index][0] = command.location
+                self.people[command.index] = command.location
                 self.screen.update_person(command.index, command.location)
+                if self.index == command.index:
+                    self.location = command.location
 
             ###### RemovePerson ######
             if isinstance(command, Person) and command.action == PersonActions.REMOVE:
@@ -90,6 +88,7 @@ class Game(object):
                     if command.index < self.index:
                         self.index -= 1
                     self.people.pop(command.index)
+                    self.screen.remove_person(command.index)
 
     def handle_events(self):
         pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
@@ -118,13 +117,12 @@ class Game(object):
 
     def move_person(self, direction, distance):
         newloc = self.location.move(direction, distance)
-        if (self.location.pane == newloc.pane and self.pane.is_tile_passable(newloc)) or self.location.pane != newloc.pane:
+        if (self.location.pane == newloc.pane and self.pane.is_tile_passable(newloc) and \
+                newloc.tile not in [x.tile for x in self.people]) or self.location.pane != newloc.pane:
             self.CDF.send(Person(PersonActions.MOVE, self.index, newloc))
-            self.location = newloc
-            if self.pane != newloc.pane:
-                self.switch_panes(self.location)
-                self.screen.add_person(self.index, None, self.location)
-            self.screen.update_person(self.index, self.location)
+            if self.location.pane == newloc.pane:
+                self.location = newloc
+                self.screen.update_person(self.index, self.location)
 
     def switch_panes(self, location):
         #TODO we can add transitions here.
