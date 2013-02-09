@@ -4,9 +4,10 @@ Location Class
 from const import *
 
 class Location(object):
-    def __init__(self, pane, tile):
+    def __init__(self, pane, tile, direction = None):
         self.pane = pane
         self.tile = tile
+        self.direction = direction
 
     # So it turns out __repr__ is like toString()
     def __repr__(self):
@@ -55,4 +56,4 @@ class Location(object):
             tile[1] -= PANE_Y
             pane[1] += 1
 
-        return Location(tuple(pane), tuple(tile))
+        return Location(tuple(pane), tuple(tile), direction)
