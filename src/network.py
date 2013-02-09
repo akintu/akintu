@@ -3,34 +3,40 @@ Network communication class
 '''
 
 from twisted.internet.protocol import Factory, Protocol
+from twisted.internet.error import ConnectionLost
 from twisted.internet import reactor
+from twisted.internet.task import LoopingCall
+from twisted.protocols.basic import LineReceiver
 
 import Queue
 import cPickle
-from pprint import pprint
+import sys
+from command import *
 
-class ServerData(Protocol):
+class ServerData(LineReceiver):
     '''
     Server protocol
     '''
     def connectionMade(self):
         self.port = self.transport.getPeer().port
-        if not self.factory.clients.has_key(self.port):
+        if self.port not in self.factory.clients:
             print("Connection made with client on port #" + str(self.port))
             self.factory.clients[self.port] = self
+        self.factory.send(self.port, self.port)
 
     def connectionLost(self, reason):
-        print('Lost connection.  Reason:' + str(reason))
-        if self.factory.clients.has_key(self.port):
+        if reason.type is ConnectionLost:
+            print('ServerData lost connection to client on ' + str(self.port) + '.')
+        else:
+            print('ServerData lost connection to client on ' + str(self.port) + '.  Reason: ' + reason.getErrorMessage())
+        if self.port in self.factory.clients:
             del self.factory.clients[self.port]
-        self.factory.shutdown()
+            self.factory.queue.put((self.port, Person(PersonActions.REMOVE, None, None)))
 
-    def dataReceived(self, data):
+    def lineReceived(self, data):
         data = cPickle.loads(data)
-        print(self.port, data)
+        print("S " + str(self.port) + "> " + str(data))
         self.factory.queue.put((self.port, data))
-        if data == 'q': #Find some other abort mechanism
-            self.factory.shutdown()
 
 class ServerDataFactory(Factory):
     '''
@@ -45,38 +51,35 @@ class ServerDataFactory(Factory):
 
     def send(self, port, data):
         data = cPickle.dumps(data)
-        if self.clients.has_key(port):
-            self.clients[port].transport.write(data)
+        if port in self.clients:
+            self.clients[port].sendLine(data)
         elif port == 0:
             for port, protocol in self.clients.iteritems():
-                protocol.transport.write(data)
+                protocol.sendLine(data)
 
-    def shutdown(self):
-        for port, protocol in self.clients.iteritems():
-            protocol.transport.loseConnection()
-        if reactor.running:
-            reactor.stop()
-        print("Server shutdown")
-
-
-class ClientData(Protocol):
+class ClientData(LineReceiver):
     '''
     Client protocol
     '''
     def connectionMade(self):
         self.factory.server = self
         print("Connected to server on " + str(self.transport.getPeer()))
-        pass #Send avatar creation command
 
     def connectionLost(self, reason):
-        print('Lost connection.  Reason:' + str(reason))
+        if reason.type is ConnectionLost:
+            print('ClientData lost connection.')
+        else:
+            print('ClientData lost connection.  Reason: ' + reason.getErrorMessage())
+        if reactor.running:
+            reactor.stop()
 
-    def dataReceived(self, data):
+    def lineReceived(self, data):
         data = cPickle.loads(data)
-        pprint(data)
-        self.factory.queue.put(data)
-        if data == 'q': #Find some other abort mechanism
-            self.factory.shutdown()
+        if self.factory.port is None:
+            self.factory.port = data
+        else:
+            print("Client> " + str(data))
+            self.factory.queue.put(data)
 
 class ClientDataFactory(Factory):
     '''
@@ -85,23 +88,20 @@ class ClientDataFactory(Factory):
     protocol = ClientData
     def __init__(self):
         self.queue = Queue.Queue()
+        self.port = None
 
     def startedConnecting(self, connector):
         print('Connecting to server...')
 
     def send(self, data):
         data = cPickle.dumps(data)
-        self.server.transport.write(data)
-
-    def shutdown(self):
-        self.server.transport.loseConnection()
-        if reactor.running:
-            reactor.stop()
-        print("Connection to server closed.")
+        self.server.sendLine(data)
 
     def clientConnectionLost(self, connector, reason):
-        pprint(reason)
-        print('Lost connection.  Reason:' + str(reason))
+        if reason.type is ConnectionLost:
+            print('ClientDataFactory lost connection.')
+        else:
+            print('ClientDataFactory lost connection.  Reason: ' + reason.getErrorMessage())
 
     def clientConnectionFailed(self, connector, reason):
-        print('Connection failed.  Reason:' + str(reason))
+        print('Connection failed.  Reason: ' + reason.getErrorMessage())
