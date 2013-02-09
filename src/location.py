@@ -4,9 +4,10 @@ Location Class
 from const import *
 
 class Location(object):
-    def __init__(self, pane, tile):
+    def __init__(self, pane, tile, direction=None):
         self.pane = pane
         self.tile = tile
+        self.direction = direction
 
     # So it turns out __repr__ is like toString()
     def __repr__(self):
@@ -55,4 +56,35 @@ class Location(object):
             tile[1] -= PANE_Y
             pane[1] += 1
 
-        return Location(tuple(pane), tuple(tile))
+        return Location(tuple(pane), tuple(tile), direction)
+        
+    def distance(self, dest):
+        return  abs((self.pane[0] * PANE_X + self.tile[0]) - \
+                (dest.pane[0] * PANE_X + dest.tile[0])) + \
+                abs((self.pane[1] * PANE_Y + self.tile[1]) - \
+                (dest.pane[1] * PANE_Y + dest.tile[1]))
+                
+    def in_melee_range(self, dest):
+        if self.pane != dest.pane:
+            return False
+        if dest.tile in [(self.tile[0] + dx, self.tile[1] + dy) for dx in range(-1, 2) for dy in range(-1, 2)]:
+            return True
+        return False
+
+if __name__ == "__main__":
+    a = Location((3, 1), (15, 20))
+    b = Location((3, 1), (5, 10))
+    c = Location((3, 1), (15, 15))
+    d = Location((3, 1), (0, 0))
+    e = Location((0, 0), (0, 0))
+    assert a.distance(b) == 20
+    assert a.distance(c) == 5
+    assert a.distance(d) == 35
+    assert a.distance(e) == 151
+    f = Location((3, 1), (15, 21))
+    g = Location((3, 1), (15, 19))
+    assert a.in_melee_range(b) == False
+    assert a.in_melee_range(f) == True
+    assert a.in_melee_range(g) == True
+    h = Location((3, 1), (15, 18))
+    assert a.in_melee_range(h) == False
