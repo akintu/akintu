@@ -22,7 +22,7 @@ class Game(object):
     def __init__(self):
         self.world = World("CorrectHorseStapleBattery")
         self.keystate = 0
-        self.unacked_movement = 0
+        self.running = 0
         self.people = []
         self.index = -1
         
@@ -77,13 +77,10 @@ class Game(object):
 
             ###### MovePerson ######
             if isinstance(command, Person) and command.action == PersonActions.MOVE:
+                self.people[command.index] = command.location
+                self.screen.update_person(command.index, command.location)
                 if self.index == command.index:
-                    self.unacked_movement -= 1
                     self.location = command.location
-                if self.index != command.index or self.unacked_movement == 0:
-                    self.people[command.index] = command.location
-                    self.screen.update_person(command.index, command.location)
-                    
 
             ###### RemovePerson ######
             if isinstance(command, Person) and command.action == PersonActions.REMOVE:
@@ -133,11 +130,14 @@ class Game(object):
         newloc = self.location.move(direction, distance)
         if (self.location.pane == newloc.pane and self.pane.is_tile_passable(newloc) and \
                 newloc.tile not in [x.tile for x in self.people]) or self.location.pane != newloc.pane:
+            if self.running:
+                self.CDF.send(Person(PersonActions.STOP, self.index))
+                self.running = False
             if self.keystate in [K_LSHIFT, K_RSHIFT]:
                 self.CDF.send(Person(PersonActions.RUN, self.index, direction))
+                self.running = True
             else:
                 self.CDF.send(Person(PersonActions.MOVE, self.index, newloc))
-                self.unacked_movement += 1
                 if self.location.pane == newloc.pane:
                     self.location = newloc
                     self.screen.update_person(self.index, self.location)

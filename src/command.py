@@ -5,7 +5,7 @@ Class for communicating map sync actions
 def enum(**enums):
     return type('Enum', (), enums)
 
-PersonActions = enum(CREATE = 1, MOVE = 2, REMOVE = 3, RUN = 4)
+PersonActions = enum(CREATE = 1, MOVE = 2, REMOVE = 3, RUN = 4, STOP = 5)
 InventoryActions = enum(PICKUP = 1, PUTDOWN = 2)
 
 
@@ -14,15 +14,13 @@ class Command:
         pass
 
     def __repr__(self):
-        result = "(" + self.__class__.__name__ + ": ["
-        #for attr, val in self.__dict__.iteritems():
-        #    result += attr + ": " + str(val) + " "
+        result = self.__class__.__name__ + "("
         result += ", ".join([attr + ": " + str(val) for attr, val in self.__dict__.iteritems()])
-        result += "])"
+        result += ")"
         return result
 
 class Person(Command):
-    def __init__(self, action, index, location):
+    def __init__(self, action, index, location = None):
         self.action = action
         self.index = index
         self.location = location
