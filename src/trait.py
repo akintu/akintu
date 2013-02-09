@@ -15,13 +15,17 @@ class Trait(object):
         self.rank = 1
         self.onStringList = None
         self.offStringList = None
-        if self.type == 'dynamic':
+        self.extraStaticAction = None
+        if self.type == 'dynamic' or self.type == "dynamic and static":
             self.onStringList = content['onString']
             self.offStringList = content['offString']
             self.registerListener()
         else: 
             self.action(self.owner)
-
+        if self.type == "dynamic and static":
+            self.extraStaticAction = content['staticAction']
+            self.extraStaticAction(self.owner)
+        
         
     def advanceTier(self):
         if self.rank == 4:
@@ -317,7 +321,111 @@ class Trait(object):
             elif tRank == 4:
                 target.baseOverallDamageBonus -= 20
                     
-    
+    @staticmethod
+    def applyReservoir(target):
+        tRank = getTraitRank(target, "Reservoir")
+        if tRank == 1:
+            target.baseMP += 10
+        elif tRank == 2:
+            target.baseMP += 5
+        elif tRank == 3:
+            target.baseMP += 5
+        elif tRank == 4:
+            target.baseMP += 5
+            
+    @staticmethod
+    def applySurvivor(target):
+        tRank = getTraitRank(target, "Survivor")
+        if tRank == 1:
+            target.baseHP += 4
+        elif tRank == 2:
+            target.baseHP += 4
+        elif tRank == 3:
+            target.baseHP += 4
+        elif tRank == 4:
+            target.baseHP += 4
+
+    @staticmethod
+    def applyIllusionSpellFocusStatic(target):
+        tRank = getTraitRank(target, "Illusion Spell Focus")
+        if tRank == 1:
+            pass
+        elif tRank == 2:
+            target.illusionResist += 1
+        elif tRank == 3:
+            target.illusionResist += 1
+        elif tRank == 4:
+            target.illusionResist += 2
+            
+    @staticmethod
+    def applyIllusionSpellFocus(target, reverse=False, spell=None):
+        if spell.school != "Illusion":
+            return
+        tRank = getTraitRank(target, "Illusion Spell Focus")
+        if not reverse:
+            if tRank == 1:
+                spell.MPCost -= 1
+                target.statusSpellpower += 1
+            elif tRank == 2:
+                spell.MPCost -= 1
+                target.statusSpellpower += 2
+            elif tRank == 3:
+                spell.MPCost -= 2
+                target.statusSpellpower += 3
+            elif tRank == 4:
+                spell.MPCost -= 2
+                target.statusSpellpower += 5
+        else:
+            if tRank == 1:
+                spell.MPCost += 1
+                target.statusSpellpower -= 1
+            elif tRank == 2:
+                spell.MPCost += 1
+                target.statusSpellpower -= 2
+            elif tRank == 3:
+                spell.MPCost += 2
+                target.statusSpellpower -= 3
+            elif tRank == 4:
+                spell.MPCost += 2
+                target.statusSpellpower -= 5        
+            
+    @staticmethod
+    def applyPrimalSpellFocusStatic(target):
+        tRank = getTraitRAnk(target, "Primal Spell Focus")
+        if tRank == 1:
+            target.baseMP += 1
+        elif tRank == 2:
+            target.baseMP += 1
+            target.primalResist += 1
+        elif tRank == 3:
+            target.baseMP += 1
+        elif tRank == 4:
+            target.baseMP += 2
+            target.primalResist += 2
+            
+    @staticmethod
+    def applyPrimalSpellFocus(target, reverse=False, spell=None):
+        if spell.school != "Primal":
+            return
+        if not reverse:
+            if tRank == 1:
+                target.statusSpellpower += 2
+            if tRank == 2:
+                target.statusSpellpower += 4
+            if tRank == 3:
+                target.statusSpellpower += 6
+            if tRank == 4:
+                target.statusSpellpower += 8
+        else:
+            if tRank == 1:
+                target.statusSpellpower -= 2
+            if tRank == 2:
+                target.statusSpellpower -= 4
+            if tRank == 3:
+                target.statusSpellpower -= 6
+            if tRank == 4:
+                target.statusSpellpower -= 8        
+            
     allContentByName = {
         'Parry': 
             {
@@ -396,7 +504,38 @@ class Trait(object):
             'action' : applyHammerAndAnvil,
             'onStringList' : ['Outgoing Melee Attack'],
             'offStringList' : ['Outgoing Melee Attack Complete']
+            },
+            
+        # Wizard Traits
+        'Reservoir':
+            {
+            'class' : 'Wizard',
+            'type' : 'static',
+            'action' : applyReservoir
+            },
+        'Survivor':
+            {
+            'class' : 'Wizard',
+            'type' : 'static',
+            'action' : applySurvivor
+            },
+        'Illusion Spell Focus':
+            {
+            'class' : 'Wizard',
+            'type' : 'dynamic and static',
+            'action' : applyIllusionSpellFocus,
+            'onStringList' : ['Outgoing Spell Cast'],
+            'offStringList' : ['Outgoing Spell Cast Complete'],
+            'staticAction' : applyIllusionSpellFocusStatic
+            },
+        'Primal Spell Focus':
+            {
+            'class' : 'Wizard',
+            'type' : 'dynamic and static',
+            'action' : applyPrimalSpellFocus,
+            'onStringList' : ['Outgoing Spell Cast'],
+            'offStringList' : ['Outgoing Spell Cast Complete'],
+            'staticAction' : applyPrimalSpellFocusStatic
             }
-        
     }
 

@@ -537,7 +537,7 @@ class Combat(object):
             Combat._shoutAttackComplete(source, target, noCounter) 
             return
         # TODO: Barehands...
-        wepon = source.equippedItem.equippedWeapon
+        weapon = source.equippedItem.equippedWeapon
         effectiveForce = source.totalForce * forceMod
         if( source.usingWeapon(ranged) ):
             effectiveForce *= 1 + (source.totalRangedForce / 100)
