@@ -781,8 +781,8 @@ class Combat(object):
         direction = "Outgoing"
         hearer = source
         otherParty = target
-        if hitType != "Critical Hit":
-            hitType = ""
+        if hitType == "Miss":
+            hitTypeString = ""
         if source.team == "Monsters":
             direction = "Incoming"
             otherParty = source
@@ -790,7 +790,7 @@ class Combat(object):
         attackType = "Ranged"
         if source.usingWeapon("Melee"):
             attackType = "Melee"
-        bundle = {'direction' : direction, 'type' : attackType, 'otherPerson' : otherParty, 'suffix' : hitType}
+        bundle = {'direction' : direction, 'type' : attackType, 'otherPerson' : otherParty, 'suffix' : hitTypeString}
         bc = broadcast.AttackBroadcast(bundle)
         bc.shout(hearer)
         

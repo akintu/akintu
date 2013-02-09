@@ -2,6 +2,8 @@
 
 import sys
 import listener
+import location
+from combat import *
 
 class Trait(object):
     
@@ -321,6 +323,157 @@ class Trait(object):
             elif tRank == 4:
                 target.baseOverallDamageBonus -= 20
     
+    # Ranger
+    @staticmethod
+    def applyWoundingProjectiles(target, reverse=False, victim=None):
+        tRank = getTraitRank(target, "Wounding Projectiles")
+        chance = None
+        magnitude = None
+        duration = 2
+        if tRank == 1:
+            chance = 10
+            magnitude = 5
+        elif tRank == 2:
+            chance = 12
+            magnitude = 6
+        elif tRank == 3:
+            chance = 15
+            magnitude = 7
+        elif tRank == 4:
+            chance = 18
+            magnitude = 8
+        if Dice.rollBeneath(chance):
+            Combat.addStatus(victim, "Wounding Projectiles", duration, magnitude)
+            
+    @staticmethod
+    def applyMeleeArcheryStatic(target):
+        tRank = getTraitRank(target, "Melee Archery")
+        if tRank == 1:
+            target.meleeRangedAttackPenaltyReduction = 50
+        elif tRank == 2 or tRank == 3 or tRank == 4:
+            target.meleeRangedAttackPenaltyReduction = 100
+        #TODO: Read from this variable in Combat class
+            
+    @staticmethod
+    def applyMeleeArchery(target, reverse=False, victim=None):
+        if not location.in_melee_range(target.location, victim.location):
+            return
+        tRank = getTraitRank(target, "Melee Archery")
+        if not reverse:
+            if tRank == 1:
+                pass
+            elif tRank == 2:
+                pass
+            elif tRank == 3:
+                target.statusRangedAccuracy += 4
+            elif tRank == 4:
+                target.statusRangedAccuracy += 4
+                target.statusOverallDamageBonus += 10
+        else:
+            if tRank == 1:
+                pass
+            elif tRank == 2:
+                pass
+            elif tRank == 3:
+                target.statusRangedAccuracy -= 4
+            elif tRank == 4:
+                target.statusRangedAccuracy -= 4
+                target.statusOverallDamageBonus -= 10        
+    
+    @staticmethod
+    def applyNatureTraining(target):
+        tRank = getTraitRank(target, "Nature Training")
+        if tRank == 1:
+            target.basePoisonTolerance += 2
+            target.basePoisonResistance += 2
+        elif tRank == 2:
+            target.basePoisonTolerance += 1
+            target.basePoisonResistance += 2
+        elif tRank == 3:
+            target.basePoisonTolerance += 1
+            target.basePoisonResistance += 2
+        elif tRank == 4:
+            target.basePoisonTolerance += 2
+            target.basePoisonResistance += 3   
+
+    @staticmethod
+    def applyExplorer(target):
+        tRank = getTraitRank(target, "Explorer")
+        if tRank == 1:
+            target.baseTrapEvade += 2
+            target.baseAwareness += 2
+            target.goldFind += 1
+        elif tRank == 2:
+            target.baseTrapEvade += 1
+            target.baseAwareness += 1
+            target.goldFind += 1
+        elif tRank == 3:            
+            target.baseTrapEvade += 1
+            target.baseAwareness += 1
+            target.goldFind += 1
+        elif tRank == 4:            
+            target.baseTrapEvade += 1
+            target.baseAwareness += 1
+            target.goldFind += 1            
+            
+    @staticmethod
+    def applyTrapsmith(target):
+        tRank = getTraitRank(target, "Trapsmith")
+        if tRank == 1:
+            target.bonusTrapDamage += 5
+            target.bonusTrapRating -= 1
+        elif tRank == 2:
+            target.bonusTrapDamage += 5
+            target.bonusTrapRating -= 1
+        elif tRank == 3:
+            target.bonusTrapDamage += 5
+            target.bonusTrapRating -= 1
+        elif tRank == 4:
+            target.bonusTrapDamage += 5
+            # No penalty at this rank
+            
+    @staticmethod
+    def applyMastermind(target, reverse=False, trap=None):
+        pass
+        # TODO: We need to be able to track the total number of player
+        # traps on the combat arena in order to implement this trait.
+    
+    @staticmethod
+    def applyFollowupExpert(target, reverse=False, victim=None):
+        duration = 2
+        magnitudeAccuracy = None
+        magnitudeForce = None
+        tRank = getTraitRank(target, "Follow-up Expert")
+        if tRank == 1:
+            magnitudeAccuracy = 2
+            magnitudeForce = 15
+        elif tRank == 2:
+            magnitudeAccuracy = 4
+            magnitudeForce = 25
+        elif tRank == 3:
+            magnitudeAccuracy = 6
+            magnitudeForce = 35
+        elif tRank == 4:
+            magnitudeAccuracy = 8
+            magnitudeForce = 50
+        Combat.addStatus(target, "Follow-up Expert Accuracy", duration, magnitudeAccuracy)
+        Combat.addStatus(target, "Follow-up Expert Force", duration, magnitudeForce)  
+            
+    @staticmethod
+    def applyTrapSadism(target, reverse=False, trap=None):
+        duration = 2
+        magnitude = None
+        tRank = getTraitRank(target, "Trap Sadism")
+        if tRank == 1:
+            magnitude = 15
+        elif tRank == 2:
+            magnitude = 30
+        elif tRank == 3:
+            magnitude = 45
+        elif tRank == 4:
+            magnitude = 65
+        Combat.addStatus(target, "Trap Sadism", duration, magnitude)
+            
     # Thief
     @staticmethod
     def applyUncannyEvasion(target):
@@ -902,7 +1055,68 @@ class Trait(object):
             'onStringList' : ['Outgoing Melee Attack'],
             'offStringList' : ['Outgoing Melee Attack Complete']
             },
-            
+        
+        # Ranger Traits
+        'Wounding Projectiles':
+            {
+            'class' : 'Ranger',
+            'type' : 'dynamic',
+            'action' : applyWoundingProjectiles,
+            'onStringList' : ['Outgoing Ranged Attack Normal Hit', 'Outgoing Ranged Attack Critical Hit'],
+            'offStringList' : []
+            },
+        'Melee Archery':
+            {
+            'class' : 'Ranger',
+            'type' : 'dynamic and static',
+            'action' : applyMeleeArchery,
+            'onStringList' : ['Outgoing Ranged Attack'],
+            'offStringList' : ['Outgoing Ranged Attack Complete'],
+            'staticAction' : applyMeleeArcheryStatic
+            },            
+        'Nature Training':
+            {
+            'class' : 'Ranger',
+            'type' : 'static',
+            'action' : applyNatureTraining,
+            },
+        'Explorer':
+            {
+            'class' : 'Ranger',
+            'type' : 'static',
+            'action' : applyExplorer
+            },
+        'Trapsmith':
+            {
+            'class' : 'Ranger',
+            'type' : 'static',
+            'action' : applyTrapsmith
+            },
+        'Mastermind':
+            {
+            'class' : 'Ranger',
+            'type' : 'dynamic',
+            'action' : applyMastermind,
+            'onStringList' : ['Monster Triggered Trap Complete'],
+            'offStringList' : ['Player Trap Removed']
+            },
+        'Follow-up Expert':
+            {
+            'class' : 'Ranger',
+            'type' : 'dynamic',
+            'action' : applyFollowupExpert,
+            'onStringList' : ['Outgoing Melee Attack Hit', 'Outgoing Melee Attack Critical Hit'],
+            'offStringList' : []
+            },
+        'Trap Sadism':
+            {
+            'class' : 'Ranger',
+            'type' : 'dynamic',
+            'action' : applyTrapSadism,
+            'onStringList' : ['Monster Hit By Trap Complete'],
+            'offStringList' : []
+            },
+    
         # Thief Traits
         'Uncanny Evasion':
             {
