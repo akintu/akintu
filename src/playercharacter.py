@@ -258,6 +258,7 @@ class PlayerCharacter(p.Person):
                     
         # Select/Gain Skill: TODO
         # Select/Gain Spell(s): TODO
+        # TODO: Check to see if we need to alter the MP/AP cost of learned spells based on traits!
     
     @property
     def experience(self):
