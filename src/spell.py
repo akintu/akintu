@@ -68,9 +68,10 @@ class Spell(object):
                     self.unapplySchoolResistance()
                 else:
                     self.action(self, target)
+                self._shoutSpellCastComplete(self.owner, target)
                 if self.targetType != "friendly" and self.targetType != "self":
                     Combat.removeStealth(self.owner)
-                self._shoutSpellCastComplete(self.owner, target)
+                
             else:
                 return
                 # TODO, notify of spell failure?

@@ -320,7 +320,228 @@ class Trait(object):
                 target.baseOverallDamageBonus -= 15
             elif tRank == 4:
                 target.baseOverallDamageBonus -= 20
-                    
+    
+    # Thief
+    @staticmethod
+    def applyUncannyEvasion(target):
+        tRank = getTraitRank(target, "Uncanny Evasion")
+        if tRank == 1:
+            target.statusRangedDodge += 3
+        elif tRank == 2:
+            target.statusRangedDodge += 3
+        elif tRank == 3:
+            target.statusRangedDodge += 3
+        elif tRank == 4:
+            target.statusRangedDodge += 3
+    
+    @staticmethod
+    def applyStealthyDaggers(target, reverse=False, victim=None):
+        if not target.usingWeapon("Knife"):
+            return
+        tRank = getTraitRank(target, "Stealthy Daggers")
+        if not reverse:
+            if tRank == 1:
+                if target.inStealth():
+                    target.statusMeleeAccuracy += 3
+                else:
+                    target.statusMeleeAccuracy += 1
+                target.statusOverallDamageBonus += 2
+            elif tRank == 2:
+                if target.inStealth():
+                    target.statusMeleeAccuracy += 6
+                else:
+                    target.statusMeleeAccuracy += 2
+                target.statusOverallDamageBonus += 3            
+            elif tRank == 3:
+                if target.inStealth():
+                    target.statusMeleeAccuracy += 9
+                else:
+                    target.statusMeleeAccuracy += 3
+                target.statusOverallDamageBonus += 4
+            elif tRank == 4:
+                if target.inStealth():
+                    target.statusMeleeAccuracy += 12
+                else:
+                    target.statusMeleeAccuracy += 4
+                target.statusOverallDamageBonus += 5
+        else:
+            if tRank == 1:
+                if target.inStealth():
+                    target.statusMeleeAccuracy -= 3
+                else:
+                    target.statusMeleeAccuracy -= 1
+                target.statusOverallDamageBonus -= 2
+            elif tRank == 2:
+                if target.inStealth():
+                    target.statusMeleeAccuracy -= 6
+                else:
+                    target.statusMeleeAccuracy -= 2
+                target.statusOverallDamageBonus -= 3            
+            elif tRank == 3:
+                if target.inStealth():
+                    target.statusMeleeAccuracy -= 9
+                else:
+                    target.statusMeleeAccuracy -= 3
+                target.statusOverallDamageBonus -= 4
+            elif tRank == 4:
+                if target.inStealth():
+                    target.statusMeleeAccuracy -= 12
+                else:
+                    target.statusMeleeAccuracy -= 4
+                target.statusOverallDamageBonus -= 5        
+
+    @staticmethod
+    def applyDueling(target, reverse=False, other=None):
+        if not target.usingWeaponStyle("Single"):
+            return
+        tRank = getTraitRank(target, "Dueling")
+        if not reverse:
+            if tRank == 1:
+                target.statusDodge += 1
+                target.statusMeleeAccuracy += 1
+                target.statusRangedAccuracy += 1
+                target.statusCriticalChance += 2
+            elif tRank == 2:
+                target.statusDodge += 2
+                target.statusMeleeAccuracy += 2
+                target.statusRangedAccuracy += 2
+                target.statusCriticalChance += 4
+            elif tRank == 3:
+                target.statusDodge += 3
+                target.statusMeleeAccuracy += 3
+                target.statusRangedAccuracy += 3
+                target.statusCriticalChance += 6
+            elif tRank == 4:
+                target.statusDodge += 5
+                target.statusMeleeAccuracy += 5
+                target.statusRangedAccuracy += 5
+                target.statusCriticalChance += 8
+        else:
+            if tRank == 1:
+                target.statusDodge -= 1
+                target.statusMeleeAccuracy -= 1
+                target.statusRangedAccuracy -= 1
+                target.statusCriticalChance -= 2
+            elif tRank == 2:
+                target.statusDodge -= 2
+                target.statusMeleeAccuracy -= 2
+                target.statusRangedAccuracy -= 2
+                target.statusCriticalChance -= 4
+            elif tRank == 3:
+                target.statusDodge -= 3
+                target.statusMeleeAccuracy -= 3
+                target.statusRangedAccuracy -= 3
+                target.statusCriticalChance -= 6
+            elif tRank == 4:
+                target.statusDodge -= 5
+                target.statusMeleeAccuracy -= 5
+                target.statusRangedAccuracy -= 5
+                target.statusCriticalChance -= 8        
+                        
+    @staticmethod
+    def applyTwoWeaponFighting(target, reverse=False, other=None):
+        if not target.usingWeaponStyle("Dual"):
+            return
+        tRank = getTraitRank(target, "Two-Weapon Fighting")
+        if not reverse:
+            if tRank == 1:
+                target.statusCriticalMagnitude += 5
+            elif tRank == 2:
+                target.statusCriticalMagnitude += 8
+            elif tRank == 3:
+                target.statusCriticalMagnitude += 10
+            elif tRank == 4:
+                target.statusCriticalMagnitude += 13
+        else:
+            if tRank == 1:
+                target.statusCriticalMagnitude -= 5
+            elif tRank == 2:
+                target.statusCriticalMagnitude -= 8
+            elif tRank == 3:
+                target.statusCriticalMagnitude -= 10
+            elif tRank == 4:
+                target.statusCriticalMagnitude -= 13        
+            
+    @staticmethod
+    def applyClever(target):
+        tRank = getTraitRank(target, "Clever")
+        if tRank == 1:
+            target.baseMagicResist += 2
+        elif tRank == 2:
+            target.baseMagicResist += 2
+        elif tRank == 3:
+            target.baseMagicResist += 2
+        elif tRank == 4:
+            target.baseMagicResist += 2
+        
+    @staticmethod
+    def applyLucky(target):
+        tRank = getTraitRank(target, "Lucky")
+        if tRank == 1:
+            target.baseTrapEvade += 5
+            target.baseCriticalChance += 0.5
+        elif tRank == 2:
+            target.baseTrapEvace += 2
+            target.baseCriticalChance += 0.5
+        elif tRank == 3:
+            target.baseTrapEvace += 2
+            target.baseCriticalChance += 0.5
+        elif tRank == 4:
+            target.baseTrapEvace += 2
+            target.baseCriticalChance += 0.5            
+        
+    @staticmethod
+    def applyDiscerningEyes(target):
+        tRank = getTraitRank(target, "Discerning Eyes")
+        if tRank == 1:
+            target.baseAwareness += 5
+            target.trapDisarmBonus += 1
+        elif tRank == 2:
+            target.baseAwareness += 2
+            target.trapDisarmBonus += 1            
+        elif tRank == 3:
+            target.baseAwareness += 2
+            target.trapDisarmBonus += 1
+        elif tRank == 4:
+            target.baseAwareness += 2
+            target.trapDisarmBonus += 1
+        
+    @staticmethod
+    def applyTreasureHunter(target):
+        tRank = getTraitRank(target, "Treasure Hunter")
+        if tRank == 1:
+            target.goldFind += 2
+        elif tRank == 2:
+            target.goldFind += 1
+        elif tRank == 3:
+            target.goldFind += 2
+        elif tRank == 4:
+            target.goldFind += 3
+        
+    @staticmethod
+    def applyDilatant(target):
+        tRank = getTraitRank(target, "Dilatant")
+        if tRank == 1:
+            target.baseHP += 3
+            target.baseCarryingCapacity += 5
+            target.baseAwareness += 1
+            target.baseShadowResistance += 1
+        elif tRank == 2:
+            target.baseHP += 3
+            target.baseCarryingCapacity += 5
+            target.baseAwareness += 2
+            target.baseShadowResistance += 1
+        elif tRank == 3:
+            target.baseHP += 3
+            target.baseCarryingCapacity += 5
+            target.baseShadowResistance += 1
+        elif tRank == 4:
+            target.baseHP += 5
+            target.baseCarryingCapacity += 10
+            target.baseAwareness += 2
+            target.baseShadowResistance += 2
+            
+    # Wizard
     @staticmethod
     def applyReservoir(target):
         tRank = getTraitRank(target, "Reservoir")
@@ -607,8 +828,10 @@ class Trait(object):
             elif tRank == 4:
                 target.statusSpellpower -= 8
 
+    
         
     allContentByName = {
+        # Fighter Traits
         'Parry': 
             {
             'class' : 'Fighter',
@@ -616,8 +839,7 @@ class Trait(object):
             'action' : applyParry,
             'onStringList' : ['Incoming Melee Attack'],
             'offStringList' : ['Incoming Melee Attack Complete']
-            }
-        ,
+            },
         'Preparation':
             {
             'class' : 'Fighter',
@@ -625,8 +847,7 @@ class Trait(object):
             'action' : applyPreparation,
             'onStringList' : ['Starting Player Turn'],
             'offStringList' : ['Outgoing Melee Attack Complete', 'Outgoing Ranged Attack Complete']
-            }
-        ,
+            },
         'Tank':
             {
             'class' : 'Fighter',
@@ -634,8 +855,7 @@ class Trait(object):
             'action' : applyTank,
             'onStringList' : ['Incoming Melee Attack', 'Incoming Ranged Attack'],
             'offStringList' : ['Incoming Melee Attack Complete', 'Incoming Ranged Attack Complete']
-            }
-        ,
+            },
         'Fencer':
             {
             'class' : 'Fighter',
@@ -643,8 +863,7 @@ class Trait(object):
             'action' : applyFencer,
             'onStringList' : ['Outgoing Melee Attack'],
             'offStringList' : ['Outgoing Melee Attack Complete']
-            }
-        ,
+            },
         'Shield Resilience':
             {
             'class' : 'Fighter',
@@ -652,8 +871,7 @@ class Trait(object):
             'action' : applyShieldResilience,
             'onStringList' : ['Incoming Melee Attack', 'Incoming Ranged Attack'],
             'offStringList' : ['Incoming Melee Attack Complete', 'Incoming Ranged Attack Complete']
-            }
-        ,
+            },
         'Bully':
             {
             'class' : 'Fighter',
@@ -661,8 +879,7 @@ class Trait(object):
             'action' : applyBully,
             'onStringList' : ['Outgoing Melee Attack', 'Outgoing Ranged Attack'],
             'offStringList' : ['Outgoing Melee Attack Complete', 'Outgoing Ranged Attack Complete']
-            }
-        ,
+            },
         'Boldness':
             {
             'class' : 'Fighter',
@@ -670,15 +887,13 @@ class Trait(object):
             'action' : applyBoldness,
             'onStringList' : ['Outgoing Melee Attack', 'Outgoing Ranged Attack'],
             'offStringList' : ['Outoing Melee Attack Complete', 'Outgoing Ranged Attack Complete']
-            }
-        ,
+            },
         'Well-Traveled':
             {
             'class' : 'Fighter',
             'type' : 'static',
             'action' : applyWellTraveled,
-            }
-        ,
+            },
         'Hammer and Anvil':
             {
             'class' : 'Fighter',
@@ -688,6 +903,68 @@ class Trait(object):
             'offStringList' : ['Outgoing Melee Attack Complete']
             },
             
+        # Thief Traits
+        'Uncanny Evasion':
+            {
+            'class' : 'Thief',
+            'type' : 'static',
+            'action' : applyUncannyEvasion
+            },
+        'Stealthy Daggers':
+            {
+            'class' : 'Thief',
+            'type' : 'dynamic',
+            'action' : applyStealthyDaggers,
+            'onStringList' : ['Outgoing Melee Attack'],
+            'offStringList' : ['Outgoing Melee Attack Complete']
+            },            
+        'Dueling':
+            {
+            'class' : 'Thief',
+            'type' : 'dynamic',
+            'action' : applyDueling,
+            'onStringList' : ['Outgoing Ranged Attack', 'Outgoing Melee Attack', 'Incoming Ranged Attack', 'Incoming Melee Attack'],
+            'offStringList' : ['Outgoing Ranged Attack Complete', 'Outgoing Melee Attack Complete', 'Incoming Ranged Attack Complete', 'Incoming Melee Attack Complete']
+            },
+        'Two-Weapon Fighting':
+            {
+            'class' : 'Thief',
+            'type' : 'dynamic',
+            'action' : applyTwoWeaponFighting,
+            'onStringList' : ['Outgoing Melee Attack'],
+            'offStringList' : ['Outgoing Melee Attack Complete']
+            },
+        'Clever':
+            {
+            'class' : 'Thief',
+            'type' : 'static',
+            'action' : applyClever
+            },            
+        'Lucky':
+            {
+            'class' : 'Thief',
+            'type' : 'static',
+            'action' : applyLucky
+            },
+        'Discerning Eyes':
+            {
+            'class' : 'Thief',
+            'type' : 'static',
+            'action' : applyDiscerningEyes
+            },
+        'Treasure Hunter':
+            {
+            'class' : 'Thief',
+            'type' : 'static',
+            'action' : applyTreasureHunter
+            },
+        'Dilatant':
+            {
+            'class' : 'Thief',
+            'type' : 'static',
+            'action' : applyDilatant
+            },
+    
         # Wizard Traits
         'Reservoir':
             {
