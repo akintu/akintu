@@ -7,8 +7,13 @@ class Broadcast(object):
         self.message = None
     
     def shout(self, target):
+        interruptCodes = []
         for ear in target.listeners:
-            ear.hear(self)
+            code = ear.hear(self)
+            if code: 
+                interruptCodes.append(code)
+        if interruptCodes:
+            return interruptCodes
     
 class AttackBroadcast(Broadcast):
     def __init__(self, argDict):

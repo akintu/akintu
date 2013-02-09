@@ -50,6 +50,17 @@ class PassiveAbility(object):
         else:
             if target.usingWeaponStyle("Dual"):
                 target.baseMeleeAccuracy -= 2
+                
+    def applyBloodOnTheEdge(self, target, reverse=False, damageAmount=0):
+        # No reverse possible.
+        hpThreshold = round(target.totalHP * 0.30)
+        if target.HP > hpThreshold:
+            return
+        hpThreshold = round(target.totalHP * 0.05)
+        if damageAmount > hpThreshold:
+            return
+        return "Ignore Damage"
+            
     
     # Spellsword    
     def applySeekerOfEnchantments(self, targer, reverse=False, spell=None):
@@ -131,8 +142,7 @@ class PassiveAbility(object):
         'level' : 1,
         'type' : 'static',
         'action' : applyColdEndurance
-        },
-                 
+        },       
         'Magical Vulnerability':
         {
         'class' : 'Barbarian',
@@ -140,7 +150,6 @@ class PassiveAbility(object):
         'type' : 'static',
         'action' : applyMagicalVulnerability
         },
-        
         'Mighty Weapon':
         {
         'class' : 'Barbarian',
@@ -150,8 +159,7 @@ class PassiveAbility(object):
         'onStringList' : ['Outgoing Melee Attack'],
         'offStringList' : ['Outgoing Melee Attack Complete']
         },
-        
-        'Mighty Weapon':
+        'Two Weapon Targeting':
         {
         'class' : 'Barbarian',
         'level' : 2,
@@ -159,6 +167,15 @@ class PassiveAbility(object):
         'action' : applyTwoWeaponTargeting,
         'onStringList' : ['Outgoing Melee Attack'],
         'offStringList' : ['Outgoing Melee Attack Complete']
+        },
+        'Blood on the Edge':
+        {
+        'class' : 'Barbarian',
+        'level' : 3,
+        'type' : 'dynamic',
+        'action' : applyBloodOnTheEdge,
+        'onStringList' : ['Incoming Damage'],
+        'offStringList' : []
         },
         
         

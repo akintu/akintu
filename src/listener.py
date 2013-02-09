@@ -21,8 +21,7 @@ class Listener(object):
                     self.action(self.callObject, self.host, reverse=False, other=bCast.otherPerson)
                     return
                 elif bCast.isinstance(broadcast.DamageBroadcast):
-                    self.action(self.callObject, self.host, reverse=False, damage=bCast.amount)
-                    return
+                    return self.action(self.callObject, self.host, reverse=False, damage=bCast.amount)
                 elif bCast.isinstance(broadcast.StatusBroadcast):
                     self.action(self.callObject, self.host, reverse=False, statusName=bCast.statusName)
                     return

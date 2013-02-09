@@ -717,7 +717,9 @@ class Combat(object):
           None"""
         if amount <= 0:
             return
-        Combat._shoutDamage(target, amount)
+        interruptCodes = Combat._shoutDamage(target, amount)
+        if interruptCodes and "Ignore Damage" in interruptCodes:
+            return
             
         remaining = amount
         while( target.HPBufferList ):
@@ -815,7 +817,7 @@ class Combat(object):
             direction = "Outgoing"
         bundle = {'direction' : direction, 'amount' : amount}
         bc = broadcast.DamageBroadcast(bundle)
-        bc.shout(target)
+        return bc.shout(target)
         
     @staticmethod
     def _shoutStatusApplied(target, statusName):
