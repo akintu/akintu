@@ -6,6 +6,7 @@ import status as displaystatus
 import playercharacter as pc
 import broadcast
 import theorycraft
+import location
 
 class IncompleteMethodCall(Exception):
     def __init__(self, value):

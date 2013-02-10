@@ -2345,16 +2345,10 @@ class Person(en.Entity):
         Outputs:
           True or False"""
         selfLoc = self.location
-        otherLoc = None
-        if isinstance(target, Person):
-            otherLoc = target.location
-        elif isinstance(target, Location):
-            otherLoc = target
-        horizontalDistance = selfLoc.x - otherLoc.x
-        veritcalDistance = selfLoc.y - otherLoc.y
-        totalDistance = max(horizontalDistance, verticalDistance)
-        return (range >= totalDistance)
-           
+        otherLoc = target.location
+        if range == 1:
+            return location.in_melee_range(selfLoc, otherLoc)
+        return location.distance(selfLoc, otherLoc) <= range:
            
     def onCooldown(self, abilityName):
         """Returns True if the ability is currently unavailable due to

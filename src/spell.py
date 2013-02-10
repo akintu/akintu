@@ -42,9 +42,11 @@ class Spell(object):
         if self.targetType == "friendly" and self.owner.team != target.team:
             return (False, "Cannot target hostile with beneficial spell.")
         # Do we need any check for AoE spells?
-        if self.range < (Location.calcDistance(self.owner.location, target.location)):
+        if self.range == 1:
+            if not location.in_melee_range(self.owner.location, target.location):
+                return (False, "Target is not in melee range.")
+        elif self.range < (location.distance(self.owner.location, target.location)):
             return (False, "Target is out of range.")
-        # TODO calcDistance is a placeholder function
         if self.name in self.owner.cooldownList:
             return (False, "Spell is on Cooldown.")
         return (True, "")
