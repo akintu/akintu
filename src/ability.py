@@ -145,11 +145,27 @@ class Ability(object):
     
     def _sacrificialStrikeCheck(self, target):
         source = self.owner
-        if source.totalHP < source.totalHP * 0.05 + 1:
+        if source.HP < source.totalHP * 0.05 + 1:
             return (False, "Insufficient HP to use " + self.name)
         if source.usingWeapon("Melee"):
             return (True, "")
         else: 
+            return (False, self.name + " requires a melee weapon.")
+        
+    def _desperateStrike(self, target):
+        source = self.owner
+        hit = Combat.calcHit(source, target, "Physical", modifier=10, critMod=20)
+        Combat.basicAttack(source, target, hit, forceMod=2.5, armorPenetrationMod=10)
+        doStun = Dice.rollPresetChance(source, target, "Occasional")
+        Combat.addStatus(target, "Stun", duration=1, hitValue=hit, chance=doStun)    
+        
+    def _desperateStrikeCheck(self, target):
+        source = self.owner
+        if source.HP > source.totalHP * 0.25:
+            return (False, "Excess HP; cannot use " + self.name)
+        if source.usingWeapon("Melee"):
+            return (True, "")
+        else:
             return (False, self.name + " requires a melee weapon.")
         
     # Spellsword
@@ -327,7 +343,6 @@ class Ability(object):
         'checkFunction': _berserkerRageCheck,
         'breakStealth' : 100
         },
-        
         'Sacrificial Strike':
         {
         'level' : 2,
@@ -339,6 +354,19 @@ class Ability(object):
         'action' : _sacrificialStrike,
         'cooldown' : None,
         'checkFunction' : _sacrificialStrikeCheck,
+        'breakStealth' : 100
+        },
+        'Desperate Strike':
+        {
+        'level' : 3,
+        'class' : 'Barbarian',
+        'HPCost' : 0,
+        'APCost' : 12,
+        'range' : 1,
+        'target' : 'hostile',
+        'action' : _desperateStrike,
+        'cooldown' : None,
+        'checkFunction' : _desperateStrikeCheck,
         'breakStealth' : 100
         },
         

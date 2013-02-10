@@ -27,11 +27,10 @@ class PassiveAbility(object):
         self.owner.listeners.append(newListener)
         
         
-    
+    # Barbarian
     def applyColdEndurance(self, target):
         target.baseColdResistance += 10
         
-    
     def applyMagicalVulnerability(self, target):
         target.baseMagicResist -= 3
         
@@ -61,6 +60,9 @@ class PassiveAbility(object):
             return
         return "Ignore Damage"
             
+    def applyMagicalIgnorance(self, target):
+        target.baseMagicResist -= 3
+        
     
     # Spellsword    
     def applySeekerOfEnchantments(self, targer, reverse=False, spell=None):
@@ -176,6 +178,13 @@ class PassiveAbility(object):
         'action' : applyBloodOnTheEdge,
         'onStringList' : ['Incoming Damage'],
         'offStringList' : []
+        },
+        'Magical Ignorance':
+        {
+        'class' : 'Barbarian',
+        'level' : 3,
+        'type' : 'static',
+        'action' : applyMagicalIgnorance
         },
         
         
