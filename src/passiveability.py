@@ -97,6 +97,14 @@ class PassiveAbility(object):
                                      (1 - other.totalDivineResistance / 100)))
             Combat.lowerHP(other, holyDamage)
                 
+    def applyBladesOfReduction(self, target, reverse=False, victim=None):
+        if not target.usingWeapon("Sword") and not target.usingWeapon("Axe"):
+            return
+        doApply = Dice.rollPresetChance(target, victim, "Reliable")
+        if doApply:
+            duration = -1 # Never ends
+            Combat.applyStatus(victim, "Blades of Reduction", duration) 
+                
     # Battle Mage
     def applyCloseRangedMagic(self, target, reverse=False, spell=None):
         if not reverse:
@@ -136,6 +144,35 @@ class PassiveAbility(object):
                 target.overrideMovementAPCost = 2
         else:
             target.overrideMovementAPCost = -1
+            
+    def applyMilitaryDefensiveTraining(self, target, reverse=False, other=None):
+        if not target.usingShield():
+            return
+        if not reverse:
+            target.statusMagicResist += 3
+        else:
+            target.statusMagicResist -= 3
+            
+    def applyMilitarySpellTraining(self, target, reverse=False, spell=None):
+        if target.usingShield():
+            return
+        if not reverse:
+            target.statusSpellpower += 2
+        else:
+            target.statusSpellpower -= 2
+            
+    def applyMilitaryOffensiveTraining(self, target, reverse=False, spell=None):
+        if target.usingWeapon("Club"):
+            if not reverse:
+                target.statusMight += 5
+            else:
+                target.statusMight -= 5
+        else:
+            if not reverse:
+                target.statusMeleeAccuracy += 2
+            else:
+                target.statusMeleeAccuracy -= 2            
+            
             
     allContentByName = {
         'Cold Endurance': 
@@ -219,7 +256,16 @@ class PassiveAbility(object):
         'level' : 3,
         'type' : 'dynamic',
         'action' : applyFocalPoint,
-        'onStringList' : ['Outgoing Physical Attack Critical Hit'],
+        'onStringList' : ['Outgoing Melee Attack Critical Hit'],
+        'offStringList' : []
+        },
+        'Blades of Reduction':
+        {
+        'class' : 'Spellsword',
+        'level' : 4,
+        'type' : 'dynamic',
+        'action' : applyBladesOfReduction,
+        'onStringList' : ['Outgoing Melee Attack Hit', 'Outgoing Melee Attack Critical Hit'],
         'offStringList' : []
         },
         
@@ -243,7 +289,6 @@ class PassiveAbility(object):
         'onStringList' : ['Outgoing Melee Attack Hit'],
         'offStringList' : []
         },
-        
         'Dire Mana':
         {
         'class' : 'Battle Mage',
@@ -253,7 +298,6 @@ class PassiveAbility(object):
         'onStringList' : ['Incoming Damage'],
         'offStringList' : []
         },
-        
         'Mystical Accuracy':
         {
         'class' : 'Battle Mage',
@@ -261,7 +305,6 @@ class PassiveAbility(object):
         'type' : 'static',
         'action' : applyMysticalAccuracy
         },
-        
         'Mystical Shield Use':
         {
         'class' : 'Battle Mage',
@@ -271,7 +314,6 @@ class PassiveAbility(object):
         'onStringList' : ['Incoming Melee Attack', 'Incoming Ranged Attack'],
         'offStringList' : ['Incoming Melee Attack Complete', 'Incoming Ranged Attack Complete']
         },
-        
         'Rapid Retreat':
         {
         'class' : 'Battle Mage',
@@ -280,8 +322,34 @@ class PassiveAbility(object):
         'action' : applyRapidRetreat,
         'onStringList' : ['Starting Player Turn'],
         'offStringList' : ['Ending Player Turn']
-        }
-        
+        },
+        'Military Defensive Training':
+        {
+        'class' : 'Battle Mage',
+        'level' : 3,
+        'type' : 'dynamic',
+        'action' : applyMilitaryDefensiveTraining,
+        'onStringList' : ['Incoming Spell Cast'],
+        'offStringList' : ['Incoming Spell Cast Complete']
+        },
+        'Military Spell Training':
+        {
+        'class' : 'Battle Mage',
+        'level' : 3,
+        'type' : 'dynamic',
+        'action' : applyMilitarySpellTraining,
+        'onStringList' : ['Outgoing Spell Cast'],
+        'offStringList' : ['Outgoing Spell Cast Complete']
+        },
+        'Military Offensive Training':
+        {
+        'class' : 'Battle Mage',
+        'level' : 3,
+        'type' : 'dynamic',
+        'action' : applyMilitaryOffensiveTraining,
+        'onStringList' : ['Outgoing Melee Attack'],
+        'offStringList' : ['Outgoing Melee Attack Complete']
+        }        
         
     }
 

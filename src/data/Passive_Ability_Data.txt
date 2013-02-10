@@ -241,15 +241,15 @@
   [ATTRIBUTE_BONUS: Critical Hit Flat Holy Damage Bonus]
     [MAGNITUDE: 15]  
 	
-#[NAME: Blades of Reduction]
-#[CLASS: Spellsword]
-#[LEVEL: 4]
-#[TYPE: Dynamic]
-#  [TRIGGERED_BY: Outgoing Physical Attack Hit]
-#    [CONDITIONAL: Using Slashing Weapon]
-#	[CONDITIONAL: Enemy does not have Status Blades of Reduction]
-#    [CONDITIONAL: Probability Reliable]
-#  [INTERRUPT: Add Status Blades of Reduction to Enemy duration -1] # Entire battle
+[NAME: Blades of Reduction]
+[CLASS: Spellsword]
+[LEVEL: 4]
+[TYPE: Dynamic]
+  [TRIGGERED_BY: Outgoing Physical Attack Hit]
+    [CONDITIONAL: Using Slashing Weapon]
+	[CONDITIONAL: Enemy does not have Status Blades of Reduction]
+    [CONDITIONAL: Probability Reliable]
+  [INTERRUPT: Add Status Blades of Reduction to Enemy duration -1] # Entire battle
   
 # Anarchist Passives
 
