@@ -719,15 +719,15 @@
     [MAGNITUDE: 10]
   [CATEGORY: Debuff]
 	
-#[NAME: Far-Sighted Focus]
-#  [TYPE: Display]
-#  [ELEMENT: None]
-#  [INTERNAL: Dodge_penalty]
-#    [MAGNITUDE: 2]
-#  [INTERNAL: Target_ranged_accuracy_bonus]
-#    [MAGNITUDE: 5]
-#  [INTERNAL: Target_ranged_dodge_bonus]
-#    [MAGNITUDE: 7]
+[NAME: Far-Sighted Focus]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Dodge_penalty]
+    [MAGNITUDE: 5]
+  [INTERNAL: Ranged_accuracy_bonus]
+    [MAGNITUDE: 5]
+  [INTERNAL: Ranged_dodge_bonus]
+    [MAGNITUDE: 7]
 
 # As is, will not display which target the bonuses are given against.	
 	

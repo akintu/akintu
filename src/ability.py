@@ -116,6 +116,51 @@ class Ability(object):
             return (True, "")
         return (False, self.name + " requires a Melee weapon.")
         
+    def _chainGrasp(self, target):
+        source = self.owner
+        success = Dice.rollBeneath(min(90, (source.totalCunning - target.totalCunning) * 9))
+        if success:
+            duration = 3
+            Combat.addStatus(target, "Chain Grasp", duration)
+        
+    def _chainGraspCheck(self, target):
+        if target.size == "Huge":
+            return (False, self.name + " cannot be used on Huge targets.")
+        return (True, "")
+        
+    def _feint(self, target):
+        source = self.owner
+        success = Dice.rollBeneath(min(72, (source.totalCunning - target.totalCunning) * 8))
+        if success:
+            duration = 2
+            Combat.addStatus(target, "Feint", duration)
+            
+    def _feintCheck(self, target):
+        return (True, "")
+        
+    def _farSightedFocus(self, target):
+        source = self.owner
+        duration = 3
+        Combat.addStatus(source, "Far-Sighted Focus", duration)
+        
+    def _farSightedFocusCheck(self, target):
+        return (True, "")
+        
+    def _tunnelVision(self, target):
+        source = self.owner
+        duration = 4
+        Combat.addStatus(source, "Tunnel Vision", duration)
+        
+    def _tunnelVisionCheck(self, target):
+        return (True, "")
+        
+    def _balm(self, target):
+        source = self.owner
+        Combat.healTarget(source, round(source.totalHP * 0.05))
+        
+    def _balmCheck(self, target):
+        return (True, "")
+        
     def _magicGuard(self, target):
         source = self.owner
         duration = 1
@@ -212,6 +257,7 @@ class Ability(object):
             return (False, self.name + " requires a melee weapon.")
         
     allAbilities = {
+        # Fighter
         'Mighty Blow':
         {
         'level' : 1,
@@ -225,7 +271,6 @@ class Ability(object):
         'checkFunction' : _mightyBlowCheck,
         'breakStealth' : 100
         },
-        
         'Brace':
         {
         'level' : 1,
@@ -239,7 +284,6 @@ class Ability(object):
         'checkFunction' : None,
         'breakStealth' : 100
         },
-        
         'Dash':
         {
         'level' : 1,
@@ -253,7 +297,6 @@ class Ability(object):
         'checkFunction' : None,
         'breakStealth' : 100            
         },
-        
         'Quick Strike':
         {
         'level' : 2,
@@ -267,7 +310,6 @@ class Ability(object):
         'checkFunction' : _quickStrikeCheck,
         'breakStealth' : 100
         },
-        
         'Precise Blow':
         {
         'level' : 2,
@@ -282,10 +324,76 @@ class Ability(object):
         'breakStealth' : 100
         },
         
+        # Thief
+        'Chain Grasp':
+        {
+        'level' : 1,
+        'class' : 'Thief',
+        'HPCost' : 0,
+        'APCost' : 6,
+        'range' : 4,
+        'target' : 'hostile', 
+        'action' : _chainGrasp,
+        'cooldown' : 7,
+        'checkFunction' : _chainGraspCheck,
+        'breakStealth' : 100
+        },
+        'Feint':
+        {
+        'level' : 4,
+        'class' : 'Thief',
+        'HPCost' : 0,
+        'APCost' : 4,
+        'range' : 1,
+        'target' : 'hostile',
+        'action' : _feint,
+        'cooldown' : None,
+        'checkFunction' : _feintCheck,
+        'breakStealth' : 100
+        },
+        'Far-Sighted Focus':
+        {
+        'level' : 4,
+        'class' : 'Thief',
+        'HPCost' : 0,
+        'APCost' : 8,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _farSightedFocus,
+        'cooldown' : 1,
+        'checkFunction' : _farSightedFocusCheck,
+        'breakStealth' : 0
+        },
         
+        # Ranger
+        'Tunnel Vision':
+        {
+        'level' : 2,
+        'class' : 'Ranger',
+        'HPCost' : 0,
+        'APCost' : 10,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _tunnelVision,
+        'cooldown' : 5,
+        'checkFunction' : _tunnelVisionCheck,
+        'breakStealth' : 0
+        },
+        'Balm':
+        {
+        'level' : 2,
+        'class' : 'Ranger',
+        'HPCost' : 0,
+        'APCost' : 6,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _balm,
+        'cooldown' : 2,
+        'checkFunction' : _balm,
+        'breakStealth' : 100
+        },
         
-        
-        
+        # Wizard
         'Magic Guard':
         {
         'level' : 1,
@@ -299,7 +407,6 @@ class Ability(object):
         'checkFunction' : None,
         'breakStealth' : 0
         },
-        
         'Gather':
         {
         'level' : 2,
@@ -313,7 +420,6 @@ class Ability(object):
         'checkFunction' : None,
         'breakStealth' : 100
         },
-        
         'Reverse Hex':
         {
         'level' : 2,

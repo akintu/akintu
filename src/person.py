@@ -2529,7 +2529,6 @@ class Person(en.Entity):
         diagonals.  If rangedBackstab is False, as it is by default, the player
         must also be in melee range."""
         targetFacing = target.directionFacing
-        # TODO: Are we including diagnoal facing directions?
         xDifference = self.location.x - target.location.x
         yDifference = self.location.y - target.location.y
         
