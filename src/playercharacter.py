@@ -790,6 +790,16 @@ class PlayerCharacter(p.Person):
         self._equipmentShopBonus = value
     
     @property
+    def attackRange(self):
+        weapon = self.equippedItems.equippedWeapon()
+        if not weapon:
+            return 1
+        if weapon.range > 1:
+            return self._bonusRange + weapon.range
+        else:
+            return weapon.range
+            
+    @property
     def hasExtraLengthBuffs(self):
         if self.totalSorcery >= 50:
             return True

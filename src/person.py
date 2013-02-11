@@ -2344,6 +2344,8 @@ class Person(en.Entity):
           range = a positive integer
         Outputs:
           True or False"""
+        if range == -1:
+            range = self.attackRange
         selfLoc = self.location
         otherLoc = target.location
         if range == 1:
