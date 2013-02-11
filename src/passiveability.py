@@ -105,6 +105,22 @@ class PassiveAbility(object):
             duration = -1 # Never ends
             Combat.applyStatus(victim, "Blades of Reduction", duration) 
                 
+                
+    # Druid
+    def applyKnowledgeOfPoison(self, target):
+        target.basePoisonBonusDamage += 30
+        
+    def applyPotencyOfPoison(self, target):
+        target.basePoisonRatingBonus += 5
+                
+    def applyExposureToPoison(self, target):
+        target.basePoisonTolerance += 5
+        target.basePoisonResistance += 20
+                
+    def applyTimeWithNature(self, target):
+        target.basePoisonResistance += 5
+        target.baseColdResistance += 5
+                
     # Battle Mage
     def applyCloseRangedMagic(self, target, reverse=False, spell=None):
         if not reverse:
@@ -269,6 +285,34 @@ class PassiveAbility(object):
         'offStringList' : []
         },
         
+        'Knowledge of Poison':
+        {
+        'class' : 'Druid',
+        'level' : 1,
+        'type' : 'static',
+        'action' : applyKnowledgeOfPoison
+        },
+        'Potency of Poisons':
+        {
+        'class' : 'Druid',
+        'level' : 1,
+        'type' : 'static',
+        'action' : applyPotencyOfPoisons
+        },
+        'Exposure to Poison':
+        {
+        'class' : 'Druid',
+        'level' : 1,
+        'type' : 'static',
+        'action' : applyExposureToPoison
+        },
+        'Time with Nature':
+        {
+        'class' : 'Druid',
+        'level' : 3,
+        'type' : 'static',
+        'action' : applyTimeWithNature
+        },
         
         'Close-Ranged Magic':
         {

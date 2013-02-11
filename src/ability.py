@@ -161,6 +161,25 @@ class Ability(object):
     def _balmCheck(self, target):
         return (True, "")
         
+    def _rapidReload(self, target):
+        source = self.owner
+        hit = Combat.calcHit(source, target, modifier=-8)
+        Combat.basicAttack(source, target, hit)
+        
+    def _rapidReloadCheck(self, target):
+        source = self.owner
+        if source.usingWeapon("Crossbow"):
+            return (True, "")
+        return (False, "Must be using a Crossbow to use " + self.name + ".")
+        
+    def _rangersAim(self, target):
+        source = self.owner
+        duration = 1
+        Combat.addStatus(source, "Ranger's Aim", duration)
+        
+    def _rangersAimCheck(self, target):
+        return (True, "")
+        
     def _magicGuard(self, target):
         source = self.owner
         duration = 1
@@ -230,7 +249,7 @@ class Ability(object):
         else:
             return (True, "")
         
-    def _martialModeDisable(self, target, reverse, percent):
+    def _martialModeDisable(self, target, reverse=False, percent):
         if percent > 0.15:
             Combat.removeStatus(target, "Martial Mode")
         toRemove = None
@@ -240,6 +259,41 @@ class Ability(object):
         if toRemove:
             target.listeners.remove(toRemove)        
         
+    # Druid
+    def _deepWound(self, target):
+        source = self.owner
+        hit = Combat.calcHit(source, target, "Physical")
+        Combat.basicAttack(source, target, hit, poisonRatingMod=5)
+        if hit != "Miss":
+            duration = 5
+            Combat.addStatus(target, "Deep Wound", duration)
+        # TODO: Applied Poison ratings fix
+        
+    def _deepWoundCheck(self, target):
+        return (True, "")
+        
+    def _painfulShot(self, target):
+        source = self.owner
+        hit = Combat.calcHit(source, target, "Physical")
+        Combat.basicAttack(source, target, hit, criticalDamageMod=1.1)
+        if hit != "Miss" and Dice.rollPresetChance(source, target, "Occasional"):
+            duration = 5
+            Combat.addStatus(target, "Painful Shot", duration)            
+        
+    def _painfulShotCheck(self, target):
+        return (True, "")
+        
+    def _poisonousTouch(self, target):
+        source = self.owner
+        hit = Combat.calcHit(source, target, "Physical Poison", modifier=5, rating=12)
+        if hit != "Miss":
+            duration = 4
+            damage = round(Dice.roll(5, 15) * (1 + source.totalCunning * 0.07))
+            Combat.addStatus(target, "Poisonous Toch", duration, damage) 
+        
+    def _poisonousTocuhCheck(self, target):
+        return (True, "")
+    
     # Battle Mage
     def _bufferStrike(self, target):
         source = self.owner
@@ -389,8 +443,34 @@ class Ability(object):
         'target' : 'self',
         'action' : _balm,
         'cooldown' : 2,
-        'checkFunction' : _balm,
+        'checkFunction' : _balmCheck,
         'breakStealth' : 100
+        },
+        'Rapid Reload':
+        {
+        'level' : 2,
+        'class' : 'Ranger',
+        'HPCost' : 0,
+        'APCost' : 3,
+        'range' : -1,
+        'target' : 'hostile',
+        'action' : _rapidReload,
+        'cooldown' : None,
+        'checkFunction' : _rapidReloadCheck,
+        'breakStealth' : 100
+        },
+        "Ranger's Aim":
+        {
+        'level' : 4,
+        'class' : 'Ranger',
+        'HPCost' : 0,
+        'APCost' : 2,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _rangersAim,
+        'cooldown' : 1,
+        'checkFunction' : _rangersAimCheck,
+        'breakStealth' : 0
         },
         
         # Wizard
@@ -492,6 +572,45 @@ class Ability(object):
         'breakStealth' : 0
         },
         
+        'Deep Wound':
+        {
+        'level' : 1,
+        'class' : 'Druid',
+        'HPCost' : 0,
+        'APCost' : 10,
+        'range' : -1,
+        'target' : 'hostile',
+        'action' : _deepWound,
+        'cooldown' : 1,
+        'checkFunction' : _deepWoundCheck,
+        'breakStealth' : 100
+        },
+        'Painful Shot':
+        {
+        'level' : 1,
+        'class' : 'Druid',
+        'HPCost' : 0,
+        'APCost' : 7,
+        'range' : -1,
+        'target' : 'hostile',
+        'action' : _painfulShot,
+        'cooldown' : None,
+        'checkFunction' : _painfulShotCheck,
+        'breakStealth' : 100
+        },
+        'Poisonous Touch':
+        {
+        'level' : 2,
+        'class' : 'Druid',
+        'HPCost' : 0,
+        'APCost' : 5,
+        'range' : 1,
+        'target' : 'hostile',
+        'action' : _poisonousTouch,
+        'cooldown' : 3,
+        'checkFunction' : _poisonousTouchCheck,
+        'breakStealth' : 100
+        },
         
         'Buffer Strike':
         {
