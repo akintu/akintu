@@ -238,8 +238,7 @@ class Combat(object):
     @staticmethod
     def addStatus(target, status, duration, magnitude=0, chance=1, 
                   overwrite=True, partial=False, critical=False,
-                  hitValue="Normal Hit", min=0, max=0, relativeTarget=None,
-                  applier=None, scalesWith=None, scaleFactor=0, charges=0):
+                  hitValue="Normal Hit", min=0, max=0, charges=0):
         """Method is used to apply a Status to a target Person.  The properties
         needed to create and apply the status are mostly provided by default parameters
         and in most cases, they can be ignored.
@@ -274,19 +273,6 @@ class Combat(object):
                        the case, this should be a non-negative value.
           max -- int*; some Statuses require a range of values to be supplied.  If this is
                        the case, this should be a non-negative value greater than 'min'.
-          relativeTarget -- Person*; a few Statuses reference another Person as a relative
-                            target that also has some linked behavior applied.  Should almost
-                            always be left as None however.
-          applier -- Person*; some Statuses require information from the person that applied
-                              the status, such as bonusElementalDamage modifying the exact
-                              damage of a DoT.  Otherwise this should be left as None.
-          scalesWith -- string attribute*; if an applier is specified, this should be the
-                              attribute type that should be read from the applier to determine
-                              some scaling property.  Possible values are:
-                              "Strength", "Cunning", "Spellpower"
-          scaleFactor -- float*; a non-negative value that indicates how much the scaling attribute
-                              should influence the values of this Status. Should only be used in
-                              conjunction with 'applier' and 'scalesWith'.
           charges -- int*; some statuses have a number of charges until they expire instead of 
                            a duration.  Is set to a default of zero if not time based.
         Outputs:
@@ -314,14 +300,8 @@ class Combat(object):
                     removeStatus(target, display.displayName)
                     target.statusList.append(dStatus)
                     dStatus.activate(target)
-        
-        # Haven't figured out what to do with these yet, TODO
-        # relativeTarget,
-        # applier, scalesWith, scaleFactor
-        
-        # Haven't figured out what to do with immunity either! TODO
+        # Haven't figured out what to do with immunity: TODO
     
-        
     @staticmethod
     def removeStatus(target, statusName):
         """Removes a specific status effect from a given Person.
@@ -499,20 +479,51 @@ class Combat(object):
         
     @staticmethod
     def basicAttack(source, target, hitType, **params):
+        if 'noCounter' not in params:
+            params['noCounter'] = False
         if source.isinstance(pc.PlayerCharacter):
             if source.usingWeaponStyle("Dual"):
                 originalCounterStatus = params['noCounter']
                 params['noCounter'] = True
-                weaponAttack(source, target, hitType[0], **params)
+                Combat.weaponAttack(source, target, hitType[0], **params)
                 params['noCounter'] = originalCounterStatus
                 params['hand'] = "Left"
-                weaponAttack(source, target, hitType[1], **params)
+                Combat.weaponAttack(source, target, hitType[1], **params)
             else:
-                weaponAttack(source, target, hitType[0], **params)
+                Combat.weaponAttack(source, target, hitType[0], **params)
         else:
-            pass
-            # Monster Attack: TODO
-        
+            Combat.monsterAttack(source, target, hitType[0], **params)   
+                
+    @staticmethod
+    def monsterAttack(source, target, hitType, **params):
+        Combat._shoutAttackHit(source, target, hitType)
+        if hitType == "Miss":
+            Combat._shoutAttackComplete(source, target, params['noCounter'])
+            return
+        baseAttackDamage = Dice.roll(source.attackMinDamage, source.attackMaxDamage)
+        if source.attackElement == "Bludgeoning":
+            baseAttackDamage *= (1 - (target.totalBludgeoningResistance / 100))
+        elif source.attackElement == "Piercing":
+            baseAttackDamage *= (1 - (target.totalPiercingResistance / 100))
+        elif source.attackElement == "Slashing":
+            baseAttackDamage *= (1 - (target.totalSlashingResistance / 100))
+        elif element == "Fire":
+            baseAttackDamage *= 1 - (target.totalFireResistance / 100)
+        elif element == "Cold":
+            baseAttackDamage *= 1 - (target.totalColdResistance / 100)           
+        elif element == "Electric":
+            baseAttackDamage *= 1 - (target.totalElectricResistance / 100)
+        elif element == "Poison":
+            baseAttackDamage *= 1 - (target.totalPoisonResistance / 100)    
+        elif element == "Shadow":
+            baseAttackDamage *= 1 - (target.totalShadowResistance / 100)
+        elif element == "Divine":
+            baseAttackDamage *= 1 - (target.totalDivineResistance / 100)
+        elif element == "Arcane":
+            baseAttackDamage *= 1 - (target.totalArcaneResistance / 100)
+        baseAttackDamage *= (1 + source.attackPower / 100)
+        Combat.lowerHP(target, round(baseAttackDamage))
+        Combat._shoutAttackComplete(source, target, params['noCounter'])
     
     @staticmethod
     def weaponAttack(source, target, hitType, forceMod=1, criticalDamageMod=1, armorPenetrationMod=0,
@@ -580,7 +591,7 @@ class Combat(object):
         # TODO: Deal with dual-type weapons    
         totalDamage = Combat.sumElementalEffects(elementalEffects, elementOverride) + outgoingDamage     
      
-        target.lowerHP(totalDamage)
+        Combat.lowerHP(target, totalDamage)
         Combat._shoutAttackComplete(source, target, noCounter) 
         
     @staticmethod
