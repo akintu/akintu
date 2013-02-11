@@ -113,6 +113,33 @@ class Ability(object):
             return (True, "")
         return (False, self.name + " requires a Melee weapon.")
         
+    def _backstab(self, target):
+        source = self.owner
+        critChance = 0
+        critMag = 0
+        accuracy = 0
+        if source.usingWeapon("Sword"):
+            critChance = 25
+            critMag = 1.5
+            if source.usingWeaponStyle("Single"):
+                accuracy = 9
+        elif source.usingWeapon("Knife"):
+            critChance = 50
+            critMag = 2
+            if source.usingWeaponStyle("Single"):
+                accuracy = 5
+        hit = Combat.calcHit(source, target, "Physical", modifier=accuracy, critMod=critChance)
+        Combat.basicAttack(source, target, hit, criticalDamageMod=critMag)
+        
+    def _backstabCheck(self, target):
+        source = self.owner
+        if not source.inStealth():
+            return (False, "Must be in stealth to perform " + self.name + " .")
+        # If not in backstab position : TODO
+        if not source.usingWeapon("Sword") and not source.usingWeapon("Knife"):
+            return (False, "Must be using either swords or knives to preform " + self.name + " .")
+        
+        
     def _chainGrasp(self, target):
         source = self.owner
         success = Dice.rollBeneath(min(90, (source.totalCunning - target.totalCunning) * 9))
@@ -123,6 +150,15 @@ class Ability(object):
     def _chainGraspCheck(self, target):
         if target.size == "Huge":
             return (False, self.name + " cannot be used on Huge targets.")
+        return (True, "")
+        
+    def _agilePosition(self, target):
+        source = self.owner
+        duration = 1
+        Combat.addStatus(source, "Agile Position", duration)
+        Combat.endTurn(source)
+        
+    def _agilePositionCheck(self, target):
         return (True, "")
         
     def _feint(self, target):
@@ -413,6 +449,19 @@ class Ability(object):
         },
         
         # Thief
+        'Backstab':
+        {
+        'level' : 1,
+        'class' : 'Thief',
+        'HPCost' : 0,
+        'APCost' : 10,
+        'range' : 1,
+        'target' : 'hostile',
+        'action' : _backstab,
+        'cooldown' : 2,
+        'checkFunction' : _backstabCheck,
+        'breakStealth' : 100
+        },
         'Chain Grasp':
         {
         'level' : 1,
@@ -425,6 +474,19 @@ class Ability(object):
         'cooldown' : 7,
         'checkFunction' : _chainGraspCheck,
         'breakStealth' : 100
+        },
+        'Agile Position':
+        {
+        'level' : 2,
+        'class' : 'Thief',
+        'HPCost' : 0,
+        'APCost': 5,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _agilePosition,
+        'cooldown' : 5,
+        'checkFunction' : _agilePositionCheck,
+        'breakStealth' : 0
         },
         'Feint':
         {

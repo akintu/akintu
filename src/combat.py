@@ -196,11 +196,19 @@ class Combat(object):
             "Partially Resisted" (Only possible with magic)
             "Normal Hit" (Standard outcome for successful attacks)
             "Critical Hit" (Possible outcome for successful physical attacks and magical attacks
-                            although most of the latter ignore whether the spell was a critical or not.)"""
+                            although most of the latter ignore whether the spell was a critical or not.)
+          If the attack was physical, it will return a list of those strings containing either one or
+          two strings, depending on whether the attacker is using one or two weapons."""
         type = type.capitalize().strip().replace("-", " ")
         if (type == "Physical"):
             Combat._shoutAttackStart(source, target)
-            return Combat.physicalHitMechanics(source, target, modifier, critMod, ignoreMeleeBowPenalty)
+            attackOne = Combat.physicalHitMechanics(source, target, modifier, critMod, ignoreMeleeBowPenalty)
+            if source.isinstance(pc.PlayerCharacter) and source.usingWeaponStyle("Dual"):
+                Combat._shoutAttackStart(source, target)
+                attackTwo = Combat.physicalHitMechanics(source, target, modifier, critMod, ignoreMeleeBowPenalty)
+                return [attackOne, attackTwo]
+            else:
+                return [attackOne]            
         
         if (type == "Magical"):
             return Combat.magicalHitMechanics(source, target)
@@ -211,6 +219,7 @@ class Combat(object):
             else:
                 return "Miss"
         
+        # Is not working as written, needs to return list.  Fix when going over applied poisons... TODO
         if (type == "Physical Poison" or type == "Poison Physical"):
             Combat._shoutAttackStart(source, target)
             if (Combat.poisonHitMechanics(source, target, rating) == "Normal Hit"):
@@ -496,6 +505,7 @@ class Combat(object):
                 params['noCounter'] = True
                 weaponAttack(source, target, hitType[0], **params)
                 params['noCounter'] = originalCounterStatus
+                params['hand'] = "Left"
                 weaponAttack(source, target, hitType[1], **params)
             else:
                 weaponAttack(source, target, hitType[0], **params)
@@ -538,7 +548,10 @@ class Combat(object):
             Combat._shoutAttackComplete(source, target, noCounter) 
             return
         # TODO: Barehands...
-        weapon = source.equippedItem.equippedWeapon
+        if hand == "Right":
+            weapon = source.equippedItems.equippedWeapon
+        else:
+            weapon = source.equippedItems.equippedOffHand
         effectiveForce = source.totalForce * forceMod
         if( source.usingWeapon(ranged) ):
             effectiveForce *= 1 + (source.totalRangedForce / 100)
