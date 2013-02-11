@@ -1061,7 +1061,7 @@
 # Damage Broadcast -- DONE
 #   [Incoming|Outgoing] Damage
 #
-# Status Broadcast
+# Status Broadcast -- DONE
 #   Incoming Status Applied
 #
 # Anarchist Trap Broadcast

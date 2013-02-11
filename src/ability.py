@@ -234,12 +234,24 @@ class Ability(object):
         else:
             return (False, self.name + " requires a melee weapon.")
         
+    def _bloodOfTheAncients(self, target):
+        source = self.owner
+        Combat.healTarget(source, round(source.totalHP * 0.15))
+        duration = 1
+        Combat.addStatus(source, "Blood of the Ancients", duration)
+        
+    def _bloodOfTheAncientsCheck(self, target):
+        source = self.owner
+        if source.HP < source.totalHP:
+            return (True, "")
+        return (False, "HP already at maximum; cannot use: " + self.name + " .")
+        
     # Spellsword
     def _martialMode(self, target):
         source = self.owner
         duration = -1
         Combat.addStatus(target, "Martial Mode", duration) 
-        newListener = listener.Listener(self, self.owner, self.onStringList, self._martialModeDisable, ['Player MP level changed'])
+        newListener = listener.Listener(self, self.owner, [], self._martialModeDisable, ['Player MP level changed'])
         source.listeners.append(newListener)
     
     def _martialModeCheck(self, target):
@@ -249,7 +261,7 @@ class Ability(object):
         else:
             return (True, "")
         
-    def _martialModeDisable(self, target, reverse=False, percent):
+    def _martialModeDisable(self, target, reverse=False, percent=None):
         if percent > 0.15:
             Combat.removeStatus(target, "Martial Mode")
         toRemove = None
@@ -310,6 +322,31 @@ class Ability(object):
         else:
             return (False, self.name + " requires a melee weapon.")
         
+    def _innerMight(self, target):
+        source = self.owner
+        duration = 2
+        magnitude = 3 + source.totalSpellpower // 5
+        Combat.addStatus(source, "Inner Might", duration, magnitude)
+        newListener = listener.Listener(self, self.owner, [], self._innerMightDisable, ['Player MP level changed'])
+        source.listeners.append(newListener)
+    
+    def _innerMightCheck(self, target):
+        source = self.owner
+        if source.MP >= source.totalMP * 0.75:
+            return (True, "")
+        else:
+            return (False, "MP level must be above 75% to use: " + self.name + " .")
+            
+    def _innerMightDisable(self, target, reverse=False, percent=None):
+        if percent < 0.75:
+            Combat.removeStatus(target, "Inner Might")
+        toRemove = None
+        for x in target.listeners:
+            if x.action == self._innerMightDisable:
+                toRemove = x
+        if toRemove:
+            target.listeners.remove(toRemove)    
+    
     allAbilities = {
         # Fighter
         'Mighty Blow':
@@ -557,6 +594,19 @@ class Ability(object):
         'checkFunction' : _desperateStrikeCheck,
         'breakStealth' : 100
         },
+        'Blood of the Ancients':
+        {
+        'level' : 4,
+        'class' : 'Barbarian',
+        'HPCost' : 0,
+        'APCost' : 11,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _bloodOfTheAncients,
+        'cooldown' : 4,
+        'checkFunction' : _bloodOfTheAncientsCheck,
+        'breakStealth' : 0
+        },
         
         'Martial Mode':
         {
@@ -612,6 +662,7 @@ class Ability(object):
         'breakStealth' : 100
         },
         
+        # Battle Mage
         'Buffer Strike':
         {
         'level' : 2,
@@ -624,6 +675,19 @@ class Ability(object):
         'cooldown' : 3,
         'checkFunction' : _bufferStrikeCheck,
         'breakStealth' : 100
+        },
+        'Inner Might':
+        {
+        'level' : 4,
+        'class' : 'Battle Mage',
+        'HPCost' : 0,
+        'APCost' : 4,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _innerMight,
+        'cooldown' : 4,
+        'checkFunction' : _innerMightCheck,
+        'breakStealth' : 0
         }
         
             

@@ -202,6 +202,10 @@
   [TYPE: Internal]
   [RECURRING: False]
   
+[NAME: Nothing]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
 [NAME: No_turn]
   [TYPE: Internal]
   [RECURRING: False]
@@ -1359,7 +1363,7 @@
 [NAME: Stunning Recovery]
   [TYPE: Display]
   [ELEMENT: None]
-  [INTERNAL: Recover_HP_percent]
+  [INTERNAL: Nothing]
     [MAGNITUDE: 0]
 	
 # Display Effects -- Spellsword Passives

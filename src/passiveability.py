@@ -63,6 +63,11 @@ class PassiveAbility(object):
     def applyMagicalIgnorance(self, target):
         target.baseMagicResist -= 3
         
+    def applyStunningRecovery(self, target, reverse=False, statusName=None):
+        if statusName == "Stun" and not target.hasStatus("Stunning Recovery"):
+            healing = round(target.totalHP * 0.05)
+            Combat.healTarget(target, healing)
+            Combat.addStatus(target, "Stunning Recovery", duration=1)
     
     # Spellsword    
     def applySeekerOfEnchantments(self, targer, reverse=False, spell=None):
@@ -238,6 +243,15 @@ class PassiveAbility(object):
         'level' : 3,
         'type' : 'static',
         'action' : applyMagicalIgnorance
+        },
+        'Stunning Recovery':
+        {
+        'class' : 'Barbarian',
+        'level' : 4,
+        'type' : 'dynamic',
+        'action' : applyStunningRecovery,
+        'onStringList' : ['Incoming Status Applied'],
+        'offStringList' : []
         },
         
         

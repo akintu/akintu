@@ -187,6 +187,9 @@ def Movement_speed_penalty_method(self, target, magnitude):
 def Movement_tiles_penalty_method(self, target, magnitude):
     target.movementTiles -= magnitude
     
+def Nothing_method(self, target, magnitude):
+    pass
+    
 def No_turn_method(self, target, magnitude):
     target.AP = 0
 
@@ -405,6 +408,9 @@ def Movement_speed_penalty_method_reverse(self, target, magnitude):
 
 def Movement_tiles_penalty_method_reverse(self, target, magnitude):
     target.movementTiles += magnitude
+    
+def Nothing_method_reverse(self, target, magnitude):
+    pass
     
 def No_turn_method_reverse(self, target, magnitude):
     pass
