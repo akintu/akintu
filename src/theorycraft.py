@@ -8,6 +8,7 @@ import weaponsparser
 import trapsparser
 import statuseffectsparser
 import copy
+import playercharacter
 
 class TheoryCraft(object):
     
@@ -51,12 +52,14 @@ class TheoryCraft(object):
         return copy.deepcopy(TheoryCraft.monsters[0])
         
     @staticmethod
-    def getNewPlayerCharacter(race, characterClass):
+    def getNewPlayerCharacter(race, characterClass, index, location):
         race = race.capitalize
         characterClass = characterClass.capitalize()
         for char in TheoryCraft.classes:
             if race == char.race and characterClass == char.characterClass:
-                return copy.deepcopy(char)
+                pc = playercharacter.PlayerCharacter(char)
+                pc.index = index
+                pc.location = location
         print "Bad character name/race, returning nothing; you're so stupid."
         
         

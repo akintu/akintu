@@ -26,7 +26,6 @@ class Person(en.Entity):
     def __init__(self, argDict):
         en.Entity.__init__(self)
         
-        self.index = index
         self.task = None
         self.task_frequency = 0
         self.task_running = False
