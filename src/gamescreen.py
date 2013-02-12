@@ -67,8 +67,8 @@ class GameScreen(object):
         self.screen.blit(self.background, [0, 0])
         pygame.display.update()
 
-    def add_person(self, personid, person, position):
-        self.persons[personid] = PersonSprite("test/knight.png", position)
+    def add_person(self, personid, person, position, sprite="test/knight.png"):
+        self.persons[personid] = PersonSprite(person.image if person else sprite, position)
         self.personsgroup.add(self.persons[personid])
         #return self.pane.startpoint
 
