@@ -6,20 +6,7 @@ import entity
 class Wealth(entity.Entity):
     
     wealthList = []
-    
-    def __init__(self, name, goldAmount=0):
-        entity.Entity.__init__(self, location)
-        self.name = name
-        self.goldValue = goldAmount
-        self.weight = 0
-        self.image = None
-        if name in types:
-            if name != "Gold":
-                self.goldValue = Wealth.types[name]['value']
-                self.weight = Wealth.types[name]['value']
-                self.image = Wealth.types[name]['image']
-        self.identifier = self.name + ": " + self.goldValue      
-        
+ 
     types = {
         "Gold" : 
                 {
@@ -40,6 +27,21 @@ class Wealth(entity.Entity):
                   'image' : None
                 }
             }     
+ 
+    def __init__(self, name, goldAmount=0):
+        entity.Entity.__init__(self, location=None)
+        self.name = name
+        self.goldValue = goldAmount
+        self.weight = 0
+        self.image = None
+        if name in Wealth.types:
+            if name != "Gold":
+                self.goldValue = Wealth.types[name]['value']
+                self.weight = Wealth.types[name]['value']
+                self.image = Wealth.types[name]['image']
+        self.identifier = self.name + ": " + str(self.goldValue)      
+        
+
 
     
     

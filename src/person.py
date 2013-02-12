@@ -24,7 +24,10 @@ class Person(en.Entity):
             return argDict[variableName]
             
     def __init__(self, argDict):
-        en.Entity.__init__(self)
+        loc = Person.setFrom(argDict, 'location', None)
+        img = Person.setFrom(argDict, 'image', None)
+        
+        en.Entity.__init__(self, location=loc, image=img, passable=False)
         
         self.index = None
         self.task = None

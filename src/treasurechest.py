@@ -2,9 +2,10 @@
 
 import sys
 import entity
-import dice
-import theorycraft
+from dice import *
+from theorycraft import *
 import wealth
+import equipment
 
 class TreasureChest(entity.Entity):
 
@@ -15,6 +16,7 @@ class TreasureChest(entity.Entity):
         if type.capitalize() not in ["Small", "Large", "Gilded"]:
             raise TypeError("Invalid Chest Type: " + type + ".")
         self.ip = ip
+        self.type = type
         if treasureLevel < 1:
             treasureLevel = 1
         if not ip:
@@ -54,11 +56,11 @@ class TreasureChest(entity.Entity):
         selectedItem = None
         giveWeapon = Dice.rollBeneath(40)
         if giveWeapon:
-            baseWeaponSelection = Dice.roll(0, len(theorycraft.TheoryCraft.weapons) - 1)
-            selectedItem = theorycraft.TheoryCraft.weapons[baseWeaponSelection]
+            baseWeaponSelection = Dice.roll(0, len(TheoryCraft.weapons) - 1)
+            selectedItem = equipment.Weapon(**TheoryCraft.weapons[baseWeaponSelection])
         else:
-            baseArmorSelection = Dice.roll(0, len(theorycraft.TheoryCraft.armors) - 1)
-            selectedItem = theorycraft.TheoryCraft.armors[baseArmorSelection]
+            baseArmorSelection = Dice.roll(0, len(TheoryCraft.armors) - 1)
+            selectedItem = equipment.Armor(TheoryCraft.armors[baseArmorSelection])
         return selectedItem.cloneWithMagicalProperties(givenIp)
         
     @staticmethod

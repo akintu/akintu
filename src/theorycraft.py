@@ -33,7 +33,7 @@ class TheoryCraft(object):
         parser = cctemplatesparser.CCTemplatesParser()
         TheoryCraft.classes = parser.parseAll("./data/Character_Class_Data.txt", "./data/Race_Data.txt")
         parser = armorparser.ArmorParser()
-        TheoryCraft.armorList = parser.parseAll("./data/Armor_Data.txt")
+        TheoryCraft.armors = parser.parseAll("./data/Armor_Data.txt")
         parser = weaponsparser.WeaponsParser()
         TheoryCraft.weapons = parser.parseAll("./data/Weapon_Data.txt")
         parser = trapsparser.TrapsParser()
@@ -58,13 +58,11 @@ class TheoryCraft(object):
         race = race.capitalize()
         characterClass = characterClass.capitalize()
         for char in TheoryCraft.classes:
-            print char['name']
-            print race + " " + characterClass
             if char['name'] == race + " " + characterClass:
                 pc = playercharacter.PlayerCharacter(char)
                 pc.index = index
                 pc.location = loc
-            return pc
+                return pc
         print "Bad character name/race, returning nothing; you're so stupid."
         
         

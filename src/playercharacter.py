@@ -328,7 +328,7 @@ class PlayerCharacter(p.Person):
         
     @statusOverallDamageBonus.setter
     def statusOverallDamageBonus(self, value):
-        return self._statusOverallDamageBonus
+        self._statusOverallDamageBonus = value
         
     @property
     def totalPoisonRatingBonus(self):
