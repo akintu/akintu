@@ -2,6 +2,7 @@
 
 import sys
 import monstersparser
+import monster
 import cctemplatesparser
 import armorparser
 import weaponsparser
@@ -43,15 +44,21 @@ class TheoryCraft(object):
         TheoryCraft.hasLoaded = True
         
     @staticmethod
-    def getMonster(level=1, region=None, name=None):
+    def getMonster(index=None, loc=location.Location((0, 0), (PANE_X/2, PANE_Y/2)), level=1, region=None, name=None):
+        theMonster = None
         if name:
             for mon in TheoryCraft.monsters:
                 if mon.name == name:
-                    return copy.deepcopy(mon)
+                    theMonster = monster.Monster(mon)
+                    break
         # TODO: search by level
         # TODO: search by region
         # TODO: This is a stub...
-        return copy.deepcopy(TheoryCraft.monsters[0])
+        else:
+            theMonster = monster.Monster(TheoryCraft.monsters[0])
+        theMonster.index = index
+        theMonster.location = loc
+        return theMonster
         
     @staticmethod
     def getNewPlayerCharacter(race, characterClass, index=None, loc=location.Location((0, 0), (PANE_X/2, PANE_Y/2))):

@@ -109,7 +109,7 @@ class MonstersParser(object):
                 mDict['specialProperty'] = MonstersParser.getFromText(f, f.readline(), specialPropertyTag)
                 mDict['startingSpellpower'] = MonstersParser.getFromText(f, f.readline(), spellpowerTag)
                 mDict['startingStrength'] = MonstersParser.getFromText(f, f.readline(), strengthTag)
-                self.allMonsters.append(monster.Monster(mDict))
+                self.allMonsters.append(mDict)
         
         return self.allMonsters
     

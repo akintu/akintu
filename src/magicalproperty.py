@@ -117,6 +117,11 @@ class MagicalProperty(object):
                         position = Dice.roll(0, len(chosenList) - 1)
                 currentProperty = chosenList[position]
                 thisIp = currentProperty.cost
+                if thisIp == "Varies":
+                    if currentProperty.name == "DR":
+                        thisIp = item.DRGradientPoints
+                    elif currentProperty.name == "Damage":
+                        thisIp = item.gradientPoints
                 if thisIp > ip or (currentProperty.max and currentProperty.counts >= currentProperty.max):
                     position += 1
                 else:
