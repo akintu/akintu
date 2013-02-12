@@ -54,7 +54,7 @@ class TheoryCraft(object):
         return copy.deepcopy(TheoryCraft.monsters[0])
         
     @staticmethod
-    def getNewPlayerCharacter(race, characterClass, loc=location.Location((0, 0), (PANE_X/2, PANE_Y/2)), index=None):
+    def getNewPlayerCharacter(race, characterClass, index=None, loc=location.Location((0, 0), (PANE_X/2, PANE_Y/2))):
         race = race.capitalize
         characterClass = characterClass.capitalize()
         for char in TheoryCraft.classes:
