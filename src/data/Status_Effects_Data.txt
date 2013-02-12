@@ -202,10 +202,6 @@
   [TYPE: Internal]
   [RECURRING: False]
   
-[NAME: Nothing]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
 [NAME: No_turn]
   [TYPE: Internal]
   [RECURRING: False]
@@ -337,6 +333,10 @@
   [TYPE: Internal]
   [RECURRING: False]
   [IMMUNE: Boss]  
+	
+[NAME: Stunning_recovery_internal]
+  [TYPE: Internal]
+  [RECURRING: False]
 	
 #[NAME: Target_ranged_accuracy_bonus]
 #  [TYPE: Internal]
@@ -1363,7 +1363,7 @@
 [NAME: Stunning Recovery]
   [TYPE: Display]
   [ELEMENT: None]
-  [INTERNAL: Nothing]
+  [INTERNAL: Stunning_recovery_internal]
     [MAGNITUDE: 0]
 	
 # Display Effects -- Spellsword Passives

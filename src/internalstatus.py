@@ -283,6 +283,9 @@ def Spellpower_penalty_method(self, target, magnitude):
 def Spell_failure_chance_method(self, target, magnitude):
     target.spellFailureChance += magnitude
 
+def Stunning_recovery_method(self, target, magnitude):
+    pass
+    
 def Tiger_style_method(self, target, magnitude):
     pass
 
@@ -508,6 +511,9 @@ def Spellpower_penalty_method_reverse(self, target, magnitude):
 def Spell_failure_chance_method_reverse(self, target, magnitude):
     target.spellFailureChance -= magnitude
 
+def Stunning_recovery_method_reverse(self, target, magnitude):
+    pass
+    
 def Tiger_style_method_reverse(self, target, magnitude):
     pass
 
@@ -591,6 +597,7 @@ applyFunctionDict = {
     'Spellpower_bonus' : Spellpower_bonus_method,
     'Spellpower_penalty' : Spellpower_penalty_method,
     'Spell_failure_chance' : Spell_failure_chance_method,
+    'Stunning_recovery' : None,
     'Tiger_style' : None,
     'Trap_evade_bonus' : Trap_evade_bonus_method,
     'Trap_evade_penalty' : Trap_evade_penalty_method,
@@ -675,6 +682,7 @@ unapplyFunctionDict = {
     'Spellpower_bonus' : Spellpower_bonus_method_reverse,
     'Spellpower_penalty' : Spellpower_penalty_method_reverse,
     'Spell_failure_chance' : Spell_failure_chance_method_reverse,
+    'Stunning_recovery' : None,
     'Tiger_style' : None,
     'Trap_evade_bonus' : Trap_evade_bonus_method_reverse,
     'Trap_evade_penalty' : Trap_evade_penalty_method_reverse,
