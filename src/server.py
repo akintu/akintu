@@ -71,6 +71,7 @@ class GameServer():
                         #Add player to new pane lists
                         command.index = self.players[port].index
                         command.action = PersonActions.CREATE
+                        command.details = (1, self.players[port].race, self.players[port].characterClass)
                         self.panes[command.location.pane].people.append(self.players[port])
 
                         # Send command to each player in the affected pane
@@ -80,7 +81,12 @@ class GameServer():
 
                         # Send list of players to the issuing client
                         for i, p in enumerate(self.panes[command.location.pane].people):
-                            self.SDF.send(port, Person(PersonActions.CREATE, i, p.location))
+                            details = None
+                            if isinstance(p, PlayerCharacter):
+                                details = (1, p.race, p.characterClass)
+                            else:
+                                details = (2,)
+                            self.SDF.send(port, Person(PersonActions.CREATE, i, p.location, details))
 
                         self.unload_panes()
                 else:
