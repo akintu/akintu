@@ -22,10 +22,16 @@ class Person(en.Entity):
                 return defaultValue
         else:
             return argDict[variableName]
-
             
     def __init__(self, argDict):
         en.Entity.__init__(self)
+        
+        self.index = index
+        self.task = None
+        self.task_frequency = 0
+        self.task_running = False
+        #self.timestamp = time.now
+
         self._cooldownList = []
         self._statusList = []
         self._minionList = []
@@ -2767,7 +2773,22 @@ class Person(en.Entity):
                 if buff[2] <= 0:
                     self.HPBufferList.remove(buff)
         
-        
+    # Non theorycrafted methods go here:
+
+    def set_task(self, task, task_frequency, *args):
+        if not self.task_running:
+            self.task = LoopingCall(task, *args)
+            self.task_frequency = task_frequency
+
+    def start_task(self):
+        if not self.task_running:
+            self.task.start(1.0 / self.task_frequency)
+            self.task_running = True
+
+    def stop_task(self):
+        if self.task and self.task_running:
+            self.task.stop()
+            self.task_running = False    
         
         
         

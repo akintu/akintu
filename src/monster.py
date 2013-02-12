@@ -2,6 +2,7 @@
 
 import sys
 import person as p
+from const import *
 
 class Monster(p.Person):
 
@@ -29,6 +30,7 @@ class Monster(p.Person):
         self.name = Monster.setFrom(argDict, 'name')
         self.experienceGiven = Monster.setFrom(argDict, 'experience')
         self.GP = Monster.setFrom(argDict, 'GP')
+        self.image = os.path.join(MONSTERS_IMAGES_PATH, self.name.replace(" ", "") + ".png")
         
         self.specialAttackOne = Monster.setFrom(argDict, 'specialAttackOne', None)
         self.specialAttackTwo = Monster.setFrom(argDict, 'specialAttackTwo', None)
