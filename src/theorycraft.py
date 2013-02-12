@@ -7,6 +7,7 @@ import armorparser
 import weaponsparser
 import trapsparser
 import statuseffectsparser
+import copy
 
 class TheoryCraft(object):
     
@@ -37,5 +38,17 @@ class TheoryCraft(object):
         parser = statuseffectsparser.StatusEffectsParser()
         TheoryCraft.statuses = parser.parseAll("./data/Status_Effects_Data.txt")
         TheoryCraft.hasLoaded = True
+        
+    @staticmethod
+    def getMonster(level=1, region=None, name=None):
+        if name:
+            for mon in TheoryCraft.monsters:
+                if mon.name == name:
+                    return copy.deepcopy(mon)
+        # TODO: search by level
+        # TODO: search by region
+        # TODO: This is a stub...
+        return copy.deepcopy(TheoryCraft.monsters[0])
+        
         
         

@@ -19,7 +19,7 @@ RAND_ROCKS = .1
 
 IMAGES_PATH = os.path.join("res", "images")
 BACKGROUND_IMAGES_PATH = os.path.join(IMAGES_PATH, "background")
-
+MONSTERS_IMAGES_PATH = os.path.join(IMAGES_PATH, "monsters")
 
 #(Path, Name, Tilesize, Cropsize, Size)
 TREES = (IMAGES_PATH, "trees1.png", TILE_SIZE, None, None)    
