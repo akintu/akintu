@@ -115,7 +115,7 @@ class PassiveAbility(object):
     def applyKnowledgeOfPoison(self, target):
         target.basePoisonBonusDamage += 30
         
-    def applyPotencyOfPoison(self, target):
+    def applyPotencyOfPoisons(self, target):
         target.basePoisonRatingBonus += 5
                 
     def applyExposureToPoison(self, target):

@@ -2350,7 +2350,7 @@ class Person(en.Entity):
         otherLoc = target.location
         if range == 1:
             return location.in_melee_range(selfLoc, otherLoc)
-        return location.distance(selfLoc, otherLoc) <= range:
+        return location.distance(selfLoc, otherLoc) <= range
            
     def onCooldown(self, abilityName):
         """Returns True if the ability is currently unavailable due to

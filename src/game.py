@@ -14,12 +14,14 @@ from network import *
 from server import *
 from const import *
 from gamescreen import GameScreen
+from theorycraft import TheoryCraft
 from world import *
 
 clock = pygame.time.Clock()
 
 class Game(object):
     def __init__(self):
+        TheoryCraft.loadAll()   #Static method call, Devin's stuff.
         self.world = World("CorrectHorseStapleBattery")
         self.keystate = 0
         self.running = 0
@@ -46,7 +48,6 @@ class Game(object):
 
         # Set up game engine
         self.screen = GameScreen()
-
 
         self.CDF.send(Person(PersonActions.CREATE, None, Location((0, 0), (PANE_X/2, PANE_Y/2))))
         

@@ -336,7 +336,7 @@ class Ability(object):
             damage = round(Dice.roll(5, 15) * (1 + source.totalCunning * 0.07))
             Combat.addStatus(target, "Poisonous Toch", duration, damage) 
         
-    def _poisonousTocuhCheck(self, target):
+    def _poisonousTouchCheck(self, target):
         return (True, "")
     
     # Battle Mage
