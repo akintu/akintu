@@ -25,11 +25,6 @@ class _Person():
             self.task.stop()
             self.task_running = False
 
-class _Pane():
-    def __init__(self, pane, people):
-        self.pane = pane
-        self.people = people
-
 class GameServer():
     def __init__(self, world):
         self.world = world
@@ -67,7 +62,7 @@ class GameServer():
             ###### MovePerson ######
             if isinstance(command, Person) and command.action == PersonActions.MOVE:
                 self.load_panes(command)
-                if self.panes[command.location.pane].pane.is_tile_passable(command.location) and \
+                if self.panes[command.location.pane].is_tile_passable(command.location) and \
                         command.location.tile not in [x.location.tile for x in self.panes[command.location.pane].people]:
                     if self.players[port].location.pane == command.location.pane:
                         #Update location and broadcast
@@ -137,7 +132,7 @@ class GameServer():
         if command.action in [PersonActions.CREATE, PersonActions.MOVE]:
             if command.location.pane not in self.panes:
                 print("Loading pane " + str(command.location.pane))
-                self.panes[command.location.pane] = _Pane(self.world.get_pane(command.location.pane)[0], [])
+                self.panes[command.location.pane] = self.world.get_pane(command.location.pane)
 
     def unload_panes(self):
         current_panes = []
@@ -145,7 +140,7 @@ class GameServer():
             x, y = player.location.pane
             for (dx, dy) in [(_x, _y) for _x in range(-1, 2) for _y in range(-1, 2)]:
                 current_panes.append((x + dx, y + dy))
-        for pane in self.panes.copy():
+        for pane in self.panes.keys():
             if pane not in current_panes:
                 #Save pane state to disk and then...
                 print("Unloading pane " + str(pane))

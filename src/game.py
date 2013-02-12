@@ -25,7 +25,6 @@ class Game(object):
         self.world = World("CorrectHorseStapleBattery")
         self.keystate = 0
         self.running = 0
-        self.people = []
         self.index = -1
         
         self.serverip = "localhost"
@@ -73,12 +72,12 @@ class Game(object):
                     self.switch_panes(command.location)
                     self.location = command.location
                 else:
-                    self.people.append(command.location)
-                    self.screen.add_person(len(self.people) - 1, None, command.location)
+                    self.pane.people.append(command.location)
+                    self.screen.add_person(len(self.pane.people) - 1, None, command.location)
 
             ###### MovePerson ######
             if isinstance(command, Person) and command.action == PersonActions.MOVE:
-                self.people[command.index] = command.location
+                self.pane.people[command.index] = command.location
                 self.screen.update_person(command.index, command.location)
                 if self.index == command.index:
                     self.location = command.location
@@ -87,15 +86,15 @@ class Game(object):
             if isinstance(command, Person) and command.action == PersonActions.REMOVE:
                 if command.index == self.index:
                     self.index = -1
-                    self.people = []
+                    self.pane.people = []
                 else:
                     self.screen.remove_person(command.index)
-                    for i in range(command.index + 1, len(self.people)):
+                    for i in range(command.index + 1, len(self.pane.people)):
                         self.screen.remove_person(i)
-                        self.screen.add_person(i - 1, None, self.people[i])
+                        self.screen.add_person(i - 1, None, self.pane.people[i])
                     if command.index < self.index:
                         self.index -= 1
-                    self.people.pop(command.index)
+                    self.pane.people.pop(command.index)
 
     def handle_events(self):
         pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
@@ -130,7 +129,7 @@ class Game(object):
     def move_person(self, direction, distance):
         newloc = self.location.move(direction, distance)
         if (self.location.pane == newloc.pane and self.pane.is_tile_passable(newloc) and \
-                newloc.tile not in [x.tile for x in self.people]) or self.location.pane != newloc.pane:
+                newloc.tile not in [x.tile for x in self.pane.people]) or self.location.pane != newloc.pane:
             if self.running:
                 self.CDF.send(Person(PersonActions.STOP, self.index))
                 self.running = False
@@ -145,5 +144,5 @@ class Game(object):
 
     def switch_panes(self, location):
         #TODO we can add transitions here.
-        self.pane, imagedict = self.world.get_pane(location.pane)
-        self.screen.set_pane(self.pane, imagedict)
+        self.pane = self.world.get_pane(location.pane)
+        self.screen.set_pane(self.pane)
