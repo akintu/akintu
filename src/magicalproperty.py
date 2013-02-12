@@ -13,6 +13,11 @@ class MagicalProperty(object):
         self.name = name
         self.weight = argDict['weight']
         self.cost = argDict['cost']
+        if self.cost == 'Varies':
+            if self.name == "Damage":
+                self.cost = item.gradientPoints
+            elif self.name == "DR":
+                self.DR = item.DRGradientPoints            
         self.effect = argDict['effect']
         self.max = argDict['max']
         self.doubled = argDict['doubled']
@@ -95,10 +100,12 @@ class MagicalProperty(object):
                 thisIp = possibleProperty[1]['cost']
                 if possibleProperty[0] == "DR":
                     thisIp = item.DRGradientPoints
+                    print "DR Gradient points = " + str(thisIp)
                     if item.DRGradientPoints == 0:
                         continue
                 elif possibleProperty[0] == "Damage":
-                    thisIp = item.gradientPoints
+                    thisIp = int(item.gradientPoints)
+                    print "Damage Gradient points = " + str(thisIp)
                 if thisIp > ip:
                     continue
                 else: 
@@ -255,8 +262,8 @@ class MagicalProperty(object):
         if self.item.gradientPoints == 0:
             raise TypeError("Cannot increase damage on item: " + str(self.item.name) + ".")
         if not reverse:
-            item.damageMinBonus += self.counts * item.gradientMin
-            item.damageMaxBonus += self.counts * item.gradientMax     
+            self.item.damageMinBonus += self.counts * int(self.item.gradientMin)
+            self.item.damageMaxBonus += self.counts * int(self.item.gradientMax)
     
     def _DR(self, owner, reverse=False):
         if self.item.DRGradientPoints == 0:
