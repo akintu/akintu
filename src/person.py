@@ -2,6 +2,7 @@
 
 import sys
 import entity as en
+from network import *
 
 class IncompleteDataInitialization(Exception):
     def __init__(self, value):
