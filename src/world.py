@@ -62,6 +62,7 @@ class Pane(object):
         
     def generate_creatures(self):
         #self.people.append(Person(args))
+        pass
             
 class Tile(object):
     def __init__(self, image = grassimage, passable = True):
