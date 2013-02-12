@@ -55,5 +55,6 @@ if __name__ == "__main__":
             print all.name
     print char
     print tc
+    print theorycraft.TheoryCraft.getMonster()
     
     
