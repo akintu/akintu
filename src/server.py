@@ -133,6 +133,7 @@ class GameServer():
             if command.location.pane not in self.panes:
                 print("Loading pane " + str(command.location.pane))
                 self.panes[command.location.pane] = self.world.get_pane(command.location.pane)
+                self.panes[command.location.pane].generate_creatures()
 
     def unload_panes(self):
         current_panes = []
