@@ -19,16 +19,18 @@ class Consumable(entity.Entity):
         self.level = 0
         self.effect = None
         self.cooldownLength = 3
-        if name in allPotions:
+        if name in Consumable.allPotions:
             self.type = "Potion"
-            self.goldValue = allPotions[name]['goldValue']
-            self.level = allPotions[name]['level']
-            self.effect = allPotions[name]['effect']
-        elif name in allPoisons:
+            self.goldValue = Consumable.allPotions[name]['goldValue']
+            self.level = Consumable.allPotions[name]['level']
+            self.effect = Consumable.allPotions[name]['effect']
+            self.ip = Consumable.allPotions[name]['ip']
+        elif name in Consumable.allPoisons:
             self.type = "Applied Poison"
-            self.goldValue = allPoisons[name]['goldValue']
-            self.level = allPoisons[name]['level']
-            self.effect = allPoisons[name]['effect']
+            self.goldValue = Consumable.allPoisons[name]['goldValue']
+            self.level = Consumable.allPoisons[name]['level']
+            self.effect = Consumable.allPoisons[name]['effect']
+            self.ip = Consumable.allPoisons[name]['ip']
         
     def canUse(self, user):
         if self.type in user.cooldownList:
@@ -48,34 +50,34 @@ class Consumable(entity.Entity):
         
     def _basicHealingPotion(self, user):
         healing = Dice.roll(3, 10)
-        healing *= (1 + user.totalPotionEffect / 100)
+        healing *= (1 + float(user.totalPotionEffect) / 100)
         Combat.healTarget(user, user, round(healing))
         
     def _lesserHealingPotion(self, user):
         healing = Dice.roll(6, 20)
-        healing *= (1 + user.totalPotionEffect / 100)
+        healing *= (1 + float(user.totalPotionEffect) / 100)
         Combat.healTarget(user, user, round(healing))
         
     def _moderateHealingPotion(self, user):
         healing = Dice.roll(9, 30)
-        healing *= (1 + user.totalPotionEffect / 100)
+        healing *= (1 + float(user.totalPotionEffect) / 100)
         Combat.healTarget(user, user, round(healing))
         
     # Healing functions go above
     
     def _basicManaPotion(self, user):
         mana = Dice.roll(5, 8)
-        mana *= (1 + user.totalPotionEffect / 100)
+        mana *= (1 + float(user.totalPotionEffect) / 100)
         Combat.modifyResource(user, "MP", mana)
         
     def _lesserManaPotion(self, user):
         mana = Dice.roll(10, 17)
-        mana *= (1 + user.totalPotionEffect / 100)
+        mana *= (1 + float(user.totalPotionEffect) / 100)
         Combat.modifyResource(user, "MP", mana)
         
     def _moderateManaPotion(self, user):
         mana = Dice.roll(18, 30)
-        mana *= (1 + user.totalPotionEffect / 100)
+        mana *= (1 + float(user.totalPotionEffect) / 100)
         Combat.modifyResource(user, "MP", mana)        
         
     # Mana functions go above
@@ -106,9 +108,9 @@ class Consumable(entity.Entity):
     # Buffing potions go above.
     
     def _basicPoison(self, user):
-        bonus = 20 * (1 + user.totalPoisonBonusDamage/100)
+        bonus = 20 * (1 + float(user.totalPoisonBonusDamage) / 100)
         base = Consumable._calcWeaponAverageDamage(user.equippedItems.equippedWeapon)
-        total = round(bonus/100 * base)
+        total = round(float(bonus) / 100 * base)
         duration = 8
         Combat.addStatus(user, "Applied Basic Poison", duration, total)
         
@@ -128,81 +130,94 @@ class Consumable(entity.Entity):
             {
             'goldValue' : 30,
             'level' : 1,
-            'effect' : _basicHealingPotion
+            'effect' : _basicHealingPotion,
+            'ip' : 1
             },
         'Lesser Healing Potion' :
             {
             'goldValue' : 75,
             'level' : 3,
-            'effect' : _lesserHealingPotion
+            'effect' : _lesserHealingPotion,
+            'ip' : 3
             },
         'Moderate Healing Potion' :
             {
             'goldValue' : 160,
             'level' : 6,
-            'effect' : _moderateHealingPotion
+            'effect' : _moderateHealingPotion,
+            'ip' : 7
             },
         # Other healing potions here
         'Basic Mana Potion' :
             {
             'goldValue' : 60,
             'level' : 1,
-            'effect' : _basicManaPotion
+            'effect' : _basicManaPotion,
+            'ip' : 2
             },
         'Lesser Mana Potion' :
             {
             'goldValue' : 200,
             'level' : 3,
-            'effect' : _lesserManaPotion
+            'effect' : _lesserManaPotion,
+            'ip' : 6
             },
         'Moderate Mana Potion' :
             {
             'goldValue' : 550,
             'level' : 6,
-            'effect' : _moderateManaPotion
+            'effect' : _moderateManaPotion,
+            'ip' : 12
             },
         # Other mana potions here
         'Antidote' :
             {
             'goldValue' : 20,
             'level' : 1,
-            'effect' : _antidote
+            'effect' : _antidote,
+            'ip' : 1
             },
         'Thawing Potion' :
             {
             'goldValue' : 30,
             'level' : 1,
-            'effect' : _thawingPotion
+            'effect' : _thawingPotion,
+            'ip' : 2
             },
         'Quenching Potion' :
             {
             'goldValue' : 30,
             'level' : 1,
-            'effect' : _quenchingPotion
+            'effect' : _quenchingPotion,
+            'ip' : 2
             },
         'Neutralizing Potion' :
             {
             'goldValue' : 25,
             'level' : 5,
-            'effect' : _neutralizingPotion
+            'effect' : _neutralizingPotion,
+            'ip' : 5
             },
         'Clotting Potion' :
             {
             'goldValue' : 7000,
             'level' : 5,
-            'effect' : _clottingPotion
+            'effect' : _clottingPotion,
+            'ip' : 10
             },
         'Rock Potion' :
             {
             'goldValue' : 120,
             'level' : 5,
-            'effect' : _rockPotion
+            'effect' : _rockPotion,
+            'ip' : 5
             },
         'Prismatic Potion' :
             {
             'goldValue' : 150,
             'level' : 5,
-            'effet' : _prismaticPotion
+            'effet' : _prismaticPotion,
+            'ip' : 6
             },
             # TODO: Other buffing potions go here.
         }
@@ -212,6 +227,7 @@ class Consumable(entity.Entity):
             'goldValue' : 10,
             'level' : 1,
             'effect' : _basicPoison,
+            'ip' : 1
             }
             # TODO: Other poisons go here.
         }   

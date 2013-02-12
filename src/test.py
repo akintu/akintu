@@ -50,8 +50,9 @@ if __name__ == "__main__":
     char = theorycraft.TheoryCraft.getNewPlayerCharacter("Human", "Spellsword")
     tc = treasurechest.TreasureChest("Small", 1, None, 12)
     for i in range(100):
-        item = tc.generateTreasure()
-        print item
+        itemList = tc.generateTreasure()
+        for all in itemList:
+            print all.name
     print char
     print tc
     

@@ -52,9 +52,9 @@ class Equipment(e.Entity):
         for property in propertyList:
             property.item = newCopy
             if property.name == "Damage":
-                property.effect(None) # No 'Owner' needed, thus None is passed.
+                property.effect(property, None) # No 'Owner' needed, thus None is passed.
             elif property.name == "DR":
-                property.effect(None) # No 'Owner' needed, thus None is passed.       
+                property.effect(property, None) # No 'Owner' needed, thus None is passed.       
         newPropertyList = [x for x in propertyList if x.name != "Damage" and x.name != "DR"]
         newCopy.propertyList = newPropertyList
         return newCopy

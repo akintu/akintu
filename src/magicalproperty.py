@@ -57,7 +57,7 @@ class MagicalProperty(object):
         if ip <= 0:
             return []
         subList = MagicalProperty.getFilledList(item)
-        subList = MagicalProperty.adjustWeights(subList, item)
+        #subList = MagicalProperty.adjustWeights(subList, item)
         totalWeight = MagicalProperty.getTotalWeight(subList)
         maxProperties = MagicalProperty.getMaxProperties(ip)
         
@@ -93,6 +93,12 @@ class MagicalProperty(object):
                     continue
                     
                 thisIp = possibleProperty[1]['cost']
+                if possibleProperty[0] == "DR":
+                    thisIp = item.DRGradientPoints
+                    if item.DRGradientPoints == 0:
+                        continue
+                elif possibleProperty[0] == "Damage":
+                    thisIp = item.gradientPoints
                 if thisIp > ip:
                     continue
                 else: 
@@ -162,14 +168,18 @@ class MagicalProperty(object):
                                 prop[1]['exclusion'] != "Melee Weapon Only"])
         return subList                                
         
+    # Method balloons values!! TODO: Fix!
     @staticmethod
     def adjustWeights(subList, item):
+        print item.name
         for prop in subList:
             for tendency in item.bonusTendencyList:
                 tName = tendency.split(",")[0]
                 tAmount = int(tendency.split(",")[1])
+                #print "tName " + tName + " tAmount " + str(tAmount)
                 if tName == prop[0] or tName in prop[1]['categories']:
-                    prop[1]['weight'] = round(prop[1]['weight'] * (1 + tAmount / 100))
+                    print prop[0] + " " + str(prop[1]['weight']) + " " + str(1 + float(tAmount) / 100)
+                    prop[1]['weight'] = round(prop[1]['weight'] * (1 + float(tAmount) / 100))
         return subList                    
         
         
@@ -238,16 +248,16 @@ class MagicalProperty(object):
             
     def _damage(self, owner, reverse=False):
         if self.item.gradientPoints == 0:
-            raise TypeError("Cannot increase damage on item: " + str(self.item) + ".")
+            raise TypeError("Cannot increase damage on item: " + str(self.item.name) + ".")
         if not reverse:
             item.damageMinBonus += self.counts * item.gradientMin
             item.damageMaxBonus += self.counts * item.gradientMax     
     
     def _DR(self, owner, reverse=False):
         if self.item.DRGradientPoints == 0:
-            raise TypeError("Cannot increase DR on item: " + str(self.item) + ".")
+            raise TypeError("Cannot increase DR on item: " + str(self.item.name) + ".")
         if not reverse:
-            item.DR += self.counts * item.DRGradient
+            self.item.DR += self.counts * self.item.DRGradient
     
     def _dexterity(self, owner, reverse=False):
         bonus = self.counts
@@ -738,7 +748,7 @@ class MagicalProperty(object):
             },
         'Awareness':
             {
-            'weight' : 10,
+            'weight' : 8,
             'cost' : 1,
             'effect' : _awareness,
             'max' : None,
@@ -771,7 +781,7 @@ class MagicalProperty(object):
             },
         'Critical Hit Chance':
             {
-            'weight' : 10,
+            'weight' : 8,
             'cost' : 1,
             'effect' : _criticalHitChance,
             'max' : None,
@@ -803,30 +813,30 @@ class MagicalProperty(object):
             'goldMod' : 35
             },
         'Damage':
-            {# TODO, apply on item generation, adjust gold value and remove from list. 
-            'weight' : 50,
+            {
+            'weight' : 150,
             'cost' : 'Varies',
             'effect' : _damage,
             'max' : None,
             'doubled' : False,
-            'exclusion' : 'Damage Gradient',
+            'exclusion' : 'Weapon Only',
             'categories' : [],
             'goldMod' : 40
             },
         'DR':
-            {# TODO, apply on item generation, adjust gold value and remove from list. 
-            'weight' : 50,
+            {
+            'weight' : 150,
             'cost' : 'Varies',
             'effect' : _DR,
             'max' : None,
             'doubled' : False,
-            'exclusion' : 'DR Gradient',
+            'exclusion' : 'Armor Only',
             'categories' : [],
             'goldMod' : 40
             },
         'Dexterity':
             {
-            'weight' : 10,
+            'weight' : 8,
             'cost' : 3,
             'effect' : _dexterity,
             'max' : None,
@@ -848,7 +858,7 @@ class MagicalProperty(object):
             },
         'Elemental Enhancement: Fire':
             {
-            'weight' : 7,
+            'weight' : 4,
             'cost' : 1,
             'effect' : _elementalEnhancementFire,
             'max' : None,
@@ -859,7 +869,7 @@ class MagicalProperty(object):
             },
         'Elemental Enhancement: Cold':
             {
-            'weight' : 7,
+            'weight' : 4,
             'cost' : 1,
             'effect' : _elementalEnhancementCold,
             'max' : None,
@@ -870,7 +880,7 @@ class MagicalProperty(object):
             },        
         'Elemental Enhancement: Electric':
             {
-            'weight' : 7,
+            'weight' : 4,
             'cost' : 1,
             'effect' : _elementalEnhancementElectric,
             'max' : None,
@@ -881,7 +891,7 @@ class MagicalProperty(object):
             },            
         'Elemental Enhancement: Poison':
             {
-            'weight' : 5,
+            'weight' : 3,
             'cost' : 1,
             'effect' : _elementalEnhancementPoison,
             'max' : None,
@@ -892,7 +902,7 @@ class MagicalProperty(object):
             },            
         'Elemental Enhancement: Shadow':
             {
-            'weight' : 5,
+            'weight' : 3,
             'cost' : 1,
             'effect' : _elementalEnhancementShadow,
             'max' : None,
@@ -903,7 +913,7 @@ class MagicalProperty(object):
             },            
         'Elemental Enhancement: Divine':
             {
-            'weight' : 4,
+            'weight' : 3,
             'cost' : 1,
             'effect' : _elementalEnhancementDivine,
             'max' : None,
@@ -914,7 +924,7 @@ class MagicalProperty(object):
             },
         'Elemental Enhancement: Arcane':
             {
-            'weight' : 7,
+            'weight' : 4,
             'cost' : 1,
             'effect' : _elementalEnhancementArcane,
             'max' : None,
@@ -1255,7 +1265,7 @@ class MagicalProperty(object):
             },
         'Strength':
             {
-            'weight' : 10,
+            'weight' : 8,
             'cost' : 3,
             'effect' : _strength,
             'max' : None,
@@ -1266,7 +1276,7 @@ class MagicalProperty(object):
             },
         'Trap Avoidance':
             {
-            'weight' : 10,
+            'weight' : 8,
             'cost' : 1,
             'effect' : _trapAvoidance,
             'max' : None,
