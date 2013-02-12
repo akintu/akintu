@@ -55,13 +55,16 @@ class TheoryCraft(object):
         
     @staticmethod
     def getNewPlayerCharacter(race, characterClass, index=None, loc=location.Location((0, 0), (PANE_X/2, PANE_Y/2))):
-        race = race.capitalize
+        race = race.capitalize()
         characterClass = characterClass.capitalize()
         for char in TheoryCraft.classes:
-            if race == char.race and characterClass == char.characterClass:
+            print char['name']
+            print race + " " + characterClass
+            if char['name'] == race + " " + characterClass:
                 pc = playercharacter.PlayerCharacter(char)
                 pc.index = index
                 pc.location = loc
+            return pc
         print "Bad character name/race, returning nothing; you're so stupid."
         
         
