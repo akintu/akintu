@@ -4,6 +4,7 @@ World generation tools and representation
 
 import os
 
+from entity import*
 from const import*
 from sprites import*
 
@@ -36,9 +37,9 @@ class World(object):
                 tree = treesheet.get_random_entity(str((i,j)), RAND_TREES)
                 rock = rocksheet.get_random_entity(str((i,j)), RAND_ROCKS)
                 if tree:
-                    tiles[(i, j)].entities.append(Entity(tree, False))
+                    tiles[(i, j)].entities.append(Entity((i, j), image=tree))
                 if rock:
-                    tiles[(i, j)].entities.append(Entity(rock, False))
+                    tiles[(i, j)].entities.append(Entity((i, j), image=rock))
         
         return (Pane(self.seed, location, tiles), images)
                 
@@ -71,9 +72,4 @@ class Tile(object):
             if ent.passable == False:
                 return False
         return True
-        
-class Entity(object):
-    def __init__(self, image = rockimage, passable = False):
-        self.image = image
-        self.passable = passable
       
