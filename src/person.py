@@ -978,7 +978,7 @@ class Person(en.Entity):
         """
         float -- The total Force multiplier used with Might to determine used might.
         """
-        return (self._statusForce/100 + self._equipmentForce / 100)
+        return (float(self._statusForce)/100 + float(self._equipmentForce) / 100)
         
     # TODO: Verify that force is not being treated as a float...
         
@@ -1104,7 +1104,7 @@ class Person(en.Entity):
         could also be affected by some special statuses and maybe even passive
         abilities.
         """
-        return (self._baseRangedForce * (self._equipmentRangedForce / 100) * 
+        return (self._baseRangedForce * (float(self._equipmentRangedForce) / 100) * 
                (1 + self._statusRangedForce))
                
     @property

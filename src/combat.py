@@ -436,40 +436,40 @@ class Combat(object):
         # TODO Worry about resistances above 80% that are reduced by any amount by some ability...
         if source.isinstance(Person):
             if element == "Fire":
-                dieRoll *= 1 + (source.totalFireBonusDamage / 100)
+                dieRoll *= 1 + (float(source.totalFireBonusDamage) / 100)
             elif element == "Cold":
-                dieRoll *= 1 + (source.totalColdBonusDamage / 100)         
+                dieRoll *= 1 + (float(source.totalColdBonusDamage) / 100)         
             elif element == "Electric":
-                dieRoll *= 1 + (source.totalElectricBonusDamage / 100)
+                dieRoll *= 1 + (float(source.totalElectricBonusDamage) / 100)
             elif element == "Poison":
-                dieRoll *= 1 + (source.totalPoisonBonusDamage / 100)    
+                dieRoll *= 1 + (float(source.totalPoisonBonusDamage) / 100)    
             elif element == "Shadow":
-                dieRoll *= 1 + (source.totalShadowBonusDamage / 100)
+                dieRoll *= 1 + (float(source.totalShadowBonusDamage) / 100)
             elif element == "Divine":
-                dieRoll *= 1 + (source.totalDivineBonusDamage / 100)
+                dieRoll *= 1 + (float(source.totalDivineBonusDamage) / 100)
             elif element == "Arcane":
-                dieRoll *= 1 + (source.totalArcaneBonusDamage / 100)
+                dieRoll *= 1 + (float(source.totalArcaneBonusDamage) / 100)
 
         if element == "Fire":
-            dieRoll *= 1 - (target.totalFireResistance / 100)
+            dieRoll *= 1 - (float(target.totalFireResistance) / 100)
         elif element == "Cold":
-            dieRoll *= 1 - (target.totalColdResistance / 100)           
+            dieRoll *= 1 - (float(target.totalColdResistance) / 100)           
         elif element == "Electric":
-            dieRoll *= 1 - (target.totalElectricResistance / 100)
+            dieRoll *= 1 - (float(target.totalElectricResistance) / 100)
         elif element == "Poison":
-            dieRoll *= 1 - (target.totalPoisonResistance / 100)    
+            dieRoll *= 1 - (float(target.totalPoisonResistance) / 100)    
         elif element == "Shadow":
-            dieRoll *= 1 - (target.totalShadowResistance / 100)
+            dieRoll *= 1 - (float(target.totalShadowResistance) / 100)
         elif element == "Divine":
-            dieRoll *= 1 - (target.totalDivineResistance / 100)
+            dieRoll *= 1 - (float(target.totalDivineResistance) / 100)
         elif element == "Arcane":
-            dieRoll *= 1 - (target.totalArcaneResistance / 100)
+            dieRoll *= 1 - (float(target.totalArcaneResistance) / 100)
         elif element == "Bludgeoning":
-            dieRoll *= 1 - (target.totalBludgeoningResistance / 100)
+            dieRoll *= 1 - (float(target.totalBludgeoningResistance) / 100)
         elif element == "Piercing":
-            dieRoll *= 1 - (target.totalPiercingResistance / 100)
+            dieRoll *= 1 - (float(target.totalPiercingResistance) / 100)
         elif element == "Slashing":
-            dieRoll *= 1 - (target.totalSlashingResistance / 100)
+            dieRoll *= 1 - (float(target.totalSlashingResistance) / 100)
         else:
             raise TypeError("Encountered an unknown element: " + element + " .")
             
@@ -502,26 +502,26 @@ class Combat(object):
             return
         baseAttackDamage = Dice.roll(source.attackMinDamage, source.attackMaxDamage)
         if source.attackElement == "Bludgeoning":
-            baseAttackDamage *= (1 - (target.totalBludgeoningResistance / 100))
+            baseAttackDamage *= (1 - (float(target.totalBludgeoningResistance) / 100))
         elif source.attackElement == "Piercing":
-            baseAttackDamage *= (1 - (target.totalPiercingResistance / 100))
+            baseAttackDamage *= (1 - (float(target.totalPiercingResistance) / 100))
         elif source.attackElement == "Slashing":
-            baseAttackDamage *= (1 - (target.totalSlashingResistance / 100))
+            baseAttackDamage *= (1 - (float(target.totalSlashingResistance) / 100))
         elif element == "Fire":
-            baseAttackDamage *= 1 - (target.totalFireResistance / 100)
+            baseAttackDamage *= 1 - (float(target.totalFireResistance) / 100)
         elif element == "Cold":
-            baseAttackDamage *= 1 - (target.totalColdResistance / 100)           
+            baseAttackDamage *= 1 - (float(target.totalColdResistance) / 100)           
         elif element == "Electric":
-            baseAttackDamage *= 1 - (target.totalElectricResistance / 100)
+            baseAttackDamage *= 1 - (float(target.totalElectricResistance) / 100)
         elif element == "Poison":
-            baseAttackDamage *= 1 - (target.totalPoisonResistance / 100)    
+            baseAttackDamage *= 1 - (float(target.totalPoisonResistance) / 100)    
         elif element == "Shadow":
-            baseAttackDamage *= 1 - (target.totalShadowResistance / 100)
+            baseAttackDamage *= 1 - (float(target.totalShadowResistance) / 100)
         elif element == "Divine":
-            baseAttackDamage *= 1 - (target.totalDivineResistance / 100)
+            baseAttackDamage *= 1 - (float(target.totalDivineResistance) / 100)
         elif element == "Arcane":
-            baseAttackDamage *= 1 - (target.totalArcaneResistance / 100)
-        baseAttackDamage *= (1 + source.attackPower / 100)
+            baseAttackDamage *= 1 - (float(target.totalArcaneResistance) / 100)
+        baseAttackDamage *= (1 + float(source.attackPower) / 100)
         Combat.lowerHP(target, round(baseAttackDamage))
         Combat._shoutAttackComplete(source, target, params['noCounter'])
     
@@ -565,16 +565,16 @@ class Combat(object):
             weapon = source.equippedItems.equippedOffHand
         effectiveForce = source.totalForce * forceMod
         if( source.usingWeapon(ranged) ):
-            effectiveForce *= 1 + (source.totalRangedForce / 100)
-        effectiveMight = round(Dice.rollFloat(0.5, 1.0) * (source.totalMight + mightMod) * (effectiveForce / 100))       
+            effectiveForce *= 1 + (float(source.totalRangedForce) / 100)
+        effectiveMight = round(Dice.rollFloat(0.5, 1.0) * (source.totalMight + mightMod) * (float(effectiveForce) / 100))       
         effectiveDR = min(80, max(0, target.totalDR - (armorPenetrationMod + source.totalArmorPenetration)))
         outgoingDamage = (Dice.roll(weapon.damageMin + weapon.damageMinBonus, 
                                     weapon.damageMax + weapon.damageMaxBonus) * 
-                         (1 - (effectiveDR / 100)))
+                         (1 - (float(effectiveDR) / 100)))
         outgoingDamage *= overallDamageMod
         
         if hitType == "Critical Hit":
-            outgoingDamage += outgoingDamage * criticalDamageMod * weapon.criticalMultiplier / 100
+            outgoingDamage += outgoingDamage * criticalDamageMod * float(weapon.criticalMultiplier) / 100
 
         elementalEffects = Combat.applyOnHitEffects(source, target)
         if elementOverride:
@@ -583,11 +583,11 @@ class Combat(object):
             outgoingDamage = 0
         else:
             if weapon.damageType == "Bludgeoning":
-                outgoingDamage *= (1 - (target.totalBludgeoningResistance / 100))
+                outgoingDamage *= (1 - (float(target.totalBludgeoningResistance) / 100))
             elif weapon.damageType == "Piercing":
-                outgoingDamage *= (1 - (target.totalPiercingResistance / 100))
+                outgoingDamage *= (1 - (float(target.totalPiercingResistance) / 100))
             elif weapon.damageType == "Slashing":
-                outgoingDamage *= (1 - (target.totalSlashingResistance / 100))
+                outgoingDamage *= (1 - (float(target.totalSlashingResistance) / 100))
         # TODO: Deal with dual-type weapons    
         totalDamage = Combat.sumElementalEffects(elementalEffects, elementOverride) + outgoingDamage     
      
@@ -601,32 +601,32 @@ class Combat(object):
             if overrideElement:
                 duple[0] = overrideElement
             if duple[0] == "Arcane":
-                currentDamage = round(duple[1] * (1 + source.totalArcaneBonusDamage / 100))
-                currentDamage = round(currentDamage * (1 - target.totalArcaneResistance / 100))
+                currentDamage = round(duple[1] * (1 + float(source.totalArcaneBonusDamage) / 100))
+                currentDamage = round(currentDamage * (1 - float(target.totalArcaneResistance) / 100))
                 damSum += currentDamage
             elif duple[0] == "Cold":
-                currentDamage = round(duple[1] * (1 + source.totalColdBonusDamage / 100))
-                currentDamage = round(currentDamage * (1 - target.totalColdResistance / 100))
+                currentDamage = round(duple[1] * (1 + float(source.totalColdBonusDamage) / 100))
+                currentDamage = round(currentDamage * (1 - float(target.totalColdResistance) / 100))
                 damSum += currentDamage                
             elif duple[0] == "Divine":
-                currentDamage = round(duple[1] * (1 + source.totalDivineBonusDamage / 100))
-                currentDamage = round(currentDamage * (1 - target.totalDivineResistance / 100))
+                currentDamage = round(duple[1] * (1 + float(source.totalDivineBonusDamage) / 100))
+                currentDamage = round(currentDamage * (1 - float(target.totalDivineResistance) / 100))
                 damSum += currentDamage
             elif duple[0] == "Electric":
-                currentDamage = round(duple[1] * (1 + source.totalElectricBonusDamage / 100))
-                currentDamage = round(currentDamage * (1 - target.totalElectricResistance / 100))
+                currentDamage = round(duple[1] * (1 + float(source.totalElectricBonusDamage) / 100))
+                currentDamage = round(currentDamage * (1 - float(target.totalElectricResistance) / 100))
                 damSum += currentDamage
             elif duple[0] == "Fire":
-                currentDamage = round(duple[1] * (1 + source.totalFireBonusDamage / 100))
-                currentDamage = round(currentDamage * (1 - target.totalFireResistance / 100))
+                currentDamage = round(duple[1] * (1 + float(source.totalFireBonusDamage) / 100))
+                currentDamage = round(currentDamage * (1 - float(target.totalFireResistance) / 100))
                 damSum += currentDamage
             elif duple[0] == "Poison":
-                currentDamage = round(duple[1] * (1 + source.totalPoisonBonusDamage / 100))
-                currentDamage = round(currentDamage * (1 - target.totalPoisonResistance / 100))
+                currentDamage = round(duple[1] * (1 + float(source.totalPoisonBonusDamage) / 100))
+                currentDamage = round(currentDamage * (1 - float(target.totalPoisonResistance) / 100))
                 damSum += currentDamage
             elif duple[0] == "Shadow":
-                currentDamage = round(duple[1] * (1 + source.totalShadowBonusDamage / 100))
-                currentDamage = round(currentDamage * (1 - target.totalShadowResistance / 100))
+                currentDamage = round(duple[1] * (1 + float(source.totalShadowBonusDamage) / 100))
+                currentDamage = round(currentDamage * (1 - float(target.totalShadowResistance) / 100))
                 damSum += currentDamage
         return damSum
         
@@ -771,7 +771,7 @@ class Combat(object):
           amount -- int; the amount of HP to restore
         Outputs:
           None"""
-        total = round(amount * (1 + source.healingBonus/100))
+        total = round(amount * (1 + float(source.healingBonus) / 100))
         # Listeners here? TODO
         Combat.modifyResource(target, "HP", total)
      

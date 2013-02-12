@@ -50,6 +50,7 @@ class MonstersParser(object):
         experienceTag = re.compile("(?:\[EXPERIENCE GIVEN: )(.*)(?:\])", re.I)
         GPTag = re.compile("(?:\[GP: )(.*)(?:\])", re.I)
         HPTag = re.compile("(?:\[HP: )(.*)(?:\])", re.I)
+        imageTag = re.compile("(?:\[IMAGE: )(.*)(?:\])", re.I)
         levelTag = re.compile("(?:\[LEVEL: )(.*)(?:\])", re.I)
         magicResistTag = re.compile("(?:\[MAGIC RESIST: )(.*)(?:\])", re.I)
         meleeAPTag = re.compile("(?:\[MELEE ATTACK AP: )(.*)(?:\])", re.I)
@@ -65,7 +66,8 @@ class MonstersParser(object):
         specialPropertyTag = re.compile("(?:\[SPECIAL PROPERTY: )(.*)(?:\])", re.I)
         spellpowerTag = re.compile("(?:\[SPELLPOWER: )(.*)(?:\])", re.I)
         strengthTag = re.compile("(?:\[STRENGTH: )(.*)(?:\])", re.I)
-
+        
+        
         with open(fileName, 'r') as f:
             while( True ):
                 mDict = {}
@@ -91,6 +93,7 @@ class MonstersParser(object):
                 mDict['experience'] = MonstersParser.getFromText(f, f.readline(), experienceTag)
                 mDict['GP'] = MonstersParser.getFromText(f, f.readline(), GPTag)
                 mDict['startingHP'] = MonstersParser.getFromText(f, f.readline(), HPTag)
+                mDict['image'] = MonstersParser.getFromText(f, f.readline(), imageTag)
                 mDict['level'] = MonstersParser.getFromText(f, f.readline(), levelTag)
                 mDict['magicResist'] = MonstersParser.getFromText(f, f.readline(), magicResistTag)
                 mDict['meleeAP'] = MonstersParser.getFromText(f, f.readline(), meleeAPTag)
