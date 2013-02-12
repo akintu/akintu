@@ -37,7 +37,7 @@
 [STARTING_SPELL_2: None]
 [STARTING_SPELL_3: None]
 
-# Starting gear: TODO!
+
 
 [STARTING_STR: 19]
 [STARTING_DEX: 12]
@@ -57,7 +57,7 @@
 [LEVELUP_HP: 8]
 [LEVELUP_MP: 0]
 
-[IMAGE: None]
+[IMAGE: mst1]
 
 [NAME: Dragoon]
 [BASE_CLASS: Fighter]
@@ -74,7 +74,7 @@
 [STARTING_SPELL_2: None]
 [STARTING_SPELL_3: None]
 
-# Starting gear: TODO!
+
 
 [STARTING_STR: 17]
 [STARTING_DEX: 15]
@@ -94,7 +94,7 @@
 [LEVELUP_HP: 8]
 [LEVELUP_MP: 0]
 
-[IMAGE: None]
+[IMAGE: npc1]
 
 [NAME: Weapon Master]
 [BASE_CLASS: Fighter]
@@ -105,14 +105,14 @@
 
 [MOVE_AP: 5]
 [MELEE_AP: 5]
-# TODO: Include the -1 AP cost for basic melee attacks as a passive ability.
+# TODO: Include the -1 AP cost for basic melee attacks as a passive ability??
 [RANGED_AP: 8]
 
 [STARTING_SPELL_1: None]
 [STARTING_SPELL_2: None]
 [STARTING_SPELL_3: None]
 
-# Starting gear: TODO!
+
 
 [STARTING_STR: 16]
 [STARTING_DEX: 15]
@@ -132,7 +132,7 @@
 [LEVELUP_HP: 8]
 [LEVELUP_MP: 0]  
 
-[IMAGE: None]
+[IMAGE: pdn2]
 
 
 [NAME: Spellsword]
@@ -150,7 +150,7 @@
 [STARTING_SPELL_2: None]
 [STARTING_SPELL_3: None]
 
-# Starting gear: TODO!
+
 
 [STARTING_STR: 16]
 [STARTING_DEX: 12]
@@ -170,7 +170,7 @@
 [LEVELUP_HP: 8]
 [LEVELUP_MP: 5]
 
-[IMAGE: None]
+[IMAGE: knt4]
 
 
 [NAME: Anarchist]
@@ -188,7 +188,7 @@
 [STARTING_SPELL_2: None]
 [STARTING_SPELL_3: None]
 
-# Starting gear: TODO!
+
 
 [STARTING_STR: 15]
 [STARTING_DEX: 17]
@@ -208,7 +208,7 @@
 [LEVELUP_HP: 7]
 [LEVELUP_MP: 0]
 
-[IMAGE: None]
+[IMAGE: ftr1]
 
 
 [NAME: Marksman]
@@ -226,7 +226,7 @@
 [STARTING_SPELL_2: None]
 [STARTING_SPELL_3: None]
 
-# Starting gear: TODO!
+
 
 [STARTING_STR: 14]
 [STARTING_DEX: 20]
@@ -246,7 +246,7 @@
 [LEVELUP_HP: 7]
 [LEVELUP_MP: 0]
 
-[IMAGE: None]
+[IMAGE: wmn3]
 
 [NAME: Druid]
 [BASE_CLASS: Ranger]
@@ -263,7 +263,7 @@
 [STARTING_SPELL_2: None]
 [STARTING_SPELL_3: None]
 
-# Starting gear: TODO!
+
 
 [STARTING_STR: 12]
 [STARTING_DEX: 20]
@@ -283,7 +283,7 @@
 [LEVELUP_HP: 7]
 [LEVELUP_MP: 0]
 
-[IMAGE: None]
+[IMAGE: avt4]
 
 
 [NAME: Tactician]
@@ -301,7 +301,7 @@
 [STARTING_SPELL_2: None]
 [STARTING_SPELL_3: None]
 
-# Starting gear: TODO!
+
 
 [STARTING_STR: 12]
 [STARTING_DEX: 17]
@@ -321,7 +321,7 @@
 [LEVELUP_HP: 7]
 [LEVELUP_MP: 5]
 
-[IMAGE: None]
+[IMAGE: amg1]
 
 [NAME: Ninja]
 [BASE_CLASS: Thief]
@@ -338,7 +338,7 @@
 [STARTING_SPELL_2: None]
 [STARTING_SPELL_3: None]
 
-# Starting gear: TODO!
+
 
 [STARTING_STR: 13]
 [STARTING_DEX: 16]
@@ -358,7 +358,7 @@
 [LEVELUP_HP: 6]
 [LEVELUP_MP: 0]
 
-[IMAGE: None]
+[IMAGE: nja1]
 
 
 [NAME: Assassin]
@@ -376,7 +376,7 @@
 [STARTING_SPELL_2: None]
 [STARTING_SPELL_3: None]
 
-# Starting gear: TODO!
+
 
 [STARTING_STR: 12]
 [STARTING_DEX: 19]
@@ -396,7 +396,7 @@
 [LEVELUP_HP: 6]
 [LEVELUP_MP: 0]
 
-[IMAGE: None]
+[IMAGE: Zph1]
 
 
 [NAME: Shadow]
@@ -414,7 +414,7 @@
 [STARTING_SPELL_2: None]
 [STARTING_SPELL_3: None]
 
-# Starting gear: TODO!
+
 
 [STARTING_STR: 10]
 [STARTING_DEX: 19]
@@ -434,7 +434,7 @@
 [LEVELUP_HP: 6]
 [LEVELUP_MP: 0]
 
-[IMAGE: None]
+[IMAGE: thf3]
 
 
 [NAME: Nightblade]
@@ -452,7 +452,7 @@
 [STARTING_SPELL_2: None]
 [STARTING_SPELL_3: None]
 
-# Starting gear: TODO!
+
 
 [STARTING_STR: 10]
 [STARTING_DEX: 16]
@@ -472,7 +472,7 @@
 [LEVELUP_HP: 6]
 [LEVELUP_MP: 5]
 
-[IMAGE: None]
+[IMAGE: mnv4]
 
 
 [NAME: Battle Mage]
@@ -490,7 +490,7 @@
 [STARTING_SPELL_2: Singe]
 [STARTING_SPELL_3: Mystic Shield]
 
-# Starting gear: TODO!
+
 
 [STARTING_STR: 8]
 [STARTING_DEX: 10]
@@ -510,7 +510,7 @@
 [LEVELUP_HP: 5]
 [LEVELUP_MP: 10]
 
-[IMAGE: None]
+[IMAGE: knt2]
 
 
 [NAME: Arcane Archer]
@@ -528,7 +528,7 @@
 [STARTING_SPELL_2: Singe]
 [STARTING_SPELL_3: Flicker of Life]
 
-# Starting gear: TODO!
+
 
 [STARTING_STR: 7]
 [STARTING_DEX: 13]
@@ -548,7 +548,7 @@
 [LEVELUP_HP: 5]
 [LEVELUP_MP: 10]
 
-[IMAGE: None]
+[IMAGE: wmn1]
 
 
 [NAME: Trickster]
@@ -566,7 +566,7 @@
 [STARTING_SPELL_2: Arcane Warding]
 [STARTING_SPELL_3: Flicker of Life]
 
-# Starting gear: TODO!
+
 
 [STARTING_STR: 5]
 [STARTING_DEX: 13]
@@ -586,7 +586,7 @@
 [LEVELUP_HP: 5]
 [LEVELUP_MP: 10]
 
-[IMAGE: None]
+[IMAGE: bmg1]
 
 
 [NAME: Sorcerer]
@@ -604,7 +604,7 @@
 [STARTING_SPELL_2: Chill]
 [STARTING_SPELL_3: Arcane Dart]
 
-# Starting gear: TODO!
+
 
 [STARTING_STR: 5]
 [STARTING_DEX: 10]
@@ -624,5 +624,5 @@
 [LEVELUP_HP: 5]
 [LEVELUP_MP: 10]
 
-[IMAGE: None]
+[IMAGE: smr1]
 
