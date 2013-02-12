@@ -62,7 +62,6 @@ class TheoryCraft(object):
                 pc = playercharacter.PlayerCharacter(char)
                 pc.index = index
                 pc.location = loc
-                print "Location:", loc, "PC Location:", pc.location
                 return pc
         print "Bad character name/race, returning nothing; you're so stupid."
         

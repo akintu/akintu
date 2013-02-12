@@ -2246,18 +2246,7 @@ class Person(en.Entity):
     @equipmentMP.setter
     def equipmentMP(self, value):
         self._equipmentMP = value
-        
-    @property
-    def location(self):
-        """The Tile beneath the Person"""
-        return None
-        # TODO -- need to get the tile.
-        
-    @location.setter
-    def location(self, tile):
-        """Tile must be unoccupied or no change will result."""
-        self._location = tile
-        
+
     @property
     def directionFacing(self):
         """The direction this Person is facing."""
