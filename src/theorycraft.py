@@ -10,6 +10,7 @@ import statuseffectsparser
 import copy
 import playercharacter
 import location
+from const import *
 
 class TheoryCraft(object):
     
@@ -60,7 +61,7 @@ class TheoryCraft(object):
             if race == char.race and characterClass == char.characterClass:
                 pc = playercharacter.PlayerCharacter(char)
                 pc.index = index
-                pc.location = location
+                pc.location = loc
         print "Bad character name/race, returning nothing; you're so stupid."
         
         
