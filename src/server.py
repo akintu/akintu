@@ -39,7 +39,7 @@ class GameServer():
                     if isinstance(p, PlayerCharacter):
                         details = (1, p.race, p.characterClass)
                     else:
-                        details = (2)
+                        details = (2,)
                     self.SDF.send(port, Person(PersonActions.CREATE, i, p.location, details))
 
             ###### MovePerson ######
