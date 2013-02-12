@@ -21,27 +21,8 @@ class World(object):
     def __init__(self, seed):
         self.seed = seed
 
-    def get_pane(self, location, position = None):
-        # TODO: use seed to generate pane and tiles on pane
-        random.seed(self.seed + str(location))
-        i = random.randrange(len(BACKGROUNDS))
-
-        background = crop_helper(BACKGROUNDS[i])
-        treesheet = SpriteSheet(TREES, self.seed + str(location))
-        rocksheet = SpriteSheet(ROCKS, self.seed + str(location))
-        images = dict(background.images.items() + treesheet.images.items() + rocksheet.images.items())
-        tiles = dict()
-        for i in range(PANE_X):
-            for j in range(PANE_Y):
-                tiles[(i, j)] = Tile(background.getimage((i, j)), True)
-                tree = treesheet.get_random_entity(str((i,j)), RAND_TREES)
-                rock = rocksheet.get_random_entity(str((i,j)), RAND_ROCKS)
-                if tree:
-                    tiles[(i, j)].entities.append(Entity((i, j), image=tree))
-                if rock:
-                    tiles[(i, j)].entities.append(Entity((i, j), image=rock))
-        
-        return (Pane(self.seed, location, tiles), images)
+    def get_pane(self, location):
+        return Pane(self.seed, location)
                 
 class Pane(object):
     '''
@@ -51,10 +32,30 @@ class Pane(object):
         tiles: Dictionary of coordinate tuples (e.g. (0,1)) to tile objects
     '''
 
-    def __init__(self, seed, location, tiles):
+    def __init__(self, seed, location):
         self.seed = seed
-        self.tiles = tiles
         self.location = location
+        
+        random.seed(self.seed + str(location))
+        i = random.randrange(len(BACKGROUNDS))
+
+        background = crop_helper(BACKGROUNDS[i])
+        treesheet = SpriteSheet(TREES, self.seed + str(location))
+        rocksheet = SpriteSheet(ROCKS, self.seed + str(location))
+        
+        self.images = dict(background.images.items() + treesheet.images.items() + rocksheet.images.items())
+        self.tiles = dict()
+        self.people = []
+        
+        for i in range(PANE_X):
+            for j in range(PANE_Y):
+                self.tiles[(i, j)] = Tile(background.getimage((i, j)), True)
+                tree = treesheet.get_random_entity(str((i,j)), RAND_TREES)
+                rock = rocksheet.get_random_entity(str((i,j)), RAND_ROCKS)
+                if tree:
+                    self.tiles[(i, j)].entities.append(Entity((i, j), image=tree))
+                if rock:
+                    self.tiles[(i, j)].entities.append(Entity((i, j), image=rock))
         
     def is_tile_passable(self, location):
         return self.tiles[location.tile].is_passable()
