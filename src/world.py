@@ -60,7 +60,8 @@ class Pane(object):
         return self.tiles[location.tile].is_passable()
         
     def generate_creatures(self):
-        self.people.append(TheoryCraft.getNewPlayerCharacter("Human", "Barbarian", len(self.people)))
+        #self.people.append(TheoryCraft.getNewPlayerCharacter("Human", "Barbarian", len(self.people)))
+        self.people.append(TheoryCraft.getMonster(len(self.people)))
             
 class Tile(object):
     def __init__(self, image = grassimage, passable = True):
