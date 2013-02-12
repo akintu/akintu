@@ -1,29 +1,7 @@
 from network import *
 from location import *
-
-class _Person():
-    def __init__(self, location = Location((0, 0), (PANE_X/2, PANE_Y/2)), index = None):
-        self.location = location
-        self.index = index
-        self.task = None
-        self.task_frequency = 0
-        self.task_running = False
-        #self.timestamp = time.now
-
-    def set_task(self, task, task_frequency, *args):
-        if not self.task_running:
-            self.task = LoopingCall(task, *args)
-            self.task_frequency = task_frequency
-
-    def start_task(self):
-        if not self.task_running:
-            self.task.start(1.0 / self.task_frequency)
-            self.task_running = True
-
-    def stop_task(self):
-        if self.task and self.task_running:
-            self.task.stop()
-            self.task_running = False
+from theorycraft import TheoryCraft
+from playercharacter import *
 
 class GameServer():
     def __init__(self, world):
@@ -47,8 +25,8 @@ class GameServer():
 
                 self.load_panes(command)
                 command.index = len(self.panes[command.location.pane].people)
-                self.players[port] = _Person(command.location, command.index)
-                self.panes[command.location.pane].people.append(_Person(command.location))
+                self.players[port] = TheoryCraft.getNewPlayerCharacter(command.details[1], command.details[2], command.index)
+                self.panes[command.location.pane].people.append(self.players[port])
 
                 # Send command to each player in the affected pane
                 for p, player in self.players.iteritems():
@@ -57,7 +35,12 @@ class GameServer():
 
                 # Send list of players to the issuing client
                 for i, p in enumerate(self.panes[command.location.pane].people):
-                    self.SDF.send(port, Person(PersonActions.CREATE, i, p.location))
+                    details = None
+                    if isinstance(p, PlayerCharacter):
+                        details = (1, p.race, p.characterClass)
+                    else:
+                        details = (2)
+                    self.SDF.send(port, Person(PersonActions.CREATE, i, p.location, details))
 
             ###### MovePerson ######
             if isinstance(command, Person) and command.action == PersonActions.MOVE:
@@ -88,7 +71,7 @@ class GameServer():
                         #Add player to new pane lists
                         command.index = self.players[port].index
                         command.action = PersonActions.CREATE
-                        self.panes[command.location.pane].people.append(_Person(command.location))
+                        self.panes[command.location.pane].people.append(self.players[port])
 
                         # Send command to each player in the affected pane
                         for p, player in self.players.iteritems():

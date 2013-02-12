@@ -48,7 +48,7 @@ class Game(object):
         # Set up game engine
         self.screen = GameScreen()
 
-        self.CDF.send(Person(PersonActions.CREATE, None, Location((0, 0), (PANE_X/2, PANE_Y/2))))
+        self.CDF.send(Person(PersonActions.CREATE, None, Location((0, 0), (PANE_X/2, PANE_Y/2)), (CreatureTypes.PLAYER, "Human", "Assassin")))
         
         self.setup.stop()
         LoopingCall(self.game_loop).start(1.0 / DESIRED_FPS)
@@ -72,12 +72,15 @@ class Game(object):
                     self.switch_panes(command.location)
                     self.location = command.location
                 else:
-                    self.pane.people.append(command.location)
-                    self.screen.add_person(len(self.pane.people) - 1, None, command.location)
+                    if command.details[0] == CreatureTypes.PLAYER:
+                        self.pane.people.append(TheoryCraft.getNewPlayerCharacter(command.details[1], command.details[2], command.index))
+                    if command.details[0] == CreatureTypes.MONSTER:
+                        self.pane.people.append(TheoryCraft.getMonster())
+                    self.screen.add_person(command.index, None, command.location, "res/images/sprites/" + self.pane.people[command.index].image + "_fr1.png")
 
             ###### MovePerson ######
             if isinstance(command, Person) and command.action == PersonActions.MOVE:
-                self.pane.people[command.index] = command.location
+                self.pane.people[command.index].location = command.location
                 self.screen.update_person(command.index, command.location)
                 if self.index == command.index:
                     self.location = command.location
@@ -129,7 +132,7 @@ class Game(object):
     def move_person(self, direction, distance):
         newloc = self.location.move(direction, distance)
         if (self.location.pane == newloc.pane and self.pane.is_tile_passable(newloc) and \
-                newloc.tile not in [x.tile for x in self.pane.people]) or self.location.pane != newloc.pane:
+                newloc.tile not in [x.location.tile for x in self.pane.people]) or self.location.pane != newloc.pane:
             if self.running:
                 self.CDF.send(Person(PersonActions.STOP, self.index))
                 self.running = False
