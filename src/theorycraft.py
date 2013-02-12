@@ -50,5 +50,14 @@ class TheoryCraft(object):
         # TODO: This is a stub...
         return copy.deepcopy(TheoryCraft.monsters[0])
         
+    @staticmethod
+    def getNewPlayerCharacter(race, characterClass):
+        race = race.capitalize
+        characterClass = characterClass.capitalize()
+        for char in TheoryCraft.classes:
+            if race == char.race and characterClass == char.characterClass:
+                return copy.deepcopy(char)
+        print "Bad character name/race, returning nothing; you're so stupid."
+        
         
         
