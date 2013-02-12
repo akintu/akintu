@@ -59,6 +59,9 @@ class Pane(object):
         
     def is_tile_passable(self, location):
         return self.tiles[location.tile].is_passable()
+        
+    def generate_creatures(self):
+        #self.people.append(Person(args))
             
 class Tile(object):
     def __init__(self, image = grassimage, passable = True):
