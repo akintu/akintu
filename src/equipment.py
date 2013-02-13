@@ -24,7 +24,7 @@ class Equipment(e.Entity):
     def __init__(self, name, goldValue, weight):
         e.Entity.__init__(self)
         self.name = name
-        self.goldValue = goldValue
+        self.goldValue = int(goldValue)
         self.weight = weight
         self.identifier = "TODO"
         self.bonusTendencyList = None        
@@ -42,18 +42,19 @@ class Equipment(e.Entity):
         newIdentifier = self.name
         goldModSum = 0
         for property in propertyList:
-            goldModSum += property.goldMod * property.count
-            newIdentifier += " ; mProp: " + property.name + " count: " + property.count  
+            goldModSum += property.goldMod * property.counts
+            newIdentifier += " ; mProp: " + property.name + " counts: " + str(property.counts)  
 
         newCopy = copy.copy(self)
-        newCopy.goldValue = round(self.goldValue * (1 + goldModSum / 100))
+        print self.goldValue
+        newCopy.goldValue = round(self.goldValue * (1 + float(goldModSum / 100)))
         newCopy.identifier = newIdentifier
         for property in propertyList:
             property.item = newCopy
             if property.name == "Damage":
-                property.effect(None) # No 'Owner' needed, thus None is passed.
+                property.effect(property, None) # No 'Owner' needed, thus None is passed.
             elif property.name == "DR":
-                property.effect(None) # No 'Owner' needed, thus None is passed.       
+                property.effect(property, None) # No 'Owner' needed, thus None is passed.       
         newPropertyList = [x for x in propertyList if x.name != "Damage" and x.name != "DR"]
         newCopy.propertyList = newPropertyList
         return newCopy
@@ -61,24 +62,24 @@ class Equipment(e.Entity):
 class Armor(Equipment):
     def __init__(self, argDict):
         Equipment.__init__(self, argDict['name'], argDict['goldValue'], argDict['weight'])
-        self.type = setFrom(argDict, 'type')
-        self.grade = setFrom(argDict, 'grade')
+        self.type = Equipment.setFrom(argDict, 'type')
+        self.grade = Equipment.setFrom(argDict, 'grade')
         self.gradePoints = Armor.convertToGradePoints(self.grade, self.type)
-        self.dodgeMod = setFrom(argDict, 'dodgeMod')
-        self.stealthMod = setFrom(argDict, 'stealthMod')
-        self.DR = setFrom(argDict, 'DR')
+        self.dodgeMod = Equipment.setFrom(argDict, 'dodgeMod')
+        self.stealthMod = Equipment.setFrom(argDict, 'stealthMod')
+        self.DR = Equipment.setFrom(argDict, 'DR')
         
-        gradientBundle = setFrom(argDict, 'DRGradient')
+        gradientBundle = Equipment.setFrom(argDict, 'DRGradient')
         self.DRGradient = int(gradientBundle.split(",")[0])
         self.DRGradientPoints = int(gradientBundle.split(",")[1])
                 
-        self.bonusMod = setFrom(argDict, 'bonusMod')
-        bonusOne = setFrom(argDict, 'bonusTendencyOne', None)
-        bonusTwo = setFrom(argDict, 'bonusTendencyTwo', None)
-        bonusThree = setFrom(argDict, 'bonusTendencyThree', None)
-        bonusFour = setFrom(argDict, 'bonusTendencyFour', None)
-        bonusFive = setFrom(argDict, 'bonusTendencyFive', None)
-        bonusSix = setFrom(argDict, 'bonusTendencySix', None)
+        self.bonusMod = Equipment.setFrom(argDict, 'bonusMod')
+        bonusOne = Equipment.setFrom(argDict, 'bonusTendencyOne', None)
+        bonusTwo = Equipment.setFrom(argDict, 'bonusTendencyTwo', None)
+        bonusThree = Equipment.setFrom(argDict, 'bonusTendencyThree', None)
+        bonusFour = Equipment.setFrom(argDict, 'bonusTendencyFour', None)
+        bonusFive = Equipment.setFrom(argDict, 'bonusTendencyFive', None)
+        bonusSix = Equipment.setFrom(argDict, 'bonusTendencySix', None)
         self.bonusTendencyList = []
         if bonusOne:
             self.bonusTendencyList.append(bonusOne)

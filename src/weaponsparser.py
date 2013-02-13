@@ -146,9 +146,11 @@ class WeaponsParser(object):
             if(self.state == "Expecting Range"):
                 wRange = rangeTag.match(line).group(1)
                 self.state = "Expecting Name"
-                weapon = equipment.Weapon(name, gold, weight, wType, wepClass, dBase, dGrad, dType,
-                                force, crit, bonusTendencyList, bonusMod, wRange)
-                self.weaponList.append(weapon)
+                weaponDict = {'name' : name, 'goldValue' : gold, 'weight' : weight, 'type' : wType, 
+                              'handsRequired' : wepClass, 'damageBase' : dBase, 'damageGradient' : dGrad, 
+                              'damageType' : dType, 'force' : force, 'criticalMultiplier' : crit, 
+                              'bonusTendencyList' : bonusTendencyList, 'bonusMod' : bonusMod, 'range' : wRange}
+                self.weaponList.append(weaponDict)
                 continue
                 
             raise sep.InvalidDataFileSyntax("Unknown Tag: " + line + " .")
@@ -164,4 +166,6 @@ if __name__ == "__main__":
         print wep.criticalMultiplier
         print wep.goldValue
         print wep.bonusTendencyList
+        
+        
         

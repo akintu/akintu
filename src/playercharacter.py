@@ -105,7 +105,6 @@ class PlayerCharacter(p.Person):
         self.arcaneArcherManaRegenFactor = 1
         
         # --- Marksman ---
-        # Weapon range is not factored in, we need to fix that.
         self._bonusRange = 0
         self.longbowAccuracyPenaltyReduction = 0
         
@@ -328,7 +327,7 @@ class PlayerCharacter(p.Person):
         
     @statusOverallDamageBonus.setter
     def statusOverallDamageBonus(self, value):
-        return self._statusOverallDamageBonus
+        self._statusOverallDamageBonus = value
         
     @property
     def totalPoisonRatingBonus(self):

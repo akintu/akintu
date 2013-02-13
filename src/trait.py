@@ -820,6 +820,7 @@ class Trait(object):
                 target.statusSpellpower += 4
                 target.healingBonus += 20
         else:
+            if tRank == 1:
                 target.statusSpellpower -= 1
                 target.healingBonus -= 5
             elif tRank == 2:
@@ -877,9 +878,9 @@ class Trait(object):
             target.baseShadowBonusDamage += 7
         elif tRank == 3:
             target.baseShadowBonusDamage += 7
-        for spell in target.spellList:
-            if spell.school == "Bane" and spell.APCost > 5:
-                spell.APCost -= 1
+            for spell in target.spellList:
+                if spell.school == "Bane" and spell.APCost > 5:
+                    spell.APCost -= 1
         elif tRank == 4:
             target.baseShadowBonusDamage += 7
             
@@ -1224,7 +1225,7 @@ class Trait(object):
             'type' : 'dynamic and static',
             'action' : applyMysticSpellFocus,
             'onStringList' : ['Outgoing Spell Cast'],
-            'offStringList' : ['Outgoing Spell Cast Complete']
+            'offStringList' : ['Outgoing Spell Cast Complete'],
             'staticAction' : applyMysticSpellFocusStatic
             },
         'Bane Spell Focus':

@@ -6,6 +6,7 @@ def enum(**enums):
     return type('Enum', (), enums)
 
 PersonActions = enum(CREATE = 1, MOVE = 2, REMOVE = 3, RUN = 4, STOP = 5)
+CreatureTypes = enum(PLAYER = 1, MONSTER = 2)
 InventoryActions = enum(PICKUP = 1, PUTDOWN = 2)
 
 
@@ -14,16 +15,14 @@ class Command:
         pass
 
     def __repr__(self):
-        result = self.__class__.__name__ + "("
-        result += ", ".join([attr + ": " + str(val) for attr, val in self.__dict__.iteritems()])
-        result += ")"
-        return result
+        return self.__class__.__name__ + "(" + ", ".join([attr + ": " + str(val) for attr, val in self.__dict__.iteritems()]) + ")"
 
 class Person(Command):
-    def __init__(self, action, index, location = None):
+    def __init__(self, action, index, location = None, details = None):
         self.action = action
         self.index = index
         self.location = location
+        self.details = details
 
 class InventoryAction(Command):
     def __init__(self, action, item_hash):

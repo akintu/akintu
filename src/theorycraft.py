@@ -2,12 +2,16 @@
 
 import sys
 import monstersparser
+import monster
 import cctemplatesparser
 import armorparser
 import weaponsparser
 import trapsparser
 import statuseffectsparser
 import copy
+import playercharacter
+import location
+from const import *
 
 class TheoryCraft(object):
     
@@ -30,7 +34,7 @@ class TheoryCraft(object):
         parser = cctemplatesparser.CCTemplatesParser()
         TheoryCraft.classes = parser.parseAll("./data/Character_Class_Data.txt", "./data/Race_Data.txt")
         parser = armorparser.ArmorParser()
-        TheoryCraft.armorList = parser.parseAll("./data/Armor_Data.txt")
+        TheoryCraft.armors = parser.parseAll("./data/Armor_Data.txt")
         parser = weaponsparser.WeaponsParser()
         TheoryCraft.weapons = parser.parseAll("./data/Weapon_Data.txt")
         parser = trapsparser.TrapsParser()
@@ -40,23 +44,32 @@ class TheoryCraft(object):
         TheoryCraft.hasLoaded = True
         
     @staticmethod
-    def getMonster(level=1, region=None, name=None):
+    def getMonster(index=None, loc=location.Location((0, 0), (PANE_X/2, PANE_Y/2)), level=1, region=None, name=None):
+        theMonster = None
         if name:
             for mon in TheoryCraft.monsters:
                 if mon.name == name:
-                    return copy.deepcopy(mon)
+                    theMonster = monster.Monster(mon)
+                    break
         # TODO: search by level
         # TODO: search by region
         # TODO: This is a stub...
-        return copy.deepcopy(TheoryCraft.monsters[0])
+        else:
+            theMonster = monster.Monster(TheoryCraft.monsters[0])
+        theMonster.index = index
+        theMonster.location = loc
+        return theMonster
         
     @staticmethod
-    def getNewPlayerCharacter(race, characterClass):
-        race = race.capitalize
+    def getNewPlayerCharacter(race, characterClass, index=None, loc=location.Location((0, 0), (PANE_X/2, PANE_Y/2))):
+        race = race.capitalize()
         characterClass = characterClass.capitalize()
         for char in TheoryCraft.classes:
-            if race == char.race and characterClass == char.characterClass:
-                return copy.deepcopy(char)
+            if char['name'] == race + " " + characterClass:
+                pc = playercharacter.PlayerCharacter(char)
+                pc.index = index
+                pc.location = loc
+                return pc
         print "Bad character name/race, returning nothing; you're so stupid."
         
         

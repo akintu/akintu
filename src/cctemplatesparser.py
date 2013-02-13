@@ -105,6 +105,7 @@ class CCTemplatesParser(object):
         levelupConstitutionTag = re.compile("(?:\[LEVELUP_CON: )(.*)(?:\])", re.I)
         levelupHPTag = re.compile("(?:\[LEVELUP_HP: )(.*)(?:\])", re.I)
         levelupMPTag = re.compile("(?:\[LEVELUP_MP: )(.*)(?:\])", re.I)
+        imageTag = re.compile("(?:\[IMAGE: )(.*)(?:\])")
         
         with open(fileName, 'r') as f:
             for i in range(self.NUM_CHARACTER_CLASSES):
@@ -136,6 +137,7 @@ class CCTemplatesParser(object):
                 ccDict['levelupConstitution'] = CCTemplatesParser.getFromText(f, f.readline(), levelupConstitutionTag)
                 ccDict['levelupHP'] = CCTemplatesParser.getFromText(f, f.readline(), levelupHPTag)
                 ccDict['levelupMP'] = CCTemplatesParser.getFromText(f, f.readline(), levelupMPTag)
+                ccDict['image'] = CCTemplatesParser.getFromText(f, f.readline(), imageTag)
                 CCTemplatesParser.characterClassTemplates.append(ccDict)
                  
     def combineRaceAndClass(self):

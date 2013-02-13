@@ -14,7 +14,7 @@ class Dice(object):
              chanceOfSuccess -- int from 1 to 100
            Outputs:
              "Normal Hit" or "Miss" """
-        if (random.int(1, 100) <= chanceOfSuccess):
+        if (random.randint(1, 100) <= chanceOfSuccess):
             return "Normal Hit"
         else:
             return "Miss"
@@ -39,7 +39,9 @@ class Dice(object):
     @staticmethod
     def roll(minimum, maximum):
         """Returns an integer somewhere between the minimum and maximum (as an integer)."""
-        return random.int(minimum, maximum)
+        if minimum == maximum:
+            return 0
+        return random.randint(minimum, maximum)
         
     @staticmethod
     def rollFloat(minFloat, maxFloat):
@@ -53,7 +55,7 @@ class Dice(object):
              chanceOfSuccess -- int from 1 to 100
            Outputs:
              True or False """
-        return random.int(1,100) <= targetRoll
+        return random.randint(1,100) <= targetRoll
             
     
     @staticmethod

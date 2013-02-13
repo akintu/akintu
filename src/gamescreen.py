@@ -67,17 +67,21 @@ class GameScreen(object):
         self.screen.blit(self.background, [0, 0])
         pygame.display.update()
 
-    def add_person(self, personid, person, position, sprite="test/knight.png"):
-        self.persons[personid] = PersonSprite(person.image if person else sprite, position)
+    def add_person(self, personid, statsdict):
+        if 'image' not in statsdict or \
+           'location' not in statsdict:
+            raise Exception('Image or location not defined')
+        self.persons[personid] = \
+            PersonSprite(statsdict)
         self.personsgroup.add(self.persons[personid])
-        #return self.pane.startpoint
 
     def remove_person(self, personid):
         self.personsgroup.remove(self.persons[personid])
         self.persons.pop(personid)
 
-    def update_person(self, personid, location):
-        self.persons[personid].newest_coord = location
+    def update_person(self, personid, statsdict):
+        if 'location' in statsdict:
+            self.persons[personid].newest_coord = statsdict['location']
 
     def update(self):
         self.personsgroup.update()
@@ -91,15 +95,26 @@ class GameScreen(object):
 
 
 class PersonSprite(pygame.sprite.DirtySprite):
-    def __init__(self, image, startpoint):
+    def __init__(self, statsdict):
         pygame.sprite.DirtySprite.__init__(self)
-        self.image = pygame.image.load(image)
+        # Store away the statsdict
+        self.statsdict = statsdict
+        # Get all the images required
+        imagepre = self.statsdict['image']
+        endings = [(2, '_fr1.png'), (4, '_lf1.png'),
+                   (6, '_rt1.png'), (8, '_bk1.png')]
+        self.images = {key: pygame.image.load(imagepre + end).convert_alpha()
+                       for key, end in endings}
+        # Location and rect info
+        loc = self.statsdict['location']
+        self.image = self.images[loc.direction]
         self.rect = self.image.get_rect()
         self.current_coord = None
-        self.newest_coord = startpoint
-        self.rect.topleft = [x*TILE_SIZE for x in startpoint.tile]
+        self.newest_coord = loc
+        self.rect.topleft = [x*TILE_SIZE for x in loc.tile]
 
     def update(self):
         if self.current_coord != self.newest_coord:
             self.current_coord = self.newest_coord
             self.rect.topleft = [x*TILE_SIZE for x in self.newest_coord.tile]
+            self.image = self.images[self.newest_coord.direction]

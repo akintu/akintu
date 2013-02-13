@@ -2,6 +2,7 @@
 
 import sys
 import entity as en
+from network import *
 
 class IncompleteDataInitialization(Exception):
     def __init__(self, value):
@@ -24,9 +25,12 @@ class Person(en.Entity):
             return argDict[variableName]
             
     def __init__(self, argDict):
-        en.Entity.__init__(self)
+        loc = Person.setFrom(argDict, 'location', None)
+        img = Person.setFrom(argDict, 'image', None)
         
-        self.index = index
+        en.Entity.__init__(self, location=loc, image=img, passable=False)
+        
+        self.index = None
         self.task = None
         self.task_frequency = 0
         self.task_running = False
@@ -975,7 +979,7 @@ class Person(en.Entity):
         """
         float -- The total Force multiplier used with Might to determine used might.
         """
-        return (self._statusForce/100 + self._equipmentForce / 100)
+        return (float(self._statusForce)/100 + float(self._equipmentForce) / 100)
         
     # TODO: Verify that force is not being treated as a float...
         
@@ -1101,7 +1105,7 @@ class Person(en.Entity):
         could also be affected by some special statuses and maybe even passive
         abilities.
         """
-        return (self._baseRangedForce * (self._equipmentRangedForce / 100) * 
+        return (self._baseRangedForce * (float(self._equipmentRangedForce) / 100) * 
                (1 + self._statusRangedForce))
                
     @property
@@ -2243,18 +2247,7 @@ class Person(en.Entity):
     @equipmentMP.setter
     def equipmentMP(self, value):
         self._equipmentMP = value
-        
-    @property
-    def location(self):
-        """The Tile beneath the Person"""
-        return None
-        # TODO -- need to get the tile.
-        
-    @location.setter
-    def location(self, tile):
-        """Tile must be unoccupied or no change will result."""
-        self._location = tile
-        
+
     @property
     def directionFacing(self):
         """The direction this Person is facing."""
@@ -2394,7 +2387,9 @@ class Person(en.Entity):
        
     def usingWeapon(self, weaponType):
         """Returns True if the passed Weapon type matches the type of
-        weapon this Person is using or is a superset of that type.
+        weapon this Person is using or is a superset of that type. 
+        Also will return true if the exact name of the weapon being 
+        weilded in either hand is specified.
         Inputs:
           self
           weaponType = "Sword", "Club", "Shortbow", "Longbow", "Bow",
@@ -2413,13 +2408,16 @@ class Person(en.Entity):
         elif weaponType == "Bow":
             acceptList.extend(["Longbow", "Shortbow"])
         
-        if self.team == "Monsters":
+        if self.team != "Players":
             wep = None
             if self.attackRange == 1:
                 wep = "Sword"
             else:
                 wep = "Bow"
             return wep in acceptList
+        elif (self.equippedItems.equippedWeapon.name == weaponType or 
+             self.equippedItems.equippedOffHand.name == weaponType):
+            return True        
         else:
             return (self.equippedItems.equippedWeapon.type in acceptList or
                     self.equippedItems.equippedOffHand.type in acceptList)

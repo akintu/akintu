@@ -227,6 +227,22 @@ class Ability(object):
     def _reverseHex(self, target):
         Combat.removeStatusOfType(target, "debuff")
         
+    def _spellSight(self, target):
+        source = self.owner
+        duration = -1
+        Combat.addStatus(source, "Spell Sight", duration)
+        newListener = listener.Listener(self, self.owner, [], self._spellSightDisable, ['Outgoing Spell Cast Complete', 'Outgoing Ranged Attack Complete'])
+        source.listeners.append(newListener)
+        
+    def _spellSightDisable(self, target, reverse=False, percent=None):
+        Combat.removeStatus("Spell Sight")
+        toRemove = None
+        for x in target.listeners:
+            if x.action == self._spellSightDisable:
+                toRemove = x
+        if toRemove:
+            target.listeners.remove(toRemove)    
+             
     def _berserkerRage(self, target):
         duration = 6
         Combat.addStatus(self.owner, self.name, duration)
@@ -608,6 +624,19 @@ class Ability(object):
         'cooldown' : 5,
         'checkFunction' : None,
         'breakStealth' : 100
+        },
+        'Spell Sight':
+        {
+        'level' : 4,
+        'class' : 'Wizard',
+        'HPCost' : 0,
+        'APCost' : 3,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _spellSight,
+        'cooldown' : 2,
+        'checkFunction' : None,
+        'breakStealth' : 0
         },
         
         

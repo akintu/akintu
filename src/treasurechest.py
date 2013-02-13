@@ -2,9 +2,11 @@
 
 import sys
 import entity
-import dice
-import theorycraft
+from dice import *
+from theorycraft import *
 import wealth
+import equipment
+import consumable
 
 class TreasureChest(entity.Entity):
 
@@ -15,8 +17,10 @@ class TreasureChest(entity.Entity):
         if type.capitalize() not in ["Small", "Large", "Gilded"]:
             raise TypeError("Invalid Chest Type: " + type + ".")
         self.ip = ip
+        self.type = type
         if treasureLevel < 1:
             treasureLevel = 1
+        self.treasureLevel = treasureLevel
         if not ip:
             self.ip = (treausureLevel - 1) * 2
             if treasureLevel > 5:
@@ -46,19 +50,55 @@ class TreasureChest(entity.Entity):
             # Only Gold
             return [TreasureChest._selectGold(self.ip)]
         else:
-            pass
-            # TODO: 1-3 Consumables and gold
+            # 1-3 Consumables and gold
+            currentIp = self.ip
+            consList = []
+            while(currentIp > 0 and len(consList) < 3):
+                item = TreasureChest._selectCons(currentIp, self.treasureLevel)
+                if not item:
+                    break
+                consList.append(item)
+                currentIp -= item.ip
+            if currentIp > 0:
+                consList.append(TreasureChest._selectGold(currentIp))
+            return consList
+            
+    @staticmethod
+    def _selectCons(givenIp, givenLevel):
+        selectionDict = None
+        selection = Dice.roll(1, 100)
+        # Ideal distribution: 
+        #
+        # Potions  : 65%
+        # Poisons  : 15%
+        # Essences : 10%
+        # Oils     : 5%
+        # Scrolls  : 5%
+        # TODO: Add all of these items so we can use that distribution.
+        if selection <= 15:
+            selectionDict = consumable.Consumable.allPoisons
+        else:
+            selectionDict = consumable.Consumable.allPotions
+        possibleItems = [x for x in selectionDict
+                         if selectionDict[x]['level'] <= givenLevel + 1 and selectionDict[x]['level'] >= givenLevel - 1
+                         and selectionDict[x]['ip'] <= givenIp]
+        if len(possibleItems) == 0:
+            return None
+        else:
+            choice = Dice.roll(0, len(possibleItems) - 1)
+            return consumable.Consumable(possibleItems[choice])
+   
     
     @staticmethod
     def _selectGear(givenIp):
         selectedItem = None
         giveWeapon = Dice.rollBeneath(40)
         if giveWeapon:
-            baseWeaponSelection = Dice.roll(0, len(theorycraft.TheoryCraft.weapons) - 1)
-            selectedItem = theorycraft.TheoryCraft.weapons[baseWeaponSelection]
+            baseWeaponSelection = Dice.roll(0, len(TheoryCraft.weapons) - 1)
+            selectedItem = equipment.Weapon(**TheoryCraft.weapons[baseWeaponSelection])
         else:
-            baseArmorSelection = Dice.roll(0, len(theorycraft.TheoryCraft.armors) - 1)
-            selectedItem = theorycraft.TheoryCraft.armors[baseArmorSelection]
+            baseArmorSelection = Dice.roll(0, len(TheoryCraft.armors) - 1)
+            selectedItem = equipment.Armor(TheoryCraft.armors[baseArmorSelection])
         return selectedItem.cloneWithMagicalProperties(givenIp)
         
     @staticmethod
