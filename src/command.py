@@ -15,7 +15,7 @@ class Command:
         pass
 
     def __repr__(self):
-        return self.__class__.__name__ + "(" + ", ".join([attr + ": " + str(val) for attr, val in self.__dict__.iteritems()]) + ")"
+        return self.__class__.__name__ + "(" + ", ".join([attr + ": " + str(val) for attr, val in self.__dict__.iteritems() if val != None]) + ")"
 
 class Person(Command):
     def __init__(self, action, index, location = None, details = None):

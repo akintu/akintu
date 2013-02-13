@@ -12,7 +12,7 @@ class MonstersParser(object):
 
     @staticmethod
     def getFromText(file, currentLine, tag):
-        if( currentLine == "" ): 
+        if( currentLine == "" ):
             # An empty string indicates the EOF.
             return "EOF"
         currentLine = currentLine.strip()
@@ -28,7 +28,7 @@ class MonstersParser(object):
         else:
             print "Parsing Error: " + currentLine
             return "ERROR!"
-    
+
     def parseAll(self, fileName):
         nameTag = re.compile("(?:\[NAME: )(.*)(?:\])", re.I)
         APTag = re.compile("(?:\[AP: )(.*)(?:\])", re.I)
@@ -66,8 +66,8 @@ class MonstersParser(object):
         specialPropertyTag = re.compile("(?:\[SPECIAL PROPERTY: )(.*)(?:\])", re.I)
         spellpowerTag = re.compile("(?:\[SPELLPOWER: )(.*)(?:\])", re.I)
         strengthTag = re.compile("(?:\[STRENGTH: )(.*)(?:\])", re.I)
-        
-        
+
+
         with open(fileName, 'r') as f:
             while( True ):
                 mDict = {}
@@ -110,9 +110,9 @@ class MonstersParser(object):
                 mDict['startingSpellpower'] = MonstersParser.getFromText(f, f.readline(), spellpowerTag)
                 mDict['startingStrength'] = MonstersParser.getFromText(f, f.readline(), strengthTag)
                 self.allMonsters.append(mDict)
-        
+
         return self.allMonsters
-    
+
 if __name__ == "__main__":
     parser = MonstersParser()
     parser.parseAll("./data/Monster_Data.txt")
@@ -120,7 +120,7 @@ if __name__ == "__main__":
         for k in monster.keys():
             print k + " : " + str(monster[k])
         print "\n"
-        
-        
-        
-        
+
+
+
+
