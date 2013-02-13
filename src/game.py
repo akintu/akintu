@@ -18,6 +18,9 @@ from theorycraft import TheoryCraft
 from world import *
 
 clock = pygame.time.Clock()
+move_keys = {K_LEFT: 4, K_KP4: 4, K_h: 4, K_RIGHT: 6, K_KP6: 6, K_l: 6, K_UP: 8, K_KP8: 8, K_k: 8, \
+                K_DOWN: 2, K_KP2: 2, K_j: 2, K_KP7: 7, K_y: 7, K_KP9: 9, K_u: 9, K_KP3: 3, K_n: 3, \
+                K_KP1: 1, K_b: 1}
 
 class Game(object):
     def __init__(self):
@@ -126,22 +129,8 @@ class Game(object):
                     reactor.stop()
                 elif event.key in [K_LSHIFT, K_RSHIFT]:
                     self.keystate = event.key
-                elif event.key in [K_LEFT, K_KP4, K_h]:
-                    self.move_person(4, 1)
-                elif event.key in [K_RIGHT, K_KP6, K_l]:
-                    self.move_person(6, 1)
-                elif event.key in [K_UP, K_KP8, K_k]:
-                    self.move_person(8, 1)
-                elif event.key in [K_DOWN, K_KP2, K_j]:
-                    self.move_person(2, 1)
-                elif event.key in [K_KP7, K_y]:  # UP LEFT
-                    self.move_person(7, 1)
-                elif event.key in[K_KP9, K_u]:  # UP RIGHT
-                    self.move_person(9, 1)
-                elif event.key in [K_KP3, K_n]:  # DOWN RIGHT
-                    self.move_person(3, 1)
-                elif event.key in [K_KP1, K_b]:  # DOWN LEFT
-                    self.move_person(1, 1)
+                elif event.key in move_keys:
+                    self.move_person(move_keys[event.key], 1)
 
     def move_person(self, direction, distance):
         newloc = self.location.move(direction, distance)
