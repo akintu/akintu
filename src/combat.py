@@ -144,7 +144,7 @@ class Combat(object):
             if source.usingWeapon("Longbow") and not source.baseClass == "Ranger" and not source.secondaryClass == "Ranger":
                 # -25% Accuracy
                 offense = round(offense * 0.75)
-            elif(source.usingWeapon("Shuriken") and not source.characterClass == "Ninja":
+            elif source.usingWeapon("Shuriken") and not source.characterClass == "Ninja":
                 offense = round(offense * 0.25)
             hitDuple = Combat.calcPhysicalHitChance(offense, defense)  
         else:
