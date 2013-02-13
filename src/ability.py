@@ -20,7 +20,13 @@ class Ability(object):
         self.checkFunction = info['checkFunction']
         self.breakStealth = info['breakStealth']
         self.owner = owner
-        
+       
+    @staticmethod       
+    def convertAbilityName(aName):
+        firstChar = aName[0].lower()
+        aName = "_" + firstChar + aName[1:]
+        aName = aName.replace(" ", "")
+        return aName
         
     def canUse(self, target):
         '''
@@ -395,6 +401,38 @@ class Ability(object):
                 toRemove = x
         if toRemove:
             target.listeners.remove(toRemove)    
+    
+    # Monsters
+    def _drawBlood(self, target):
+        ''' Deal Bleeding of 9% damage per turn for 4 Turns '''
+        source = self.owner
+        hit = Combat.calcHit(source, target, "Physical")
+        Combat.basicAttack(source, target, hit)
+        if hit != "Miss":
+            duration = 4
+            percentPerTurn = 9
+            Combat.addStatus(target, "Bleeding", duration, percentPerTurn) 
+    
+    def _smash(self, target):
+        ''' Deal +20% damage with +15 armor penetration '''
+        source = self.owner
+        hit = Combat.calcHit(source, target, "Physical")
+        Combat.basicAttack(source, target, hit, armorPenetrationMod=15, overallDamageMod=1.2)
+        
+    def _quaffPotion(self, target):
+        ''' Consume a potion, healing 15-30% of all damage taken. '''
+        source = self.owner
+        percentToHeal = Dice.roll(15, 30)
+        amountToHeal = float(percentToHeal) / 100 * source.totalHP
+        Combat.healTarget(source, amountToHeal)
+        
+    def _quaffPotionCheck(self, target):
+        ''' Monsters should only use this if they are below 65% HP '''
+        source = self.owner
+        if source.HP >= source.totalHP * 0.65:
+            return (False, "")
+        return (True, "")
+    
     
     allAbilities = {
         # Fighter
@@ -776,9 +814,48 @@ class Ability(object):
         'cooldown' : 4,
         'checkFunction' : _innerMightCheck,
         'breakStealth' : 0
-        }
+        },
         
-            
+        # Monsters
+        'Draw Blood':
+        {
+        'level' : 1,
+        'class' : 'Monster',
+        'HPCost' : 0,
+        'APCost' : 10,
+        'range' : 1,
+        'target' : 'hostile',
+        'action' : _drawBlood,
+        'cooldown' : 1,
+        'checkFunction' : None,
+        'breakStealth' : 100
+        },
+        'Smash':
+        {
+        'level' : 1,
+        'class' : 'Monster',
+        'HPCost' : 0,
+        'APCost' : 14,
+        'range' : 1,
+        'target' : 'hostile',
+        'action' : _smash,
+        'cooldown' : 2,
+        'checkFunction' : None,
+        'breakStealth' : 100
+        },
+        'Quaff Potion':
+        {
+        'level' : 1,
+        'class' : 'Monster',
+        'HPCost' : 0,
+        'APCost' : 7,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _quaffPotion,
+        'cooldown' : 3,
+        'checkFunction' : _quaffPotionCheck,
+        'breakStealth' : 0
+        }
             
 
     }

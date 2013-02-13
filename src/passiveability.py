@@ -194,6 +194,23 @@ class PassiveAbility(object):
             else:
                 target.statusMeleeAccuracy -= 2            
             
+    # Monsters
+    def applyPanic(self, target, reverse=False, hero=None):
+        ''' Monsters that Panic gain Dexterity (increasing their accuracy and
+        dodge) every time they are hit with melee attacks when at half health
+        or lower.  Lasts the entire battle and stacks. '''
+        if self.HP <= 0.5 * self.totalHP:
+            self.statusDexterity += 2
+            
+    def applyDeflectMissiles(self, target, reverse=False, hero=None):
+        ''' Monsters with Deflect Missiles gain 10 Dodge and 5% DR against Ranged
+        attacks.'''
+        if not reverse: 
+            self.statusDR += 5
+            self.statusDodge += 10
+        else:
+            self.statusDR -= 5
+            self.statusDodge -= 10
             
     allContentByName = {
         'Cold Endurance': 
@@ -407,7 +424,28 @@ class PassiveAbility(object):
         'action' : applyMilitaryOffensiveTraining,
         'onStringList' : ['Outgoing Melee Attack'],
         'offStringList' : ['Outgoing Melee Attack Complete']
-        }        
+        },        
+        
+        # Monsters
+        'Panic':
+        {
+        'class' : 'Monster',
+        'level' : 1,
+        'type' : 'dynamic',
+        'action' : applyPanic,
+        'onStringList' : ['Incoming Melee Attack Hit'],
+        'offStringList' : []
+        },
+        'Deflect Missiles':
+        {
+        'class' : 'Monster',
+        'level' : 1,
+        'type' : 'dynamic',
+        'action' : applyDeflectMissiles,
+        'onStringList' : ['Incoming Ranged Attack'],
+        'offStringList' : ['Incoming Ranged Attack Complete']
+        }
+        
         
     }
 
