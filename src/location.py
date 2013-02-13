@@ -4,14 +4,14 @@ Location Class
 from const import *
 
 class Location(object):
-    def __init__(self, pane, tile, direction=None):
+    def __init__(self, pane, tile, direction=2):
         self.pane = pane
         self.tile = tile
         self.direction = direction
 
     # So it turns out __repr__ is like toString()
     def __repr__(self):
-        return "(%s, %s)" % (self.pane, self.tile)
+        return "(%s, %s, %d)" % (self.pane, self.tile, self.direction)
 
     def move(self, direction, distance):
         '''
@@ -57,7 +57,12 @@ class Location(object):
             pane[1] += 1
 
         if direction not in [2, 4, 6, 8]:
-            direction = self.direction
+            dirs = None
+            if self.direction in [2, 8]:
+                dirs = {1: 2, 3: 2, 7: 8, 9: 8}
+            if self.direction in [4, 6]:
+                dirs = {1: 4, 3: 6, 7: 4, 9: 6}
+            direction = dirs[direction]
             
         return Location(tuple(pane), tuple(tile), direction)
         
