@@ -56,6 +56,9 @@ class Location(object):
             tile[1] -= PANE_Y
             pane[1] += 1
 
+        if direction not in [2, 4, 6, 8]:
+            direction = self.direction
+            
         return Location(tuple(pane), tuple(tile), direction)
         
     def distance(self, dest):
