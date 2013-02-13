@@ -2415,8 +2415,8 @@ class Person(en.Entity):
             else:
                 wep = "Bow"
             return wep in acceptList
-        elif self.equippedItems.equippedWeapon.name == weaponType or 
-             self.equippedItems.equippedOffHand.name == weaponType:
+        elif (self.equippedItems.equippedWeapon.name == weaponType or 
+             self.equippedItems.equippedOffHand.name == weaponType):
             return True        
         else:
             return (self.equippedItems.equippedWeapon.type in acceptList or
