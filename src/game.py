@@ -26,7 +26,7 @@ class Game(object):
         self.keystate = 0
         self.running = 0
         self.index = -1
-        
+
         self.serverip = "localhost"
         if len(sys.argv) == 1:
             GameServer(self.world)
@@ -49,7 +49,7 @@ class Game(object):
         self.screen = GameScreen()
 
         self.CDF.send(Person(PersonActions.CREATE, None, Location((0, 0), (PANE_X/2, PANE_Y/2)), (CreatureTypes.PLAYER, "Human", "Assassin")))
-        
+
         self.setup.stop()
         LoopingCall(self.game_loop).start(1.0 / DESIRED_FPS)
 
