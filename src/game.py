@@ -76,12 +76,19 @@ class Game(object):
                         self.pane.people.append(TheoryCraft.getNewPlayerCharacter(command.details[1], command.details[2], command.index))
                     if command.details[0] == CreatureTypes.MONSTER:
                         self.pane.people.append(TheoryCraft.getMonster())
-                    self.screen.add_person(command.index, None, command.location, "res/images/sprites/" + self.pane.people[command.index].image + "_fr1.png")
+                    # TODO: The persondict (and imagepath) should be
+                    # constructed in separate method
+                    imagepath = os.path.join('res', 'images', 'sprites',
+                                             self.pane.people[command.index].image)
+                    persondict = {'location': command.location,
+                                  'image': imagepath,
+                                  'team': 'Players'}
+                    self.screen.add_person(command.index, persondict)
 
             ###### MovePerson ######
             if isinstance(command, Person) and command.action == PersonActions.MOVE:
                 self.pane.people[command.index].location = command.location
-                self.screen.update_person(command.index, command.location)
+                self.screen.update_person(command.index, {'location': command.location})
                 if self.index == command.index:
                     self.location = command.location
 
@@ -94,7 +101,14 @@ class Game(object):
                     self.screen.remove_person(command.index)
                     for i in range(command.index + 1, len(self.pane.people)):
                         self.screen.remove_person(i)
-                        self.screen.add_person(i - 1, None, self.pane.people[i])
+                        # TODO: The persondict (and imagepath) should be
+                        # constructed in separate method
+                        imagepath = os.path.join('res', 'images', 'sprites',
+                                                 self.pane.people[i].image)
+                        persondict = {'location': pane.people[i].location,
+                                      'image': imagepath,
+                                      'team': 'Players'}
+                        self.screen.add_person(i-1, persondict)
                     if command.index < self.index:
                         self.index -= 1
                     self.pane.people.pop(command.index)
@@ -143,7 +157,7 @@ class Game(object):
                 self.CDF.send(Person(PersonActions.MOVE, self.index, newloc))
                 if self.location.pane == newloc.pane:
                     self.location = newloc
-                    self.screen.update_person(self.index, self.location)
+                    self.screen.update_person(self.index, {'location': self.location})
 
     def switch_panes(self, location):
         #TODO we can add transitions here.
