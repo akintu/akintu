@@ -95,15 +95,26 @@ class GameScreen(object):
 
 
 class PersonSprite(pygame.sprite.DirtySprite):
-    def __init__(self, image, startpoint):
+    def __init__(self, statsdict):
         pygame.sprite.DirtySprite.__init__(self)
-        self.image = pygame.image.load(image)
+        # Store away the statsdict
+        self.statsdict = statsdict
+        # Get all the images required
+        imagepre = self.statsdict['image']
+        endings = [(2, '_fr1.png'), (4, '_lf1.png'),
+                   (6, '_rt1.png'), (8, '_bk1.png')]
+        self.images = {key: pygame.image.load(imagepre + end).convert_alpha()
+                       for key, end in endings}
+        # Location and rect info
+        loc = self.statsdict['location']
+        self.image = self.images[loc.direction]
         self.rect = self.image.get_rect()
         self.current_coord = None
-        self.newest_coord = startpoint
-        self.rect.topleft = [x*TILE_SIZE for x in startpoint.tile]
+        self.newest_coord = loc
+        self.rect.topleft = [x*TILE_SIZE for x in loc.tile]
 
     def update(self):
         if self.current_coord != self.newest_coord:
             self.current_coord = self.newest_coord
             self.rect.topleft = [x*TILE_SIZE for x in self.newest_coord.tile]
+            self.image = self.images[self.newest_coord.direction]
