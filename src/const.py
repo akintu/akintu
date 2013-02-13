@@ -1,6 +1,9 @@
 '''
 Constants for use in Akintu
 '''
+
+from pygame.locals import *
+
 SHOW_FPS = True
 
 CAPTION = "Akintu r01"
@@ -34,3 +37,7 @@ GRAVEL1 = (BACKGROUND_IMAGES_PATH, "gravel1.jpg", TILE_SIZE, None, None)
 
 ENTITIES = {'trees': TREES, 'rocks': ROCKS}
 BACKGROUNDS = [GRASS1, GRASS2, GRASS3, GRASS4, GRASS5, GRAVEL1]
+
+MOVE_KEYS = {K_LEFT: 4, K_KP4: 4, K_h: 4, K_RIGHT: 6, K_KP6: 6, K_l: 6, K_UP: 8, K_KP8: 8, K_k: 8, \
+                K_DOWN: 2, K_KP2: 2, K_j: 2, K_KP7: 7, K_y: 7, K_KP9: 9, K_u: 9, K_KP3: 3, K_n: 3, \
+                K_KP1: 1, K_b: 1}
