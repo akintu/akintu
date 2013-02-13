@@ -59,7 +59,7 @@ class Combat(object):
         # Should we check here if the abilityName matches any known ability?  That is, check for typos?
         
     @staticmethod
-    def calcPhysicalHitChance(offense, defense):
+    def calcPhysicalHitChance(offense, defense, outrightMiss=False):
         """Uses the game rules' dodge mechanics to compute how likely a
         dodge vs. accuracy lineup would be.
         Inputs:
@@ -132,28 +132,33 @@ class Combat(object):
     @staticmethod
     def physicalHitMechanics(source, target, modifier, critMod, ignoreMeleeBowPenalty):
         hitDuple = None
-        if (source.usingWeapon("Ranged")):
-            #Ranged attack
-            if(source.inRange(target, 1) and not ignoreMeleeBowPenalty):
-                #Ranged attack with penalty 20% miss chance TODO
-                #Passives alter how this functions? TODO
-                #Ranged attack not in melee, or it doesn't matter.
-                pass
+        if source.usingWeapon("Ranged"):
+            # Ranged attack
             defense = target.totalDodge + target.totalRangedDodge
             offense = source.totalRangedAccuracy + modifier
-            hitDuple = Combat.calcPhysicalHitChance(offense, defense)    
+            if source.inRange(target, 1) and not ignoreMeleeBowPenalty:
+                # Ranged attack with penalty 20% miss chance
+                outrightMissChance = round(20 * (1 - float(source.longbowAccuracyPenaltyReduction) / 100))
+                if not Dice.rollBeneath(outrightMissChance):
+                    return "Miss"
+            if source.usingWeapon("Longbow") and not source.baseClass == "Ranger" and not source.secondaryClass == "Ranger":
+                # -25% Accuracy
+                offense = round(offense * 0.75)
+            elif(source.usingWeapon("Shuriken") and not source.characterClass == "Ninja":
+                offense = round(offense * 0.25)
+            hitDuple = Combat.calcPhysicalHitChance(offense, defense)  
         else:
-            #Melee attack
+            # Melee attack
             defense = target.totalDodge + target.totalMeleeDodge
             offense = source.totalMeleeAccuracy + modifier
+            if source.usingWeapon("Katana") and not source.characterClass == "Ninja":
+                offense = round(offense * 0.9)
             hitDuple = Combat.calcPhysicalHitChance(offense, defense)
         chanceToHit = hitDuple[0]
         accuracyCritMod = hitDuple[1]
         if (Dice.rollBeneath(chanceToHit)):
-            # We hit! Listener? TODO
             chanceToCritical = source.totalCriticalChance + accuracyCritMod + critMod
             if(Dice.rollBeneath(chanceToCritical)):
-                # Critical hit! Listener TODO
                 return "Critical Hit"
             else:
                 return "Normal Hit"
@@ -175,7 +180,7 @@ class Combat(object):
     @staticmethod
     def calcHit(source, target, type, rating=0, modifier=0, critMod=0, ignoreMeleeBowPenalty=False):
         """Determies if the attack performed from the source to the target is successful, and returns 
-        a HitType string to indicate this.  Nees listeners TODO
+        a HitType string to indicate this.
         Inputs:        
           source -- Person performing attack
           target -- Person receiving attack

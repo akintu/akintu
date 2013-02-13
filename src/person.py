@@ -2387,7 +2387,9 @@ class Person(en.Entity):
        
     def usingWeapon(self, weaponType):
         """Returns True if the passed Weapon type matches the type of
-        weapon this Person is using or is a superset of that type.
+        weapon this Person is using or is a superset of that type. 
+        Also will return true if the exact name of the weapon being 
+        weilded in either hand is specified.
         Inputs:
           self
           weaponType = "Sword", "Club", "Shortbow", "Longbow", "Bow",
@@ -2406,13 +2408,16 @@ class Person(en.Entity):
         elif weaponType == "Bow":
             acceptList.extend(["Longbow", "Shortbow"])
         
-        if self.team == "Monsters":
+        if self.team != "Players":
             wep = None
             if self.attackRange == 1:
                 wep = "Sword"
             else:
                 wep = "Bow"
             return wep in acceptList
+        elif self.equippedItems.equippedWeapon.name == weaponType or 
+             self.equippedItems.equippedOffHand.name == weaponType:
+            return True        
         else:
             return (self.equippedItems.equippedWeapon.type in acceptList or
                     self.equippedItems.equippedOffHand.type in acceptList)

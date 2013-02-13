@@ -105,7 +105,6 @@ class PlayerCharacter(p.Person):
         self.arcaneArcherManaRegenFactor = 1
         
         # --- Marksman ---
-        # Weapon range is not factored in, we need to fix that.
         self._bonusRange = 0
         self.longbowAccuracyPenaltyReduction = 0
         
