@@ -67,17 +67,21 @@ class GameScreen(object):
         self.screen.blit(self.background, [0, 0])
         pygame.display.update()
 
-    def add_person(self, personid, person, position, sprite="test/knight.png"):
-        self.persons[personid] = PersonSprite(person.image if person else sprite, position)
+    def add_person(self, personid, statsdict):
+        if 'image' not in statsdict or \
+           'location' not in statsdict:
+            raise Exception('Image or location not defined')
+        self.persons[personid] = \
+            PersonSprite(statsdict)
         self.personsgroup.add(self.persons[personid])
-        #return self.pane.startpoint
 
     def remove_person(self, personid):
         self.personsgroup.remove(self.persons[personid])
         self.persons.pop(personid)
 
-    def update_person(self, personid, location):
-        self.persons[personid].newest_coord = location
+    def update_person(self, personid, statsdict):
+        if 'location' in statsdict:
+            self.persons[personid].newest_coord = statsdict['location']
 
     def update(self):
         self.personsgroup.update()
