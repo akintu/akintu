@@ -5,14 +5,47 @@ Sprite Related Objects and Helper Functions
 import os
 import random
 
+from const import *
 from PIL import Image
-grassimage = os.path.join("res", "images", "background", "grass.png")
-rockimage = os.path.join("res", "images", "rocks1.png")
-tree_sheet = os.path.join("res", "images", "trees1.png")
+
+# rockimage = os.path.join("res", "images", "rocks1.png")
+# tree_sheet = os.path.join("res", "images", "trees1.png")
+
+class Sprites(object):
+    
+    hasLoaded = False
+    trees = []
+    rocks = []
+    background = []
+    objects = []
+    
+    @staticmethod
+    def load(seed):
+        if Sprites.hasLoaded:
+            print "Sprites.load() has already been called."
+        
+        for image in BACKGROUNDS:
+            Sprites.background.append(crop_helper(image))
+        for key, image in ENTITIES.iteritems():
+            Sprites.objects.append(SpriteSheet(image, seed))
+        Sprites.hasLoaded = True
+
+    @staticmethod
+    def get_random_background(seed):
+        random.seed(seed)
+        i = random.randrange(len(Sprites.background))
+        return Sprites.background[i]
+
+    @staticmethod
+    def get_random_object(seed):
+        random.seed(seed)
+        i = random.randrange(len(Sprites.objects))
+        return Sprites.objects[i]
+
 
 def crop_helper(const):
     return Crop(const[0], const[1], const[2], const[3], const[4])
-
+    
 class Crop(object):
     def __init__(self, pathDIR, name, tilesize, cropsize = None, size = None):
         if not cropsize:

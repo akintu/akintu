@@ -21,8 +21,10 @@ clock = pygame.time.Clock()
 
 class Game(object):
     def __init__(self):
+        seed = "CorrectHorseStapleBattery"
         TheoryCraft.loadAll()   #Static method call, Devin's stuff.
-        self.world = World("CorrectHorseStapleBattery")
+        Sprites.load(seed)
+        self.world = World(seed)
         self.keystate = 0
         self.running = 0
         self.index = -1

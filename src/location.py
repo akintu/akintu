@@ -66,6 +66,38 @@ class Location(object):
             
         return Location(tuple(pane), tuple(tile), direction)
         
+    def get_surrounding_panes(self):
+        '''
+        Gets the locations of surrounding panes
+        
+        Suppose self.pane = (0, 0)
+        This will return a dictionary of locations with 
+        the following keys and values:
+            1: BOTTOM_LEFT  (-1, 1)
+            2: DOWN         ( 0, 1)
+            3: BOTTOM_RIGHT ( 1, 1)
+            4: LEFT         (-1, 0)
+            5: CURRENT PANE ( 0, 0)
+            6: RIGHT        ( 1, 0)
+            7: TOP_LEFT     (-1,-1)
+            8: UP           ( 0,-1)
+            9: TOP_RIGHT    ( 1,-1)    
+        '''
+
+        panes = dict()
+        x = self.pane[0]
+        y = self.pane[1]
+        panes[1] = tuple((x-1, y+1))
+        panes[2] = tuple((x, y+1))
+        panes[3] = tuple((x+1, y+1))
+        panes[4] = tuple((x-1, y))
+        panes[5] = tuple((x, y))
+        panes[6] = tuple((x+1, y))
+        panes[7] = tuple((x-1, y-1))
+        panes[8] = tuple((x, y-1))
+        panes[9] = tuple((x+1, y-1))
+        return panes
+    
     def distance(self, dest):
         return  abs((self.pane[0] * PANE_X + self.tile[0]) - \
                 (dest.pane[0] * PANE_X + dest.tile[0])) + \
@@ -96,3 +128,16 @@ if __name__ == "__main__":
     assert a.in_melee_range(g) == True
     h = Location((3, 1), (15, 18))
     assert a.in_melee_range(h) == False
+    
+    #TEST get_surrounding_panes()
+    i = Location((0, 0), None)
+    panes = i.get_surrounding_panes()
+    assert panes[1] == (-1, 1)  # 1: BOTTOM_LEFT  (-1, 1)
+    assert panes[2] == (0, 1)   # 2: DOWN         ( 0, 1)
+    assert panes[3] == (1, 1)   # 3: BOTTOM_RIGHT ( 1, 1)
+    assert panes[4] == (-1, 0)  # 4: LEFT         (-1, 0)
+    assert panes[5] == i.pane   # 5: CURRENT PANE ( 0, 0)
+    assert panes[6] == (1, 0)   # 6: RIGHT        ( 1, 0)
+    assert panes[7] == (-1,-1)  # 7: TOP_LEFT     (-1,-1)
+    assert panes[8] == (0,-1)   # 8: UP           ( 0,-1)
+    assert panes[9] == (1,-1)   # 9: TOP_RIGHT    ( 1,-1)
