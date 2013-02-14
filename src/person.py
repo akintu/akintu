@@ -2602,17 +2602,24 @@ class Person(en.Entity):
                 return True
         return False
         
-    def hasStatus(self, statusName):
+    def hasStatus(self, statusName=None, statusCategory=None):
         """Returns True if this person has a status with a display name
-        matching the given 'statusName'.
+        matching the given 'statusName' OR a status that belongs to a 
+        category supplied.
         Inputs:
           self
           statusName = The name of the status to look for
+          statusCategory = The name of the status cateogry to look for
         Outputs:
           True or False"""
-        for item in self.statusList:
-            if (statusName == str(item)):
-                return True
+        if statusName:
+            for item in self.statusList:
+                if statusName == item.name:
+                    return True
+        if statusCategory:
+            for item in self.statusList:
+                if statusCategory in item.categoryList:
+                    return True
         return False
         
     # usingAnimalStyle method is identical to hasStatus but needs to

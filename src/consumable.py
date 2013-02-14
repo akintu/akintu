@@ -8,7 +8,8 @@ from dice import *
 class Consumable(entity.Entity):
 
     AP_COST = 7
-
+    COOLDOWN = 3
+    
     def __init__(self, name, location=None):
         entity.Entity.__init__(self, location)
         self.name = name
@@ -18,7 +19,7 @@ class Consumable(entity.Entity):
         self.goldValue = 0
         self.level = 0
         self.effect = None
-        self.cooldownLength = 3
+        self.cooldownLength = Consumable.COOLDOWN
         if name in Consumable.allPotions:
             self.type = "Potion"
             self.goldValue = Consumable.allPotions[name]['goldValue']
@@ -98,13 +99,22 @@ class Consumable(entity.Entity):
         Combat.removeStatusOfType(user, "Bleeding", True) # removeAll
         
     def _rockPotion(self, user):
-        pass
-        # TODO: Add DR buff from rock potion.
-        
+        if user.hasStatus(statusCategory="Stone") and not user.hasStatus("Rock Potion"):
+            Combat.addStatus(user, "Rock Potion", duration=8)
+        else:
+            print "Cannot stack Stone effects."      
+
     def _prismaticPotion(self, user):
-        pass
-        # TODO: Add Cold, Fire, Electric resistance buff from this potion.
+        Combat.addStatus(user, "Prismatic Potion", duration=8)
         
+    def _vaccine(self, user):
+        Combat.addStatus(user, "Vaccine", duration=99)
+        damage = round(Dice.roll(1, 8) * (1 - float(user.totalPoisonResistance) / 100))
+        Combat.lowerHP(user, damage)
+        
+    def _spiritPotion(self, user):
+        Combat.addStatus(user, "Spirit Potion", duration = 8)
+    
     # Buffing potions go above.
     
     def _basicPoison(self, user):
@@ -113,6 +123,10 @@ class Consumable(entity.Entity):
         total = round(float(bonus) / 100 * base)
         duration = 8
         Combat.addStatus(user, "Applied Basic Poison", duration, total)
+        
+    def _vilePoison(self, user):
+        duration = 8 # Duration of poison on weapon, not on affected monster.
+        Combat.addStatus(user, "Applied Vile Poison", duration=8)
         
     # Poisons go above
     # Scrolls, effusions, oils go here...
@@ -219,6 +233,20 @@ class Consumable(entity.Entity):
             'effet' : _prismaticPotion,
             'ip' : 6
             },
+        'Vaccine' :
+            {
+            'goldValue' : 100,
+            'level' : 5,
+            'effect' : _vaccine,
+            'ip' : 4
+            },
+        'Spirit Potion' : 
+            {
+            'goldValue' : 250,
+            'level' : 8,
+            'effect' : _spiritPotion,
+            'ip' : 10
+            }
             # TODO: Other buffing potions go here.
         }
     allPoisons = {
@@ -228,8 +256,18 @@ class Consumable(entity.Entity):
             'level' : 1,
             'effect' : _basicPoison,
             'ip' : 1
+            },
+            # Numbing Poison
+            # Sickening Poison
+        'Vile Poison' :
+            {
+            'goldValue' : 40,
+            'level' : 1,
+            'effect' : _vilePoison,
+            'ip' : 2
             }
-            # TODO: Other poisons go here.
+
+            # TODO: Fill in other poisons.
         }   
         # TODO: Scrolls/Oils and Effusions
     

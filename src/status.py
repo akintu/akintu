@@ -6,7 +6,7 @@ import internalstatus
 class Status(object):
     def __init__(self):
         # Values loaded at startup time
-        self.displayName = None
+        self.name = None
         self.element = None
         self.categoryList = None
         self.internalList = None
@@ -21,7 +21,7 @@ class Status(object):
     def populate(self, name, element, categoryList, internalList):
         """Populates the fields of this status from the information gained
         through a parser from a txt file or a previously created displaystatus."""
-        self.displayName = name
+        self.name = name
         self.element = element
         self.categoryList = categoryList
         self.internalList = internalList
@@ -45,7 +45,7 @@ class Status(object):
     
     def cloneWithDetails(self, magnitude, duration, min=0, max=0, charges=0):
         clone = Status()
-        clone.populate(self.displayName, self.element, self.categoryList, self.internalList)
+        clone.populate(self.name, self.element, self.categoryList, self.internalList)
         clone.turnsLeft = duration
         clone.charges = charges
         clone.applyMagnitude(magnitude)

@@ -135,6 +135,12 @@ class OnHitEffect(object):
             Combat.addStatus(target, "Toxic Magic Weapon", duration, damage)
         return None
     
+    def applyVilePoison(self, magnitude, source, target):
+        pRating = 24
+        duration = 1
+        if Combat.calcPoisonHit(source, target, pRating):
+            Combat.addStatus(target, "Vile Poison", duration)
+    
     def applyWeakeningFire(self, magnitude, source, target):
         chance = magnitude
         duration = 3
@@ -192,6 +198,12 @@ class OnHitEffect(object):
         return None
 
     def applyFlatElementalDamage(self, magnitude, source, target):
+        # Account for Poison tolerance etc.
+        rating = None
+        if self.element == "Poison": 
+            rating = source.level * 3 + 7
+            if not Combat.calcPoisonHit(source, target, rating):
+                magnitude = 0
         return [self.element, magnitude]
     
     

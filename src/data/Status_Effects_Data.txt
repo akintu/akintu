@@ -135,11 +135,23 @@
   [TYPE: Internal]
   [RECURRING: False]
  
+[NAME: Elemental_resistance_divine]
+  [TYPE: Internal]
+  [RECURRING: False]
+ 
 [NAME: Elemental_resistance_electric]
   [TYPE: Internal]
   [RECURRING: False]
   
 [NAME: Elemental_resistance_fire]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Elemental_resistance_poison]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Elemental_resistance_shadow]
   [TYPE: Internal]
   [RECURRING: False]
   
@@ -362,7 +374,11 @@
   [TYPE: Internal]
   [RECURRING: False]
   [IMMUNE: Boss]
-	
+
+[NAME: Vile_poison_internal]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
 [NAME: Weapon_damage_bonus]
   [TYPE: Internal]
   [RECURRING: False]
@@ -388,7 +404,6 @@
     [MAGNITUDE: 0]
   [CATEGORY: Buff]	
   
-
 [NAME: Stone Guard]
   [TYPE: Display]
   [ELEMENT: None]
@@ -397,6 +412,7 @@
   [INTERNAL: Poison_tolerance_bonus]
     [MAGNITUDE: 0]
   [CATEGORY: Buff]
+  [CATEGORY: Stone]
 
 [NAME: Chill]
   [TYPE: Display]
@@ -1552,6 +1568,43 @@
     [MAGNITUDE: 0]
   [CATEGORY: Bleeding]
 	
+# Display Effects -- Buffing Potions
+
+[NAME: Rock Potion]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: DR_bonus]
+    [MAGNITUDE: 10]
+  [CATEGORY: Buff]
+  [CATEGORY: Stone]
+  
+[NAME: Prismatic Potion]
+  [TYPE: Display]
+  [ELEMENT: Arcane]
+  [INTERNAL: Elemental_resistance_fire]
+    [MAGNITUDE: 10]
+  [INTERNAL: Elemental_resistance_cold]
+    [MAGNITUDE: 10]
+  [INTERNAL: Elemental_resistance_electric]
+    [MAGNITUDE: 10]
+  [CATEGORY: Buff]
+  
+[NAME: Vaccine]
+  [TYPE: Display]
+  [ELEMENT: Poison]
+  [INTERNAL: Poison_tolerance_bonus]
+    [MAGNITUDE: 18]
+  [CATEGORY: Buff]
+  
+[NAME: Spirit Potion]
+  [TYPE: Display]
+  [ELEMENT: Shadow]
+  [INTERNAL: Elemental_resistance_shadow]
+    [MAGNITUDE: 20]
+  [INTERNAL: Elemental_resistance_arcane]
+    [MAGNITUDE: 5]
+  [CATEGORY: Buff]
+	
 # Display Effects -- Applied Poisons
 
 [NAME: Applied Basic Poison]
@@ -1562,7 +1615,23 @@
   [CATEGORY: Buff]
   [CATEGORY: Applied Poison]
   
-  
+[NAME: Applied Vile Poison]
+  [TYPE: Display]
+  [ELEMENT: Poison]
+  [INTERNAL: Vile_poison_internal]
+    [MAGNITUDE: 0]
+  [CATEGORY: Buff]
+  [CATEGORY: Applied Poison]
+
+[NAME: Vile Poison]
+  [TYPE: Display]
+  [ELEMENT: Poison]
+  [INTERNAL: Attack_power_penalty]
+    [MAGNITUDE: 10]
+  [INTERNAL: Spell_failure_chance]
+    [MAGNITUDE: 3]
+  [CATEGORY: Buff]
+  [CATEGORY: Applied Poison]
 	
 	
 	

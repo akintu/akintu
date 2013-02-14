@@ -282,9 +282,6 @@ def Spellpower_penalty_method(self, target, magnitude):
 
 def Spell_failure_chance_method(self, target, magnitude):
     target.spellFailureChance += magnitude
-
-def Stunning_recovery_method(self, target, magnitude):
-    pass
     
 def Tiger_style_method(self, target, magnitude):
     pass
@@ -294,6 +291,9 @@ def Trap_evade_bonus_method(self, target, magnitude):
 
 def Trap_evade_penalty_method(self, target, magnitude):
     target.statusTrapEvade -= magnitude
+    
+def Vile_poison_method(self, target, magnitude):
+    target.onHitEffects.append(onhiteffect.OnHitEffect(magnitude, onhiteffect.OnHitEffect.applyVilePoison))
     
 def Weapon_damage_bonus_method(self, target, magnitude):
     target.onHitEffects.append(onhiteffect.OnHitEffect(magnitude, onhiteffect.OnHitEffect.applyFlatElementalDamage, self.element))
@@ -361,6 +361,9 @@ def Elemental_resistance_cold_method_reverse(self, target, magnitude):
 def Elemental_resistance_electric_method_reverse(self, target, magnitude):
     target.statusElectricResistance -= magnitude
 
+def Elemental_resistance_divine_method_reverse(self, target, magnitude):
+    target.statusDivineResistance -= magnitude
+    
 def Elemental_resistance_fire_method_reverse(self, target, magnitude):
     target.statusFireResistance -= magnitude
 
@@ -510,9 +513,6 @@ def Spellpower_penalty_method_reverse(self, target, magnitude):
 
 def Spell_failure_chance_method_reverse(self, target, magnitude):
     target.spellFailureChance -= magnitude
-
-def Stunning_recovery_method_reverse(self, target, magnitude):
-    pass
     
 def Tiger_style_method_reverse(self, target, magnitude):
     pass
@@ -523,6 +523,9 @@ def Trap_evade_bonus_method_reverse(self, target, magnitude):
 def Trap_evade_penalty_method_reverse(self, target, magnitude):
     target.statusTrapEvade += magnitude
 
+def Vile_poison_method_reverse(self, target, magnitude):
+    target.removeOnHitEffect("VilePoison", magnitude)
+    
 def Weapon_damage_bonus_method_reverse(self, target, magnitude):
     target.removeOnHitEffect("FlatElementalDamage " + self.element, magnitude)
     
@@ -601,6 +604,7 @@ applyFunctionDict = {
     'Tiger_style' : None,
     'Trap_evade_bonus' : Trap_evade_bonus_method,
     'Trap_evade_penalty' : Trap_evade_penalty_method,
+    'Vile_poison_internal' : Vile_poison_method,
     'Weapon_damage_bonus' : Weapon_damage_bonus_method
 }
         
@@ -633,6 +637,7 @@ unapplyFunctionDict = {
     'Elemental_resistance_arcane' : Elemental_resistance_arcane_method_reverse,
     'Elemental_resistance_cold' : Elemental_resistance_cold_method_reverse,
     'Elemental_resistance_electric' : Elemental_resistance_electric_method_reverse,
+    'Elemental_resistance_divine' : Elemental_resistance_divine_method_reverse,
     'Elemental_resistance_fire' : Elemental_resistance_fire_method_reverse,
     'Elemental_resistance_poison' : Elemental_resistance_poison_method_reverse,
     'Elemental_resistance_shadow' : Elemental_resistance_shadow_method_reverse,
@@ -686,6 +691,7 @@ unapplyFunctionDict = {
     'Tiger_style' : None,
     'Trap_evade_bonus' : Trap_evade_bonus_method_reverse,
     'Trap_evade_penalty' : Trap_evade_penalty_method_reverse,
+    'Vile_poison_internal' : Vile_poison_method_reverse,
     'Weapon_damage_bonus' : Weapon_damage_bonus_method_reverse
 }
     

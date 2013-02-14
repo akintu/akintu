@@ -114,21 +114,27 @@ class Combat(object):
             return "Critical Hit" 
         
     @staticmethod
-    def calcPoisonHit(offense, defense):
+    def calcPoisonHit(source, target, rating):
         """Uses the game rules' poison tolerance mechanics to compute whether
         this poison hit works or is ignored.
         Inputs: 
-          offense -- int probably poison rating
-          defense -- int probably poison tolerance
+          source -- attacker (Person)
+          target -- victim (Person)
         Outputs:
-          "Normal Hit" or "Miss" """
+          True or False """
+        offense = None
+        defense = source.totalPoisonTolerance
+        if isinstance.source(pc.PlayerCharacter):
+            offense = source.totalPoisonRatingBous + rating
+        else: 
+            offense = rating
         offense *= Dice.rollFloat(0.5, 1.0)
         defense *= Dice.rollFloat(0.5, 1.0)
         if(offense >= defense):
-            return "Normal Hit"
+            return True
         else:
-            return "Miss"
-        
+            return False
+
     @staticmethod
     def physicalHitMechanics(source, target, modifier, critMod, ignoreMeleeBowPenalty):
         hitDuple = None
@@ -170,12 +176,6 @@ class Combat(object):
         offense = source.totalSpellpower
         defense = target.totalMagicResist
         return Combat.calcMagicalHit(offense, defense)
-        
-    @staticmethod
-    def poisonHitMechanics(source, target, rating):
-        offensePoison = source.totalPoisonRatingBonus + rating
-        defensePoison = target.totalPoisonTolerance
-        poisonHit = Combat.calcPoisonHit(offensePoison, defensePoison)
         
     @staticmethod
     def calcHit(source, target, type, rating=0, modifier=0, critMod=0, ignoreMeleeBowPenalty=False):
@@ -223,17 +223,6 @@ class Combat(object):
                 return Combat.magicalHitMechanics(source, target)
             else:
                 return "Miss"
-        
-        # Is not working as written, needs to return list.  Fix when going over applied poisons... TODO
-        if (type == "Physical Poison" or type == "Poison Physical"):
-            Combat._shoutAttackStart(source, target)
-            if (Combat.poisonHitMechanics(source, target, rating) == "Normal Hit"):
-                return Combat.physicalHitMechanics(source, target, modifier, critMod, ignoreMeleeBowPenalty)
-            else:
-                return "Miss"
-            
-        if (type == "Poison"):
-            return Combat.poisonHitMechanics(source, target, rating)
             
         if (type == "Trap"):
             raise NotImplementedError("This method does not yet support the Trap type.")
