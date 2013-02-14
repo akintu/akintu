@@ -1,10 +1,13 @@
 #!/usr/bin/python
 
 import sys
-import person as p
+import person
+import ability
+import passiveability
+import spell
 from const import *
 
-class Monster(p.Person):
+class Monster(person.Person):
 
     ERROR = "INITIALIZATION_FAILURE"
 
@@ -12,7 +15,7 @@ class Monster(p.Person):
     def setFrom(argDict, variableName, defaultValue=ERROR):
         if( (variableName not in argDict) or (argDict[variableName] == "None") ):
             if defaultValue == Monster.ERROR:
-                raise p.IncompleteDataInitialization( "The parameter: " + variableName + " must be specified, but isn't.")
+                raise person.IncompleteDataInitialization( "The parameter: " + variableName + " must be specified, but isn't.")
             else:
                 return defaultValue
         else:
@@ -20,7 +23,7 @@ class Monster(p.Person):
 
 
     def __init__(self, argDict):
-        p.Person.__init__(self, argDict)
+        person.Person.__init__(self, argDict)
         self.attackPower = 100
         # TODO: Make sure internalstatuses are hooked into attackPower
         self.team = "Monsters"
@@ -31,11 +34,37 @@ class Monster(p.Person):
         self.experienceGiven = Monster.setFrom(argDict, 'experience')
         self.GP = Monster.setFrom(argDict, 'GP')
 
+        self.abilityList = []
+        self.spellList = []
+        self.passiveAbility = None
         
-        self.specialAttackOne = Monster.setFrom(argDict, 'specialAttackOne', None)
-        self.specialAttackTwo = Monster.setFrom(argDict, 'specialAttackTwo', None)
-        self.specialAttackThree = Monster.setFrom(argDict, 'specialAttackThree', None)
-        self.specialProperty = Monster.setFrom(argDict, 'specialProperty', None)
+        self.specialAttackOneName = Monster.setFrom(argDict, 'specialAttackOne', None)
+        if self.specialAttackOneName:
+            if "Spell: " in self.specialAttackOneName:
+                spellName = self.specialAttackOneName[7:]
+                self.spellList.append(spell.Spell(spellName, self)
+            else:
+                self.abilityList.append(ability.Ability(self.specialAttackOneName, self))
+            
+        self.specialAttackTwoName = Monster.setFrom(argDict, 'specialAttackTwo', None)
+        if self.specialAttackTwoName:
+            if "Spell: " in self.specialAttackTwoName:
+                spellName = self.specialAttackTwoName[7:]
+                self.spellList.append(spell.Spell(spellName, self)
+            else:
+                self.abilityList.append(ability.Ability(self.specialAttackTwoName, self))
+            
+        self.specialAttackThreeName = Monster.setFrom(argDict, 'specialAttackThree', None)
+        if self.specialAttackThreeName:
+            if "Spell: " in self.specialAttackThreeName:
+                spellName = self.specialAttackThreeName[7:]
+                self.spellList.append(spell.Spell(spellName, self)
+            else:
+                self.abilityList.append(ability.Ability(self.specialAttackThreeName, self))
+            
+        self.specialPropertyName = Monster.setFrom(argDict, 'specialProperty', None)
+        if self.specialProperyName:
+            self.passiveAbility = ability.Ability(self.specialPropertyName, self)
         
         self.attackElement = Monster.setFrom(argDict, 'attackElement')
         self.attackMinDamage = Monster.setFrom(argDict, 'attackMin')

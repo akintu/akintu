@@ -764,7 +764,7 @@ class Combat(object):
                 target.HPBufferList.remove(current)
                 return
         Combat.modifyResource(target, "HP", remaining)
-        # Plenty of listeners here TODO
+
         
     @staticmethod
     def healTarget(source, target, amount):
@@ -776,8 +776,11 @@ class Combat(object):
           amount -- int; the amount of HP to restore
         Outputs:
           None"""
-        total = round(amount * (1 + float(source.healingBonus) / 100))
-        # Listeners here? TODO
+        if isinstance(source, pc.PlayerCharacter):
+            total = round(amount * (1 + float(source.healingBonus) / 100))
+        else:
+            total = amount
+        # Listeners here?
         Combat.modifyResource(target, "HP", total)
      
     @staticmethod

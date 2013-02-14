@@ -2576,18 +2576,19 @@ class Person(en.Entity):
           self
         Outputs:
           True or False"""
-        xCoord = self.location.x
-        yCoord = self.location.y
-        adjacentCoords = ([[xCoord + 1, yCoord], [xCoord + 1, yCoord + 1]
-                           [xCoord + 1, yCoord - 1], [xCoord, yCoord + 1]
-                           [xCoord - 1, yCoord - 1], [xCoord - 1, yCoord]
-                           [xCoord, yCoord - 1], [xCoord - 1, yCoord + 1]])
-                       
-        for coords in adjacentCoords:
-            if Terrain.getTile(coords[0], coords[1]).isWalkable:
-                return True
-        return False                
-        # TODO Write Terrain.getLocation(x, y) method.                 
+        pass
+        #xCoord = self.location.x
+        #yCoord = self.location.y
+        #adjacentCoords = ([[xCoord + 1, yCoord], [xCoord + 1, yCoord + 1]
+        #                   [xCoord + 1, yCoord - 1], [xCoord, yCoord + 1]
+        #                   [xCoord - 1, yCoord - 1], [xCoord - 1, yCoord]
+        #                   [xCoord, yCoord - 1], [xCoord - 1, yCoord + 1]])
+        #               
+        #for coords in adjacentCoords:
+        #    if Terrain.getTile(coords[0], coords[1]).isWalkable:
+        #        return True
+        #return False                
+        # TODO Ask for such a method...          
     
     def hasWeaponEnchant(self):
         """Returns True if any wepaon enchantment cast by a spellsword is
@@ -2596,7 +2597,6 @@ class Person(en.Entity):
           self
         Outputs:
           True or False"""
-        #TODO: Add status class and modify status classifications (external)
         for status in self.statusList:
             if "Weapon Enchantment" in status.categoryList:
                 return True
@@ -2634,7 +2634,6 @@ class Person(en.Entity):
           self
         Outputs:
           True or False"""
-        # "and minionList" = contains something
         if self.isClass("Sorcerer") and self.minionList:
             return True
         return False
