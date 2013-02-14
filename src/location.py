@@ -83,6 +83,7 @@ class Location(object):
             8: UP           ( 0,-1)
             9: TOP_RIGHT    ( 1,-1)    
         '''
+
         panes = dict()
         x = self.pane[0]
         y = self.pane[1]
@@ -90,7 +91,7 @@ class Location(object):
         panes[2] = tuple((x, y+1))
         panes[3] = tuple((x+1, y+1))
         panes[4] = tuple((x-1, y))
-        panes[5] = self.pane
+        panes[5] = tuple((x, y))
         panes[6] = tuple((x+1, y))
         panes[7] = tuple((x-1, y-1))
         panes[8] = tuple((x, y-1))

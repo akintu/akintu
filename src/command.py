@@ -2,8 +2,8 @@
 Class for communicating map sync actions
 '''
 
-def enum(**enums):
-    return type('Enum', (), enums)
+
+from const import enum
 
 PersonActions = enum(CREATE = 1, MOVE = 2, REMOVE = 3, RUN = 4, STOP = 5)
 CreatureTypes = enum(PLAYER = 1, MONSTER = 2)
