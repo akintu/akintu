@@ -42,7 +42,7 @@ class Monster(person.Person):
         if self.specialAttackOneName:
             if "Spell: " in self.specialAttackOneName:
                 spellName = self.specialAttackOneName[7:]
-                self.spellList.append(spell.Spell(spellName, self)
+                self.spellList.append(spell.Spell(spellName, self))
             else:
                 self.abilityList.append(ability.Ability(self.specialAttackOneName, self))
             
@@ -50,7 +50,7 @@ class Monster(person.Person):
         if self.specialAttackTwoName:
             if "Spell: " in self.specialAttackTwoName:
                 spellName = self.specialAttackTwoName[7:]
-                self.spellList.append(spell.Spell(spellName, self)
+                self.spellList.append(spell.Spell(spellName, self))
             else:
                 self.abilityList.append(ability.Ability(self.specialAttackTwoName, self))
             
@@ -58,19 +58,18 @@ class Monster(person.Person):
         if self.specialAttackThreeName:
             if "Spell: " in self.specialAttackThreeName:
                 spellName = self.specialAttackThreeName[7:]
-                self.spellList.append(spell.Spell(spellName, self)
+                self.spellList.append(spell.Spell(spellName, self))
             else:
                 self.abilityList.append(ability.Ability(self.specialAttackThreeName, self))
             
         self.specialPropertyName = Monster.setFrom(argDict, 'specialProperty', None)
-        if self.specialProperyName:
-            self.passiveAbility = ability.Ability(self.specialPropertyName, self)
+        if self.specialPropertyName:
+            self.passiveAbility = passiveability.PassiveAbility(self.specialPropertyName, self)
         
         self.attackElement = Monster.setFrom(argDict, 'attackElement')
         self.attackMinDamage = Monster.setFrom(argDict, 'attackMin')
         self.attackMaxDamage = Monster.setFrom(argDict, 'attackMax')
         self.attackRange = Monster.setFrom(argDict, 'attackRange')
-        
         
         
     def adjustMaxHP(self, numberOfPlayers):
@@ -82,5 +81,7 @@ class Monster(person.Person):
             self.baseHP = round(self.baseHP * 2)
         elif numberOfPlayers == 4:
             self.baseHP = round(self.baseHP * 2.5)
-            
+        
+        
+        
         

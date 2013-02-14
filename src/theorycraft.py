@@ -11,9 +11,12 @@ import statuseffectsparser
 import copy
 import playercharacter
 import location
+from dice import *
 from const import *
 
 class TheoryCraft(object):
+    
+    GROUP_GP = 10 # TODO: Move to const.py
     
     hasLoaded = False
     
@@ -48,7 +51,7 @@ class TheoryCraft(object):
         theMonster = None
         if name:
             for mon in TheoryCraft.monsters:
-                if mon.name == name:
+                if mon['name'] == name:
                     theMonster = monster.Monster(mon)
                     break
         # TODO: search by level
@@ -72,5 +75,35 @@ class TheoryCraft(object):
                 return pc
         print "Bad character name/race, returning nothing; you're so stupid."
         
-        
+    @staticmethod
+    def generateMonsterGroup(initialMonster, levelTolerance=1):
+        ''' Generates a 'random' grouping of monsters
+        based on the Monster this method is called on.
+        The initialMonster supplied will be in the group,
+        and this method will attempt to fill up the GP.
+        This method will not scale the HP of the monsters.
+        Inputs:
+          initialMonster -- the Monster that was on the overworld
+             representing this group.
+          levelTolerance -- int*; defaults to 1.  Indicates the
+                      number of levels +/- allowed to deviate
+                      from the initial monster's level.
+        Outputs:
+          list of Monsters '''
+        # TODO: Add in region logic when we have regions.
+        listOfMonsters = [initialMonster]
+        subList = [x for x in TheoryCraft.monsters if
+                   x['level'] <= initialMonster.level + levelTolerance and
+                   x['level'] >= initialMonster.level - levelTolerance]
+        minGP = initialMonster.GP
+        for m in subList:
+            if m['GP'] < minGP:
+                minGP = m['GP']
+        currentGP = initialMonster.GP
+        while(minGP <= TheoryCraft.GROUP_GP - currentGP):
+            selection = Dice.roll(0, len(subList) - 1)
+            if subList[selection]['GP'] <= TheoryCraft.GROUP_GP - currentGP:
+                listOfMonsters.append(monster.Monster(subList[selection]))
+                currentGP += subList[selection]['GP']
+        return listOfMonsters
         

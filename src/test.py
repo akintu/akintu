@@ -55,6 +55,9 @@ if __name__ == "__main__":
             print all.name
     print char
     print tc
-    print theorycraft.TheoryCraft.getMonster()
+    initMonster = theorycraft.TheoryCraft.getMonster(name="Hired Goon")
+    mList = theorycraft.TheoryCraft.generateMonsterGroup(initMonster)
+    for m in mList:
+        print m.name
     
     
