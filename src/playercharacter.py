@@ -731,8 +731,23 @@ class PlayerCharacter(p.Person):
     @bonusTrapRating.setter
     def bonusTrapRating(self, value):
         self._bonusTrapRating = value
+        
+    def isClass(self, className):
+        """Returns True if this character is the characterClass provided
+        or has the base class provided as its primary base class."""
+        return self.characterClass == className or self.baseClass == className
+        
+    def hasSummon(self):
+        """Returns True if this Person is a Sorcerer and has a
+        Guardian active.
+        Inputs:
+          self
+        Outputs:
+          True or False"""
+        if self.isClass("Sorcerer") and self.minionList:
+            return True
+        return False
 
-    
     @property
     def ninjaStyle(self):
         """The Style this Ninja is currently using.  If this playercharacter

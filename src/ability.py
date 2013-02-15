@@ -327,17 +327,29 @@ class Ability(object):
             target.listeners.remove(toRemove)        
         
     # Druid
+    
+    def _stealth(self, target):
+        source = self.owner
+        Combat.addStatus(source, "Stealth", duration=-1)
+        
+    def _stealthCheck(self, target):
+        if self.inStealth():
+            return (False, "Already in Stealth")
+        return (True, "")
+    
     def _deepWound(self, target):
         source = self.owner
+        source.statusPoisonRatingBonus += 5
+        newListener = listener.Listener(self, self.owner, [], self._deepWoundDisable, 
+                                       ['Outgoing Melee Attack Complete', 'Outgoing Ranged Attack Complete'])
         hit = Combat.calcHit(source, target, "Physical")
-        Combat.basicAttack(source, target, hit, poisonRatingMod=5)
+        Combat.basicAttack(source, target, hit)
         if hit != "Miss":
             duration = 5
             Combat.addStatus(target, "Deep Wound", duration)
-        # TODO: Applied Poison ratings fix
-        
-    def _deepWoundCheck(self, target):
-        return (True, "")
+   
+    def _deepWoundDisable(self, target, reverse=False, other=None):
+        self.owner.statusPoisonRatingBonus -= 5
         
     def _painfulShot(self, target):
         source = self.owner
@@ -748,6 +760,19 @@ class Ability(object):
         'breakStealth' : 0
         },
         
+        'Druid Stealth':
+        {
+        'level' : 1,
+        'class' : 'Druid',
+        'HPCost' : 0,
+        'APCost' : 7,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _stealth,
+        'cooldown' : 3,
+        'checkFunction' : _stealthCheck,
+        'breakStealth' : 0
+        },
         'Deep Wound':
         {
         'level' : 1,
@@ -758,7 +783,7 @@ class Ability(object):
         'target' : 'hostile',
         'action' : _deepWound,
         'cooldown' : 1,
-        'checkFunction' : _deepWoundCheck,
+        'checkFunction' : None,
         'breakStealth' : 100
         },
         'Painful Shot':

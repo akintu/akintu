@@ -1147,7 +1147,10 @@ class Person(en.Entity):
         "static" abililties that boost Sneak, and "dynamic"
         statuses that boost or reduce Sneak.
         """
-        return (max(0, self.totalCunning - 10) +
+        cunningBonus = max(0, self.totalCunning - 10)
+        if isinstance(self, playercharacter) and self.characterClass == "Shadow":
+            cunningBonus *= 2
+        return (cunningBonus +
                 self._equipmentSneak + 
                 self._statusSneak + 
                 self._baseSneak)
@@ -2776,6 +2779,20 @@ class Person(en.Entity):
                 buff[2] -= turnsToLive
                 if buff[2] <= 0:
                     self.HPBufferList.remove(buff)
+        
+    def detectStealth(self, stealthedTarget):
+        ''' Rolls to see if this Person can detect the stealthed
+        target.  Currently does not factor in "boss" monsters etc.
+        Returns True if this Person has detected the stealthedTarget. '''
+        if not stealthedTarget.inStealth():
+            print "Target is not in stealth."
+            return True
+        chance = max(1, 15 - stealthedTarget.totalSneak + self.totalAwareness)
+        if Dice.rollBeneath(chance):
+            return True
+        else:
+            return False
+        # Include Noise later? TODO (Out of combat considerations.)
         
     # Non theorycrafted methods go here:
 
