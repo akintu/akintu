@@ -11,12 +11,14 @@ import consumable
 class TreasureChest(entity.Entity):
 
     GOLD_PER_IP = 25
-
-    def __init__(self, type, treasureLevel, location, ip=None):
+    CHANCE_OF_LOCK = 20
+    
+    def __init__(self, type, treasureLevel, location, ip=None, locked=None):
         entity.Entity.__init__(self, location)
         if type.capitalize() not in ["Small", "Large", "Gilded"]:
             raise TypeError("Invalid Chest Type: " + type + ".")
         self.ip = ip
+        self.baseIp = self.ip # Used for treasure chest bashing reductions.
         self.type = type
         if treasureLevel < 1:
             treasureLevel = 1
@@ -28,8 +30,17 @@ class TreasureChest(entity.Entity):
             if treaureLevel > 10:
                 self.ip = round(self.ip * 1.5)
             if treasureLevel > 18:
-                self.ip = round(self.ip * 1.5)            
-    
+                self.ip = round(self.ip * 1.5)
+        self.locked = locked
+        self.lockComplexity = 0
+        if locked is None:
+            locked = Dice.rollBeneath(TreasureChest.CHANCE_OF_LOCK)
+        if locked:
+            if self.treasureLevel <= 10:
+                self.lockComplexity = 11 + self.treasureLevel * 3
+            else:
+                self.lockComplexity = 21 + self.treasureLevel * 2
+        
     def generateTreasure(self, openingPlayer=None):
         if self.type == "Gilded" and not openingPlayer:
             print "TreasureChest.generateTreasure -- Warning: No player specified for this treasure!"
@@ -125,4 +136,47 @@ class TreasureChest(entity.Entity):
     def _generateGildedTreasure(self, player):
         return []
         # TODO: Two pieces of class-approriate gear.
+        
+    def bash(self, player):
+        ''' Attempts to have the player bash open the lock on this
+        chest.  Will lower the IP content of the chest appropriately.
+        If the bash is successful, will return True otherwise it will
+        return False.  If the chest has already been unlocked, or was
+        never locked, will return True. '''
+        if not self.locked:
+            print "This chest is already unlocked."
+            return True
+        lowerAmount = min(5, round(self.baseIp * 0.1))
+        self.ip -= lowerAmount
+        if self.ip < round(self.baseIp * 0.5):
+            self.ip = round(self.baseIp * 0.5)
+            print "Chest IP unaffected."
+        else:
+            print "Chest IP reduced by " + lowerAmount + "."        
+        success = min(100, max(10, 25 + player.totalStrength - self.lockComplexity))
+        if Dice.rollBeneath(success):
+            return True
+        else:
+            return False
+    
+    def pickLock(self, player):
+        ''' Attempts to have the player unlock the chest via 
+        lockpicking.  Will return True if the chest was already
+        unlocked or if successful, otherwise will return False. '''
+        if not self.locked:
+            print "This chest is already unlocked."
+            return True
+        if player.lockpicking < self.lockComplexity:
+            return False
+        print "Lock picking successful."
+        # TODO: Give experience?  Decide.
+        return True
+            
+    
+    
+    
+    
+    
+        
+        
         

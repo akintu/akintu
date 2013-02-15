@@ -135,6 +135,12 @@ class OnHitEffect(object):
             Combat.addStatus(target, "Toxic Magic Weapon", duration, damage)
         return None
     
+    def applyNumbingPoison(self, magnitude, source, target):
+        pRating = 13
+        duration = 1
+        if Combat.calcPoisonHit(source, target, pRating):
+            Combat.addStatus(target, "Numbing Poison", duration)
+    
     def applyVilePoison(self, magnitude, source, target):
         pRating = 24
         duration = 1

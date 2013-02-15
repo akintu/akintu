@@ -192,7 +192,10 @@ def Nothing_method(self, target, magnitude):
     
 def No_turn_method(self, target, magnitude):
     target.AP = 0
-
+    
+def Numbing_poison_method(self, target, magnitude):
+    target.onHitEffects.append(onhiteffect.OnHitEffect(magnitude, onhiteffect.OnHitEffect.applyNumbingPoison))
+    
 def On_hit_cripple_weapon_method(target, chance, conditional, magnitude):
     target.applyOnHitMod('On_hit_cripple_weapon', conditional, chance, magnitude)
     
@@ -421,6 +424,9 @@ def Nothing_method_reverse(self, target, magnitude):
 def No_turn_method_reverse(self, target, magnitude):
     pass
 
+def Numbing_poison_method_reverse(self, target, magnitude):
+    target.removeOnHitEffect("NumbingPoison", magnitude)
+    
 def On_hit_cripple_weapon_method_reverse(self, target, magnitude):
     target.removeOnHitMod('On_hit_cripple_weapon')
     
@@ -570,6 +576,7 @@ applyFunctionDict = {
     'Movement_speed_penalty' : Movement_speed_penalty_method,
     'Movement_tiles_penalty' : Movement_tiles_penalty_method,
     'No_turn' : No_turn_method,
+    'Numbing_poison_internal' : Numbing_poison_method,
     'On_hit_cripple_weapon' : On_hit_cripple_weapon_method,
     'On_hit_frost_weapon' : On_hit_frost_weapon_method,
     'On_hit_mage_hunting' : On_hit_mage_hunting_method,
@@ -653,6 +660,7 @@ unapplyFunctionDict = {
     'Melee_dodge_bonus' : Melee_dodge_bonus_method_reverse,
     'Melee_force_bonus' : Melee_force_bonus_method_reverse,
     'Might_bonus' : Might_bonus_method_reverse,
+    'Numbing_poison_internal' : Numbing_poison_method_reverse,
     'Movement_speed_penalty' : Movement_speed_penalty_method_reverse,
     'Movement_tiles_penalty' : Movement_tiles_penalty_method_reverse,
     'No_turn' : None,

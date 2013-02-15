@@ -138,7 +138,6 @@ class PlayerCharacter(p.Person):
         
         # --- Thief classes ---
         # self._stealthBreakMaxOverride Default 100
-        self._canLockpick = False
         self.trapDisarmBonus = 0
         
         # --- Weaponmaster ---
@@ -689,15 +688,11 @@ class PlayerCharacter(p.Person):
         self._statusIdentification = value
     
     @property
-    def canLockpick(self):
-        return self._canLockpick
-    
-    @canLockpick.setter
-    def canLockpick(self, value):
-        if value == 1 or value == True:
-            self._canLockpick = True
+    def lockpicking(self):
+        if self.baseClass == "Thief":
+            return self.totalCunning
         else:
-            self._canLockpick = False
+            return 0
     
     @property
     def tricksterAttackManaRegen(self):

@@ -213,11 +213,15 @@
 [NAME: Movement_tiles_penalty]
   [TYPE: Internal]
   [RECURRING: False]
-  
+
 [NAME: No_turn]
   [TYPE: Internal]
   [RECURRING: False]
   [IMMUNE: Boss]
+  
+[NAME: Numbing_poison_internal]
+  [TYPE: Internal]
+  [RECURRING: False]
   
 [NAME: On_hit_cripple_weapon]
   [TYPE: Internal]
@@ -1615,6 +1619,21 @@
   [CATEGORY: Buff]
   [CATEGORY: Applied Poison]
   
+[NAME: Applied Numbing Poison]
+  [TYPE: Display]
+  [ELEMENT: Poison]
+  [INTERNAL: Numbing_poison_internal]
+    [MAGNITUDE: 0]
+  [CATEGORY: Buff]
+  [CATEGORY: Applied Poison]
+
+[NAME: Numbing Poison]
+  [TYPE: Display]
+  [ELEMENT: Poison]
+  [INTERNAL: Movement_speed_penalty]
+    [MAGNITUDE: 25]
+  [CATEGORY: Debuff]
+  
 [NAME: Applied Vile Poison]
   [TYPE: Display]
   [ELEMENT: Poison]
@@ -1630,8 +1649,8 @@
     [MAGNITUDE: 10]
   [INTERNAL: Spell_failure_chance]
     [MAGNITUDE: 3]
-  [CATEGORY: Buff]
-  [CATEGORY: Applied Poison]
+  [CATEGORY: Debuff]
+
 	
 	
 	

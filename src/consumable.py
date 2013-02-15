@@ -126,8 +126,12 @@ class Consumable(entity.Entity):
         
     def _vilePoison(self, user):
         duration = 8 # Duration of poison on weapon, not on affected monster.
-        Combat.addStatus(user, "Applied Vile Poison", duration=8)
+        Combat.addStatus(user, "Applied Vile Poison", duration)
         
+    def _numbingPoison(self, user):
+        duration = 8 # Duration of poison on weapon, not on affected monster.
+        Combat.addStatus(user, "Applied Numbing Poison", duration)        
+     
     # Poisons go above
     # Scrolls, effusions, oils go here...
         
@@ -257,7 +261,13 @@ class Consumable(entity.Entity):
             'effect' : _basicPoison,
             'ip' : 1
             },
-            # Numbing Poison
+        'Numbing Poison' : 
+            {
+            'goldValue' : 15,
+            'level' : 1,
+            'effect' : _numbingPoison,
+            'ip' : 1
+            },
             # Sickening Poison
         'Vile Poison' :
             {

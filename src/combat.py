@@ -7,6 +7,7 @@ import playercharacter as pc
 import broadcast
 import theorycraft
 import location
+import consumable
 
 class IncompleteMethodCall(Exception):
     def __init__(self, value):
@@ -781,6 +782,16 @@ class Combat(object):
                 if duple:
                     ee.append(duple)
         return ee
+     
+    @staticmethod
+    def useConsumable(playerChar, item):
+        ''' Attempts to use a consumable.  If successful, returns True.
+        If unsucessful, returns False and does nothing.'''
+        if item.canUse(playerChar):
+            Combat.modifyResource(playerChar, "AP", -consumable.Consumable.AP_COST)
+            item.use(playerChar)
+            return True
+        return False
      
     @staticmethod
     def _shoutAttackStart(source, target):
