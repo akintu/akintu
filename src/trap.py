@@ -7,6 +7,7 @@ import entity as e
 
 class Trap(e.Entity):
     
+    totalWeight = 0
     
     def __init__(self, name, level=None, player=None, charges=1, location=None, image=None):
         """Constructor for Traps.  Should only be used with
@@ -36,13 +37,26 @@ class Trap(e.Entity):
     
     # Player traps
     def _shrapnelTrap(self, target):
-        pass
+        minDamage = round(5 * (1 + self.owner.totalCunning * 0.017))
+        maxDamage = round(12 * (1 + self.owner.totalCunning * 0.017))
+        dieRoll = Dice.roll(minDamage, maxDamage)
+        element = "Piercing"
+        damage = Trap.calcTrapDamage(target, dieRoll, element)
+        Combat.lowerHP(target, damage)
         
     def _stickyTrap(self, target):
-        pass
+        duration = 2
+        Combat.addStatus(target, "Sticky Trap", duration)
         
     def _boulderPitTrap(self, target):
-        pass
+        minDamage = round(3 * (1 + self.owner.totalCunning * 0.02))
+        maxDamage = round(8 * (1 + self.owner.totalCunning * 0.02))
+        dieRoll = Dice.roll(minDamage, maxDamage)
+        element = "Bludgeoning"
+        damage = Trap.calcTrapDamage(target, dieRoll, element)
+        Combat.lowerHP(target, damage)
+        if (target.size == "Small" or target.size == "Medium") and Dice.rollBeneath(20):
+            Combat.addStatus(target, "Stun", duration=1)
         
     def _poisonThornTrap(self, target):
         minDamage = round(5 * (1 + self.owner.totalPoisonBonusDamage))
@@ -181,26 +195,43 @@ class Trap(e.Entity):
     @staticmethod
     def calcTrapDamage(target, amount, element):
         if element == "Fire":
-            amount *= 1 - (float(target.totalFireResistance) / 100)
+            amount = round(amount * (1 - (float(target.totalFireResistance) / 100)))
         elif element == "Cold":
-            amount *= 1 - (float(target.totalColdResistance) / 100)           
+            amount = round(amount * (1 - (float(target.totalColdResistance) / 100)))           
         elif element == "Electric":
-            amount *= 1 - (float(target.totalElectricResistance) / 100)
+            amount = round(amount * (1 - (float(target.totalElectricResistance) / 100)))
         elif element == "Poison":
-            amount *= 1 - (float(target.totalPoisonResistance) / 100)    
+            amount = round(amount * (1 - (float(target.totalPoisonResistance) / 100)))    
         elif element == "Shadow":
-            amount *= 1 - (float(target.totalShadowResistance) / 100)
+            amount = round(amount * (1 - (float(target.totalShadowResistance) / 100)))
         elif element == "Divine":
-            amount *= 1 - (float(target.totalDivineResistance) / 100)
+            amount = round(amount * (1 - (float(target.totalDivineResistance) / 100)))
         elif element == "Arcane":
-            amount *= 1 - (float(target.totalArcaneResistance) / 100)
+            amount = round(amount * (1 - (float(target.totalArcaneResistance) / 100)))
         elif element == "Bludgeoning":
-            amount *= 1 - (float(target.totalBludgeoningResistance) / 100)
+            amount = round(amount * (1 - (float(target.totalBludgeoningResistance) / 100)))
+            amount = round(amount * (1 - max(0, min(80, target.totalDR))))
         elif element == "Piercing":
-            amount *= 1 - (float(target.totalPiercingResistance) / 100)
+            amount = round(amount * (1 - (float(target.totalPiercingResistance) / 100)))
+            amount = round(amount * (1 - max(0, min(80, target.totalDR))))
         elif element == "Slashing":
-            amount *= 1 - (float(target.totalSlashingResistance) / 100)
+            amount = round(amount * (1 - (float(target.totalSlashingResistance) / 100)))
+            amount = round(amount * (1 - max(0, min(80, target.totalDR))))
         return amount
+        
+    @staticmethod
+    def getRandomTrap(level):
+        ''' Returns a random hostile trap of the given level. '''
+        if Trap.totalWeight == 0:
+            # Hasn't been initialized.
+            for hTrap in Trap.monsterTraps:
+                Trap.totalWeight += hTrap['rarityWeight']
+        
+        choice = Dice.roll(0, Trap.totalWeight)
+        for hTrap in Trap.monsterTraps:
+            choice -= hTrap['rarityWeight']
+            if choice <= 0:
+                return Trap(hTrap, level)
         
     playerTraps = {
         'Shrapnel Trap':

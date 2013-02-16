@@ -249,11 +249,22 @@ class PlayerCharacter(p.Person):
         self.abilities = []
         for abil in ability.Ability.allAbilities:
             current = ability.Ability.allAbilities[abil]
-            if current['class'] == self.characterClass:
+            if current['class'] == self.characterClass or current['class']:
                 if current['level'] == self.level:
                     newAbil = ability.Ability(abil, self)
                     self.abilities.append(newAbil)
-                    
+            elif current['class'] == 'Ranger*':
+                # Traps for rangers, but Anarchists get a different version with more range.
+                if self.baseClass == 'Ranger' and self.characterClass != "Anarchist":
+                    if current['level'] == self.level:
+                        newAbil = ability.Ability(abil, self)
+                        self.abilities.append(newAbil)
+            elif current['class'] == 'Thief*':
+                # Only thieves get backstabs and lockpicking etc.
+                if self.baseClass == 'Thief':
+                    if current['level'] == self.level:
+                        newAbil = ability.Ability(abil, self)
+                        self.abilities.append(newAbil)
         # Select/Gain Skill: TODO
         # Select/Gain Spell(s): TODO
         # TODO: Check to see if we need to alter the MP/AP cost of learned spells based on traits!

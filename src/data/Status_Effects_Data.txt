@@ -366,6 +366,10 @@
 #  [TYPE: Internal]
 #  [RECURRING: False]
   
+[NAME: Target_throat_internal]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
 [NAME: Tiger_style]
   [TYPE: Internal]
   [RECURRING: False]
@@ -588,7 +592,7 @@
 #  [INTERNAL: On_hit_frost_weapon]
 #    [CHANCE: Unlikely]
 #	[INTERNAL: Movement_speed_penalty]
-#	  [MAGNITUDE: 25]
+#	  [MAGNITUDE: 1]
 #	[INTERNAL: Dodge_penalty]
 #	  [MAGNITUDE: 4]
 	
@@ -607,7 +611,7 @@
   [INTERNAL: Dodge_penalty]
     [MAGNITUDE: 15]
   [INTERNAL: Movement_speed_penalty]
-    [MAGNITUDE: 50]
+    [MAGNITUDE: 2]
   [CATEGORY: Debuff]
 	
 [NAME: Wound Arm]
@@ -641,6 +645,13 @@
   [INTERNAL: Dodge_penalty]
     [MAGNITUDE: 8]
   [CATEGORY: Buff]
+	
+[NAME: Sticky Trap]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Movement_speed_penalty]
+    [MAGNITUDE: 1]
+  [CATEGORY: Debuff]
 	
 [NAME: Ranger's Aim]
   [TYPE: Display]
@@ -722,7 +733,7 @@
   [TYPE: Display]
   [ELEMENT: None]
   [INTERNAL: Movement_speed_penalty]
-    [MAGNITUDE: 25]
+    [MAGNITUDE: 1]
   [INTERNAL: Spell_failure_chance]
     [MAGNITUDE: 5]
   [INTERNAL: Dodge_penalty]
@@ -974,10 +985,8 @@
     [MAGNITUDE: 3]
   [INTERNAL: Applied_poison_rating_bonus]
     [MAGNITUDE: 10]
-  [INTERNAL: On_hit_stun]
+  [INTERNAL: Target_throat_internal]
     [MAGNITUDE: 0]
-    [CHANCE: Rare]
-	[CONDITIONAL: Using Ranged Weapon && Target not Huge]
   [CATEGORY: Buff] 
 	
 [NAME: Poison Thorn Trap]
@@ -990,7 +999,7 @@
   [TYPE: Display]
   [ELEMENT: Poison]
   [INTERNAL: Movement_speed_penalty]
-    [MAGNITUDE: 25]
+    [MAGNITUDE: 1]
   [INTERNAL: Dodge_penalty]
     [MAGNITUDE: 5]
   [INTERNAL: Accuracy_penalty]
@@ -1101,7 +1110,7 @@
   [TYPE: Display]
   [ELEMENT: None]
   [INTERNAL: Movement_speed_penalty]
-    [MAGNITUDE: 100]
+    [MAGNITUDE: 5]
   [INTERNAL: Dodge_penalty]
     [MAGNITUDE: 4]
   [CATEGORY: Debuff]
@@ -1180,7 +1189,7 @@
   [TYPE: Display]
   [ELEMENT: None]
   [INTERNAL: Movement_speed_penalty]
-    [MAGNITUDE: 100]
+    [MAGNITUDE: 5]
   [CATEGORY: Debuff]
 
 [NAME: Bait]
@@ -1271,7 +1280,7 @@
   [TYPE: Display]
   [ELEMENT: None]
   [INTERNAL: Movement_speed_penalty]
-    [MAGNITUDE: 50]
+    [MAGNITUDE: 3]
   [CATEGORY: Debuff]
 	
 [NAME: Precision Threading]
@@ -1495,7 +1504,7 @@
   [TYPE: Display]
   [ELEMENT: Arcane]
   [INTERNAL: Movement_speed_penalty]
-    [MAGNITUDE: 50]
+    [MAGNITUDE: 3]
   [CATEGORY: Debuff]
 	
 [NAME: Toxic Magic Weapon]
@@ -1629,7 +1638,7 @@
   [TYPE: Display]
   [ELEMENT: Poison]
   [INTERNAL: Movement_speed_penalty]
-    [MAGNITUDE: 25]
+    [MAGNITUDE: 1]
   [CATEGORY: Debuff]
   
 [NAME: Applied Vile Poison]
