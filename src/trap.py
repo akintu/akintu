@@ -7,6 +7,7 @@ import entity as e
 
 class Trap(e.Entity):
     
+    totalWeight = 0
     
     def __init__(self, name, level=None, player=None, charges=1, location=None, image=None):
         """Constructor for Traps.  Should only be used with
@@ -217,6 +218,20 @@ class Trap(e.Entity):
             amount = round(amount * (1 - (float(target.totalSlashingResistance) / 100)))
             amount = round(amount * (1 - max(0, min(80, target.totalDR))))
         return amount
+        
+    @staticmethod
+    def getRandomTrap(level):
+        ''' Returns a random hostile trap of the given level. '''
+        if Trap.totalWeight == 0:
+            # Hasn't been initialized.
+            for hTrap in Trap.monsterTraps:
+                Trap.totalWeight += hTrap['rarityWeight']
+        
+        choice = Dice.roll(0, Trap.totalWeight)
+        for hTrap in Trap.monsterTraps:
+            choice -= hTrap['rarityWeight']
+            if choice <= 0:
+                return Trap(hTrap, level)
         
     playerTraps = {
         'Shrapnel Trap':
