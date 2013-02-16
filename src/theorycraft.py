@@ -43,7 +43,7 @@ class TheoryCraft(object):
         TheoryCraft.hasLoaded = True
         
     @staticmethod
-    def getMonster(index=None, loc=location.Location((0, 0), (PANE_X/2, PANE_Y/2)), level=1, region=None, name=None):
+    def getMonster(index=None, loc=location.Location((0, 0), (PANE_X/2, PANE_Y/2)), level=2, region=None, name=None):
         theMonster = None
         if name:
             for mon in TheoryCraft.monsters:
@@ -53,7 +53,7 @@ class TheoryCraft(object):
         # TODO: search by region
         # TODO: This is a stub...
         else:
-            inLevelList = [x for x in TheoryCraft.monsters if x['level'] = level]
+            inLevelList = [x for x in TheoryCraft.monsters if x['level'] == level]
             if inLevelList:
                 choice = Dice.roll(0, len(inLevelList) - 1)
                 theMonster = monster.Monster(inLevelList[choice])
