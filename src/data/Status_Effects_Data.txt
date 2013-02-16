@@ -985,8 +985,6 @@
   [ELEMENT: Poison]
   [INTERNAL: Damage_over_time]
     [MAGNITUDE: 0]
-	[MIN: 0]
-	[MAX: 0]
 
 [NAME: Lethargic Shot]
   [TYPE: Display]

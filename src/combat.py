@@ -313,6 +313,7 @@ class Combat(object):
                 matchingStatus = target.statusList
                 break
         if matchingStatus:
+            matchingStatus.deactivate(target)
             target.statusList.remove(matchingStatus)
             
     @staticmethod
@@ -372,7 +373,7 @@ class Combat(object):
             return
         pass
         # TODO
-        
+                
     @staticmethod
     def calcDamage(source, target, min, max, element, hitValue, partial=1, critical=1, scalesWith=None, scaleFactor=0):
         """Computes the amount of damage that should be dealt to the target after considering all bonuses and penalties

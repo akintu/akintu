@@ -800,7 +800,7 @@ class PlayerCharacter(p.Person):
     
     @property
     def attackRange(self):
-        weapon = self.equippedItems.equippedWeapon()
+        weapon = self.equippedItems.equippedWeapon
         if not weapon:
             return 1
         if weapon.range > 1:

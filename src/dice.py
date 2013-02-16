@@ -81,20 +81,20 @@ class Dice(object):
             return False
     
     @staticmethod
-    def rollTrapHit(target, trap):
+    def rollTrapHit(trap, target):
         """Determines if the target is hit by the trap, or if he evades it.
         Inputs:
-          target -- Person; the victim of the trap
           trap -- Trap; the trap that is being triggered
+          target -- Person; the victim of the trap
         Outputs:
-          "Evaded" -- The trap failed to harm the target.
-          "Hit" -- The trap successfully hit the target."""
-        adjustedEva = target.totalTrapEvade * random.uniform(0.5, 1.0)
-        adjustedRating = trap.trapRating * random.uniform(0.5, 1.0)
+          False -- The trap failed to harm the target.
+          True -- The trap successfully hit the target."""
+        adjustedEva = round(target.totalTrapEvade * random.uniform(0.5, 1.0))
+        adjustedRating = round(trap.trapRating * random.uniform(0.5, 1.0))
         if adjustedEva >= adjustedRating:
-            return "Evaded"
+            return False
         else:
-            return "Hit"
+            return True
     
     @staticmethod
     def rollPresetChance(source, target, chance):

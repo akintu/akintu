@@ -6,7 +6,6 @@ import monster
 import cctemplatesparser
 import armorparser
 import weaponsparser
-import trapsparser
 import statuseffectsparser
 import copy
 import playercharacter
@@ -40,8 +39,6 @@ class TheoryCraft(object):
         TheoryCraft.armors = parser.parseAll("./data/Armor_Data.txt")
         parser = weaponsparser.WeaponsParser()
         TheoryCraft.weapons = parser.parseAll("./data/Weapon_Data.txt")
-        parser = trapsparser.TrapsParser()
-        TheoryCraft.traps = parser.parseAll("./data/Trap_Data.txt")
         parser = statuseffectsparser.StatusEffectsParser()
         TheoryCraft.statuses = parser.parseAll("./data/Status_Effects_Data.txt")
         TheoryCraft.hasLoaded = True

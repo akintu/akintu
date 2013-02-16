@@ -30,7 +30,7 @@ import onhiteffect
 #            and possibly the min/max fields may be overridden later, but some IStatuses
 #            will never change from here.
 #   3. An addStatus() call is performed which applys a Display Status and, along with it,
-#       all of its IStatuses who also get magnitude information (and possibly min/max?).      
+#       all of its IStatuses who also get magnitude information and element.      
 #         --STATE-- This IStatus has been fully instantiated and is ready to have work
 #                   done by it.
 #
@@ -38,7 +38,7 @@ import onhiteffect
 
 class InternalStatus(object):
 
-    def __init__(self, name, recurring, immunity):
+    def __init__(self, name, recurring, immunity, element=None):
         # Known only from loaded data file definition:
         self.name = name
         self.recurring = recurring
@@ -47,25 +47,18 @@ class InternalStatus(object):
         self.unapplyEffect = unapplyFunctionDict[name]
         
         # Known only from loaded data file instantiation:
-        self.conditional = None
-        self.chance = 100
         self.parentName = None
         
         # May only be known at apply time:
         self.magnitude = None # inherit magnitude from caller if 0.      
-        self.min = 0
-        self.max = 0
-        
-        # Element??
+        self.duration = None # Not typically used or kept track of here.  Only for HP Buffers
+                             # thus far.
+        self.element = element
             
-    def cloneWithDetails(self, magnitude, conditional, chance, min, max, parent):
+    def cloneWithDetails(self, magnitude, element, parent):
         """Returns a Status with 'ready-to-use' values based off of a previously defined InternalStatus."""
-        cloneStatus = InternalStatus(self.name, self.recurring, self.immunity)
+        cloneStatus = InternalStatus(self.name, self.recurring, self.immunity, self.element)
         cloneStatus.magnitude = magnitude
-        cloneStatus.conditional = conditional
-        cloneStatus.chance = chance
-        cloneStatus.min = min
-        cloneStatus.max = max
         cloneStatus.parentName = parent
         return cloneStatus
 
@@ -106,8 +99,9 @@ def Critical_chance_bonus_method(self, target, magnitude):
 def Critical_magnitude_bonus_method(self, target, magnitude):
     target.statusCriticalMagnitude += magnitude
 
-def Damage_over_time_method(self, source, target, magnitude):
-    pass
+def Damage_over_time_method(self, target, magnitude):
+    dam = calcDamage(None, target, magnitude, magnitude, self.element, "Normal Hit")
+    target.lowerHP(target, dam)
     
 def Dodge_bonus_method(self, target, magnitude):
     target.statusDodge += magnitude
@@ -145,8 +139,8 @@ def Elemental_resistance_poison_method(self, target, magnitude):
 def Elemental_resistance_shadow_method(self, target, magnitude):
     target.statusShadowResistance += magnitude
 
-def Elemental_vulnerability_method(self, target, magnitude, minimum, maximum, element):
-    target.lowerElementalResistance(element, magnitude)
+def Elemental_vulnerability_method(self, target, magnitude, element):
+    target.lowerElementalResistance(self.element, magnitude)
 
 def Hidden_method(self, target, magnitude):
     pass
@@ -154,8 +148,8 @@ def Hidden_method(self, target, magnitude):
 def Hidden_double_cunning_method(self, target, magnitude):
     pass
 
-def HP_buffer_method(self, target, magnitude, duration, name):
-    target.applyHPBuffer(name, magnitude, duration)
+def HP_buffer_method(self, target, magnitude):
+    target.applyHPBuffer(self.parentName, magnitude, self.duration)
 
 def Increased_movement_AP_cost_method(self, target, magnitude):
     target.statusMovementAPCost += magnitude

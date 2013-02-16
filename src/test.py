@@ -22,7 +22,6 @@ import status
 import trait
 import theorycraft
 import trap
-import trapsparser
 import treasurechest
 import wealth
 

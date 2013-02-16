@@ -49,17 +49,17 @@ class Status(object):
         clone.turnsLeft = duration
         clone.charges = charges
         clone.applyMagnitude(magnitude)
+        for iStatus in clone.internalList:
+            iStatus.element = clone.element
         clone.applyMinMax(min, max)
         return clone
         
     def activate(self, target):
-        # Requires identical ordering of parameters, TODO
         for iStatus in self.internalList:
             if iStatus.recurring == "False":
                 iStatus.applyEffect(target, iStatus.magnitude)
         
     def deactivate(self, target):
-        # Also requires identical ordering of parameters, TODO
         for iStatus in self.internalList:
             iStatus.unapplyEffect(target, iStatus.magnitude)
             

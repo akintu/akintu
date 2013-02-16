@@ -2529,7 +2529,7 @@ class Person(en.Entity):
           True or False"""
         stealthList = ["Stealth", "Shadow Walk", "Conceal"]
         for item in self.statusList:
-            if (str(item) in stealthList):
+            if (item.name in stealthList):
                 return True
         return False    
         
@@ -2570,7 +2570,7 @@ class Person(en.Entity):
           className = The name of the class to check against.
         Outputs:
           True or False"""
-        return (str(self.characterClass) == className)
+        return self.characterClass == className
     
     def hasAdjacentFreeSpace(self):
         """Returns True if this person has at least one connecting
@@ -2636,17 +2636,6 @@ class Person(en.Entity):
         Outputs:
           True or False"""
         return (self.owner is not None)
-
-    def haveSummon(self):
-        """Returns True if this Person is a Sorcerer and has a
-        Guardian active.
-        Inputs:
-          self
-        Outputs:
-          True or False"""
-        if self.isClass("Sorcerer") and self.minionList:
-            return True
-        return False
     
     def getMeleeFacingEnemy(self):
         """Returns the enemy as a Person directly in front of 

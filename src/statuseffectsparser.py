@@ -161,9 +161,7 @@ class StatusEffectsParser(object):
                         iStatus = None
                         for husk in allInternalHusks:
                             if husk.name == internalNameList[i]:
-                                iStatus = husk.cloneWithDetails(magnitudeList[i], conditionalList[i],
-                                                                chanceList[i], minList[i], maxList[i],
-                                                                name)
+                                iStatus = husk.cloneWithDetails(magnitudeList[i], element, name)
                         internalList.append(iStatus)       
                     displayStatus = status.Status()
                     displayStatus.populate(name, element, categoryList, internalList)
