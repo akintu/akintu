@@ -16,7 +16,7 @@ from world import *
 class GameScreen(object):
 
     def __init__(self):
-        self.screen = pygame.display.set_mode((1024, 640))
+        self.screen = pygame.display.set_mode((1280, 640))
         pygame.display.set_caption('Akintu r01')
         self.background = pygame.Surface((1024, 640))
         self.world = dict()
@@ -65,6 +65,30 @@ class GameScreen(object):
                 entimage = self.images[ent.image]
                 self.background.blit(entimage, (i*TILE_SIZE, j*TILE_SIZE))
         self.screen.blit(self.background, [0, 0])
+        pygame.display.update()
+
+    def update_tile(self, tile, location):
+        self.pane.tiles[location.tile] = tile
+        i, j = location.tile
+
+        # Draw the tile background
+        if tile.image not in self.images:
+            self.images[tile.image] = \
+                pygame.image.load(tile.image).convert_alpha()
+        tileimage = self.images[tile.image]
+        self.background.blit(tileimage, (i*TILE_SIZE, j*TILE_SIZE))
+
+        # Draw all the entities
+        for ent in tile.entities:
+            if ent.image not in self.images:
+                self.images[ent.image] = \
+                    pygame.image.load(ent.image).convert_alpha()
+            entimage = self.images[ent.image]
+            self.background.blit(entimage, (i*TILE_SIZE, j*TILE_SIZE))
+
+        # Draw the entire background (if this becomes an issue we'll refactor)
+        self.screen.blit(self.background, [0, 0])
+        self.personsgroup.draw(self.screen)
         pygame.display.update()
 
     def add_person(self, personid, statsdict):
