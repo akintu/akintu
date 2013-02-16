@@ -366,6 +366,10 @@
 #  [TYPE: Internal]
 #  [RECURRING: False]
   
+[NAME: Target_throat_internal]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
 [NAME: Tiger_style]
   [TYPE: Internal]
   [RECURRING: False]
@@ -981,10 +985,8 @@
     [MAGNITUDE: 3]
   [INTERNAL: Applied_poison_rating_bonus]
     [MAGNITUDE: 10]
-  [INTERNAL: On_hit_stun]
+  [INTERNAL: Target_throat_internal]
     [MAGNITUDE: 0]
-    [CHANCE: Rare]
-	[CONDITIONAL: Using Ranged Weapon && Target not Huge]
   [CATEGORY: Buff] 
 	
 [NAME: Poison Thorn Trap]

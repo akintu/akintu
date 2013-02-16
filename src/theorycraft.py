@@ -23,7 +23,6 @@ class TheoryCraft(object):
     statuses = []
     armors = []
     weapons = []
-    traps = []
     monsters = []
     
     @staticmethod
@@ -51,11 +50,16 @@ class TheoryCraft(object):
                 if mon['name'] == name:
                     theMonster = monster.Monster(mon)
                     break
-        # TODO: search by level
         # TODO: search by region
         # TODO: This is a stub...
         else:
-            theMonster = monster.Monster(TheoryCraft.monsters[0])
+            inLevelList = [x for x in TheoryCraft.monsters if x['level'] = level]
+            if inLevelList:
+                choice = Dice.roll(0, len(inLevelList) - 1)
+                theMonster = monster.Monster(inLevelList[choice])
+            else:
+                # No monster of this level exists, just give a default monster for testing.
+                theMonster = monster.Monster(TheoryCraft.monsters[0])
         theMonster.index = index
         theMonster.location = loc
         return theMonster

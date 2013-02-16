@@ -126,6 +126,12 @@ class OnHitEffect(object):
         Combat.modifyResource(source, "MP", restoration)
         return None
         
+    def applyTargetThroat(self, magnitude, source, target):
+        if not source.usingWeapon("Ranged") or target.size == "Huge":
+            return
+        if Dice.rollPresetChance(source, target, "Rarely"):
+            Combat.addStatus(target, "Stun", duration=1)
+        
     def applyToxic(self, magnitude, source, target):
         pRating = magnitude + 5
         damage = Dice.roll(2,4)

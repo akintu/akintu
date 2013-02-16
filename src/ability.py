@@ -379,6 +379,11 @@ class Ability(object):
             damage = round(Dice.roll(5, 15) * (1 + source.totalCunning * 0.07))
             Combat.addStatus(target, "Poisonous Toch", duration, damage) 
     
+    def _targetThroat(self, target):
+        source = self.owner
+        duration = 4
+        Combat.addStatus(source, "Target Throat", duration)
+    
     def _poisonThornTrap(self, target):
         pass
         # Remove Trap
@@ -863,6 +868,19 @@ class Ability(object):
         'cooldown' : 3,
         'checkFunction' : None,
         'breakStealth' : 100
+        },
+        'Target Throat':
+        {
+        'level' : 3,
+        'class' : 'Druid',
+        'HPCost' : 0,
+        'APCost' : 8,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _targetThroat,
+        'cooldown' : 6,
+        'checkFunction' : None,
+        'breakStealth' : 0
         },
         'Poison Thorn Trap':
         {
