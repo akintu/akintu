@@ -173,9 +173,6 @@ class Ability(object):
         if success:
             duration = 2
             Combat.addStatus(target, "Feint", duration)
-            
-    def _feintCheck(self, target):
-        return (True, "")
         
     def _farSightedFocus(self, target):
         source = self.owner
@@ -197,9 +194,6 @@ class Ability(object):
         source = self.owner
         Combat.healTarget(source, round(source.totalHP * 0.05))
         
-    def _balmCheck(self, target):
-        return (True, "")
-        
     def _rapidReload(self, target):
         source = self.owner
         hit = Combat.calcHit(source, target, modifier=-8)
@@ -218,6 +212,21 @@ class Ability(object):
         
     def _rangersAimCheck(self, target):
         return (True, "")
+        
+    def _shrapnelTrap(self, target):
+        pass
+        # Remove Trap
+        # Add trap.Trap("Shrapnel Trap", self.owner, target.location)
+        
+    def _stickyTrap(self, target):
+        pass
+        # Remove Trap
+        # Add trap.Trap("Sticky Trap", self.owner, target.location)
+        
+    def _boulderPitTrap(self, target):
+        pass
+        # Remove Trap
+        # Add trap.Trap("Boulder Pit Trap", self.owner, target.location)
         
     def _magicGuard(self, target):
         source = self.owner
@@ -369,9 +378,11 @@ class Ability(object):
             duration = 4
             damage = round(Dice.roll(5, 15) * (1 + source.totalCunning * 0.07))
             Combat.addStatus(target, "Poisonous Toch", duration, damage) 
-        
-    def _poisonousTouchCheck(self, target):
-        return (True, "")
+    
+    def _poisonThornTrap(self, target):
+        pass
+        # Remove Trap
+        # Add trap.Trap("Poison Thorn Trap", self.owner, target.location)
     
     # Battle Mage
     def _bufferStrike(self, target):
@@ -518,7 +529,7 @@ class Ability(object):
         'Backstab':
         {
         'level' : 1,
-        'class' : 'Thief',
+        'class' : 'Thief*',
         'HPCost' : 0,
         'APCost' : 10,
         'range' : 1,
@@ -564,7 +575,7 @@ class Ability(object):
         'target' : 'hostile',
         'action' : _feint,
         'cooldown' : None,
-        'checkFunction' : _feintCheck,
+        'checkFunction' : None,
         'breakStealth' : 100
         },
         'Far-Sighted Focus':
@@ -582,6 +593,34 @@ class Ability(object):
         },
         
         # Ranger
+        # "Ranger*" abilities are given to Druid,
+        # Marksman, and Tactician classes.
+        'Shrapnel Trap':
+        {
+        'level' : 1,
+        'class' : 'Ranger*',
+        'HPCost' : 0,
+        'APCost' : 5,
+        'range' : 0,
+        'target' : 'location',
+        'action' : _shrapnelTrap,
+        'cooldown' : 1,
+        'checkFunction' : None,
+        'breakStealth' : 0
+        },
+        'Sticky Trap':
+        {
+        'level' : 2,
+        'class' : 'Ranger*',
+        'HPCost' : 0,
+        'APCost' : 3,
+        'range' : 0,
+        'target' : 'location',
+        'action' : _stickyTrap,
+        'cooldown' : 1,
+        'checkFunction' : None,
+        'breakStealth' : 0
+        },
         'Tunnel Vision':
         {
         'level' : 2,
@@ -605,7 +644,7 @@ class Ability(object):
         'target' : 'self',
         'action' : _balm,
         'cooldown' : 2,
-        'checkFunction' : _balmCheck,
+        'checkFunction' : None,
         'breakStealth' : 100
         },
         'Rapid Reload':
@@ -632,6 +671,19 @@ class Ability(object):
         'action' : _rangersAim,
         'cooldown' : 1,
         'checkFunction' : _rangersAimCheck,
+        'breakStealth' : 0
+        },
+        'Boulder Pit Trap':
+        {
+        'level' : 4,
+        'class' : 'Ranger*',
+        'HPCost' : 0,
+        'APCost' : 5,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _boulderPitTrap,
+        'cooldown' : 1,
+        'checkFunction' : None,
         'breakStealth' : 0
         },
         
@@ -809,8 +861,21 @@ class Ability(object):
         'target' : 'hostile',
         'action' : _poisonousTouch,
         'cooldown' : 3,
-        'checkFunction' : _poisonousTouchCheck,
+        'checkFunction' : None,
         'breakStealth' : 100
+        },
+        'Poison Thorn Trap':
+        {
+        'level' : 4,
+        'class' : 'Druid',
+        'HPCost' : 0,
+        'APCost' : 5,
+        'range' : 0,
+        'target' : 'location',
+        'action' : _poisonThornTrap,
+        'cooldown' : 1,
+        'checkFunction' : None,
+        'breakStealth' : 0
         },
         
         # Battle Mage
