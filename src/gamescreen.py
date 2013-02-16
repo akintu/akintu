@@ -4,6 +4,7 @@ Main visual engine
 
 import pygame
 from pygame.locals import *
+from pygame import Rect, Color
 
 import os
 import sys
@@ -125,10 +126,16 @@ class PersonSprite(pygame.sprite.DirtySprite):
         self.statsdict = statsdict
         # Get all the images required
         imagepre = self.statsdict['image']
-        endings = [(2, '_fr1.png'), (4, '_lf1.png'),
-                   (6, '_rt1.png'), (8, '_bk1.png')]
-        self.images = {key: pygame.image.load(imagepre + end).convert_alpha()
-                       for key, end in endings}
+        # Try to retrieve the different facing images
+        try:
+            endings = [(2, '_fr1.png'), (4, '_lf1.png'),
+                       (6, '_rt1.png'), (8, '_bk1.png')]
+            self.images = {key: pygame.image.load(imagepre+end).convert_alpha()
+                           for key, end in endings}
+        # Assume imagepre is the actual image location, add facing overlays
+        except pygame.error:
+            self.images = facing_overlays(imagepre)
+
         # Location and rect info
         loc = self.statsdict['location']
         self.image = self.images[loc.direction]
@@ -142,3 +149,20 @@ class PersonSprite(pygame.sprite.DirtySprite):
             self.current_coord = self.newest_coord
             self.rect.topleft = [x*TILE_SIZE for x in self.newest_coord.tile]
             self.image = self.images[self.newest_coord.direction]
+
+
+def facing_overlays(imageloc):
+    '''
+    Given an image location, will return a facing dictionary of images with
+    facing overlays
+    '''
+    keys = [2, 4, 6, 8]
+    rects = [(0, 29, 32, 3),
+             (0, 0, 3, 32),
+             (29, 0, 3, 32),
+             (0, 0, 32, 3)]
+    images = dict()
+    for key, rect in zip(keys, rects):
+        images[key] = pygame.image.load(imageloc).convert_alpha()
+        images[key].fill(Color('blue'), rect)
+    return images
