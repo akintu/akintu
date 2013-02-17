@@ -30,9 +30,13 @@ class GameScreen(object):
         pygame.display.set_caption('Akintu r01')
         self.background = pygame.Surface((PANE_X * TILE_SIZE,
                                           PANE_Y * TILE_SIZE))
+        self.world = dict()
         self.images = dict()
         self.persons = dict()
         self.personsgroup = pygame.sprite.RenderUpdates()
+        self.playerpanes = ordereddict()
+        for i, j in [(i, j) for i in range(PANE_X) for j in range(PANE_Y)]:
+            self.world[(i, j)] = None
         pygame.display.flip()
 
     def set_pane(self, pane):
@@ -122,8 +126,6 @@ class GameScreen(object):
             - 'xoffset' (in pixels)
             - 'xoffset' (in pixels)
             - 'foot' (0 or 1)
-
-        To be supported in the future:
             - 'name'
             - 'HP'
             - 'MP'
@@ -132,7 +134,9 @@ class GameScreen(object):
             - 'totalHP'
             - 'totalMP'
             - 'totalAP'
-            - 'location'
+            - 'team'
+
+        To be supported in the future:
             - 'statusList'
             - 'cooldownList'
             - time remaining
@@ -141,11 +145,14 @@ class GameScreen(object):
         # Check for properly-formatted statsdict, set some defaults if not
         # present
         if 'image' not in statsdict or \
-           'location' not in statsdict:
-            raise Exception('Image or location not defined')
+           'location' not in statsdict or \
+           'team' not in statsdict:
+            raise Exception('Image, location, or team not defined')
         for attr in ['xoffset', 'yoffset', 'foot']:
             if attr not in statsdict:
                 statsdict[attr] = 0
+        if statsdict['team'] == "Players":
+
 
         self.persons[personid] = \
             PersonSprite(statsdict)
