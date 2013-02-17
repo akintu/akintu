@@ -141,15 +141,13 @@ class GameScreen(object):
         '''
         # Check for properly-formatted statsdict, set some defaults if not
         # present
-        if 'image' not in statsdict or \
-           'location' not in statsdict:
+        if 'image' not in statsdict or 'location' not in statsdict:
             raise Exception('Image or location not defined')
         for attr in ['xoffset', 'yoffset', 'foot']:
             if attr not in statsdict:
                 statsdict[attr] = 0
 
-        self.persons[personid] = \
-            PersonSprite(statsdict)
+        self.persons[personid] = PersonSprite(statsdict)
         self.personsgroup.add(self.persons[personid])
 
     def remove_person(self, personid):
