@@ -239,6 +239,18 @@ class Spell(object):
         duration = 4
         Combat.addStatus(target, self.name, duration)
     
+    def _infection(self, target):
+        source = self.owner
+        minDam = round(7 * (1 + source.totalSpellpower * 0.03) * 
+                           (1 + float(source.totalPoisonBonusDamage) / 100))
+        maxDam = round(10 * (1 + source.totalSpellpower * 0.03) * 
+                           (1 + float(source.totalPoisonBonusDamage) / 100))
+        dieRoll = Dice.roll(minDam, maxDam)
+        rating = round(35 + 0.4 * source.totalSpellpower)
+        duration = 4 + source.totalSpellpower / 20
+        if Combat.calcPoisonHit(source, target, rating):
+            Combat.addStatus(target, "Infection", duration, dieRoll)
+    
     allSpells = {
         'Arcane Dart':
         {
@@ -456,6 +468,17 @@ class Spell(object):
         'target' : 'hostile',
         'action' : _fright,
         'cooldown' : 1
+        },
+        'Infection':
+        {
+        'tier' : 2,
+        'school' : 'Natural',
+        'MPCost' : 7,
+        'APCost' : 6,
+        'range' : 1,
+        'target' : 'hostile',
+        'action' : _infection,
+        'cooldown' : None
         }
     }      
 

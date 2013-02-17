@@ -544,8 +544,6 @@
   [ELEMENT: Poison]
   [INTERNAL: Damage_over_time]
     [MAGNITUDE: 0]
-	[MIN: 0]
-	[MAX: 0]
   [INTERNAL: Poison_tolerance_penalty]
     [MAGNITUDE: 5]
   
