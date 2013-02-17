@@ -8,6 +8,7 @@ from pygame import Rect, Color
 
 import os
 import sys
+import collections
 from PIL import Image
 
 from const import *
@@ -31,7 +32,7 @@ class GameScreen(object):
         self.background = pygame.Surface((PANE_X * TILE_SIZE,
                                           PANE_Y * TILE_SIZE))
         self.images = dict()
-        self.persons = dict()
+        self.persons = OrderedDict()
         self.personsgroup = pygame.sprite.RenderUpdates()
         pygame.display.flip()
 
