@@ -73,6 +73,7 @@ class Spell(object):
                 
             else:
                 return
+                print "Spell casting failed."
                 # TODO, notify of spell failure?
         else:
             return 
@@ -200,7 +201,6 @@ class Spell(object):
         duration = Dice.scale(source.totalSpellpower, 3, 0.02, cap=4)
         magnitude = round(Dice.roll(2,8) * (1 + source.totalSpellpower * 0.005))
         Combat.addStatus(target, self.name, duration, magnitude, hitValue=hitType)
-        # TODO: Deal with the fact that this damage is not being rolled every turn...
         
     def _zoneOfSilence(self, target):
         pass
@@ -227,10 +227,17 @@ class Spell(object):
         duration = Dice.scale(source.totalSpellpower, 3, 0.03, cap=7)
         magnitude = round(Dice.roll(1,8) * (1 + source.totalSpellpower * 0.01))
         Combat.addStatus(target, self.name, duration, magnitude)
-        # TODO: Deal with the fact that this damage is not being rolled every turn...
+        
+    def _hoveringShield(self, target):
+        source = self.owner
+        duration = 5
+        magnitude = 12 + source.totalSpellpower / 10
+        Combat.addStatus(target, self.name, duration, magnitude)
     
-    
-
+    def _fright(self, target):
+        source = self.owner
+        duration = 4
+        Combat.addStatus(target, self.name, duration)
     
     allSpells = {
         'Arcane Dart':
@@ -423,9 +430,33 @@ class Spell(object):
         'target' : 'friendly',
         'action' : _flamingWeapon,
         'cooldown' : None
+        },
+        
+        # Tier 2
+        # Burst
+        # Identification
+        'Hovering Shield':
+        {
+        'tier' : 2,
+        'school' : 'Mystic',
+        'MPCost' : 8,
+        'APCost' : 5,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _hoveringShield,
+        'cooldown' : 5
+        },
+        'Fright':
+        {
+        'tier' : 2,
+        'school' : 'Bane',
+        'MPCost' : 6,
+        'APCost' : 3,
+        'range' : 6,
+        'target' : 'hostile',
+        'action' : _fright,
+        'cooldown' : 1
         }
-        
-        
     }      
 
     def _shoutSpellCast(self, source, target):
