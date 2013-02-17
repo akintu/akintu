@@ -187,6 +187,20 @@ class GameScreen(object):
         if SHOW_FPS:
             pygame.display.set_caption("%s %d" % (CAPTION, fps))
 
+    def _drawunitframe(self, personid):
+        '''
+        Draw the unit frame for the given personid
+        '''
+        # Discover which slot this unit frame will go
+        count = 0
+        for key, person in self.persons.iteritems():
+            if key == personid:
+                break;
+            if person.statsdict['team'] == 'Players':
+                count++
+
+    def _generateunitframe(self, statsdict)
+
 
 class PersonSprite(pygame.sprite.DirtySprite):
     def __init__(self, statsdict):
