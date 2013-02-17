@@ -179,6 +179,13 @@ class GameScreen(object):
 
 class PersonSprite(pygame.sprite.DirtySprite):
     def __init__(self, statsdict):
+        '''
+        Initialize the PersonSprite
+
+        Entries required in statsdict:
+            - 'image'
+            - 'location'
+        '''
         pygame.sprite.DirtySprite.__init__(self)
         # Store away the statsdict
         self.statsdict = statsdict
@@ -203,6 +210,11 @@ class PersonSprite(pygame.sprite.DirtySprite):
         self.rect.topleft = [x*TILE_SIZE for x in loc.tile]
 
     def update(self):
+        '''
+        Hook for SpritesGroup update() calls
+
+        Checks for new coordinate, updates location if necessary
+        '''
         if self.current_coord != self.newest_coord:
             self.current_coord = self.newest_coord
             self.rect.topleft = [x*TILE_SIZE for x in self.newest_coord.tile]
