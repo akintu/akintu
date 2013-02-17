@@ -126,6 +126,7 @@ class GameScreen(object):
 
         To be supported in the future:
             - 'name'
+            - 'team'
             - 'HP'
             - 'MP'
             - 'AP'
