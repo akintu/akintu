@@ -79,7 +79,7 @@ class Pane(object):
         self.images.update(self.treesheet.images.items())
         self.images.update(self.rocksheet.images.items())
         self.tiles = dict()
-        self.people = []
+        self.people = {}
         
         for i in range(PANE_X):
             for j in range(PANE_Y):
@@ -97,7 +97,8 @@ class Pane(object):
         
     def generate_creatures(self):
         #self.people.append(TheoryCraft.getNewPlayerCharacter("Human", "Barbarian", len(self.people)))
-        self.people.append(TheoryCraft.getMonster(len(self.people)))
+        person = TheoryCraft.getMonster()
+        self.people[id(person)] = person
     
     def get_edge_tiles(self, edge):
         passable_list = []

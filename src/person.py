@@ -30,7 +30,7 @@ class Person(en.Entity):
         
         en.Entity.__init__(self, location=loc, image=img, passable=False)
         
-        self.index = None
+        self.id = None
         self.task = None
         self.task_frequency = 0
         self.task_running = False

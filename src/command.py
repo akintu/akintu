@@ -2,7 +2,6 @@
 Class for communicating map sync actions
 '''
 
-
 from const import enum
 
 PersonActions = enum(CREATE = 1, MOVE = 2, REMOVE = 3, RUN = 4, STOP = 5)
@@ -19,9 +18,9 @@ class Command:
             self.__dict__.iteritems() if val != None]) + ")"
 
 class Person(Command):
-    def __init__(self, action, index, location = None, details = None):
+    def __init__(self, action, id, location = None, details = None):
         self.action = action
-        self.index = index
+        self.id = id
         self.location = location
         self.details = details
 
