@@ -59,20 +59,19 @@ class Pane(object):
     Member Variables
         tiles: Dictionary of coordinate tuples (e.g. (0,1)) to tile objects
     '''
+    PaneCorners = {1:TILE_BOTTOM_LEFT, 3:TILE_BOTTOM_RIGHT, 7:TILE_TOP_LEFT, 9:TILE_TOP_RIGHT}
+    PaneEdges = {'2':TILES_BOTTOM, '4':TILES_LEFT, '6':TILES_RIGHT, '8':TILES_TOP}
 
     def __init__(self, seed, location):
-        self.PaneCorners = {1:TILE_BOTTOM_LEFT, 3:TILE_BOTTOM_RIGHT, 7:TILE_TOP_LEFT, 9:TILE_TOP_RIGHT}
-        self.PaneEdges = {'2':TILES_BOTTOM, '4':TILES_LEFT, '6':TILES_RIGHT, '8':TILES_TOP}
-
         self.seed = seed
         self.location = location
-
-        # random.seed(self.seed + str(location))
-        # i = random.randrange(len(BACKGROUNDS))
-        background = Sprites.get_random_background(self.seed + str(location))
+        self.load_images()
+    
+    def load_images(self):
+        background = Sprites.get_random_background(self.seed + str(self.location))
         
-        self.treesheet = SpriteSheet(TREES, self.seed + str(location))
-        self.rocksheet = SpriteSheet(ROCKS, self.seed + str(location))
+        self.treesheet = SpriteSheet(TREES, self.seed + str(self.location))
+        self.rocksheet = SpriteSheet(ROCKS, self.seed + str(self.location))
         
         self.images = dict()
         self.images.update(background.images.items())
@@ -91,7 +90,6 @@ class Pane(object):
                 if rock:
                     self.tiles[(i, j)].entities.append(Entity((i, j), image=rock))
                 #self.add_obstacle((i, j))
-        
     def is_tile_passable(self, location):
         return self.tiles[location.tile].is_passable()
         
@@ -101,11 +99,11 @@ class Pane(object):
     
     def get_edge_tiles(self, edge):
         passable_list = []
-        if edge in self.PaneCorners:
-            tile_loc = self.PaneCorners[edge]
+        if edge in Pane.PaneCorners:
+            tile_loc = Pane.PaneCorners[edge]
             passable_list.append(self.is_tile_passable(Location(self.location, tile_loc)))
             return passable_list
-        if edge in self.PaneEdges:
+        if edge in Pane.PaneEdges:
             return passable_list
         
     def merge_tiles(self, edge_id, tiles):
@@ -118,7 +116,7 @@ class Pane(object):
             for passable in tiles:
                 if not passable:
                     #print "NOT PASSABLE"
-                    self.add_obstacle(self.PaneCorners[edge_id])
+                    self.add_obstacle(Pane.PaneCorners[edge_id])
 
     def add_obstacle(self, location):
         object = Sprites.get_random_object(self.seed + str(location))
