@@ -45,11 +45,11 @@ class Region:
         bottom_right = Location((pane_x, pane_y), (tile_x, tile_y))
 
         col = top_left
-        for x in range(top_left.pane[0] * PANE_X + top_left.tile[0], \
-                        bottom_right.pane[0] * PANE_X + bottom_right.tile[0] + 1):
+        for y in range(top_left.pane[1] * PANE_Y + top_left.tile[1], \
+                        bottom_right.pane[1] * PANE_Y + bottom_right.tile[1] + 1):
             tile = col
-            for y in range(top_left.pane[1] * PANE_Y + top_left.tile[1], \
-                            bottom_right.pane[1] * PANE_Y + bottom_right.tile[1] + 1):
+            for x in range(top_left.pane[0] * PANE_X + top_left.tile[0], \
+                            bottom_right.pane[0] * PANE_X + bottom_right.tile[0] + 1):
                 locations |= {Location(tile.pane, tile.tile)}
                 tile = tile.move(6, 1)
             col = col.move(2, 1)
@@ -106,9 +106,11 @@ if __name__ == "__main__":
     #R.build(RAct.SUBTRACT, RShape.CIRCLE, Location((0, 0), (0, 0)), 5)
 
     #Build region from shapes
-    R.build(RAct.ADD, RShape.CIRCLE, Location((0, 0), (16, 10)), 8)
-    R.build(RAct.SUBTRACT, RShape.DIAMOND, Location((0, 0), (24, 10)), 8)
-    R.build(RAct.SUBTRACT, RShape.SQUARE, Location((0, 0), (14, 5)), Location((0, 0), (15, 6)))
+    R.build(RAct.ADD, RShape.SQUARE, Location((0, 0), (0, 0)), Location((0, 0), (31, 19)))
+    R.build(RAct.SUBTRACT, RShape.SQUARE, Location((0, 0), (1, 1)), Location((0, 0), (30, 18)))
+    R.build(RAct.ADD, RShape.CIRCLE, Location((0, 0), (16, 10)), 7)
+    R.build(RAct.SUBTRACT, RShape.DIAMOND, Location((0, 0), (22, 10)), 6)
+    R.build(RAct.SUBTRACT, RShape.SQUARE, Location((0, 0), (14, 6)), Location((0, 0), (15, 7)))
 
     #Display the region
     for y in range(PANE_Y):
