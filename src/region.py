@@ -74,10 +74,10 @@ class Region:
 
         return locations
 
-    def circle(self, loc, dist):
+    def circle(self, loc, rad):
         locations = set()
-        top_left = loc.move(7, dist)
-        bottom_right = loc.move(3, dist)
+        top_left = loc.move(7, rad)
+        bottom_right = loc.move(3, rad)
 
         col = top_left
         for x in range(top_left.pane[0] * PANE_X + top_left.tile[0], \
@@ -85,7 +85,7 @@ class Region:
             tile = col
             for y in range(top_left.pane[1] * PANE_Y + top_left.tile[1], \
                             bottom_right.pane[1] * PANE_Y + bottom_right.tile[1] + 1):
-                if loc.radius(tile) <= dist:
+                if loc.radius(tile) <= rad:
                     locations |= {Location(tile.pane, tile.tile)}
                 tile = tile.move(6, 1)
             col = col.move(2, 1)

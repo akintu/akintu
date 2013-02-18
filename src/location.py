@@ -15,7 +15,8 @@ class Location(object):
         return "(%s, %s, %d)" % (self.pane, self.tile, self.direction)
         
     def __eq__(self, other):
-        return self.pane == other.pane and self.tile == other.tile
+        if isinstance(other, self.__class__):
+            return self.pane == other.pane and self.tile == other.tile
         
     def __ne__(self, other):
         return not self == other
