@@ -11,7 +11,7 @@ class GameServer():
 
         LoopingCall(self.server_loop).start(0)
 
-        self.players = {}  # {Port: _Player} of all players
+        self.players = {}  # {Port: Person} of all players
         self.panes = {}  # {location.Pane: Pane} Dictionary of actual pane objects
 
     def server_loop(self):
@@ -20,8 +20,8 @@ class GameServer():
 
             ###### CreatePerson ######
             if isinstance(command, Person) and command.action == PersonActions.CREATE:
-                #Assume clients only send this when they want to create themselves
-                #Send new sprite to all clients, then give calling client everything on pane
+                # Assume clients only send this when they want to create themselves
+                # Send new sprite to all clients, then give calling client everything on pane
 
                 self.load_panes(command)
                 
@@ -38,20 +38,23 @@ class GameServer():
 
                 # Send list of players to the issuing client
                 for i, person in self.panes[command.location.pane].people.iteritems():
-                    details = None
-                    if isinstance(person, PlayerCharacter):
-                        details = (1, person.race, person.characterClass)
-                    else:
-                        details = (2,)
-                    self.SDF.send(port, Person(PersonActions.CREATE, i, person.location, details))
+                    if i != command.id:
+                        details = None
+                        if isinstance(person, PlayerCharacter):
+                            details = (1, person.race, person.characterClass)
+                        else:
+                            details = (2,)
+                        self.SDF.send(port, Person(PersonActions.CREATE, i, person.location, details))
 
             ###### MovePerson ######
             if isinstance(command, Person) and command.action == PersonActions.MOVE:
                 self.load_panes(command)
                 if self.panes[command.location.pane].is_tile_passable(command.location) and \
                         command.location.tile not in [x.location.tile for x in self.panes[command.location.pane].people.values()]:
+                    
+                    # If the origin and destination are in the same pane
                     if self.players[port].location.pane == command.location.pane:
-                        #Update location and broadcast
+                        # Update location and broadcast
                         self.panes[command.location.pane].people[command.id].location = command.location
                         self.players[port].location = command.location
                         for p, player in self.players.iteritems():
@@ -59,17 +62,17 @@ class GameServer():
                                 if command.location.pane == player.location.pane:
                                     self.SDF.send(p, command)
                     else:
-                        #Remove player from old pane on all relevent clients and server
+                        # Remove player from old pane on all relevent clients and server
                         del self.panes[self.players[port].location.pane].people[command.id]
                         command.action = PersonActions.REMOVE
                         for p, player in self.players.iteritems():
                             if self.players[port].location.pane == player.location.pane:
                                 self.SDF.send(p, command)
 
-                        #Update location
+                        # Update location
                         self.players[port].location = command.location
 
-                        #Add player to new pane lists
+                        # Add player to new pane lists
                         command.action = PersonActions.CREATE
                         command.details = (1, self.players[port].race, self.players[port].characterClass)
                         self.panes[command.location.pane].people[self.players[port].id] = self.players[port]
@@ -132,6 +135,6 @@ class GameServer():
                 current_panes.append((x + dx, y + dy))
         for pane in self.panes.keys():
             if pane not in current_panes:
-                #Save pane state to disk and then...
+                # Save pane state to disk and then...
                 print("Unloading pane " + str(pane))
                 del self.panes[pane]

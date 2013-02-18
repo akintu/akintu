@@ -50,7 +50,8 @@ class Game(object):
         # Set up game engine
         self.screen = GameScreen()
 
-        self.CDF.send(Person(PersonActions.CREATE, None, Location((0, 0), (PANE_X/2, PANE_Y/2)), (CreatureTypes.PLAYER, "Human", "Assassin")))
+        self.CDF.send(Person(PersonActions.CREATE, None, Location((0, 0), (PANE_X/2, PANE_Y/2)), \
+            (CreatureTypes.PLAYER, "Human", "Assassin")))
 
         self.setup.stop()
         LoopingCall(self.game_loop).start(1.0 / DESIRED_FPS)
@@ -69,23 +70,20 @@ class Game(object):
 
             ###### CreatePerson ######
             if isinstance(command, Person) and command.action == PersonActions.CREATE:
-                if self.id == -1:  # Pane setup, player already drawn
+                if self.id == -1:  # Need to setup the pane
                     self.id = command.id
                     self.switch_panes(command.location)
                     self.location = command.location
-                else:
-                    if command.details[0] == CreatureTypes.PLAYER:
-                        self.pane.people[command.id] = TheoryCraft.getNewPlayerCharacter(command.details[1], command.details[2])
-                    if command.details[0] == CreatureTypes.MONSTER:
-                        self.pane.people[command.id] = TheoryCraft.getMonster()
-                    # TODO: The persondict (and imagepath) should be
-                    # constructed in separate method
-                    imagepath = os.path.join('res', 'images', 'sprites',
-                                             self.pane.people[command.id].image)
-                    persondict = {'location': command.location,
-                                  'image': imagepath,
-                                  'team': 'Players'}
-                    self.screen.add_person(command.id, persondict)
+            
+                if command.details[0] == CreatureTypes.PLAYER:
+                    self.pane.people[command.id] = \
+                        TheoryCraft.getNewPlayerCharacter(command.details[1], command.details[2])
+                if command.details[0] == CreatureTypes.MONSTER:
+                    self.pane.people[command.id] = TheoryCraft.getMonster()
+
+                imagepath = os.path.join('res', 'images', 'sprites', self.pane.people[command.id].image)
+                persondict = {'location': command.location, 'image': imagepath, 'team': 'Players'}
+                self.screen.add_person(command.id, persondict)
 
             ###### MovePerson ######
             if isinstance(command, Person) and command.action == PersonActions.MOVE:
@@ -122,7 +120,8 @@ class Game(object):
     def move_person(self, direction, distance):
         newloc = self.location.move(direction, distance)
         if (self.location.pane == newloc.pane and self.pane.is_tile_passable(newloc) and \
-                newloc.tile not in [x.location.tile for x in self.pane.people.values()]) or self.location.pane != newloc.pane:
+                newloc.tile not in [x.location.tile for x in self.pane.people.values()]) or \
+                self.location.pane != newloc.pane:
             if self.running:
                 self.CDF.send(Person(PersonActions.STOP, self.id))
                 self.running = False
