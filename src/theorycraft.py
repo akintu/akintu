@@ -43,7 +43,7 @@ class TheoryCraft(object):
         TheoryCraft.hasLoaded = True
         
     @staticmethod
-    def getMonster(index=None, loc=location.Location((0, 0), (PANE_X/2, PANE_Y/2)), level=2, region=None, name=None):
+    def getMonster(loc=location.Location((0, 0), (PANE_X/2, PANE_Y/2)), level=2, region=None, name=None):
         theMonster = None
         if name:
             for mon in TheoryCraft.monsters:
@@ -60,18 +60,16 @@ class TheoryCraft(object):
             else:
                 # No monster of this level exists, just give a default monster for testing.
                 theMonster = monster.Monster(TheoryCraft.monsters[0])
-        theMonster.index = index
         theMonster.location = loc
         return theMonster
         
     @staticmethod
-    def getNewPlayerCharacter(race, characterClass, index=None, loc=location.Location((0, 0), (PANE_X/2, PANE_Y/2))):
+    def getNewPlayerCharacter(race, characterClass, loc=location.Location((0, 0), (PANE_X/2, PANE_Y/2))):
         race = race.capitalize()
         characterClass = characterClass.capitalize()
         for char in TheoryCraft.classes:
             if char['name'] == race + " " + characterClass:
                 pc = playercharacter.PlayerCharacter(char)
-                pc.index = index
                 pc.location = loc
                 return pc
         print "Bad character name/race, returning nothing; you're so stupid."

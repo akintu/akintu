@@ -15,8 +15,14 @@ from world import *
 
 
 class GameScreen(object):
+    '''
+    Main graphics engine for Akintu
+    '''
 
     def __init__(self):
+        '''
+        Initialize Akintu graphics engine with default settings
+        '''
         self.screen = pygame.display.set_mode((1280, 640))
         pygame.display.set_caption('Akintu r01')
         self.background = pygame.Surface((1024, 640))
@@ -29,7 +35,10 @@ class GameScreen(object):
         pygame.display.flip()
 
     def set_pane(self, pane):
-        # Remove all persons
+        '''
+        Set the Pane for the graphics engine to display
+        '''
+        # Remove all persons first
         for personid in list(self.persons):
             self.personsgroup.remove(self.persons[personid])
             self.persons.pop(personid)
@@ -48,6 +57,9 @@ class GameScreen(object):
         self.draw_world()
 
     def draw_world(self):
+        '''
+        Draw the world (represented by a Pane)
+        '''
         for i, j in [(i, j) for i in range(PANE_X) for j in range(PANE_Y)]:
             tile = self.pane.tiles[(i, j)]
 
@@ -69,6 +81,9 @@ class GameScreen(object):
         pygame.display.update()
 
     def update_tile(self, tile, location):
+        '''
+        Update a specific tile in the current pane
+        '''
         self.pane.tiles[location.tile] = tile
         i, j = location.tile
 
@@ -93,6 +108,32 @@ class GameScreen(object):
         pygame.display.update()
 
     def add_person(self, personid, statsdict):
+        '''
+        Add a Person object to the world
+
+        Required entries in statsdict:
+            - 'image'
+            - 'location'
+
+        Supported entries in statsdict:
+            - 'image'
+            - 'location'
+
+        To be supported in the future:
+            - 'name'
+            - 'HP'
+            - 'MP'
+            - 'AP'
+            - 'buffedHP'
+            - 'totalHP'
+            - 'totalMP'
+            - 'totalAP'
+            - 'location'
+            - 'statusList'
+            - 'cooldownList'
+            - time remaining
+            - is it the players turn?
+        '''
         if 'image' not in statsdict or \
            'location' not in statsdict:
             raise Exception('Image or location not defined')
@@ -101,26 +142,50 @@ class GameScreen(object):
         self.personsgroup.add(self.persons[personid])
 
     def remove_person(self, personid):
+        '''
+        Remove a Person object from the world
+        '''
         self.personsgroup.remove(self.persons[personid])
         self.persons.pop(personid)
 
     def update_person(self, personid, statsdict):
+        '''
+        Update statsdict for a Person object
+
+        See documentation for add_person() to see supported entries in
+        statsdict
+        '''
         if 'location' in statsdict:
             self.persons[personid].newest_coord = statsdict['location']
 
     def update(self):
+        '''
+        Updates and redraws necessary parts of the game world
+
+        Should be called once per game loop cycle
+        '''
         self.personsgroup.update()
         rectlist = self.personsgroup.draw(self.screen)
         pygame.display.update(rectlist)
         self.personsgroup.clear(self.screen, self.background)
 
     def set_fps(self, fps):
+        '''
+        Set the FPS in the title bar (if enabled)
+        '''
         if SHOW_FPS:
             pygame.display.set_caption("%s %d" % (CAPTION, fps))
 
 
 class PersonSprite(pygame.sprite.DirtySprite):
     def __init__(self, statsdict):
+        '''
+        Initialize the PersonSprite
+
+        Entries required in statsdict:
+            - 'image'
+            - 'location'
+        '''
         pygame.sprite.DirtySprite.__init__(self)
         # Store away the statsdict
         self.statsdict = statsdict
@@ -145,11 +210,17 @@ class PersonSprite(pygame.sprite.DirtySprite):
         self.rect.topleft = [x*TILE_SIZE for x in loc.tile]
 
     def update(self):
+        '''
+        Hook for SpritesGroup update() calls
+
+        Checks for new coordinate, updates location if necessary
+        '''
         if self.current_coord != self.newest_coord:
             self.current_coord = self.newest_coord
             self.rect.topleft = [x*TILE_SIZE for x in self.newest_coord.tile]
             self.image = self.images[self.newest_coord.direction]
 
+####### MISC Utility Functions #######
 
 def facing_overlays(imageloc):
     '''
