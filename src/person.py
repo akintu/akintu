@@ -1866,7 +1866,7 @@ class Person(en.Entity):
         Will not allow non-positive values.
         """
         if value > 0:
-            self_.baseDexterity = value
+            self._baseDexterity = value
         
     @property
     def totalStrength(self):
@@ -1918,7 +1918,7 @@ class Person(en.Entity):
         Will not allow non-positive values.
         """
         if value > 0:
-            self_.baseStrength = value      
+            self._baseStrength = value      
     
     @property
     def totalCunning(self):
@@ -1970,7 +1970,7 @@ class Person(en.Entity):
         Will not allow non-positive values.
         """
         if value > 0:
-            self_.baseCunning = value   
+            self._baseCunning = value   
     
     @property
     def totalSorcery(self):
@@ -2025,7 +2025,7 @@ class Person(en.Entity):
         Will not allow non-positive values.
         """
         if value > 0:
-            self_.baseSorcery = value   
+            self._baseSorcery = value   
 
     @property
     def totalPiety(self):
@@ -2077,7 +2077,7 @@ class Person(en.Entity):
         Will not allow non-positive values.
         """
         if value > 0:
-            self_.basePiety = value 
+            self._basePiety = value 
             
     @property
     def totalConstitution(self):
@@ -2129,7 +2129,7 @@ class Person(en.Entity):
         Will not allow non-positive values.
         """
         if value > 0:
-            self_.baseConstitution = value  
+            self._baseConstitution = value  
             
     # Derived Attributes
           
@@ -2180,8 +2180,8 @@ class Person(en.Entity):
     
     @HP.setter
     def HP(self, value):
-        if value > self._totalHP:
-            value = self._totalHP
+        if value > self.totalHP:
+            value = self.totalHP
         if value < 0:
             value = 0
         self._HP = value            
@@ -2210,7 +2210,17 @@ class Person(en.Entity):
     @baseHP.setter
     def baseHP(self, value):
         self._baseHP = value
-    
+        self.HP = self.totalHP
+
+    @property
+    def totalMP(self):
+        """The maximum MP of the player.  Is determined by class, level,
+        equipment, skills, statuses, and base attributes."""
+        if self.totalPiety == 0 or self._baseMP == 0:
+            return self._baseMP
+        else:
+            return max(0, self._baseMP + (self.totalPiety - 10) * 4 + self.equipmentMP)
+        
     @property
     def MP(self):
         """The current Mana Points of a PlayerCharacter"""
@@ -2221,19 +2231,9 @@ class Person(en.Entity):
         """Will not exceed totalMP"""
         if value < 0:
             value = 0
-        if value > totalMP:
-            value = totalMP
+        if value > self.totalMP:
+            value = self.totalMP
         self._MP = value
-        
-    @property
-    def totalMP(self):
-        """The maximum MP of the player.  Is determined by class, level,
-        equipment, skills, statuses, and base attributes."""
-        if( self.totalPiety == 0 ):
-            return self._baseMP
-        else:
-            return max(0, self._baseMP + (self.totalPiety - 10) * 4 + self.equipmentMP)
-        # TODO Fix non-casters showing mana.
         
     @property
     def baseMP(self):
@@ -2242,6 +2242,7 @@ class Person(en.Entity):
     @baseMP.setter
     def baseMP(self, value):
         self._baseMP = value
+        self.MP = self.totalMP
         
     @property
     def equipmentMP(self):

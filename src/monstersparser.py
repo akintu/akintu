@@ -99,8 +99,8 @@ class MonstersParser(object):
                 MonstersParser.associate(f, f.readline(), armorPenetrationTag, mDict, 'startingArmorPenetration', 
                                                                                'levelupArmorPenetration')
                 MonstersParser.associate(f, f.readline(), attackElementTag, mDict, 'attackElement')
-                MonstersParser.associate(f, f.readline(), attackMinTag, mDict, 'attackMin', 'levelupAttackMin')
-                MonstersParser.associate(f, f.readline(), attackMaxTag, mDict, 'attackMax', 'levelupAttackMax')
+                MonstersParser.associate(f, f.readline(), attackMinTag, mDict, 'attackMin', 'levelupMinDamage')
+                MonstersParser.associate(f, f.readline(), attackMaxTag, mDict, 'attackMax', 'levelupMaxDamage')
                 MonstersParser.associate(f, f.readline(), attackRangeTag, mDict, 'attackRange')
                 MonstersParser.associate(f, f.readline(), cunningTag, mDict, 'startingCunning', 'levelupCunning')
                 MonstersParser.associate(f, f.readline(), dexterityTag, mDict, 'startingDexterity', 'levelupDexterity')

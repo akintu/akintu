@@ -40,7 +40,7 @@ class Dice(object):
     def roll(minimum, maximum):
         """Returns an integer somewhere between the minimum and maximum (as an integer)."""
         if minimum == maximum:
-            return 0
+            return minimum
         return random.randint(minimum, maximum)
         
     @staticmethod

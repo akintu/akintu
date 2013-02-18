@@ -43,17 +43,20 @@ class TheoryCraft(object):
         TheoryCraft.hasLoaded = True
         
     @staticmethod
-    def getMonster(index=None, loc=location.Location((0, 0), (PANE_X/2, PANE_Y/2)), level=2, region=None, name=None):
+    def getMonster(index=None, loc=location.Location((0, 0), (PANE_X/2, PANE_Y/2)), level=2, name=None, tolerance=1, ignoreMaxLevel=False):
         theMonster = None
+        levelChoice = Dice.roll(max(1, level - tolerance), min(20, level + tolerance))
         if name:
             for mon in TheoryCraft.monsters:
                 if mon['name'] == name:
                     theMonster = monster.Monster(mon)
                     break
-        # TODO: search by region
-        # TODO: This is a stub...
         else:
-            inLevelList = [x for x in TheoryCraft.monsters if x['level'] == level]
+            inLevelList = None
+            if ignoreMaxLevel: 
+                inLevelList = [x for x in TheoryCraft.monsters if x['minLevel'] <= levelChoice]
+            else:
+                inLevelList = [x for x in TheoryCraft.monsters if x['minLevel'] <= levelChoice and x['maxLevel'] >= levelChoice]
             if inLevelList:
                 choice = Dice.roll(0, len(inLevelList) - 1)
                 theMonster = monster.Monster(inLevelList[choice])
@@ -62,6 +65,7 @@ class TheoryCraft(object):
                 theMonster = monster.Monster(TheoryCraft.monsters[0])
         theMonster.index = index
         theMonster.location = loc
+        theMonster.setLevel(levelChoice)
         return theMonster
         
     @staticmethod
@@ -77,25 +81,34 @@ class TheoryCraft(object):
         print "Bad character name/race, returning nothing; you're so stupid."
         
     @staticmethod
-    def generateMonsterGroup(initialMonster, levelTolerance=1):
+    def generateMonsterGroup(initialMonster, levelTolerance=1, numberOfPlayers=1, ignoreMaxLevel=False):
         ''' Generates a 'random' grouping of monsters
         based on the Monster this method is called on.
         The initialMonster supplied will be in the group,
         and this method will attempt to fill up the GP.
-        This method will not scale the HP of the monsters.
+        This method WILL scale the HP of the monsters.
         Inputs:
           initialMonster -- the Monster that was on the overworld
              representing this group.
           levelTolerance -- int*; defaults to 1.  Indicates the
                       number of levels +/- allowed to deviate
                       from the initial monster's level.
+          numberOfPlayers -- int*; used to determine how much to scale
+                      maximum HP by.
+          ignoreMaxLevel -- bool*; if set to True, will allow monsters
+                      to be generated beyond their recommended maximum
+                      level.
         Outputs:
           list of Monsters '''
-        # TODO: Add in region logic when we have regions.
+        # Add in category logic when we have regions?  Do we want this ever?
         listOfMonsters = [initialMonster]
-        subList = [x for x in TheoryCraft.monsters if
-                   x['level'] <= initialMonster.level + levelTolerance and
-                   x['level'] >= initialMonster.level - levelTolerance]
+        if ignoreMaxLevel:
+            subList = [x for x in TheoryCraft.monsters if
+                       x['minLevel'] <= initialMonster.level + levelTolerance]
+        else:
+            subList = [x for x in TheoryCraft.monsters if
+                       x['minLevel'] <= initialMonster.level + levelTolerance and
+                       x['maxLevel'] >= initialMonster.level - levelTolerance]
         minGP = initialMonster.GP
         for m in subList:
             if m['GP'] < minGP:
@@ -104,7 +117,14 @@ class TheoryCraft(object):
         while(minGP <= TheoryCraft.GROUP_GP - currentGP):
             selection = Dice.roll(0, len(subList) - 1)
             if subList[selection]['GP'] <= TheoryCraft.GROUP_GP - currentGP:
+                addingMonster = monster.Monster(subList[selection])
+                addingMonster.setLevel(initialMonster.level)
                 listOfMonsters.append(monster.Monster(subList[selection]))
                 currentGP += subList[selection]['GP']
+                
+        for mon in listOfMonsters:
+            mon.adjustMaxHP(numberOfPlayers)
         return listOfMonsters
+        
+        
         
