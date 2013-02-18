@@ -21,7 +21,7 @@ class World(object):
     def __init__(self, seed):
         self.seed = seed
 
-    def get_pane(self, location):
+    def get_pane(self, location, is_server=False):
         self.panes = dict()
         surrounding_panes = Location(location, None).get_surrounding_panes()
         for key, loc in surrounding_panes.iteritems():
@@ -30,6 +30,8 @@ class World(object):
         self._merge_tiles(surrounding_panes)
         
         self.panes[location] = Pane(self.seed, location)
+        if not is_server:
+            self.panes[location].person = {}
         return self.panes[location]
     
     def _generate_world(self):
@@ -79,7 +81,7 @@ class Pane(object):
         self.images.update(self.treesheet.images.items())
         self.images.update(self.rocksheet.images.items())
         self.tiles = dict()
-        self.people = {}
+        self.person = {}
         
         for i in range(PANE_X):
             for j in range(PANE_Y):
@@ -91,14 +93,13 @@ class Pane(object):
                 if rock:
                     self.tiles[(i, j)].entities.append(Entity((i, j), image=rock))
                 #self.add_obstacle((i, j))
+                
+        #person = TheoryCraft.getNewPlayerCharacter("Human", "Barbarian")
+        person = TheoryCraft.getMonster()
+        self.person[id(person)] = person
         
     def is_tile_passable(self, location):
         return self.tiles[location.tile].is_passable()
-        
-    def generate_creatures(self):
-        #self.people.append(TheoryCraft.getNewPlayerCharacter("Human", "Barbarian", len(self.people)))
-        person = TheoryCraft.getMonster()
-        self.people[id(person)] = person
     
     def get_edge_tiles(self, edge):
         passable_list = []

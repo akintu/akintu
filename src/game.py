@@ -26,7 +26,7 @@ class Game(object):
         Sprites.load(seed)
         self.world = World(seed)
         self.keystate = 0
-        self.running = 0
+        self.running = False
         self.id = -1
 
         self.serverip = "localhost"
@@ -76,18 +76,19 @@ class Game(object):
                     self.location = command.location
             
                 if command.details[0] == CreatureTypes.PLAYER:
-                    self.pane.people[command.id] = \
+                    self.pane.person[command.id] = \
                         TheoryCraft.getNewPlayerCharacter(command.details[1], command.details[2])
                 if command.details[0] == CreatureTypes.MONSTER:
-                    self.pane.people[command.id] = TheoryCraft.getMonster()
-
-                imagepath = os.path.join('res', 'images', 'sprites', self.pane.people[command.id].image)
+                    self.pane.person[command.id] = TheoryCraft.getMonster()
+                self.pane.person[command.id].location = command.location
+                    
+                imagepath = os.path.join('res', 'images', 'sprites', self.pane.person[command.id].image)
                 persondict = {'location': command.location, 'image': imagepath, 'team': 'Players'}
                 self.screen.add_person(command.id, persondict)
 
             ###### MovePerson ######
             if isinstance(command, Person) and command.action == PersonActions.MOVE:
-                self.pane.people[command.id].location = command.location
+                self.pane.person[command.id].location = command.location
                 self.screen.update_person(command.id, {'location': command.location})
                 if self.id == command.id:
                     self.location = command.location
@@ -96,11 +97,16 @@ class Game(object):
             if isinstance(command, Person) and command.action == PersonActions.REMOVE:
                 if command.id == self.id:
                     self.id = -1
-                    self.pane.people = {}
+                    self.pane.person = {}
                 else:
                     self.screen.remove_person(command.id)
-                    del self.pane.people[command.id]
-
+                    del self.pane.person[command.id]
+                    
+            ###### StopRunning ######
+            if isinstance(command, Person) and command.action == PersonActions.STOP:
+                if command.id == self.id:
+                    self.running = False
+                    
     def handle_events(self):
         pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
         for event in pygame.event.get():
@@ -120,7 +126,7 @@ class Game(object):
     def move_person(self, direction, distance):
         newloc = self.location.move(direction, distance)
         if (self.location.pane == newloc.pane and self.pane.is_tile_passable(newloc) and \
-                newloc.tile not in [x.location.tile for x in self.pane.people.values()]) or \
+                newloc.tile not in [x.location.tile for x in self.pane.person.values()]) or \
                 self.location.pane != newloc.pane:
             if self.running:
                 self.CDF.send(Person(PersonActions.STOP, self.id))
