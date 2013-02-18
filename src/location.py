@@ -84,19 +84,8 @@ class Location(object):
             9: TOP_RIGHT    ( 1,-1)    
         '''
 
-        panes = dict()
-        x = self.pane[0]
-        y = self.pane[1]
-        panes[1] = tuple((x-1, y+1))
-        panes[2] = tuple((x, y+1))
-        panes[3] = tuple((x+1, y+1))
-        panes[4] = tuple((x-1, y))
-        panes[5] = tuple((x, y))
-        panes[6] = tuple((x+1, y))
-        panes[7] = tuple((x-1, y-1))
-        panes[8] = tuple((x, y-1))
-        panes[9] = tuple((x+1, y-1))
-        return panes
+        return {((-dy + 1) * 3) + dx + 2: \
+            (self.pane[0] + dx, self.pane[1] + dy) for dx in range(-1, 2) for dy in range(1, -2, -1)}
     
     def distance(self, dest):
         return  abs((self.pane[0] * PANE_X + self.tile[0]) - \
