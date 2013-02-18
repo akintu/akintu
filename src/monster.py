@@ -71,6 +71,9 @@ class Monster(person.Person):
         self.attackMaxDamage = Monster.setFrom(argDict, 'attackMax')
         self.attackRange = Monster.setFrom(argDict, 'attackRange')
         
+        # Add levelup stats TODO
+        # Add leveling functionality TODO
+        
         
     def adjustMaxHP(self, numberOfPlayers):
         if numberOfPlayers == 1:
