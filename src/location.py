@@ -2,6 +2,7 @@
 Location Class
 '''
 from const import *
+import math
 
 class Location(object):
     def __init__(self, pane, tile, direction=2):
@@ -12,6 +13,17 @@ class Location(object):
     # So it turns out __repr__ is like toString()
     def __repr__(self):
         return "(%s, %s, %d)" % (self.pane, self.tile, self.direction)
+        
+    def __eq__(self, other):
+        return self.pane == other.pane and self.tile == other.tile
+        
+    def __ne__(self, other):
+        return not self == other
+        
+    def __hash__(self):
+        str = "%04d%04d%02d%02d" % (self.pane[0], self.pane[1], self.tile[0], self.tile[1])
+        str = str.replace("-", "1")
+        return int(str)
 
     def move(self, direction, distance):
         '''
@@ -93,6 +105,12 @@ class Location(object):
                 abs((self.pane[1] * PANE_Y + self.tile[1]) - \
                 (dest.pane[1] * PANE_Y + dest.tile[1]))
                 
+    def radius(self, rad):
+        return math.sqrt(((self.pane[0] * PANE_X + self.tile[0]) - \
+                (rad.pane[0] * PANE_X + rad.tile[0]))**2 + \
+                ((self.pane[1] * PANE_Y + self.tile[1]) - \
+                (rad.pane[1] * PANE_Y + rad.tile[1]))**2)
+                
     def in_melee_range(self, dest):
         if self.pane != dest.pane:
             return False
@@ -107,6 +125,7 @@ if __name__ == "__main__":
     d = Location((3, 1), (0, 0))
     e = Location((0, 0), (0, 0))
     assert a.distance(b) == 20
+    assert a.distance(b) == b.distance(a)
     assert a.distance(c) == 5
     assert a.distance(d) == 35
     assert a.distance(e) == 151
@@ -117,6 +136,7 @@ if __name__ == "__main__":
     assert a.in_melee_range(g) == True
     h = Location((3, 1), (15, 18))
     assert a.in_melee_range(h) == False
+    assert a.radius(b) == math.sqrt(200)
     
     #TEST get_surrounding_panes()
     i = Location((0, 0), None)
