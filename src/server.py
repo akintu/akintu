@@ -82,7 +82,6 @@ class GameServer():
                     
                         # Update location in server memory
                         self.person[command.id].location = command.location
-                        print command.location
                     
                         # Add player to new pane lists and send to clients in the affected pane
                         self.pane[command.location.pane].person.append(command.id)

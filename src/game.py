@@ -73,7 +73,6 @@ class Game(object):
                 if self.id == -1:  # Need to setup the pane
                     self.id = command.id
                     self.switch_panes(command.location)
-                    self.location = command.location
             
                 if command.details[0] == CreatureTypes.PLAYER:
                     self.pane.person[command.id] = \
@@ -90,8 +89,6 @@ class Game(object):
             if isinstance(command, Person) and command.action == PersonActions.MOVE:
                 self.pane.person[command.id].location = command.location
                 self.screen.update_person(command.id, {'location': command.location})
-                if self.id == command.id:
-                    self.location = command.location
 
             ###### RemovePerson ######
             if isinstance(command, Person) and command.action == PersonActions.REMOVE:
@@ -124,10 +121,10 @@ class Game(object):
                     self.move_person(MOVE_KEYS[event.key], 1)
 
     def move_person(self, direction, distance):
-        newloc = self.location.move(direction, distance)
-        if (self.location.pane == newloc.pane and self.pane.is_tile_passable(newloc) and \
+        newloc = self.pane.person[self.id].location.move(direction, distance)
+        if (self.pane.person[self.id].location.pane == newloc.pane and self.pane.is_tile_passable(newloc) and \
                 newloc.tile not in [x.location.tile for x in self.pane.person.values()]) or \
-                self.location.pane != newloc.pane:
+                self.pane.person[self.id].location.pane != newloc.pane:
             if self.running:
                 self.CDF.send(Person(PersonActions.STOP, self.id))
                 self.running = False
@@ -136,9 +133,10 @@ class Game(object):
                 self.running = True
             else:
                 self.CDF.send(Person(PersonActions.MOVE, self.id, newloc))
-                if self.location.pane == newloc.pane:
-                    self.location = newloc
-                    self.screen.update_person(self.id, {'location': self.location})
+                if self.pane.person[self.id].location.pane == newloc.pane:
+                    self.pane.person[self.id].location = newloc
+                    self.pane.person[self.id].location = newloc
+                    self.screen.update_person(self.id, {'location': self.pane.person[self.id].location})
 
     def switch_panes(self, location):
         #TODO we can add transitions here.
