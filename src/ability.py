@@ -441,6 +441,37 @@ class Ability(object):
             percentPerTurn = 9
             Combat.addStatus(target, "Bleeding", duration, percentPerTurn) 
     
+    def _howl(self, target):
+        '''Lowers Might by 15 and causes 3% of spells to fail. in an area of effect,
+         and deals a small amount of shadow damage.'''
+        source = self.owner
+        targetsList = None # TODO: targetsList = getAllAOETargets("Players", source.location, 4)
+        duration = 5
+        baseShadowDamage = source.level * 3
+        for t in targetsList:
+            Combat.addStatus(t, "Howl", duration)
+            dam = Combat.calcDamage(source, t, baseShadowDamage, baseShadowDamage + 4, "Shadow", "Normal Hit")
+            Combat.lowerHP(t, dam)
+            
+    def _howlCheck(self, target):
+        ''' Only used if there is at least one player in range without the Howl debuff.'''
+        source = self.owner
+        return (False, "") # TODO: Finish this method!
+        
+    def _poisonFang(self, target):
+        ''' Lowers target's poison tolerance and deals poison damage if successful. '''
+        source = self.owner
+        if Combat.calcHit(source, target, "Physical") != "Miss":
+            pRating = 6 + source.level * 2
+            if Combat.calcHit(source, target, "Poison", rating=pRating):
+                tolerancePenalty = 5 + source.level
+                duration = 2
+                Combat.addStatus(target, "Poison Fang", duration, tolerancePenalty)
+                pDamMin = 6 + source.level * 2
+                pDamMax = 9 + source.level * 2
+                damage = Combat.calcDamage(source, target, pDamBase, pDamMax, "Poison", "Normal Hit")
+                Combat.lowerHP(target, damage)
+        
     def _smash(self, target):
         ''' Deal +20% damage with +15 armor penetration '''
         source = self.owner
@@ -934,6 +965,32 @@ class Ability(object):
         'range' : 1,
         'target' : 'hostile',
         'action' : _drawBlood,
+        'cooldown' : 1,
+        'checkFunction' : None,
+        'breakStealth' : 100
+        },
+        'Howl':
+        {
+        'level' : 1,
+        'class' : 'Monster',
+        'HPCost' : 0,
+        'APCost' : 10,
+        'range' : 0,
+        'target' : 'location',
+        'action' : _howl,
+        'cooldown' : 4,
+        'checkFunction' : _howlCheck,
+        'breakStealth' : 100
+        },
+        'Poison Fang':
+        {
+        'level' : 1,
+        'class' : 'Monster',
+        'HPCost' : 0,
+        'APCost' : 8,
+        'range' : 1,
+        'target' : 'hostile',
+        'action' : _poisonFang,
         'cooldown' : 1,
         'checkFunction' : None,
         'breakStealth' : 100

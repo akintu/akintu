@@ -118,7 +118,8 @@ class TheoryCraft(object):
             selection = Dice.roll(0, len(subList) - 1)
             if subList[selection]['GP'] <= TheoryCraft.GROUP_GP - currentGP:
                 addingMonster = monster.Monster(subList[selection])
-                addingMonster.setLevel(initialMonster.level)
+                if initialMonster.level >= addingMonster.minLevel:
+                    addingMonster.setLevel(initialMonster.level)
                 listOfMonsters.append(monster.Monster(subList[selection]))
                 currentGP += subList[selection]['GP']
                 

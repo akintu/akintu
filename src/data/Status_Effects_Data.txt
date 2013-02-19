@@ -205,6 +205,10 @@
   [TYPE: Internal]
   [RECURRING: False]
   
+[NAME: Might_penalty]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
 [NAME: Movement_speed_penalty]
   [TYPE: Internal]
   [RECURRING: False]
@@ -1656,7 +1660,23 @@
     [MAGNITUDE: 3]
   [CATEGORY: Debuff]
 
-	
+# Display Effects -- Monster abilities
+
+[NAME: Howl]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Might_penalty]
+    [MAGNITUDE: 15]
+  [INTERNAL: Spell_failure_chance]
+    [MAGNITUDE: 3]
+  [CATEGORY: Debuff]
+
+[NAME: Poison Fang]
+  [TYPE: Display]
+  [ELEMENT: Poison]
+  [INTERNAL: Poison_tolerance_penalty]
+    [MAGNITUDE: 0]
+  [CATEGORY: Debuff]
 	
 	
 	

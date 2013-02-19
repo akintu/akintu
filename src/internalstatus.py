@@ -175,6 +175,9 @@ def Melee_force_bonus_method(self, target, magnitude):
 def Might_bonus_method(self, target, magnitude):
     target.statusMight += magnitude
 
+def Might_penalty_method(self, target, magnitude):
+    target.statusMight -= magnitude
+    
 def Movement_speed_penalty_method(self, target, magnitude):
     target.movementTiles *= (100 - magnitude)/100
 
@@ -408,6 +411,9 @@ def Melee_force_bonus_method_reverse(self, target, magnitude):
 
 def Might_bonus_method_reverse(self, target, magnitude):
     target.statusMight -= magnitude
+    
+def Might_penalty_method_reverse(self, target, magnitude):
+    target.statusMight += magnitude
 
 def Movement_speed_penalty_method_reverse(self, target, magnitude):
     target.movementTiles /= (100 - magnitude)/100
@@ -573,6 +579,7 @@ applyFunctionDict = {
     'Melee_dodge_bonus' : Melee_dodge_bonus_method,
     'Melee_force_bonus' : Melee_force_bonus_method,
     'Might_bonus' : Might_bonus_method,
+    'Might_penalty' : Might_penalty_method,
     'Movement_speed_penalty' : Movement_speed_penalty_method,
     'Movement_tiles_penalty' : Movement_tiles_penalty_method,
     'No_turn' : No_turn_method,
@@ -661,6 +668,7 @@ unapplyFunctionDict = {
     'Melee_dodge_bonus' : Melee_dodge_bonus_method_reverse,
     'Melee_force_bonus' : Melee_force_bonus_method_reverse,
     'Might_bonus' : Might_bonus_method_reverse,
+    'Might_penalty' : Might_penalty_method_reverse,
     'Numbing_poison_internal' : Numbing_poison_method_reverse,
     'Movement_speed_penalty' : Movement_speed_penalty_method_reverse,
     'Movement_tiles_penalty' : Movement_tiles_penalty_method_reverse,
