@@ -87,7 +87,7 @@ class TheoryCraft(object):
         ''' Generates a 'random' grouping of monsters
         based on the Monster this method is called on.
         The initialMonster supplied will be in the group,
-        and this method will attempt to fill up the GP.
+        and this method will attempt to fill up the GP (Group points).
         This method WILL scale the HP of the monsters.
         Inputs:
           initialMonster -- the Monster that was on the overworld
