@@ -11,9 +11,9 @@ class GameServer():
 
         LoopingCall(self.server_loop).start(0)
 
-        self.player = {}  # {Port: Person} of all players
-        self.person = {} # {PersonID: Person} of all persons
-        self.pane = {}  # {location.Pane: Pane} Dictionary of actual pane objects
+        self.player = {}  # {Port: PersonID} Dict of all players, pointing to their personid
+        self.person = {} # {PersonID: Person} Dict of all persons
+        self.pane = {}  # {location.Pane: Pane} Dict of actual pane objects
 
     def server_loop(self):
         while not self.SDF.queue.empty():
@@ -96,7 +96,8 @@ class GameServer():
                                 self.SDF.send(p, command)
 
                         # Send list of players to the issuing client
-                        if port:
+                        if command.id in [i for i in self.player.values()]:
+                            p = [p for p, i in self.player.iteritems() if i == command.id][0]
                             for i in self.pane[command.location.pane].person:
                                 if i != command.id:
                                     details = None
@@ -104,7 +105,7 @@ class GameServer():
                                         details = (1, self.person[i].race, self.person[i].characterClass)
                                     else:
                                         details = (2,)
-                                    self.SDF.send(port, Person(PersonActions.CREATE, i, self.person[i].location, details))
+                                    self.SDF.send(p, Person(PersonActions.CREATE, i, self.person[i].location, details))
 
                         self.unload_panes()
                 else:
