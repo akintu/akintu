@@ -43,7 +43,9 @@ class TheoryCraft(object):
         TheoryCraft.hasLoaded = True
         
     @staticmethod
-    def getMonster(index=None, loc=location.Location((0, 0), (PANE_X/2, PANE_Y/2)), level=2, name=None, tolerance=1, ignoreMaxLevel=False):
+    def getMonster(index=None, loc=location.Location((0, 0), (PANE_X/2, PANE_Y/2)), level=None, name=None, tolerance=1, ignoreMaxLevel=False):
+        if not level:
+            level = Dice.roll(1,3)
         theMonster = None
         levelChoice = Dice.roll(max(1, level - tolerance), min(20, level + tolerance))
         if name:

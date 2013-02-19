@@ -1662,6 +1662,29 @@
 
 # Display Effects -- Monster abilities
 
+[NAME: Draconic Guard]
+  [TYPE: Display]
+  [ELEMENT: Fire]
+  [INTERNAL: Magic_resist_bonus]
+    [MAGNITUDE: 0]
+  [INTERNAL: Elemental_resistance_fire]
+    [MAGNITUDE: 15]
+  [CATEGORY: Buff]
+
+[NAME: Flaming Rend]
+  [TYPE: Display]
+  [ELEMENT: Fire]
+  [INTERNAL: DR_penalty]
+    [MAGNITUDE: 0]
+  [CATEGORY: Debuff]
+
+[NAME: Frigid Slash]
+  [TYPE: Display]
+  [ELEMENT: Cold]
+  [INTERNAL: Movement_tiles_penalty]
+    [MAGNITUDE: 1]
+  [CATEGORY: Debuff]
+  
 [NAME: Howl]
   [TYPE: Display]
   [ELEMENT: None]

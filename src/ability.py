@@ -431,6 +431,24 @@ class Ability(object):
             target.listeners.remove(toRemove)    
     
     # Monsters
+    
+    def _draconicGuard(self, target):
+        ''' Heal 10% of max HP, raise magic resist and fire resist briefly. '''
+        source = self.owner
+        healing = round(source.totalHP * 0.1)
+        Combat.healTarget(source, healing)
+        duration = 3
+        # Fire resist magnitude set at +15%, this magnitude is for spell resist.
+        magnitude = 2 * self.level
+        Combat.addStatus(source, "Draconic Guard", duration, magnitude)
+        
+    def _draconicGuardCheck(self, target):
+        ''' Only used when at <25% of max HP '''
+        source = self.owner
+        if source.HP < source.totalHP * 0.25:
+            return (True, "")
+        return (False, "")
+    
     def _drawBlood(self, target):
         ''' Deal Bleeding of 9% damage per turn for 4 Turns '''
         source = self.owner
@@ -440,6 +458,29 @@ class Ability(object):
             duration = 4
             percentPerTurn = 9
             Combat.addStatus(target, "Bleeding", duration, percentPerTurn) 
+    
+    def _flamingRend(self, target):
+        ''' Deal fire damage and lower target's DR. Lower accuracy than normal.'''
+        source = self.owner
+        hit = Combat.calcHit(source, target, "Physical", modifier=-5)
+        if hit != "Miss":
+            dam = Combat.calcDamage(source, target, self.level * 4, self.level * 6, "Fire", "Normal Hit")
+            Combat.lowerHP(target, dam)
+            duration = 3
+            magnitude = 3 * self.level
+            Combat.addStatus(target, "Flaming Rend", duration, magnitude)             
+    
+    def _frigidSlash(self, target):
+        ''' Deal slashing and cold damage and lower target's movement tiles. Lower accuracy than normal.'''
+        source = self.owner
+        hit = Combat.calcHit(source, target, "Physical", modifier=-6)
+        if hit != "Miss":
+            damSlash = Combat.calcDamage(source, target, 5 + self.level * 2, 5 + self.level * 3, "Slashing", "Normal Hit")
+            damCold = Combat.calcDamage(source, target, self.level * 2, self.level * 3, "Cold", "Normal Hit")
+            Combat.lowerHP(target, damSlash)
+            Combat.lowerHP(target, damCold)
+            duration = 2
+            Combat.addStatus(target, "Frigid Slash", duration)
     
     def _howl(self, target):
         '''Lowers Might by 15 and causes 3% of spells to fail. in an area of effect,
@@ -956,6 +997,19 @@ class Ability(object):
         },
         
         # Monsters
+        'Draconic Guard':
+        {
+        'level' : 1,
+        'class' : 'Monster',
+        'HPCost' : 0,
+        'APCost' : 5,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _draconicGuard,
+        'cooldown' : 4,
+        'checkFunction' : _draconicGuardCheck,
+        'breakStealth' : 100
+        },
         'Draw Blood':
         {
         'level' : 1,
@@ -965,6 +1019,32 @@ class Ability(object):
         'range' : 1,
         'target' : 'hostile',
         'action' : _drawBlood,
+        'cooldown' : 1,
+        'checkFunction' : None,
+        'breakStealth' : 100
+        },
+        'Flaming Rend' :
+        {
+        'level' : 1,
+        'class' : 'Monster',
+        'HPCost' : 0,
+        'APCost' : 11,
+        'range' : 1,
+        'target' : 'hostile',
+        'action' : _flamingRend,
+        'cooldown' : 3,
+        'checkFunction' : None,
+        'breakStealth' : 100
+        },
+        'Frigid Slash' :
+        {
+        'level' : 1,
+        'class' : 'Monster',
+        'HPCost' : 0,
+        'APCost' : 7,
+        'range' : 1,
+        'target' : 'hostile',
+        'action' : _frigidSlash,
         'cooldown' : 1,
         'checkFunction' : None,
         'breakStealth' : 100
