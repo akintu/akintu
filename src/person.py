@@ -2782,10 +2782,10 @@ class Person(en.Entity):
         
     # Non theorycrafted methods go here:
 
-    def add_ai(self, ai_func, **details):
+    def add_ai(self, ai_func, frequency, **details):
         self.ai[ai_func] = details
         self.ai[ai_func]['task'] = LoopingCall(ai_func, **details)
-        self.ai[ai_func]['task'].start(1.0 / self.ai[ai_func]['frequency'])
+        self.ai[ai_func]['task'].start(1.0 / frequency)
         
     def remove_ai(self, ai_func):
         if ai_func in self.ai:
