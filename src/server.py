@@ -145,9 +145,6 @@ class GameServer():
     def ai_run(self, frequency=1, pid=None, direction=None):
         self.SDF.queue.put((None, Person(PersonActions.MOVE, pid, self.person[pid].location.move(direction, 1))))
 
-    #def run_person(self, port, direction):
-    #    self.SDF.queue.put((port, Person(PersonActions.MOVE, self.players[port].id, self.players[port].location.move(direction, 1))))
-
     def load_panes(self, command):
         if command.action in [PersonActions.CREATE, PersonActions.MOVE]:
             if command.location.pane not in self.pane:
