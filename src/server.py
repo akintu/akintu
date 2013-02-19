@@ -2,11 +2,13 @@ from network import *
 from location import *
 from theorycraft import TheoryCraft
 from playercharacter import *
-import random
+from ai import AI
 
 class GameServer():
     def __init__(self, world):
         self.world = world
+        self.ai = AI(self)
+        self.world.set_ai(self.ai)
         self.SDF = ServerDataFactory()
         reactor.listenTCP(1337, self.SDF)
 
@@ -112,7 +114,7 @@ class GameServer():
                         command.location = self.person[command.id].location
                         self.SDF.send(port, command)
                     else:
-                        self.person[command.id].remove_ai(self.ai_run)
+                        self.person[command.id].remove_ai(self.ai.run)
                         for p, i in self.player.iteritems():
                             if i == command.id:
                                 self.SDF.send(p, Person(PersonActions.STOP, i))
@@ -133,29 +135,17 @@ class GameServer():
 
             ###### RunPerson ######
             if isinstance(command, Person) and command.action == PersonActions.RUN:
-                self.person[command.id].add_ai(self.ai_run, 5, pid=command.id, direction=command.location)
+                self.person[command.id].add_ai(self.ai.run, 5, pid=command.id, direction=command.location)
 
             ###### StopPerson ######
             if isinstance(command, Person) and command.action == PersonActions.STOP:
-                self.person[command.id].remove_ai(self.ai_run)
+                self.person[command.id].remove_ai(self.ai.run)
              
     def tile_is_open(self, location):
         return self.pane[location.pane].is_tile_passable(location) and \
                         location.tile not in [self.person[i].location.tile \
                         for i in self.pane[location.pane].person]
              
-    def ai_run(self, pid=None, direction=None):
-        self.SDF.queue.put((None, Person(PersonActions.MOVE, pid, self.person[pid].location.move(direction, 1))))
-        
-    def ai_wander(self, pid=None, region=None, move_chance=0):
-        if random.random() <= move_chance:
-            dirs = [1, 2, 3, 4, 6, 7, 8, 9]
-            direction = random.choice(dirs)
-            while not self.tile_is_open(self.person[pid].location.move(direction, 1)) and len(dirs) > 0:
-                dirs.remove(direction)
-                direction = random.choice(dirs)
-            self.SDF.queue.put((None, Person(PersonActions.MOVE, pid, self.person[pid].location.move(direction, 1))))
-
     def load_panes(self, command):
         if command.action in [PersonActions.CREATE, PersonActions.MOVE]:
             if command.location.pane not in self.pane:

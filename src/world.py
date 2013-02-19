@@ -9,6 +9,7 @@ from const import*
 from sprites import*
 from location import Location
 from theorycraft import TheoryCraft
+from region import *
 
 class World(object):
     '''
@@ -20,16 +21,19 @@ class World(object):
 
     def __init__(self, seed):
         self.seed = seed
+        
+    def set_ai(self, ai):
+        self.ai = ai
 
     def get_pane(self, location, is_server=False):
         self.panes = dict()
         surrounding_panes = Location(location, None).get_surrounding_panes()
         for key, loc in surrounding_panes.iteritems():
             if not loc in self.panes:
-                self.panes[loc] = Pane(self.seed, loc)
+                self.panes[loc] = Pane(self.seed, loc, self.ai)
         self._merge_tiles(surrounding_panes)
         
-        self.panes[location] = Pane(self.seed, location)
+        self.panes[location] = Pane(self.seed, location, self.ai)
         if not is_server:
             self.panes[location].person = {}
         return self.panes[location]
@@ -62,7 +66,7 @@ class Pane(object):
         tiles: Dictionary of coordinate tuples (e.g. (0,1)) to tile objects
     '''
 
-    def __init__(self, seed, location):
+    def __init__(self, seed, location, ai):
         self.PaneCorners = {1:TILE_BOTTOM_LEFT, 3:TILE_BOTTOM_RIGHT, 7:TILE_TOP_LEFT, 9:TILE_TOP_RIGHT}
         self.PaneEdges = {'2':TILES_BOTTOM, '4':TILES_LEFT, '6':TILES_RIGHT, '8':TILES_TOP}
 
@@ -96,6 +100,11 @@ class Pane(object):
                 
         #person = TheoryCraft.getNewPlayerCharacter("Human", "Barbarian")
         person = TheoryCraft.getMonster()
+        person.location = Location(location, (PANE_X/2, PANE_Y/4))
+        r = Region()
+        r.build(RAct.ADD, RShape.CIRCLE, Location(location, CENTER), PANE_Y/4 + 1)
+        r.build(RAct.SUBTRACT, RShape.CIRCLE, Location(location, CENTER), int(PANE_Y/6))
+        person.add_ai(ai.wander, 1, pid=id(person), region=r, move_chance=0.4)
         self.person[id(person)] = person
         
     def is_tile_passable(self, location):

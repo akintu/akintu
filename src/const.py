@@ -16,6 +16,7 @@ def enum(**enums):
 TILE_SIZE = 32
 PANE_X = 32
 PANE_Y = 20
+CENTER = (PANE_X/2, PANE_Y/2)
 
 TILE_TOP_LEFT = (0, 0)
 TILE_TOP_RIGHT = (PANE_X-1, 0)
