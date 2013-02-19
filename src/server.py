@@ -133,7 +133,7 @@ class GameServer():
 
             ###### RunPerson ######
             if isinstance(command, Person) and command.action == PersonActions.RUN:
-                self.person[command.id].add_ai(self.ai_run, 15, pid=command.id, direction=command.location)
+                self.person[command.id].add_ai(self.ai_run, 5, pid=command.id, direction=command.location)
 
             ###### StopPerson ######
             if isinstance(command, Person) and command.action == PersonActions.STOP:
