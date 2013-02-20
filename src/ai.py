@@ -7,7 +7,7 @@ class AI():
         self.server = None
         self.behavior = {}
         
-    def startai(self, server):
+    def startup(self, server):
         self.server = server
         for name in self.behavior.keys():
             self.start(name)
@@ -58,3 +58,7 @@ class AI():
         self.behavior[name]['frequency'] = frequency
         self.stop(name)
         self.start(name)
+
+    def shutdown(self):
+        for name in self.behavior.keys():
+            self.remove(name)

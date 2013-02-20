@@ -33,7 +33,7 @@ class GameServer():
                     
                 person.id = id(person)
                 command.id = person.id
-                person.ai.startai(self)
+                person.ai.startup(self)
                 
                 if port:
                     self.player[port] = person.id
@@ -156,7 +156,7 @@ class GameServer():
                 self.person.update(self.pane[command.location.pane].person)
                 self.pane[command.location.pane].person = self.pane[command.location.pane].person.keys()
                 for p in self.pane[command.location.pane].person:
-                    self.person[p].ai.startai(self)
+                    self.person[p].ai.startup(self)
 
     def unload_panes(self):
         current_panes = []
@@ -170,7 +170,7 @@ class GameServer():
                 print("Unloading pane " + str(pane))
                 
                 # Stop all AI behaviors
-                for p in pane.person:
-                    self.person[p].ai.stop()
+                for p in self.pane[pane].person:
+                    self.person[p].ai.shutdown()
                     
                 del self.pane[pane]
