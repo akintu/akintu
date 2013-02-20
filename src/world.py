@@ -27,15 +27,15 @@ class World(object):
 
     def get_pane(self, location, is_server=False):
         self.panes = dict()
-        surrounding_panes = Location(location, None).get_surrounding_panes()
-        for key, loc in surrounding_panes.iteritems():
+        surrounding_locations = Location(location, None).get_surrounding_panes()
+        for key, loc in surrounding_locations.iteritems():
             if not loc in self.panes:
                 self.panes[loc] = Pane(self.seed, loc, self.ai)
-                #TODO Remove this call
-                #self.panes[loc].load_images()
-        self._merge_tiles(surrounding_panes)
-        
+
+        #This is the pane we will return, current pane
         self.panes[location] = Pane(self.seed, location, self.ai)
+        self._merge_tiles(surrounding_locations)
+        
         self.panes[location].load_images()
         if not is_server:
             self.panes[location].person = {}
@@ -47,18 +47,18 @@ class World(object):
     def _verify_path(self, start_location, end_location):
         pass
         
-    def _merge_tiles(self, panes):
+    def _merge_tiles(self, pane_locations):
         '''
         Merges the edge tiles of the surrounding panes with the current pane
         
         Member Variables
-            panes:  A dictionary of tuples that represent the panes to be merged.
+            pane_locations:  A dictionary of tuples that represent the panes to be merged.
                     This is given from Location.get_surrounding_panes()
         '''
-        curr_pane = self.panes[panes[5]]  #Get our current pane
-        for key, value in panes.iteritems():
-            surr_pane = self.panes[value]
-            edge_tiles = surr_pane.get_edge_tiles(10-key)
+        curr_pane = self.panes[pane_locations[5]]  #Get our current pane
+        for key, value in pane_locations.iteritems():
+            surrounding_pane = self.panes[value]
+            edge_tiles = surrounding_pane.get_edge_tiles(10-key)
             curr_pane.merge_tiles(key, edge_tiles)    #We request the opposite side
 
 class Pane(object):
@@ -80,7 +80,7 @@ class Pane(object):
         for i in range(PANE_X):
             for j in range(PANE_Y):
                 self.tiles[(i, j)] = Tile(None, True)
-                self.add_obstacle((i, j))
+                self.add_obstacle((i, j), RAND_ENTITIES)
 
     def load_images(self):
         
@@ -109,28 +109,37 @@ class Pane(object):
     
     def get_edge_tiles(self, edge):
         passable_list = []
-        if edge in Pane.PaneCorners:
+        #Get the corner that edge represents
+        if edge in Pane.PaneCorners.iteritems():
             tile_loc = Pane.PaneCorners[edge]
             passable_list.append(self.is_tile_passable(Location(self.location, tile_loc)))
             return passable_list
+        #Get the edge
         if edge in Pane.PaneEdges:
+            edge_range = Pane.PaneEdges[edge]
+            # for x in range(edge_range[0][0], edge_range[1][0]):
+                # print str(x) + "X"
+                # for y in range(edge_range[0][1], edge_range[1][1]):
+                    # print str(y) +"Y"
             return passable_list
+    
+    def get_top_edge(self):
+        list = []
         
     def merge_tiles(self, edge_id, tiles):
+        print edge_id
         if tiles and edge_id in [2, 4, 6, 8]: #Edge Tiles
             #print "MERGE_TILES: EDGE"
             assert False
             pass
         if tiles and edge_id in [1, 3, 7, 9]: #Corner Tiles
-            #print "MERGE_TILES: CORNER"
             for passable in tiles:
                 if not passable:
-                    #print "NOT PASSABLE"
-                    self.add_obstacle(Pane.PaneCorners[edge_id])
+                    self.add_obstacle(Pane.PaneCorners[edge_id], 1)
 
-    def add_obstacle(self, tile):
+    def add_obstacle(self, tile, percentage):
         random.seed(self.seed + str(self.location) + str(tile))
-        if random.randrange(100) <= RAND_ENTITIES*100:
+        if random.randrange(100) <= percentage*100:
             index = random.randrange(len(ENTITY_KEYS))
             self.objects[tile] = ENTITY_KEYS[index]
             self.tiles[tile].passable = False
