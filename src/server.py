@@ -166,4 +166,9 @@ class GameServer():
             if pane not in current_panes:
                 # Save pane state to disk and then...
                 print("Unloading pane " + str(pane))
+                
+                # Stop all AI behaviors
+                for p in pane.person:
+                    self.person[p].ai.stop()
+                    
                 del self.pane[pane]
