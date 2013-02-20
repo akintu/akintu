@@ -2,11 +2,16 @@ from location import Location
 from const import *
 
 RAct = enum(ADD = 1, SUBTRACT = 2)
-RShape = enum(SQUARE = 1, DIAMOND = 2, CIRCLE = 3)
+RShape = enum(SQUARE = 1, DIAMOND = 2, CIRCLE = 3, LINE = 4)
 
 class Region:
     def __init__(self):
         self.locations = set()
+        
+    def __iter__(self):
+        temp = self.locations
+        while len(temp):
+            yield temp.pop()
 
     def build(self, method, shape, *details):
         if shape == RShape.SQUARE:

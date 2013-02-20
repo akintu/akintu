@@ -31,10 +31,7 @@ class Person(en.Entity):
         en.Entity.__init__(self, location=loc, image=img, passable=False)
         
         self.id = None
-        self.task = None
-        self.task_frequency = 0
-        self.task_running = False
-        #self.timestamp = time.now
+        self.ai = {}
 
         self._cooldownList = []
         self._statusList = []
@@ -2785,21 +2782,15 @@ class Person(en.Entity):
         
     # Non theorycrafted methods go here:
 
-    def set_task(self, task, task_frequency, *args):
-        if not self.task_running:
-            self.task = LoopingCall(task, *args)
-            self.task_frequency = task_frequency
-
-    def start_task(self):
-        if not self.task_running:
-            self.task.start(1.0 / self.task_frequency)
-            self.task_running = True
-
-    def stop_task(self):
-        if self.task and self.task_running:
-            self.task.stop()
-            self.task_running = False    
+    def add_ai(self, ai_func, frequency, **details):
+        self.ai[ai_func] = details
+        self.ai[ai_func]['task'] = LoopingCall(ai_func, **details)
+        self.ai[ai_func]['task'].start(1.0 / frequency)
         
-        
-        
+    def remove_ai(self, ai_func):
+        if ai_func in self.ai:
+            self.ai[ai_func]['task'].stop()
+            del self.ai[ai_func]
+        else:
+            print "Server error: Attempted to stop ai function", ai_func
         
