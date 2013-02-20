@@ -94,13 +94,15 @@ class Pane(object):
             self.tiles[tile].entities.append(Entity(tile, image=obstacle))
                 
         #person = TheoryCraft.getNewPlayerCharacter("Human", "Barbarian")
-        person = TheoryCraft.getMonster()
-        person.location = Location(self.location, (PANE_X/2, PANE_Y/4))
-        r = Region()
-        r.build(RAct.ADD, RShape.CIRCLE, Location(self.location, CENTER), PANE_Y/4 + 1)
-        r.build(RAct.SUBTRACT, RShape.CIRCLE, Location(self.location, CENTER), int(PANE_Y/6))
-        person.ai.add("WANDER", person.ai.wander, 1, pid=id(person), region=r, move_chance=0.4)
-        self.person[id(person)] = person
+        for i in range(5):
+            person = TheoryCraft.getMonster()
+            person.location = Location(self.location, (random.randrange(3, PANE_X - 3), random.randrange(3, PANE_Y - 3)))
+            r = Region()
+            r.build(RAct.ADD, RShape.CIRCLE, person.location, PANE_Y/4)
+            #r.build(RAct.SUBTRACT, RShape.CIRCLE, Location(self.location, CENTER), int(PANE_Y/6))
+            person.ai.add("WANDER", person.ai.wander, 1, pid=id(person), region=r, move_chance=0.6)
+            self.person[id(person)] = person
+
         
     def is_tile_passable(self, location):
         return self.tiles[location.tile].is_passable()
