@@ -31,9 +31,12 @@ class World(object):
         for key, loc in surrounding_panes.iteritems():
             if not loc in self.panes:
                 self.panes[loc] = Pane(self.seed, loc, self.ai)
+                #TODO Remove this call
+                #self.panes[loc].load_images()
         self._merge_tiles(surrounding_panes)
         
         self.panes[location] = Pane(self.seed, location, self.ai)
+        self.panes[location].load_images()
         if not is_server:
             self.panes[location].person = {}
         return self.panes[location]
@@ -66,38 +69,31 @@ class Pane(object):
         tiles: Dictionary of coordinate tuples (e.g. (0,1)) to tile objects
     '''
     PaneCorners = {1:TILE_BOTTOM_LEFT, 3:TILE_BOTTOM_RIGHT, 7:TILE_TOP_LEFT, 9:TILE_TOP_RIGHT}
-    PaneEdges = {'2':TILES_BOTTOM, '4':TILES_LEFT, '6':TILES_RIGHT, '8':TILES_TOP}
+    PaneEdges = {2:TILES_BOTTOM, 4:TILES_LEFT, 6:TILES_RIGHT, 8:TILES_TOP}
 
     def __init__(self, seed, location, ai):
-
         self.seed = seed
         self.location = location
         self.ai = ai
-        self.load_images()
-    
-    def load_images(self):
-        background = Sprites.get_random_background(self.seed + str(self.location))
-        
-        self.treesheet = SpriteSheet(TREES, self.seed + str(self.location))
-        self.rocksheet = SpriteSheet(ROCKS, self.seed + str(self.location))
-        
-        self.images = dict()
-        self.images.update(background.images.items())
-        self.images.update(self.treesheet.images.items())
-        self.images.update(self.rocksheet.images.items())
         self.tiles = dict()
+        self.objects = dict()
+        for i in range(PANE_X):
+            for j in range(PANE_Y):
+                self.tiles[(i, j)] = Tile(None, True)
+                self.add_obstacle((i, j))
+
+    def load_images(self):
+        
+        self.images = Sprites.get_images_dict()
         self.person = {}
         
         for i in range(PANE_X):
             for j in range(PANE_Y):
-                self.tiles[(i, j)] = Tile(background.getimage((i, j)), True)
-                tree = self.treesheet.get_random_entity(str((i, j)), RAND_TREES)
-                rock = self.rocksheet.get_random_entity(str((i, j)), RAND_ROCKS)
-                if tree:
-                    self.tiles[(i, j)].entities.append(Entity((i, j), image=tree))
-                if rock:
-                    self.tiles[(i, j)].entities.append(Entity((i, j), image=rock))
-                #self.add_obstacle((i, j))
+                self.tiles[(i, j)].set_image(Sprites.get_background(self.seed + str(self.location), (i, j)))
+
+        for tile, entity_key in self.objects.iteritems():
+            obstacle = Sprites.get_object(entity_key, self.seed, self.location, tile)
+            self.tiles[tile].entities.append(Entity(tile, image=obstacle))
                 
         #person = TheoryCraft.getNewPlayerCharacter("Human", "Barbarian")
         person = TheoryCraft.getMonster()
@@ -132,11 +128,13 @@ class Pane(object):
                     #print "NOT PASSABLE"
                     self.add_obstacle(Pane.PaneCorners[edge_id])
 
-    def add_obstacle(self, location):
-        object = Sprites.get_random_object(self.seed + str(location))
-        self.tiles[location].entities.append(Entity(location, image=object))
-        self.tiles[location].passable = False
-    
+    def add_obstacle(self, tile):
+        random.seed(self.seed + str(self.location) + str(tile))
+        if random.randrange(100) <= RAND_ENTITIES*100:
+            index = random.randrange(len(ENTITY_KEYS))
+            self.objects[tile] = ENTITY_KEYS[index]
+            self.tiles[tile].passable = False
+
 class Tile(object):
     def __init__(self, image = os.path.join("res", "images", "background", "grass.png"), passable = True):
         self.entities = []
@@ -146,6 +144,9 @@ class Tile(object):
     def __repr__(self):
         return "(%s, %s, %s)" % (self.passable, self.image, self.entities)
     
+    def set_image(self, image):
+        self.image = image
+        
     def is_passable(self):
         if self.passable == False:
             return False

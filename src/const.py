@@ -31,8 +31,8 @@ TILES_BOTTOM = (TILE_BOTTOM_LEFT, TILE_BOTTOM_RIGHT)
 DESIRED_FPS = 120
 
 #Coverage Percentage (.1 = 10%)
-RAND_TREES = .20 
-RAND_ROCKS = .1
+RAND_ENTITIES = .08 
+#RAND_ROCKS = .1
 
 IMAGES_PATH = os.path.join("res", "images")
 BACKGROUND_IMAGES_PATH = os.path.join(IMAGES_PATH, "background")
@@ -49,6 +49,7 @@ GRASS4 = (BACKGROUND_IMAGES_PATH, "grass4.jpg", TILE_SIZE, None, None)
 GRASS5 = (BACKGROUND_IMAGES_PATH, "grass5.jpg", TILE_SIZE, None, None)
 GRAVEL1 = (BACKGROUND_IMAGES_PATH, "gravel1.jpg", TILE_SIZE, None, None)
 
+ENTITY_KEYS = ['trees', 'rocks']
 ENTITIES = {'trees': TREES, 'rocks': ROCKS}
 BACKGROUNDS = [GRASS1, GRASS2, GRASS3, GRASS4, GRASS5, GRAVEL1]
 

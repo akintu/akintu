@@ -17,7 +17,8 @@ class Sprites(object):
     trees = []
     rocks = []
     background = []
-    objects = []
+    objects = dict()
+    images = dict()
     
     @staticmethod
     def load(seed):
@@ -25,23 +26,32 @@ class Sprites(object):
             print "Sprites.load() has already been called."
         
         for image in BACKGROUNDS:
-            Sprites.background.append(crop_helper(image))
+            background = crop_helper(image)
+            Sprites.background.append(background)
+            Sprites.images.update(background.images.items())
         for key, image in ENTITIES.iteritems():
-            Sprites.objects.append(SpriteSheet(image, seed))
+            spritesheet = SpriteSheet(image)
+            Sprites.objects[key] = spritesheet
+            Sprites.images.update(spritesheet.images.items())
         Sprites.hasLoaded = True
 
     @staticmethod
-    def get_random_background(seed):
+    def get_background(seed, tile):
         random.seed(seed)
         i = random.randrange(len(Sprites.background))
-        return Sprites.background[i]
-
+        return Sprites.background[i].getimage(tile)
+    
     @staticmethod
-    def get_random_object(seed):
-        random.seed(seed)
-        i = random.randrange(len(Sprites.objects))
-        return Sprites.objects[i]
-
+    def get_images_dict():
+        return Sprites.images
+    # @staticmethod
+    # def get_random_image(key, seed, pane, tile):
+        # random.seed(seed)
+        # i = random.randrange(len(Sprites.objects))
+        # return Sprites.objects[key].get_random_image(seed, pane, tile)
+    @staticmethod
+    def get_object(key, seed, pane, tile):
+        return Sprites.objects[key].get_random_image(seed, pane, tile)
 
 def crop_helper(const):
     return Crop(const[0], const[1], const[2], const[3], const[4])
@@ -80,17 +90,17 @@ class Crop(object):
         return self.tile_id[(i, j)]
         
 class SpriteSheet(object):
-    def __init__(self, sheet, seed):
+    def __init__(self, sheet):
         self.images = dict()
         self.sheet = crop_helper(sheet)
         self.images = self.sheet.images
         self.name = self.sheet.name
-        self.seed = seed
+        #self.seed = seed
         
-    def get_random_entity(self, seed, percentage):
-        random.seed(self.seed + self.name + seed)
-        i = random.randrange(self.sheet.x / percentage)
-        j = random.randrange(self.sheet.y / percentage)
+    def get_random_image(self, seed, pane, tile):#, percentage):
+        random.seed(seed + str(pane) + self.name + str(tile))
+        i = random.randrange(self.sheet.x)# / percentage)
+        j = random.randrange(self.sheet.y)# / percentage)
         image = None
         if i <= self.sheet.x and j <= self.sheet.x:
             image = self.sheet.getimage((i,j))
