@@ -75,25 +75,12 @@ class Pane(object):
         self.location = location
         self.tiles = dict()
         self.objects = dict()
+        self.person = {}
         for i in range(PANE_X):
             for j in range(PANE_Y):
                 self.tiles[(i, j)] = Tile(None, True)
                 self.add_obstacle((i, j), RAND_ENTITIES)
-
-    def load_images(self):
-        
-        self.images = Sprites.get_images_dict()
-        self.person = {}
-        
-        for i in range(PANE_X):
-            for j in range(PANE_Y):
-                self.tiles[(i, j)].set_image(Sprites.get_background(self.seed + str(self.location), (i, j)))
-
-        for tile, entity_key in self.objects.iteritems():
-            obstacle = Sprites.get_object(entity_key, self.seed, self.location, tile)
-            self.tiles[tile].entities.append(Entity(tile, image=obstacle))
                 
-        #person = TheoryCraft.getNewPlayerCharacter("Human", "Barbarian")
         for i in range(5):
             person = TheoryCraft.getMonster()
             person.location = Location(self.location, (random.randrange(PANE_X), random.randrange(PANE_Y)))
@@ -103,6 +90,16 @@ class Pane(object):
             person.ai.add("WANDER", person.ai.wander, 5, pid=id(person), region=r, move_chance=0.2)
             self.person[id(person)] = person
 
+    def load_images(self):
+        self.images = Sprites.get_images_dict()
+        
+        for i in range(PANE_X):
+            for j in range(PANE_Y):
+                self.tiles[(i, j)].set_image(Sprites.get_background(self.seed + str(self.location), (i, j)))
+
+        for tile, entity_key in self.objects.iteritems():
+            obstacle = Sprites.get_object(entity_key, self.seed, self.location, tile)
+            self.tiles[tile].entities.append(Entity(tile, image=obstacle))
         
     def is_tile_passable(self, location):
         return self.tiles[location.tile].is_passable()
@@ -138,7 +135,7 @@ class Pane(object):
                 self.objects[tile] = ENTITY_KEYS[index]
                 self.tiles[tile].passable = False
         else:
-            print "Merged " + str(entity_type)
+            #print "Merged " + str(entity_type)
             self.objects[tile] = entity_type
             self.tiles[tile].passable = False
             
