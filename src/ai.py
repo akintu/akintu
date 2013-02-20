@@ -6,7 +6,7 @@ class AI():
     def __init__(self):
         self.server = None
         self.behavior = {}
-        
+
     def startup(self, server):
         self.server = server
         for name in self.behavior.keys():

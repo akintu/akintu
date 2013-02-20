@@ -23,9 +23,9 @@ class World(object):
 
     def __init__(self, seed):
         self.seed = seed
+        self.panes = dict()
 
     def get_pane(self, location, is_server=False):
-        self.panes = dict()
         surrounding_locations = Location(location, None).get_surrounding_panes()
         for key, loc in surrounding_locations.iteritems():
             if not loc in self.panes:
