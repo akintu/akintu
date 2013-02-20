@@ -111,30 +111,35 @@ class Pane(object):
         if edge in Pane.PaneCorners:
             tile_loc = Pane.PaneCorners[edge]
             opposite = Location(None, tile_loc).get_opposite_tile(edge).tile
-            passable_list[opposite] = self.is_tile_passable(Location(self.location, tile_loc))
-            print passable_list
+            if not self.is_tile_passable(Location(self.location, tile_loc)):
+                passable_list[opposite] = self.objects[tile_loc]
         #Get the edge
         if edge in Pane.PaneEdges:
             edge_range = Pane.PaneEdges[edge]
             for x in range(edge_range[0][0], edge_range[1][0]+1):
                 for y in range(edge_range[0][1], edge_range[1][1]+1):
                     opposite = Location(None, (x, y)).get_opposite_tile(edge).tile
-                    passable_list[opposite] = self.is_tile_passable(Location(self.location, (x, y)))
+                    if not self.is_tile_passable(Location(self.location, (x, y))):
+                        passable_list[opposite] = self.objects[(x, y)]
         return passable_list
 
     def merge_tiles(self, tiles):
         if tiles:
-            for key, passable in tiles.iteritems():
-                if not passable:
-                   self.add_obstacle(key, 1)
+            for tile, entity_key in tiles.iteritems():
+                self.add_obstacle(tile, 1, entity_key)
 
-    def add_obstacle(self, tile, percentage):
-        random.seed(self.seed + str(self.location) + str(tile))
-        if random.randrange(100) <= percentage*100:
-            index = random.randrange(len(ENTITY_KEYS))
-            self.objects[tile] = ENTITY_KEYS[index]
+    def add_obstacle(self, tile, percentage, entity_type=None):
+        if not entity_type:
+            random.seed(self.seed + str(self.location) + str(tile))
+            if random.randrange(100) <= percentage*100:
+                index = random.randrange(len(ENTITY_KEYS))
+                self.objects[tile] = ENTITY_KEYS[index]
+                self.tiles[tile].passable = False
+        else:
+            print "Merged " + str(entity_type)
+            self.objects[tile] = entity_type
             self.tiles[tile].passable = False
-
+            
 class Tile(object):
     def __init__(self, image = os.path.join("res", "images", "background", "grass.png"), passable = True):
         self.entities = []

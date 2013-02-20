@@ -87,9 +87,9 @@ class Location(object):
         # if y in [0, PANE_Y-1]:
             # y = math.fabs(self.tile[1] - (PANE_Y - 1)) 
         if edge in [4, 6, 1, 3, 7, 9]:
-            x = math.fabs(x - (PANE_X - 1))
+            x = int(math.fabs(x - (PANE_X - 1)))
         if edge in [2, 8, 1, 3, 7, 9]:
-            y = math.fabs(y - (PANE_Y - 1)) 
+            y = int(math.fabs(y - (PANE_Y - 1)))
         return Location(self.pane, tuple((x, y)))
 
     def get_surrounding_panes(self):
