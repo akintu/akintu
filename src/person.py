@@ -2318,6 +2318,11 @@ class Person(en.Entity):
     def minionList(self, value):
         self._minionList = value
     
+    @property
+    def movementSpeed(self):
+        '''The overworld movement speed.'''
+        return float(self.totalMovementTiles) / float(self.totalMovementAPCost)
+    
     def resource(self, type, quantity):
         """Returns True if the Person has at least 'quantity' of the resource.
         Inputs:

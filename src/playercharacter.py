@@ -825,13 +825,22 @@ class PlayerCharacter(p.Person):
             return True
         return False
     
+    @p.Person.movementSpeed.getter
+    def movementSpeed(self):
+        '''The overworld movement speed.  Overrides from Person.'''
+        if(True):
+            return float(self.totalMovementTiles) / float(self.totalMovementAPCost) 
+        else:
+            pass
+            # TODO: Should check for encumberment.
+    
     def removeOnHitEffect(self, name, count):
         for fx in self.onHitEffects:
             if fx.name.lower() == name.lower() and fx.count == count:
                 self.onHitEffects.remove(fx)
                 return 
                 # Need to return immediately to remove exactly one fx.
-    
+        
     def equip(self, newPiece):
         """Equips a piece of gear, and places any replaced gear in the inventory."""
         oldPieces = self.equippedItems.equip(newPiece)
