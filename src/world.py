@@ -87,7 +87,7 @@ class Pane(object):
             r = Region()
             r.build(RAct.ADD, RShape.CIRCLE, person.location, PANE_Y/4)
             #r.build(RAct.SUBTRACT, RShape.CIRCLE, Location(self.location, CENTER), int(PANE_Y/6))
-            person.ai.add("WANDER", person.ai.wander, 5, pid=id(person), region=r, move_chance=0.2)
+            person.ai.add("WANDER", person.ai.wander, person.movementSpeed, pid=id(person), region=r, move_chance=1)
             self.person[id(person)] = person
 
     def load_images(self):
