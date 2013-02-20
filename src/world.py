@@ -96,11 +96,11 @@ class Pane(object):
         #person = TheoryCraft.getNewPlayerCharacter("Human", "Barbarian")
         for i in range(5):
             person = TheoryCraft.getMonster()
-            person.location = Location(self.location, (random.randrange(3, PANE_X - 3), random.randrange(3, PANE_Y - 3)))
+            person.location = Location(self.location, (random.randrange(PANE_X), random.randrange(PANE_Y)))
             r = Region()
             r.build(RAct.ADD, RShape.CIRCLE, person.location, PANE_Y/4)
             #r.build(RAct.SUBTRACT, RShape.CIRCLE, Location(self.location, CENTER), int(PANE_Y/6))
-            person.ai.add("WANDER", person.ai.wander, 1, pid=id(person), region=r, move_chance=0.6)
+            person.ai.add("WANDER", person.ai.wander, 5, pid=id(person), region=r, move_chance=0.2)
             self.person[id(person)] = person
 
         
