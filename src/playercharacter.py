@@ -829,7 +829,8 @@ class PlayerCharacter(p.Person):
     def movementSpeed(self):
         '''The overworld movement speed.  Overrides from Person.'''
         if(True):
-            return float(self.totalMovementTiles) / float(self.totalMovementAPCost) 
+            return 5.0 
+            #float(self.totalMovementTiles) / float(self.totalMovementAPCost) 
         else:
             pass
             # TODO: Should check for encumberment.
