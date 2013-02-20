@@ -29,6 +29,23 @@ class MonstersParser(object):
             print "Parsing Error: " + currentLine
             return "ERROR!"
 
+    @staticmethod
+    def baseAndLevel(mDict, data, baseKey, levelKey):
+        if re.match("[0-9]+\+[0-9]+", str(data)):
+            mDict[baseKey] = int(data.partition("+")[0])
+            mDict[levelKey] = int(data.partition("+")[2])
+        else:
+            mDict[baseKey] = int(data)
+            mDict[levelKey] = 0           
+           
+    @staticmethod
+    def associate(file, currentLine, tag, mDict, baseKey, levelKey=None):
+        data = MonstersParser.getFromText(file, currentLine, tag)
+        if levelKey:
+            MonstersParser.baseAndLevel(mDict, data, baseKey, levelKey)
+        else:
+            mDict[baseKey] = data
+            
     def parseAll(self, fileName):
         nameTag = re.compile("(?:\[NAME: )(.*)(?:\])", re.I)
         APTag = re.compile("(?:\[AP: )(.*)(?:\])", re.I)
@@ -41,19 +58,23 @@ class MonstersParser(object):
         dexterityTag = re.compile("(?:\[DEXTERITY: )(.*)(?:\])", re.I)
         DRTag = re.compile("(?:\[DR: )(.*)(?:\])", re.I)
         arcaneResistTag = re.compile("(?:\[ELEMENTAL RESIST ARCANE: )(.*)(?:\])", re.I)
+        bludgeoningResistTag = re.compile("(?:\[BLUDGEONING RESIST: )(.*)(?:\])", re.I)
         coldResistTag = re.compile("(?:\[ELEMENTAL RESIST COLD: )(.*)(?:\])", re.I)
         divineResistTag = re.compile("(?:\[ELEMENTAL RESIST DIVINE: )(.*)(?:\])", re.I)
         electricResistTag = re.compile("(?:\[ELEMENTAL RESIST ELECTRIC: )(.*)(?:\])", re.I)
         fireResistTag = re.compile("(?:\[ELEMENTAL RESIST FIRE: )(.*)(?:\])", re.I)
+        piercingResistTag = re.compile("(?:\[PIERCING RESIST: )(.*)(?:\])", re.I)
         poisonResistTag = re.compile("(?:\[ELEMENTAL RESIST POISON: )(.*)(?:\])", re.I)
         shadowResistTag = re.compile("(?:\[ELEMENTAL RESIST SHADOW: )(.*)(?:\])", re.I)
+        slashingResistTag = re.compile("(?:\[SLASHING RESIST: )(.*)(?:\])", re.I)
         experienceTag = re.compile("(?:\[EXPERIENCE GIVEN: )(.*)(?:\])", re.I)
         GPTag = re.compile("(?:\[GP: )(.*)(?:\])", re.I)
         HPTag = re.compile("(?:\[HP: )(.*)(?:\])", re.I)
         imageTag = re.compile("(?:\[IMAGE: )(.*)(?:\])", re.I)
-        levelTag = re.compile("(?:\[LEVEL: )(.*)(?:\])", re.I)
         magicResistTag = re.compile("(?:\[MAGIC RESIST: )(.*)(?:\])", re.I)
+        maxLevelTag = re.compile("(?:\[MAX LEVEL: )(.*)(?:\])", re.I)
         meleeAPTag = re.compile("(?:\[MELEE ATTACK AP: )(.*)(?:\])", re.I)
+        minLevelTag = re.compile("(?:\[MIN LEVEL: )(.*)(?:\])", re.I)
         moveAPTag = re.compile("(?:\[MOVE AP: )(.*)(?:\])", re.I)
         moveTilesTag = re.compile("(?:\[MOVE TILES: )(.*)(?:\])", re.I)
         MPTag = re.compile("(?:\[MP: )(.*)(?:\])", re.I)
@@ -66,49 +87,68 @@ class MonstersParser(object):
         specialPropertyTag = re.compile("(?:\[SPECIAL PROPERTY: )(.*)(?:\])", re.I)
         spellpowerTag = re.compile("(?:\[SPELLPOWER: )(.*)(?:\])", re.I)
         strengthTag = re.compile("(?:\[STRENGTH: )(.*)(?:\])", re.I)
-
+        typeTag = re.compile("(?:\[TYPE: )(.*)(?:\])", re.I)
 
         with open(fileName, 'r') as f:
             while( True ):
                 mDict = {}
-                mDict['name'] = MonstersParser.getFromText(f, f.readline(), nameTag)
+                MonstersParser.associate(f, f.readline(), nameTag, mDict, 'name')
                 if mDict['name'] == "EOF":
                     break
-                mDict['AP'] = MonstersParser.getFromText(f, f.readline(), APTag)
-                mDict['startingArmorPenetration'] = MonstersParser.getFromText(f, f.readline(), armorPenetrationTag)
-                mDict['attackElement'] = MonstersParser.getFromText(f, f.readline(), attackElementTag)
-                mDict['attackMin'] = MonstersParser.getFromText(f, f.readline(), attackMinTag)
-                mDict['attackMax'] = MonstersParser.getFromText(f, f.readline(), attackMaxTag)
-                mDict['attackRange'] = MonstersParser.getFromText(f, f.readline(), attackRangeTag)
-                mDict['startingCunning'] = MonstersParser.getFromText(f, f.readline(), cunningTag)
-                mDict['startingDexterity'] = MonstersParser.getFromText(f, f.readline(), dexterityTag)
-                mDict['startingDR'] = MonstersParser.getFromText(f, f.readline(), DRTag)
-                mDict['startingArcaneResistance'] = MonstersParser.getFromText(f, f.readline(), arcaneResistTag)
-                mDict['startingColdResistance'] = MonstersParser.getFromText(f, f.readline(), coldResistTag)
-                mDict['startingDivineResistance'] = MonstersParser.getFromText(f, f.readline(), divineResistTag)
-                mDict['startingElectricResistance'] = MonstersParser.getFromText(f, f.readline(), electricResistTag)
-                mDict['startingFireResistance'] = MonstersParser.getFromText(f, f.readline(), fireResistTag)
-                mDict['startingPoisonResistance'] = MonstersParser.getFromText(f, f.readline(), poisonResistTag)
-                mDict['startingShadowResistance'] = MonstersParser.getFromText(f, f.readline(), shadowResistTag)
-                mDict['experience'] = MonstersParser.getFromText(f, f.readline(), experienceTag)
-                mDict['GP'] = MonstersParser.getFromText(f, f.readline(), GPTag)
-                mDict['startingHP'] = MonstersParser.getFromText(f, f.readline(), HPTag)
-                mDict['image'] = MonstersParser.getFromText(f, f.readline(), imageTag)
-                mDict['level'] = MonstersParser.getFromText(f, f.readline(), levelTag)
-                mDict['magicResist'] = MonstersParser.getFromText(f, f.readline(), magicResistTag)
-                mDict['meleeAP'] = MonstersParser.getFromText(f, f.readline(), meleeAPTag)
-                mDict['moveAP'] = MonstersParser.getFromText(f, f.readline(), moveAPTag)
-                mDict['movementTiles'] = MonstersParser.getFromText(f, f.readline(), moveTilesTag)
-                mDict['startingMP'] = MonstersParser.getFromText(f, f.readline(), MPTag)
-                mDict['startingPoisonTolerance'] = MonstersParser.getFromText(f, f.readline(), poisonToleranceTag)
-                mDict['rangedAP'] = MonstersParser.getFromText(f, f.readline(), rangedAPTag)
-                mDict['size'] = MonstersParser.getFromText(f, f.readline(), sizeTag)
-                mDict['specialAttackOne'] = MonstersParser.getFromText(f, f.readline(), specialAttackOneTag)
-                mDict['specialAttackTwo'] = MonstersParser.getFromText(f, f.readline(), specialAttackTwoTag)
-                mDict['specialAttackThree'] = MonstersParser.getFromText(f, f.readline(), specialAttackThreeTag)
-                mDict['specialProperty'] = MonstersParser.getFromText(f, f.readline(), specialPropertyTag)
-                mDict['startingSpellpower'] = MonstersParser.getFromText(f, f.readline(), spellpowerTag)
-                mDict['startingStrength'] = MonstersParser.getFromText(f, f.readline(), strengthTag)
+                MonstersParser.associate(f, f.readline(), APTag, mDict, 'AP')
+                MonstersParser.associate(f, f.readline(), armorPenetrationTag, mDict, 'startingArmorPenetration', 
+                                                                               'levelupArmorPenetration')
+                MonstersParser.associate(f, f.readline(), attackElementTag, mDict, 'attackElement')
+                MonstersParser.associate(f, f.readline(), attackMinTag, mDict, 'attackMin', 'levelupMinDamage')
+                MonstersParser.associate(f, f.readline(), attackMaxTag, mDict, 'attackMax', 'levelupMaxDamage')
+                MonstersParser.associate(f, f.readline(), attackRangeTag, mDict, 'attackRange')
+                MonstersParser.associate(f, f.readline(), cunningTag, mDict, 'startingCunning', 'levelupCunning')
+                MonstersParser.associate(f, f.readline(), dexterityTag, mDict, 'startingDexterity', 'levelupDexterity')
+                MonstersParser.associate(f, f.readline(), DRTag, mDict, 'startingDR', 'levelupDR')
+                MonstersParser.associate(f, f.readline(), arcaneResistTag, mDict, 'startingArcaneResistance',
+                                                                            'levelupArcaneResistance')
+                MonstersParser.associate(f, f.readline(), bludgeoningResistTag, mDict, 'startingBludgeoningResistance',
+                                                                                'levelupBludgeoningResistance')
+                MonstersParser.associate(f, f.readline(), coldResistTag, mDict, 'startingColdResistance',
+                                                                         'levelupColdResistance')
+                MonstersParser.associate(f, f.readline(), divineResistTag, mDict, 'startingDivineResistance',
+                                                                           'levelupDivineResistance')
+                MonstersParser.associate(f, f.readline(), electricResistTag, mDict, 'startingElectricResistance',
+                                                                             'levelupElectricResistance')
+                MonstersParser.associate(f, f.readline(), fireResistTag, mDict, 'startingFireResistance',
+                                                                         'levelupFireResistance')
+                MonstersParser.associate(f, f.readline(), piercingResistTag, mDict, 'startingPiercingResistance',
+                                                                                'levelupPiercingResistance')                                                         
+                MonstersParser.associate(f, f.readline(), poisonResistTag, mDict, 'startingPoisonResistance',
+                                                                           'levelupPoisonResistance')
+                MonstersParser.associate(f, f.readline(), shadowResistTag, mDict, 'startingShadowResistance',
+                                                                           'levelupShadowResistance')
+                MonstersParser.associate(f, f.readline(), slashingResistTag, mDict, 'startingSlashingResistance',
+                                                                           'levelupSlashingResistance')                                                        
+                MonstersParser.associate(f, f.readline(), experienceTag, mDict, 'experience')
+                MonstersParser.associate(f, f.readline(), GPTag, mDict, 'GP')
+                MonstersParser.associate(f, f.readline(), HPTag, mDict, 'startingHP', 'levelupHP')
+                MonstersParser.associate(f, f.readline(), imageTag, mDict, 'image')
+                MonstersParser.associate(f, f.readline(), magicResistTag, mDict, 'magicResist', 'levelupMagicResist')
+                MonstersParser.associate(f, f.readline(), maxLevelTag, mDict, 'maxLevel')
+                MonstersParser.associate(f, f.readline(), meleeAPTag, mDict, 'meleeAP')
+                MonstersParser.associate(f, f.readline(), minLevelTag, mDict, 'minLevel')
+                MonstersParser.associate(f, f.readline(), moveAPTag, mDict, 'moveAP')
+                MonstersParser.associate(f, f.readline(), moveTilesTag, mDict, 'movementTiles')
+                MonstersParser.associate(f, f.readline(), MPTag, mDict, 'startingMP', 'levelupMP')
+                MonstersParser.associate(f, f.readline(), poisonToleranceTag, mDict, 'startingPoisonTolerance',
+                                                                              'levelupPoisonTolerance')
+                MonstersParser.associate(f, f.readline(), rangedAPTag, mDict, 'rangedAP')
+                MonstersParser.associate(f, f.readline(), sizeTag, mDict, 'size')
+                MonstersParser.associate(f, f.readline(), specialAttackOneTag, mDict, 'specialAttackOne')
+                MonstersParser.associate(f, f.readline(), specialAttackTwoTag, mDict, 'specialAttackTwo')
+                MonstersParser.associate(f, f.readline(), specialAttackThreeTag, mDict, 'specialAttackThree')
+                MonstersParser.associate(f, f.readline(), specialPropertyTag, mDict, 'specialProperty')
+                MonstersParser.associate(f, f.readline(), spellpowerTag, mDict, 'startingSpellpower',
+                                                                         'levelupSpellpower')
+                MonstersParser.associate(f, f.readline(), strengthTag, mDict, 'startingStrength',
+                                                                       'levelupStrength')
+                MonstersParser.associate(f, f.readline(), typeTag, mDict, 'type')                                                       
                 self.allMonsters.append(mDict)
 
         return self.allMonsters
