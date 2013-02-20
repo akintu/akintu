@@ -78,7 +78,20 @@ class Location(object):
             direction = dirs[direction]
             
         return Location(tuple(pane), tuple(tile), direction)
-        
+    
+    def get_opposite_tile(self, edge):
+        x = self.tile[0]
+        y = self.tile[1]
+        # if x in [0, PANE_X-1]:
+            # x = math.fabs(self.tile[0] - (PANE_X - 1))
+        # if y in [0, PANE_Y-1]:
+            # y = math.fabs(self.tile[1] - (PANE_Y - 1)) 
+        if edge in [4, 6, 1, 3, 7, 9]:
+            x = math.fabs(self.tile[0] - (PANE_X - 1))
+        if edge in [2, 8, 1, 3, 7, 9]:
+            y = math.fabs(self.tile[1] - (PANE_Y - 1)) 
+        return Location(self.pane, tuple((x, y)))
+
     def get_surrounding_panes(self):
         '''
         Gets the locations of surrounding panes
@@ -151,3 +164,16 @@ if __name__ == "__main__":
     assert panes[7] == (-1,-1)  # 7: TOP_LEFT     (-1,-1)
     assert panes[8] == (0,-1)   # 8: UP           ( 0,-1)
     assert panes[9] == (1,-1)   # 9: TOP_RIGHT    ( 1,-1)
+    
+    #TEST get_opposite_tile()
+    j = Location(None, (0, 0))
+    k = Location(None, (0, 1))
+    l = Location(None, (1, 0))
+    m = Location(None, (4, PANE_Y-1))
+
+    assert j.get_opposite_tile(7).tile == (PANE_X-1, PANE_Y-1)
+    assert j.get_opposite_tile(4).tile == (PANE_X-1, 0)
+    assert j.get_opposite_tile(8).tile == (0, PANE_Y-1)
+    assert k.get_opposite_tile(4).tile == (PANE_X-1, 1)
+    assert l.get_opposite_tile(8).tile == (1, PANE_Y-1)
+    assert m.get_opposite_tile(2).tile == (4, 0)

@@ -3,6 +3,7 @@ World generation tools and representation
 '''
 
 import os
+import math
 
 from entity import*
 from const import*
@@ -57,7 +58,7 @@ class World(object):
         for key, value in pane_locations.iteritems():
             surrounding_pane = self.panes[value]
             edge_tiles = surrounding_pane.get_edge_tiles(10-key)
-            curr_pane.merge_tiles(key, edge_tiles)    #We request the opposite side
+            curr_pane.merge_tiles(edge_tiles)    #We request the opposite side
 
 class Pane(object):
     '''
@@ -105,33 +106,28 @@ class Pane(object):
         return self.tiles[location.tile].is_passable()
     
     def get_edge_tiles(self, edge):
-        passable_list = []
+        passable_list = dict()
         #Get the corner that edge represents
         if edge in Pane.PaneCorners.iteritems():
             tile_loc = Pane.PaneCorners[edge]
-            passable_list.append(self.is_tile_passable(Location(self.location, tile_loc)))
+            #passable_list.append(self.is_tile_passable(Location(self.location, tile_loc)))
+            opposite = Location(None, tile_loc).get_opposite_tile(edge).tile
+            passable_list[opposite] = self.is_tile_passable(Location(self.location, tile_loc))
             return passable_list
         #Get the edge
         if edge in Pane.PaneEdges:
             edge_range = Pane.PaneEdges[edge]
-            # for x in range(edge_range[0][0], edge_range[1][0]):
-                # print str(x) + "X"
-                # for y in range(edge_range[0][1], edge_range[1][1]):
-                    # print str(y) +"Y"
+            for x in range(edge_range[0][0], edge_range[1][0]+1):
+                for y in range(edge_range[0][1], edge_range[1][1]+1):
+                    opposite = Location(None, (x, y)).get_opposite_tile(edge).tile
+                    passable_list[opposite] = self.is_tile_passable(Location(self.location, (x, y)))
             return passable_list
-    
-    def get_top_edge(self):
-        list = []
-        
-    def merge_tiles(self, edge_id, tiles):
-        if tiles and edge_id in [2, 4, 6, 8]: #Edge Tiles
-            #print "MERGE_TILES: EDGE"
-            assert False
-            pass
-        if tiles and edge_id in [1, 3, 7, 9]: #Corner Tiles
-            for passable in tiles:
+
+    def merge_tiles(self, tiles):
+        if tiles:
+            for key, passable in tiles.iteritems():
                 if not passable:
-                    self.add_obstacle(Pane.PaneCorners[edge_id], 1)
+                   self.add_obstacle(key, 1)
 
     def add_obstacle(self, tile, percentage):
         random.seed(self.seed + str(self.location) + str(tile))
