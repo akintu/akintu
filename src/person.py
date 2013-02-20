@@ -3,6 +3,7 @@
 import sys
 import entity as en
 from network import *
+from ai import AI
 
 class IncompleteDataInitialization(Exception):
     def __init__(self, value):
@@ -31,7 +32,7 @@ class Person(en.Entity):
         en.Entity.__init__(self, location=loc, image=img, passable=False)
         
         self.id = None
-        self.ai = {}
+        self.ai = AI()
 
         self._cooldownList = []
         self._statusList = []
@@ -2022,7 +2023,7 @@ class Person(en.Entity):
         Will not allow non-positive values.
         """
         if value > 0:
-            self._baseSorcery = value   
+            self_.baseSorcery = value   
 
     @property
     def totalPiety(self):
@@ -2074,7 +2075,7 @@ class Person(en.Entity):
         Will not allow non-positive values.
         """
         if value > 0:
-            self._basePiety = value 
+            self_.basePiety = value 
             
     @property
     def totalConstitution(self):
@@ -2126,7 +2127,7 @@ class Person(en.Entity):
         Will not allow non-positive values.
         """
         if value > 0:
-            self._baseConstitution = value  
+            self_.baseConstitution = value  
             
     # Derived Attributes
           
@@ -2177,8 +2178,8 @@ class Person(en.Entity):
     
     @HP.setter
     def HP(self, value):
-        if value > self.totalHP:
-            value = self.totalHP
+        if value > self._totalHP:
+            value = self._totalHP
         if value < 0:
             value = 0
         self._HP = value            
@@ -2207,17 +2208,7 @@ class Person(en.Entity):
     @baseHP.setter
     def baseHP(self, value):
         self._baseHP = value
-        self.HP = self.totalHP
-
-    @property
-    def totalMP(self):
-        """The maximum MP of the player.  Is determined by class, level,
-        equipment, skills, statuses, and base attributes."""
-        if self.totalPiety == 0 or self._baseMP == 0:
-            return self._baseMP
-        else:
-            return max(0, self._baseMP + (self.totalPiety - 10) * 4 + self.equipmentMP)
-        
+    
     @property
     def MP(self):
         """The current Mana Points of a PlayerCharacter"""
@@ -2228,9 +2219,19 @@ class Person(en.Entity):
         """Will not exceed totalMP"""
         if value < 0:
             value = 0
-        if value > self.totalMP:
-            value = self.totalMP
+        if value > totalMP:
+            value = totalMP
         self._MP = value
+        
+    @property
+    def totalMP(self):
+        """The maximum MP of the player.  Is determined by class, level,
+        equipment, skills, statuses, and base attributes."""
+        if( self.totalPiety == 0 ):
+            return self._baseMP
+        else:
+            return max(0, self._baseMP + (self.totalPiety - 10) * 4 + self.equipmentMP)
+        # TODO Fix non-casters showing mana.
         
     @property
     def baseMP(self):
@@ -2239,7 +2240,6 @@ class Person(en.Entity):
     @baseMP.setter
     def baseMP(self, value):
         self._baseMP = value
-        self.MP = self.totalMP
         
     @property
     def equipmentMP(self):
@@ -2782,16 +2782,3 @@ class Person(en.Entity):
         # Include Noise later? TODO (Out of combat considerations.)
         
     # Non theorycrafted methods go here:
-
-    def add_ai(self, ai_func, frequency, **details):
-        self.ai[ai_func] = details
-        self.ai[ai_func]['task'] = LoopingCall(ai_func, **details)
-        self.ai[ai_func]['task'].start(1.0 / frequency)
-        
-    def remove_ai(self, ai_func):
-        if ai_func in self.ai:
-            self.ai[ai_func]['task'].stop()
-            del self.ai[ai_func]
-        else:
-            print "Server error: Attempted to stop ai function", ai_func
-        

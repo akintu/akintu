@@ -10,6 +10,7 @@ from sprites import*
 from location import Location
 from theorycraft import TheoryCraft
 from region import *
+from ai import AI
 
 class World(object):
     '''
@@ -21,19 +22,16 @@ class World(object):
 
     def __init__(self, seed):
         self.seed = seed
-        
-    def set_ai(self, ai):
-        self.ai = ai
 
     def get_pane(self, location, is_server=False):
         self.panes = dict()
         surrounding_locations = Location(location, None).get_surrounding_panes()
         for key, loc in surrounding_locations.iteritems():
             if not loc in self.panes:
-                self.panes[loc] = Pane(self.seed, loc, self.ai)
+                self.panes[loc] = Pane(self.seed, loc)
 
         #This is the pane we will return, current pane
-        self.panes[location] = Pane(self.seed, location, self.ai)
+        self.panes[location] = Pane(self.seed, location)
         self._merge_tiles(surrounding_locations)
         
         self.panes[location].load_images()
@@ -71,10 +69,9 @@ class Pane(object):
     PaneCorners = {1:TILE_BOTTOM_LEFT, 3:TILE_BOTTOM_RIGHT, 7:TILE_TOP_LEFT, 9:TILE_TOP_RIGHT}
     PaneEdges = {2:TILES_BOTTOM, 4:TILES_LEFT, 6:TILES_RIGHT, 8:TILES_TOP}
 
-    def __init__(self, seed, location, ai):
+    def __init__(self, seed, location):
         self.seed = seed
         self.location = location
-        self.ai = ai
         self.tiles = dict()
         self.objects = dict()
         for i in range(PANE_X):
@@ -101,7 +98,7 @@ class Pane(object):
         r = Region()
         r.build(RAct.ADD, RShape.CIRCLE, Location(self.location, CENTER), PANE_Y/4 + 1)
         r.build(RAct.SUBTRACT, RShape.CIRCLE, Location(self.location, CENTER), int(PANE_Y/6))
-        person.add_ai(self.ai.wander, 1, pid=id(person), region=r, move_chance=0.4)
+        person.ai.add("WANDER", person.ai.wander, 1, pid=id(person), region=r, move_chance=0.4)
         self.person[id(person)] = person
         
     def is_tile_passable(self, location):
@@ -127,7 +124,6 @@ class Pane(object):
         list = []
         
     def merge_tiles(self, edge_id, tiles):
-        print edge_id
         if tiles and edge_id in [2, 4, 6, 8]: #Edge Tiles
             #print "MERGE_TILES: EDGE"
             assert False

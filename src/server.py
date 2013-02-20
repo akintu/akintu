@@ -2,13 +2,10 @@ from network import *
 from location import *
 from theorycraft import TheoryCraft
 from playercharacter import *
-from ai import AI
 
 class GameServer():
     def __init__(self, world):
         self.world = world
-        self.ai = AI(self)
-        self.world.set_ai(self.ai)
         self.SDF = ServerDataFactory()
         reactor.listenTCP(1337, self.SDF)
 
@@ -156,6 +153,8 @@ class GameServer():
                 # a list of personIDs
                 self.person.update(self.pane[command.location.pane].person)
                 self.pane[command.location.pane].person = self.pane[command.location.pane].person.keys()
+                for p in self.pane[command.location.pane].person:
+                    self.person[p].ai.startai(self)
 
     def unload_panes(self):
         current_panes = []
