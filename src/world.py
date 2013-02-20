@@ -57,8 +57,8 @@ class World(object):
         curr_pane = self.panes[pane_locations[5]]  #Get our current pane
         for key, value in pane_locations.iteritems():
             surrounding_pane = self.panes[value]
-            edge_tiles = surrounding_pane.get_edge_tiles(10-key)
-            curr_pane.merge_tiles(edge_tiles)    #We request the opposite side
+            edge_tiles = surrounding_pane.get_edge_tiles(10-key)#We request the opposite side
+            curr_pane.merge_tiles(edge_tiles)    
 
 class Pane(object):
     '''
@@ -108,12 +108,11 @@ class Pane(object):
     def get_edge_tiles(self, edge):
         passable_list = dict()
         #Get the corner that edge represents
-        if edge in Pane.PaneCorners.iteritems():
+        if edge in Pane.PaneCorners:
             tile_loc = Pane.PaneCorners[edge]
-            #passable_list.append(self.is_tile_passable(Location(self.location, tile_loc)))
             opposite = Location(None, tile_loc).get_opposite_tile(edge).tile
             passable_list[opposite] = self.is_tile_passable(Location(self.location, tile_loc))
-            return passable_list
+            print passable_list
         #Get the edge
         if edge in Pane.PaneEdges:
             edge_range = Pane.PaneEdges[edge]
@@ -121,7 +120,7 @@ class Pane(object):
                 for y in range(edge_range[0][1], edge_range[1][1]+1):
                     opposite = Location(None, (x, y)).get_opposite_tile(edge).tile
                     passable_list[opposite] = self.is_tile_passable(Location(self.location, (x, y)))
-            return passable_list
+        return passable_list
 
     def merge_tiles(self, tiles):
         if tiles:
