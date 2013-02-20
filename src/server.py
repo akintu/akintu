@@ -33,6 +33,7 @@ class GameServer():
                     
                 person.id = id(person)
                 command.id = person.id
+                person.ai.startai(self)
                 
                 if port:
                     self.player[port] = person.id
@@ -111,7 +112,7 @@ class GameServer():
                         command.location = self.person[command.id].location
                         self.SDF.send(port, command)
                     else:
-                        self.person[command.id].remove_ai(self.ai.run)
+                        self.person[command.id].ai.remove("RUN")
                         for p, i in self.player.iteritems():
                             if i == command.id:
                                 self.SDF.send(p, Person(PersonActions.STOP, i))
@@ -132,11 +133,12 @@ class GameServer():
 
             ###### RunPerson ######
             if isinstance(command, Person) and command.action == PersonActions.RUN:
-                self.person[command.id].add_ai(self.ai.run, 5, pid=command.id, direction=command.location)
+                self.person[command.id].ai.add("RUN", self.person[command.id].ai.run, 5, pid=command.id, direction=command.location)
+                self.person[command.id].ai.start("RUN")
 
             ###### StopPerson ######
             if isinstance(command, Person) and command.action == PersonActions.STOP:
-                self.person[command.id].remove_ai(self.ai.run)
+                self.person[command.id].ai.remove("RUN")
              
     def tile_is_open(self, location):
         return self.pane[location.pane].is_tile_passable(location) and \

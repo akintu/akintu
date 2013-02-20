@@ -35,6 +35,7 @@ class AI():
     def add(self, name, ai_func, frequency, **details):
         self.behavior[name] = {}
         self.behavior[name]['frequency'] = frequency
+        self.behavior[name]['running'] = False
         self.behavior[name]['task'] = LoopingCall(ai_func, **details)
         
     def remove(self, name):
@@ -50,7 +51,8 @@ class AI():
         
     def stop(self, name):
         if self.behavior[name]['running']:
-            self.ai[name]['task'].stop()
+            self.behavior[name]['task'].stop()
+            self.behavior[name]['running'] = False
         
     def update_frequency(self, name, frequency):
         self.behavior[name]['frequency'] = frequency
