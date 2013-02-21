@@ -177,11 +177,13 @@ class CombatPane(Pane):
         super(CombatPane, self).__init__(pane.seed, focus_location.tile, False)
         self.focus_location = focus_location
         
-        center_x = focus_location.tile[0]
-        center_y = focus_location.tile[1]
+        loc_x = focus_location.tile[0]
+        loc_y = focus_location.tile[1]
         
-        corner_x = center_x - 5
-        corner_y = center_y - 3
+        dx_min = loc_x - 5
+        dy_min = loc_y - 3
+        dx_max = loc_x - 26
+        dy_max = loc_y - 14
         
         #todo, update this to put focus_location as the center
         i = j = 2
@@ -192,6 +194,7 @@ class CombatPane(Pane):
                     super(CombatPane, self).add_obstacle(Location((0, 0), (i, j)), 1, pane.objects[(x,y)])
                 y+=3
             x+=3
+        super(CombatPane, self).load_images()
         
 class Tile(object):
     def __init__(self, image = os.path.join("res", "images", "background", "grass.png"), passable = True):
