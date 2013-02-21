@@ -459,6 +459,20 @@ class Ability(object):
             percentPerTurn = 9
             Combat.addStatus(target, "Bleeding", duration, percentPerTurn) 
     
+    def _endureBeating(self, target):
+        ''' Gain +20% DR for 4 turns. '''
+        source = self.owner
+        duration = 5 # One turn expires immediately.
+        Combat.addStatus(source, "Endure Beating", duration)
+        
+    def _endureBeatingCheck(self, target):
+        ''' Should only use if above 20% HP and no targets are in melee range. '''
+        source = self.owner
+        if source.HP < source.totalHP * 0.2:
+            return (False, "")
+        # if in melee range of enemies, return False TODO
+        return (True, "")
+    
     def _flamingRend(self, target):
         ''' Deal fire damage and lower target's DR. Lower accuracy than normal.'''
         source = self.owner
@@ -1022,6 +1036,19 @@ class Ability(object):
         'cooldown' : 1,
         'checkFunction' : None,
         'breakStealth' : 100
+        },
+        'Endure Beating':
+        {
+        'level' : 1,
+        'class' : 'Monster',
+        'HPCost' : 0,
+        'APCost' : 12,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _endureBeating,
+        'cooldown' : 5,
+        'checkFunction' : _endureBeatingCheck,
+        'breakStealth' : 0
         },
         'Flaming Rend' :
         {

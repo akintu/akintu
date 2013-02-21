@@ -3,7 +3,6 @@
 import sys
 import combat
 import dice
-import playercharacter
 
 class Spell(object):
 
@@ -13,7 +12,10 @@ class Spell(object):
 
     def __init__(self, name, owner):
         self.name = name
-        info = Spell.allSpells[name]
+        if name in Spell.allSpells:
+            info = Spell.allSpells[name]
+        elif name in Spell.monsterSpells:
+            info = Spell.monsterSpells[name]
         self.tier = info['tier']
         self.school = info['school']
         self.MPCost = info['MPCost']
@@ -112,6 +114,22 @@ class Spell(object):
             hero.magicResist -= hero.mysticResist
         elif self.school == "Natural":
             hero.magicResist -= hero.naturalResist
+            
+    # Monster Only Spells           
+           
+    def _shadowField(self, target):
+        '''Deals massive shadow damage to a 3x3 area centered on a player.
+        Partial Resistance = 33% Damage Dealt.'''
+        source = self.owner
+        hitType = Combat.calcHit(source, target, "Magical")
+        damageBase = 11
+        damage = Combat.calcDamage(source, target, damageBase, damageBase * 4, "Shadow", hitValue=hitType,
+                                   partial=0.33, scalesWith="Spellpower", scaleFactor=0.02)
+        #TODO: This hits a 3x3 area.  Include all targets!
+        Combat.lowerHP(target, damage)
+        
+        
+    # Player & Monster Spells
             
     def _arcaneDart(self, target):
         source = self.owner
@@ -251,7 +269,22 @@ class Spell(object):
         if Combat.calcPoisonHit(source, target, rating):
             Combat.addStatus(target, "Infection", duration, dieRoll)
     
+    monsterSpells = {
+        'Shadow Field':
+        {
+        'tier' : 1,
+        'school' : 'Bane',
+        'MPCost' : 24,
+        'APCost' : 10,
+        'range' : 7,
+        'target' : 'hostile',
+        'action' : _shadowField,
+        'cooldown' : 5
+        }
+    }
+    
     allSpells = {
+        # Player/Monster Spells
         'Arcane Dart':
         {
         'tier' : 1,

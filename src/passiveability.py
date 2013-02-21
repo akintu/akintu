@@ -195,13 +195,7 @@ class PassiveAbility(object):
                 target.statusMeleeAccuracy -= 2            
             
     # Monsters
-    def applyPanic(self, target, reverse=False, hero=None):
-        ''' Monsters that Panic gain Dexterity (increasing their accuracy and
-        dodge) every time they are hit with melee attacks when at half health
-        or lower.  Lasts the entire battle and stacks. '''
-        if self.HP <= 0.5 * self.totalHP:
-            self.statusDexterity += 2
-            
+
     def applyDeflectMissiles(self, target, reverse=False, hero=None):
         ''' Monsters with Deflect Missiles gain 10 Dodge and 5% DR against Ranged
         attacks.'''
@@ -211,6 +205,19 @@ class PassiveAbility(object):
         else:
             self.statusDR -= 5
             self.statusDodge -= 10
+
+    def applyGrowingBoldness(self, target, reverse=False, hero=None):
+        ''' Monsters with Growing Boldness gain +2 Strength and 1% attack power after 
+        every attempt to attack in melee. '''
+        self.statusStrength += 2
+        self.attackPower += 1
+            
+    def applyPanic(self, target, reverse=False, hero=None):
+        ''' Monsters that Panic gain Dexterity (increasing their accuracy and
+        dodge) every time they are hit with melee attacks when at half health
+        or lower.  Lasts the entire battle and stacks. '''
+        if self.HP <= 0.5 * self.totalHP:
+            self.statusDexterity += 2
             
     allContentByName = {
         'Cold Endurance': 
@@ -427,15 +434,6 @@ class PassiveAbility(object):
         },        
         
         # Monsters
-        'Panic':
-        {
-        'class' : 'Monster',
-        'level' : 1,
-        'type' : 'dynamic',
-        'action' : applyPanic,
-        'onStringList' : ['Incoming Melee Attack Hit'],
-        'offStringList' : []
-        },
         'Deflect Missiles':
         {
         'class' : 'Monster',
@@ -444,7 +442,26 @@ class PassiveAbility(object):
         'action' : applyDeflectMissiles,
         'onStringList' : ['Incoming Ranged Attack'],
         'offStringList' : ['Incoming Ranged Attack Complete']
+        },
+        'Growing Boldness':
+        {
+        'class' : 'Monster',
+        'level' : 1,
+        'type' : 'dynamic',
+        'action' : applyGrowingBoldness,
+        'onStringList' : ['Outgoing Melee Attack Complete'],
+        'offStringList' : []
+        },
+        'Panic':
+        {
+        'class' : 'Monster',
+        'level' : 1,
+        'type' : 'dynamic',
+        'action' : applyPanic,
+        'onStringList' : ['Incoming Melee Attack Hit'],
+        'offStringList' : []
         }
+        
         
         
     }

@@ -1671,6 +1671,13 @@
     [MAGNITUDE: 15]
   [CATEGORY: Buff]
 
+[NAME: Endure Beating]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: DR_bonus]
+    [MAGNITUDE: 20]
+  [CATEGORY: Buff]
+  
 [NAME: Flaming Rend]
   [TYPE: Display]
   [ELEMENT: Fire]
