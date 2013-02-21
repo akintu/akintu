@@ -124,6 +124,14 @@ class PassiveAbility(object):
         else:
             Combat.removeStatus(source, "Laying in Wait")
                 
+    def applyFireHandler(self, target):
+        target.baseFireResistance += 5
+        target.baseFireBonusDamage += 5
+        
+    def applyCamouflage(self, target):
+        target.baseSneak += 8
+        target.baseDodge += 2
+                
     # Druid
     def applyKnowledgeOfPoison(self, target):
         target.basePoisonBonusDamage += 30
@@ -358,6 +366,20 @@ class PassiveAbility(object):
         'action' : applyLayingInWait,
         'onStringList' : ['Player Turn Start'],
         'offStringList' : ['Outgoing Melee Attack', 'Outgoing Ranged Attack']
+        },
+        'Fire Handler':
+        {
+        'class' : 'Marksman',
+        'level' : 2,
+        'type' : 'static',
+        'action' : applyFireHandler,
+        },
+        'Camouflage':
+        {
+        'class' : 'Marksman',
+        'level' : 2,
+        'type' : 'static',
+        'action' : applyCamouflage
         },
         
         'Knowledge of Poison':

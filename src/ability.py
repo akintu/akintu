@@ -348,6 +348,20 @@ class Ability(object):
             return (False, "Target must be exactly " + source.attackRange + " tiles away.")
         return (True, "")
         
+    def _hotArrow(self, target):
+        source = self.owner
+        hitType = Combat.calcHit(source, target, "Physical", modifier=-1)
+        Combat.basicAttack(source, target, hitType)
+        fireBase = 3
+        fireDamage = Combat.calcDamage(source, target, fireBase, fireBase, "Fire", hitType)
+        Combat.lowerHP(target, fireDamage)
+
+    def _hotArrowCheck(self, target):
+        source = self.owner
+        if not source.usingWeapon("Bow") and not source.usingWeapon("Crossbow"):
+            return (False, "Must be using a bow or crossbow to use " + self.name)
+        return (True, "")            
+        
     # Druid
     
     def _stealth(self, target):
@@ -938,6 +952,19 @@ class Ability(object):
         'action' : _cuspOfEscape,
         'cooldown' : 1,
         'checkFunction' : _cuspOfEscapeCheck,
+        'breakStealth' : 100
+        },
+        'Hot Arrow':
+        {
+        'level' : 2,
+        'class' : 'Marksman',
+        'HPCost' : 0,
+        'APCost' : 5,
+        'range' : -1,
+        'target' : 'hostile',
+        'action' : _hotArrow,
+        'cooldown' : 1,
+        'checkFunction' : _hotArrowCheck,
         'breakStealth' : 100
         },
         
