@@ -27,6 +27,7 @@ class Game(object):
         self.world = World(seed)
         self.keystate = 0
         self.running = False
+        self.combat = False
         self.id = -1
 
         self.serverip = "localhost"
@@ -108,6 +109,7 @@ class Game(object):
             if isinstance(command, Update) and command.property == UpdateProperties.COMBAT and \
                     command.value == True:
                 self.switch_panes(command.location, True)
+                self.combat = True
                     
     def handle_events(self):
         pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
@@ -133,7 +135,7 @@ class Game(object):
             if self.running:
                 self.CDF.send(Person(PersonActions.STOP, self.id))
                 self.running = False
-            if self.keystate in [K_LSHIFT, K_RSHIFT]:
+            if self.keystate in [K_LSHIFT, K_RSHIFT] and not self.combat:
                 self.CDF.send(Person(PersonActions.RUN, self.id, direction))
                 self.running = True
             else:
