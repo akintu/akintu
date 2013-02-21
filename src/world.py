@@ -70,7 +70,7 @@ class Pane(object):
     PaneCorners = {1:TILE_BOTTOM_LEFT, 3:TILE_BOTTOM_RIGHT, 7:TILE_TOP_LEFT, 9:TILE_TOP_RIGHT}
     PaneEdges = {2:TILES_BOTTOM, 4:TILES_LEFT, 6:TILES_RIGHT, 8:TILES_TOP}
 
-    def __init__(self, seed, location):
+    def __init__(self, seed, location, load_entities=True):
         self.seed = seed
         self.location = location
         self.tiles = dict()
@@ -79,17 +79,18 @@ class Pane(object):
         for i in range(PANE_X):
             for j in range(PANE_Y):
                 self.tiles[(i, j)] = Tile(None, True)
-                self.add_obstacle((i, j), RAND_ENTITIES)
-        #self.add_obstacle((i, j), RAND_ENTITIES)
-        self.add_region(Location(location, (10, 10)), 5, 1)
-        for i in range(1):
-            person = TheoryCraft.getMonster()
-            person.location = Location(self.location, (random.randrange(PANE_X), random.randrange(PANE_Y)))
-            r = Region()
-            r.build(RAct.ADD, RShape.CIRCLE, person.location, PANE_Y/4)
-            #r.build(RAct.SUBTRACT, RShape.CIRCLE, Location(self.location, CENTER), int(PANE_Y/6))
-            person.ai.add("WANDER", person.ai.wander, person.movementSpeed * 5, pid=id(person), region=r, move_chance=1.0 / (person.movementSpeed * 5))
-            self.person[id(person)] = person
+                if load_entities:
+                    self.add_obstacle((i, j), RAND_ENTITIES)
+
+        if load_entities:
+            for i in range(1):
+                person = TheoryCraft.getMonster()
+                person.location = Location(self.location, (random.randrange(PANE_X), random.randrange(PANE_Y)))
+                r = Region()
+                r.build(RAct.ADD, RShape.CIRCLE, person.location, PANE_Y/4)
+                #r.build(RAct.SUBTRACT, RShape.CIRCLE, Location(self.location, CENTER), int(PANE_Y/6))
+                person.ai.add("WANDER", person.ai.wander, person.movementSpeed * 5, pid=id(person), region=r, move_chance=1.0 / (person.movementSpeed * 5))
+                self.person[id(person)] = person
 
     def load_images(self):
         self.images = Sprites.get_images_dict()
@@ -132,7 +133,7 @@ class Pane(object):
         if not tile in self.tiles:
             self.tiles[tile] = Tile(None, True)
         if not entity_type:
-            random.seed(self.seed + str(self.location) + str(tile))
+            random.seed(str(self.seed) + str(self.location) + str(tile))
             if random.randrange(100) <= percentage*100:
                 index = random.randrange(len(ENTITY_KEYS))
                 self.objects[tile] = ENTITY_KEYS[index]
@@ -152,7 +153,39 @@ class Pane(object):
                 if not loc in self.tiles:
                     self.tiles[loc] = Tile(None, True)
                     self.add_obstacle(loc.tile, 1, entity_type)
-            
+                    
+    def get_combat_pane(self, focus_tile):
+        combat_pane = CombatPane(self.seed, focus_tile, self.objects)
+        return combat_pane
+
+
+class CombatPane(Pane):
+    
+    def __init(self, seed, focus_location, objects_dict):
+        '''
+        A subpane of the current pane.  It will contain 10x6 of the original
+        tiles which turn into 3x3 grids on the CombatPane.
+        Dimensions are 30x18 (there is a border around the pane)
+        Member Variables:
+            focus_location: a Location object with the current pane and the 
+                            tile of the monster of focus.  Normally this will
+                            be in the center of the combat pane, but in the 
+                            case of corner combat, the combat pane will never
+                            leave the bounds of the parent pane.
+                            
+        '''
+        super(Pane, self).__init__(seed, focus_location.tile, False)
+        self.focus_location = focus_location
+        start_x = focus_location.tile[0]
+        
+        #todo, update this to put focus_location as the center
+        i = j = 2
+        for x in range(start_x, start_x+10):
+            for y in range(start_y, start_y+6):
+                super(Pane, self).add_obstacle(Location(None,(i, j)), 1, objects_dict[(x,y)])
+                y+=3
+            x+=3
+        
 class Tile(object):
     def __init__(self, image = os.path.join("res", "images", "background", "grass.png"), passable = True):
         self.entities = []
@@ -177,5 +210,6 @@ if __name__ == "__main__":
     '''
     Test World
     '''
-    print "Pass"
+    a = Pane((0,0), "SomeSeed")
+    a.get_combat_pane(Location((0,0), (4,10)), a.objects)
     
