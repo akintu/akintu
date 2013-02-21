@@ -2,6 +2,7 @@ from network import *
 from location import *
 from theorycraft import TheoryCraft
 from playercharacter import *
+import copy
 
 class GameServer():
     def __init__(self, world):
@@ -84,14 +85,14 @@ class GameServer():
                                         if not person.in_combat:
                                             person.ai.pause()
                                             person.in_combat = True
-                                            self.combat[person.id] = person.deepcopy()
+                                            self.combat[person.id] = copy.copy(person)
                                             
-                                            self.load_pane(person.location)
+                                            self.load_pane(person.location, True)
                                             self.pane[person.location].person.append(person.id)
                                             
                                         self.person[i].ai.pause()
                                         self.person[i].in_combat = True
-                                        self.combat[i] = self.person[i].deepcopy()
+                                        self.combat[i] = copy.copy(self.person[i])
                                         
                                         self.SDF.send(p, Update(i, UpdateProperties.COMBAT, True, person.location))
                                         self.SDF.send(p, Person(PersonActions.CREATE, i, Location(None, \
