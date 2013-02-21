@@ -168,7 +168,7 @@ class CombatPane(Pane):
         '''
         A subpane of the current pane.  It will contain 10x6 of the original
         tiles which turn into 3x3 grids on the CombatPane.
-        Dimensions are 30x18 (there is a border around the pane)
+        Dimensions are 30x18 (there will be a border around the pane)
         Member Variables:
             focus_location: a Location object with the current pane and the 
                             tile of the monster of focus.  Normally this will
@@ -178,26 +178,37 @@ class CombatPane(Pane):
                             
         '''
         super(CombatPane, self).__init__(pane.seed, focus_location.tile, False)
-        self.focus_location = focus_location
+        
         
         loc_x = focus_location.tile[0]
         loc_y = focus_location.tile[1]
         
-        dx_min = loc_x - 5
-        dy_min = loc_y - 3
-        dx_max = loc_x - 26
-        dy_max = loc_y - 14
+        dx_min = min(loc_x - 5, 0)     #yields 0 if far enough away from edge
+        dy_min = min(loc_y - 3, 0)     #Negative if too close
+        
+        dx_max = max(loc_x - 26, 0)    #yields 0 if far enough away from edge
+        dy_max = max(loc_y - 14, 0)    #Positive if too close
+        
+        loc_x -= dx_min #(0,0) yields (5,3), (31,19) yields (31,19)
+        loc_y -= dy_min
+        
+        loc_x -= dx_max #(5,3) yields (5,3), (31,19) yields (26,14)
+        loc_y -= dx_max 
+        
+        self.focus_location = Location((0,0), (loc_x, loc_y))
         
         #todo, update this to put focus_location as the center
-        i = j = 2
-        for x in range(0, 10):
-            for y in range(0, 6):
+        i = j = 1
+        for x in range(loc_x-5, loc_x+5):
+            for y in range(loc_y-5, loc_y+5):
                 if (x,y) in pane.objects:
-                    print str((x, y)) + str(pane.objects[(x,y)])
-                    #self.add_obstacle((i, j), RAND_ENTITIES)
-                    super(CombatPane, self).add_obstacle((i, j), 1, pane.objects[(x,y)])
-                y+=3
-            x+=3
+                    print pane.objects[(x,y)]
+                    for di in range(0,3):
+                        for dj in range(0,3):
+                            print "x: " + str(di) + "y: " + str(dj)
+                            super(CombatPane, self).add_obstacle((i+di, j+dj), 1, pane.objects[(x,y)])
+                i+=3
+            j+=3
         super(CombatPane, self).load_images()
         
 class Tile(object):
