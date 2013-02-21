@@ -241,6 +241,9 @@ def Ranged_critical_magnitude_bonus_method(self, target, magnitude):
 def Ranged_dodge_bonus_method(self, target, magnitude):
     target.statusRangedDodge += magnitude
 
+def Ranged_dodge_penalty_method(self, target, mangitude):
+    target.statusRangedDodge -= magnitude
+    
 def Ranged_force_bonus_method(self, target, magnitude):
     target.statusRangedForce += magnitude
 
@@ -478,6 +481,9 @@ def Ranged_critical_magnitude_bonus_method_reverse(self, target, magnitude):
 def Ranged_dodge_bonus_method_reverse(self, target, mangitude):
     target.statusRangedDodge -= magnitude
 
+def Ranged_dodge_penalty_method_reverse(self, target, mangitude):
+    target.statusRangedDodge += magnitude
+    
 def Ranged_force_bonus_method_reverse(self, target, magnitude):
     target.statusRangedForce -= magnitude
 
@@ -600,6 +606,7 @@ applyFunctionDict = {
     'Ranged_accuracy_penalty' : Ranged_accuracy_penalty_method,
     'Ranged_critical_magnitude_bonus' : Ranged_critical_magnitude_bonus_method,
     'Ranged_dodge_bonus' : Ranged_dodge_bonus_method,
+    'Ranged_dodge_penalty' : Ranged_dodge_penalty_method,
     'Ranged_force_bonus' : Ranged_force_bonus_method,
     'Recover_HP_percent' : Recover_HP_percent_method,
     'Reduced_stealth_AP_cost' : Reduced_stealth_AP_cost_method,
@@ -626,9 +633,6 @@ applyFunctionDict = {
         #'AI_attack_nearby' : 
         #'AI_flee' : # Need decent AI to implement these...
         # 'Redirect_melee_attacks': None, # Save this one for last?
-        #'Target_ranged_accuracy_bonus':
-        #'Target_ranged_dodge_bonus':
-        #'Target_ranged_dodge_penalty_marksman': # Probably replace these three...
         
 unapplyFunctionDict = {
     'Applied_poison_rating_bonus' : Applied_poison_rating_bonus_method_reverse,
@@ -689,6 +693,7 @@ unapplyFunctionDict = {
     'Ranged_accuracy_penalty' : Ranged_accuracy_penalty_method_reverse,
     'Ranged_critical_magnitude_bonus' : Ranged_critical_magnitude_bonus_method_reverse,
     'Ranged_dodge_bonus' : Ranged_dodge_bonus_method_reverse,
+    'Ranged_dodge_penalty' : Ranged_dodge_penalty_method_reverse,
     'Ranged_force_bonus' : Ranged_force_bonus_method_reverse,
     'Recover_HP_percent' : None,
     'Redirect_melee_attacks' : None,

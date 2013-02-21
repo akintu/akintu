@@ -2629,6 +2629,19 @@ class Person(en.Entity):
                     return True
         return False
         
+    def getStatusStackCount(self, statusName):
+        """Returns the number of stacks of a particular status.
+        If the status is not present on this Person, returns 0.
+        Inputs:
+          self,
+          statusName = The name of the status to look for
+        Outputs:
+          A non-negative integer."""
+        for item in self.statusList:
+            if statusName == item.name:
+                return item.stacks
+        return 0
+        
     # usingAnimalStyle method is identical to hasStatus but needs to
     # function out of combat as well.  TODO
     

@@ -46,7 +46,7 @@ class Testy(object):
         
 if __name__ == "__main__":
     theorycraft.TheoryCraft.loadAll()
-    char = theorycraft.TheoryCraft.getNewPlayerCharacter("Human", "Spellsword")
+    char = theorycraft.TheoryCraft.getNewPlayerCharacter("Human", "Arcane Archer")
     tc = treasurechest.TreasureChest("Small", 1, None, 12)
     for i in range(100):
         itemList = tc.generateTreasure()

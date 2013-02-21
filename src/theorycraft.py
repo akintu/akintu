@@ -71,10 +71,12 @@ class TheoryCraft(object):
         
     @staticmethod
     def getNewPlayerCharacter(race, characterClass, loc=location.Location((0, 0), (PANE_X/2, PANE_Y/2))):
-        race = race.capitalize()
-        characterClass = characterClass.capitalize()
+        race = race.lower()
+        characterClass = characterClass.lower()
+        selection = race + " " + characterClass
+        print selection
         for char in TheoryCraft.classes:
-            if char['name'] == race + " " + characterClass:
+            if char['name'].lower() == race + " " + characterClass:
                 pc = playercharacter.PlayerCharacter(char)
                 pc.location = loc
                 return pc

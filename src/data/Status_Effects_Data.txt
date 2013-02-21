@@ -292,6 +292,10 @@
   [TYPE: Internal]
   [RECURRING: False]
   
+[NAME: Ranged_dodge_penalty]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
 [NAME: Ranged_force_bonus]
   [TYPE: Internal]
   [RECURRING: False]
@@ -919,6 +923,14 @@
 	
 # Display Effects -- Marksman Skills
 
+[NAME: Laying in Wait]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Ranged_accuracy_bonus]
+    [MAGNITUDE: 0]
+  [INTERNAL: Melee_accuracy_bonus]
+    [MAGNITUDE: 0]
+
 #[NAME: Suppressing Fire]
 #  [TYPE: Display]
 #  [ELEMENT: None]
@@ -951,11 +963,13 @@
     [MAGNITUDE: 10]
   [CATEGORY: Debuff] 
 	
-#[NAME: Beacon Trap]
-#  [TYPE: Display]
-#  [ELEMENT: None]
-#  [INTERNAL: Target_ranged_dodge_penalty_marksman]
-#    [MAGNITUDE: 15]
+[NAME: Beacon Trap]
+  [TYPE: Display]
+  [ELEMENT: None]
+  [INTERNAL: Ranged_dodge_penalty]
+    [MAGNITUDE: 15]
+  [INTERNAL: Magic_resist_penalty]
+    [MAGNITUDE: 3]
 	
 # Display Effects -- Druid Skills
 

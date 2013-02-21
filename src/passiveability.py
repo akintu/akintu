@@ -109,7 +109,20 @@ class PassiveAbility(object):
         if doApply:
             duration = -1 # Never ends
             Combat.applyStatus(victim, "Blades of Reduction", duration) 
+             
+    # Marksman
+    def applyExcellentVision(self, target):
+        target._bonusRange += 2
+        target.baseAwareness += 2        
                 
+    def applyLayingInWait(self, target, reverse=False):
+        source = self.owner
+        if not reverse:
+            # If no moves last turn TODO
+            mag = (source.getStatusStackCount("Laying in Wait") + 1) * 2
+            Combat.addStatus(source, "Laying in Wait", duration=-1, magnitude=mag, overwrite=False)
+        else:
+            Combat.removeStatus(source, "Laying in Wait")
                 
     # Druid
     def applyKnowledgeOfPoison(self, target):
@@ -328,6 +341,23 @@ class PassiveAbility(object):
         'action' : applyBladesOfReduction,
         'onStringList' : ['Outgoing Melee Attack Hit', 'Outgoing Melee Attack Critical Hit'],
         'offStringList' : []
+        },
+        
+        'Excellent Vision':
+        {
+        'class' : 'Marksman',
+        'level' : 1,
+        'type' : 'static',
+        'action' : applyExcellentVision
+        },
+        'Laying in Wait':
+        {
+        'class' : 'Marksman',
+        'level' : 1,
+        'type' : 'dynamic',
+        'action' : applyLayingInWait,
+        'onStringList' : ['Player Turn Start'],
+        'offStringList' : ['Outgoing Melee Attack', 'Outgoing Ranged Attack']
         },
         
         'Knowledge of Poison':

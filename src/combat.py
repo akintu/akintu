@@ -289,8 +289,10 @@ class Combat(object):
         
         for display in target.statusList:
             if display.displayName == dStatus.displayName:
-                if overwrite:
-                    display.stacks += 1
+                if not overwrite:
+                    dStatus.deactivate(target)
+                    dStatus.stacks += 1
+                    dStatus.activate(target)
                 else:
                     removeStatus(target, display.displayName)
                     target.statusList.append(dStatus)

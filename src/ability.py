@@ -335,6 +335,19 @@ class Ability(object):
         if toRemove:
             target.listeners.remove(toRemove)        
         
+    # Marksman
+    def _cuspOfEscape(self, target):
+        hitType = Combat.calcHit(source, target, "Physical", modifier=10, critMod=5)
+        Combat.basicAttack(source, target, hitType)
+        
+    def _cuspOfEscapeCheck(self, target):
+        source = self.owner
+        if source.usingWeapon("Melee"):
+            return (False, "Must be using a ranged weapon for: " + self.name)
+        if source.location.distance(target.location) != source.attackRange:
+            return (False, "Target must be exactly " + source.attackRange + " tiles away.")
+        return (True, "")
+        
     # Druid
     
     def _stealth(self, target):
@@ -844,7 +857,7 @@ class Ability(object):
         
         
         
-        
+        # Barbarian
         'Berserker Rage':
         {
         'level' : 1,
@@ -898,6 +911,7 @@ class Ability(object):
         'breakStealth' : 0
         },
         
+        #Spellsword
         'Martial Mode':
         {
         'level' : 2,
@@ -912,6 +926,22 @@ class Ability(object):
         'breakStealth' : 0
         },
         
+        #Marksman
+        'Cusp of Escape':
+        {
+        'level' : 1,
+        'class' : 'Marksman',
+        'HPCost' : 0,
+        'APCost' : 10,
+        'range' : -1, 
+        'target' : 'hostile',
+        'action' : _cuspOfEscape,
+        'cooldown' : 1,
+        'checkFunction' : _cuspOfEscapeCheck,
+        'breakStealth' : 100
+        },
+        
+        #Druid
         'Druid Stealth':
         {
         'level' : 1,
