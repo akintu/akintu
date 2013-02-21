@@ -80,7 +80,8 @@ class Pane(object):
             for j in range(PANE_Y):
                 self.tiles[(i, j)] = Tile(None, True)
                 self.add_obstacle((i, j), RAND_ENTITIES)
-                
+        #self.add_obstacle((i, j), RAND_ENTITIES)
+        self.add_region(Location(location, (10, 10)), 5, 1)
         for i in range(5):
             person = TheoryCraft.getMonster()
             person.location = Location(self.location, (random.randrange(PANE_X), random.randrange(PANE_Y)))
@@ -128,6 +129,8 @@ class Pane(object):
                 self.add_obstacle(tile, 1, entity_key)
 
     def add_obstacle(self, tile, percentage, entity_type=None):
+        if not tile in self.tiles:
+            self.tiles[tile] = Tile(None, True)
         if not entity_type:
             random.seed(self.seed + str(self.location) + str(tile))
             if random.randrange(100) <= percentage*100:
@@ -135,9 +138,20 @@ class Pane(object):
                 self.objects[tile] = ENTITY_KEYS[index]
                 self.tiles[tile].passable = False
         else:
-            #print "Merged " + str(entity_type)
             self.objects[tile] = entity_type
             self.tiles[tile].passable = False
+        if tile in self.objects:
+            return self.objects[tile]
+    
+    def add_region(self, location, size, percentage, entity_type=None):
+        r = Region()
+        r.build(RAct.ADD, RShape.CIRCLE, location, size)
+        entity_type = self.add_obstacle(location.tile, percentage, entity_type)
+        if entity_type:
+            for loc in r:
+                if not loc in self.tiles:
+                    self.tiles[loc] = Tile(None, True)
+                    self.add_obstacle(loc.tile, 1, entity_type)
             
 class Tile(object):
     def __init__(self, image = os.path.join("res", "images", "background", "grass.png"), passable = True):
