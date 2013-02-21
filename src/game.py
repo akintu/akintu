@@ -104,6 +104,11 @@ class Game(object):
                 if command.id == self.id:
                     self.running = False
                     
+            ###### Initiate Combat ######
+            if isinstance(command, Update) and command.property == UpdateProperties.COMBAT and \
+                    command.value == True:
+                self.switch_panes(command.location)
+                    
     def handle_events(self):
         pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
         for event in pygame.event.get():
@@ -135,10 +140,12 @@ class Game(object):
                 self.CDF.send(Person(PersonActions.MOVE, self.id, newloc))
                 if self.pane.person[self.id].location.pane == newloc.pane:
                     self.pane.person[self.id].location = newloc
-                    self.pane.person[self.id].location = newloc
                     self.screen.update_person(self.id, {'location': self.pane.person[self.id].location})
 
-    def switch_panes(self, location):
+    def switch_panes(self, location, combat=False):
         #TODO we can add transitions here.
-        self.pane = self.world.get_pane(location.pane)
+        if combat:
+            self.pane = self.pane.get_combat_pane(location)
+        else:
+            self.pane = self.world.get_pane(location.pane)
         self.screen.set_pane(self.pane)

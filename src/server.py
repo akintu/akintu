@@ -22,7 +22,7 @@ class GameServer():
 
             ###### CreatePerson ######
             if isinstance(command, Person) and command.action == PersonActions.CREATE:
-                self.load_panes(command)
+                self.load_pane(command.location.pane)
                 
                 person = None
                 if port:
@@ -59,7 +59,7 @@ class GameServer():
 
             ###### MovePerson ######
             if isinstance(command, Person) and command.action == PersonActions.MOVE:
-                self.load_panes(command)
+                self.load_pane(command.location.pane)
                 
                 # If this is a legal move request
                 if self.tile_is_open(command.location):
@@ -80,12 +80,30 @@ class GameServer():
                                 if self.person[i].location.in_melee_range(person.location) and \
                                         person.team == "Monsters":
                                     
-                                    if not self.person[i].in_combat and not person.in_combat:
+                                    if not self.person[i].in_combat:
+                                        if not person.in_combat:
+                                            person.ai.pause()
+                                            person.in_combat = True
+                                            self.combat[person.id] = person.deepcopy()
+                                            
+                                            self.load_pane(person.location)
+                                            self.pane[person.location].person.append(person.id)
+                                            
                                         self.person[i].ai.pause()
                                         self.person[i].in_combat = True
-                                        person.ai.pause()
-                                        person.in_combat = True
-                                        self.SDF.send(p, Update(i, UpdateProperties.COMBAT, True, Location(None, (0, 0))))
+                                        self.combat[i] = self.person[i].deepcopy()
+                                        
+                                        self.SDF.send(p, Update(i, UpdateProperties.COMBAT, True, person.location))
+                                        self.SDF.send(p, Person(PersonActions.CREATE, i, Location(None, \
+                                                (0, 0)), (1, self.combat[i].race, self.combat[i].characterClass)))
+                                        for ii in self.pane[person.location].person:
+                                            details = None
+                                            if isinstance(self.combat[ii], PlayerCharacter):
+                                                details = (1, self.combat[ii].race, self.combat[ii].characterClass)
+                                            else:
+                                                details = (2,)
+                                            self.SDF.send(p, Person(PersonActions.CREATE, ii, self.combat[ii].location, details))
+                                        self.pane[person.location].person.append(self.person[i].id)
 
                     else:
                         # Remove person from players' person tables, and pane's person list
@@ -162,18 +180,20 @@ class GameServer():
                         location.tile not in [self.person[i].location.tile \
                         for i in self.pane[location.pane].person]
              
-    def load_panes(self, command):
-        if command.action in [PersonActions.CREATE, PersonActions.MOVE]:
-            if command.location.pane not in self.pane:
-                print("Loading pane " + str(command.location.pane))
-                self.pane[command.location.pane] = self.world.get_pane(command.location.pane, True)
-                
-                # Add all people in pane to global person table, then replace pane's person list with
-                # a list of personIDs
-                self.person.update(self.pane[command.location.pane].person)
-                self.pane[command.location.pane].person = self.pane[command.location.pane].person.keys()
-                for p in self.pane[command.location.pane].person:
-                    self.person[p].ai.startup(self)
+    def load_pane(self, pane, combat=False):
+        if pane not in self.pane:
+            print("Loading pane " + str(pane))
+            if combat:
+                self.pane[pane] = self.pane[pane.pane].get_combat_pane(pane)
+            else:
+                self.pane[pane] = self.world.get_pane(pane, True)
+            
+            # Add all people in pane to global person table, then replace pane's person list with
+            # a list of personIDs
+            self.person.update(self.pane[pane].person)
+            self.pane[pane].person = self.pane[pane].person.keys()
+            for p in self.pane[pane].person:
+                self.person[p].ai.startup(self)
 
     def unload_panes(self):
         current_panes = []
