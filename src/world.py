@@ -155,13 +155,13 @@ class Pane(object):
                     self.add_obstacle(loc.tile, 1, entity_type)
                     
     def get_combat_pane(self, focus_tile):
-        combat_pane = CombatPane(self.seed, focus_tile, self.objects)
+        combat_pane = CombatPane(self, focus_tile)
         return combat_pane
 
 
 class CombatPane(Pane):
     
-    def __init(self, seed, focus_location, objects_dict):
+    def __init(self, pane, focus_location):
         '''
         A subpane of the current pane.  It will contain 10x6 of the original
         tiles which turn into 3x3 grids on the CombatPane.
@@ -174,15 +174,20 @@ class CombatPane(Pane):
                             leave the bounds of the parent pane.
                             
         '''
-        super(Pane, self).__init__(seed, focus_location.tile, False)
+        super(Pane, self).__init__(pane.seed, focus_location.tile, False)
         self.focus_location = focus_location
-        start_x = focus_location.tile[0]
+        
+        center_x = focus_location.tile[0]
+        center_y = focus_location.tile[1]
+        
+        corner_x = center_x - 5
+        corner_y = center_y - 3
         
         #todo, update this to put focus_location as the center
         i = j = 2
         for x in range(start_x, start_x+10):
             for y in range(start_y, start_y+6):
-                super(Pane, self).add_obstacle(Location(None,(i, j)), 1, objects_dict[(x,y)])
+                super(Pane, self).add_obstacle(Location(None,(i, j)), 1, pane.objects[(x,y)])
                 y+=3
             x+=3
         
@@ -210,6 +215,6 @@ if __name__ == "__main__":
     '''
     Test World
     '''
-    a = Pane((0,0), "SomeSeed")
-    a.get_combat_pane(Location((0,0), (4,10)), a.objects)
+    a = Pane((0,0), "SomeSeed", False)
+    #a.get_combat_pane(Location((0,0), (4,10)))
     
