@@ -161,7 +161,7 @@ class Pane(object):
 
 class CombatPane(Pane):
     
-    def __init(self, pane, focus_location):
+    def __init__(self, pane, focus_location):
         '''
         A subpane of the current pane.  It will contain 10x6 of the original
         tiles which turn into 3x3 grids on the CombatPane.
@@ -174,7 +174,7 @@ class CombatPane(Pane):
                             leave the bounds of the parent pane.
                             
         '''
-        super(Pane, self).__init__(pane.seed, focus_location.tile, False)
+        super(CombatPane, self).__init__(pane.seed, focus_location.tile, False)
         self.focus_location = focus_location
         
         center_x = focus_location.tile[0]
@@ -185,9 +185,11 @@ class CombatPane(Pane):
         
         #todo, update this to put focus_location as the center
         i = j = 2
-        for x in range(start_x, start_x+10):
-            for y in range(start_y, start_y+6):
-                super(Pane, self).add_obstacle(Location(None,(i, j)), 1, pane.objects[(x,y)])
+        for x in range(0, 10):
+            for y in range(0, 6):
+                if (x,y) in pane.objects:
+                    print str((x, y)) + str(pane.objects[(x,y)])
+                    super(CombatPane, self).add_obstacle(Location(None,(i, j)), 1, pane.objects[(x,y)])
                 y+=3
             x+=3
         
