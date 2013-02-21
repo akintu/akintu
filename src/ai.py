@@ -6,6 +6,7 @@ class AI():
     def __init__(self):
         self.server = None
         self.behavior = {}
+        self.paused = False
 
     def startup(self, server):
         self.server = server
@@ -59,6 +60,20 @@ class AI():
         self.stop(name)
         self.start(name)
 
+    def pause(self):
+        if not self.paused:
+            for name in self.behavior.keys():
+                if self.behavior[name]['running']:
+                    self.behavior[name]['task'].stop()
+            self.paused = True
+        
+    def resume(self):
+        if self.paused:
+            for name in self.behavior.keys():
+                if self.behavior[name]['running']:
+                    self.start(name)
+            self.paused = False
+        
     def shutdown(self):
         for name in self.behavior.keys():
             self.remove(name)

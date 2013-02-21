@@ -13,6 +13,7 @@ class GameServer():
 
         self.player = {}  # {Port: PersonID} Dict of all players, pointing to their personid
         self.person = {} # {PersonID: Person} Dict of all persons
+        self.combat = {}
         self.pane = {}  # {location.Pane: Pane} Dict of actual pane objects
 
     def server_loop(self):
@@ -72,6 +73,20 @@ class GameServer():
                             if p != port:
                                 if command.location.pane == self.person[i].location.pane:
                                     self.SDF.send(p, command)
+                                    
+                        # Check for combat range and initiate combat states
+                        for p, i in self.player.iteritems():
+                            for person in self.person.values():
+                                if self.person[i].location.in_melee_range(person.location) and \
+                                        person.team == "Monsters":
+                                    
+                                    if not self.person[i].in_combat and not person.in_combat:
+                                        self.person[i].ai.pause()
+                                        self.person[i].in_combat = True
+                                        person.ai.pause()
+                                        person.in_combat = True
+                                        self.SDF.send(p, Update(i, UpdateProperties.COMBAT, True, Location(None, (0, 0))))
+
                     else:
                         # Remove person from players' person tables, and pane's person list
                         self.pane[self.person[command.id].location.pane].person.remove(command.id)

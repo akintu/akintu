@@ -82,13 +82,13 @@ class Pane(object):
                 self.add_obstacle((i, j), RAND_ENTITIES)
         #self.add_obstacle((i, j), RAND_ENTITIES)
         self.add_region(Location(location, (10, 10)), 5, 1)
-        for i in range(5):
+        for i in range(1):
             person = TheoryCraft.getMonster()
             person.location = Location(self.location, (random.randrange(PANE_X), random.randrange(PANE_Y)))
             r = Region()
             r.build(RAct.ADD, RShape.CIRCLE, person.location, PANE_Y/4)
             #r.build(RAct.SUBTRACT, RShape.CIRCLE, Location(self.location, CENTER), int(PANE_Y/6))
-            person.ai.add("WANDER", person.ai.wander, person.movementSpeed * 5, pid=id(person), region=r, move_chance=1)
+            person.ai.add("WANDER", person.ai.wander, person.movementSpeed * 5, pid=id(person), region=r, move_chance=1.0 / (person.movementSpeed * 5))
             self.person[id(person)] = person
 
     def load_images(self):

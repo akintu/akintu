@@ -7,7 +7,7 @@ from const import enum
 PersonActions = enum(CREATE = 1, MOVE = 2, REMOVE = 3, RUN = 4, STOP = 5)
 CreatureTypes = enum(PLAYER = 1, MONSTER = 2)
 InventoryActions = enum(PICKUP = 1, PUTDOWN = 2)
-
+UpdateProperties = enum(HP = 1, MP = 2, AP = 3, COMBAT = 4)
 
 class Command:
     def __init__(self):
@@ -18,12 +18,20 @@ class Command:
             self.__dict__.iteritems() if val != None]) + ")"
 
 class Person(Command):
-    def __init__(self, action, id, location = None, details = None):
+    def __init__(self, action, id, location=None, details=None):
         self.action = action
         self.id = id
         self.location = location
         self.details = details
 
+class Update(Command):
+    def __init__(self, id, property, value, location=None, details=None):
+        self.id = id
+        self.property = property
+        self.value = value
+        self.location = location
+        self.details = details
+        
 class InventoryAction(Command):
     def __init__(self, action, item_hash):
         self.action = action

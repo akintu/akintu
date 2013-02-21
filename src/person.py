@@ -33,6 +33,7 @@ class Person(en.Entity):
         
         self.id = None
         self.ai = AI()
+        self.in_combat = False
 
         self._cooldownList = []
         self._statusList = []
