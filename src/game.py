@@ -107,7 +107,7 @@ class Game(object):
             ###### Initiate Combat ######
             if isinstance(command, Update) and command.property == UpdateProperties.COMBAT and \
                     command.value == True:
-                self.switch_panes(command.location)
+                self.switch_panes(command.location, True)
                     
     def handle_events(self):
         pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
