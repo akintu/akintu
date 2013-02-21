@@ -533,6 +533,15 @@ class Ability(object):
         hit = Combat.calcHit(source, target, "Physical")
         Combat.basicAttack(source, target, hit, armorPenetrationMod=15, overallDamageMod=1.2)
         
+    def _stunningCut(self, target):
+        ''' Deal normal damage with +2 accuracy and 10% chance to stun. '''
+        source = self.owner
+        hit = Combat.calcHit(source, target, "Physical", modifier=2)
+        Combat.basicAttack(source, target, hit)
+        if hit != "Miss" and Dice.rollBeneath(10):
+            duration = 2 # 1 turn expires immediately...
+            Combat.addStatus(target, "Stun", duration)
+        
     def _quaffPotion(self, target):
         ''' Consume a potion, healing 15-30% of all damage taken. '''
         source = self.owner
@@ -1112,6 +1121,19 @@ class Ability(object):
         'target' : 'hostile',
         'action' : _smash,
         'cooldown' : 2,
+        'checkFunction' : None,
+        'breakStealth' : 100
+        },
+        'Stunning Cut':
+        {
+        'level' : 1,
+        'class' : 'Monster',
+        'HPCost' : 0,
+        'APCost' : 10,
+        'range' : 1,
+        'target' : 'hostile',
+        'action' : _stunningCut,
+        'cooldown' : 1,
         'checkFunction' : None,
         'breakStealth' : 100
         },

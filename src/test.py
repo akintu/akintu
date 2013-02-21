@@ -55,7 +55,7 @@ if __name__ == "__main__":
     print char
     print char.movementSpeed
     print tc
-    initMonster = theorycraft.TheoryCraft.getMonster(level=dice.Dice.roll(1,3))
+    initMonster = theorycraft.TheoryCraft.getMonster(level=4)
     mList = theorycraft.TheoryCraft.generateMonsterGroup(initMonster)
     for m in mList:
         print m.name
