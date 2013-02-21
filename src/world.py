@@ -189,7 +189,7 @@ class CombatPane(Pane):
             for y in range(0, 6):
                 if (x,y) in pane.objects:
                     print str((x, y)) + str(pane.objects[(x,y)])
-                    super(CombatPane, self).add_obstacle(Location(None,(i, j)), 1, pane.objects[(x,y)])
+                    super(CombatPane, self).add_obstacle(Location((0, 0), (i, j)), 1, pane.objects[(x,y)])
                 y+=3
             x+=3
         

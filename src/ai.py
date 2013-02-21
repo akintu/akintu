@@ -51,7 +51,7 @@ class AI():
         self.behavior[name]['task'].start(1.0 / self.behavior[name]['frequency'])
         
     def stop(self, name):
-        if self.behavior[name]['running']:
+        if self.behavior[name]['running'] and not self.paused:
             self.behavior[name]['task'].stop()
             self.behavior[name]['running'] = False
         
