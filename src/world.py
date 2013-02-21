@@ -83,7 +83,10 @@ class Pane(object):
                     self.add_obstacle((i, j), RAND_ENTITIES)
 
         if load_entities:
-            for i in range(1):
+            self.load_monsters()
+    
+    def load_monsters(self):
+        for i in range(1):
                 person = TheoryCraft.getMonster()
                 person.location = Location(self.location, (random.randrange(PANE_X), random.randrange(PANE_Y)))
                 r = Region()
@@ -91,7 +94,7 @@ class Pane(object):
                 #r.build(RAct.SUBTRACT, RShape.CIRCLE, Location(self.location, CENTER), int(PANE_Y/6))
                 person.ai.add("WANDER", person.ai.wander, person.movementSpeed * 5, pid=id(person), region=r, move_chance=1.0 / (person.movementSpeed * 5))
                 self.person[id(person)] = person
-
+    
     def load_images(self):
         self.images = Sprites.get_images_dict()
         
@@ -191,7 +194,8 @@ class CombatPane(Pane):
             for y in range(0, 6):
                 if (x,y) in pane.objects:
                     print str((x, y)) + str(pane.objects[(x,y)])
-                    super(CombatPane, self).add_obstacle(Location((0, 0), (i, j)), 1, pane.objects[(x,y)])
+                    #self.add_obstacle((i, j), RAND_ENTITIES)
+                    super(CombatPane, self).add_obstacle((i, j), 1, pane.objects[(x,y)])
                 y+=3
             x+=3
         super(CombatPane, self).load_images()
