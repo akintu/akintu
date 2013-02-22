@@ -238,6 +238,21 @@ class PassiveAbility(object):
             else:
                 target.statusMeleeAccuracy -= 2            
             
+    # Arcane Archer
+    def applyManaArrows(self, target, reverse=False, other=None):
+        source = self.owner
+        if source.usingWeapon("Bow") or source.usingWeapon("Crossbow"):
+            source.MP += source.arcaneArcherManaRegen
+            
+    def applyMysticalResearch(self, target, reverse=False, spell=None):
+        source = self.owner
+        if not reverse:
+            if spell.school == "Mystic":
+                source.statusSpellpower += 4
+        else:
+            if spell.school == "Mystic":
+                source.statusSpellpower -= 4
+            
     # Monsters
 
     def applyDeflectMissiles(self, target, reverse=False, hero=None):
@@ -541,6 +556,26 @@ class PassiveAbility(object):
         'onStringList' : ['Outgoing Melee Attack'],
         'offStringList' : ['Outgoing Melee Attack Complete']
         },        
+        
+        # Arcane Archer
+        'Mana Arrows':
+        {
+        'class' : 'Arcane Archer',
+        'level' : 1,
+        'type' : 'dynamic',
+        'action' : applyManaArrows,
+        'onStringList' : ['Ougoing Ranged Attack Complete'],
+        'offStringList' : []
+        },
+        'Mystical Research':
+        {
+        'class' : 'Arcane Archer',
+        'level' : 2,
+        'type' : 'dynamic',
+        'action' : applyMysticalResearch,
+        'onStringList' : ['Outgoing Spell Cast'],
+        'offStringList' : ['Outgoing Spell Cast Complete']
+        },
         
         # Monsters
         'Deflect Missiles':

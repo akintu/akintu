@@ -1273,17 +1273,7 @@
   [TYPE: Display]
   [ELEMENT: Arcane]
   [INTERNAL: Weapon_damage_bonus]
-    [MAGNITUDE: 2]
-    [CONDITIONAL: Using Bow || Using Crossbow]
-  [CATEGORY: Buff]
-  [CATEGORY: Threading]
-  
-[NAME: Improved Arcane Threading]
-  [TYPE: Display]
-  [ELEMENT: Arcane]
-  [INTERNAL: Weapon_damage_bonus]
-    [MAGNITUDE: 5]
-    [CONDITIONAL: Using Bow || Using Crossbow]
+    [MAGNITUDE: 0]
   [CATEGORY: Buff]
   [CATEGORY: Threading]
   

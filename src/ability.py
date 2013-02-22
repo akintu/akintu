@@ -476,6 +476,20 @@ class Ability(object):
         if toRemove:
             target.listeners.remove(toRemove)    
     
+    # Arcane Archer
+    def _arcaneThreading(self, target):
+        source = self.owner
+        Combat.removeStatusOfType(source, "Threading")
+        duration = -1
+        magnitude = 2
+        Combat.addStatus(source, "Arcane Threading", duration, magnitude)
+    
+    def _arcaneThreadingCheck(self, target):
+        source = self.owner
+        if source.usingWeapon("Bow") or source.usingWeapon("Crossbow"):
+            return (True, "")
+        return (False, "Must be using a bow or crossbow to use: " + self.name)
+    
     # Monsters
     
     def _draconicGuard(self, target):
@@ -1118,6 +1132,21 @@ class Ability(object):
         'action' : _innerMight,
         'cooldown' : 4,
         'checkFunction' : _innerMightCheck,
+        'breakStealth' : 0
+        },
+        
+        # Arcane Archer
+        'Arcane Threading':
+        {
+        'level' : 1,
+        'class' : 'Arcane Archer',
+        'HPCost' : 0,
+        'APCost' : 1,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _arcaneThreading,
+        'cooldown' : 1,
+        'checkFunction' : _arcaneThreadingCheck,
         'breakStealth' : 0
         },
         

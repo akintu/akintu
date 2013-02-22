@@ -354,7 +354,6 @@ class Combat(object):
                 for dStatus in removalCandidates:
                     Combat.removeStatus(target, dStatus.displayName)
             else:
-                # Does this work for roll(0,0) ? TODO
                 choice = Dice.roll(0, len(removalCandidates) - 1)
                 Combat.removeStatus(target, removalCandidates[choice].displayName)
         

@@ -95,14 +95,9 @@ class PlayerCharacter(p.Person):
         # Class specific properties and weird things:
         
         # --- Arcane Archer ---
-        self._arcaneArcherManaRegenLow = None
-        self._arcaneArcherManaRegenHigh = None
-        self._arcaneArcherManaRegenBase = None
+        self._arcaneArcherManaRegen = None
         if (self.characterClass == "Arcane Archer"):
-            self._arcaneArcherManaRegenLow = 4
-            self._arcaneArcherManaRegenBase = 6
-            self._arcaneArcherManaRegenHigh = 7
-        self.arcaneArcherManaRegenFactor = 1
+            self._arcaneArcherManaRegen = 6
         
         # --- Marksman ---
         self._bonusRange = 0
@@ -653,30 +648,14 @@ class PlayerCharacter(p.Person):
         self._statusShadowBonusDamage = value
         
     # Class specific and miscellaneous
-    
+
     @property
-    def arcaneArcherManaRegenBase(self):
+    def arcaneArcherManaRegen(self):
         return self._arcaneArcherManaRegenBase
     
-    @arcaneArcherManaRegenBase.setter
-    def arcaneArcherManaRegenBase(self, value):
+    @arcaneArcherManaRegen.setter
+    def arcaneArcherManaRegen(self, value):
         self._arcaneArcherManaRegenBase = value
-        
-    @property
-    def arcaneArcherManaRegenHigh(self):
-        return self._arcaneArcherManaRegenHigh
-    
-    @arcaneArcherManaRegenHigh.setter
-    def arcaneArcherManaRegenHigh(self, value):
-        self._arcaneArcherManaRegenHigh = value
-        
-    @property
-    def arcaneArcherManaRegenLow(self):
-        return self._arcaneArcherManaRegenLow
-    
-    @arcaneArcherManaRegenLow.setter
-    def arcaneArcherManaRegenLow(self, value):
-        self._arcaneArcherManaRegenLow = value
     
     @property
     def totalIdentification(self):
