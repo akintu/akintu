@@ -1282,8 +1282,6 @@
   [ELEMENT: Electric]
   [INTERNAL: Weapon_damage_bonus]
     [MAGNITUDE: 0]
-	[MIN: 1]
-	[MAX: 8]
   [CATEGORY: Buff]
   [CATEGORY: Threading]
 	

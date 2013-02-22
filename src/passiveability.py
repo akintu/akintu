@@ -252,6 +252,15 @@ class PassiveAbility(object):
         else:
             if spell.school == "Mystic":
                 source.statusSpellpower -= 4
+                
+    def applyArcaneThreadingUpgrade(self, target):
+        toRemove = None
+        for abil in target.abilities:
+            if abil.name == "Arcane Threading":
+                toRemove = abil
+                break
+        if toRemove:        
+            target.abilities.remove(toRemove)
             
     # Monsters
 
@@ -575,6 +584,13 @@ class PassiveAbility(object):
         'action' : applyMysticalResearch,
         'onStringList' : ['Outgoing Spell Cast'],
         'offStringList' : ['Outgoing Spell Cast Complete']
+        },
+        'Arcane Threading Upgrade':
+        {
+        'class' : 'Arcane Archer',
+        'level' : 4,
+        'type' : 'static',
+        'action' : applyArcaneThreadingUpgrade
         },
         
         # Monsters

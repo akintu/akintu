@@ -490,6 +490,44 @@ class Ability(object):
             return (True, "")
         return (False, "Must be using a bow or crossbow to use: " + self.name)
     
+    def _tripleChargedArrow(self, target):
+        source = self.owner
+        hitType = Combat.calcHit(source, target, "Physical")
+        Combat.basicAttack(source, target, hitType)
+        source.MP += 12
+        
+    def _tripleChargedArrowCheck(self, target):
+        source = self.owner
+        if source.usingWeapon("Bow") or source.usingWeapon("Crossbow"):
+            return (True, "")
+        return (False, "Must be using a bow or crossbow to use: " + self.name)
+    
+    def _improvedArcaneThreading(self, target):
+        source = self.owner
+        Combat.removeStatusOfType(source, "Threading")
+        duration = -1
+        magnitude = 5
+        Combat.addStatus(source, "Arcane Threading", duration, magnitude)
+    
+    def _improvedArcaneThreadingCheck(self, target):
+        source = self.owner
+        if source.usingWeapon("Bow") or source.usingWeapon("Crossbow"):
+            return (True, "")
+        return (False, "Must be using a bow or crossbow to use: " + self.name)
+    
+    def _electricThreading(self, target):
+        source = self.owner
+        Combat.removeStatusOfType(source, "Threading")
+        duration = -1
+        magnitude = 6
+        Combat.addStatus(source, "Electric Threading", duration, magnitude)
+        
+    def _electricThreadingCheck(self, target):
+        source = self.owner
+        if source.usingWeapon("Bow") or source.usingWeapon("Crossbow"):
+            return (True, "")
+        return (False, "Must be using a bow or crossbow to use: " + self.name)
+    
     # Monsters
     
     def _draconicGuard(self, target):
@@ -1147,6 +1185,45 @@ class Ability(object):
         'action' : _arcaneThreading,
         'cooldown' : 1,
         'checkFunction' : _arcaneThreadingCheck,
+        'breakStealth' : 0
+        },
+        'Triple-Charged Arrow':
+        {
+        'level' : 3,
+        'class' : 'Arcane Archer',
+        'HPCost' : 0,
+        'APCost' : 5,
+        'range' : -1,
+        'target' : 'hostile',
+        'action' : _tripleChargedArrow,
+        'cooldown' : 3,
+        'checkFunction' : _tripleChargedArrowCheck,
+        'breakStealth' : 100
+        },
+        'Improved Arcane Threading':
+        {
+        'level' : 1,
+        'class' : 'Arcane Archer',
+        'HPCost' : 0,
+        'APCost' : 1,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _improvedArcaneThreading,
+        'cooldown' : 1,
+        'checkFunction' : _improvedArcaneThreadingCheck,
+        'breakStealth' : 0
+        },
+        'Electric Threading':
+        {
+        'level' : 4,
+        'class' : 'Arcane Archer',
+        'HPCost' : 0,
+        'APCost' : 1,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _electricThreading,
+        'cooldown' : 1,
+        'checkFunction' : _electricThreadingCheck,
         'breakStealth' : 0
         },
         
