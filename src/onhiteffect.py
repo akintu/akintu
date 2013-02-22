@@ -126,6 +126,15 @@ class OnHitEffect(object):
         Combat.modifyResource(source, "MP", restoration)
         return None
         
+    def applySuppressed(self, magnitude, source, target):
+        target.statusMeleeAccuracy -= 5
+        target.statusRangedAccuracy -= 5
+        target.attackPower -= 5
+        if source.usingWeapon("Shortbow") or source.usingWeapon("Sling") or source.usingWeapon("Crossbow"):
+            if Dice.rollPresetChance(source, target, "Rare"):
+                duration = 2
+                Combat.addStatus(target, "Crippled", duration)
+        
     def applyTargetThroat(self, magnitude, source, target):
         if not source.usingWeapon("Ranged") or target.size == "Huge":
             return

@@ -67,10 +67,10 @@ def Applied_poison_rating_bonus_method(self, target, magnitude):
     target.equipmentPoisonRatingBonus += magnitude
 
 def Attack_power_bonus_method(self, target, magnitude):
-    target.attackPower *= (1 + magnitude / 100)
+    target.attackPower += magnitude
 
 def Attack_power_penalty_method(self, target, magnitude):
-    target.attackPower *= (1 - magnitude / 100)
+    target.attackPower -= magnitude
 
 def Arcane_archer_mana_regen_penalty_method(self, target, magnitude):
     target.arcaneArcherManaRegenBase -= magnitude
@@ -179,7 +179,8 @@ def Might_penalty_method(self, target, magnitude):
     target.statusMight -= magnitude
     
 def Movement_speed_penalty_method(self, target, magnitude):
-    target.movementTiles *= (100 - magnitude)/100
+    target.movementTiles -= magnitude
+    # TODO: Ensure monsters can always move at least one tile.
 
 def Movement_tiles_penalty_method(self, target, magnitude):
     target.movementTiles -= magnitude
@@ -205,9 +206,10 @@ def On_hit_mage_hunting_method(self, target, magnitude):
 def On_hit_stun_method(target, chance, conditional):
     target.applyOnHitMod('On_hit_stun', conditional, chance, 0, 'No_turn')
 
-def On_hit_suppressing_weapon_method(target, chance, conditional, magnitude1, magnitude2, magnitude3):
-    target.applyOnHitMod('On_hit_suppressing_weapon', conditional, chance, magnitude1, 'Melee_accuracy_penalty', magnitude2, 'Ranged_accuracy_penalty', magnitude3, 'Attack_power_penalty')
-
+def On_hit_suppressing_weapon_method(self, target, magnitude):
+    target.onHitEffects.append(onhiteffect.OnHitEffect(magnitude, onhiteffect.OnHitEffect.applySuppressed))
+    target.statusCriticalChance -= 10
+    
 def Overall_damage_bonus_method(self, target, magnitude):
     target.statusOverallDamageBonus += magnitude
 
@@ -308,10 +310,10 @@ def Applied_poison_rating_bonus_method_reverse(self, target, magnitude):
     target.equipmentPoisonRatingBonus -= magnitude
 
 def Attack_power_bonus_method_reverse(self, target, magnitude):
-    target.attackPower /= (1 + magnitude / 100)
+    target.attackPower -= magnitude
 
 def Attack_power_penalty_method_reverse(self, target, magnitude):
-    target.attackPower /= (1 - magnitude / 100)
+    target.attackPower += magnitude
 
 def Arcane_archer_mana_regen_penalty_method_reverse(self, target, magnitude):
     target.arcaneArcherManaRegenBase += magnitude
@@ -419,7 +421,7 @@ def Might_penalty_method_reverse(self, target, magnitude):
     target.statusMight += magnitude
 
 def Movement_speed_penalty_method_reverse(self, target, magnitude):
-    target.movementTiles /= (100 - magnitude)/100
+    target.movementTiles += magnitude
 
 def Movement_tiles_penalty_method_reverse(self, target, magnitude):
     target.movementTiles += magnitude
@@ -446,8 +448,9 @@ def On_hit_stun_method_reverse(self, target, magnitude):
     target.removeOnHitMod('On_hit_stun')
 
 def On_hit_suppressing_weapon_method_reverse(self, target, magnitude):
-    target.removeOnHitMod('On_hit_suppressing_weapon')
-
+    target.removeOnHitEffect('On_hit_suppressing_weapon', magnitude)
+    target.statusCriticalChance += 10
+    
 def Overall_damage_bonus_method_reverse(self, target, magnitude):
     target.statusOverallDamageBonus -= magnitude
 

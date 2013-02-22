@@ -376,6 +376,11 @@ class Ability(object):
             return (True, "")
         return (False, "Must be using a sling to use " + self.name)            
         
+    def _suppressingFire(self, target):
+        source = self.owner
+        duration = 4
+        Combat.addStatus(self, "Suppressing Fire", duration)
+        
     # Druid
     
     def _stealth(self, target):
@@ -993,6 +998,19 @@ class Ability(object):
         'cooldown' : 1,
         'checkFunction' : _hotBulletCheck,
         'breakStealth' : 100
+        },
+        'Suppressing Fire':
+        {
+        'level' : 4,
+        'class' : 'Marksman',
+        'HPCost' : 0,
+        'APCost' : 5,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _suppressingFire,
+        'cooldown' : 4,
+        'checkFunction' : None,
+        'breakStealth' : 0
         },
         
         #Druid

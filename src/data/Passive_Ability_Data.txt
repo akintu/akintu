@@ -350,7 +350,7 @@
 [TYPE: Dynamic]
   [TRIGGERED_BY: Incoming Ranged Attack Hit]
   [APPLY_STATUS: Superior Training]
-    [MAGNITUDE: 2]
+    [MAGNITUDE: 3]
 	[DURATION: 2] # Will decrement almost immediately
 	
 # Druid passives

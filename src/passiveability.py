@@ -131,6 +131,7 @@ class PassiveAbility(object):
     def applyCamouflage(self, target):
         target.baseSneak += 8
         target.baseDodge += 2
+        target.baseRangedAccuracy += 2
                 
     def applyShortbowNiche(self, target, reverse=False, other=None):
         source = self.owner
@@ -142,6 +143,17 @@ class PassiveAbility(object):
             if source.usingWeapon("Shortbow"):
                 source.statusCriticalMagnitude -= 10
                 source.statusRangedAccuracy -= 1
+                
+    def applyIncredibleFocus(self, target, reverse=False, statusName=None):
+        source = self.owner
+        if statusName == "Stun" and Dice.rollBeneath(75):
+            Combat.removeStatus(source, statusName)
+                
+    def applySuperiorTraining(self, target, reverse=False, other=None):
+        source = self.owner
+        duration = 2 # Decremented almost immediately.
+        mag = 3
+        Combat.addStatus(source, "Superior Training", duration, mag)
                 
     # Druid
     def applyKnowledgeOfPoison(self, target):
@@ -400,6 +412,24 @@ class PassiveAbility(object):
         'action' : applyShortbowNiche,
         'onStringList' : ['Outgoing Ranged Attack'],
         'offStringList' : ['Outgoing Ranged Attack Complete']
+        },
+        'Incredible Focus':
+        {
+        'class' : 'Marksman',
+        'level' : 4,
+        'type' : 'dynamic',
+        'action' : applyIncredibleFocus,
+        'onStringList' : ['Status Applied'],
+        'offStringList' : []
+        },
+        'Superior Training':
+        {
+        'class' : 'Marksman',
+        'level' : 4,
+        'type' : 'dynamic',
+        'action' : applySuperiorTraining,
+        'onStringList' : ['Incoming Ranged Attack Hit'],
+        'offStringList' : []
         },
         
         'Knowledge of Poison':
