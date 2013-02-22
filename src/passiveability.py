@@ -170,6 +170,31 @@ class PassiveAbility(object):
         target.basePoisonResistance += 5
         target.baseColdResistance += 5
                 
+    # Nightblade
+    def applyLowLightAdvantage(self, target):
+        # TODO: Need to adjust melee accuracy +2/-2 based on indoors/outdoors.
+        target.baseAwareness += 1
+                
+    def applySingleBlade(self, target, reverse=False, other=None):
+        source = self.owner
+        if not reverse:
+            if source.usingWeaponStyle("Single"):
+                source.statusMeleeAccuracy += 3
+                source.statusCriticalChance += 5
+        else:
+            if source.usingWeaponStyle("Single"):
+                source.statusMeleeAccuracy -= 3
+                source.statusCriticalChance -= 5
+    
+    def applyUpCloseAndPersonal(self, target, reverse=False, spell=None):
+        source = self.owner
+        if not reverse:
+            if spell.school == "Bane" and location.in_melee_range(source.location, target.location):
+                source.statusSpellpower += 4
+        else:
+            if spell.school == "Bane" and location.in_melee_range(source.location, target.location):
+                source.statusSpellpower -= 4
+        
     # Battle Mage
     def applyCloseRangedMagic(self, target, reverse=False, spell=None):
         if not reverse:
@@ -483,6 +508,32 @@ class PassiveAbility(object):
         'level' : 3,
         'type' : 'static',
         'action' : applyTimeWithNature
+        },
+        
+        'Low-Light Advantage':
+        {
+        'class' : 'Nightblade',
+        'level' : 1,
+        'type' : 'static',
+        'action' : applyLowLightAdvantage
+        },
+        'Single Blade':
+        {
+        'class' : 'Nightblade',
+        'level' : 2,
+        'type' : 'dynamic',
+        'action' : applySingleBlade,
+        'onStringList' : ['Outgoing Melee Attack'],
+        'offStringList' : ['Outgoing Melee Attack Complete']
+        },
+        'Up close and Personal':
+        {
+        'class' : 'Nightblade',
+        'level' : 4,
+        'type' : 'dynamic',
+        'action' : applyUpCloseAndPersonal,
+        'onStringList' : ['Outgoing Spell Cast'],
+        'offStringList' : ['Outgoing Spell Cast Complete']
         },
         
         'Close-Ranged Magic':

@@ -437,6 +437,18 @@ class Ability(object):
         # Remove Trap
         # Add trap.Trap("Poison Thorn Trap", self.owner, target.location)
     
+    # Nightblade
+    def _shadowstep(self, target):
+        source = self.owner
+        Combat.movePerson(source, target.location, instant=True)
+        # TODO: Consider replacing the ability to set AP costs?
+        
+    def _shadowstepCheck(self, target):
+        source = self.owner
+        if not source.inStealth():
+            return (False, "Must be in stealth to use " + self.name)
+        # TODO: Check to see if the destination tile is passable.
+        
     # Battle Mage
     def _bufferStrike(self, target):
         source = self.owner
@@ -1144,6 +1156,21 @@ class Ability(object):
         'action' : _poisonThornTrap,
         'cooldown' : 1,
         'checkFunction' : None,
+        'breakStealth' : 0
+        },
+        
+        # Nightblade
+        'Shadowstep':
+        {
+        'level' : 4,
+        'class' : 'Nightblade',
+        'HPCost' : 0,
+        'APCost' : 6,
+        'range' : 4,
+        'target' : 'location',
+        'action' : _shadowstep,
+        'cooldown' : 2,
+        'checkFunction' : _shadowstepCheck,
         'breakStealth' : 0
         },
         

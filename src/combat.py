@@ -654,7 +654,7 @@ class Combat(object):
         #TODO -- trigger duration/number of moves/break on stealth??
         
     @staticmethod
-    def movePlayer(target, destination, instant=False):
+    def movePerson(target, destination, instant=False):
         """Will move the player character from its current location to the given
         destination tile.  By default, will show the moving animation.
         Inputs:
