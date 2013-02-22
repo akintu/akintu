@@ -77,26 +77,24 @@ class EquippedItems(object):
         Outputs:
           A List of the equipment that was displaced (even if it was only one
           piece.)"""
-        if newPiece.isinstance(equipment.Weapon) or newPiece.type == "Shield":
+        if not hand:
+            hand = "Right"
+        if newPiece.isinstance(equipment.Weapon):
             return _equipWeapon(self, newPiece, hand)
         if newPiece.type == "Finger":
             return _equipRing(self, newPiece, hand)
+        if newPiece.type == "Shield":
+            return _equipShield(self, newPiece)        
         else:
             return _equipArmor(self, newPiece)
     
     def _equipWeapon(self, newPiece, hand="Right"):
-        if hand == "Main":
+        if hand == "Main" or not hand:
             hand = "Right"
         elif hand == "Off" or hand == "Off-Hand":
             hand = "Left"
-            
-        handsUsed = None
-        if newPiece.isinstance(equipment.Weapon):
-            handsUsed = newPiece.handsRequired
-        else: 
-            # Shield
-            handsUsed = "One-Handed"
-            hand = "Left"
+
+        handsUsed = newPiece.handsRequired
         
         oldPieceOne = None
         oldPieceTwo = None
@@ -106,12 +104,12 @@ class EquippedItems(object):
                 oldPieceOne = self._allGear['Main Hand']
                 self._allGear['Main Hand'] = newPiece
             # Case 3: Main hand empty, Off-hand full
-            if not self._allGear['Main Hand'] and self._allGear['Off Hand']:
+            elif not self._allGear['Main Hand'] and self._allGear['Off Hand']:
                 oldPieceOne = self._allGear['Off Hand']
                 self._allGear['Main Hand'] = newPiece
                 self._allGear['Off Hand'] = None
             # Case 4: Both hands full
-            if self._allGear['Main Hand'] and self._allGear['Off Hand']:
+            elif self._allGear['Main Hand'] and self._allGear['Off Hand']:
                 oldPieceOne = self._allGear['Main Hand']
                 oldPieceTwo = self._allGear['Off Hand']
                 self._allGear['Main Hand'] = newPiece
@@ -129,6 +127,17 @@ class EquippedItems(object):
             return [oldPieceOne, oldPieceTwo]
         else:
             return [oldPieceOne]
+  
+    def _equipShield(self, newPiece):
+        oldPiece = None
+        mainHand = self._allGear['Main Hand']
+        if mainHand.handsRequired == "Two-Handed":
+            oldPiece = mainHand
+            self._allGear['Main Hand'] = None
+        else:
+            oldPiece = self._allGear['Off Hand']
+        self._allGear['Off Hand'] = newPiece
+        return [oldPiece]
   
     @property
     def equippedOffHand(self):

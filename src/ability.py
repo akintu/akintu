@@ -381,7 +381,7 @@ class Ability(object):
         duration = 4
         Combat.addStatus(self, "Suppressing Fire", duration)
         
-    # Druid
+    # Thief
     
     def _stealth(self, target):
         source = self.owner
@@ -391,6 +391,8 @@ class Ability(object):
         if self.inStealth():
             return (False, "Already in Stealth")
         return (True, "")
+    
+    # Druid
     
     def _deepWound(self, target):
         source = self.owner

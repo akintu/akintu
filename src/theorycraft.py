@@ -43,6 +43,24 @@ class TheoryCraft(object):
         TheoryCraft.hasLoaded = True
         
     @staticmethod
+    def getWeaponByName(name, ip=0):
+        '''Gets a weapon with the given name and the
+        specified base item points.'''
+        for wep in TheoryCraft.weapons:
+            if wep['name'] == name:
+                return wep.cloneWithMagicalProperties(ip)
+        print "Weapon name: '" + name + "' not found in master list."
+        
+    @staticmethod
+    def getArmorByName(name, ip=0):
+        '''Gets a piece of armor with the given name and the
+        specified base item points.'''
+        for arm in TheoryCraft.armors:
+            if arm['name'] == name:
+                return arm.cloneWithMagicalProperties(ip)
+        print "Armor name: '" + name + "' not found in master list."    
+        
+    @staticmethod
     def getMonster(index=None, loc=location.Location((0, 0), (PANE_X/2, PANE_Y/2)), level=None, name=None, tolerance=1, ignoreMaxLevel=False):
         if not level:
             level = Dice.roll(1,3)
