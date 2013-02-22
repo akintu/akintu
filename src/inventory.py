@@ -1,17 +1,20 @@
 #!/usr/bin/python
 
 import sys
+import theorycraft
 import wealth
-import consumables
+import consumable
 import equippeditems
-from theorycraft import *
+
 
 class Inventory(object):
     MAX_SLOTS = 20
     
-    def __init__(self, presetItems=[], presetGoldAmount=0, ccName=None):
-	    self._allItems = presetItems
-	    self.gold = presetGoldAmount
+    def __init__(self, presetItems=None, presetGoldAmount=0, ccName=None):
+        self._allItems = []
+        if presetItems:
+            self._allItems = presetItems
+        self.gold = presetGoldAmount
         if ccName:
             self._addStartingItems(ccName)
         
@@ -19,53 +22,53 @@ class Inventory(object):
         '''Adds starting equipment to this inventory appropriate
         to the character class name provided (as a new character.)'''
         for i in range(3):
-            self.addItem(consumables.Consumables("Basic Healing Potion"))
+            self.addItem(consumable.Consumable("Basic Healing Potion"))
         for i in range(2):
-            self.addItem(consumables.Consumables("Antidote"))
+            self.addItem(consumable.Consumable("Antidote"))
         self.gold = 75
         if ccName == "Barbarian":
-            self.addItem(TheoryCraft.getWeaponByName("Great Axe"))
+            self.addItem(theorycraft.TheoryCraft.getWeaponByName("Great Axe"))
         elif ccName == "Dragoon":
-            self.addItem(TheoryCraft.getWeaponByName("Spear"))
+            self.addItem(theorycraft.TheoryCraft.getWeaponByName("Spear"))
         elif ccName == "Weapon Master":
-            self.addItem(TheoryCraft.getWeaponByName("Long Sword"))
-            self.addItem(TheoryCraft.getArmorByName("Heavy Shield"))
+            self.addItem(theorycraft.TheoryCraft.getWeaponByName("Long Sword"))
+            self.addItem(theorycraft.TheoryCraft.getArmorByName("Heavy Shield"))
         elif ccName == "Spellsword":
-            self.addItem(TheoryCraft.getWeaponByName("Great Sword"))
+            self.addItem(theorycraft.TheoryCraft.getWeaponByName("Great Sword"))
         elif ccName == "Anarchist":
-            self.addItem(TheoryCraft.getWeaponByName("Hatchet"))
-            self.addItem(TheoryCraft.getArmorByName("Medium Shield"))
+            self.addItem(theorycraft.TheoryCraft.getWeaponByName("Hatchet"))
+            self.addItem(theorycraft.TheoryCraft.getArmorByName("Medium Shield"))
         elif ccName == "Marksman":
-            self.addItem(TheoryCraft.getWeaponByName("Longbow"))
-            self.addItem(TheoryCraft.getWeaponByName("Shortbow"))
+            self.addItem(theorycraft.TheoryCraft.getWeaponByName("Longbow"))
+            self.addItem(theorycraft.TheoryCraft.getWeaponByName("Shortbow"))
         elif ccName == "Druid":
-            self.addItem(TheoryCraft.getWeaponByName("Shortbow"))
-            self.addItem(TheoryCraft.getWeaponByName("Staff"))
+            self.addItem(theorycraft.TheoryCraft.getWeaponByName("Shortbow"))
+            self.addItem(theorycraft.TheoryCraft.getWeaponByName("Staff"))
         elif ccName == "Tactician":
-            self.addItem(TheoryCraft.getWeaponByName("Shortbow"))
-            self.addItem(TheoryCraft.getWeaponByName("Flail"))
+            self.addItem(theorycraft.TheoryCraft.getWeaponByName("Shortbow"))
+            self.addItem(theorycraft.TheoryCraft.getWeaponByName("Flail"))
         elif ccName == "Ninja":
-            self.addItem(TheoryCraft.getWeaponByName("Katana"))
+            self.addItem(theorycraft.TheoryCraft.getWeaponByName("Katana"))
         elif ccName == "Assassin":
-            self.addItem(TheoryCraft.getWeaponByName("Crossbow"))
+            self.addItem(theorycraft.TheoryCraft.getWeaponByName("Crossbow"))
         elif ccName == "Shadow":
-            self.addItem(TheoryCraft.getWeaponByName("Stiletto"))
-            self.addItem(TheoryCraft.getWeaponByName("Dagger"))
+            self.addItem(theorycraft.TheoryCraft.getWeaponByName("Stiletto"))
+            self.addItem(theorycraft.TheoryCraft.getWeaponByName("Dagger"))
         elif ccName == "Nightblade":
-            self.addItem(TheoryCraft.getWeaponByName("Short Sword"))
+            self.addItem(theorycraft.TheoryCraft.getWeaponByName("Short Sword"))
         elif ccName == "Battle Mage":
-            self.addItem(TheoryCraft.getWeaponByName("Morning Star"))
-            self.addItem(TheoryCraft.getWeaponByName("Medium Shield"))
+            self.addItem(theorycraft.TheoryCraft.getWeaponByName("Morning Star"))
+            self.addItem(theorycraft.TheoryCraft.getArmorByName("Medium Shield"))
         elif ccName == "Arcane Archer":
-            self.addItem(TheoryCraft.getWeaponByName("Longbow"))
-            self.addItem(TheoryCraft.getWeaponByName("Crossbow"))
+            self.addItem(theorycraft.TheoryCraft.getWeaponByName("Longbow"))
+            self.addItem(theorycraft.TheoryCraft.getWeaponByName("Crossbow"))
         elif ccName == "Trickster":
-            self.addItem(TheoryCraft.getWeaponByName("Dagger"))
-            self.addItem(TheoryCraft.getWeaponByName("Dagger"))
-            self.addItem(TheoryCraft.getWeaponByName("Sling"))
+            self.addItem(theorycraft.TheoryCraft.getWeaponByName("Dagger"))
+            self.addItem(theorycraft.TheoryCraft.getWeaponByName("Dagger"))
+            self.addItem(theorycraft.TheoryCraft.getWeaponByName("Sling"))
         elif ccName == "Sorcerer":
-            self.addItem(TheoryCraft.getWeaponByName("Sling"))
-            self.addItem(TheoryCraft.getWeaponByName("Staff"))
+            self.addItem(theorycraft.TheoryCraft.getWeaponByName("Sling"))
+            self.addItem(theorycraft.TheoryCraft.getWeaponByName("Staff"))
         else:
             print "Warning: character class: '" + ccName + "' is unknown for item generation."
         
@@ -75,19 +78,19 @@ class Inventory(object):
         return self._allItems
         
     def depositGold(self, goldObject):
-        if goldObject.isinstance(Wealth) and goldObject.name == "Gold":
+        if isinstance(goldObject, wealth.Wealth) and goldObject.name == "Gold":
             self.gold += goldObject.goldValue
         else:
             print "Warning: Attempted to deposit non-gold object to inventory!"
     
     def addItem(self, item):
-        if item.isinstance(Wealth) and item.name == "Gold":
+        if isinstance(item, wealth.Wealth) and item.name == "Gold":
             self.depositGold(item)
         else:
             self._allItems.append(item)
             item.location = None
-            if len(self._allItems) > MAX_SLOTS:
-                print "Warning: Item added to inventory caused the inventory to exceed the MAX_SLOTS of " + MAX_SLOTS + " items."
+            if len(self._allItems) > Inventory.MAX_SLOTS:
+                print "Warning: Item added to inventory caused the inventory to exceed the MAX_SLOTS of " + str(Inventory.MAX_SLOTS) + " items."
             # Check for weight here?
             
     def removeItem(self, item):

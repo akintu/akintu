@@ -4,6 +4,7 @@ import sys
 import monstersparser
 import monster
 import cctemplatesparser
+import equipment
 import armorparser
 import weaponsparser
 import statuseffectsparser
@@ -48,7 +49,7 @@ class TheoryCraft(object):
         specified base item points.'''
         for wep in TheoryCraft.weapons:
             if wep['name'] == name:
-                return wep.cloneWithMagicalProperties(ip)
+                return equipment.Weapon(**wep).cloneWithMagicalProperties(ip)
         print "Weapon name: '" + name + "' not found in master list."
         
     @staticmethod
@@ -57,7 +58,7 @@ class TheoryCraft(object):
         specified base item points.'''
         for arm in TheoryCraft.armors:
             if arm['name'] == name:
-                return arm.cloneWithMagicalProperties(ip)
+                return equipment.Armor(arm).cloneWithMagicalProperties(ip)
         print "Armor name: '" + name + "' not found in master list."    
         
     @staticmethod

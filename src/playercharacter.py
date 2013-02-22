@@ -142,12 +142,6 @@ class PlayerCharacter(p.Person):
         # --- Wizard classes ---
         self.healingBonus = 0
         
-        # include starting equipment in this initializer. TODO
-        self.equippedItems = equippeditems.EquippedItems(None)
-        self._baseInventoryCapacity = p.Person.setFrom(argDict, 'startingInventoryCapacity', 0)
-        self._equipmentCarryingCapacity = 0
-        self.inventory = inventory.Inventory()
-        
         # Levelup stats
         self.levelupStrength = p.Person.setFrom(argDict, 'levelupStrength', p.Person.ERROR)
         self.levelupCunning = p.Person.setFrom(argDict, 'levelupCunning', p.Person.ERROR)
@@ -214,10 +208,23 @@ class PlayerCharacter(p.Person):
                 if current['level'] == 1:
                     newPAbil = passiveability.PassiveAbility(pAbil, self)
                     self.passiveAbilities.append(newPAbil)
-        
+        self.listeners = []
         self.traits = []
         
-        self.listeners = []
+        # Items
+        self.equippedItems = equippeditems.EquippedItems(None)
+        self._baseInventoryCapacity = p.Person.setFrom(argDict, 'startingInventoryCapacity', 0)
+        self._equipmentCarryingCapacity = 0
+        self.inventory = inventory.Inventory(ccName=self.characterClass)
+        # Actually equip starting weapon/shield.  Won't work for two one-handed weapons.
+        for item in self.inventory.allItems:
+            if isinstance(item, equipment.Weapon):
+                self.equip(item)
+                break
+        for item in self.inventory.allItems:
+            if isinstance(item, equipment.Armor) and item.type == "Shield":
+                self.equip(item)
+                break
         
         self.movesPerformed = [0,0]
         self.attacksPerformed = [0,0] 
@@ -827,37 +834,37 @@ class PlayerCharacter(p.Person):
         oldPieces = self.equippedItems.equip(newPiece)
         oldPiece = oldPieces[0]
         oldPiece2 = None
-        if len(oldPiece) > 1:
+        if oldPiece and len(oldPieces) > 1:
             oldPiece2 = oldPieces[1]
             
         for prop in newPiece.propertyList:
-            prop.effect(self)   
-        if newPiece.isinstance(equipment.Armor):
+            prop.effect(prop, self)   
+        if isinstance(newPiece, equipment.Armor):
             self.equipmentDR += newPiece.DR
-            self.equipmentStealth += newPiece.stealthMod
+            self.equipmentSneak += newPiece.stealthMod
             self.equipmentDodge += newPiece.dodgeMod
-        elif newPiece.isisntance(equipment.Weapon):
+        elif isinstance(newPiece, equipment.Weapon):
             pass
             # Weapon stats are viewed on the weapon itself.
             
         if oldPiece:
             for prop in oldPiece.propertyList:
-                prop.effect(self, reverse=True)   
-            if oldPiece.isinstance(equipment.Armor):
+                prop.effect(prop, self, reverse=True)   
+            if isinstance(oldPiece, equipment.Armor):
                 self.equipmentDR -= oldPiece.DR
                 self.equipmentStealth -= oldPiece.stealthMod
                 self.equipmentDodge -= oldPiece.dodgeMod
-            elif oldPiece.isinstance(equipment.Weapon):
+            elif isinstance(oldPiece, equipment.Weapon):
                 pass
             self.inventory.allItems.append(oldPiece)
         if oldPiece2:
             for prop in oldPiece2.propertyList:
-                prop.effect(self, reverse=True)         
-            if oldPiece2.isinstance(equipment.Armor):
+                prop.effect(prop, self, reverse=True)         
+            if isinstance(oldPiece2, equipment.Armor):
                 self.equipmentDR -= oldPiece2.DR
-                self.equipmentStealth -= oldPiece2.stealthMod
+                self.equipmentSneak -= oldPiece2.stealthMod
                 self.equipmentDodge -= oldPiece2.dodgeMod
-            elif oldPiece2.isinstance(equipment.Weapon):
+            elif isinstance(oldPiece2, equipment.Weapon):
                 pass
             self.inventory.allItems.append(oldPiece2)        
         # TODO: Check to see if weight capacity has changed?

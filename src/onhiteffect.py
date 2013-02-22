@@ -12,7 +12,7 @@ class OnHitEffect(object):
         if elementalDamageType:
             self.name += " " + elementalDamageType
         self.element = elementalDamageType
-        if self.elementalDamageType in ['Bludgeoning', 'Slashing', 'Piercing']:
+        if self.element in ['Bludgeoning', 'Slashing', 'Piercing']:
             print "Invalid physical elemental damage type: " + self.elementalDamageType + "."
         
     def apply(self, source, target):

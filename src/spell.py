@@ -6,12 +6,9 @@ import dice
 
 class Spell(object):
 
-    
-    
- 
-
     def __init__(self, name, owner):
         self.name = name
+        info = None
         if name in Spell.allSpells:
             info = Spell.allSpells[name]
         elif name in Spell.monsterSpells:

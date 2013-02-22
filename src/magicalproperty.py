@@ -91,7 +91,7 @@ class MagicalProperty(object):
             if (len(chosenList) < maxListSize):
                 dieRoll = Dice.roll(1, totalWeight)
                 possibleProperty = MagicalProperty.selection(subList, dieRoll)
-                print "Ip to match: " + str(ip) + " IP of " + possibleProperty[0] + " = " + str(possibleProperty[1]['cost'])
+                #print "Ip to match: " + str(ip) + " IP of " + possibleProperty[0] + " = " + str(possibleProperty[1]['cost'])
                 
                 chosenNames = [x.name for x in chosenList]
                 if possibleProperty[0] in chosenNames:
@@ -100,12 +100,12 @@ class MagicalProperty(object):
                 thisIp = possibleProperty[1]['cost']
                 if possibleProperty[0] == "DR":
                     thisIp = item.DRGradientPoints
-                    print "DR Gradient points = " + str(thisIp)
+                    #print "DR Gradient points = " + str(thisIp)
                     if item.DRGradientPoints == 0:
                         continue
                 elif possibleProperty[0] == "Damage":
                     thisIp = int(item.gradientPoints)
-                    print "Damage Gradient points = " + str(thisIp)
+                    #print "Damage Gradient points = " + str(thisIp)
                 if thisIp > ip:
                     continue
                 else: 
@@ -135,7 +135,7 @@ class MagicalProperty(object):
                     ip -= thisIp
                     currentProperty.counts += 1
                     position = Dice.roll(0, len(chosenList) - 1)
-                    print currentProperty.name + " counts " + str(currentProperty.counts)
+                    #print currentProperty.name + " counts " + str(currentProperty.counts)
         return chosenList
         
         
@@ -339,19 +339,19 @@ class MagicalProperty(object):
         bonusMax = self.counts * 2
         pass
         if not reverse:
-            hitEffect = onhiteffect.OnHitEffect(self.counts, onhiteffect.applyElementalDamage, "Fire")
+            hitEffect = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyElementalDamage, "Fire")
             owner.onHitEffects.append(hitEffect)
         else:
-            owner.unregisterOnHitEffect(self.counts, onhiteffect.applyElementalDamage, "Fire")
+            owner.unregisterOnHitEffect(self.counts, onhiteffect.OnHitEffect.applyElementalDamage, "Fire")
 
     def _elementalDamageCold(self, owner, reverse=False):
         bonusMin = self.counts
         bonusMax = self.counts * 2
         if not reverse:
-            hitEffect = onhiteffect.OnHitEffect(self.counts, onhiteffect.applyElementalDamage, "Cold")
+            hitEffect = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyElementalDamage, "Cold")
             owner.onHitEffects.append(hitEffect)
         else:
-            owner.unregisterOnHitEffect(self.counts, onhiteffect.applyElementalDamage, "Cold")
+            owner.unregisterOnHitEffect(self.counts, onhiteffect.OnHitEffect.applyElementalDamage, "Cold")
             # TODO Write unregisterOnHitEffect method in PlayerCharacter class.
         
     def _elementalDamageElectric(self, owner, reverse=False):
@@ -359,50 +359,50 @@ class MagicalProperty(object):
         bonusMax = self.counts * 2
         pass
         if not reverse:
-            hitEffect = onhiteffect.OnHitEffect(self.counts, onhiteffect.applyElementalDamage, "Electric")
+            hitEffect = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyElementalDamage, "Electric")
             owner.onHitEffects.append(hitEffect)
         else:
-            owner.unregisterOnHitEffect(self.counts, onhiteffect.applyElementalDamage, "Electric")
+            owner.unregisterOnHitEffect(self.counts, onhiteffect.OnHitEffect.applyElementalDamage, "Electric")
 
     def _elementalDamagePoison(self, owner, reverse=False):
         bonusMin = self.counts
         bonusMax = self.counts
         pass
         if not reverse:
-            hitEffect = onhiteffect.OnHitEffect(self.counts, onhiteffect.applyElementalDamage, "Poison")
+            hitEffect = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyElementalDamage, "Poison")
             owner.onHitEffects.append(hitEffect)
         else:
-            owner.unregisterOnHitEffect(self.counts, onhiteffect.applyElementalDamage, "Poison")
+            owner.unregisterOnHitEffect(self.counts, onhiteffect.OnHitEffect.applyElementalDamage, "Poison")
     
     def _elementalDamageShadow(self, owner, reverse=False):
         bonusMin = self.counts
         bonusMax = self.counts * 2
         pass
         if not reverse:
-            hitEffect = onhiteffect.OnHitEffect(self.counts, onhiteffect.applyElementalDamage, "Shadow")
+            hitEffect = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyElementalDamage, "Shadow")
             owner.onHitEffects.append(hitEffect)
         else:
-            owner.unregisterOnHitEffect(self.counts, onhiteffect.applyElementalDamage, "Shadow")
+            owner.unregisterOnHitEffect(self.counts, onhiteffect.OnHitEffect.applyElementalDamage, "Shadow")
         
     def _elementalDamageDivine(self, owner, reverse=False):
         bonusMin = self.counts
         bonusMax = self.counts * 3
         pass
         if not reverse:
-            hitEffect = onhiteffect.OnHitEffect(self.counts, onhiteffect.applyElementalDamage, "Divine")
+            hitEffect = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyElementalDamage, "Divine")
             owner.onHitEffects.append(hitEffect)
         else:
-            owner.unregisterOnHitEffect(self.counts, onhiteffect.applyElementalDamage, "Divine")
+            owner.unregisterOnHitEffect(self.counts, onhiteffect.OnHitEffect.applyElementalDamage, "Divine")
 
     def _elementalDamageArcane(self, owner, reverse=False):
         bonusMin = self.counts
         bonusMax = self.counts * 2
         pass
         if not reverse:
-            hitEffect = onhiteffect.OnHitEffect(self.counts, onhiteffect.applyElementalDamage, "Arcane")
+            hitEffect = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyElementalDamage, "Arcane")
             owner.onHitEffects.append(hitEffect)
         else:
-            owner.unregisterOnHitEffect(self.counts, onhiteffect.applyElementalDamage, "Arcane")
+            owner.unregisterOnHitEffect(self.counts, onhiteffect.OnHitEffect.applyElementalDamage, "Arcane")
         
     def _elementalResistanceFire(self, owner, reverse=False):
         bonus = self.counts
@@ -495,7 +495,7 @@ class MagicalProperty(object):
     def _might(self, owner, reverse=False):
         bonus = self.counts
         if not reverse:
-            owner.eqiupmentMight += bonus
+            owner.equipmentMight += bonus
         else:
             owner.equipmentMight -= bonus
             
@@ -584,140 +584,140 @@ class MagicalProperty(object):
             
     def _registerAcidic(self, owner, reverse=False):
         if not reverse:
-            onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.applyAcidic)
+            onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyAcidic)
             owner.onHitEffects.append(onHit)
         else:
             owner.removeOnHitEffect(self.name, self.counts)
             
     def _registerEvil(self, owner, reverse=False):
         if not reverse:
-            onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.applyEvil)
+            onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyEvil)
             owner.onHitEffects.append(onHit)
         else:
             owner.removeOnHitEffect(self.name, self.counts)
          
     def _registerHoly(self, owner, reverse=False):
         if not reverse:
-            onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.applyHoly)
+            onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyHoly)
             owner.onHitEffects.append(onHit)
         else:
             owner.removeOnHitEffect(self.name, self.counts)
 
     def _registerIgnite(self, owner, reverse=False):
         if not reverse:
-            onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.applyIgnite)
+            onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyIgnite)
             owner.onHitEffects.append(onHit)
         else:
             owner.removeOnHitEffect(self.name, self.counts)
             
     def _registerSlowing(self, owner, reverse=False):
         if not reverse:
-            onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.applySlowing)
+            onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applySlowing)
             owner.onHitEffects.append(onHit)
         else:
             owner.removeOnHitEffect(self.name, self.counts)
             
     def _registerSpellhunger(self, owner, reverse=False):
         if not reverse:
-            onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.applySpellhunger)
+            onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applySpellhunger)
             owner.onHitEffects.append(onHit)
         else:
             owner.removeOnHitEffect(self.name, self.counts)
             
     def _registerStunning(self, owner, reverse=False):
         if not reverse:
-            onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.applyStunning)
+            onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyStunning)
             owner.onHitEffects.append(onHit)
         else:
             owner.removeOnHitEffect(self.name, self.counts)
             
     def _registerMinorBleeding(self, owner, reverse=False):
         if not reverse:
-            onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.applyMinorBleeding)
+            onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyMinorBleeding)
             owner.onHitEffects.append(onHit)
         else:
             owner.removeOnHitEffect(self.name, self.counts)
             
     def _registerModerateBleeding(self, owner, reverse=False):
         if not reverse:
-            onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.applyModerateBleeding)
+            onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyModerateBleeding)
             owner.onHitEffects.append(onHit)
         else:
             owner.removeOnHitEffect(self.name, self.counts)
             
     def _registerSeriousBleeding(self, owner, reverse=False):
         if not reverse:
-            onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.applySeriousBleeding)
+            onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applySeriousBleeding)
             owner.onHitEffects.append(onHit)
         else:
             owner.removeOnHitEffect(self.name, self.counts)   
          
     def _registerHealthSteal(self, owner, reverse=False):
         if not reverse:
-            onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.applyHealthSteal)
+            onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyHealthSteal)
             owner.onHitEffects.append(onHit)
         else:
             owner.removeOnHitEffect(self.name, self.counts)
             
     def _registerManaSteal(self, owner, reverse=False):
         if not reverse:
-            onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.applyManaSteal)
+            onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyManaSteal)
             owner.onHitEffects.append(onHit)
         else:
             owner.removeOnHitEffect(self.name, self.counts)
             
     def _registerToxic(self, owner, reverse=False):
         if not reverse:
-            onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.applyToxic)
+            onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyToxic)
             owner.onHitEffects.append(onHit)
         else:
             owner.removeOnHitEffect(self.name, self.counts)
             
     def _registerWeakeningFire(self, owner, reverse=False):
         if not reverse:
-            onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.applyWeakeningFire)
+            onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyWeakeningFire)
             owner.onHitEffects.append(onHit)
         else:
             owner.removeOnHitEffect(self.name, self.counts)
 
     def _registerWeakeningCold(self, owner, reverse=False):
         if not reverse:
-            onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.applyWeakeningCold)
+            onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyWeakeningCold)
             owner.onHitEffects.append(onHit)
         else:
             owner.removeOnHitEffect(self.name, self.counts)            
             
     def _registerWeakeningElectric(self, owner, reverse=False):
         if not reverse:
-            onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.applyWeakeningElectric)
+            onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyWeakeningElectric)
             owner.onHitEffects.append(onHit)
         else:
             owner.removeOnHitEffect(self.name, self.counts)
             
     def _registerWeakeningPoison(self, owner, reverse=False):
         if not reverse:
-            onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.applyWeakeningPoison)
+            onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyWeakeningPoison)
             owner.onHitEffects.append(onHit)
         else:
             owner.removeOnHitEffect(self.name, self.counts)
             
     def _registerWeakeningDivine(self, owner, reverse=False):
         if not reverse:
-            onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.applyWeakeningDivine)
+            onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyWeakeningDivine)
             owner.onHitEffects.append(onHit)
         else:
             owner.removeOnHitEffect(self.name, self.counts)
             
     def _registerWeakeningShadow(self, owner, reverse=False):
         if not reverse:
-            onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.applyWeakeningShadow)
+            onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyWeakeningShadow)
             owner.onHitEffects.append(onHit)
         else:
             owner.removeOnHitEffect(self.name, self.counts)
             
     def _registerWeakeningArcane(self, owner, reverse=False):
         if not reverse:
-            onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.applyWeakeningArcane)
+            onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyWeakeningArcane)
             owner.onHitEffects.append(onHit)
         else:
             owner.removeOnHitEffect(self.name, self.counts)

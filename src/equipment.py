@@ -46,7 +46,6 @@ class Equipment(e.Entity):
             newIdentifier += " ; mProp: " + property.name + " counts: " + str(property.counts)  
 
         newCopy = copy.copy(self)
-        print self.goldValue
         newCopy.goldValue = round(self.goldValue * (1 + float(goldModSum / 100)))
         newCopy.identifier = newIdentifier
         for property in propertyList:

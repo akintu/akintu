@@ -535,7 +535,7 @@
 [RANGED_AP: 4]
 
 [STARTING_SPELL_1: Arcane Dart]
-[STARTING_SPELL_2: Arcane Warding]
+[STARTING_SPELL_2: Arcane Ward]
 [STARTING_SPELL_3: Flicker of Life]
 
 [STARTING_STR: 5]

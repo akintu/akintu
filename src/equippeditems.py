@@ -64,30 +64,6 @@ class EquippedItems(object):
             self._moreRecentFinger = 'Left'
         return [oldPiece]
     
-    def equip(self, newPiece, hand=None):
-        """Equips the given 'newPiece' of Equipment.  If the new piece is
-        either a ring or a one-handed weapon, specifying the 'hand' will 
-        determine which weapon/shield/ring it replaces.  Otherwise a default
-        value will be used.  Returns the equipment previously equipped in a 
-        list.
-        Inputs: 
-          newPiece -- Equipment; The piece of equipment to put on.
-          hand -- string*; Possible values: "Right", "Left" (The primary hand
-                            is considered to be "Right".)
-        Outputs:
-          A List of the equipment that was displaced (even if it was only one
-          piece.)"""
-        if not hand:
-            hand = "Right"
-        if newPiece.isinstance(equipment.Weapon):
-            return _equipWeapon(self, newPiece, hand)
-        if newPiece.type == "Finger":
-            return _equipRing(self, newPiece, hand)
-        if newPiece.type == "Shield":
-            return _equipShield(self, newPiece)        
-        else:
-            return _equipArmor(self, newPiece)
-    
     def _equipWeapon(self, newPiece, hand="Right"):
         if hand == "Main" or not hand:
             hand = "Right"
@@ -138,6 +114,30 @@ class EquippedItems(object):
             oldPiece = self._allGear['Off Hand']
         self._allGear['Off Hand'] = newPiece
         return [oldPiece]
+  
+    def equip(self, newPiece, hand=None):
+        """Equips the given 'newPiece' of Equipment.  If the new piece is
+        either a ring or a one-handed weapon, specifying the 'hand' will 
+        determine which weapon/shield/ring it replaces.  Otherwise a default
+        value will be used.  Returns the equipment previously equipped in a 
+        list.
+        Inputs: 
+          newPiece -- Equipment; The piece of equipment to put on.
+          hand -- string*; Possible values: "Right", "Left" (The primary hand
+                            is considered to be "Right".)
+        Outputs:
+          A List of the equipment that was displaced (even if it was only one
+          piece.)"""
+        if not hand:
+            hand = "Right"
+        if isinstance(newPiece, equipment.Weapon):
+            return self._equipWeapon(newPiece, hand)
+        if newPiece.type == "Finger":
+            return self._equipRing(newPiece, hand)
+        if newPiece.type == "Shield":
+            return self._equipShield(newPiece)        
+        else:
+            return self._equipArmor(newPiece)
   
     @property
     def equippedOffHand(self):

@@ -594,7 +594,7 @@ class Person(en.Entity):
         return self._basePoisonResistance
         
     @basePoisonResistance.setter
-    def basePoisonReistance(self, value):
+    def basePoisonResistance(self, value):
         self._basePoisonResistance = value
         
     @property
