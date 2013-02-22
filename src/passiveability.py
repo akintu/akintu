@@ -132,6 +132,17 @@ class PassiveAbility(object):
         target.baseSneak += 8
         target.baseDodge += 2
                 
+    def applyShortbowNiche(self, target, reverse=False, other=None):
+        source = self.owner
+        if not reverse:
+            if source.usingWeapon("Shortbow"):
+                source.statusCriticalMagnitude += 10
+                source.statusRangedAccuracy += 1
+        else:
+            if source.usingWeapon("Shortbow"):
+                source.statusCriticalMagnitude -= 10
+                source.statusRangedAccuracy -= 1
+                
     # Druid
     def applyKnowledgeOfPoison(self, target):
         target.basePoisonBonusDamage += 30
@@ -380,6 +391,15 @@ class PassiveAbility(object):
         'level' : 2,
         'type' : 'static',
         'action' : applyCamouflage
+        },
+        'Shortbow Niche':
+        {
+        'class' : 'Marksman',
+        'level' : 3,
+        'type' : 'dynamic',
+        'action' : applyShortbowNiche,
+        'onStringList' : ['Outgoing Ranged Attack'],
+        'offStringList' : ['Outgoing Ranged Attack Complete']
         },
         
         'Knowledge of Poison':

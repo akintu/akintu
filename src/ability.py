@@ -362,6 +362,20 @@ class Ability(object):
             return (False, "Must be using a bow or crossbow to use " + self.name)
         return (True, "")            
         
+    def _hotBullet(self, target):
+        source = self.owner
+        hitType = Combat.calcHit(source, target, "Physical")
+        Combat.basicAttack(sourcd, target, hitType, criticalDamageMod=1.1)
+        fireBase = 8
+        fireDamage = Combat.calcDamage(source, target, fireBase, fireBase, "Fire", hitType)
+        Combat.lowerHP(target, fireDamage)
+
+    def _hotBulletCheck(self, target):
+        source = self.owner
+        if source.usingWeapon("Sling"):
+            return (True, "")
+        return (False, "Must be using a sling to use " + self.name)            
+        
     # Druid
     
     def _stealth(self, target):
@@ -965,6 +979,19 @@ class Ability(object):
         'action' : _hotArrow,
         'cooldown' : 1,
         'checkFunction' : _hotArrowCheck,
+        'breakStealth' : 100
+        },
+        'Hot Bullet':
+        {
+        'level' : 3,
+        'class' : 'Marksman',
+        'HPCost' : 0,
+        'APCost' : 5,
+        'range' : -1,
+        'target' : 'hostile',
+        'action' : _hotBullet,
+        'cooldown' : 1,
+        'checkFunction' : _hotBulletCheck,
         'breakStealth' : 100
         },
         
