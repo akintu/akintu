@@ -122,6 +122,9 @@ class GameScreen(object):
         Supported entries in statsdict:
             - 'image'
             - 'location'
+            - 'xoffset' (in pixels)
+            - 'xoffset' (in pixels)
+            - 'foot' (0 or 1)
 
         To be supported in the future:
             - 'name'
