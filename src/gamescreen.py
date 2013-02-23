@@ -239,7 +239,6 @@ class PersonSprite(pygame.sprite.DirtySprite):
 
         Checks for new coordinate, updates location if necessary
         '''
-        self.statsdict['foot'] = (self.statsdict['foot'] + 1) % 2
         foot = self.statsdict['foot']
         xoff = self.statsdict['xoffset']
         yoff = self.statsdict['yoffset']
