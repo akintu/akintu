@@ -262,8 +262,8 @@ class GameScreen(object):
         hbary = 16
         if totalHP:
             hbar1 = barxsize
-            hbar2 = int(HP / totalHP * barxsize)
-            hbar3 = int(buffedHP / totalHP * barxsize)
+            hbar2 = int(float(HP) / totalHP * barxsize)
+            hbar3 = int(float(buffedHP) / totalHP * barxsize)
         else:
             hbar1 = barxsize
             hbar2 = 0
@@ -271,14 +271,14 @@ class GameScreen(object):
         mbary = hbary + 12
         if totalMP:
             mbar1 = barxsize
-            mbar2 = int(MP / totalMP * barxsize)
+            mbar2 = int(float(MP) / totalMP * barxsize)
         else:
             mbar1 = barxsize
             mbar2 = 0
         abary = mbary + 12
         if totalAP:
             abar1 = barxsize
-            abar2 = int(AP / totalAP * barxsize)
+            abar2 = int(float(AP) / totalAP * barxsize)
         else:
             abar1 = barxsize
             abar2 = 0
