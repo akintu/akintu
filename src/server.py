@@ -27,9 +27,7 @@ class GameServer():
 
                 person = None
                 if port:
-                    person = TheoryCraft.getNewPlayerCharacter(command.details[1], command.details[2])
-                    # Does this work?
-                    #person = TheoryCraft.getNewPlayerCharacter(*command.details)
+                    person = TheoryCraft.getNewPlayerCharacter(*command.details[1:])
                 else:
                     person = TheoryCraft.getMonster()
 
@@ -76,41 +74,6 @@ class GameServer():
                                 if command.location.pane == self.person[i].location.pane:
                                     self.SDF.send(p, command)
 
-                        # Check for combat range and initiate combat states
-                        for p, i in self.player.iteritems():
-                            for person in self.person.values():
-                                if self.person[i].location.in_melee_range(person.location) and \
-                                        person.team == "Monsters":
-
-                                    if not self.person[i].in_combat:
-                                        if not person.in_combat:
-                                            person.ai.pause()
-                                            person.in_combat = True
-                                            self.combat[person.id] = copy.copy(person)
-
-                                            self.load_pane(person.location, True)
-                                            self.pane[person.location].person.append(person.id)
-
-                                        self.person[i].ai.pause()
-                                        self.person[i].in_combat = True
-                                        self.combat[i] = copy.copy(self.person[i])
-
-                                        self.SDF.send(p, Update(i, UpdateProperties.COMBAT, \
-                                                True, person.location))
-                                        self.SDF.send(p, Person(PersonActions.CREATE, i, \
-                                                Location((0, 0), (0, 0)), \
-                                                (1, self.combat[i].race, self.combat[i].characterClass)))
-                                        for ii in self.pane[person.location].person:
-                                            details = None
-                                            if isinstance(self.combat[ii], PlayerCharacter):
-                                                details = (1, self.combat[ii].race, \
-                                                        self.combat[ii].characterClass)
-                                            else:
-                                                details = (2,)
-                                            self.SDF.send(p, Person(PersonActions.CREATE, ii, \
-                                                    self.combat[ii].location, details))
-                                        self.pane[person.location].person.append(self.person[i].id)
-
                     else:
                         # Remove person from players' person tables, and pane's person list
                         self.pane[self.person[command.id].location.pane].person.remove(command.id)
@@ -147,6 +110,41 @@ class GameServer():
                                             self.person[i].location, details))
 
                         self.unload_panes()
+                        
+                    # Check for combat range and initiate combat states
+                    for p, i in self.player.iteritems():
+                        for person in self.person.values():
+                            if self.person[i].location.in_melee_range(person.location) and \
+                                    person.team == "Monsters":
+
+                                if not self.person[i].in_combat:
+                                    if not person.in_combat:
+                                        person.ai.pause()
+                                        person.in_combat = True
+                                        self.combat[person.id] = copy.copy(person)
+
+                                        self.load_pane(person.location, True)
+                                        self.pane[person.location].person.append(person.id)
+
+                                    self.person[i].ai.pause()
+                                    self.person[i].in_combat = True
+                                    self.combat[i] = copy.copy(self.person[i])
+
+                                    self.SDF.send(p, Update(i, UpdateProperties.COMBAT, \
+                                            True, person.location))
+                                    self.SDF.send(p, Person(PersonActions.CREATE, i, \
+                                            Location((0, 0), (0, 0)), \
+                                            (1, self.combat[i].race, self.combat[i].characterClass)))
+                                    for ii in self.pane[person.location].person:
+                                        details = None
+                                        if isinstance(self.combat[ii], PlayerCharacter):
+                                            details = (1, self.combat[ii].race, \
+                                                    self.combat[ii].characterClass)
+                                        else:
+                                            details = (2,)
+                                        self.SDF.send(p, Person(PersonActions.CREATE, ii, \
+                                                self.combat[ii].location, details))
+                                    self.pane[person.location].person.append(self.person[i].id)
                 else:
                     if port:
                         command.location = self.person[command.id].location

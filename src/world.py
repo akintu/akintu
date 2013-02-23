@@ -179,7 +179,6 @@ class CombatPane(Pane):
         '''
         super(CombatPane, self).__init__(pane.seed, focus_location.tile, False)
         
-        
         loc_x = focus_location.tile[0]
         loc_y = focus_location.tile[1]
         
