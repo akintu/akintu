@@ -340,6 +340,19 @@ class PassiveAbility(object):
         if toRemove:        
             target.abilities.remove(toRemove)
             
+    # Trickster
+    
+    def applyWildSurvival(self, target):
+        target.baseDodge += 10
+            
+    def applyGlee(self, target, reverse=False):
+        source = self.owner
+        source.MP += source.level * 2 + 18
+            
+    def applyInfuriatingBlows(self, target, reverse=False, other=None):
+        source = self.owner
+        source.MP += 2
+            
     # Monsters
 
     def applyDeflectMissiles(self, target, reverse=False, hero=None):
@@ -672,6 +685,8 @@ class PassiveAbility(object):
         'offStringList' : ['Outgoing Spell Cast Complete']
         },
         
+        
+        # Battle Mage
         'Close-Ranged Magic':
         {
         'class' : 'Battle Mage',
@@ -778,6 +793,33 @@ class PassiveAbility(object):
         'level' : 4,
         'type' : 'static',
         'action' : applyArcaneThreadingUpgrade
+        },
+        
+        # Trickster
+        'Wild Survival':
+        {
+        'class' : 'Trickster',
+        'level' : 1,
+        'type' : 'static',
+        'action' : applyWildSurvival
+        },
+        'Glee':
+        {
+        'class' : 'Trickster',
+        'level' : 1,
+        'type' : 'dynamic',
+        'action' : applyGlee,
+        'onStringList' : ['Attack Dodged'],
+        'offStringList' : []
+        },
+        'Infuriating Blows':
+        {
+        'class' : 'Trickster',
+        'level' : 1,
+        'type' : 'dynamic',
+        'action' : applyInfuriatingBlows,
+        'onStringList' : ['Outgoing Melee Attack Hit', 'Outgoing Ranged Attack Hit'],
+        'offStringList' : []
         },
         
         # Monsters

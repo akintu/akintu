@@ -452,7 +452,7 @@ class Ability(object):
         if not source.inStealth():
             return (False, "Must be in stealth to perform " + self.name + " .")
         # If not in ranged backstab position : TODO
-        if not source.usingWeaponStyle("Ranged"):
+        if not source.usingWeapon("Ranged"):
             return (False, "Must be using a ranged weapon to perform " + self.name + " .")
         if source.usingWeapon("Longbow"):
             return (False, "Cannot use a Longbow to perform " + self.name + " .")
@@ -467,7 +467,7 @@ class Ability(object):
         source = self.owner
         if not source.inStealth():
             return (False, "Must be in stealth to perform " + self.name + " .")
-        if not source.usingWeaponStyle("Ranged"):
+        if not source.usingWeapon("Ranged"):
             return (False, "Must be using a ranged weapon to perform " + self.name + " .")
         return (True, "")
     
@@ -502,7 +502,7 @@ class Ability(object):
         source = self.owner
         if not source.inStealth():
             return (False, "Must be in stealth to perform " + self.name + " .")
-        if not source.usingWeaponStyle("Ranged"):
+        if not source.usingWeapon("Ranged"):
             return (False, "Must be using a Ranged weapon to perform " + self.name + " .")
         return (True, "")
     
@@ -516,7 +516,7 @@ class Ability(object):
         source = self.owner
         if not source.inStealth():
             return (False, "Must be in stealth to perform " + self.name + " .")
-        if not source.usingWeaponStyle("Ranged"):
+        if not source.usingWeapon("Ranged"):
             return (False, "Must be using a Ranged weapon to perform " + self.name + " .")
         return (True, "")        
     
@@ -720,6 +720,11 @@ class Ability(object):
         if source.usingWeapon("Bow") or source.usingWeapon("Crossbow"):
             return (True, "")
         return (False, "Must be using a bow or crossbow to use: " + self.name)
+    
+    def _sidestep(self, target):
+        source = self.owner
+        Combat.addStatus(source, "Sidestep", duration=1)
+        Combat.endTurn(source)
     
     # Monsters
     
@@ -1579,6 +1584,21 @@ class Ability(object):
         'action' : _electricThreading,
         'cooldown' : 1,
         'checkFunction' : _electricThreadingCheck,
+        'breakStealth' : 0
+        },
+        
+        # Trickster
+        'Sidestep':
+        {
+        'level' : 1,
+        'class' : 'Trickster',
+        'HPCost' : 0,
+        'APCost' : 4,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _sidestep,
+        'cooldown' : None,
+        'checkFunction' : None,
         'breakStealth' : 0
         },
         

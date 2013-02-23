@@ -499,6 +499,7 @@ class Combat(object):
     def monsterAttack(source, target, hitType, **params):
         Combat._shoutAttackHit(source, target, hitType)
         if hitType == "Miss":
+            Combat._shoutAttackDodged(source, target)
             Combat._shoutAttackComplete(source, target, params['noCounter'])
             return
         baseAttackDamage = Dice.roll(source.attackMinDamage, source.attackMaxDamage)
@@ -798,6 +799,12 @@ class Combat(object):
             item.use(playerChar)
             return True
         return False
+     
+    @staticmethod
+    def _shoutAttackDodged(source, target):
+        dodger = target
+        bc = broadcast.DodgeBroadcast()
+        bc.shout(dodger)
      
     @staticmethod
     def _shoutAttackStart(source, target):

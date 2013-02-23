@@ -72,6 +72,11 @@ class ResourceLevelBroadcast(Broadcast):
         self.resourceLevel = argDict['percent']
         self.message = "Player " + self.resourceType + " level changed"
         
+class DodgeBroadcast(Broadcast):
+    def __init(self):
+        Broadcast.__init__(self)
+        
+        self.message = "Attack Dodged"
         
         
         
