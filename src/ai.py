@@ -23,7 +23,7 @@ class AI():
             dirs = [1, 2, 3, 4, 6, 7, 8, 9]
             direction = random.choice(dirs)
             newloc = self.server.person[pid].location.move(direction, 1)
-            while not region.has(newloc) or not self.server.tile_is_open(newloc):
+            while not region.has(newloc) or not self.server.tile_is_open(newloc, pid):
                 dirs.remove(direction)
                 if len(dirs) == 0:
                     return
