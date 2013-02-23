@@ -18,6 +18,9 @@ PANE_X = 32
 PANE_Y = 20
 CENTER = (PANE_X/2, PANE_Y/2)
 
+SIDEBAR_X = PANE_X * TILE_SIZE
+SIDEBAR_Y = 0
+
 TILE_TOP_LEFT = (0, 0)
 TILE_TOP_RIGHT = (PANE_X-1, 0)
 TILE_BOTTOM_LEFT = (0, PANE_Y-1)
@@ -39,7 +42,7 @@ BACKGROUND_IMAGES_PATH = os.path.join(IMAGES_PATH, "background")
 MONSTERS_IMAGES_PATH = os.path.join(IMAGES_PATH, "monsters")
 
 #(Path, Name, Tilesize, Cropsize, Size)
-TREES = (IMAGES_PATH, "trees1.png", TILE_SIZE, None, None)    
+TREES = (IMAGES_PATH, "trees1.png", TILE_SIZE, None, None)
 ROCKS = (IMAGES_PATH, "rocks1.png", TILE_SIZE, None, None)
 
 GRASS1 = (BACKGROUND_IMAGES_PATH, "grass1.jpg", TILE_SIZE, None, None)
