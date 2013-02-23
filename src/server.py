@@ -62,7 +62,7 @@ class GameServer():
                 self.load_pane(command.location.pane)
 
                 # If this is a legal move request
-                if self.tile_is_open(command.location):
+                if self.tile_is_open(command.location, command.id):
 
                     # If the origin and destination are in the same pane
                     if self.person[command.id].location.pane == command.location.pane:
@@ -117,33 +117,36 @@ class GameServer():
                             if self.person[i].location.in_melee_range(person.location) and \
                                     person.team == "Monsters":
 
-                                if not self.person[i].in_combat:
-                                    if not person.in_combat:
+                                if i not in self.combat:
+                                    if person.id not in self.combat:
+                                        # Put monster into combat
                                         person.ai.pause()
-                                        person.in_combat = True
-                                        self.combat[person.id] = copy.copy(person)
+                                        self.combat[person.id] = {'pane': person.location,
+                                                                   'loc': person.location}
 
                                         self.load_pane(person.location, True)
                                         self.pane[person.location].person.append(person.id)
 
+                                    # Put player into combat
                                     self.person[i].ai.pause()
-                                    self.person[i].in_combat = True
-                                    self.combat[i] = copy.copy(self.person[i])
+                                    self.combat[i] = {'pane': person.location,
+                                                       'loc': self.person[i].location}
 
                                     self.SDF.send(p, Update(i, UpdateProperties.COMBAT, \
                                             True, person.location))
                                     self.SDF.send(p, Person(PersonActions.CREATE, i, \
                                             Location((0, 0), (0, 0)), \
-                                            (1, self.combat[i].race, self.combat[i].characterClass)))
+                                            (1, self.person[i].race, self.person[i].characterClass)))
                                     for ii in self.pane[person.location].person:
+                                        print "II:", ii
                                         details = None
-                                        if isinstance(self.combat[ii], PlayerCharacter):
-                                            details = (1, self.combat[ii].race, \
-                                                    self.combat[ii].characterClass)
+                                        if isinstance(self.person[ii], PlayerCharacter):
+                                            details = (1, self.person[ii].race, \
+                                                    self.person[ii].characterClass)
                                         else:
                                             details = (2,)
                                         self.SDF.send(p, Person(PersonActions.CREATE, ii, \
-                                                self.combat[ii].location, details))
+                                                self.combat[ii]['loc'], details))
                                     self.pane[person.location].person.append(self.person[i].id)
                 else:
                     if port:
@@ -179,10 +182,15 @@ class GameServer():
             if isinstance(command, Person) and command.action == PersonActions.STOP:
                 self.person[command.id].ai.remove("RUN")
 
-    def tile_is_open(self, location):
+    def tile_is_open(self, location, pid=None):
         if location.pane not in self.pane:
             return False
-        return self.pane[location.pane].is_tile_passable(location) and \
+        if pid and pid in self.combat:
+            return self.pane[self.combat[pid]['pane']].is_tile_passable(location) and \
+                location.tile not in [self.combat[i]['loc'].tile \
+                for i in self.pane[self.combat[pid]['pane']].person]
+        else:
+            return self.pane[location.pane].is_tile_passable(location) and \
                         location.tile not in [self.person[i].location.tile \
                         for i in self.pane[location.pane].person]
 
@@ -199,6 +207,7 @@ class GameServer():
             self.person.update(self.pane[pane].person)
             self.pane[pane].person = self.pane[pane].person.keys()
             for p in self.pane[pane].person:
+                self.person[p].id = id(self.person[p])
                 self.person[p].ai.startup(self)
 
     def unload_panes(self):
