@@ -39,18 +39,9 @@ class Location(object):
 
         tile = list(self.tile)
         pane = list(self.pane)
-        #LEFT
-        if direction in [1, 4, 7]:
-            tile[0] -= distance
-        #RIGHT
-        if direction in [3, 6, 9]:
-            tile[0] += distance
-        #UP
-        if direction in [7, 8, 9]:
-            tile[1] -= distance
-        #DOWN
-        if direction in [1, 2, 3]:
-            tile[1] += distance
+        
+        tile[0] += distance * (((direction - 1) % 3) - 1)  # Second operand works out to -1, 0, or 1
+        tile[1] -= distance * (((direction - 1) // 3) - 1) # depending on what column or row it is in
 
         #LEFT PANE
         while tile[0] < 0:
