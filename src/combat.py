@@ -208,6 +208,9 @@ class Combat(object):
         type = type.capitalize().strip().replace("-", " ")
         if (type == "Physical"):
             Combat._shoutAttackStart(source, target)
+            if Dice.rollBeneath(target.totalAvoidanceChance):
+                print "Attack *avoided*."
+                return ["Miss"]
             attackOne = Combat.physicalHitMechanics(source, target, modifier, critMod, ignoreMeleeBowPenalty)
             if source.isinstance(pc.PlayerCharacter) and source.usingWeaponStyle("Dual"):
                 Combat._shoutAttackStart(source, target)

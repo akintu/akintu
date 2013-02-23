@@ -1107,8 +1107,6 @@
 [NAME: Shadow Walk]
   [TYPE: Display]
   [ELEMENT: None]
-  [INTERNAL: Hidden_double_cunning]
-    [MAGNITUDE: 0]
   [INTERNAL: Set_movement_AP_cost]
     [MAGNITUDE: 6]
   [INTERNAL: Avoidance]

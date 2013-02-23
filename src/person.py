@@ -1145,6 +1145,10 @@ class Person(en.Entity):
         Sneak is determined by CUN, equipment that boosts Sneak,
         "static" abililties that boost Sneak, and "dynamic"
         statuses that boost or reduce Sneak.
+        
+        Note: The Shadow Walk double cunning effect is hardcoded
+        into this formulation and thus does not need to be encoded
+        anywhere else.
         """
         cunningBonus = max(0, self.totalCunning - 10)
         if isinstance(self, playercharacter) and self.characterClass == "Shadow":

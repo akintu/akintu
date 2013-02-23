@@ -170,6 +170,49 @@ class PassiveAbility(object):
         target.basePoisonResistance += 5
         target.baseColdResistance += 5
                 
+    # Shadow
+    def applyADabblerOfSorts(self, target):
+        target.basePoisonRatingBonus += 3
+        target.basePoisonBonusDamage += 5
+                
+    def applyBackflip(self, target, reverse=False, other=None):
+        source = self.owner
+        if not reverse:
+            #if back not against wall, TODO
+            source.statusDodge += 3
+        else:
+            # if back not against wall
+            source.statusDodge -= 3
+                
+    def applyTreasureBag(self, target):
+        target.baseInventoryCapacity += 15
+        
+    def applyAnEyeForValue(self, target):
+        target.goldFind += 2
+        
+    def applySlingSkills(self, target, reverse=False, other=None):
+        source = self.target
+        if not reverse:
+            if source.usingWeapon("Sling"):
+                source.statusRangedAccuracy += 5
+        else:
+            if source.usingWeapon("Sling"):
+                source.statusRangedAccuracy -= 5
+                
+    def applyHideInPeril(self, target, reverse=False, amount=None):
+        source = self.target
+        if amount >= source.totalHP * 0.4 and not source.inStealth():
+            Combat.addStatus(source, "Shadow Walk", -1)
+                
+    def applyBackstabUpgrade(self, target):
+        toRemove = None
+        for abil in target.abilities:
+            if abil.name == "Backstab":
+                toRemove = abil
+                break
+        if toRemove:        
+            target.abilities.remove(toRemove)
+                
     # Nightblade
     def applyLowLightAdvantage(self, target):
         # TODO: Need to adjust melee accuracy +2/-2 based on indoors/outdoors.
@@ -510,6 +553,65 @@ class PassiveAbility(object):
         'action' : applyTimeWithNature
         },
         
+        # Shadow
+        'A Dabbler of Sorts':
+        {
+        'class' : 'Shadow',
+        'level' : 1,
+        'type' : 'static',
+        'action' : applyADabblerOfSorts
+        },
+        'Backflip':
+        {
+        'class' : 'Shadow',
+        'level' : 1,
+        'type' : 'dynamic',
+        'action' : applyBackflip,
+        'onStringList' : ['Incoming Melee Attack', 'Incoming Ranged Attack'],
+        'offStringList' : ['Incoming Melee Attack Complete', 'Incoming Ranged Attack Complete']
+        },
+        'Treasure Bag':
+        {
+        'class' : 'Shadow',
+        'level' : 2,
+        'type' : 'static',
+        'action' : applyTreasureBag
+        },
+        'An Eye for Value':
+        {
+        'class' : 'Shadow',
+        'level' : 2,
+        'type' : 'static',
+        'action' : applyAnEyeForValue
+        },
+        'Backstab Upgrade':
+        {
+        'class' : 'Shadow',
+        'level' : 2,
+        'type' : 'static',
+        'action' : applyBackstabUpgrade
+        },
+        'Sling Skills':
+        {
+        'class' : 'Shadow',
+        'level' : 3,
+        'type' : 'dynamic',
+        'action' : applySlingSkills,
+        'onStringList' : ['Outgoing Ranged Attack'],
+        'offStringList' : ['Outgoing Ranged Attack Complete']
+        },
+        'Hide in Peril':
+        {
+        'class' : 'Shadow',
+        'level' : 4,
+        'type' : 'dynamic',
+        'action' : applyHideInPeril,
+        'onStringList' : ['Incmoing Damage'],
+        'offStringList' : []
+        },
+        
+        
+        # Nightblade
         'Low-Light Advantage':
         {
         'class' : 'Nightblade',

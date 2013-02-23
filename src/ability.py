@@ -437,6 +437,102 @@ class Ability(object):
         # Remove Trap
         # Add trap.Trap("Poison Thorn Trap", self.owner, target.location)
     
+    # Shadow
+    
+    def _shadowWalk(self, target):
+        source = self.owner
+        duration = -2
+        Combat.addStatus(source, "Shadow Walk", duration)
+    
+    def _shadowWalkCheck(self, target):
+        source = self.owner
+        if source.inStealth():
+            return (False, "Cannot enter stealth when already in stealth.")
+        return (True, "")
+    
+    def _bleedingBackstab(self, target):
+        source = self.owner
+        critChance = 0
+        critMag = 0
+        accuracy = 0
+        if source.usingWeapon("Sword"):
+            critChance = 25
+            critMag = 1.5
+            if source.usingWeaponStyle("Single"):
+                accuracy = 9
+        elif source.usingWeapon("Knife"):
+            critChance = 50
+            critMag = 2
+            if source.usingWeaponStyle("Single"):
+                accuracy = 5
+        hit = Combat.calcHit(source, target, "Physical", modifier=accuracy, critMod=critChance)
+        Combat.basicAttack(source, target, hit, criticalDamageMod=critMag)
+        if hit != "Miss":
+            duration = 2
+            magnitude = 3
+            Combat.addStatus(target, "Bleeding", duration, magnitude)
+    
+    def _bleedingBackstabCheck(self, target):
+        source = self.owner
+        if not source.inStealth():
+            return (False, "Must be in stealth to perform " + self.name + " .")
+        # If not in backstab position : TODO
+        if not source.usingWeapon("Sword") and not source.usingWeapon("Knife"):
+            return (False, "Must be using either swords or knives to preform " + self.name + " .")
+    
+    def _rearAssault(self, target):
+        source = self.owner
+        critChance = 0
+        critMag = 0
+        accuracy = 0
+        if source.usingWeapon("Sword"):
+            critChance = 25
+            critMag = 1.5
+            if source.usingWeaponStyle("Single"):
+                accuracy = 9
+        elif source.usingWeapon("Knife"):
+            critChance = 50
+            critMag = 2
+            if source.usingWeaponStyle("Single"):
+                accuracy = 5
+        accuracy -= 14
+        hit = Combat.calcHit(source, target, "Physical", modifier=accuracy, critMod=critChance)
+        Combat.basicAttack(source, target, hit, criticalDamageMod=critMag)
+        if hit != "Miss":
+            duration = 2
+            magnitude = 3
+            Combat.addStatus(target, "Bleeding", duration, magnitude)
+    
+    def _rearAssaultCheck(self, target):
+        source = self.owner
+        if source.inStealth():
+            return (False, "Must not be in stealth to perform " + self.name + " .")
+        # If not in backstab position : TODO
+        if not source.usingWeapon("Sword") and not source.usingWeapon("Knife"):
+            return (False, "Must be using either swords or knives to preform " + self.name + " .")
+    
+    def _quickWithACrossbow(self, target):
+        source = self.owner
+        hit = Combat.calcHit(source, target, "Physical", modifier=1, critMod=1)
+        Combat.basicAttack(source, target, hit)
+        
+    def _quickWithACrossbowCheck(self, target):
+        source = self.owner
+        if source.usingWeapon("Crossbow"):
+            return (True, "")
+        return (False, "Must be using a crossbow to use " + self.name)
+    
+    def _stealthRecovery(self, target):
+        source = self.owner
+        healing = round(source.totalHP * 0.03)
+        Combat.healTarget(source, healing)
+        
+    def _stealthRecoveryCheck(self, target):
+        source = self.owner
+        if source.inStealth():
+            return (True, "")
+        return (False, "Must be in stealth to use " + self.name + ".")
+    
     # Nightblade
     def _shadowstep(self, target):
         source = self.owner
@@ -1156,6 +1252,73 @@ class Ability(object):
         'action' : _poisonThornTrap,
         'cooldown' : 1,
         'checkFunction' : None,
+        'breakStealth' : 0
+        },
+        
+        # Shadow
+        'Shadow Walk':
+        {
+        'level' : 1,
+        'class' : 'Shadow',
+        'HPCost' : 0,
+        'APCost' : 6,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _shadowWalk,
+        'cooldown' : 2,
+        'checkFunction' : _shadowWalkCheck,
+        'breakStealth' : 0
+        },
+        'Bleeding Backstab':
+        {
+        'level' : 2,
+        'class' : 'Shadow',
+        'HPCost' : 0,
+        'APCost' : 10,
+        'range' : 1,
+        'target' : 'hostile',
+        'action' : _bleedingBackstab,
+        'cooldown' : 2,
+        'checkFunction' : _bleedingBackstabCheck,
+        'breakStealth' : 100
+        },
+        'Rear Assault':
+        {
+        'level' : 3,
+        'class' : 'Shadow',
+        'HPCost' : 0,
+        'APCost' : 9,
+        'range' : 1,
+        'target' : 'hostile',
+        'action' : _rearAssault,
+        'cooldown' : 1,
+        'checkFunction' : _rearAssaultCheck,
+        'breakStealth' : 100
+        },
+        'Quick with a Crossbow':
+        {
+        'level' : 3,
+        'class' : 'Shadow',
+        'HPCost' : 0,
+        'APCost' : 4,
+        'range' : -1,
+        'target' : 'hostile',
+        'action' : _quickWithACrossbow,
+        'cooldown' : 1,
+        'checkFunction' : _quickWithACrossbowCheck,
+        'breakStealth' : 100
+        },
+        'Stealth Recovery':
+        {
+        'level' : 4,
+        'class' : 'Shadow',
+        'HPCost' : 0,
+        'APCost' : 2,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _stealthRecovery,
+        'cooldown' : 2,
+        'checkFunction' : _stealthRecoveryCheck,
         'breakStealth' : 0
         },
         
