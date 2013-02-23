@@ -721,10 +721,16 @@ class Ability(object):
             return (True, "")
         return (False, "Must be using a bow or crossbow to use: " + self.name)
     
+    # Trickster
+    
     def _sidestep(self, target):
         source = self.owner
         Combat.addStatus(source, "Sidestep", duration=1)
         Combat.endTurn(source)
+    
+    def _riskyFocus(self, target):
+        source = self.owner
+        Combat.addStatus(source, "Risky Focus", duration=1)
     
     # Monsters
     
@@ -1598,6 +1604,19 @@ class Ability(object):
         'target' : 'self',
         'action' : _sidestep,
         'cooldown' : None,
+        'checkFunction' : None,
+        'breakStealth' : 0
+        },
+        'Risky Focus':
+        {
+        'level' : 2,
+        'class' : 'Trickster',
+        'HPCost' : 0,
+        'APCost' : 2,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _riskyFocus,
+        'cooldown' : 1,
         'checkFunction' : None,
         'breakStealth' : 0
         },

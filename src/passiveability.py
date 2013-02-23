@@ -353,6 +353,12 @@ class PassiveAbility(object):
         source = self.owner
         source.MP += 2
             
+    def applyDoubleDodge(self, target, reverse=False):
+        source = self.owner
+        Combat.addStatus(source, "Double Dodge", 1)
+        magnitude = min(15, 5 * source.getStatusStackCount("Double Dodge"))
+        source.statusDodge += magnitude
+            
     # Monsters
 
     def applyDeflectMissiles(self, target, reverse=False, hero=None):
@@ -820,6 +826,15 @@ class PassiveAbility(object):
         'action' : applyInfuriatingBlows,
         'onStringList' : ['Outgoing Melee Attack Hit', 'Outgoing Ranged Attack Hit'],
         'offStringList' : []
+        },
+        'Double Dodge':
+        {
+        'class' : 'Trickster',
+        'level' : 2,
+        'type' : 'dynamic',
+        'action' : applyDoubleDodge,
+        'onStringList' : ['Attack Dodged'],
+        'offStringList' : [] # Removed on status removal.
         },
         
         # Monsters

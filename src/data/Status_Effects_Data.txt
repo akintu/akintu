@@ -114,6 +114,10 @@
   [RECURRING: False]
   [IMMUNE: None]  
 
+[NAME: Double_dodge_internal]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
 [NAME: Dragon_style]
   [TYPE: Internal]
   [RECURRING: False]
@@ -161,10 +165,6 @@
   [IMMUNE: None]
  
 [NAME: Hidden]
-  [TYPE: Internal]
-  [RECURRING: False]
-  
-[NAME: Hidden_double_cunning]
   [TYPE: Internal]
   [RECURRING: False]
  
@@ -1464,7 +1464,7 @@
 [NAME: Double Dodge]
   [TYPE: Display]
   [ELEMENT: None]
-  [INTERNAL: Dodge_bonus]
+  [INTERNAL: Double_dodge_internal]
     [MAGNITUDE: 0]
   [CATEGORY: Buff]
 

@@ -109,6 +109,9 @@ def Dodge_bonus_method(self, target, magnitude):
 def Dodge_penalty_method(self, target, magnitude):
     target.statusDodge -= magnitude
 
+def Double_dodge_method(self, target, magnitude):
+    pass
+    
 def Dragon_style_method(self, target, magnitude):
     pass
 
@@ -350,7 +353,11 @@ def Dodge_bonus_method_reverse(self, target, magnitude):
 
 def Dodge_penalty_method_reverse(self, target, magnitude):
     target.statusDodge += magnitude
-
+    
+def Double_dodge_method_reverse(self, target, magnitude):
+    stacks = target.getStatusStackCount("Double Dodge")
+    target.statusDodge -= min(15, stacks * 5)
+    
 def Dragon_style_method_reverse(self, target, magnitude):
     pass
 
@@ -566,6 +573,7 @@ applyFunctionDict = {
     'Damage_over_time' : Damage_over_time_method,
     'Dodge_bonus' : Dodge_bonus_method,
     'Dodge_penalty' : Dodge_penalty_method,
+    'Double_dodge_internal' : None,
     'Dragon_style' : None,
     'DR_bonus' : DR_bonus_method,
     'DR_penalty' : DR_penalty_method,
@@ -653,6 +661,7 @@ unapplyFunctionDict = {
     'Damage_over_time' : None,
     'Dodge_bonus' : Dodge_bonus_method_reverse,
     'Dodge_penalty' : Dodge_penalty_method_reverse,
+    'Double_dodge_internal' : Double_dodge_method_reverse,
     'Dragon_style' : None,
     'DR_bonus' : DR_bonus_method_reverse,
     'DR_penalty' : DR_penalty_method_reverse,
