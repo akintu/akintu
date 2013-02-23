@@ -321,6 +321,20 @@ class GameScreen(object):
             top += 74
         pygame.display.update([rect])
 
+    def _drawmonsterframes(self):
+        top = 507
+        left = PANE_X * TILE_SIZE + 5
+        rect = (left, top, 246, 132)
+        self.screen.fill(Color('black'), rect)
+
+        for personid in self.monsterframes:
+            self.screen.blit(self.monsterframes[personid], (left, top))
+            top += 44
+            if (top - 507) / 132 >= 1:
+                top = 507
+                left = left + 121 + 4
+        pygame.display.update([rect])
+
 
 class PersonSprite(pygame.sprite.DirtySprite):
     def __init__(self, statsdict):
