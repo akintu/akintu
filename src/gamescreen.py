@@ -313,11 +313,11 @@ class GameScreen(object):
     def _drawplayerframes(self):
         top = 4
         left = PANE_X * TILE_SIZE + 5
-        rect = (left, top, 245, 296)
+        rect = (left, top, 246, 296)
         self.screen.fill(Color('black'), rect)
 
-        for frame in self.playerframes:
-            self.screen.blit(self.playerframes[frame], (left, top))
+        for personid in self.playerframes:
+            self.screen.blit(self.playerframes[personid], (left, top))
             top += 74
         pygame.display.update([rect])
 
