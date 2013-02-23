@@ -138,7 +138,6 @@ class GameServer():
                                             Location((0, 0), (0, 0)), \
                                             (1, self.person[i].race, self.person[i].characterClass)))
                                     for ii in self.pane[person.location].person:
-                                        print "II:", ii
                                         details = None
                                         if isinstance(self.person[ii], PlayerCharacter):
                                             details = (1, self.person[ii].race, \

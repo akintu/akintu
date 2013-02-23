@@ -25,11 +25,14 @@ class Game(object):
         TheoryCraft.loadAll()   #Static method call, Devin's stuff.
         Sprites.load(seed)
         self.world = World(seed)
+        
+        # Game state
+        self.id = -1
         self.keystate = 0
         self.running = False
         self.combat = False
-        self.id = -1
-
+        
+        # Setup server if host
         self.serverip = "localhost"
         if len(sys.argv) == 1:
             GameServer(self.world)
@@ -88,8 +91,10 @@ class Game(object):
 
             ###### MovePerson ######
             if isinstance(command, Person) and command.action == PersonActions.MOVE:
+                #self.screen.update_person(command.id, {'location': command.location})
+                self.animate(command.id, self.pane.person[command.id].location, command.location, \
+                        1.0 / self.pane.person[command.id].movementSpeed)
                 self.pane.person[command.id].location = command.location
-                self.screen.update_person(command.id, {'location': command.location})
 
             ###### RemovePerson ######
             if isinstance(command, Person) and command.action == PersonActions.REMOVE:
@@ -106,11 +111,10 @@ class Game(object):
                     self.running = False
                     
             ###### Initiate Combat ######
-            if isinstance(command, Update) and command.property == UpdateProperties.COMBAT and \
-                    command.value == True:
-                self.switch_panes(command.location, True)
-                self.combat = True
-                    
+            if isinstance(command, Update) and command.property == UpdateProperties.COMBAT:
+                self.switch_panes(command.location, command.value)
+                self.combat = command.value
+                
     def handle_events(self):
         pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
         for event in pygame.event.get():
@@ -128,22 +132,53 @@ class Game(object):
                     self.move_person(MOVE_KEYS[event.key], 1)
 
     def move_person(self, direction, distance):
+        if self.running:
+            self.CDF.send(Person(PersonActions.STOP, self.id))
+            self.running = False
+            
         newloc = self.pane.person[self.id].location.move(direction, distance)
-        if (self.pane.person[self.id].location.pane == newloc.pane and self.pane.is_tile_passable(newloc) and \
+        if not self.pane.person[self.id].anim and ((self.pane.person[self.id].location.pane == \
+                newloc.pane and self.pane.is_tile_passable(newloc) and \
                 newloc.tile not in [x.location.tile for x in self.pane.person.values()]) or \
-                self.pane.person[self.id].location.pane != newloc.pane:
-            if self.running:
-                self.CDF.send(Person(PersonActions.STOP, self.id))
-                self.running = False
+                self.pane.person[self.id].location.pane != newloc.pane):
+
             if self.keystate in [K_LSHIFT, K_RSHIFT] and not self.combat:
                 self.CDF.send(Person(PersonActions.RUN, self.id, direction))
                 self.running = True
             else:
                 self.CDF.send(Person(PersonActions.MOVE, self.id, newloc))
                 if self.pane.person[self.id].location.pane == newloc.pane:
+                    self.animate(self.id, self.pane.person[self.id].location, newloc, \
+                        1.0 / self.pane.person[self.id].movementSpeed)
                     self.pane.person[self.id].location = newloc
-                    self.screen.update_person(self.id, {'location': self.pane.person[self.id].location})
 
+    def animate(self, id, source, dest, time):
+        xdist = (dest.tile[0] - source.tile[0]) * TILE_SIZE
+        ydist = (dest.tile[1] - source.tile[1]) * TILE_SIZE
+        steps = max(abs(xdist), abs(ydist))
+        source.direction = dest.direction
+        self.pane.person[id].anim = LoopingCall(self.do_animation, id, source, dest, xdist, ydist, steps)
+        self.pane.person[id].anim.start(float(time) / steps)
+        
+    def do_animation(self, id, source, dest, xdist, ydist, steps):
+        self.pane.person[id].anim_iter += 1
+        statsdict = {}
+        if self.pane.person[id].anim_iter < steps:
+            statsdict['location'] = source
+            statsdict['xoffset'] = int(float(self.pane.person[id].anim_iter) / steps * xdist)
+            statsdict['yoffset'] = int(float(self.pane.person[id].anim_iter) / steps * ydist)
+            statsdict['foot'] = 0 if self.pane.person[id].anim_iter % TILE_SIZE < TILE_SIZE / 2 else 1
+        else:
+            statsdict['location'] = dest
+            statsdict['xoffset'] = 0
+            statsdict['yoffset'] = 0
+            statsdict['foot'] = 0
+            if self.pane.person[id].anim:
+                self.pane.person[id].anim.stop()
+            self.pane.person[id].anim = None
+            self.pane.person[id].anim_iter = 0
+        self.screen.update_person(id, statsdict)
+            
     def switch_panes(self, location, combat=False):
         #TODO we can add transitions here.
         if combat:

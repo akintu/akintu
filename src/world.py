@@ -92,7 +92,7 @@ class Pane(object):
                 r = Region()
                 r.build(RAct.ADD, RShape.CIRCLE, person.location, PANE_Y/4)
                 #r.build(RAct.SUBTRACT, RShape.CIRCLE, Location(self.location, CENTER), int(PANE_Y/6))
-                person.ai.add("WANDER", person.ai.wander, person.movementSpeed * 5, pid=id(person), region=r, move_chance=1.0 / (person.movementSpeed * 5))
+                person.ai.add("WANDER", person.ai.wander, person.movementSpeed, pid=id(person), region=r, move_chance=1.0 / (person.movementSpeed * 5))
                 self.person[id(person)] = person
     
     def load_images(self):
@@ -201,10 +201,10 @@ class CombatPane(Pane):
         for x in range(loc_x-5, loc_x+5):
             for y in range(loc_y-5, loc_y+5):
                 if (x,y) in pane.objects:
-                    print pane.objects[(x,y)]
+                    #print pane.objects[(x,y)]
                     for di in range(0,3):
                         for dj in range(0,3):
-                            print "x: " + str(di) + "y: " + str(dj)
+                            #print "x: " + str(di) + "y: " + str(dj)
                             super(CombatPane, self).add_obstacle((i+di, j+dj), 1, pane.objects[(x,y)])
                 i+=3
             j+=3
