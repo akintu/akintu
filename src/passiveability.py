@@ -174,6 +174,12 @@ class PassiveAbility(object):
     def applyAnatomy(self, target):
         target.baseCriticalChance += 10
                 
+    def applySlightlySneakier(self, target):
+        target.baseSneak += 3
+    
+    def applyDabblesWithPoison(self, target):
+        target.basePoisonRatingBonus += 2
+                
     # Shadow
     def applyADabblerOfSorts(self, target):
         target.basePoisonRatingBonus += 3
@@ -565,6 +571,21 @@ class PassiveAbility(object):
         'type' : 'static',
         'action' : applyAnatomy
         },
+        'Slightly Sneakier':
+        {
+        'class' : 'Assassin',
+        'level' : 3,
+        'type' : 'static',
+        'action' : applySlightlySneakier
+        },
+        'Dabbles with Poison':
+        {
+        'class' : 'Assassin',
+        'level' : 4,
+        'type' : 'static',
+        'action' : applyDabblesWithPoison
+        },
+        
         
         # Shadow
         'A Dabbler of Sorts':

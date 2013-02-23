@@ -506,6 +506,20 @@ class Ability(object):
             return (False, "Must be using a Ranged weapon to perform " + self.name + " .")
         return (True, "")
     
+    def _massiveShot(self, target):
+        source = self.owner
+        hit = Combat.calcHit(source, target, "Physical", modifier=2)
+        Combat.basicAttack(source, target, hit, forceMod=1.3, criticalDamageMod=4.5, overallDamageMod=1.3)
+        Combat.addStatus(source, "Massive Shot", duration=8)
+    
+    def _massiveShotCheck(self, target):
+        source = self.owner
+        if not source.inStealth():
+            return (False, "Must be in stealth to perform " + self.name + " .")
+        if not source.usingWeaponStyle("Ranged"):
+            return (False, "Must be using a Ranged weapon to perform " + self.name + " .")
+        return (True, "")        
+    
     # Shadow
     
     def _shadowWalk(self, target):
@@ -1456,6 +1470,19 @@ class Ability(object):
         'cooldown' : 1,
         'checkFunction' : _cautiousShotCheck,
         'breakStealth' : 2
+        },
+        'Massive Shot':
+        {
+        'level' : 3,
+        'class' : 'Assassin',
+        'HPCost' : 0,
+        'APCost' : 20,
+        'range' : -1,
+        'target' : 'hostile',
+        'action' : _massiveShot,
+        'cooldown' : 4,
+        'checkFunction' : _massiveShotCheck,
+        'breakStealth' : 100
         },
         
         # Nightblade
