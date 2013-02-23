@@ -188,9 +188,13 @@ class GameScreen(object):
         for key in statsdict:
             if key in ['name', 'HP', 'MP', 'AP', 'buffedHP', 'totalHP',
                        'totalMP', 'totalAP']:
-                self.playerframes[personid] = \
-                        _generateplayerframe(personid)
-                self._drawplayerframes()
+                if statsdict['team'] == "Players":
+                    self.playerframes[personid] = \
+                            _generateplayerframe(personid)
+                    self._drawplayerframes()
+                elif statsdict['team'] == "Monsters":
+                    #TODO
+                    pass
 
     def update(self):
         '''
