@@ -437,6 +437,75 @@ class Ability(object):
         # Remove Trap
         # Add trap.Trap("Poison Thorn Trap", self.owner, target.location)
     
+    # Assassin
+    
+    def _rangedBackstab(self, target):
+        source = self.owner
+        critChance = 40 # Incorporates -10% due to the bonus from "Anatomy"
+        critMag = 2
+        accuracy = 5
+        hit = Combat.calcHit(source, target, "Physical", modifier=accuracy, critMod=critChance)
+        Combat.basicAttack(source, target, hit, criticalDamageMod=critMag)
+        
+    def _rangedBackstabCheck(self, target):
+        source = self.owner
+        if not source.inStealth():
+            return (False, "Must be in stealth to perform " + self.name + " .")
+        # If not in ranged backstab position : TODO
+        if not source.usingWeaponStyle("Ranged"):
+            return (False, "Must be using a ranged weapon to perform " + self.name + " .")
+        if source.usingWeapon("Longbow"):
+            return (False, "Cannot use a Longbow to perform " + self.name + " .")
+        return (True, "")
+    
+    def _hiddenShot(self, target):
+        source = self.owner
+        hit = Combat.calcHit(source, target, "Physical")
+        Combat.basicAttack(source, target, hit, criticalDamageMod=1.1)
+        
+    def _hiddenShotCheck(self, target):
+        source = self.owner
+        if not source.inStealth():
+            return (False, "Must be in stealth to perform " + self.name + " .")
+        if not source.usingWeaponStyle("Ranged"):
+            return (False, "Must be using a ranged weapon to perform " + self.name + " .")
+        return (True, "")
+    
+    def _visibleAttack(self, target):
+        source = self.owner
+        hit = Combat.calcHit(source, target, "Physical", modifier=3)
+        Combat.basicAttack(source, target, hit)
+    
+    def _visibleAttackCheck(self, target):
+        source = self.owner
+        if source.inStealth():
+            return (False, "Cannot be in stealth to perform " + self.name + " .")
+        return (True, "")
+    
+    def _sneakySneaky(self, target):
+        source = self.owner
+        duration = 4
+        Combat.addStatus(source, "Sneaky Sneaky", duration)
+
+    def _sneakySneakyCheck(self, target):
+        source = self.owner
+        if source.inStealth():
+            return (True, "")
+        return (False, "Must be in stealth to perform " + self.name + " .")
+    
+    def _cautiousShot(self, target):
+        source = self.owner
+        hit = Combat.calcHit(source, target, "Physical")
+        Combat.basicAttack(source, target, hit, overallDamageMod=0.5)
+        
+    def _cautiousShotCheck(self, target):
+        source = self.owner
+        if not source.inStealth():
+            return (False, "Must be in stealth to perform " + self.name + " .")
+        if not source.usingWeaponStyle("Ranged"):
+            return (False, "Must be using a Ranged weapon to perform " + self.name + " .")
+        return (True, "")
+    
     # Shadow
     
     def _shadowWalk(self, target):
@@ -1320,6 +1389,73 @@ class Ability(object):
         'cooldown' : 2,
         'checkFunction' : _stealthRecoveryCheck,
         'breakStealth' : 0
+        },
+        
+        # Assassin
+        'Ranged Backstab':
+        {
+        'level' : 1,
+        'class' : 'Assassin',
+        'HPCost' : 0,
+        'APCost' : 10,
+        'range' : 1,
+        'target' : 'hostile',
+        'action' : _rangedBackstab,
+        'cooldown' : 2,
+        'checkFunction' : _rangedBackstabCheck,
+        'breakStealth' : 100
+        },
+        'Hidden Shot':
+        {
+        'level' : 1,
+        'class' : 'Assassin',
+        'HPCost' : 0,
+        'APCost' : 5,
+        'range' : -1,
+        'target' : 'hostile',
+        'action' : _hiddenShot,
+        'cooldown' : 2,
+        'checkFunction' : _hiddenShotCheck,
+        'breakStealth' : 5
+        },
+        'Visible Attack':
+        {
+        'level' : 2,
+        'class' : 'Assassin',
+        'HPCost' : 0,
+        'APCost' : 5,
+        'range' : -1,
+        'target' : 'hostile',
+        'action' : _visibleAttack,
+        'cooldown' : 2,
+        'checkFunction' : _visibleAttackCheck,
+        'breakStealth' : 100
+        },
+        'Sneaky Sneaky':
+        {
+        'level' : 2,
+        'class' : 'Assassin',
+        'HPCost' : 0,
+        'APCost' : 8,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _sneakySneaky,
+        'cooldown' : 3,
+        'checkFunction' : _sneakySneakyCheck,
+        'breakStealth' : 0
+        },
+        'Cautious Shot' :
+        {
+        'level' : 2,
+        'class' : 'Assassin',
+        'HPCost' : 0,
+        'APCost' : 6,
+        'range' : -1,
+        'target' : 'hostile',
+        'action' : _cautiousShot,
+        'cooldown' : 1,
+        'checkFunction' : _cautiousShotCheck,
+        'breakStealth' : 2
         },
         
         # Nightblade

@@ -1145,7 +1145,6 @@
     [MAGNITUDE: 5]
   [INTERNAL: Critical_magnitude_bonus]
     [MAGNITUDE: 10]
-  [REMOVED_ON: Stealth Removed]
   [CATEGORY: Buff]
   
 [NAME: Massive Shot]

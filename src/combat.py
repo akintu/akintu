@@ -332,6 +332,7 @@ class Combat(object):
         Combat.removeStatus(target, "Stealth")
         Combat.removeStatus(target, "Conceal")
         Combat.removeStatus(target, "Shadow Walk")
+        Combat.removeStatus(target, "Sneaky Sneaky") # assassin ability
     
     @staticmethod
     def removeStatusOfType(target, category, removeAll=False):

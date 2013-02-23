@@ -170,6 +170,10 @@ class PassiveAbility(object):
         target.basePoisonResistance += 5
         target.baseColdResistance += 5
                 
+    # Assassin
+    def applyAnatomy(self, target):
+        target.baseCriticalChance += 10
+                
     # Shadow
     def applyADabblerOfSorts(self, target):
         target.basePoisonRatingBonus += 3
@@ -551,6 +555,15 @@ class PassiveAbility(object):
         'level' : 3,
         'type' : 'static',
         'action' : applyTimeWithNature
+        },
+        
+        # Assassin
+        'Anatomy':
+        {
+        'class' : 'Assassin',
+        'level' : 1,
+        'type' : 'static',
+        'action' : applyAnatomy
         },
         
         # Shadow
