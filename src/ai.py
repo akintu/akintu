@@ -1,6 +1,7 @@
 import random
 from command import *
 from network import *
+from time import time
 
 class AI():
     def __init__(self):
@@ -14,13 +15,15 @@ class AI():
             self.start(name)
         
     ###### AI BEHAVIORS ######
-    def run(self, pid=None, direction=None, region=None):
+    def run(self, name, pid=None, direction=None, region=None):
         newloc = self.server.person[pid].location.move(direction, 1)
         self.server.SDF.queue.put((None, Person(PersonActions.MOVE, pid, newloc)))
 
-    def wander(self, pid=None, region=None, move_chance=0):
+    def wander(self, name, pid=None, region=None, move_chance=0):
+        if time() < self.behavior[name]['time']:
+            return
         if random.random() <= move_chance:
-            dirs = [1, 2, 3, 4, 6, 7, 8, 9]
+            dirs = [2, 4, 6, 8]
             direction = random.choice(dirs)
             newloc = self.server.person[pid].location.move(direction, 1)
             while not region.has(newloc) or not self.server.tile_is_open(newloc, pid):
@@ -31,13 +34,14 @@ class AI():
                 newloc = self.server.person[pid].location.move(direction, 1)
             
             self.server.SDF.queue.put((None, Person(PersonActions.MOVE, pid, newloc)))
+            self.behavior[name]['time'] = time() + (1.0 / self.behavior[name]['frequency'])
 
     ###### AI MANAGEMENT ######
     def add(self, name, ai_func, frequency, **details):
         self.behavior[name] = {}
         self.behavior[name]['frequency'] = frequency
         self.behavior[name]['running'] = False
-        self.behavior[name]['task'] = LoopingCall(ai_func, **details)
+        self.behavior[name]['task'] = LoopingCall(ai_func, name, **details)
         
     def remove(self, name):
         if name in self.behavior:
@@ -48,6 +52,7 @@ class AI():
 
     def start(self, name):
         self.behavior[name]['running'] = True
+        self.behavior[name]['time'] = time()
         self.behavior[name]['task'].start(1.0 / self.behavior[name]['frequency'])
         
     def stop(self, name):

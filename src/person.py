@@ -33,6 +33,8 @@ class Person(en.Entity):
         
         self.id = None
         self.ai = AI()
+        self.anim = None
+        self.anim_iter = 0
 
         self._cooldownList = []
         self._statusList = []
@@ -2325,7 +2327,7 @@ class Person(en.Entity):
     @property
     def movementSpeed(self):
         '''The overworld movement speed.'''
-        return float(self.totalMovementTiles) / float(self.totalMovementAPCost)
+        return 5 * float(self.totalMovementTiles) / float(self.totalMovementAPCost)
     
     def resource(self, type, quantity):
         """Returns True if the Person has at least 'quantity' of the resource.
