@@ -8,6 +8,7 @@ from twisted.internet import reactor
 from twisted.internet.task import LoopingCall
 from twisted.protocols.basic import LineReceiver
 
+import socket
 import Queue
 import cPickle
 import sys
@@ -35,7 +36,7 @@ class ServerData(LineReceiver):
 
     def lineReceived(self, data):
         data = cPickle.loads(data)
-        print("S " + str(self.port) + "> " + str(data))
+        if socket.gethostname() == "Jzar": print("S " + str(self.port) + "> " + str(data))
         self.factory.queue.put((self.port, data))
 
 class ServerDataFactory(Factory):
@@ -78,7 +79,7 @@ class ClientData(LineReceiver):
         if self.factory.port is None:
             self.factory.port = data
         else:
-            print("Client> " + str(data))
+            if socket.gethostname() == "Jzar": print("Client> " + str(data))
             self.factory.queue.put(data)
 
 class ClientDataFactory(Factory):
