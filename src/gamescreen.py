@@ -141,9 +141,15 @@ class GameScreen(object):
             - time remaining
             - is it the players turn?
         '''
+        # Check for properly-formatted statsdict, set some defaults if not
+        # present
         if 'image' not in statsdict or \
            'location' not in statsdict:
             raise Exception('Image or location not defined')
+        for attr in ['xoffset', 'yoffset', 'foot']:
+            if attr not in statsdict:
+                statsdict[attr] = 0
+
         self.persons[personid] = \
             PersonSprite(statsdict)
         self.personsgroup.add(self.persons[personid])
@@ -163,7 +169,8 @@ class GameScreen(object):
         statsdict
         '''
         if 'location' in statsdict:
-            self.persons[personid].newest_coord = statsdict['location']
+            self.persons[personid].current_coord = statsdict['location']
+        self.persons[personid].update_dict(statsdict)
 
     def update(self):
         '''
@@ -200,21 +207,31 @@ class PersonSprite(pygame.sprite.DirtySprite):
         imagepre = self.statsdict['image']
         # Try to retrieve the different facing images
         try:
+            self.images = []
             endings = [(2, '_fr1.png'), (4, '_lf1.png'),
                        (6, '_rt1.png'), (8, '_bk1.png')]
-            self.images = {key: pygame.image.load(imagepre+end).convert_alpha()
-                           for key, end in endings}
+            self.images.append(
+                    {key: pygame.image.load(imagepre+end).convert_alpha()
+                    for key, end in endings})
+            endings = [(2, '_fr2.png'), (4, '_lf2.png'),
+                       (6, '_rt2.png'), (8, '_bk2.png')]
+            self.images.append(
+                    {key: pygame.image.load(imagepre+end).convert_alpha()
+                    for key, end in endings})
         # Assume imagepre is the actual image location, add facing overlays
         except pygame.error:
             self.images = facing_overlays(imagepre)
 
         # Location and rect info
         loc = self.statsdict['location']
-        self.image = self.images[loc.direction]
+        foot = self.statsdict['foot']
+        xoff= self.statsdict['xoffset']
+        yoff= self.statsdict['yoffset']
+        self.image = self.images[foot][loc.direction]
         self.rect = self.image.get_rect()
-        self.current_coord = None
-        self.newest_coord = loc
-        self.rect.topleft = [x*TILE_SIZE for x in loc.tile]
+        self.current_coord = loc
+        self.rect.topleft = (loc.tile[0] * TILE_SIZE + xoff,
+                             loc.tile[1] * TILE_SIZE + yoff)
 
     def update(self):
         '''
@@ -222,12 +239,23 @@ class PersonSprite(pygame.sprite.DirtySprite):
 
         Checks for new coordinate, updates location if necessary
         '''
-        if self.current_coord != self.newest_coord:
-            self.current_coord = self.newest_coord
-            self.rect.topleft = [x*TILE_SIZE for x in self.newest_coord.tile]
-            self.image = self.images[self.newest_coord.direction]
+        foot = self.statsdict['foot']
+        xoff = self.statsdict['xoffset']
+        yoff = self.statsdict['yoffset']
+        loc = self.current_coord
+        self.rect.topleft = (loc.tile[0] * TILE_SIZE + xoff,
+                             loc.tile[1] * TILE_SIZE + yoff)
+        self.image = self.images[foot][loc.direction]
+
+    def update_dict(self, statsdict):
+        '''
+        Update self.statsdict with all they keys/values in statsdict
+        '''
+        for key in statsdict:
+            self.statsdict[key] = statsdict[key]
 
 ####### MISC Utility Functions #######
+
 
 def facing_overlays(imageloc):
     '''
@@ -239,8 +267,8 @@ def facing_overlays(imageloc):
              (0, 0, 3, 32),
              (29, 0, 3, 32),
              (0, 0, 32, 3)]
-    images = dict()
+    imagedict = dict()
     for key, rect in zip(keys, rects):
-        images[key] = pygame.image.load(imageloc).convert_alpha()
-        images[key].fill(Color('blue'), rect)
-    return images
+        imagedict[key] = pygame.image.load(imageloc).convert_alpha()
+        imagedict[key].fill(Color('blue'), rect)
+    return [imagedict, imagedict]
