@@ -23,9 +23,13 @@ class GameScreen(object):
         '''
         Initialize Akintu graphics engine with default settings
         '''
-        self.screen = pygame.display.set_mode((PANE_X * TILE_SIZE + 256, PANE_Y * TILE_SIZE))
+        self.screen = pygame.display.set_mode(
+                (PANE_X * TILE_SIZE + 256,
+                max(PANE_Y * TILE_SIZE, 20 * TILE_SIZE)
+                ))
         pygame.display.set_caption('Akintu r01')
-        self.background = pygame.Surface((PANE_X * TILE_SIZE, PANE_Y * TILE_SIZE))
+        self.background = pygame.Surface((PANE_X * TILE_SIZE,
+                                          PANE_Y * TILE_SIZE))
         self.world = dict()
         self.images = dict()
         self.persons = dict()
