@@ -248,9 +248,10 @@ class GameScreen(object):
                 prev = font.render(txt, True, Color(color))
                 continue
             end += 1
+            prev = cur
         lines.append(prev)
 
-        height = line[0].get_rect().height
+        height = lines[0].get_rect().height
         textarea = pygame.Surface((246, 100))
         y = 0
 
