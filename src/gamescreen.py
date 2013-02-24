@@ -135,6 +135,7 @@ class GameScreen(object):
             - 'totalHP'
             - 'totalMP'
             - 'totalAP'
+            - 'restrictedAP'
             - 'team'
 
         To be supported in the future:
@@ -190,7 +191,7 @@ class GameScreen(object):
 
         for key in statsdict:
             if key in ['name', 'HP', 'MP', 'AP', 'buffedHP', 'totalHP',
-                       'totalMP', 'totalAP']:
+                       'totalMP', 'totalAP', 'restrictedAP']:
                 if statsdict['team'] == "Players":
                     self.playerframes[personid] = \
                             _generateplayerframe(personid)
@@ -259,10 +260,17 @@ class GameScreen(object):
             AP = 0
         else:
             AP = statsdict['AP']
+        if 'restrictedAP' not in statsdict or not totalAP:
+            restrictedAP = 0
+            reducedAP = totalAP
+        else:
+            restrictedAP = statsdict['restrictedAP']
+            reducedAP = totalAP
+            totalAP = restrictedAP + totalAP
 
         hstring = str(HP) + ' / ' + (str(totalHP) if totalHP else '0')
         mstring = str(MP) + ' / ' + (str(totalMP) if totalMP else '0')
-        astring = str(AP) + ' / ' + (str(totalAP) if totalAP else '0')
+        astring = str(AP) + ' / ' + (str(reducedAP) if totalAP else '0')
 
         barx = 32 + 4 + 40
         barlabelx = 32 + 4 + 4
@@ -288,6 +296,9 @@ class GameScreen(object):
         if totalAP:
             abar1 = barxsize
             abar2 = int(float(AP) / totalAP * barxsize)
+            abarredx = int(float(reducedAP) / totalAP * barxsize)
+            abarredwidth = barxsize - abarredx
+            abarredx += barx
         else:
             abar1 = barxsize
             abar2 = 0
@@ -300,6 +311,7 @@ class GameScreen(object):
         frame.fill(Color('blue'), (barx, mbary, mbar2, barysize))
         frame.fill(Color('black'), (barx, abary, abar1, barysize))
         frame.fill(Color('purple'), (barx, abary, abar2, barysize))
+        frame.fill(Color('yellow'), (abarredx, abary, abarredwidth, barysize))
 
         font = pygame.font.SysFont("Arial", 10)
         hfont = font.render(hstring, True, Color('black'))
