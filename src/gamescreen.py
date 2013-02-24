@@ -466,7 +466,7 @@ class GameScreen(object):
         '''
         top = 4
         left = PANE_X * TILE_SIZE + 5
-        rect = (left, top, 246, 296)
+        rect = (left, top, 246, 292)
         self.screen.fill(Color('black'), rect)
 
         for personid in self.playerframes:
