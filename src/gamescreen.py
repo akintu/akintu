@@ -172,9 +172,9 @@ class GameScreen(object):
         '''
         self.personsgroup.remove(self.persons[personid])
         self.persons.pop(personid)
-        if personid in playerframes:
+        if personid in self.playerframes:
             self.playerframes.pop(personid)
-        elif personid in monsterframes:
+        elif personid in self.monsterframes:
             self.monsterframes.pop(personid)
 
     def update_person(self, personid, statsdict):
