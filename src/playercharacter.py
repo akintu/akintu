@@ -231,6 +231,13 @@ class PlayerCharacter(p.Person):
         # TODO: Need to update attacksPerformed each turn.  The previous turn's number of attacks is in position 0, this turn's
         # in position 1.  Need to also shift those at the end of each turn...        
     
+    def getDetailTuple(self):
+        '''Should be overriden by PlayerCharacters and other
+        children.  Returns a tuple of information needed to reconstitute
+        this Person object.
+        First argument should represent which type of object this is.'''
+        return ("Player", self.race, self.characterClass)
+    
     def gainLevelUp(self):
         """Start the levelup process for acquiring a new level.  May need to
         be integrated with another UI class to make decisions later TODO.

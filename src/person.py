@@ -226,6 +226,13 @@ class Person(en.Entity):
         
         self.listeners = []
     
+    def getDetailTuple(self):
+        '''Should be overriden by PlayerCharacters and other
+        children.  Returns a tuple of information needed to reconstitute
+        this Person object.
+        First argument should represent which type of object this is.'''
+        raise NotImplementedError("This method was not overloaded.")
+    
     @property
     def totalRangedAttackAPCost(self):
         """Is comprised only of the value given at character creation.

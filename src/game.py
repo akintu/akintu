@@ -88,19 +88,15 @@ class Game(object):
                 self.pane.person[command.id].location = command.location
                     
                 imagepath = os.path.join('res', 'images', 'sprites', self.pane.person[command.id].image)
-                persondict = {'location': command.location, 'image': imagepath, \
-                    'team': self.pane.person[command.id].team, \
-                    'HP': self.pane.person[command.id].HP, 'totalHP': self.pane.person[command.id].totalHP, \
-                    'MP': self.pane.person[command.id].MP, 'totalMP': self.pane.person[command.id].totalMP, \
-                    'AP': self.pane.person[command.id].AP, 'totalAP': self.pane.person[command.id].totalAP}
-                print persondict
+                p = self.pane.person[command.id]
+                persondict = {'location': command.location, 'image': imagepath, 'team': p.team, \
+                    'HP': p.HP, 'totalHP': p.totalHP, 'MP': p.MP, \
+                    'totalMP': p.totalMP, 'AP': p.AP, 'totalAP': p.totalAP, \
+                    'level': p.level}
                 self.screen.add_person(command.id, persondict)
 
             ###### MovePerson ######
             if isinstance(command, Person) and command.action == PersonActions.MOVE:
-                if self.pane.person[command.id].anim:
-                    self.pane.person[command.id].anim.stop()
-                    
                 self.animate(command.id, self.pane.person[command.id].location, command.location, \
                         1.0 / self.pane.person[command.id].movementSpeed)
                 self.pane.person[command.id].location = command.location
@@ -168,6 +164,8 @@ class Game(object):
         source.direction = dest.direction
         
         self.pane.person[id].anim_start = time.time()
+        if self.pane.person[id].anim:
+            self.pane.person[id].anim.stop()
         self.pane.person[id].anim = LoopingCall(self.do_animation, id, source, dest, xdist, ydist, length)
         self.pane.person[id].anim.start(float(length) / steps)
         
