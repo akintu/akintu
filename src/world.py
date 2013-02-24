@@ -84,16 +84,27 @@ class Pane(object):
 
         if load_entities:
             self.load_monsters()
+            
+    def __repr__(self):
+        s = ""
+        for j in range(PANE_Y):
+            for i in range(PANE_X):
+                if (i, j) in self.objects:
+                    s += "X"
+                else:
+                    s += " "
+            s += "\n"
+        return s
     
     def load_monsters(self):
         for i in range(3):
-                person = TheoryCraft.getMonster()
-                person.location = Location(self.location, (random.randrange(PANE_X), random.randrange(PANE_Y)))
-                r = Region()
-                r.build(RAct.ADD, RShape.CIRCLE, person.location, PANE_Y/4)
-                #r.build(RAct.SUBTRACT, RShape.CIRCLE, Location(self.location, CENTER), int(PANE_Y/6))
-                person.ai.add("WANDER", person.ai.wander, person.movementSpeed, pid=id(person), region=r, move_chance=1.0 / (person.movementSpeed * 5))
-                self.person[id(person)] = person
+            person = TheoryCraft.getMonster()
+            person.location = Location(self.location, (random.randrange(PANE_X), random.randrange(PANE_Y)))
+            r = Region()
+            r.build(RAct.ADD, RShape.CIRCLE, person.location, PANE_Y/4)
+            #r.build(RAct.SUBTRACT, RShape.CIRCLE, Location(self.location, CENTER), int(PANE_Y/6))
+            person.ai.add("WANDER", person.ai.wander, person.movementSpeed, pid=id(person), region=r, move_chance=1.0 / (person.movementSpeed * 5))
+            self.person[id(person)] = person
     
     def load_images(self):
         self.images = Sprites.get_images_dict()
@@ -196,19 +207,26 @@ class CombatPane(Pane):
         
         self.focus_location = Location((0,0), (loc_x, loc_y))
         
+        print "ORIGINAL PANE" + str(pane.location)
+        print pane
+        
         #todo, update this to put focus_location as the center
         i = j = 1
         for x in range(loc_x-5, loc_x+5):
             for y in range(loc_y-5, loc_y+5):
                 if (x,y) in pane.objects:
-                    #print pane.objects[(x,y)]
+                    print "(x, y): (" + str(x) + ", " + str(y) + ") (i, j): (" + str(i) + ", " + str(j) + ")"
                     for di in range(0,3):
                         for dj in range(0,3):
-                            #print "x: " + str(di) + "y: " + str(dj)
+                            
                             super(CombatPane, self).add_obstacle((i+di, j+dj), 1, pane.objects[(x,y)])
-                i+=3
-            j+=3
+                j+=3
+            j = 1
+            i+=3
+        print "COMBAT PANE" + str((loc_x, loc_y))
+        
         super(CombatPane, self).load_images()
+        print self
         
 class Tile(object):
     def __init__(self, image = os.path.join("res", "images", "background", "grass.png"), passable = True):

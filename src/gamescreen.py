@@ -224,7 +224,7 @@ class GameScreen(object):
         Set the FPS in the title bar (if enabled)
         '''
         if SHOW_FPS:
-            pygame.display.set_caption("%s %d" % (CAPTION, fps))
+            pygame.display.set_caption("%s %f" % (CAPTION, fps))
 
     def show_text(self, text, color='white', size=13, bold=False, ital=False):
         '''
