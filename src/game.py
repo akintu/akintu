@@ -60,7 +60,7 @@ class Game(object):
             (CreatureTypes.PLAYER, "Human", "Assassin")))
 
         self.setup.stop()
-        LoopingCall(self.game_loop).start(0)
+        LoopingCall(self.game_loop).start(1.0 / DESIRED_FPS)
 
     def game_loop(self):
         clock.tick()
@@ -80,11 +80,11 @@ class Game(object):
                     self.id = command.id
                     self.switch_panes(command.location)
             
-                if command.details[0] == CreatureTypes.PLAYER:
+                if command.details[0] == "Player":
                     self.pane.person[command.id] = \
                         TheoryCraft.getNewPlayerCharacter(command.details[1], command.details[2])
-                if command.details[0] == CreatureTypes.MONSTER:
-                    self.pane.person[command.id] = TheoryCraft.getMonster()
+                if command.details[0] == "Monster":
+                    self.pane.person[command.id] = TheoryCraft.getMonster(command.details[1], command.details[2])
                 self.pane.person[command.id].location = command.location
                     
                 imagepath = os.path.join('res', 'images', 'sprites', self.pane.person[command.id].image)

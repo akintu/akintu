@@ -29,7 +29,7 @@ class GameServer():
                 if port:
                     person = TheoryCraft.getNewPlayerCharacter(*command.details[1:])
                 else:
-                    person = TheoryCraft.getMonster()
+                    person = TheoryCraft.getMonster(*command.details[1:])
 
                 person.id = id(person)
                 command.id = person.id
@@ -49,13 +49,8 @@ class GameServer():
                 if port:
                     for i in self.pane[command.location.pane].person:
                         if i != command.id:
-                            details = None
-                            if isinstance(self.person[i], PlayerCharacter):
-                                details = (1, self.person[i].race, self.person[i].characterClass)
-                            else:
-                                details = (2,)
                             self.SDF.send(port, Person(PersonActions.CREATE, i, \
-                                    self.person[i].location, details))
+                                    self.person[i].location, self.person[i].getDetailTuple()))
 
             ###### MovePerson ######
             if isinstance(command, Person) and command.action == PersonActions.MOVE:
@@ -87,11 +82,7 @@ class GameServer():
                         # Add player to new pane lists and send to clients in the affected pane
                         self.pane[command.location.pane].person.append(command.id)
                         command.action = PersonActions.CREATE
-                        if isinstance(self.person[command.id], PlayerCharacter):
-                            command.details = (1, self.person[command.id].race, \
-                                self.person[command.id].characterClass)
-                        else:
-                            command.details = (2,)
+                        command.details = self.person[command.id].getDetailTuple()
                         for p, i in self.player.iteritems():
                             if self.person[i].location.pane == command.location.pane:
                                 self.SDF.send(p, command)
@@ -101,13 +92,8 @@ class GameServer():
                             p = [p for p, i in self.player.iteritems() if i == command.id][0]
                             for i in self.pane[command.location.pane].person:
                                 if i != command.id:
-                                    details = None
-                                    if isinstance(self.person[i], PlayerCharacter):
-                                        details = (1, self.person[i].race, self.person[i].characterClass)
-                                    else:
-                                        details = (2,)
                                     self.SDF.send(p, Person(PersonActions.CREATE, i, \
-                                            self.person[i].location, details))
+                                            self.person[i].location, self.person[i].getDetailTuple()))
 
                         self.unload_panes()
                         
@@ -138,14 +124,8 @@ class GameServer():
                                             Location((0, 0), (0, 0)), \
                                             (1, self.person[i].race, self.person[i].characterClass)))
                                     for ii in self.pane[person.location].person:
-                                        details = None
-                                        if isinstance(self.person[ii], PlayerCharacter):
-                                            details = (1, self.person[ii].race, \
-                                                    self.person[ii].characterClass)
-                                        else:
-                                            details = (2,)
                                         self.SDF.send(p, Person(PersonActions.CREATE, ii, \
-                                                self.combat[ii]['loc'], details))
+                                                self.combat[ii]['loc'], self.person[ii].getDetailTuple()))
                                     self.pane[person.location].person.append(self.person[i].id)
                 else:
                     if port:
