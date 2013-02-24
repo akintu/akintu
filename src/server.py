@@ -37,7 +37,7 @@ class GameServer():
 
                 # Send command to each player in the affected pane
                 for p, i in self.player.iteritems():
-                    if command.location.pane == self.person[i].location.pane:
+                    if command.location.pane == self.person[i].location.pane and i not in self.combat:
                         self.SDF.send(p, command)
 
                 # Send list of players to the issuing client
@@ -50,9 +50,27 @@ class GameServer():
             ###### MovePerson ######
             if isinstance(command, Person) and command.action == PersonActions.MOVE:
                 self.load_pane(command.location.pane)
+                
+                # Remove from combat
+                if command.id in self.combat and command.location.pane != (0, 0):
+                    for p in self.person.values():
+                        if p.location == self.combat[command.id]['pane']:
+                            self.SDF.queue.put((None, Person(PersonActions.REMOVE, p.id)))
+                    for i in self.pane[self.combat[command.id]['pane']].person:
+                        del self.combat[i]
+                    
+                    self.SDF.send(port, Person(PersonActions.REMOVE, command.id))
+                    self.SDF.send(port, Update(command.id, UpdateProperties.COMBAT, \
+                            False))
+                    self.SDF.send(port, Person(PersonActions.CREATE, i, \
+                            self.person[command.id].location, self.person[command.id].getDetailTuple()))
+                    
+                    for i in self.pane[self.person[command.id].location.pane].person:
+                        self.SDF.send(port, Person(PersonActions.CREATE, i, \
+                                self.person[i].location, self.person[i].getDetailTuple()))
 
                 # If this is a legal move request
-                if self.tile_is_open(command.location, command.id):
+                elif self.tile_is_open(command.location, command.id):
 
                     # If the origin and destination are in the same pane
                     if self.person[command.id].location.pane == command.location.pane:
@@ -60,15 +78,16 @@ class GameServer():
                         # Update location and broadcast
                         self.person[command.id].location = command.location
                         for p, i in self.player.iteritems():
-                            if p != port:
-                                if command.location.pane == self.person[i].location.pane:
-                                    self.SDF.send(p, command)
+                            if p != port and command.location.pane == self.person[i].location.pane and \
+                                    i not in self.combat:
+                                self.SDF.send(p, command)
 
                     else:
                         # Remove person from players' person tables, and pane's person list
                         self.pane[self.person[command.id].location.pane].person.remove(command.id)
                         for p, i in self.player.iteritems():
-                            if self.person[i].location.pane == self.person[command.id].location.pane:
+                            if self.person[i].location.pane == self.person[command.id].location.pane \
+                                    and i not in self.combat:
                                 self.SDF.send(p, Person(PersonActions.REMOVE, command.id))
 
                         # Update location in server memory
@@ -79,7 +98,8 @@ class GameServer():
                         command.action = PersonActions.CREATE
                         command.details = self.person[command.id].getDetailTuple()
                         for p, i in self.player.iteritems():
-                            if self.person[i].location.pane == command.location.pane:
+                            if self.person[i].location.pane == command.location.pane and \
+                                    i not in self.combat:
                                 self.SDF.send(p, command)
 
                         # Send list of players to the issuing client
@@ -115,9 +135,11 @@ class GameServer():
 
                                     self.SDF.send(p, Person(PersonActions.REMOVE, i))
                                     self.SDF.send(p, Update(i, UpdateProperties.COMBAT, \
-                                            True, person.location))
+                                            True))
                                     self.SDF.send(p, Person(PersonActions.CREATE, i, \
-                                            Location((0, 0), (0, 0)), self.person[i].getDetailTuple()))
+                                            person.location, self.person[i].getDetailTuple()))
+                                    self.SDF.send(p, Person(PersonActions.MOVE, i, \
+                                            Location((0, 0), (0, 0)), True))
                                     for ii in self.pane[person.location].person:
                                         self.SDF.send(p, Person(PersonActions.CREATE, ii, \
                                                 self.combat[ii]['loc'], self.person[ii].getDetailTuple()))
@@ -125,6 +147,7 @@ class GameServer():
                 else:
                     if port:
                         command.location = self.person[command.id].location
+                        command.details = True
                         self.SDF.send(port, command)
                     else:
                         self.person[command.id].ai.remove("RUN")
@@ -141,7 +164,8 @@ class GameServer():
 
                 #Notify clients in the affected pane
                 for p, i in self.player.iteritems():
-                    if self.person[i].location.pane == self.person[command.id].location.pane:
+                    if self.person[i].location.pane == self.person[command.id].location.pane and \
+                            i not in self.combat:
                         self.SDF.send(p, command)
                 del self.person[command.id]
                 self.unload_panes()
@@ -196,7 +220,7 @@ class GameServer():
                 print("Unloading pane " + str(pane))
 
                 # Stop all AI behaviors
-                for p in self.pane[pane].person:
-                    self.person[p].ai.shutdown()
+                for i in self.pane[pane].person:
+                    self.person[i].ai.shutdown()
 
                 del self.pane[pane]

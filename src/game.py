@@ -97,8 +97,14 @@ class Game(object):
                 
             ###### MovePerson ######
             if isinstance(command, Person) and command.action == PersonActions.MOVE:
-                self.animate(command.id, self.pane.person[command.id].location, command.location, \
-                        1.0 / self.pane.person[command.id].movementSpeed)
+                if command.details:
+                    if self.pane.person[command.id].anim:
+                        self.pane.person[command.id].anim.stop()
+                        self.pane.person[command.id].anim = None
+                    self.screen.update_person(command.id, {'location': command.location})
+                else:
+                    self.animate(command.id, self.pane.person[command.id].location, command.location, \
+                            1.0 / self.pane.person[command.id].movementSpeed)
                 self.pane.person[command.id].location = command.location
 
             ###### RemovePerson ######

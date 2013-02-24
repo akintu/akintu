@@ -13,6 +13,7 @@ import Queue
 import cPickle
 import sys
 from command import *
+from const import *
 
 class ServerData(LineReceiver):
     '''

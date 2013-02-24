@@ -3,15 +3,13 @@ Constants for use in Akintu
 '''
 
 from pygame.locals import *
-
-SHOW_FPS = True
-
-CAPTION = "Akintu r01"
-
 import os
 
 def enum(**enums):
     return type('Enum', (), enums)
+
+CAPTION = "Akintu r01"
+SHOW_FPS = True
 
 TILE_SIZE = 32
 PANE_X = 32
