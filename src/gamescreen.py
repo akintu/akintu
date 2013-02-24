@@ -140,6 +140,7 @@ class GameScreen(object):
             - 'totalAP'
             - 'restrictedAP'
             - 'team'
+            - 'level'
 
         To be supported in the future:
             - 'statusList'
@@ -196,7 +197,7 @@ class GameScreen(object):
 
         for key in statsdict:
             if key in ['name', 'HP', 'MP', 'AP', 'buffedHP', 'totalHP',
-                       'totalMP', 'totalAP', 'restrictedAP']:
+                       'totalMP', 'totalAP', 'restrictedAP', 'level']:
                 if statsdict['team'] == "Players":
                     self.playerframes[personid] = \
                             _generateplayerframe(personid)
@@ -330,6 +331,10 @@ class GameScreen(object):
             restrictedAP = statsdict['restrictedAP']
             reducedAP = totalAP
             totalAP = restrictedAP + totalAP
+        if 'level' not in statsdict:
+            level = '0'
+        else:
+            level = str(statsdict['level'])
 
         hstring = str(HP) + ' / ' + (str(totalHP) if totalHP else '0')
         mstring = str(MP) + ' / ' + (str(totalMP) if totalMP else '0')
@@ -388,6 +393,11 @@ class GameScreen(object):
         namefont = font.render(name, True, Color('black'))
         frame.blit(namefont, (barx, 2))
 
+        font = pygame.font.SysFont("Arial", 16, bold=True)
+        levelfont = font.render(level, True, Color('black'))
+        left = 4 + 16 - (levelfont.get_rect().width // 2)
+        frame.blit(levelfont, (left, 40))
+
         return frame
 
     def _generatemonsterframe(self, personid):
@@ -425,6 +435,10 @@ class GameScreen(object):
             MP = 0
         else:
             MP = statsdict['MP']
+        if 'level' not in statsdict:
+            level = 'L0'
+        else:
+            level = 'L' + str(statsdict['level'])
 
         hstring = str(HP) + ' / ' + (str(totalHP) if totalHP else '0')
 
@@ -460,6 +474,10 @@ class GameScreen(object):
         font = pygame.font.SysFont("Arial", 12, bold=True)
         namefont = font.render(name, True, Color('black'))
         frame.blit(namefont, (barlabelx, 2))
+
+        font = pygame.font.SysFont("Arial", 9, bold=True)
+        levelfont = font.render(level, True, Color('black'))
+        frame.blit(levelfont, (barlabelx, hbary + 12))
 
         return frame
 
