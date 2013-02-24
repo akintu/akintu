@@ -2150,7 +2150,7 @@ class Person(en.Entity):
     
     @property
     def totalAP(self):
-        return self._baseAP + max(5, self._equipmentAP)
+        return self._baseAP + min(5, self._equipmentAP) - self.restrictionAP
         
     @property
     def equipmentAP(self):
@@ -2158,7 +2158,8 @@ class Person(en.Entity):
         
     @equipmentAP.setter
     def equipmentAP(self, value):
-        ''' Value should not exceed +5 per item. '''
+        ''' Value should not exceed +5 per item
+        but it doesn't really matter if it does.'''
         self._equipmentAP += value
     
     @property
@@ -2175,6 +2176,12 @@ class Person(en.Entity):
         if value < 0: 
             value = 0
         self._baseAP = value       
+    
+    @property
+    def restrictionAP(self):
+        '''The amount of AP lost due to armor beyond maximum.
+        Always 0 for monsters.'''
+        return 0
     
     @property
     def HP(self):
