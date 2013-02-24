@@ -61,6 +61,9 @@ class GameScreen(object):
         self.pane = pane
         self.draw_world()
 
+        # Clear the text box in sidebar
+        self.show_text('')
+
     def draw_world(self):
         '''
         Draw the world (represented by a Pane)
@@ -262,7 +265,7 @@ class GameScreen(object):
         # Draw a 2 px border 1 px outside of text rect
         borderouter = (PANE_X * TILE_SIZE + 2, 297, 252, 106)
         borderinner = (PANE_X * TILE_SIZE + 4, 299, 248, 102)
-        self.screen.fill(Color('white'), borderouter)
+        self.screen.fill(Color('gray'), borderouter)
         self.screen.fill(Color('black'), borderinner)
 
         top = 300
