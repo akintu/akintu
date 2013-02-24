@@ -175,8 +175,10 @@ class GameScreen(object):
         self.persons.pop(personid)
         if personid in self.playerframes:
             self.playerframes.pop(personid)
+            self._drawplayerframes()
         elif personid in self.monsterframes:
             self.monsterframes.pop(personid)
+            self._drawmonsterframes()
 
     def update_person(self, personid, statsdict):
         '''
