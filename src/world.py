@@ -86,7 +86,7 @@ class Pane(object):
             self.load_monsters()
     
     def load_monsters(self):
-        for i in range(1):
+        for i in range(3):
                 person = TheoryCraft.getMonster()
                 person.location = Location(self.location, (random.randrange(PANE_X), random.randrange(PANE_Y)))
                 r = Region()
