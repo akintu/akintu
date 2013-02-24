@@ -161,9 +161,9 @@ class GameScreen(object):
                 self._generateplayerframe(personid)
             self._drawplayerframes()
         elif statsdict['team'] == "Monsters":
-            #self.monsterframes[personid] = \
-                #self._generatemonsterframe(personid)
-            #self._drawmonsterframes()
+            self.monsterframes[personid] = \
+                self._generatemonsterframe(personid)
+            self._drawmonsterframes()
             pass
 
     def remove_person(self, personid):
