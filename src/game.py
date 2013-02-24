@@ -79,7 +79,7 @@ class Game(object):
             if isinstance(command, Person) and command.action == PersonActions.CREATE:
                 if self.id == -1:  # Need to setup the pane
                     self.id = command.id
-                    self.switch_panes(command.location)
+                    self.switch_panes(command.location, self.combat)
             
                 self.pane.person[command.id] = TheoryCraft.convertFromDetails(command.details)
                 self.pane.person[command.id].location = command.location
@@ -92,6 +92,9 @@ class Game(object):
                     'level': p.level}
                 self.screen.add_person(command.id, persondict)
 
+            if isinstance(command, Person) and command.id not in self.pane.person:
+                continue
+                
             ###### MovePerson ######
             if isinstance(command, Person) and command.action == PersonActions.MOVE:
                 self.animate(command.id, self.pane.person[command.id].location, command.location, \
@@ -117,7 +120,6 @@ class Game(object):
                     
             ###### Initiate Combat ######
             if isinstance(command, Update) and command.property == UpdateProperties.COMBAT:
-                self.switch_panes(command.location, command.value)
                 self.combat = command.value
                 
     def handle_events(self):

@@ -5,7 +5,6 @@ Class for communicating map sync actions
 from const import enum
 
 PersonActions = enum(CREATE = 1, MOVE = 2, REMOVE = 3, RUN = 4, STOP = 5)
-CreatureTypes = enum(PLAYER = 1, MONSTER = 2)
 InventoryActions = enum(PICKUP = 1, PUTDOWN = 2)
 UpdateProperties = enum(HP = 1, MP = 2, AP = 3, COMBAT = 4)
 

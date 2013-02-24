@@ -113,11 +113,11 @@ class GameServer():
                                     self.combat[i] = {'pane': person.location,
                                                        'loc': self.person[i].location}
 
+                                    self.SDF.send(p, Person(PersonActions.REMOVE, i))
                                     self.SDF.send(p, Update(i, UpdateProperties.COMBAT, \
                                             True, person.location))
                                     self.SDF.send(p, Person(PersonActions.CREATE, i, \
-                                            Location((0, 0), (0, 0)), \
-                                            (1, self.person[i].race, self.person[i].characterClass)))
+                                            Location((0, 0), (0, 0)), self.person[i].getDetailTuple()))
                                     for ii in self.pane[person.location].person:
                                         self.SDF.send(p, Person(PersonActions.CREATE, ii, \
                                                 self.combat[ii]['loc'], self.person[ii].getDetailTuple()))

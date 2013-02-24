@@ -112,7 +112,6 @@ class TheoryCraft(object):
         race = race.lower()
         characterClass = characterClass.lower()
         selection = race + " " + characterClass
-        print selection
         for char in TheoryCraft.classes:
             if char['name'].lower() == race + " " + characterClass:
                 pc = playercharacter.PlayerCharacter(char)
