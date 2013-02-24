@@ -62,11 +62,22 @@ class TheoryCraft(object):
         print "Armor name: '" + name + "' not found in master list."    
         
     @staticmethod
+    def convertFromDetails(tuple):
+        '''Converts a 'detail tuple' representing the intermediate state of 
+        a Person to an actual instance of a Person.'''
+        if tuple[0] == "Monster":
+            return TheoryCraft.getMonster(name=tuple[1], level=tuple[2])
+        elif tuple[1] == "Player":
+            return TheoryCraft.getNewPlayerCharacter(race=tuple[1], characterClass=tuple[2])
+        else:
+            print "Warning: Attempted to convert from invalid tuple: " + str(tuple[0]) + " ."
+        
+    @staticmethod
     def getMonster(index=None, loc=location.Location((0, 0), (PANE_X/2, PANE_Y/2)), level=None, name=None, tolerance=1, ignoreMaxLevel=False):
         ''' Generates a monster for the overworld.
         If name is specified:
             Create the exact monster specified with the exact level specified.
-        If name is snot specified and level is specified:
+        If name is not specified and level is specified:
             Default behavior, generate a random monster of the given level + or - the tolerance (default=1)
         If neither name nor level are specified:
             Testing mode; generate a random monster within levels 1-4.'''
