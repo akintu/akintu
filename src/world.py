@@ -215,7 +215,7 @@ class CombatPane(Pane):
         for x in range(loc_x-5, loc_x+5):
             for y in range(loc_y-5, loc_y+5):
                 if (x,y) in pane.objects:
-                    print "(x, y): (" + str(x) + ", " + str(y) + ") (i, j): (" + str(i) + ", " + str(j) + ")"
+                    #print "(x, y): (" + str(x) + ", " + str(y) + ") (i, j): (" + str(i) + ", " + str(j) + ")"
                     for di in range(0,3):
                         for dj in range(0,3):
                             
