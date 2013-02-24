@@ -8,8 +8,21 @@ import random
 from const import *
 from PIL import Image
 
-# rockimage = os.path.join("res", "images", "rocks1.png")
-# tree_sheet = os.path.join("res", "images", "trees1.png")
+
+#(Path, Name, Tilesize, Cropsize, Size)
+TREE = (OBSTACLES_IMAGES_PATH, "tree_green.png", TILE_SIZE, None, TILE_SIZE)
+ROCKS = (OBSTACLES_IMAGES_PATH, "rocks1.png", TILE_SIZE, None, None)
+
+GRASS1 = (BACKGROUND_IMAGES_PATH, "grass1.jpg", TILE_SIZE, None, None)
+GRASS2 = (BACKGROUND_IMAGES_PATH, "grass2.jpg", TILE_SIZE, None, None)
+GRASS3 = (BACKGROUND_IMAGES_PATH, "grass3.jpg", TILE_SIZE, None, None)
+GRASS4 = (BACKGROUND_IMAGES_PATH, "grass4.jpg", TILE_SIZE, None, None)
+GRAVEL1 = (BACKGROUND_IMAGES_PATH, "gravel1.jpg", TILE_SIZE, None, None)
+
+ENTITY_KEYS = ['tree', 'rocks']
+ENTITIES = {'tree': TREE, 'rocks': ROCKS}
+#BACKGROUNDS = [GRASS1, GRASS2, GRASS3, GRASS4, GRASS5, GRAVEL1]
+BACKGROUNDS = [GRASS1, GRASS2, GRASS3, GRASS4, GRAVEL1]
 
 class Sprites(object):
     
@@ -67,7 +80,7 @@ class Crop(object):
         self.backimage = Image.open(path)
 
         if size:
-            self.backimage.resize(size)
+            self.backimage = self.backimage.resize((size, size))
         self.x = self.backimage.size[0]/cropsize
         self.y = self.backimage.size[1]/cropsize
         currx = 0

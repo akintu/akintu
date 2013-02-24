@@ -38,24 +38,9 @@ RAND_ENTITIES = .06
 #RAND_ROCKS = .1
 
 IMAGES_PATH = os.path.join("res", "images")
+OBSTACLES_IMAGES_PATH = os.path.join(IMAGES_PATH, "obstacles")
 BACKGROUND_IMAGES_PATH = os.path.join(IMAGES_PATH, "background")
 MONSTERS_IMAGES_PATH = os.path.join(IMAGES_PATH, "monsters")
-
-#(Path, Name, Tilesize, Cropsize, Size)
-TREES = (IMAGES_PATH, "trees1.png", TILE_SIZE, None, None)
-ROCKS = (IMAGES_PATH, "rocks1.png", TILE_SIZE, None, None)
-
-GRASS1 = (BACKGROUND_IMAGES_PATH, "grass1.jpg", TILE_SIZE, None, None)
-GRASS2 = (BACKGROUND_IMAGES_PATH, "grass2.jpg", TILE_SIZE, None, None)
-GRASS3 = (BACKGROUND_IMAGES_PATH, "grass3.jpg", TILE_SIZE, None, None)
-GRASS4 = (BACKGROUND_IMAGES_PATH, "grass4.jpg", TILE_SIZE, None, None)
-#GRASS = (BACKGROUND_IMAGES_PATH, "grass.png", TILE_SIZE, None, None)
-GRAVEL1 = (BACKGROUND_IMAGES_PATH, "gravel1.jpg", TILE_SIZE, None, None)
-
-ENTITY_KEYS = ['trees', 'rocks']
-ENTITIES = {'trees': TREES, 'rocks': ROCKS}
-#BACKGROUNDS = [GRASS1, GRASS2, GRASS3, GRASS4, GRASS5, GRAVEL1]
-BACKGROUNDS = [GRASS1, GRASS2, GRASS3, GRASS4, GRAVEL1]
 
 MOVE_KEYS = {K_LEFT: 4, K_KP4: 4, K_h: 4, K_RIGHT: 6, K_KP6: 6, K_l: 6, K_UP: 8, K_KP8: 8, K_k: 8, \
                 K_DOWN: 2, K_KP2: 2, K_j: 2}
