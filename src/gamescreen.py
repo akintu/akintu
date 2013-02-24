@@ -196,7 +196,9 @@ class GameScreen(object):
                             _generateplayerframe(personid)
                     self._drawplayerframes()
                 elif statsdict['team'] == "Monsters":
-                    #TODO
+                    self.monsterframes[personid] = \
+                        self._generatemonsterframe(personid)
+                    self._drawmonsterframes()
                     pass
 
     def update(self):
