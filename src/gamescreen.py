@@ -259,13 +259,19 @@ class GameScreen(object):
             textarea.blit(line, (0, y))
             y += height
 
+        # Draw a 2 px border 1 px outside of text rect
+        borderouter = (PANE_X * TILE_SIZE + 2, 297, 252, 106)
+        borderinner = (PANE_X * TILE_SIZE + 4, 299, 248, 102)
+        self.screen.fill(Color('white'), borderouter)
+        self.screen.fill(Color('black'), borderinner)
+
         top = 300
         left = PANE_X * TILE_SIZE + 5
         rect = (left, top, 246, 100)
         self.screen.fill(Color('black'), rect)
         self.screen.blit(textarea, (left, top))
 
-        pygame.display.update([rect])
+        pygame.display.update([borderouter])
 
     def _generateplayerframe(self, personid):
         '''
