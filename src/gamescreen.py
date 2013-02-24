@@ -403,7 +403,7 @@ class GameScreen(object):
 
         font = pygame.font.SysFont("Arial", 12, bold=True)
         namefont = font.render(name, True, Color('black'))
-        frame.blit(namefont, (barx, 2))
+        frame.blit(namefont, (barlabelx, 2))
 
         return frame
 
