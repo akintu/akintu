@@ -268,10 +268,6 @@ class GameScreen(object):
             reducedAP = totalAP
             totalAP = restrictedAP + totalAP
 
-        totalAP=20
-        reducedAP=16
-        AP=8
-
         hstring = str(HP) + ' / ' + (str(totalHP) if totalHP else '0')
         mstring = str(MP) + ' / ' + (str(totalMP) if totalMP else '0')
         astring = str(AP) + ' / ' + (str(reducedAP) if totalAP else '0')
