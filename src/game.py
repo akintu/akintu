@@ -7,6 +7,7 @@ from pygame.locals import *
 
 import os
 import sys
+import time
 
 from command import *
 from location import *
@@ -16,6 +17,7 @@ from const import *
 from gamescreen import GameScreen
 from theorycraft import TheoryCraft
 from world import *
+
 
 clock = pygame.time.Clock()
 
@@ -58,7 +60,7 @@ class Game(object):
             (CreatureTypes.PLAYER, "Human", "Assassin")))
 
         self.setup.stop()
-        LoopingCall(self.game_loop).start(1.0 / DESIRED_FPS)
+        LoopingCall(self.game_loop).start(0)
 
     def game_loop(self):
         clock.tick()
@@ -86,12 +88,19 @@ class Game(object):
                 self.pane.person[command.id].location = command.location
                     
                 imagepath = os.path.join('res', 'images', 'sprites', self.pane.person[command.id].image)
-                persondict = {'location': command.location, 'image': imagepath, 'team': self.pane.person[command.id].team}
+                persondict = {'location': command.location, 'image': imagepath, \
+                    'team': self.pane.person[command.id].team, \
+                    'HP': self.pane.person[command.id].HP, 'totalHP': self.pane.person[command.id].totalHP, \
+                    'MP': self.pane.person[command.id].MP, 'totalMP': self.pane.person[command.id].totalMP, \
+                    'AP': self.pane.person[command.id].AP, 'totalAP': self.pane.person[command.id].totalAP}
+                print persondict
                 self.screen.add_person(command.id, persondict)
 
             ###### MovePerson ######
             if isinstance(command, Person) and command.action == PersonActions.MOVE:
-                #self.screen.update_person(command.id, {'location': command.location})
+                if self.pane.person[command.id].anim:
+                    self.pane.person[command.id].anim.stop()
+                    
                 self.animate(command.id, self.pane.person[command.id].location, command.location, \
                         1.0 / self.pane.person[command.id].movementSpeed)
                 self.pane.person[command.id].location = command.location
@@ -152,22 +161,24 @@ class Game(object):
                         1.0 / self.pane.person[self.id].movementSpeed)
                     self.pane.person[self.id].location = newloc
 
-    def animate(self, id, source, dest, time):
+    def animate(self, id, source, dest, length):
         xdist = (dest.tile[0] - source.tile[0]) * TILE_SIZE
         ydist = (dest.tile[1] - source.tile[1]) * TILE_SIZE
         steps = max(abs(xdist), abs(ydist))
         source.direction = dest.direction
-        self.pane.person[id].anim = LoopingCall(self.do_animation, id, source, dest, xdist, ydist, steps)
-        self.pane.person[id].anim.start(float(time) / steps)
         
-    def do_animation(self, id, source, dest, xdist, ydist, steps):
-        self.pane.person[id].anim_iter += 1
+        self.pane.person[id].anim_start = time.time()
+        self.pane.person[id].anim = LoopingCall(self.do_animation, id, source, dest, xdist, ydist, length)
+        self.pane.person[id].anim.start(float(length) / steps)
+        
+    def do_animation(self, id, source, dest, xdist, ydist, length):
+        completion = min((time.time() - self.pane.person[id].anim_start) / float(length), 1)
         statsdict = {}
-        if self.pane.person[id].anim_iter < steps:
+        if completion < 1:
             statsdict['location'] = source
-            statsdict['xoffset'] = int(float(self.pane.person[id].anim_iter) / steps * xdist)
-            statsdict['yoffset'] = int(float(self.pane.person[id].anim_iter) / steps * ydist)
-            statsdict['foot'] = 0 if self.pane.person[id].anim_iter % TILE_SIZE < TILE_SIZE / 2 else 1
+            statsdict['xoffset'] = int(completion * xdist)
+            statsdict['yoffset'] = int(completion * ydist)
+            statsdict['foot'] = 0 if completion < 0.5 else 1
         else:
             statsdict['location'] = dest
             statsdict['xoffset'] = 0
@@ -176,7 +187,7 @@ class Game(object):
             if self.pane.person[id].anim:
                 self.pane.person[id].anim.stop()
             self.pane.person[id].anim = None
-            self.pane.person[id].anim_iter = 0
+            self.pane.person[id].anim_start = 0
         self.screen.update_person(id, statsdict)
             
     def switch_panes(self, location, combat=False):

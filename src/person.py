@@ -34,7 +34,7 @@ class Person(en.Entity):
         self.id = None
         self.ai = AI()
         self.anim = None
-        self.anim_iter = 0
+        self.anim_start = 0
 
         self._cooldownList = []
         self._statusList = []

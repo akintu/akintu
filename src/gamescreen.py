@@ -161,9 +161,9 @@ class GameScreen(object):
                 self._generateplayerframe(personid)
             self._drawplayerframes()
         elif statsdict['team'] == "Monsters":
-            #self.monsterframes[personid] = \
-                #self._generatemonsterframe(personid)
-            #self._drawmonsterframes()
+            self.monsterframes[personid] = \
+                self._generatemonsterframe(personid)
+            self._drawmonsterframes()
             pass
 
     def remove_person(self, personid):
@@ -172,7 +172,10 @@ class GameScreen(object):
         '''
         self.personsgroup.remove(self.persons[personid])
         self.persons.pop(personid)
-        self.playerframes.pop(personid)
+        if personid in self.playerframes:
+            self.playerframes.pop(personid)
+        elif personid in self.monsterframes:
+            self.monsterframes.pop(personid)
 
     def update_person(self, personid, statsdict):
         '''
@@ -188,9 +191,15 @@ class GameScreen(object):
         for key in statsdict:
             if key in ['name', 'HP', 'MP', 'AP', 'buffedHP', 'totalHP',
                        'totalMP', 'totalAP']:
-                self.playerframes[personid] = \
-                        _generateplayerframe(personid)
-                self._drawplayerframes()
+                if statsdict['team'] == "Players":
+                    self.playerframes[personid] = \
+                            _generateplayerframe(personid)
+                    self._drawplayerframes()
+                elif statsdict['team'] == "Monsters":
+                    self.monsterframes[personid] = \
+                        self._generatemonsterframe(personid)
+                    self._drawmonsterframes()
+                    pass
 
     def update(self):
         '''
@@ -306,15 +315,95 @@ class GameScreen(object):
 
         return frame
 
+    def _generatemonsterframe(self, personid):
+        frame = pygame.Surface((121, 40))
+        frame.fill(Color('gray'))
+        image = self.persons[personid].images[0][2]
+        statsdict = self.persons[personid].statsdict
+
+        if 'name' not in statsdict:
+            name = 'Grue'
+        else:
+            name = statsdict['name']
+
+        # Retrieve stats (error-checking as we go)
+        if 'totalHP' not in statsdict or statsdict['totalHP'] <= 0:
+            totalHP = None
+        else:
+            totalHP = statsdict['totalHP']
+        if 'HP' not in statsdict or not totalHP:
+            HP = 0
+        else:
+            HP = statsdict['HP']
+        if 'totalMP' not in statsdict or statsdict['totalMP'] <= 0:
+            totalMP = None
+        else:
+            totalMP = statsdict['totalMP']
+        if 'MP' not in statsdict or not totalMP:
+            MP = 0
+        else:
+            MP = statsdict['MP']
+
+        hstring = str(HP) + ' / ' + (str(totalHP) if totalHP else '0')
+
+        barx = 32 + 4 + 35
+        barlabelx = 32 + 4 + 4
+        barxsize = 46
+        barysize = 5
+        hbary = 16
+        if totalHP:
+            hbar1 = barxsize
+            hbar2 = int(float(HP) / totalHP * barxsize)
+        else:
+            hbar1 = barxsize
+            hbar2 = 0
+        mbary = hbary + 7
+        if totalMP:
+            mbar1 = barxsize
+            mbar2 = int(float(MP) / totalMP * barxsize)
+        else:
+            mbar1 = barxsize
+            mbar2 = 0
+
+        frame.blit(image, (4, 4))
+        frame.fill(Color('black'), (barx, hbary, hbar1, barysize))
+        frame.fill(Color('red'), (barx, hbary, hbar2, barysize))
+        frame.fill(Color('black'), (barx, mbary, mbar1, barysize))
+        frame.fill(Color('blue'), (barx, mbary, mbar2, barysize))
+
+        font = pygame.font.SysFont("Arial", 9)
+        hfont = font.render(hstring, True, Color('black'))
+        frame.blit(hfont, (barlabelx, hbary))
+
+        font = pygame.font.SysFont("Arial", 12, bold=True)
+        namefont = font.render(name, True, Color('black'))
+        frame.blit(namefont, (barx, 2))
+
+        return frame
+
     def _drawplayerframes(self):
         top = 4
         left = PANE_X * TILE_SIZE + 5
-        rect = (left, top, 245, 296)
+        rect = (left, top, 246, 296)
         self.screen.fill(Color('black'), rect)
 
-        for frame in self.playerframes:
-            self.screen.blit(self.playerframes[frame], (left, top))
+        for personid in self.playerframes:
+            self.screen.blit(self.playerframes[personid], (left, top))
             top += 74
+        pygame.display.update([rect])
+
+    def _drawmonsterframes(self):
+        top = 507
+        left = PANE_X * TILE_SIZE + 5
+        rect = (left, top, 246, 132)
+        self.screen.fill(Color('black'), rect)
+
+        for personid in self.monsterframes:
+            self.screen.blit(self.monsterframes[personid], (left, top))
+            top += 44
+            if (top - 507) / 132 >= 1:
+                top = 507
+                left = left + 121 + 4
         pygame.display.update([rect])
 
 
