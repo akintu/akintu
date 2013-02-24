@@ -236,4 +236,4 @@ if __name__ == "__main__":
     '''
     a = Pane((0,0), "SomeSeed", False)
     #a.get_combat_pane(Location((0,0), (4,10)))
-    
+
