@@ -310,6 +310,72 @@ class GameScreen(object):
 
         return frame
 
+    def _generatemonsterframe(self, personid):
+        frame = pygame.Surface((121, 40))
+        frame.fill(Color('gray'))
+        image = self.persons[personid].images[0][2]
+        statsdict = self.persons[personid].statsdict
+
+        if 'name' not in statsdict:
+            name = 'Grue'
+        else:
+            name = statsdict['name']
+
+        # Retrieve stats (error-checking as we go)
+        if 'totalHP' not in statsdict or statsdict['totalHP'] <= 0:
+            totalHP = None
+        else:
+            totalHP = statsdict['totalHP']
+        if 'HP' not in statsdict or not totalHP:
+            HP = 0
+        else:
+            HP = statsdict['HP']
+        if 'totalMP' not in statsdict or statsdict['totalMP'] <= 0:
+            totalMP = None
+        else:
+            totalMP = statsdict['totalMP']
+        if 'MP' not in statsdict or not totalMP:
+            MP = 0
+        else:
+            MP = statsdict['MP']
+
+        hstring = str(HP) + ' / ' + (str(totalHP) if totalHP else '0')
+
+        barx = 32 + 4 + 35
+        barlabelx = 32 + 4 + 4
+        barxsize = 46
+        barysize = 5
+        hbary = 16
+        if totalHP:
+            hbar1 = barxsize
+            hbar2 = int(float(HP) / totalHP * barxsize)
+        else:
+            hbar1 = barxsize
+            hbar2 = 0
+        mbary = hbary + 7
+        if totalMP:
+            mbar1 = barxsize
+            mbar2 = int(float(MP) / totalMP * barxsize)
+        else:
+            mbar1 = barxsize
+            mbar2 = 0
+
+        frame.blit(image, (4, 4))
+        frame.fill(Color('black'), (barx, hbary, hbar1, barysize))
+        frame.fill(Color('red'), (barx, hbary, hbar2, barysize))
+        frame.fill(Color('black'), (barx, mbary, mbar1, barysize))
+        frame.fill(Color('blue'), (barx, mbary, mbar2, barysize))
+
+        font = pygame.font.SysFont("Arial", 9)
+        hfont = font.render(hstring, True, Color('black'))
+        frame.blit(hfont, (barlabelx, hbary))
+
+        font = pygame.font.SysFont("Arial", 12, bold=True)
+        namefont = font.render(name, True, Color('black'))
+        frame.blit(namefont, (barx, 2))
+
+        return frame
+
     def _drawplayerframes(self):
         top = 4
         left = PANE_X * TILE_SIZE + 5
