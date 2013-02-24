@@ -88,7 +88,12 @@ class Game(object):
                 self.pane.person[command.id].location = command.location
                     
                 imagepath = os.path.join('res', 'images', 'sprites', self.pane.person[command.id].image)
-                persondict = {'location': command.location, 'image': imagepath, 'team': self.pane.person[command.id].team}
+                persondict = {'location': command.location, 'image': imagepath, \
+                    'team': self.pane.person[command.id].team, \
+                    'HP': self.pane.person[command.id].HP, 'totalHP': self.pane.person[command.id].totalHP, \
+                    'MP': self.pane.person[command.id].MP, 'totalMP': self.pane.person[command.id].totalMP, \
+                    'AP': self.pane.person[command.id].AP, 'totalAP': self.pane.person[command.id].totalAP}
+                print persondict
                 self.screen.add_person(command.id, persondict)
 
             ###### MovePerson ######
