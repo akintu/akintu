@@ -67,7 +67,7 @@ class TheoryCraft(object):
         a Person to an actual instance of a Person.'''
         if tuple[0] == "Monster":
             return TheoryCraft.getMonster(name=tuple[1], level=tuple[2])
-        elif tuple[1] == "Player":
+        elif tuple[0] == "Player":
             return TheoryCraft.getNewPlayerCharacter(race=tuple[1], characterClass=tuple[2])
         else:
             print "Warning: Attempted to convert from invalid tuple: " + str(tuple[0]) + " ."

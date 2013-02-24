@@ -27,6 +27,7 @@ class Game(object):
         TheoryCraft.loadAll()   #Static method call, Devin's stuff.
         Sprites.load(seed)
         self.world = World(seed)
+        self.pane = None
         
         # Game state
         self.id = -1
@@ -80,11 +81,7 @@ class Game(object):
                     self.id = command.id
                     self.switch_panes(command.location)
             
-                if command.details[0] == "Player":
-                    self.pane.person[command.id] = \
-                        TheoryCraft.getNewPlayerCharacter(command.details[1], command.details[2])
-                if command.details[0] == "Monster":
-                    self.pane.person[command.id] = TheoryCraft.getMonster(command.details[1], command.details[2])
+                self.pane.person[command.id] = TheoryCraft.convertFromDetails(command.details)
                 self.pane.person[command.id].location = command.location
                     
                 imagepath = os.path.join('res', 'images', 'sprites', self.pane.person[command.id].image)
@@ -105,6 +102,9 @@ class Game(object):
             if isinstance(command, Person) and command.action == PersonActions.REMOVE:
                 if command.id == self.id:
                     self.id = -1
+                    for person in self.pane.person.values():
+                        if person.anim:
+                            person.anim.stop()
                     self.pane.person = {}
                 else:
                     self.screen.remove_person(command.id)

@@ -25,12 +25,7 @@ class GameServer():
             if isinstance(command, Person) and command.action == PersonActions.CREATE:
                 self.load_pane(command.location.pane)
 
-                person = None
-                if port:
-                    person = TheoryCraft.getNewPlayerCharacter(*command.details[1:])
-                else:
-                    person = TheoryCraft.getMonster(*command.details[1:])
-
+                person = TheoryCraft.convertFromDetails(command.details)
                 person.id = id(person)
                 command.id = person.id
                 person.ai.startup(self)
