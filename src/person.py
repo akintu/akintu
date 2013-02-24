@@ -2193,8 +2193,8 @@ class Person(en.Entity):
     
     @HP.setter
     def HP(self, value):
-        if value > self._totalHP:
-            value = self._totalHP
+        if value > self.totalHP:
+            value = self.totalHP
         if value < 0:
             value = 0
         self._HP = value            
@@ -2204,9 +2204,9 @@ class Person(en.Entity):
         """The maximum HP of the player.  Is determined by eqiupment,
         skills, statuses, and base attributes."""
         if self.totalConstitution == 0:
-            return self._baseHP
+            return self.baseHP
         else:
-            return self.baseHP + (self.totalConstitution - 10) * 4 + self._equipmentHP
+            return self.baseHP + (self.totalConstitution - 10) * 4 + self.equipmentHP
     
     @property
     def equipmentHP(self):
@@ -2234,8 +2234,8 @@ class Person(en.Entity):
         """Will not exceed totalMP"""
         if value < 0:
             value = 0
-        if value > totalMP:
-            value = totalMP
+        if value > self.totalMP:
+            value = self.totalMP
         self._MP = value
         
     @property

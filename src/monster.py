@@ -115,7 +115,9 @@ class Monster(person.Person):
         self.attackMaxDamage += self.levelupMaxDamage * diff
         self.baseDR += self.levelupDR * diff
         self.baseHP += self.levelupHP * diff
+        self.HP = self.totalHP
         self.baseMP += self.levelupMP * diff
+        self.MP = self.totalMP
         self._baseArcaneResistance += self.levelupArcaneResistance * diff
         self._baseBludgeoningResistance += self.levelupBludgeoningResistance * diff
         self._baseColdResistance += self.levelupColdResistance * diff
