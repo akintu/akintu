@@ -225,7 +225,7 @@ class GameScreen(object):
         if SHOW_FPS:
             pygame.display.set_caption("%s %d" % (CAPTION, fps))
 
-    def show_text(self, text, color='white', size=12, bold=False, ital=False):
+    def show_text(self, text, color='white', size=13, bold=False, ital=False):
         '''
         Show arbitrary text in the sidebar
         '''
