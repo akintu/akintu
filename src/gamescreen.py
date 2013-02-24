@@ -222,6 +222,50 @@ class GameScreen(object):
         if SHOW_FPS:
             pygame.display.set_caption("%s %d" % (CAPTION, fps))
 
+    def show_text(self, text, color='white', size=12, bold=False, ital=False):
+        '''
+        Show arbitrary text in the sidebar
+        '''
+        words = text.split(' ')
+        beg = 0
+        end = 1
+        lines = []
+
+        font = pygame.font.SysFont("Arial", size, bold=bold, italic=ital)
+
+        txt = ' '.join(words[beg:end])
+        prev = font.render(txt, True, Color(color))
+        cur = None
+
+        while beg < len(words) and end <= len(words):
+            txt = ' '.join(words[beg:end])
+            cur = font.render(txt, True, Color(color))
+            rect = cur.get_rect()
+            if rect.width > 246:
+                lines.append(prev)
+                beg = end - 1
+                txt = ' '.join(words[beg:end])
+                prev = font.render(txt, True, Color(color))
+                continue
+            end += 1
+        lines.append(prev)
+
+        height = line[0].get_rect().height
+        textarea = pygame.Surface((246, 100))
+        y = 0
+
+        for line in lines:
+            textarea.blit(line, (0, y))
+            y += height
+
+        top = 300
+        left = PANE_X * TILE_SIZE + 5
+        rect = (left, top, 246, 100)
+        self.screen.fill(Color('black'), rect)
+        self.screen.blit(textarea, (left, top))
+
+        pygame.display.update([rect])
+
     def _generateplayerframe(self, personid):
         '''
         Generate unit frame for a given player personid
