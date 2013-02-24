@@ -63,10 +63,17 @@ class TheoryCraft(object):
         
     @staticmethod
     def getMonster(index=None, loc=location.Location((0, 0), (PANE_X/2, PANE_Y/2)), level=None, name=None, tolerance=1, ignoreMaxLevel=False):
+        ''' Generates a monster for the overworld.
+        If name is specified:
+            Create the exact monster specified with the exact level specified.
+        If name is snot specified and level is specified:
+            Default behavior, generate a random monster of the given level + or - the tolerance (default=1)
+        If neither name nor level are specified:
+            Testing mode; generate a random monster within levels 1-4.'''
         if not level:
             level = Dice.roll(1,3)
         theMonster = None
-        levelChoice = Dice.roll(max(1, level - tolerance), min(20, level + tolerance))
+        levelChoice = level
         if name:
             for mon in TheoryCraft.monsters:
                 if mon['name'] == name:
@@ -74,6 +81,7 @@ class TheoryCraft(object):
                     break
         else:
             inLevelList = None
+            levelChoice = Dice.roll(max(1, level - tolerance), min(20, level + tolerance))
             if ignoreMaxLevel: 
                 inLevelList = [x for x in TheoryCraft.monsters if x['minLevel'] <= levelChoice]
             else:

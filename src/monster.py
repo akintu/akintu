@@ -144,6 +144,11 @@ class Monster(person.Person):
         elif numberOfPlayers == 4:
             self.baseHP = round(self.baseHP * 2.5)
         
-        
+    def getDetailTuple(self):
+        '''Should be overriden by PlayerCharacters and other
+        children.  Returns a tuple of information needed to reconstitute
+        this Person object.
+        First argument should represent which type of object this is.'''
+        return ("Monster", self.name, self.level)
         
         
