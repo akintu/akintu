@@ -2149,6 +2149,12 @@ class Person(en.Entity):
         self._AP = value
     
     @property
+    def restrictionAP(self):
+        '''The amount of AP lost due to armor beyond maximum.
+        Always 0 for monsters.'''
+        return 0
+    
+    @property
     def totalAP(self):
         return self._baseAP + min(5, self._equipmentAP) - self.restrictionAP
         
@@ -2177,11 +2183,7 @@ class Person(en.Entity):
             value = 0
         self._baseAP = value       
     
-    @property
-    def restrictionAP(self):
-        '''The amount of AP lost due to armor beyond maximum.
-        Always 0 for monsters.'''
-        return 0
+    
     
     @property
     def HP(self):

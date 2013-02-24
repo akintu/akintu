@@ -813,7 +813,7 @@ class PlayerCharacter(p.Person):
         return False
     
     @p.Person.restrictionAP.getter
-    def restrictionAP(self, value):
+    def restrictionAP(self):
         toleranceGrade = 0
         if self.armorTolerance == "Light":
             toleranceGrade = 8
@@ -822,7 +822,8 @@ class PlayerCharacter(p.Person):
         elif self.armorTolerance == "Heavy":
             toleranceGrade = 30
         aGrade = self.equippedItems.totalArmorGrade
-        self._restrictionAP = max(0, round(aGrade / 2.0) - toleranceGrade)
+        return max(0, round(aGrade / 2.0) - toleranceGrade)
+        
     
     @p.Person.movementSpeed.getter
     def movementSpeed(self):
