@@ -221,6 +221,13 @@ class GameScreen(object):
             pygame.display.set_caption("%s %d" % (CAPTION, fps))
 
     def _generateplayerframe(self, personid):
+        '''
+        Generate unit frame for a given player personid
+
+        Grabs the relevant data out of the PersonSprite object for that
+        personID, and returns the surface for the unit frame, which can be
+        blitted onto any other surface.
+        '''
         frame = pygame.Surface((246, 70))
         frame.fill(Color('gray'))
         image = self.persons[personid].images[0][2]
@@ -328,6 +335,13 @@ class GameScreen(object):
         return frame
 
     def _generatemonsterframe(self, personid):
+        '''
+        Generate unit frame for a given monster personid
+
+        Grabs the relevant data out of the PersonSprite object for that
+        personID, and returns the surface for the unit frame, which can be
+        blitted onto any other surface.
+        '''
         frame = pygame.Surface((121, 40))
         frame.fill(Color('gray'))
         image = self.persons[personid].images[0][2]
@@ -394,6 +408,9 @@ class GameScreen(object):
         return frame
 
     def _drawplayerframes(self):
+        '''
+        Draw the unitframes inside of self.playerframes
+        '''
         top = 4
         left = PANE_X * TILE_SIZE + 5
         rect = (left, top, 246, 296)
@@ -405,6 +422,9 @@ class GameScreen(object):
         pygame.display.update([rect])
 
     def _drawmonsterframes(self):
+        '''
+        Draw the unitframes inside of self.monsterframes
+        '''
         top = 507
         left = PANE_X * TILE_SIZE + 5
         rect = (left, top, 246, 132)
