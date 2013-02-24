@@ -207,8 +207,8 @@ class CombatPane(Pane):
         
         self.focus_location = Location((0,0), (loc_x, loc_y))
         
-        print "ORIGINAL PANE" + str(pane.location)
-        print pane
+        # print "ORIGINAL PANE" + str(pane.location)
+        # print pane
         
         #todo, update this to put focus_location as the center
         i = j = 1
@@ -218,15 +218,14 @@ class CombatPane(Pane):
                     #print "(x, y): (" + str(x) + ", " + str(y) + ") (i, j): (" + str(i) + ", " + str(j) + ")"
                     for di in range(0,3):
                         for dj in range(0,3):
-                            
                             super(CombatPane, self).add_obstacle((i+di, j+dj), 1, pane.objects[(x,y)])
                 j+=3
             j = 1
             i+=3
-        print "COMBAT PANE" + str((loc_x, loc_y))
         
         super(CombatPane, self).load_images()
-        print self
+        # print "COMBAT PANE" + str((loc_x, loc_y))
+        # print self
         
 class Tile(object):
     def __init__(self, image = os.path.join("res", "images", "background", "grass.png"), passable = True):
