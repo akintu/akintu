@@ -1340,6 +1340,13 @@
     [MAGNITUDE: 8]
   [CATEGORY: Debuff]
 	
+[NAME: Slightly Smugger]
+  [TYPE: Display]
+  [ELEMENT: Arcane]
+  [INTERNAL: Spellpower_bonus]
+    [MAGNITUDE: 3]
+  [CATEGORY: Buff]
+	
 # Display Effects -- Sorcerer Skills
 	
 [NAME: Bolster Guardian]

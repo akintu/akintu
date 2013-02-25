@@ -370,6 +370,12 @@ class PassiveAbility(object):
                 source.statusMeleeAccuracy -= 4
                 source.statusCriticalChance -= 5
             
+    def applySlightlySmugger(self, target, reverse=False):
+        source = self.owner
+        duration = 2
+        magnitude = 3
+        Combat.addStatus(source, "Slightly Smugger", duration, magnitude)
+            
     # Monsters
 
     def applyDeflectMissiles(self, target, reverse=False, hero=None):
@@ -855,6 +861,15 @@ class PassiveAbility(object):
         'action' : applyRiskyFighting,
         'onStringList' : ['Outgoing Melee Attack'],
         'offStringList' : ['Outgoing Melee Attack Complete']
+        },
+        'Slightly Smugger':
+        {
+        'class' : 'Trickster',
+        'level' : 4,
+        'type' : 'dynamic',
+        'action' : applySlightlySmugger,
+        'onStringList' : ['Attack Dodged'],
+        'offStringList' : [] # Removed on status removal
         },
         
         # Monsters

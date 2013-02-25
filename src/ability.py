@@ -749,6 +749,16 @@ class Ability(object):
             return (True, "")
         return (False, "Must be using a crossbow to perform " + self.name)
     
+    def _curiousDrain(self, target):
+        source = self.owner
+        hit = Combat.calcHit(source, target, "Physical")
+        Combat.basicAttack(source, target, hit, modifier=-4)
+        if hit != "Miss":
+            duration = 4
+            Combat.addStatus(source, "Curious Drain", duration)
+            Combat.addStatus(target, "Curiously Sluggish", duration)
+        
+    
     # Monsters
     
     def _draconicGuard(self, target):
@@ -1648,6 +1658,19 @@ class Ability(object):
         'action' : _wearyBolt,
         'cooldown' : None,
         'checkFunction' : _wearyBoltCheck,
+        'breakStealth' : 100
+        },
+        'Curious Drain':
+        {
+        'level' : 4,
+        'class' : 'Trickster',
+        'HPCost' : 0,
+        'APCost' : 6,
+        'range' : -1,
+        'target' : 'hostile',
+        'action' : _curiousDrain,
+        'cooldown' : 1,
+        'checkFunction' : _curiousDrain,
         'breakStealth' : 100
         },
         
