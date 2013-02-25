@@ -359,6 +359,17 @@ class PassiveAbility(object):
         magnitude = min(15, 5 * source.getStatusStackCount("Double Dodge"))
         source.statusDodge += magnitude
             
+    def applyRiskyFighting(self, target, reverse=False, other=None):
+        source = self.owner
+        if not reverse:
+            if source.usingWeaponStyle("Dual"):
+                source.statusMeleeAccuracy += 4
+                source.statusCriticalChance += 5
+        else:
+            if source.usingWeaponStyle("Dual"):
+                source.statusMeleeAccuracy -= 4
+                source.statusCriticalChance -= 5
+            
     # Monsters
 
     def applyDeflectMissiles(self, target, reverse=False, hero=None):
@@ -835,6 +846,15 @@ class PassiveAbility(object):
         'action' : applyDoubleDodge,
         'onStringList' : ['Attack Dodged'],
         'offStringList' : [] # Removed on status removal.
+        },
+        'Risky Fighting':
+        {
+        'class' : 'Trickster',
+        'level' : 3,
+        'type' : 'dynamic',
+        'action' : applyRiskyFighting,
+        'onStringList' : ['Outgoing Melee Attack'],
+        'offStringList' : ['Outgoing Melee Attack Complete']
         },
         
         # Monsters

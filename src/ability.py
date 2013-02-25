@@ -732,6 +732,23 @@ class Ability(object):
         source = self.owner
         Combat.addStatus(source, "Risky Focus", duration=1)
     
+    def _wearyBolt(self, target):
+        source = self.owner
+        hit = Combat.calcHit(source, target, "Physical")
+        Combat.basicAttack(source, target, hit)
+        if hit != "Miss":
+            count = target.getStatusStackCount("Weary Bolt") + 1
+            duration = 3
+            magnitude = min(20, count * 5)
+            Combat.addStatus(target, "Weary Bolt", duration, magnitude, overwrite=False)
+            Combat.setStatusDuration(target, "Weary Bolt", duration)
+            
+    def _wearyBoltCheck(self, target):
+        source = self.owner
+        if source.usingWeapon("Crossbow"):
+            return (True, "")
+        return (False, "Must be using a crossbow to perform " + self.name)
+    
     # Monsters
     
     def _draconicGuard(self, target):
@@ -1619,6 +1636,19 @@ class Ability(object):
         'cooldown' : 1,
         'checkFunction' : None,
         'breakStealth' : 0
+        },
+        'Weary Bolt':
+        {
+        'level' : 3,
+        'class' : 'Trickster',
+        'HPCost' : 0,
+        'APCost' : 5,
+        'range' : -1,
+        'target' : 'hostile',
+        'action' : _wearyBolt,
+        'cooldown' : None,
+        'checkFunction' : _wearyBoltCheck,
+        'breakStealth' : 100
         },
         
         # Monsters

@@ -1323,7 +1323,7 @@
   [TYPE: Display]
   [ELEMENT: None]
   [INTERNAL: Attack_power_penalty]
-    [MAGNITUDE: 5]
+    [MAGNITUDE: 0]
   [CATEGORY: Debuff]
 	
 [NAME: Curious Drain]

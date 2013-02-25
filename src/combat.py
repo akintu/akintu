@@ -322,6 +322,26 @@ class Combat(object):
             target.statusList.remove(matchingStatus)
             
     @staticmethod
+    def setStatusDuration(target, statusName, newDuration):
+        """Applies a new duration to an existing status.
+        Will do nothing if the status is not found.
+        Inputs:
+          target -- Person
+          statusName -- the name of a status effect to change
+            the duration of
+          newDuration -- int > 0, the new number of turns
+            for this status
+        Outputs:
+          None"""
+        statusName = statusName.capitalize().strip()
+        matchingStatus = None
+        for stat in target.statusList:
+            if stat.displayName == statusName:
+                matchingStatus = target.statusList
+                matchingStatus.turnsLeft = newDuration
+                break
+            
+    @staticmethod
     def removeStealth(target):
         """Removes any form of stealth (other than invisibility) from
         the given Person.
