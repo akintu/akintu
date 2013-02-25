@@ -76,6 +76,8 @@ class Pane(object):
         self.tiles = dict()
         self.objects = dict()
         self.person = {}
+        self.background_key = Sprites.get_background(self.seed + str(self.location))
+
         for i in range(PANE_X):
             for j in range(PANE_Y):
                 self.tiles[(i, j)] = Tile(None, True)
@@ -111,7 +113,7 @@ class Pane(object):
         
         for i in range(PANE_X):
             for j in range(PANE_Y):
-                self.tiles[(i, j)].set_image(Sprites.get_background(self.seed + str(self.location), (i, j)))
+                self.tiles[(i, j)].set_image(Sprites.get_background_tile(self.background_key, (i, j)))
 
         for tile, entity_key in self.objects.iteritems():
             obstacle = Sprites.get_object(entity_key, self.seed, self.location, tile)
@@ -205,27 +207,50 @@ class CombatPane(Pane):
         loc_x -= dx_max #(5,3) yields (5,3), (31,19) yields (26,14)
         loc_y -= dx_max 
         
-        self.focus_location = Location((0,0), (loc_x, loc_y))
+        self.focus_location = Location(pane.location, (loc_x, loc_y))
         
         # print "ORIGINAL PANE" + str(pane.location)
         # print pane
         
         #todo, update this to put focus_location as the center
-        i = j = 1
+        i = 1
         for x in range(loc_x-5, loc_x+5):
+            j = 1
             for y in range(loc_y-5, loc_y+5):
                 if (x,y) in pane.objects:
                     #print "(x, y): (" + str(x) + ", " + str(y) + ") (i, j): (" + str(i) + ", " + str(j) + ")"
-                    for di in range(0,3):
-                        for dj in range(0,3):
-                            super(CombatPane, self).add_obstacle((i+di, j+dj), 1, pane.objects[(x,y)])
+                    # for di in range(0,3):
+                        # for dj in range(0,3):
+                    # print str((x, y))
+                    self.add_zoomed_obstacle((i, j), pane.objects[(x,y)])
                 j+=3
-            j = 1
             i+=3
         
-        super(CombatPane, self).load_images()
-        # print "COMBAT PANE" + str((loc_x, loc_y))
-        # print self
+        self.load_background_images()
+
+        
+    def add_zoomed_obstacle(self, tile_center, entity_key):
+        '''
+        Adds a given entity_key to the given location (tile) and it's 
+        surrounding 8 tiles.
+        '''
+
+        for di in range(0,3):
+            for dj in range(0,3):
+                tile = (tile_center[0]+(di-1), tile_center[1]+(dj-1))
+                print "di: " + str(di) + " dj: " + str(dj) + " TILE: " + str(tile)
+                if not tile in self.tiles:
+                    self.tiles[tile] = Tile(None, True)
+                self.objects[tile] = entity_key
+                self.tiles[tile].passable = False
+                obstacle = Sprites.get_zoomed_image(entity_key, (di,dj))
+                self.tiles[tile].entities.append(Entity(tile, image=obstacle))
+            
+    def load_background_images(self):
+        self.images = Sprites.get_images_dict()
+        for i in range(PANE_X):
+            for j in range(PANE_Y):
+                self.tiles[(i, j)].set_image(Sprites.get_background_tile(self.background_key, (i, j)))
         
 class Tile(object):
     def __init__(self, image = os.path.join("res", "images", "background", "grass.png"), passable = True):
