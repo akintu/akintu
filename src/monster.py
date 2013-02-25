@@ -25,10 +25,8 @@ class Monster(person.Person):
     def __init__(self, argDict):
         person.Person.__init__(self, argDict)
         self.attackPower = 100
-        # TODO: Make sure internalstatuses are hooked into attackPower
         self.team = "Monsters"
         # TODO: Find a way to distinguish between summons and monsters for the 'team'.
-        
         self.level = Monster.setFrom(argDict, 'minLevel')
         self.minLevel = self.level
         self.maxLevel = Monster.setFrom(argDict, 'maxLevel')
@@ -36,6 +34,8 @@ class Monster(person.Person):
         self.experienceGiven = Monster.setFrom(argDict, 'experience')
         self.GP = Monster.setFrom(argDict, 'GP')
 
+        self.type = Monster.setFrom(argDict, 'type')
+        
         self.abilityList = []
         self.spellList = []
         self.passiveAbility = None
