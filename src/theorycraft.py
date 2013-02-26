@@ -153,7 +153,8 @@ class TheoryCraft(object):
             if m['GP'] < minGP:
                 minGP = m['GP']
         currentGP = initialMonster.GP
-        while(minGP <= TheoryCraft.GROUP_GP - currentGP):
+        numMonsters = 0
+        while(minGP <= TheoryCraft.GROUP_GP - currentGP and numMonsters < 6):
             selection = Dice.roll(0, len(subList) - 1)
             if subList[selection]['GP'] <= TheoryCraft.GROUP_GP - currentGP:
                 addingMonster = monster.Monster(subList[selection])
@@ -161,6 +162,7 @@ class TheoryCraft(object):
                     addingMonster.setLevel(initialMonster.level)
                 listOfMonsters.append(monster.Monster(subList[selection]))
                 currentGP += subList[selection]['GP']
+                numMonsters += 1
                 
         for mon in listOfMonsters:
             mon.adjustMaxHP(numberOfPlayers)
