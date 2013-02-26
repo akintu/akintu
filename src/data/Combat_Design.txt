@@ -1,0 +1,45 @@
+Combat logic design document: Combat_design.txt
+
+----- Player Turn Start -----
+* Turn Start Broadcast
+* Fill AP
+* Set/Reset Timer
+* Allow players to move --> Player Turn
+
+----- Player Turn -----
+while( AP > minCost, player didn't select "end turn", or timeLeft >0 )
+    ~ Player takes an action ::
+	    * Player actions blocked until action resolved (including animation)
+		* Other player actions queued(blocked?) until action resolved (including animation)
+		* If monster or player HP < 0, death only occurs after action is completely resolved.
+		* If a queued action references a dead monster, remove it from the queue.
+		* If all monsters are dead, cancel all queued actions from other players. --> Victory
+        * If this action killed this player, cancel queued actions targeting this player --> Player death (this player only)	
+        * If all players are dead --> Reset Overworld Monster		
+* continue --> Monster Turn Start
+		
+----- Monster Turn Start -----
+* Monsters take actions (one at a time) according to AI and AP values/cooldowns
+* If a player dies as a result of an action --> Player death (target only)
+* Monsters run out of sufficient AP to use any available abilities --> Upkeep Phase
+
+----- Upkeep Phase -----
+* Perform Recurring status effects (such as Bleeding)
+* Status effect durations decrement
+* continue --> Player Turn Start
+
+----- Victory -----
+* Broadcast a victory message to all players still alive.
+* Display EXP earned
+* Remove all statuses with a duration > -1
+* Restore HP, MP, AP to maximum
+* Replace the Monster in the overworld with a treasure chest and remove the combat "state"
+* Apply EXP, if exp is enough to levelup, display levelup icon/prompt.
+
+----- Player Death -----
+* Remove from combat
+* If permadeath, display a message, and prompt to create a new character.
+* If not permadeath, display a message indicating gold lost and prompt to respawn in town pane.
+
+----- Reset Overworld Monster -----
+* Remove the combat "state" from the overworld and return AI to default behavior; restore monster HP.
