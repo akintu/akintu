@@ -95,7 +95,7 @@ class Pane(object):
                     s += "X"
                 else:
                     s += " "
-            s += "\n"
+            s += "|\n"
         return s
     
     def load_monsters(self):
@@ -170,14 +170,16 @@ class Pane(object):
                     self.tiles[loc] = Tile(None, True)
                     self.add_obstacle(loc.tile, 1, entity_type)
                     
-    def get_combat_pane(self, focus_tile):
-        combat_pane = CombatPane(self, focus_tile)
+    def get_combat_pane(self, focus_tile, is_server = False, monster = None):
+        combat_pane = CombatPane(self, focus_tile, monster)
+        if not is_server:
+            combat_pane.person = {}
         return combat_pane
 
 
 class CombatPane(Pane):
     
-    def __init__(self, pane, focus_location):
+    def __init__(self, pane, focus_location, monster):
         '''
         A subpane of the current pane.  It will contain 10x6 of the original
         tiles which turn into 3x3 grids on the CombatPane.
@@ -190,45 +192,64 @@ class CombatPane(Pane):
                             leave the bounds of the parent pane.
                             
         '''
-        super(CombatPane, self).__init__(pane.seed, focus_location.tile, False)
+        super(CombatPane, self).__init__(pane.seed, pane.location, False)
         
         loc_x = focus_location.tile[0]
         loc_y = focus_location.tile[1]
         
-        dx_min = min(loc_x - 5, 0)     #yields 0 if far enough away from edge
-        dy_min = min(loc_y - 3, 0)     #Negative if too close
-        
-        dx_max = max(loc_x - 26, 0)    #yields 0 if far enough away from edge
+        dx_min = min(loc_x - 5, 0)     #yields 0 if far enough away from edge,
+        dy_min = min(loc_y - 3, 0)     #and negative if too close
+        # print "dx_min, dy_min: " + str(dx_min) + ", " + str(dy_min)
+        dx_max = max(loc_x - 26, 0)    #yields 0 if far enough away from edge,
         dy_max = max(loc_y - 14, 0)    #Positive if too close
+        # print "dx_max, dy_max: " + str(dx_max) + ", " + str(dy_max)
+        dx = dx_min + dx_max
+        dy = dy_min + dy_max
+        loc_x -= dx
+        loc_y -= dy
         
-        loc_x -= dx_min #(0,0) yields (5,3), (31,19) yields (31,19)
-        loc_y -= dy_min
+        self.focus_location = Location(pane.location, (PANE_X/2 + dx*3, PANE_Y/2 + dy*3))
+        # print "Original Focus: " + str(focus_location)
+        # print "Adjusted Focus: (" + str(loc_x) + ", " + str(loc_y) + ")"
+        # print "Monster Location: " + str(self.focus_location)
         
-        loc_x -= dx_max #(5,3) yields (5,3), (31,19) yields (26,14)
-        loc_y -= dx_max 
-        
-        self.focus_location = Location(pane.location, (loc_x, loc_y))
-        
-        # print "ORIGINAL PANE" + str(pane.location)
-        # print pane
-        
-        #todo, update this to put focus_location as the center
-        i = 1
-        for x in range(loc_x-5, loc_x+5):
-            j = 1
-            for y in range(loc_y-5, loc_y+5):
+        i = 2
+        for x in range(loc_x-4, loc_x+6):
+            j = 2
+            for y in range(loc_y-2, loc_y+4):
+                # print "(" + str(x) + ", " + str(y) + ")"
                 if (x,y) in pane.objects:
-                    #print "(x, y): (" + str(x) + ", " + str(y) + ") (i, j): (" + str(i) + ", " + str(j) + ")"
-                    # for di in range(0,3):
-                        # for dj in range(0,3):
-                    # print str((x, y))
                     self.add_zoomed_obstacle((i, j), pane.objects[(x,y)])
                 j+=3
             i+=3
         
         self.load_background_images()
-
+        if not monster:
+            monster = TheoryCraft.getMonster()
+        self.load_monster_group(monster)
+    
+    def load_monster_group(self, monster):
+        monsters = TheoryCraft.generateMonsterGroup(monster)
+        location = Location(self.location, (0,1))
+        monsters[0].location = location
+        self.person[id(monsters[0])] = monsters[0]
+    
+    def place_person(self, person, location):
+        while not super(CombatPane, self).is_tile_passable(location):
+            #Choose a new location
+            location.move
+            pass
+        while self.is_person_here(location):
+            #Choose a new location
+            pass
+        self.person[id(person)] = person
+        return self.tiles[location.tile].is_passable()
         
+    def is_person_here(self, location):
+        for person in self.person:
+            return person.location == location
+        return False
+    
     def add_zoomed_obstacle(self, tile_center, entity_key):
         '''
         Adds a given entity_key to the given location (tile) and it's 
@@ -238,7 +259,6 @@ class CombatPane(Pane):
         for di in range(0,3):
             for dj in range(0,3):
                 tile = (tile_center[0]+(di-1), tile_center[1]+(dj-1))
-                print "di: " + str(di) + " dj: " + str(dj) + " TILE: " + str(tile)
                 if not tile in self.tiles:
                     self.tiles[tile] = Tile(None, True)
                 self.objects[tile] = entity_key
