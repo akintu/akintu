@@ -199,6 +199,15 @@ class PassiveAbility(object):
         target.basePoisonResistance += 5
         target.baseColdResistance += 5
                 
+    # Tactician
+    def applySpellsOfDeception(self, target, reverse=False, spell=None):
+        if not reverse:
+            if spell.school == "Illusion" or spell.school == "Mental":
+                target.statusSpellpower += 5
+        else:
+            if spell.school == "Illusion" or spell.school == "Mental":
+                target.statusSpellpower -= 5        
+                
     # Assassin
     def applyAnatomy(self, target):
         target.baseCriticalChance += 10
@@ -654,6 +663,17 @@ class PassiveAbility(object):
         'level' : 3,
         'type' : 'static',
         'action' : applyTimeWithNature
+        },
+        
+        # Tactician
+        'Spells of Deception':
+        {
+        'class' : 'Tactician',
+        'level' : 1,
+        'type' : 'dynamic',
+        'action' : applySpellsOfDeception,
+        'onStringList' : ['Outgoing Spell Cast'],
+        'offStringList' : ['Outgoing Spell Cast Complete']
         },
         
         # Assassin

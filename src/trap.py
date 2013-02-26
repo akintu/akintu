@@ -9,7 +9,7 @@ class Trap(e.Entity):
     
     totalWeight = 0
     
-    def __init__(self, name, level=None, player=None, charges=1, location=None, image=None):
+    def __init__(self, name, level=None, player=None, location=None, image=None):
         """Constructor for Traps.  Should only be used with
         keyword arguments."""
         e.Entity.__init__(self, location=location, image=image, passable=True)
@@ -22,6 +22,8 @@ class Trap(e.Entity):
             self.rarityWeight = 0 # Not used by player traps
             self.effect = trapDict['effect']
             self.team = "Players"
+            self.isFavor = trapDict['isFavor']
+            self.charges = trapDict['charges']
         else:
             self.name = name
             trapDict = Trap.monsterTraps[name]
@@ -33,7 +35,8 @@ class Trap(e.Entity):
             self.rarityWeight = trapDict['rarityWeight']
             self.effect = trapDict['effect']
             self.team = "Monsters"
-        self.charges = charges
+            self.isFavor = False # Monsters do not place Favors
+            self.charges = 1 # Monster traps only have one charge
     
     # Player traps
     def _shrapnelTrap(self, target):
@@ -71,6 +74,16 @@ class Trap(e.Entity):
         dot = Dice.roll(minDot, maxDot)
         duration = min(4, 3 + self.owner.totalCunning / 30)
         Combat.addStatus(target, "Poison Thorn Trap", duration, dot)
+    
+    def _accuracyFavor(self, target):
+        accuracyBonus = 3 + self.owner.totalCunning / 4
+        duration = 2
+        Combat.addStatus(target, "Accuracy Favor", duration, accuracyBonus)
+        
+    def _manaFavor(self, target):
+        manaRecovered = 5 + self.owner.totalCunning / 6
+        Combat.modifyResource(target, "MP", manaRecovered)
+    
     
     # Monster traps
     def _bearTrap(self, target):
@@ -186,12 +199,35 @@ class Trap(e.Entity):
         
     # Utility methods      
     def trigger(self, target):
-        print self.name + " Sprung!"
-        if Dice.rollTrapHit(self, target):
+        '''This method will attempt to trigger the trap.
+        It should only be called when a hostile target steps on
+        it.  However, if this is a "favor" trap, it should only 
+        be called if a friendly target steps on it.'''
+        if self.isFavor:
+            # Print some message.
             self.effect(target)
             self.charges -= 1
+        else:
+            print self.name + " Sprung!"
+            if Dice.rollTrapHit(self, target):
+                self.effect(target)
+                self.charges -= 1
             # If self.charges <= 0, remove from tile. TODO
         
+    def shouldTrigger(self, target):
+        '''Determines if this trap should attempt to 
+        go off when stepped on by the target.
+        Inputs: 
+          self
+          target -- Person stepping on trap/favor
+        Outputs:
+          True or False'''
+        if self.isFavor and self.team == target.team:
+            return True
+        elif self.team != target.team:
+            return True
+        return False
+           
     @staticmethod
     def calcTrapDamage(target, amount, element):
         if element == "Fire":
@@ -239,26 +275,54 @@ class Trap(e.Entity):
             'rating' : 13,
             'ratingScale' : 0.015,
             'effect' : _shrapnelTrap,
+            'isFavor' : False,
+            'charges' : 1
             },
         'Sticky Trap':
             {
             'rating' : 20,
             'ratingScale' : 0.007,
-            'effect' : _stickyTrap
+            'effect' : _stickyTrap,
+            'isFavor' : False,
+            'charges' : 2
             },
         'Boulder Pit Trap':
             {
             'rating' : 25,
             'ratingScale' : 0.007,
-            'effect' : _boulderPitTrap
+            'effect' : _boulderPitTrap,
+            'isFavor' : False,
+            'charges' : 1
             },
         
+        # Druid only traps
         'Poison Thorn Trap':
             {
             'rating' : 18,
             'ratingScale' : 0.01,
-            'effect' : _poisonThornTrap
+            'effect' : _poisonThornTrap,
+            'isFavor' : False,
+            'charges' : 1
+            },
+            
+        # Tactician only traps
+        'Accuracy Favor':
+            {
+            'rating' : 0,
+            'ratingScale' : 0.0,
+            'effect' : _accuracyFavor,
+            'isFavor' : True,
+            'charges' : 3
+            },
+        'Mana Favor':
+            {
+            'rating' : 0,
+            'ratingScale' : 0.0,
+            'effect' : _manaFavor,
+            'isFavor' : True,
+            'chargets' : 3
             }
+        
     
     }
     

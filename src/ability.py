@@ -437,6 +437,18 @@ class Ability(object):
         # Remove Trap
         # Add trap.Trap("Poison Thorn Trap", self.owner, target.location)
     
+    # Tactician
+    
+    def _accuracyFavor(self, target):
+        pass
+        # Remove Trap
+        # Add trap.Trap("Accuracy Favor", self.owner, target.location)
+    
+    def _manaFavor(self, target):
+        pass
+        # Remove Trap
+        # Add trap.Trap("Mana Favor", self.owner, target.location)
+    
     # Assassin
     
     def _rangedBackstab(self, target):
@@ -1372,6 +1384,34 @@ class Ability(object):
         'target' : 'location',
         'action' : _poisonThornTrap,
         'cooldown' : 1,
+        'checkFunction' : None,
+        'breakStealth' : 0
+        },
+        
+        # Tactician
+        'Accuracy Favor':
+        {
+        'level' : 1,
+        'class' : 'Tactician',
+        'HPCost' : 0,
+        'APCost' : 5,
+        'range' : 1,
+        'target' : 'location',
+        'action' : _accuracyFavor,
+        'cooldown' : 1,
+        'checkFunction' : None,
+        'breakStealth' : 0
+        },
+        'Mana Favor':
+        {
+        'level' : 1,
+        'class' : 'Tactician',
+        'HPCost' : 0,
+        'APCost' : 5,
+        'range' : 1,
+        'target' : 'location',
+        'action' : _manaFavor,
+        'cooldown' : 2,
         'checkFunction' : None,
         'breakStealth' : 0
         },
