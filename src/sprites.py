@@ -11,7 +11,7 @@ from PIL import Image
 
 #(Path, Name, Tilesize, Cropsize, Size)
 TREE = (OBSTACLES_IMAGES_PATH, "tree_green.png", TILE_SIZE, None, TILE_SIZE)
-ROCKS = (OBSTACLES_IMAGES_PATH, "rocks1.png", TILE_SIZE, None, None)
+ROCKS = (OBSTACLES_IMAGES_PATH, "rocks1.png", TILE_SIZE, None, TILE_SIZE)
 
 GRASS1 = (BACKGROUND_IMAGES_PATH, "grass1.jpg", TILE_SIZE, None, None)
 GRASS2 = (BACKGROUND_IMAGES_PATH, "grass2.jpg", TILE_SIZE, None, None)
