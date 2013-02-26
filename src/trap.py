@@ -84,6 +84,10 @@ class Trap(e.Entity):
         manaRecovered = 5 + self.owner.totalCunning / 6
         Combat.modifyResource(target, "MP", manaRecovered)
     
+    def _magicalDampeningTrap(self, target):
+        spellpowerReduction = 6 + self.owner.totalCunning / 4
+        duration = 4
+        Combat.addStatus(target, "Magical Dampening Trap", duration, spellpowerReduction)
     
     # Monster traps
     def _bearTrap(self, target):
@@ -320,9 +324,16 @@ class Trap(e.Entity):
             'ratingScale' : 0.0,
             'effect' : _manaFavor,
             'isFavor' : True,
-            'chargets' : 3
+            'charges' : 3
+            },
+        'Magical Dampening Trap':
+            {
+            'rating' : 30,
+            'ratingScale' : 0.01,
+            'effect' : _magicalDampeningTrap,
+            'isFavor' : False,
+            'charges' : 1
             }
-        
     
     }
     

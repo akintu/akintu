@@ -448,6 +448,11 @@ class Ability(object):
         pass
         # Remove Trap
         # Add trap.Trap("Mana Favor", self.owner, target.location)
+        
+    def _magicalDampeningTrap(self, target):
+        pass
+        # Remove Trap
+        # Add trap.Trap("Magical Dampening Trap", self.owner, target.location)
     
     # Assassin
     
@@ -1412,6 +1417,19 @@ class Ability(object):
         'target' : 'location',
         'action' : _manaFavor,
         'cooldown' : 2,
+        'checkFunction' : None,
+        'breakStealth' : 0
+        },
+        'Magical Dampening Trap':
+        {
+        'level' : 2,
+        'class' : 'Tactician',
+        'HPCost' : 0,
+        'APCost' : 5,
+        'range' : 0,
+        'target' : 'location',
+        'action' : _magicalDampeningTrap,
+        'cooldown' : 0,
         'checkFunction' : None,
         'breakStealth' : 0
         },
