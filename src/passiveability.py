@@ -69,8 +69,37 @@ class PassiveAbility(object):
             Combat.healTarget(target, healing)
             Combat.addStatus(target, "Stunning Recovery", duration=1)
     
+    # Dragoon
+    
+    def applyPolearmSpecialization(self, target, reverse=False, other=None):
+        source = self.owner
+        if not reverse:
+            if source.usingWeapon("Polearm"):
+                source.statusForce += 30
+                source.statusCriticalChance += 5
+        else:
+            if source.usingWeapon("Polearm"):
+                source.statusForce -= 30
+                source.statusCriticalChance -= 5
+    
+    def applyDragonFoe(self, target, reverse=False, other=None):
+        source = self.owner
+        if not reverse:        
+            if other.type == "Dragonkin":
+                source.statusMeleeAccuracy += 2
+                source.statusRangedAccuracy += 2
+                source.statusDodge += 2
+        else:
+            if other.type == "Dragonkin":
+                source.statusMeleeAccuracy -= 2
+                source.statusRangedAccuracy -= 2
+                source.statusDodge -= 2            
+    
+    def applyFireTouched(self, target):
+        target.baseFireResistance += 10
+    
     # Spellsword    
-    def applySeekerOfEnchantments(self, targer, reverse=False, spell=None):
+    def applySeekerOfEnchantments(self, target, reverse=False, spell=None):
         if not reverse:
             if spell.school == "Enchantment":
                 target.statusSpellpower += 6
@@ -169,6 +198,15 @@ class PassiveAbility(object):
     def applyTimeWithNature(self, target):
         target.basePoisonResistance += 5
         target.baseColdResistance += 5
+                
+    # Tactician
+    def applySpellsOfDeception(self, target, reverse=False, spell=None):
+        if not reverse:
+            if spell.school == "Illusion" or spell.school == "Mental":
+                target.statusSpellpower += 5
+        else:
+            if spell.school == "Illusion" or spell.school == "Mental":
+                target.statusSpellpower -= 5        
                 
     # Assassin
     def applyAnatomy(self, target):
@@ -467,6 +505,34 @@ class PassiveAbility(object):
         'offStringList' : []
         },
         
+        'Polearm Specialization':
+        {
+        'class' : 'Dragoon',
+        'level' : 1,
+        'type' : 'dynamic',
+        'action' : applyPolearmSpecialization,
+        'onStringList' : ['Outgoing Melee Attack'],
+        'offStringList' : ['Outgoing Melee Attack Complete']
+        },
+        'Dragon Foe':
+        {
+        'class' : 'Dragoon',
+        'level' : 1,
+        'type' : 'dynamic',
+        'action' : applyDragonFoe,
+        'onStringList' : ['Outgoing Melee Attack', 'Outgoing Ranged Attack', 
+                          'Incoming Melee Attack', 'Incoming Ranged Attack'],
+        'offStringList' : ['Outgoing Melee Attack Complete', 'Outgoing Ranged Attack Complete',
+                           'Incmoing Melee Attack Complete', 'Incoming Ranged Attack Complete']                           
+        },
+        'Fire-Touched':
+        {
+        'class' : 'Dragoon',
+        'level' : 2,
+        'type' : 'static',
+        'action' : applyFireTouched,
+        },
+        
         
         'Seeker of Enchantments':
         {
@@ -597,6 +663,17 @@ class PassiveAbility(object):
         'level' : 3,
         'type' : 'static',
         'action' : applyTimeWithNature
+        },
+        
+        # Tactician
+        'Spells of Deception':
+        {
+        'class' : 'Tactician',
+        'level' : 1,
+        'type' : 'dynamic',
+        'action' : applySpellsOfDeception,
+        'onStringList' : ['Outgoing Spell Cast'],
+        'offStringList' : ['Outgoing Spell Cast Complete']
         },
         
         # Assassin
