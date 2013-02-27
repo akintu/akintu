@@ -172,11 +172,8 @@ class Pane(object):
                     self.tiles[loc] = Tile(None, True)
                     self.add_obstacle(loc.tile, 1, entity_type)
                     
-    def get_combat_pane(self, focus_tile, is_server = False, monster = None):
-        combat_pane = CombatPane(self, focus_tile, monster)
-        if not is_server:
-            combat_pane.person = {}
-        return combat_pane
+    def get_combat_pane(self, focus_tile, monster = None):
+        return CombatPane(self, focus_tile, monster)
 
 
 class CombatPane(Pane):
@@ -223,11 +220,9 @@ class CombatPane(Pane):
             i+=3
         
         self.load_background_images()
-        if not monster:
-            print "MONSTER NOT SUPPLIED"
-            monster = TheoryCraft.getMonster()
-        monsters = TheoryCraft.generateMonsterGroup(monster)
-        self.place_monsters(monsters, self.focus_location)
+        if monster:
+            monsters = TheoryCraft.generateMonsterGroup(monster)
+            self.place_monsters(monsters, self.focus_location)
     
 
     def place_monsters(self, monsters, start_location):
@@ -236,8 +231,8 @@ class CombatPane(Pane):
         for person in monsters:
             while not self.is_passable(loc) or not self.is_within_bounds(loc, 3):
                 #Choose a new location
-                loc = self.rand_move_within_pane(loc, [1,9], [1,2], 3)
                 print str(loc) + " New Location"
+                loc = self.rand_move_within_pane(loc, [1,9], [1,2], 3)
             print str(loc) + " Passable Location"
             person.location = loc
             self.person[id(person)] = person
