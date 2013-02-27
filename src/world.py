@@ -227,7 +227,7 @@ class CombatPane(Pane):
 
     def place_monsters(self, monsters, start_location):
         loc = temp = start_location
-        print monsters
+        #print monsters
         for person in monsters:
             while not self.is_passable(loc) or not self.is_within_bounds(loc, 3):
                 #Choose a new location
@@ -241,7 +241,7 @@ class CombatPane(Pane):
         
         
     def rand_move_within_pane(self, location, dir_range, dist_range, bounds):
-        random.seed(time.clock())
+        #random.seed(time.clock())
         while True:
             dir = Dice.roll(dir_range[0], dir_range[1])
             if dir == 5:
