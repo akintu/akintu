@@ -859,6 +859,20 @@ class Ability(object):
         source = self.owner
         return (False, "") # TODO: Finish this method!
         
+    def _militaryValor(self, target):
+        '''Grants bonus accuracy, +15% overall damage, but lowers shadow resistance 25%'''
+        source = self.owner
+        duration = 5
+        magnitude = self.level + 4 # Used for accuracy bonus only
+        Combat.addStatus(source, "Military Valor", duration, magnitude)
+        
+    def _militaryValorCheck(self, target):
+        ''' Will only be used if HP is at least 80% of maximum. '''
+        source = self.owner
+        if source.HP >= source.totalHP * 0.8:
+            return (True, "")
+        return (False, "")
+        
     def _phantomStare(self, target):
         '''Considered a magical attack.  Deals moderate shadow damage, has a 5% chance to stun,
         and lowers spellpower and melee accuracy.''' 
@@ -1857,6 +1871,19 @@ class Ability(object):
         'action' : _howl,
         'cooldown' : 4,
         'checkFunction' : _howlCheck,
+        'breakStealth' : 100
+        },
+        'Military Valor':
+        {
+        'level' : 1,
+        'class' : 'Monster',
+        'HPCost' : 0,
+        'APCost' : 9,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _militaryValor,
+        'cooldown' : 5,
+        'checkFunction' : _militaryValorCheck,
         'breakStealth' : 100
         },
         'Phantom Stare':
