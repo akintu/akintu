@@ -7,7 +7,7 @@ inRange(self, target, 8)
 modifyResource(self, MP, -2)
 modifyResource(self, AP, -5)
 [HIT]
-calcHit(self, target)
+calcHit(self, target, "Magical")
 [ACT]
 modifyResource(target, HP, 0-scale(calcDamage(self, target, 2, 4, Arcane, HIT), 0.03, Spellpower))
 
@@ -71,7 +71,7 @@ inRange(self, target, 7)
 modifyResource(self, MP, -6)
 modifyResource(self, AP, -7)
 [HIT]
-calcHit(self, target)
+calcHit(self, target, "Magical")
 [ACT]
 modifyResource(target, HP, 0-scale(calcDamage(self, target, 2, 9, Fire, HIT, partial = 0.5, critical = 1.2), 0.05, Spellpower))
 
@@ -84,7 +84,7 @@ inRange(self, target, 6)
 modifyResource(self, MP, -10)
 modifyResource(self, AP, -6)
 [HIT]
-calcHit(self, target)
+calcHit(self, target, "Magical")
 [ACT]
 modifyResource(target, HP, 0-scale(calcDamage(self, target, 1, 12, Cold, HIT), 0.01, Spellpower))
 addStatus(target, "Chill", 2, scale(5, 0.012, Spellpower), FREQUENT)
@@ -99,7 +99,7 @@ inRange(self, target, 2)
 modifyResource(self, MP, -13)
 modifyResource(self, AP, -6)
 [HIT]
-calcHit(self, target)
+calcHit(self, target, "Magical")
 [ACT]
 modifyResource(target, HP, 0 - scale(calcDamage(self, target, min=15, max=22, element=Electric, hitType=hit), 0.014, Spellpower))
 applyCooldown(self, "Shock", 1)
@@ -113,7 +113,7 @@ inRange(self, target, 12)
 modifyResource(self, MP -5)
 modifyResource(self, AP, -5)
 [HIT]
-calcHit(self, target)
+calcHit(self, target, "Magical")
 [ACT]
 addStatus(target, "Suggest Laziness", 1, 0, OCCASIONAL)
 
@@ -126,7 +126,7 @@ inRange(self, target, 6)
 modifyResource(self, MP, -14)
 modifyResource(self, AP, -9)
 [HIT]
-calcHit(self, target)
+calcHit(self, target, "Magical")
 [ACT]
 addStatus(target, "Stutter_spell_fail", 5, 10)
 addStatus(target, "Stutter_spellpower_reduction", 5, scale(5, 0.02, Spellpower))
@@ -140,7 +140,7 @@ inRange(self, target, 6)
 modifyResource(self, MP, -9)
 modifyResource(self, AP, -9)
 [HIT]
-calcHit(self, target)
+calcHit(self, target, "Magical")
 [ACT]
 addStatus(target, "Cloud Vision", scale(5, 0.02, Spellpower), scale(5, 0.012, Spellpower))
 addStatus(target, "Cloud Vision", scale(5, 0.02, Spellpower), scale(2.5, 0.012, Spellpower), partial = true)
@@ -156,7 +156,7 @@ modifyResource(self, MP -20)
 modifyResource(self, AP, -11)
 applyCooldown(self, "Haunt", 3)
 [HIT]
-calcHit(self, target)
+calcHit(self, target, "Magical")
 [ACT]
 modifyResource(target, HP, 0 - scale(calcDamage(self, target, min=13, max=20, element=Shadow, hitType=hit), 0.01, Spellpower))
 addStatus(target, "Haunt", scale(3, 0.02, Spellpower, cap = 4), min=scale(2, 0.005, Spellpower), max=scale(8, 0.005, Spellpower))
@@ -220,7 +220,7 @@ modifyResource(self, AP, -9)
 applyCooldown(self, "Burst", 1)
 [HIT]
 getAOETargets(target, radius=1, selectMonsters=True)
-calcHit(self, targetSet)
+calcHit(self, targetSet, "Magical")
 [ACT]
 modifyResource(target, HP, 0 - scale(calcDamage(self, target, min=5, max=6, element=Arcane, hitType=hit), 0.005, Spellpower))
 ## Apply the following to all targets
@@ -258,7 +258,7 @@ modifyResource(self, MP, -6)
 modifyResource(self, AP, -3)
 applyCooldown(self, "Fright", 1)
 [HIT]
-calcHit(self, target)
+calcHit(self, target, "Magical")
 [ACT]
 addStatus(target, "Fright_shadow_adjustment", 4, 20)
 addStatus(target, "Fright_attack_power_adjustment", 4, 5)
@@ -272,8 +272,8 @@ inRange(self, target, 1)
 modifyResource(self, MP, -7)
 modifyResource(self, AP, -6)
 [HIT]
-calcHit(self, target)
-calcPoisonHit(self, target, scale(35, 0.012, Spellpower))
+calcHit(self, target, "Magical")
+calcHit(self, target, "Poison", rating=scale(35, 0.012, Spellpower))
 [ACT]
 addStatus(target, "Infection_damage", scale(4, 0.013, Spellpower), min=scale(7, 0.03, Spellpower), max=scale(10, 0.03, Spellpower))
 addStatus(target, "Infection_tolerance_adjustment", scale(4, 0.013, Spellpower), 5)
@@ -314,7 +314,7 @@ modifyResource(self, AP, -14)
 applyCooldown(self, "Torrent", 2)
 [HIT]
 getPathTargets(self.location, target.location, selectMonsters=True, selectFirstOnly=True)
-calcHit(self, target)
+calcHit(self, target, "Magical")
 [ACT]
 modifyResource(target, HP, 0 - scale(calcDamage(self, target, min=10, max=35, element=Cold, hitType=hit), 0.014, Spellpower))
 [COND]
@@ -335,7 +335,7 @@ modifyResource(self, AP, -8)
 applyCooldown(self, "Lightning Bolt", 1)
 [HIT]
 getPathTargets(self.location, target.location, selectMonsters=True, selectFirstOnly=False)
-calcHit(self, targetSet)
+calcHit(self, targetSet, "Magical")
 [ACT]
 modifyResource(targetSet, HP, 0 - scale(calcDamage(self, target, min=5, max=33, element=Electric, hitType=hitSet, partial=0.5, critical=1.3), 0.005, Spellpower))
 
@@ -349,7 +349,7 @@ targetSize(target, LARGE, smallerThan=True)
 modifyResource(self, MP -9)
 modifyResource(self, AP, -10)
 [HIT]
-calcHit(self, target)
+calcHit(self, target, "Magical")
 [ACT]
 addStatus(target, "Suggest Cowardice", 1, 0, hit=RELIABLE, partial=True)
 
@@ -406,7 +406,147 @@ modifyResource(self, AP, -8)
 [ACT]
 addStatus(target, "Frost Weapon", scale(3, 0.03, Spellpower, cap=7), scale(roll(min=2, max=5), 0.019, Spellpower))
 
+// Fighter Skills
 
+Mighty Blow:
+[REQ]
+resource(self, AP, 9)
+inRange(self, target, 1)
+[RES]
+modifyResource(self, AP, -9)
+[HIT]
+calcHit(self, target, "Physical", modifier=-5)
+[ACT]
+weaponAttack(self, target, hit, forceMod=1.5)
 
+Brace:
+[REQ]
+resource(self, AP, 2)
+[RES]
+modifyResource(self, AP, -2)
+[ACT]
+addStatus(self, "Brace", 1, 5)
+endTurn(self)
+
+Dash:
+[REQ]
+resource(self, AP, 2)
+!onCooldown(self, "Dash")
+[RES]
+modifyResource(self, AP, -2)
+applyCooldown(self, "Dash", 4)
+[ACT]
+setMovementCost(self, 2)
+
+Quick Strike:
+[REQ]
+resource(self, AP, 3)
+inRange(self, target, 1)
+[RES]
+modifyResource(self, AP, -3)
+[HIT]
+calcHit(self, target, "Physical", modifier=-10)
+[ACT]
+weaponAttack(self, target, hit, forceMod=0.5)
+
+Precise Blow:
+[REQ]
+resource(self, AP, 7)
+inRange(self, target, 1)
+[RES]
+modifyResource(self, AP, -7)
+[HIT]
+calcHit(self, target, "Physical", modifier=4)
+[ACT]
+weaponAttack(self, target, hit)
+
+Thrust:
+[REQ]
+resource(self, AP, 5)
+inRange(self, target, 1)
+!onCooldown(self, "Thrust")
+usingWeapon(self, "Sword")
+[RES]
+modifyResource(self, AP -5)
+applyCooldown(self, "Thrust", 1)
+[HIT]
+calcHit(self, target, "Physical")
+[ACT]
+weaponAttack(self, target, hit, elementOverride="Piercing")
+
+Clobber:
+[REQ]
+resource(self, AP, 10)
+inRange(self, target, 1)
+usingWeapon(self, "Club")
+[RES]
+modifyResource(self, AP, -10)
+[HIT]
+calcHit(self, target, "Physical", modifier=-3)
+[ACT]
+weaponAttack(self, target, hit, armorPenetrationMod=5)
+[COND]
+targetSize(target, LARGE, smallerThan=True)
+[ACT]
+addStatus(target, "Stun", duration=1, chance = 0.2, hit=hit)
+
+Wound Leg:
+[REQ]
+resource(self, AP, 9)
+inRange(self, target, 1)
+[RES]
+modifyResource(self, AP, -9)
+[HIT]
+calcHit(self, target, "Physical", modifier=-10)
+[ACT]
+addStatus(target, "Wound Leg", duration=3, hit=hit)
+
+Wound Arm:
+[REQ]
+resource(self, AP, 9)
+inRange(self, target, 1)
+[RES]
+modifyResource(self, AP, -9)
+[HIT]
+calcHit(self, target, "Physical", modifier=-10)
+[ACT]
+addStatus(target, "Wound Arm", duration=3, hit=hit)
+
+Combo Attack:
+[REQ]
+resource(self, AP, 6)
+inRange(self, target, 1)
+[RES]
+modifyResource(self, AP, -6)
+[COND]
+numberOfStackedStatus(self, "Combo Attack")
+[HIT]
+calcHit(self, target, "Physical", modifier=((stack) - 2))
+[ACT]
+weaponAttack(self, target, hit, criticalChanceMod=( 1 + (stack/100)), overallDamageMod=1.1, criticalDamageMod=( 1 + (3 * stack/100) ))
+addStatus(self, "Combo Attack", duration=1, overwrite=False)  
+
+Rush:
+[MOD]
+usingArmor(self, "Heavy")
+# Save value as armorMod, 1 if True, 0 if False.
+[REQ]
+resource(self, AP, 7, modifier=armorMod)
+canReach(self, target, self.movementTiles)
+!onCooldown(self, "Rush")
+[RES]
+modifyResource(self, AP, 7, modifier=armorMod)
+applyCooldown(self, "Rush", 3)
+[ACT]
+movePlayer(self, target)
+[COND]
+facingMeleeEnemy(self)
+[HIT]
+calcHit(self, enemy, "Physical")
+[ACT]
+weaponAttack(self, enemy, hit, overallDamageMod=1.2)
+[COND]
+usingArmor(self, "Heavy")
+modifyResource(enemy, HP, 0 - calcDamage(self, target, min=(self.totalDR * 0.4), max=(self.totalDR * 0.4), element=Bludgeoning, hitType=hit))
 
 

@@ -1,16 +1,22 @@
-boolean resource(Person target = self, int type, int quantity)
+boolean resource(Person target=self, int type, int quantity, int modifier=0)
 // Types
 // 1 = AP
 // 2 = MP
 // 3 = HP
 // 4 = CD
-int modifyResource(Person target = self, int type, int value)
+int modifyResource(Person target=self, int type, int value, int modifier=0)
 
 boolean inRange(Person source, Person target, int range)
 boolean onCooldown(Person target, Ability a)
 int applyCooldown(Person target, Ability a, int duration)
 
-int calcHit(Person source, Person target)
+int calcHit(Person source, Person target, AttackType type, int rating=0, int modifier=0)
+// AttackType types:
+// Physical (Dodge vs. Accuracy)
+// Magical  (Magic Resist vs. Spellpower)
+// Poison   (Poison Tolerance vs. Poison Rating)
+// Trap     (Trap Evade vs. Trap Rating)
+
 return hitType;
 // Hit Types
 // 0 = Miss
@@ -18,7 +24,7 @@ return hitType;
 // 2 = Normal hit
 // 3 = Critical hit
 
-int calcDamage(Person source, Person target, int min, int max, float scale, Attribute scalesWith, int element, int hitType, float partial = 1, float critical = 1)
+int calcDamage(Person source, Person target, int min, int max, Element element, int hitType, float partial=1, float critical=1)
 // Elements
 // 1 = Fire
 // 2 = Cold
@@ -27,12 +33,13 @@ int calcDamage(Person source, Person target, int min, int max, float scale, Attr
 // 5 = Electric
 // 6 = Poison
 // 7 = Arcane
-// 8 = Bludgeoning
-// 9 = Slashing
-// 10 = Piercing
+// 8 = Bludgeoning -- Not used here; should call WeaponAttack 
+// 9 = Slashing -- Not used here; should call WeaponAttack 
+// 10 = Piercing -- Not used here; should call WeaponAttack 
 
 // Attributes
 // 1 = Spellpower
+// 2 = Strength
 
 int roll(int min, int max)
 int displayAnimation(Coord source.location, Coord target.location, Animation anim)
@@ -47,4 +54,42 @@ Set<Targets> getAOETargets(Location center, int radius, boolean selectMonsters)
 Set<Targets> getPathTargets(Location start, Location end, boolean selectMonsters, boolean selectFirstOnly=false)
 boolean calcPoisonHit(Person source, Person target, int poisonRating)
 int knockback(Location sourceOfImpact, Person target, int distance)
+
 boolean targetSize(Person target, Size size, boolean smallerThan)
+
+boolean isHit(HitType hit, HitType requiredHit, boolean greaterThan=True)
+
+int weaponAttack(Person source, Person target, int hitType, float forceMod=1, float criticalChanceMod=1, float criticalDamageMod=1, int armorPenetrationMod=0, Element elementOverride=None,
+                 float overallDamageMod=1)
+// Method calls calcDamage internally. 
+// Element override will replace the physical damage of the attack with a different element if such is provided.  This will usually be None as this behavior is not common.
+
+int setMovementCost(Person target, int newCost, int numberOfMoves=1, int duration=0, boolean inStealth=False)
+// By default only affects the next movement action.  If duration is set instead, it will last until that many turns have expired.  Behavior for setting both numberOfMoves and
+// duration to non-zero values is undefined.  inStealth determines if the movement cost change only affects stealthed movement if set to True.
+
+boolean usingWeapon(Person player, WeaponType weapon)
+// Weapon Types
+// "Sword"
+// "Club"
+// etc.
+
+boolean usingArmor(Person player, ArmorLevel armor)
+// ArmorLevels
+// "Heavy"
+// "Medium"
+// "Light"
+// "Robes"
+
+float numberOfStackedStatus(Person player, Status status)
+// returns the number of the same status on the player.  Is stored in variable "stack". 
+// Rerturn is used as a float to prevent repeated casting for division/multiplication but will really only return integers.
+
+Person facingMeleeEnemy(Person player)
+// If the player is directly facing an enemy character in melee, return that character.  Otherwise return None.
+
+boolean canReach(Person player, Location target, int tilesAllowed)
+// returns True if the player can reach the destination within the given number of tiles.
+
+int movePlayer(Person player, Location destination, boolean instant=False)
+// if instant is left as False, will show player moving animation to reach the destination, otherwise it will be instant.
