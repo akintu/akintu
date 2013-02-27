@@ -14,6 +14,7 @@ class Dice(object):
              chanceOfSuccess -- int from 1 to 100
            Outputs:
              "Normal Hit" or "Miss" """
+        random.seed()
         if (random.randint(1, 100) <= chanceOfSuccess):
             return "Normal Hit"
         else:
@@ -31,6 +32,7 @@ class Dice(object):
           cap: optional int representing the largest amount that can be returned
         Outpus:
           integer"""
+        random.seed()
         if cap != 0:
             return round(min(value * (1 + scaleAttributeValue * scale), cap))
         else:
@@ -39,12 +41,14 @@ class Dice(object):
     @staticmethod
     def roll(minimum, maximum):
         """Returns an integer somewhere between the minimum and maximum (as an integer)."""
+        random.seed()
         if minimum == maximum:
             return minimum
         return random.randint(minimum, maximum)
         
     @staticmethod
     def rollFloat(minFloat, maxFloat):
+        random.seed()
         return random.uniform(minFloat, maxFloat)
         
     @staticmethod
@@ -55,6 +59,7 @@ class Dice(object):
              chanceOfSuccess -- int from 1 to 100
            Outputs:
              True or False """
+        random.seed()
         return random.randint(1,100) <= targetRoll
             
     
@@ -70,6 +75,7 @@ class Dice(object):
             is not in the list.  Defaults to 0%.
         Outputs:
           True or False"""
+        random.seed()
         size = target.size
         chance = defaultChance
         for rule in sizeRules:
@@ -89,6 +95,7 @@ class Dice(object):
         Outputs:
           False -- The trap failed to harm the target.
           True -- The trap successfully hit the target."""
+        random.seed()
         adjustedEva = round(target.totalTrapEvade * random.uniform(0.5, 1.0))
         adjustedRating = round(trap.trapRating * random.uniform(0.5, 1.0))
         if adjustedEva >= adjustedRating:
@@ -106,6 +113,7 @@ class Dice(object):
             Reliable, Frequent, Occasional, Unlikely, Rarely
         Outputs:
           True or False"""
+        random.seed()
         name = chance.capitalize()
         endChance = 0
         if (name == "Reliable" or name == "Reliably"):
