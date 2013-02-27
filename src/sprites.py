@@ -11,7 +11,9 @@ from PIL import Image
 
 #(Path, Name, Tilesize, Cropsize, Size)
 TREE = (OBSTACLES_IMAGES_PATH, "tree_green.png", TILE_SIZE, None, TILE_SIZE)
-ROCKS = (OBSTACLES_IMAGES_PATH, "rocks1.png", TILE_SIZE, None, TILE_SIZE)
+TREE_ZOOM = TREE
+ROCK = (OBSTACLES_IMAGES_PATH, "rock.png", TILE_SIZE, None, TILE_SIZE)
+ROCK_ZOOM = (OBSTACLES_IMAGES_PATH, "rock_zoom.png", TILE_SIZE, None, TILE_SIZE)
 
 GRASS1 = (BACKGROUND_IMAGES_PATH, "grass1.jpg", TILE_SIZE, None, None)
 GRASS2 = (BACKGROUND_IMAGES_PATH, "grass2.jpg", TILE_SIZE, None, None)
@@ -19,10 +21,11 @@ GRASS3 = (BACKGROUND_IMAGES_PATH, "grass3.jpg", TILE_SIZE, None, None)
 GRASS4 = (BACKGROUND_IMAGES_PATH, "grass4.jpg", TILE_SIZE, None, None)
 GRAVEL1 = (BACKGROUND_IMAGES_PATH, "gravel1.jpg", TILE_SIZE, None, None)
 
-ENTITY_KEYS = ['tree', 'rocks']
-ENTITIES = {'tree': TREE, 'rocks': ROCKS}
-#BACKGROUNDS = [GRASS1, GRASS2, GRASS3, GRASS4, GRASS5, GRAVEL1]
+ENTITIES = {'tree': TREE, 'rock': ROCK}
+ZOOMED_ENTITIES = {'rock_zoom': ROCK_ZOOM, 'tree_zoom': TREE_ZOOM}
 BACKGROUNDS = {'summer': GRASS2, 'fall': GRASS3, 'desert': GRAVEL1}
+ENTITY_KEYS = sorted(ENTITIES.keys())
+#ZOOMED_KEYS = sorted(ZOOMED_ENTITIES.keys())
 
 class Sprites(object):
     
@@ -31,6 +34,7 @@ class Sprites(object):
     rocks = []
     background = dict()
     objects = dict()
+    zoomed_objects = dict()
     images = dict()
     
     @staticmethod
@@ -43,6 +47,10 @@ class Sprites(object):
             Sprites.background[key] = background
             Sprites.images.update(background.images.items())
         for key, image in ENTITIES.iteritems():
+            spritesheet = SpriteSheet(image)
+            Sprites.objects[key] = spritesheet
+            Sprites.images.update(spritesheet.images.items())
+        for key, image in ZOOMED_ENTITIES.iteritems():
             spritesheet = SpriteSheet(image)
             Sprites.objects[key] = spritesheet
             Sprites.images.update(spritesheet.images.items())
@@ -67,6 +75,7 @@ class Sprites(object):
         
     @staticmethod
     def get_zoomed_image(key, tile_loc):
+        print key
         return Sprites.objects[key].get_zoomed_image(tile_loc)
 
 def crop_helper(const):

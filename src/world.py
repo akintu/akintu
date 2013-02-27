@@ -4,6 +4,7 @@ World generation tools and representation
 
 import os
 import math
+import random, time
 
 from entity import*
 from const import*
@@ -12,6 +13,7 @@ from location import Location
 from theorycraft import TheoryCraft
 from region import *
 from ai import AI
+from dice import Dice
 
 class World(object):
     '''
@@ -95,7 +97,7 @@ class Pane(object):
                     s += "X"
                 else:
                     s += " "
-            s += "\n"
+            s += "|\n"
         return s
     
     def load_monsters(self):
@@ -170,75 +172,112 @@ class Pane(object):
                     self.tiles[loc] = Tile(None, True)
                     self.add_obstacle(loc.tile, 1, entity_type)
                     
-    def get_combat_pane(self, focus_tile):
-        combat_pane = CombatPane(self, focus_tile)
-        return combat_pane
+    def get_combat_pane(self, focus_tile, monster = None):
+        return CombatPane(self, focus_tile, monster)
 
 
 class CombatPane(Pane):
     
-    def __init__(self, pane, focus_location):
+    def __init__(self, pane, pane_focus, monster):
         '''
         A subpane of the current pane.  It will contain 10x6 of the original
         tiles which turn into 3x3 grids on the CombatPane.
         Dimensions are 30x18 (there will be a border around the pane)
         Member Variables:
-            focus_location: a Location object with the current pane and the 
-                            tile of the monster of focus.  Normally this will
-                            be in the center of the combat pane, but in the 
-                            case of corner combat, the combat pane will never
-                            leave the bounds of the parent pane.
+            pane_focus:     a Location object with the current pane and the 
+                            tile of the monster of focus.  This is the location 
+                            from which we entered combat.  If this location is
+                            far enough away from a border, sub pane will be centered
+                            from here.
                             
         '''
-        super(CombatPane, self).__init__(pane.seed, focus_location.tile, False)
+        super(CombatPane, self).__init__(pane.seed, pane.location, False)
         
-        loc_x = focus_location.tile[0]
-        loc_y = focus_location.tile[1]
+        loc_x = pane_focus.tile[0]
+        loc_y = pane_focus.tile[1]
         
-        dx_min = min(loc_x - 5, 0)     #yields 0 if far enough away from edge
-        dy_min = min(loc_y - 3, 0)     #Negative if too close
+        dx_min = min(loc_x - 5, 0)     #yields 0 if far enough away from edge,
+        dy_min = min(loc_y - 3, 0)     #and negative if too close
+        # print "dx_min, dy_min: " + str(dx_min) + ", " + str(dy_min)
+        dx_max = max(loc_x - 26, 0)    #yields 0 if far enough away from edge,
+        dy_max = max(loc_y - 14, 0)    #and positive if too close
+        # print "dx_max, dy_max: " + str(dx_max) + ", " + str(dy_max)
+        dx = dx_min + dx_max - 1
+        dy = dy_min + dy_max - 1
+        loc_x -= dx
+        loc_y -= dy
         
-        dx_max = max(loc_x - 26, 0)    #yields 0 if far enough away from edge
-        dy_max = max(loc_y - 14, 0)    #Positive if too close
-        
-        loc_x -= dx_min #(0,0) yields (5,3), (31,19) yields (31,19)
-        loc_y -= dy_min
-        
-        loc_x -= dx_max #(5,3) yields (5,3), (31,19) yields (26,14)
-        loc_y -= dx_max 
-        
-        self.focus_location = Location(pane.location, (loc_x, loc_y))
-        
-        # print "ORIGINAL PANE" + str(pane.location)
-        # print pane
-        
-        #todo, update this to put focus_location as the center
-        i = 1
-        for x in range(loc_x-5, loc_x+5):
-            j = 1
-            for y in range(loc_y-5, loc_y+5):
+        self.focus_location = Location(pane.location, (PANE_X/2 + dx*3, PANE_Y/2 + dy*3))
+
+        i = 2
+        for x in range(loc_x-4, loc_x+6):
+            j = 2
+            for y in range(loc_y-2, loc_y+4):
+                # print "(" + str(x) + ", " + str(y) + ")"
                 if (x,y) in pane.objects:
-                    #print "(x, y): (" + str(x) + ", " + str(y) + ") (i, j): (" + str(i) + ", " + str(j) + ")"
-                    # for di in range(0,3):
-                        # for dj in range(0,3):
-                    # print str((x, y))
                     self.add_zoomed_obstacle((i, j), pane.objects[(x,y)])
                 j+=3
             i+=3
         
         self.load_background_images()
+        if monster: 
+            monsters = TheoryCraft.generateMonsterGroup(monster)
+            self.place_monsters(monsters, self.focus_location)
+    
 
+    def place_monsters(self, monsters, start_location):
+        loc = temp = start_location
+        print monsters
+        for person in monsters:
+            while not self.is_passable(loc) or not self.is_within_bounds(loc, 3):
+                #Choose a new location
+                #print str(loc) + " New Location"
+                loc = self.rand_move_within_pane(loc, [1,9], [1,2], 3)
+            #print str(loc) + " Passable Location"
+            person.location = loc
+            self.person[id(person)] = person
+            temp = loc
+            loc = self.rand_move_within_pane(loc, [1,9], [2,5], 3)
         
+        
+    def rand_move_within_pane(self, location, dir_range, dist_range, bounds):
+        random.seed(time.clock())
+        while True:
+            dir = Dice.roll(dir_range[0], dir_range[1])
+            if dir == 5:
+                #print "Cant move in direction 5"
+                continue
+            dist = Dice.roll(dist_range[0], dist_range[1])
+            new_loc = location.move(dir, dist)
+            if new_loc.pane != location.pane:
+                #print "Off the pane"
+                continue
+            return new_loc
+        
+        
+    def is_passable(self, location):
+        for key, person in self.person.iteritems():
+            if person.location == location:
+                return False
+        return super(CombatPane, self).is_tile_passable(location)
+        
+        
+    def is_within_bounds(self, location, edge):
+        #Outside of current pane
+        if self.location != location.pane:
+            return False
+        return True
+        
+    
     def add_zoomed_obstacle(self, tile_center, entity_key):
         '''
-        Adds a given entity_key to the given location (tile) and it's 
-        surrounding 8 tiles.
+        Zooms the given obstacle to a 3x3 obstacle and centers it on the given tile.
         '''
 
+        entity_key += "_zoom"
         for di in range(0,3):
             for dj in range(0,3):
                 tile = (tile_center[0]+(di-1), tile_center[1]+(dj-1))
-                print "di: " + str(di) + " dj: " + str(dj) + " TILE: " + str(tile)
                 if not tile in self.tiles:
                     self.tiles[tile] = Tile(None, True)
                 self.objects[tile] = entity_key
@@ -246,11 +285,13 @@ class CombatPane(Pane):
                 obstacle = Sprites.get_zoomed_image(entity_key, (di,dj))
                 self.tiles[tile].entities.append(Entity(tile, image=obstacle))
             
+            
     def load_background_images(self):
         self.images = Sprites.get_images_dict()
         for i in range(PANE_X):
             for j in range(PANE_Y):
                 self.tiles[(i, j)].set_image(Sprites.get_background_tile(self.background_key, (i, j)))
+        
         
 class Tile(object):
     def __init__(self, image = os.path.join("res", "images", "background", "grass.png"), passable = True):
