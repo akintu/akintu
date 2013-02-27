@@ -274,6 +274,7 @@ class CombatPane(Pane):
         Zooms the given obstacle to a 3x3 obstacle and centers it on the given tile.
         '''
 
+        entity_key += "_zoom"
         for di in range(0,3):
             for dj in range(0,3):
                 tile = (tile_center[0]+(di-1), tile_center[1]+(dj-1))
