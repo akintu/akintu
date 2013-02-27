@@ -446,6 +446,11 @@ class PassiveAbility(object):
         if source.HP <= 0.5 * source.totalHP:
             source.statusDexterity += 2
             
+    def applyRegeneration(self, target, reverse=False):
+        ''' Monsters with regerenation recover 15% of their max HP each turn.'''
+        source = self.owner
+        source.HP += round(source.totalHP * 0.15)
+            
     allContentByName = {
         'Cold Endurance': 
         {
@@ -982,6 +987,15 @@ class PassiveAbility(object):
         'type' : 'dynamic',
         'action' : applyPanic,
         'onStringList' : ['Incoming Melee Attack Hit'],
+        'offStringList' : []
+        },
+        'Regeneration':
+        {
+        'class' : 'Monster',
+        'level' : 1,
+        'type' : 'dynamic',
+        'action' : applyRegeneration,
+        'onStringList' : ['Monster Turn Start'],
         'offStringList' : []
         }
         

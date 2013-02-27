@@ -859,6 +859,22 @@ class Ability(object):
         source = self.owner
         return (False, "") # TODO: Finish this method!
         
+    def _phantomStare(self, target):
+        '''Considered a magical attack.  Deals moderate shadow damage, has a 5% chance to stun,
+        and lowers spellpower and melee accuracy.''' 
+        source = self.owner
+        hit = Combat.calcHit(source, target, "Magical")
+        if hit != "Miss":
+            if Dice.rollBeneath(5):
+                Combat.addStatus(target, "Stun", duration=1)
+            duration = 3
+            magnitude = 3 + source.level # Used for both spellpower and accuracy loss
+            Combat.addStatus(target, "Phantom Stare", duration)
+            sMin = 8 + source.level * 2
+            sMax = 16 + source.level * 2
+            damage = Combat.calcDamage(source, target, sMin, sMax, "Shadow", hit, partial=0.25)
+            Combat.lowerHP(target, damage)
+        
     def _poisonFang(self, target):
         ''' Lowers target's poison tolerance and deals poison damage if successful. '''
         source = self.owner
@@ -872,6 +888,17 @@ class Ability(object):
                 pDamMax = 9 + source.level * 2
                 damage = Combat.calcDamage(source, target, pDamBase, pDamMax, "Poison", "Normal Hit")
                 Combat.lowerHP(target, damage)
+        
+    def _shadowBurst(self, target):
+        ''' Deals a heavy amount of shadow damage to all targets in melee range (magical) '''
+        source = self.owner
+        # Get all AOE targets within melee range -- TODO
+        # Deal heavy shadow damage to each if they fail a magical resistance check
+        
+    def _shadowBurstCheck(self, target):
+        ''' Should only be used if HP < 30% of maximum OR 3+ players are in melee range '''
+        source = self.owner
+        return (False, "") # TODO
         
     def _smash(self, target):
         ''' Deal +20% damage with +15 armor penetration '''
@@ -887,6 +914,27 @@ class Ability(object):
         if hit != "Miss" and Dice.rollBeneath(10):
             duration = 2 # 1 turn expires immediately...
             Combat.addStatus(target, "Stun", duration)
+        
+    def _toxicSpit(self, target):
+        '''If a poison check is failed, target suffers reduced accuracy, 9% spell failure,
+        and -20% poison resistance (elemental.) Also deals a small amount of poison damage.'''
+        source = self.owner
+        rating = 6 + self.level * 3
+        hit = Combat.calcPoisonHit(source, target, rating)
+        if hit:
+            duration = 3 + source.level / 4
+            magnitude = 5 + source.level # Used for accuracy debuff
+            Combat.applyStatus(target, "Toxic Spit", duration, magnitude)
+            pDamMin = 2 + source.level
+            pDamMax = 5 + source.level
+            damage = Combat.calcDamage(source, target, pDamMin, pDamMax, "Poison", "Normal Hit")
+            Combat.lowerHP(target, damage)
+            
+    def _toxicSpitCheck(self, target):
+        ''' Should not be used if the target already has the toxic spit debuff '''
+        if target.hasStatus("Toxic Spit"):
+            return (False, "")
+        return (True, "")              
         
     def _quaffPotion(self, target):
         ''' Consume a potion, healing 15-30% of all damage taken. '''
@@ -1811,6 +1859,19 @@ class Ability(object):
         'checkFunction' : _howlCheck,
         'breakStealth' : 100
         },
+        'Phantom Stare':
+        {
+        'level' : 1,
+        'class' : 'Monster',
+        'HPCost' : 0,
+        'APCost' : 8,
+        'range' : 2,
+        'target' : 'hostile',
+        'action' : _phantomStare,
+        'cooldown' : 0,
+        'checkFunction' : None,
+        'breakStealth' : 0
+        },
         'Poison Fang':
         {
         'level' : 1,
@@ -1822,6 +1883,19 @@ class Ability(object):
         'action' : _poisonFang,
         'cooldown' : 1,
         'checkFunction' : None,
+        'breakStealth' : 100
+        },
+        'Shadow Burst':
+        {
+        'level' : 1,
+        'class' : 'Monster',
+        'HPCost' : 0,
+        'APCost' : 15,
+        'range' : 0,
+        'target' : 'location',
+        'action' : _shadowBurst,
+        'cooldown' : 3,
+        'checkFunction' : _shadowBurstCheck,
         'breakStealth' : 100
         },
         'Smash':
@@ -1848,6 +1922,19 @@ class Ability(object):
         'action' : _stunningCut,
         'cooldown' : 1,
         'checkFunction' : None,
+        'breakStealth' : 100
+        },
+        'Toxic Spit':
+        {
+        'level' : 1,
+        'class' : 'Monster',
+        'HPCost' : 0,
+        'APCost' : 5,
+        'range' : 3,
+        'target' : 'hostile',
+        'action' : _toxicSpit,
+        'cooldown' : 1,
+        'checkFunction' : _toxicSpitCheck,
         'breakStealth' : 100
         },
         'Quaff Potion':
