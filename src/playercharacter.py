@@ -771,8 +771,9 @@ class PlayerCharacter(p.Person):
     @property
     def inventoryWeight(self):
         """How much all of the inventory items weigh, in pounds."""
-        pass
-        # TODO
+        totalWeight = self.inventory.totalWeight
+        totalWeight += self.equippedItems.equippedWeight
+        return totalWeight
         
     @property
     def inventoryCapacity(self):

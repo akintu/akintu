@@ -2801,6 +2801,17 @@ class Person(en.Entity):
                 if buff[2] <= 0:
                     self.HPBufferList.remove(buff)
         
+    def getHPBufferSum(self):
+        '''Returns the total buffered HP from all active HPBuffers on this person.
+        Inputs:
+          self
+        Outputs:
+          non-negative int'''
+        totalBuffedHP = 0
+        for buff in self.HPBufferList:
+            totalBuffedHP += buff[1]
+        return totalBuffedHP
+        
     def detectStealth(self, stealthedTarget):
         ''' Rolls to see if this Person can detect the stealthed
         target.  Currently does not factor in "boss" monsters etc.
