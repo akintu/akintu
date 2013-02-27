@@ -220,7 +220,7 @@ class CombatPane(Pane):
             i+=3
         
         self.load_background_images()
-        if monster:
+        if monster: 
             monsters = TheoryCraft.generateMonsterGroup(monster)
             self.place_monsters(monsters, self.focus_location)
     
@@ -231,9 +231,9 @@ class CombatPane(Pane):
         for person in monsters:
             while not self.is_passable(loc) or not self.is_within_bounds(loc, 3):
                 #Choose a new location
-                print str(loc) + " New Location"
+                #print str(loc) + " New Location"
                 loc = self.rand_move_within_pane(loc, [1,9], [1,2], 3)
-            print str(loc) + " Passable Location"
+            #print str(loc) + " Passable Location"
             person.location = loc
             self.person[id(person)] = person
             temp = loc
@@ -244,13 +244,15 @@ class CombatPane(Pane):
         random.seed(time.clock())
         while True:
             dir = Dice.roll(dir_range[0], dir_range[1])
-            if dir != 5:
-                break
-        dist = Dice.roll(dist_range[0], dist_range[1])
-        new_loc = location.move(dir, dist)
-        if new_loc.pane != location.pane:
-            new_loc.pane = location.pane
-        return new_loc
+            if dir == 5:
+                #print "Cant move in direction 5"
+                continue
+            dist = Dice.roll(dist_range[0], dist_range[1])
+            new_loc = location.move(dir, dist)
+            if new_loc.pane != location.pane:
+                #print "Off the pane"
+                continue
+            return new_loc
         
         
     def is_passable(self, location):
