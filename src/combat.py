@@ -22,7 +22,7 @@ class Combat(object):
     @staticmethod
     def modifyResource(target, type, value):
         """Modifies the given resource by the given value.
-           May need to implement listeners...TODO
+           May need to implement listeners...
         Inputs:
           target == Person
           type == "AP", "MP", "HP"
@@ -454,7 +454,6 @@ class Combat(object):
         elif hitValue == "Partially Resisted":
             dieRoll *= partial
             
-        # TODO Worry about resistances above 80% that are reduced by any amount by some ability...
         if source.isinstance(Person):
             if element == "Fire":
                 dieRoll *= 1 + (float(source.totalFireBonusDamage) / 100)
@@ -472,25 +471,25 @@ class Combat(object):
                 dieRoll *= 1 + (float(source.totalArcaneBonusDamage) / 100)
 
         if element == "Fire":
-            dieRoll *= 1 - (float(target.totalFireResistance) / 100)
+            dieRoll *= 1 - (min(80, float(target.totalFireResistance) / 100))
         elif element == "Cold":
-            dieRoll *= 1 - (float(target.totalColdResistance) / 100)           
+            dieRoll *= 1 - (min(80, float(target.totalColdResistance) / 100))           
         elif element == "Electric":
-            dieRoll *= 1 - (float(target.totalElectricResistance) / 100)
+            dieRoll *= 1 - (min(80, float(target.totalElectricResistance) / 100))
         elif element == "Poison":
-            dieRoll *= 1 - (float(target.totalPoisonResistance) / 100)    
+            dieRoll *= 1 - (min(80, float(target.totalPoisonResistance) / 100))   
         elif element == "Shadow":
-            dieRoll *= 1 - (float(target.totalShadowResistance) / 100)
+            dieRoll *= 1 - (min(80, float(target.totalShadowResistance) / 100))
         elif element == "Divine":
-            dieRoll *= 1 - (float(target.totalDivineResistance) / 100)
+            dieRoll *= 1 - (min(80, float(target.totalDivineResistance) / 100))
         elif element == "Arcane":
-            dieRoll *= 1 - (float(target.totalArcaneResistance) / 100)
+            dieRoll *= 1 - (min(80, float(target.totalArcaneResistance) / 100))
         elif element == "Bludgeoning":
-            dieRoll *= 1 - (float(target.totalBludgeoningResistance) / 100)
+            dieRoll *= 1 - (min(80, float(target.totalBludgeoningResistance) / 100))
         elif element == "Piercing":
-            dieRoll *= 1 - (float(target.totalPiercingResistance) / 100)
+            dieRoll *= 1 - (min(80, float(target.totalPiercingResistance) / 100))
         elif element == "Slashing":
-            dieRoll *= 1 - (float(target.totalSlashingResistance) / 100)
+            dieRoll *= 1 - (min(80, float(target.totalSlashingResistance) / 100))
         else:
             raise TypeError("Encountered an unknown element: " + element + " .")
             
@@ -610,7 +609,15 @@ class Combat(object):
                 outgoingDamage *= (1 - (float(target.totalPiercingResistance) / 100))
             elif weapon.damageType == "Slashing":
                 outgoingDamage *= (1 - (float(target.totalSlashingResistance) / 100))
-        # TODO: Deal with dual-type weapons    
+            elif weapon.damageType == "Slashing & Piercing" or weapon.damageType == "Piercing & Slashing":
+                resistance = min(target.totalSlashingResistance, target.totalPiercingResistance)
+                outgoingDamage *= (1 - (float(resistance / 100)))
+            elif weapon.damageType == "Bludgeoning & Piercing" or weapon.damageType == "Piercing & Bludgeoning":
+                resistance = min(target.totalBludgeoningResistance, target.totalPiercingResistance)
+                outgoingDamage *= (1 - (float(resistance / 100)))
+            elif weapon.damageType == "Bludgeoning & Slashing" or wepaon.damageType == "Slashing & Bludgeoning":
+                resistance = min(target.totalBludgeoningResistance, target.totalSlashingResistance)
+                outgoingDamage *= (1 - (float(resistance / 100)))            
         totalDamage = Combat.sumElementalEffects(elementalEffects, elementOverride) + outgoingDamage     
      
         Combat.lowerHP(target, totalDamage)
@@ -717,6 +724,10 @@ class Combat(object):
     def upkeep(target):
         '''Applies all upkeep operations for this Person.  (Used during the combat
         phase: "Upkeep"'''
+        if target.HPRegen > 0:
+            Combat.healTarget(target, target.HPRegen)
+        if target.MPRegen > 0:
+            Combat.modifyResource(target, "MP", target.MPRegen)
         for stat in target.statusList:
             stat.upkeepActivate(target)
             if stat.turnsLeft > 0:

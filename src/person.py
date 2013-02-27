@@ -78,7 +78,6 @@ class Person(en.Entity):
         self._equipmentHP = 0
         self._HP = self.totalHP
         self.HPRegen = Person.setFrom(argDict, 'HPRegen', 0)
-        # TODO: Implement both kinds of regen.
         
         self._baseMP = Person.setFrom(argDict, 'startingMP', 0)
         self._equipmentMP = 0
@@ -110,7 +109,6 @@ class Person(en.Entity):
         self._statusDR = 0
         
         # No such thing as 'base' force.
-        # TODO: Consider moving these two to the Weapon class.
         self._equipmentForce = 0
         self._statusForce = 0
         
@@ -2253,7 +2251,6 @@ class Person(en.Entity):
             return self._baseMP
         else:
             return max(0, self._baseMP + (self.totalPiety - 10) * 4 + self.equipmentMP)
-        # TODO Fix non-casters showing mana.
         
     @property
     def baseMP(self):
@@ -2662,9 +2659,6 @@ class Person(en.Entity):
             if statusName == item.name:
                 return item.stacks
         return 0
-        
-    # usingAnimalStyle method is identical to hasStatus but needs to
-    # function out of combat as well.  TODO
     
     def isSummon(self):
         """Returns True if this Person is a Guardian summoned by a 
