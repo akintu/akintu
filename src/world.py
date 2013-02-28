@@ -22,10 +22,10 @@ class World(object):
         seed: the random seed for this world
     '''
 
-    def __init__(self, seed, remove_dictionary=None):
+    def __init__(self, seed, world_state=None):
         self.seed = seed
         self.panes = dict()
-        self.remove = remove_dictionary
+        self.world_state = world_state
 
     def get_pane(self, location, is_server=False):
         surrounding_locations = Location(location, None).get_surrounding_panes()
@@ -34,9 +34,11 @@ class World(object):
                 self.panes[loc] = Pane(self.seed, loc)
 
         #This is the pane we will return, current pane
-        if self.remove:
-            if location in self.remove:
-                pass
+        pane_state = None
+        if self.world_state:
+            if location in self.world_state:
+                pane_state = self.world_state[location]
+        print "WORLD STATE: " + str(self.world_state)
         self.panes[location] = Pane(self.seed, location)
         self._merge_tiles(surrounding_locations)
         
@@ -75,23 +77,32 @@ class Pane(object):
     PaneCorners = {1:TILE_BOTTOM_LEFT, 3:TILE_BOTTOM_RIGHT, 7:TILE_TOP_LEFT, 9:TILE_TOP_RIGHT}
     PaneEdges = {2:TILES_BOTTOM, 4:TILES_LEFT, 6:TILES_RIGHT, 8:TILES_TOP}
 
-    def __init__(self, seed, location, load_entities=True, remove_list=None):
+    def __init__(self, seed, location, load_entities=True, pane_state=None):
         self.seed = seed
         self.location = location
+        self.pane_state = pane_state
+        self.curr_state = dict()
         self.tiles = dict()
         self.objects = dict()
         self.person = {}
         self.background_key = Sprites.get_background(self.seed + str(self.location))
 
+        print "PANE STATE: " + str(pane_state)
         for i in range(PANE_X):
             for j in range(PANE_Y):
                 self.tiles[(i, j)] = Tile(None, True)
                 if load_entities:
                     self.add_obstacle((i, j), RAND_ENTITIES)
-
+                    
+        #print load_entities
         if load_entities:
-            self.load_monsters()
-            
+            if self.pane_state:
+                self.load_state(self.pane_state)
+            else:
+                #print "Loading monsters"
+                self.load_monsters()
+                #self.load_items()
+
     def __repr__(self):
         s = ""
         for j in range(PANE_Y):
@@ -103,24 +114,33 @@ class Pane(object):
             s += "|\n"
         return s
     
-    def load_monsters(self, remove_list=None):
-        random.seed(self.seed + str(self.location) + "load_monsters")
-        for i in range(3): 
-            person = TheoryCraft.getMonster(level=2)#TODO, pass in random here
-            person.location = Location(self.location, (random.randrange(PANE_X), random.randrange(PANE_Y)))
-            r = Region()
-            r.build(RAct.ADD, RShape.CIRCLE, person.location, PANE_Y/4)
-            #r.build(RAct.SUBTRACT, RShape.CIRCLE, Location(self.location, CENTER), int(PANE_Y/6))
-            person.ai.add("WANDER", person.ai.wander, person.movementSpeed, pid=id(person), region=r, move_chance=1.0 / (person.movementSpeed))
-            self.person[id(person)] = person
+    def load_monsters(self, monsters=None):
+        if monsters:
+            for monster in monsters:
+                person = TheoryCraft.getMonster(name=monster[0], level=monster[1])
+                person.location = Location(self.location, monster[2])
+                r = Region()#region=monster[3])
+                #person.ai(monster[4])
+                self.person[id(person)] = person
+        else:
+            random.seed(self.seed + str(self.location) + "load_monsters")
+            for i in range(3): 
+                person = TheoryCraft.getMonster(level=2)#TODO, pass in random here
+                person.location = Location(self.location, (random.randrange(PANE_X), random.randrange(PANE_Y)))
+                r = Region()
+                r.build(RAct.ADD, RShape.CIRCLE, person.location, PANE_Y/4)
+                #r.build(RAct.SUBTRACT, RShape.CIRCLE, Location(self.location, CENTER), int(PANE_Y/6))
+                person.ai.add("WANDER", person.ai.wander, person.movementSpeed, pid=id(person), region=r, move_chance=1.0 / (person.movementSpeed))
+                self.person[id(person)] = person
+    
+    def load_items(self):
+        pass
     
     def load_images(self):
-        self.images = Sprites.get_images_dict()
-        
+        self.images = Sprites.get_images_dict()  
         for i in range(PANE_X):
             for j in range(PANE_Y):
                 self.tiles[(i, j)].set_image(Sprites.get_background_tile(self.background_key, (i, j)))
-
         for tile, entity_key in self.objects.iteritems():
             obstacle = Sprites.get_object(entity_key, self.seed, self.location, tile)
             self.tiles[tile].entities.append(Entity(tile, image=obstacle))
@@ -179,7 +199,19 @@ class Pane(object):
     def get_combat_pane(self, focus_tile, monster = None):
         return CombatPane(self, focus_tile, monster)
 
-
+    MONSTER_KEY = "monsters"
+    ITEM_KEY = "items"
+    def load_state(self, state):
+        #Get Monsters
+        if "monsters" in state:
+            pass
+        #Get Items
+        #Get Anything Else
+        
+    
+    def save_state(self):
+        pass
+    
 class CombatPane(Pane):
     
     def __init__(self, pane, pane_focus, monster):

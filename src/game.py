@@ -26,7 +26,7 @@ class Game(object):
         #seed = "CorrectHorseStapleBattery"
         TheoryCraft.loadAll()   #Static method call, Devin's stuff.
         Sprites.load(seed)
-        self.world = World(seed)
+        self.world = World(seed, world_state=state)
         self.pane = None
         
         # Game state
