@@ -85,7 +85,7 @@ class GameServer():
                         command.details = self.person[command.id].getDetailTuple()
                         for p, i in self.player.iteritems():
                             if self.person[i].location.pane == command.location.pane and \
-                                    i not in self.combat:
+                                    not self.person[i].cPane:
                                 self.SDF.send(p, command)
 
                         # Send list of players to the issuing client
