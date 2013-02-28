@@ -11,7 +11,7 @@ import statuseffectsparser
 import copy
 import playercharacter
 import location
-import random
+from random import randint, choice
 from dice import *
 from const import *
 
@@ -74,7 +74,7 @@ class TheoryCraft(object):
             print "Warning: Attempted to convert from invalid tuple: " + str(tuple[0]) + " ."
         
     @staticmethod
-    def getMonster(index=None, loc=location.Location((0, 0), (PANE_X/2, PANE_Y/2)), level=None, name=None, tolerance=1, ignoreMaxLevel=False):
+    def getMonster(index=None, loc=location.Location((0, 0), (PANE_X/2, PANE_Y/2)), level=None, name=None, tolerance=1, ignoreMaxLevel=False, setSeed=None):
         ''' Generates a monster for the overworld.
         If name is specified:
             Create the exact monster specified with the exact level specified.
@@ -82,6 +82,8 @@ class TheoryCraft(object):
             Default behavior, generate a random monster of the given level + or - the tolerance (default=1)
         If neither name nor level are specified:
             Testing mode; generate a non-deterministic random monster within levels 1-4.'''
+        #if setSeed:
+        #    random.seed(setSeed)
         if not level:
             level = Dice.roll(1,3)
         theMonster = None
@@ -99,14 +101,14 @@ class TheoryCraft(object):
             if lower == upper:
                 levelChoice = lower
             else:    
-                levelChoice = random.randint(lower, upper)
+                levelChoice = randint(lower, upper)
                 
             if ignoreMaxLevel: 
                 inLevelList = [x for x in TheoryCraft.monsters if x['minLevel'] <= levelChoice]
             else:
                 inLevelList = [x for x in TheoryCraft.monsters if x['minLevel'] <= levelChoice and x['maxLevel'] >= levelChoice]
             if inLevelList:
-                theMonster = monster.Monster(random.choice(inLevelList))
+                theMonster = monster.Monster(choice(inLevelList))
             else:
                 # No monster of this level exists, just give a default monster for testing.
                 theMonster = monster.Monster(TheoryCraft.monsters[0])
@@ -166,7 +168,7 @@ class TheoryCraft(object):
             if len(subList) == 1:
                 selection = 0
             else:
-                selection = random.randint(0, len(subList) - 1)
+                selection = randint(0, len(subList) - 1)
             if subList[selection]['GP'] <= TheoryCraft.GROUP_GP - currentGP:
                 addingMonster = monster.Monster(subList[selection])
                 if initialMonster.level >= addingMonster.minLevel:
