@@ -14,7 +14,7 @@ class GameServer():
 
         self.player = {}  # {Port: PersonID} Dict of all players, pointing to their personid
         self.person = {} # {PersonID: Person} Dict of all persons
-        self.combat = {}
+        self.combat = {} # {PersonID: Person} Dict of all persons in combat
         self.pane = {}  # {location.Pane: Pane} Dict of actual pane objects
 
     def server_loop(self):

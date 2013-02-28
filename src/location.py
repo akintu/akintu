@@ -22,8 +22,8 @@ class Location(object):
         return not self == other
         
     def __hash__(self):
-        str = "%04d%04d%02d%02d" % (self.pane[0], self.pane[1], self.tile[0], self.tile[1])
-        str = str.replace("-", "1")
+        str = "%d0%d0%d0%d" % (self.pane[0], self.pane[1], self.tile[0], self.tile[1])
+        str = str.replace("-", "9")
         return int(str)
 
     def move(self, direction, distance):
