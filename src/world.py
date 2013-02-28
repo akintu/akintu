@@ -241,7 +241,10 @@ class CombatPane(Pane):
         loc_y -= dy
         
         self.focus_location = Location(pane.location, (PANE_X/2 + dx*3, PANE_Y/2 + dy*3))
-
+        fx = max(0, min(PANE_X - 1, self.focus_location.tile[0]))
+        fy = max(0, min(PANE_Y - 1, self.focus_location.tile[1]))
+        self.focus_location.tile = (fx, fy)
+        
         i = 2
         for x in range(loc_x-4, loc_x+6):
             j = 2
@@ -265,7 +268,7 @@ class CombatPane(Pane):
             while not self.is_passable(loc) or not self.is_within_bounds(loc, 3):
                 #Choose a new location
                 #print str(loc) + " New Location"
-                loc = self.rand_move_within_pane(loc, [1,9], [1,2], 3)
+                loc = self.rand_move_within_pane(loc, [1,9], [1,5], 3)
             #print str(loc) + " Passable Location"
             person.location = loc
             self.person[id(person)] = person

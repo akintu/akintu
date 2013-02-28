@@ -48,7 +48,7 @@ class AI():
             self.stop(name)
             del self.behavior[name]
         else:
-            print "Server error: Attempted to stop non-existent ai function", name
+            print "Server error: Attempted to stop non-existent ai function:", name
 
     def start(self, name):
         self.behavior[name]['running'] = True

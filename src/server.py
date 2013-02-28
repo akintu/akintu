@@ -113,7 +113,7 @@ class GameServer():
                                     self.load_pane(self.person[person].cPane, person)
 
                                 # Put player into combat
-                                self.person[command.id].ai.pause()
+                                self.person[command.id].ai.remove("RUN")
                                 self.person[command.id].cPane = self.person[person].location
                                 
                                 #TODO: Calculate starting location for reals
