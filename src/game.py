@@ -22,8 +22,8 @@ from world import *
 clock = pygame.time.Clock()
 
 class Game(object):
-    def __init__(self):
-        seed = "CorrectHorseStapleBattery"
+    def __init__(self, seed, serverip):
+        #seed = "CorrectHorseStapleBattery"
         TheoryCraft.loadAll()   #Static method call, Devin's stuff.
         Sprites.load(seed)
         self.world = World(seed)
@@ -37,10 +37,14 @@ class Game(object):
         
         # Setup server if host
         self.serverip = "localhost"
-        if len(sys.argv) == 1:
-            GameServer(self.world)
-        else:
+        if serverip:
             self.serverip = sys.argv[1]
+        else:
+            GameServer(self.world)
+        # if len(sys.argv) == 1:
+            # GameServer(self.world)
+        # else:
+            # self.serverip = sys.argv[1]
 
         self.CDF = ClientDataFactory()
         reactor.connectTCP(self.serverip, 1337, self.CDF)
