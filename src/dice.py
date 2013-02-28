@@ -68,8 +68,10 @@ class Dice(object):
         
     @staticmethod
     def rollFloat(minFloat, maxFloat):
-        
-        return random.uniform(minFloat, maxFloat)
+        Dice.stashGen()
+        rValue = random.uniform(minFloat, maxFloat)
+        Dice.popGen()
+        return rValue
         
     @staticmethod
     def rollBeneath(targetRoll):
