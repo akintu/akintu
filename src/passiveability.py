@@ -842,8 +842,8 @@ class PassiveAbility(object):
         'level' : 2,
         'type' : 'dynamic',
         'action' : applyRapidRetreat,
-        'onStringList' : ['Starting Player Turn'],
-        'offStringList' : ['Ending Player Turn']
+        'onStringList' : ['Player Turn Start'],
+        'offStringList' : ['Monster Turn Start']
         },
         'Military Defensive Training':
         {

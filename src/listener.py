@@ -28,7 +28,10 @@ class Listener(object):
                 elif bCast.isinstance(broadcast.ResourceLevelBroadcast):
                     self.action(self.callObject, self.host, reverse=False, percent = bCast.resourceLevel)
                     return
-                elif bCast.isinstance(broadcast.AttackDodged):
+                elif bCast.isinstance(broadcast.DodgeBroadcast):
+                    self.action(self.callObject, self.host, reverse=False)
+                    return
+                elif bCast.isinstance(broadcast.TurnBroadcast):
                     self.action(self.callObject, self.host, reverse=False)
                     return
         for string in self.offStringList:
@@ -48,8 +51,10 @@ class Listener(object):
                 elif bCast.isinstance(broadcast.ResourceLevelBroadcast):
                     self.action(self.callObject, self.host, reverse=True)
                     return
-                elif bCast.isinstance(broadcast.AttackDodged):
+                elif bCast.isinstance(broadcast.DodgeBroadcast):
                     self.action(self.callObject, self.host, reverse=True)
                     return    
-                    
+                elif bCast.isinstance(broadcast.TurnBroadcast):
+                    self.action(self.callObject, self.host, reverse=True)
+                    return    
                     

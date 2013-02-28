@@ -78,5 +78,12 @@ class DodgeBroadcast(Broadcast):
         
         self.message = "Attack Dodged"
         
+class TurnBroadcast(Broadcast):
+    def __init__(self, argDict):
+        Broadcast.__init__(self)
+        
+        self.turn = argDict['turn']
+        self.message = self.turn + " Turn Start"
+        
         
         
