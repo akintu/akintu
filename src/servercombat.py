@@ -25,7 +25,7 @@ class CombatServer():
                             
                 newloc = self.server.person[command.id].location.move( \
                         10 - self.server.person[command.id].location.direction, 1)
-                self.server.SDF.queue.put((None, Person(PersonActions.MOVE, pid, newloc)))
+                self.server.SDF.queue.put((None, Person(PersonActions.MOVE, command.id, newloc, True)))
                 self.server.unload_panes()
                 
             # If this is a legal move request
