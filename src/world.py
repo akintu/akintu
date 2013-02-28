@@ -13,7 +13,6 @@ from location import Location
 from theorycraft import TheoryCraft
 from region import *
 from ai import AI
-from dice import Dice
 
 class World(object):
     '''
@@ -23,9 +22,10 @@ class World(object):
         seed: the random seed for this world
     '''
 
-    def __init__(self, seed):
+    def __init__(self, seed, remove_dictionary=None):
         self.seed = seed
         self.panes = dict()
+        self.remove = remove_dictionary
 
     def get_pane(self, location, is_server=False):
         surrounding_locations = Location(location, None).get_surrounding_panes()
@@ -34,6 +34,9 @@ class World(object):
                 self.panes[loc] = Pane(self.seed, loc)
 
         #This is the pane we will return, current pane
+        if self.remove:
+            if location in self.remove:
+                pass
         self.panes[location] = Pane(self.seed, location)
         self._merge_tiles(surrounding_locations)
         
@@ -72,7 +75,7 @@ class Pane(object):
     PaneCorners = {1:TILE_BOTTOM_LEFT, 3:TILE_BOTTOM_RIGHT, 7:TILE_TOP_LEFT, 9:TILE_TOP_RIGHT}
     PaneEdges = {2:TILES_BOTTOM, 4:TILES_LEFT, 6:TILES_RIGHT, 8:TILES_TOP}
 
-    def __init__(self, seed, location, load_entities=True):
+    def __init__(self, seed, location, load_entities=True, remove_list=None):
         self.seed = seed
         self.location = location
         self.tiles = dict()
@@ -100,9 +103,10 @@ class Pane(object):
             s += "|\n"
         return s
     
-    def load_monsters(self):
+    def load_monsters(self, remove_list=None):
+        #random.seed(self.seed + str(self.location) + "load_monsters")
         for i in range(3):
-            person = TheoryCraft.getMonster()
+            person = TheoryCraft.getMonster()#TODO, pass in random here
             person.location = Location(self.location, (random.randrange(PANE_X), random.randrange(PANE_Y)))
             r = Region()
             r.build(RAct.ADD, RShape.CIRCLE, person.location, PANE_Y/4)
@@ -227,7 +231,7 @@ class CombatPane(Pane):
 
     def place_monsters(self, monsters, start_location):
         loc = temp = start_location
-        print monsters
+        #print monsters
         for person in monsters:
             while not self.is_passable(loc) or not self.is_within_bounds(loc, 3):
                 #Choose a new location
@@ -241,13 +245,13 @@ class CombatPane(Pane):
         
         
     def rand_move_within_pane(self, location, dir_range, dist_range, bounds):
-        random.seed(time.clock())
+        random.seed()
         while True:
-            dir = Dice.roll(dir_range[0], dir_range[1])
+            dir = random.randint(dir_range[0], dir_range[1])
             if dir == 5:
                 #print "Cant move in direction 5"
                 continue
-            dist = Dice.roll(dist_range[0], dist_range[1])
+            dist = random.randint(dist_range[0], dist_range[1])
             new_loc = location.move(dir, dist)
             if new_loc.pane != location.pane:
                 #print "Off the pane"

@@ -12,7 +12,14 @@ from game import Game
 
 def main():
     pygame.init()
-    game = Game()
+    
+    #TODO: all this can be changed when the menu is integrated
+    #state is undefined right now, but we could pass in a directory
+    #or a pickled object
+    ip = None
+    if len(sys.argv) != 1:
+        ip = argv[1]
+    game = Game("CorrectHorseStapleBattery!", ip, state=None)
 
 
 if __name__ == "__main__":

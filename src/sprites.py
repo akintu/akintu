@@ -75,7 +75,6 @@ class Sprites(object):
         
     @staticmethod
     def get_zoomed_image(key, tile_loc):
-        print key
         return Sprites.objects[key].get_zoomed_image(tile_loc)
 
 def crop_helper(const):

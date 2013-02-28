@@ -22,8 +22,8 @@ from world import *
 clock = pygame.time.Clock()
 
 class Game(object):
-    def __init__(self):
-        seed = "CorrectHorseStapleBattery"
+    def __init__(self, seed, serverip=None, state=None):
+        #seed = "CorrectHorseStapleBattery"
         TheoryCraft.loadAll()   #Static method call, Devin's stuff.
         Sprites.load(seed)
         self.world = World(seed)
@@ -37,10 +37,14 @@ class Game(object):
         
         # Setup server if host
         self.serverip = "localhost"
-        if len(sys.argv) == 1:
-            GameServer(self.world)
-        else:
+        if serverip:
             self.serverip = sys.argv[1]
+        else:
+            GameServer(self.world)
+        # if len(sys.argv) == 1:
+            # GameServer(self.world)
+        # else:
+            # self.serverip = sys.argv[1]
 
         self.CDF = ClientDataFactory()
         reactor.connectTCP(self.serverip, 1337, self.CDF)
@@ -184,12 +188,12 @@ class Game(object):
             statsdict['location'] = source
             statsdict['xoffset'] = int(completion * xdist)
             statsdict['yoffset'] = int(completion * ydist)
-            statsdict['foot'] = 0 if completion < 0.5 else 1
+            statsdict['foot'] = 1 if completion < 0.5 else 0
         else:
             statsdict['location'] = dest
             statsdict['xoffset'] = 0
             statsdict['yoffset'] = 0
-            statsdict['foot'] = 0
+            statsdict['foot'] = 1
             if self.pane.person[id].anim:
                 self.pane.person[id].anim.stop()
             self.pane.person[id].anim = None
