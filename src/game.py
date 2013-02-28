@@ -22,7 +22,7 @@ from world import *
 clock = pygame.time.Clock()
 
 class Game(object):
-    def __init__(self, seed, serverip):
+    def __init__(self, seed, serverip=None, state=None):
         #seed = "CorrectHorseStapleBattery"
         TheoryCraft.loadAll()   #Static method call, Devin's stuff.
         Sprites.load(seed)
