@@ -104,9 +104,9 @@ class Pane(object):
         return s
     
     def load_monsters(self, remove_list=None):
-        #random.seed(self.seed + str(self.location) + "load_monsters")
-        for i in range(3):
-            person = TheoryCraft.getMonster()#TODO, pass in random here
+        random.seed(self.seed + str(self.location) + "load_monsters")
+        for i in range(3): 
+            person = TheoryCraft.getMonster(level=2)#TODO, pass in random here
             person.location = Location(self.location, (random.randrange(PANE_X), random.randrange(PANE_Y)))
             r = Region()
             r.build(RAct.ADD, RShape.CIRCLE, person.location, PANE_Y/4)
