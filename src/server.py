@@ -204,11 +204,8 @@ class GameServer():
                 print("Unloading pane " + str(pane))
 
                 # Stop all AI behaviors
-                print "Person keys:", self.person.keys()
                 for i in self.pane[pane].person:
-                    print "Deleting person #", i
                     self.person[i].ai.shutdown()
                     del self.person[i]
-                print "Person keys:", self.person.keys()
 
                 del self.pane[pane]

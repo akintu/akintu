@@ -37,7 +37,7 @@ class ServerData(LineReceiver):
 
     def lineReceived(self, data):
         data = cPickle.loads(data)
-        if socket.gethostname() == "Jzar": print("S " + str(self.port) + "> " + str(data))
+        if socket.gethostname() in ["Jzar", "Jgor"]: print("S " + str(self.port) + "> " + str(data))
         self.factory.queue.put((self.port, data))
 
 class ServerDataFactory(Factory):
@@ -80,7 +80,7 @@ class ClientData(LineReceiver):
         if self.factory.port is None:
             self.factory.port = data
         else:
-            if socket.gethostname() == "Jzar": print("Client> " + str(data))
+            if socket.gethostname() in ["Jzar", "Jgor"]: print("Client> " + str(data))
             self.factory.queue.put(data)
 
 class ClientDataFactory(Factory):

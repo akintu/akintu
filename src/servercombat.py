@@ -20,12 +20,19 @@ class CombatServer():
                     if i != command.id:
                         self.server.SDF.send(port, Person(PersonActions.CREATE, i, \
                                 self.server.person[i].location, self.server.person[i].getDetailTuple()))
-                self.server.person[command.id].cPane = None
-                self.server.person[command.id].cLocation = None
-                            
+
+                i = [i for i, p in self.server.person.iteritems() if p.location == \
+                        self.server.person[command.id].cPane][0]
+                self.server.person[i].ai.resume()
+                self.server.person[i].cPane = None
+                self.server.person[i].cLocation = None
+
+                
                 newloc = self.server.person[command.id].location.move( \
                         10 - self.server.person[command.id].location.direction, 1)
                 self.server.SDF.queue.put((None, Person(PersonActions.MOVE, command.id, newloc, True)))
+                self.server.person[command.id].cPane = None
+                self.server.person[command.id].cLocation = None
                 self.server.unload_panes()
                 
             # If this is a legal move request
