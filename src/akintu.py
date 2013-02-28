@@ -18,7 +18,7 @@ def main():
     #or a pickled object
     ip = None
     if len(sys.argv) != 1:
-        ip = argv[1]
+        ip = sys.argv[1]
     game = Game("correcthorsebatterystaple!", ip, state=None)
 
 
