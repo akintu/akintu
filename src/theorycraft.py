@@ -11,6 +11,7 @@ import statuseffectsparser
 import copy
 import playercharacter
 import location
+import random
 from dice import *
 from const import *
 
@@ -80,7 +81,7 @@ class TheoryCraft(object):
         If name is not specified and level is specified:
             Default behavior, generate a random monster of the given level + or - the tolerance (default=1)
         If neither name nor level are specified:
-            Testing mode; generate a random monster within levels 1-4.'''
+            Testing mode; generate a non-deterministic random monster within levels 1-4.'''
         if not level:
             level = Dice.roll(1,3)
         theMonster = None
@@ -92,14 +93,20 @@ class TheoryCraft(object):
                     break
         else:
             inLevelList = None
-            levelChoice = Dice.roll(max(1, level - tolerance), min(20, level + tolerance))
+            lower = max(1, level - tolerance)
+            upper = min(20, level + tolerance)
+            levelChoice = None
+            if lower == upper:
+                levelChoice = lower
+            else:    
+                levelChoice = random.randint(lower, upper)
+                
             if ignoreMaxLevel: 
                 inLevelList = [x for x in TheoryCraft.monsters if x['minLevel'] <= levelChoice]
             else:
                 inLevelList = [x for x in TheoryCraft.monsters if x['minLevel'] <= levelChoice and x['maxLevel'] >= levelChoice]
             if inLevelList:
-                choice = Dice.roll(0, len(inLevelList) - 1)
-                theMonster = monster.Monster(inLevelList[choice])
+                theMonster = monster.Monster(random.choice(inLevelList))
             else:
                 # No monster of this level exists, just give a default monster for testing.
                 theMonster = monster.Monster(TheoryCraft.monsters[0])
