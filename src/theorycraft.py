@@ -162,7 +162,11 @@ class TheoryCraft(object):
         currentGP = initialMonster.GP
         numMonsters = 0
         while(minGP <= TheoryCraft.GROUP_GP - currentGP and numMonsters < 6):
-            selection = Dice.roll(0, len(subList) - 1)
+            selection = None
+            if len(subList) == 1:
+                selection = 0
+            else:
+                selection = random.randint(0, len(subList) - 1)
             if subList[selection]['GP'] <= TheoryCraft.GROUP_GP - currentGP:
                 addingMonster = monster.Monster(subList[selection])
                 if initialMonster.level >= addingMonster.minLevel:
