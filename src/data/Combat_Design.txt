@@ -19,6 +19,7 @@ while( AP > minCost, player didn't select "end turn", or timeLeft >0 )
 * continue --> Monster Turn Start
 		
 ----- Monster Turn Start -----
+* Turn Start Broadcast
 * Monsters take actions (one at a time) according to AI and AP values/cooldowns
 * If a player dies as a result of an action --> Player death (target only)
 * Monsters run out of sufficient AP to use any available abilities --> Upkeep Phase

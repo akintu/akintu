@@ -74,7 +74,7 @@ class TheoryCraft(object):
             print "Warning: Attempted to convert from invalid tuple: " + str(tuple[0]) + " ."
         
     @staticmethod
-    def getMonster(index=None, loc=location.Location((0, 0), (PANE_X/2, PANE_Y/2)), level=None, name=None, tolerance=1, ignoreMaxLevel=False, setSeed=None):
+    def getMonster(index=None, loc=location.Location((0, 0), (PANE_X/2, PANE_Y/2)), level=None, name=None, tolerance=1, ignoreMaxLevel=False):
         ''' Generates a monster for the overworld.
         If name is specified:
             Create the exact monster specified with the exact level specified.
@@ -82,8 +82,6 @@ class TheoryCraft(object):
             Default behavior, generate a random monster of the given level + or - the tolerance (default=1)
         If neither name nor level are specified:
             Testing mode; generate a non-deterministic random monster within levels 1-4.'''
-        #if setSeed:
-        #    random.seed(setSeed)
         if not level:
             level = Dice.roll(1,3)
         theMonster = None
