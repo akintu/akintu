@@ -454,6 +454,11 @@ class Ability(object):
         # Remove Trap
         # Add trap.Trap("Magical Dampening Trap", self.owner, target.location)
     
+    def _nearsightedTrap(self, target):
+        pass
+        # Remove Trap
+        # Add trap.Trap("Nearsighted Trap", self.owner, target.location)
+    
     # Assassin
     
     def _rangedBackstab(self, target):
@@ -1492,6 +1497,19 @@ class Ability(object):
         'target' : 'location',
         'action' : _magicalDampeningTrap,
         'cooldown' : 0,
+        'checkFunction' : None,
+        'breakStealth' : 0
+        },
+        'Nearsighted Trap':
+        {
+        'level' : 3,
+        'class' : 'Tactician',
+        'HPCost' : 0,
+        'APCost' : 5,
+        'range' : 0,
+        'target' : 'location',
+        'action' : _nearsightedTrap,
+        'cooldown' : 2,
         'checkFunction' : None,
         'breakStealth' : 0
         },

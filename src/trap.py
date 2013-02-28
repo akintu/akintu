@@ -89,6 +89,11 @@ class Trap(e.Entity):
         duration = 4
         Combat.addStatus(target, "Magical Dampening Trap", duration, spellpowerReduction)
     
+    def _nearsightedTrap(self, target):
+        if target.attackRange <= 4:
+            return
+        target.attackRange = max(4, target.attackRange - 2)
+    
     # Monster traps
     def _bearTrap(self, target):
         ''' Common monster trap that deals light damage '''
@@ -333,8 +338,15 @@ class Trap(e.Entity):
             'effect' : _magicalDampeningTrap,
             'isFavor' : False,
             'charges' : 1
+            },
+        'Nearsighted Trap':
+            {
+            'rating' : 30,
+            'ratingScale' : 0.01,
+            'effect' : _nearsightedTrap,
+            'isFavor' : False,
+            'charges' : 1
             }
-    
     }
     
     monsterTraps = {

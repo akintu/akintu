@@ -1053,14 +1053,6 @@
   [INTERNAL: Spellpower_penalty]
     [MAGNITUDE: 0]
   [CATEGORY: Debuff]
-	
-[NAME: Nearsighted Trap]
-  [TYPE: Display]
-  [ELEMENT: Arcane]
-  [INTERNAL: Reduced_missile_range]
-    [MAGNITUDE: 2]
-  [CATEGORY: Debuff]
-  # Encode the minimum of 4 tiles somewhere?? TODO
 
 [NAME: Mage Hunting]
   [TYPE: Display]
