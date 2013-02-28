@@ -62,7 +62,7 @@ class Game(object):
         self.screen = GameScreen()
 
         self.CDF.send(Person(PersonActions.CREATE, None, Location((0, 0), (PANE_X/2, PANE_Y/2)), \
-            ("Player", "Human", "Assassin")))
+            ("Player", "Human", "Barbarian")))
 
         self.setup.stop()
         LoopingCall(self.game_loop).start(1.0 / DESIRED_FPS)
@@ -131,6 +131,10 @@ class Game(object):
             ###### Initiate Combat ######
             if isinstance(command, Update) and command.property == UpdateProperties.COMBAT:
                 self.combat = command.value
+            ###### Update AP ######    
+            if isinstance(command, Update) and command.property == UpdateProperties.AP:
+                self.pane.person[command.id].AP = command.value
+                self.screen.update_person(command.id, {'AP': command.value, 'team': self.pane.person[command.id].team})
                 
     def handle_events(self):
         pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
@@ -162,7 +166,8 @@ class Game(object):
             if self.keystate in [K_LSHIFT, K_RSHIFT] and not self.combat:
                 self.CDF.send(Person(PersonActions.RUN, self.id, direction))
                 self.running = True
-            else:
+                
+            elif self.pane.person[self.id].AP >= self.pane.person[self.id].totalMovementAPCost:
                 self.CDF.send(Person(PersonActions.MOVE, self.id, newloc))
                 if self.pane.person[self.id].location.pane == newloc.pane:
                     self.animate(self.id, self.pane.person[self.id].location, newloc, \

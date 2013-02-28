@@ -105,29 +105,9 @@ class GameServer():
                             if self.person[command.id].location.in_melee_range( \
                                     self.person[person].location) and \
                                     self.person[person].team == "Monsters":
-
-                                if not self.person[person].cPane:
-                                    # Put monster into combat
-                                    self.person[person].ai.pause()
-                                    self.person[person].cPane = self.person[person].location
-                                    self.load_pane(self.person[person].cPane, person)
-
-                                # Put player into combat
-                                self.person[command.id].ai.remove("RUN")
-                                self.person[command.id].cPane = self.person[person].location
+                                self.CS.startCombat(command.id, person)
+                                    
                                 
-                                #TODO: Calculate starting location for reals
-                                self.person[command.id].cLocation = Location((0, 0), (0, 0))
-
-                                self.SDF.send(p, Person(PersonActions.REMOVE, i))
-                                self.SDF.send(p, Update(i, UpdateProperties.COMBAT, \
-                                        True))
-                                self.SDF.send(p, Person(PersonActions.CREATE, i, \
-                                        self.person[command.id].cLocation, \
-                                        self.person[command.id].getDetailTuple()))
-                                for i in self.pane[self.person[person].cPane].person:
-                                    self.SDF.send(p, Person(PersonActions.CREATE, i, \
-                                            self.person[i].cLocation, self.person[i].getDetailTuple()))
                 else:
                     if port:
                         command.location = self.person[command.id].location

@@ -200,7 +200,7 @@ class GameScreen(object):
                        'totalMP', 'totalAP', 'restrictedAP', 'level']:
                 if statsdict['team'] == "Players":
                     self.playerframes[personid] = \
-                            _generateplayerframe(personid)
+                            self._generateplayerframe(personid)
                     self._drawplayerframes()
                 elif statsdict['team'] == "Monsters":
                     self.monsterframes[personid] = \

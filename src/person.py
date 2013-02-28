@@ -2152,8 +2152,8 @@ class Person(en.Entity):
         
     @AP.setter
     def AP(self, value):
-        if value > self._totalAP: 
-            value = self._totalAP
+        if value > self.totalAP: 
+            value = self.totalAP
         self._AP = value
     
     @property
