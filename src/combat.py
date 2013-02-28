@@ -719,23 +719,7 @@ class Combat(object):
         Outputs:
           None"""
         pass #TODO
-        
-    @staticmethod
-    def upkeep(target):
-        '''Applies all upkeep operations for this Person.  (Used during the combat
-        phase: "Upkeep"'''
-        if target.HPRegen > 0:
-            Combat.healTarget(target, target.HPRegen)
-        if target.MPRegen > 0:
-            Combat.modifyResource(target, "MP", target.MPRegen)
-        for stat in target.statusList:
-            stat.upkeepActivate(target)
-            if stat.turnsLeft > 0:
-                stat.turnsLeft -= 1
-        # Remove expired statuseffects
-        target.statusList[:] = [x for x in target.statusList if x.turnsList != 0]
-        
-        
+          
     @staticmethod
     def unsummonGuardian(target):
         """Removes the current guardian of the player from the battlefield.

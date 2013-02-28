@@ -1,4 +1,6 @@
 from network import *
+import broadcast
+from combat import *
 
 class CombatServer():
     def __init__(self, server):
@@ -52,3 +54,29 @@ class CombatServer():
         return self.server.pane[self.server.person[pid].cPane].is_tile_passable(location) and \
                 location.tile not in [self.server.person[i].cLocation.tile \
                 for i in self.server.pane[self.server.person[pid].cPane].person]
+                
+    def upkeep(self, target):
+        '''Applies all upkeep operations for this Person.  (Used during the combat
+        phase: "Upkeep"'''
+        if target.HPRegen > 0:
+            Combat.healTarget(target, target.HPRegen)
+        if target.MPRegen > 0:
+            Combat.modifyResource(target, "MP", target.MPRegen)
+        for stat in target.statusList:
+            stat.upkeepActivate(target)
+            if stat.turnsLeft > 0:
+                stat.turnsLeft -= 1
+        # Remove expired statuseffects
+        target.statusList[:] = [x for x in target.statusList if x.turnsList != 0]
+                
+    def shout_turn_start(self, player, turn="Player"):
+        '''Shouts to the Player that this particular turn is starting.
+        Defaults to "Player"; "Monster" is the other valid value.'''
+	    bc = broadcast.TurnBroadcast({'turn':turn})
+	    bc.shout(player)
+                
+    def refill_resources(player):
+        player.MP = player.totalMP
+	    player.HP = player.totalHP
+	    player.AP = player.totalAP      
+          
