@@ -94,3 +94,9 @@ def softcoreDeath(player):
     # Display message of gold lost TODO
 	player.inventory.gold -= goldLoss
 	# Transport player to town
+	
+@staticmethod
+def shoutTurnStart(player, turn="Player"):
+    bundle = {'turn':turn}
+	bc = broadcast.TurnBroadcast(bundle)
+	bc.shout(player)
