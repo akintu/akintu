@@ -26,6 +26,9 @@ while( AP > minCost, player didn't select "end turn", or timeLeft >0 )
 ----- Upkeep Phase -----
 * Perform Recurring status effects (such as Bleeding)
 * Status effect durations decrement
+* If monsters are all dead --> Victory
+* If player dies --> Player death (this player only)
+* If all players are dead --> Reset Overworld Monster
 * continue --> Player Turn Start
 
 ----- Victory -----
@@ -33,7 +36,7 @@ while( AP > minCost, player didn't select "end turn", or timeLeft >0 )
 * Display EXP earned
 * Remove all statuses with a duration > -1
 * Restore HP, MP, AP to maximum
-* Replace the Monster in the overworld with a treasure chest and remove the combat "state"
+* Remove the Monster from the overworld and remove the combat "state"
 * Apply EXP, if exp is enough to levelup, display levelup icon/prompt.
 
 ----- Player Death -----
@@ -42,4 +45,51 @@ while( AP > minCost, player didn't select "end turn", or timeLeft >0 )
 * If not permadeath, display a message indicating gold lost and prompt to respawn in town pane.
 
 ----- Reset Overworld Monster -----
-* Remove the combat "state" from the overworld and return AI to default behavior; restore monster HP.
+* Remove the combat "state" from the overworld and return AI to default behavior; restore monster HP/MP
+
+
+*** Monster Basic Combat AI ***
+Get list of abilities usable with remaining AP/MP
+Among those abilities, select those with valid targets in current range (Will using checking function).
+Use one of those abilities, if possible.
+(Select which ability by prioritizing special "attack" use before basic attack use with a 70/30 chance split)
+If no such abilities exist, check to see if you have enough AP to move.
+Move closer to nearest player (break ties randomly).
+Repeat process until insufficent AP/MP exists for movement OR ability use.
+
+
+
+**************** MOVE THIS LATER ***********************
+
+@staticmethod
+def calcExperienceGain(player, monsterList):
+    expGain = 0
+	for mon in monsterList:
+	    if player.level <= mon.level:
+		    expGain += mon.experienceGiven
+	    elif player.level <= mon.level - 2:
+		    expGain += round(mon.experienceGiven * 0.75)
+	    else:
+		    expGain += round(mon.experienceGiven * 0.15)
+	return expGain
+	
+@staticmethod
+def removeTemporaryStatuses(player):
+    removalList = [x for x in player.statusList if x.turnsLeft > -1]
+	for removalStatus in removalList:
+	    Combat.removeStatus(player, removalStatus)
+		
+@staticmethod
+def refillResources(player):
+    player.MP = player.totalMP
+	player.HP = player.totalHP
+	player.AP = player.totalAP
+	
+@staticmethod
+def softcoreDeath(player):
+    goldLoss -= round(player.inventory.gold * 0.1)
+	if goldLoss > player.inventory.gold:
+	    goldLoss = player.inventory.gold
+    # Display message of gold lost TODO
+	player.inventory.gold -= goldLoss
+	# Transport player to town

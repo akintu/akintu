@@ -1222,7 +1222,7 @@ class MagicalProperty(object):
             },
         'Regeneration: HP':
             {
-            'weight' : 6,
+            'weight' : 5,
             'cost' : 6,
             'effect' : _regenerationHP,
             'max' : None,
@@ -1233,7 +1233,7 @@ class MagicalProperty(object):
             },
         'Regeneration MP':
             {
-            'weight' : 5,
+            'weight' : 4,
             'cost' : 7,
             'effect' : _regenerationMP,
             'max' : None,

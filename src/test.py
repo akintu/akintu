@@ -46,19 +46,24 @@ class Testy(object):
         
 if __name__ == "__main__":
     theorycraft.TheoryCraft.loadAll()
+    char = None
     for i in range(96):
         raceName = theorycraft.TheoryCraft.classes[i]['name'].split(' ', 1)[0]
         className = theorycraft.TheoryCraft.classes[i]['name'].split(' ', 1)[1]
         char = theorycraft.TheoryCraft.getNewPlayerCharacter(raceName, className)
         print "   " + char.equippedItems.equippedWeapon.name
+        
     tc = treasurechest.TreasureChest("Small", 1, None, 12)
-    for i in range(100):
-        itemList = tc.generateTreasure()
-        for all in itemList:
+    for i in range(3):
+        tc.generateTreasure([char])
+        for all in char.inventory.allItems:
             print all.name
-    print char
-    print char.movementSpeed
-    print tc
+            if isinstance(all, equipment.Equipment):
+                for mag in all.propertyList:
+                    print mag.name + ":  " + str(mag.counts)
+        print str(int(char.inventory.gold)) + "\n"
+    print char.equippedItems.equippedWeapon.name
+    
     initMonster = theorycraft.TheoryCraft.getMonster(level=4)
     mList = theorycraft.TheoryCraft.generateMonsterGroup(initMonster)
     for m in mList:

@@ -26,7 +26,7 @@ class Monster(person.Person):
         person.Person.__init__(self, argDict)
         self.attackPower = 100
         self.team = "Monsters"
-        # TODO: Find a way to distinguish between summons and monsters for the 'team'.
+        # TODO: Find a way to distinguish between summons and monsters for the 'team'. Perhaps inherit from Person seperately?
         self.level = Monster.setFrom(argDict, 'minLevel')
         self.minLevel = self.level
         self.maxLevel = Monster.setFrom(argDict, 'maxLevel')
@@ -145,10 +145,9 @@ class Monster(person.Person):
             self.baseHP = round(self.baseHP * 2.5)
         
     def getDetailTuple(self):
-        '''Should be overriden by PlayerCharacters and other
-        children.  Returns a tuple of information needed to reconstitute
-        this Person object.
-        First argument should represent which type of object this is.'''
+        '''First argument should represent which type of object this is.'''
         return ("Monster", self.name, self.level)
         
-        
+    def getIdentifier(self):
+        tup = self.getDetailTuple()
+        return tup[0] + ": " + tup[1] + " " + tup[2]

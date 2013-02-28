@@ -41,16 +41,23 @@ class TreasureChest(entity.Entity):
             else:
                 self.lockComplexity = 21 + self.treasureLevel * 2
         
-    def generateTreasure(self, openingPlayer=None):
-        if self.type == "Gilded" and not openingPlayer:
+    def generateTreasure(self, playerList=None):
+        if not playerList:
             print "TreasureChest.generateTreasure -- Warning: No player specified for this treasure!"
             return
         if self.type == "Small":
-            return self._generateSmallTreasure()
+            for p in playerList:
+                valuables = self._generateSmallTreasure()
+                for v in valuables:
+                    p.inventory.addItem(v)
         elif self.type == "Large":
-            return self._generateLargeTreasure()
+            for p in playerList:
+                valuables = self._generateLargeTreasure()
+                for v in valuables:
+                    p.inventory.addItem(v)
         else:
-            return self._generateGildedTreasure(openingPlayer)
+            pass # TODO
+            #valuables = self._generateGildedTreasure(playerList)
             
     def _generateSmallTreasure(self):
         selection = Dice.roll(1, 100)
@@ -122,18 +129,18 @@ class TreasureChest(entity.Entity):
         selection = Dice.roll(1, 100)
         if selection <= 60:
             # Two pieces of gear ip=50/50
-            return [TreasureChest.selectGear(self.ip // 2), TreasureChest.selectGear(self.ip / 2)] 
+            return [TreasureChest.selectGear(self.ip / 2), TreasureChest.selectGear(self.ip / 2)] 
         elif selection <= 90:
             # Two pieces of gear and gold, ip=40/40/20
             return [TreasureChest.selectGear(round(self.ip * 0.4)),
                     TreasureChest.selectGear(round(self.ip * 0.4)),
-                    TreasureChest.selectGold((self.ip * 2) // 10)]
+                    TreasureChest.selectGold((self.ip * 2) / 10)]
         else:
             # One piece of gear ip=100
             return [TreasureChest._selectGear(self.ip)]
            
             
-    def _generateGildedTreasure(self, player):
+    def _generateGildedTreasure(self, playerList):
         return []
         # TODO: Two pieces of class-approriate gear.
         

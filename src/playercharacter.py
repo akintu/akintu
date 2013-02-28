@@ -15,10 +15,13 @@ class PlayerCharacter(p.Person):
     demoExpRequiredForLevel = {1 : 10, 2 : 25, 3 : 50, 4 : 90, 5 : 170}
     LEVEL_MAX = 5
     
-    def __init__(self, argDict):  
+    def __init__(self, argDict, name="No Name"):  
         p.Person.__init__(self, argDict)
         
         self.team = "Players"
+        self.name = name
+        if name in ["Kyle Rich", "Devin Ekins", "Joshua Belcher", "Colton Myers"]:
+            self.name = "Awesome Dude"
         
         self.level = 1
         self._experience = 0
@@ -867,6 +870,7 @@ class PlayerCharacter(p.Person):
         elif isinstance(newPiece, equipment.Weapon):
             pass
             # Weapon stats are viewed on the weapon itself.
+        self.inventory.removeItem(newPiece)
             
         if oldPiece:
             for prop in oldPiece.propertyList:
