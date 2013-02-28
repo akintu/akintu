@@ -149,7 +149,9 @@ class TheoryCraft(object):
         Outputs:
           list of Monsters '''
         # Add in category logic when we have regions?  Do we want this ever?
-        listOfMonsters = [initialMonster]
+        firstMonster = TheoryCraft.getMonster(loc=initialMonster.location, level=initialMonster.level,
+                                              name=initialMonster.name)
+        listOfMonsters = [firstMonster]
         if ignoreMaxLevel:
             subList = [x for x in TheoryCraft.monsters if
                        x['minLevel'] <= initialMonster.level + levelTolerance]

@@ -151,3 +151,4 @@ class Monster(person.Person):
     def getIdentifier(self):
         tup = self.getDetailTuple()
         return tup[0] + ": " + tup[1] + " " + tup[2]
+        # Insert location here?
