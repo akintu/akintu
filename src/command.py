@@ -10,7 +10,7 @@ UpdateProperties = enum(HP = 1, MP = 2, AP = 3, COMBAT = 4)
 
 class Command:
     def __init__(self):
-        pass
+        self.id = None
 
     def __repr__(self):
         return self.__class__.__name__ + "(" + ", ".join([attr + ": " + str(val) for attr, val in \

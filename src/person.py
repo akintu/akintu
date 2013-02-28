@@ -32,6 +32,9 @@ class Person(en.Entity):
         en.Entity.__init__(self, location=loc, image=img, passable=False)
         
         self.id = None
+        self.cPane = None
+        self.cLocation = None
+
         self.ai = AI()
         self.anim = None
         self.anim_start = 0

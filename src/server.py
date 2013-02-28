@@ -2,24 +2,28 @@ from network import *
 from location import *
 from theorycraft import TheoryCraft
 from playercharacter import *
-import copy
+from servercombat import *
 
 class GameServer():
     def __init__(self, world):
         self.world = world
         self.SDF = ServerDataFactory()
+        self.CS = CombatServer(self)
         reactor.listenTCP(1337, self.SDF)
 
         LoopingCall(self.server_loop).start(0)
 
         self.player = {}  # {Port: PersonID} Dict of all players, pointing to their personid
         self.person = {} # {PersonID: Person} Dict of all persons
-        self.combat = {} # {PersonID: Person} Dict of all persons in combat
         self.pane = {}  # {location.Pane: Pane} Dict of actual pane objects
 
     def server_loop(self):
         while not self.SDF.queue.empty():
             port, command = self.SDF.queue.get()
+            
+            if command.id and self.person[command.id] and self.person[command.id].cPane:
+                self.CS.handle(port, command)
+                continue
 
             ###### CreatePerson ######
             if isinstance(command, Person) and command.action == PersonActions.CREATE:
@@ -37,7 +41,7 @@ class GameServer():
 
                 # Send command to each player in the affected pane
                 for p, i in self.player.iteritems():
-                    if command.location.pane == self.person[i].location.pane and i not in self.combat:
+                    if command.location.pane == self.person[i].location.pane and not self.person[i].cPane:
                         self.SDF.send(p, command)
 
                 # Send list of players to the issuing client
@@ -50,27 +54,9 @@ class GameServer():
             ###### MovePerson ######
             if isinstance(command, Person) and command.action == PersonActions.MOVE:
                 self.load_pane(command.location.pane)
-                
-                # Remove from combat
-                if command.id in self.combat and command.location.pane != (0, 0):
-                    for p in self.person.values():
-                        if p.location == self.combat[command.id]['pane']:
-                            self.SDF.queue.put((None, Person(PersonActions.REMOVE, p.id)))
-                    for i in self.pane[self.combat[command.id]['pane']].person:
-                        del self.combat[i]
                     
-                    self.SDF.send(port, Person(PersonActions.REMOVE, command.id))
-                    self.SDF.send(port, Update(command.id, UpdateProperties.COMBAT, \
-                            False))
-                    self.SDF.send(port, Person(PersonActions.CREATE, i, \
-                            self.person[command.id].location, self.person[command.id].getDetailTuple()))
-                    
-                    for i in self.pane[self.person[command.id].location.pane].person:
-                        self.SDF.send(port, Person(PersonActions.CREATE, i, \
-                                self.person[i].location, self.person[i].getDetailTuple()))
-
                 # If this is a legal move request
-                elif self.tile_is_open(command.location, command.id):
+                if self.tile_is_open(command.location):
 
                     # If the origin and destination are in the same pane
                     if self.person[command.id].location.pane == command.location.pane:
@@ -79,7 +65,7 @@ class GameServer():
                         self.person[command.id].location = command.location
                         for p, i in self.player.iteritems():
                             if p != port and command.location.pane == self.person[i].location.pane and \
-                                    i not in self.combat:
+                                    not self.person[i].cPane:
                                 self.SDF.send(p, command)
 
                     else:
@@ -87,7 +73,7 @@ class GameServer():
                         self.pane[self.person[command.id].location.pane].person.remove(command.id)
                         for p, i in self.player.iteritems():
                             if self.person[i].location.pane == self.person[command.id].location.pane \
-                                    and i not in self.combat:
+                                    and not self.person[i].cPane:
                                 self.SDF.send(p, Person(PersonActions.REMOVE, command.id))
 
                         # Update location in server memory
@@ -103,7 +89,7 @@ class GameServer():
                                 self.SDF.send(p, command)
 
                         # Send list of players to the issuing client
-                        if command.id in [i for i in self.player.values()]:
+                        if command.id in self.player.values():
                             p = [p for p, i in self.player.iteritems() if i == command.id][0]
                             for i in self.pane[command.location.pane].person:
                                 if i != command.id:
@@ -113,37 +99,35 @@ class GameServer():
                         self.unload_panes()
                         
                     # Check for combat range and initiate combat states
-                    for p, i in self.player.iteritems():
-                        for person in self.person.values():
-                            if self.person[i].location.in_melee_range(person.location) and \
-                                    person.team == "Monsters":
+                    if command.id in self.player.values():
+                        p = [p for p, i in self.player.iteritems() if i == command.id][0]
+                        for person in self.pane[self.person[command.id].location.pane].person:
+                            if self.person[command.id].location.in_melee_range( \
+                                    self.person[person].location) and \
+                                    self.person[person].team == "Monsters":
 
-                                if i not in self.combat:
-                                    if person.id not in self.combat:
-                                        # Put monster into combat
-                                        person.ai.pause()
-                                        self.combat[person.id] = {'pane': person.location,
-                                                                   'loc': person.location}
+                                if not self.person[person].cPane:
+                                    # Put monster into combat
+                                    self.person[person].ai.pause()
+                                    self.person[person].cPane = self.person[person].location
+                                    self.load_pane(self.person[person].cPane, person)
 
-                                        self.load_pane(person.location, True)
-                                        self.pane[person.location].person.append(person.id)
+                                # Put player into combat
+                                self.person[command.id].ai.pause()
+                                self.person[command.id].cPane = self.person[person].location
+                                
+                                #TODO: Calculate starting location for reals
+                                self.person[command.id].cLocation = Location((0, 0), (0, 0))
 
-                                    # Put player into combat
-                                    self.person[i].ai.pause()
-                                    self.combat[i] = {'pane': person.location,
-                                                       'loc': self.person[i].location}
-
-                                    self.SDF.send(p, Person(PersonActions.REMOVE, i))
-                                    self.SDF.send(p, Update(i, UpdateProperties.COMBAT, \
-                                            True))
+                                self.SDF.send(p, Person(PersonActions.REMOVE, i))
+                                self.SDF.send(p, Update(i, UpdateProperties.COMBAT, \
+                                        True))
+                                self.SDF.send(p, Person(PersonActions.CREATE, i, \
+                                        self.person[command.id].cLocation, \
+                                        self.person[command.id].getDetailTuple()))
+                                for i in self.pane[self.person[person].cPane].person:
                                     self.SDF.send(p, Person(PersonActions.CREATE, i, \
-                                            person.location, self.person[i].getDetailTuple()))
-                                    self.SDF.send(p, Person(PersonActions.MOVE, i, \
-                                            Location((0, 0), (0, 0)), True))
-                                    for ii in self.pane[person.location].person:
-                                        self.SDF.send(p, Person(PersonActions.CREATE, ii, \
-                                                self.combat[ii]['loc'], self.person[ii].getDetailTuple()))
-                                    self.pane[person.location].person.append(self.person[i].id)
+                                            self.person[i].cLocation, self.person[i].getDetailTuple()))
                 else:
                     if port:
                         command.location = self.person[command.id].location
@@ -180,23 +164,23 @@ class GameServer():
             if isinstance(command, Person) and command.action == PersonActions.STOP:
                 self.person[command.id].ai.remove("RUN")
 
-    def tile_is_open(self, location, pid=None):
+    def tile_is_open(self, location):
         if location.pane not in self.pane:
             return False
-        if pid and pid in self.combat:
-            return self.pane[self.combat[pid]['pane']].is_tile_passable(location) and \
-                location.tile not in [self.combat[i]['loc'].tile \
-                for i in self.pane[self.combat[pid]['pane']].person]
-        else:
-            return self.pane[location.pane].is_tile_passable(location) and \
-                        location.tile not in [self.person[i].location.tile \
-                        for i in self.pane[location.pane].person]
+        return self.pane[location.pane].is_tile_passable(location) and \
+                location.tile not in [self.person[i].location.tile \
+                for i in self.pane[location.pane].person]
 
-    def load_pane(self, pane, combat=False):
+    def load_pane(self, pane, pid=None):
         if pane not in self.pane:
             print("Loading pane " + str(pane))
-            if combat:
-                self.pane[pane] = self.pane[pane.pane].get_combat_pane(pane)
+            if pid:
+                self.pane[pane] = self.pane[pane.pane].get_combat_pane(pane, self.person[pid])
+                for i, p in self.pane[pane].person.iteritems():
+                    p.cLocation = p.location
+                    p.location = None
+                    p.cPane = pane
+                #print self.pane[pane.pane].person
             else:
                 self.pane[pane] = self.world.get_pane(pane, True)
 
@@ -220,7 +204,11 @@ class GameServer():
                 print("Unloading pane " + str(pane))
 
                 # Stop all AI behaviors
+                print "Person keys:", self.person.keys()
                 for i in self.pane[pane].person:
+                    print "Deleting person #", i
                     self.person[i].ai.shutdown()
+                    del self.person[i]
+                print "Person keys:", self.person.keys()
 
                 del self.pane[pane]
