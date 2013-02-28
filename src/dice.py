@@ -6,6 +6,19 @@ import random
 class Dice(object):
     """A utility class used for purely chance events."""
     
+    oldGenerator = None
+    
+    @staticmethod
+    def stashGen():
+        """Saves the old position in the RNG and loads a new position."""
+        Dice.oldGenerator = random.getstate()
+        random.seed()
+    
+    @staticmethod    
+    def popGen():
+        """Loads the old position in the RNG"""
+        random.setstate(Dice.oldGenerator)
+    
     @staticmethod
     def rollSuccess(chanceOfSuccess):
         """rolls between [1 and 100]  If the roll is <= chanceOfSuccess, 
@@ -14,10 +27,12 @@ class Dice(object):
              chanceOfSuccess -- int from 1 to 100
            Outputs:
              "Normal Hit" or "Miss" """
-        random.seed()
+        Dice.stashGen()
         if (random.randint(1, 100) <= chanceOfSuccess):
+            Dice.popGen()
             return "Normal Hit"
         else:
+            Dice.popGen()
             return "Miss"
             
     @staticmethod
@@ -32,23 +47,28 @@ class Dice(object):
           cap: optional int representing the largest amount that can be returned
         Outpus:
           integer"""
-        random.seed()
+        Dice.stashGen()
+        rValue = None
         if cap != 0:
-            return round(min(value * (1 + scaleAttributeValue * scale), cap))
+            rValue = round(min(value * (1 + scaleAttributeValue * scale), cap))
         else:
-            return round(value * (1 + scaleAttributeValue * scale))
+            rValue = round(value * (1 + scaleAttributeValue * scale))
+        Dice.popGen()
+        return rValue
     
     @staticmethod
     def roll(minimum, maximum):
         """Returns an integer somewhere between the minimum and maximum (as an integer)."""
-        random.seed()
         if minimum == maximum:
             return minimum
-        return random.randint(minimum, maximum)
+        Dice.stashGen()
+        rValue = random.randint(minimum, maximum)
+        Dice.popGen()
+        return rValue
         
     @staticmethod
     def rollFloat(minFloat, maxFloat):
-        random.seed()
+        
         return random.uniform(minFloat, maxFloat)
         
     @staticmethod
@@ -59,9 +79,10 @@ class Dice(object):
              chanceOfSuccess -- int from 1 to 100
            Outputs:
              True or False """
-        random.seed()
-        return random.randint(1,100) <= targetRoll
-            
+        Dice.stashGen()
+        rValue = random.randint(1,100) <= targetRoll
+        Dice.popGen()
+        return rValue
     
     @staticmethod
     def chanceFromSize(target, sizeRules, defaultChance=0):
@@ -75,15 +96,17 @@ class Dice(object):
             is not in the list.  Defaults to 0%.
         Outputs:
           True or False"""
-        random.seed()
+        Dice.stashGen()
         size = target.size
         chance = defaultChance
         for rule in sizeRules:
             if size == rule[0]:
                 chance = rule[1]
         if random.random() <= chance:
+            Dice.popGen()
             return True
         else:
+            Dice.popGen()
             return False
     
     @staticmethod
@@ -95,9 +118,10 @@ class Dice(object):
         Outputs:
           False -- The trap failed to harm the target.
           True -- The trap successfully hit the target."""
-        random.seed()
+        Dice.stashGen()
         adjustedEva = round(target.totalTrapEvade * random.uniform(0.5, 1.0))
         adjustedRating = round(trap.trapRating * random.uniform(0.5, 1.0))
+        Dice.popGen()
         if adjustedEva >= adjustedRating:
             return False
         else:
@@ -113,49 +137,48 @@ class Dice(object):
             Reliable, Frequent, Occasional, Unlikely, Rarely
         Outputs:
           True or False"""
-        random.seed()
+        Dice.stashGen()
+        rValue = None
         name = chance.capitalize()
         endChance = 0
-        if (name == "Reliable" or name == "Reliably"):
+        if name == "Reliable" or name == "Reliably":
             endChance = 80
             if( source.level > target.level ):
                 endChance += 10 * (source.level - target.level)
             else:
                 endChance -= 5 * (target.level - source.level)
-            return (roll(1, 100) <= endChance)
-                
-        if (name == "Frequent" or name == "Frequently"):
+            rValue = Dice.roll(1, 100) <= endChance      
+        elif name == "Frequent" or name == "Frequently":
             endChance = 60
             if( source.level > target.level ):
                 endChance += 5 * (source.level - target.level)
             else:
                 endChance -= 5 * (target.level - source.level)
-            return (roll(1,100) <= min(endChance, 90))
-
-        if (name == "Occasional" or name == "Occasionally"):
+            rValue = Dice.roll(1,100) <= min(endChance, 90)
+        elif name == "Occasional" or name == "Occasionally":
             endChance = 50
             if( source.level > target.level ):
                 endChance += 5 * (source.level - target.level)
             else:
                 endChance -= 10 * (target.level - source.level)
-            return (roll(1,100) <= min(endChance, 80))
-
-        if (name == "Unlikely"):
+            rValue = Dice.roll(1,100) <= min(endChance, 80)
+        elif name == "Unlikely":
             endChance = 30
             if( source.level > target.level):
                 endChance += 5 * (source.level - target.level)
             else:
                 endChance -= 10 * (target.level - source.level)
-            return (roll(1,100) <= min(endChance, 70))
-
-        if (name == "Rarely" or name == "Rare"):
+            rValue =  Dice.roll(1,100) <= min(endChance, 70)
+        elif name == "Rarely" or name == "Rare":
             endChance = 15
-            if( source.level > target.level):
+            if source.level > target.level:
                 endChance += 5 * (source.level - target.level)
             else:
                 endChance -= 10 * (source.level - target.level)
-            return (roll(1,100) <= min(endChance, 50))
-                        
+            rValue = Dice.roll(1,100) <= min(endChance, 50)
+        Dice.popGen()
+        return rValue
+        
                 
                 
                 
