@@ -19,7 +19,7 @@ def main():
     ip = None
     if len(sys.argv) != 1:
         ip = argv[1]
-    game = Game("CorrectHorseStapleBattery!", ip, state=None)
+    game = Game("correcthorsebatterystaple!", ip, state=None)
 
 
 if __name__ == "__main__":
