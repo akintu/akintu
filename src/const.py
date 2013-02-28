@@ -31,15 +31,19 @@ TILES_BOTTOM = (TILE_BOTTOM_LEFT, TILE_BOTTOM_RIGHT)
 
 DESIRED_FPS = 120
 
+#========================IMAGES===========================
 #Coverage Percentage (.1 = 10%)
 RAND_ENTITIES = .06
-#RAND_ROCKS = .1
 
 IMAGES_PATH = os.path.join("res", "images")
 OBSTACLES_IMAGES_PATH = os.path.join(IMAGES_PATH, "obstacles")
 BACKGROUND_IMAGES_PATH = os.path.join(IMAGES_PATH, "background")
 MONSTERS_IMAGES_PATH = os.path.join(IMAGES_PATH, "monsters")
 
+#======================SAVE/LOAD==========================
+MONSTER_KEY = "monsters"
+ITEM_KEY = "items"
+    
 MOVE_KEYS = {K_LEFT: 4, K_KP4: 4, K_h: 4, K_RIGHT: 6, K_KP6: 6, K_l: 6, K_UP: 8, K_KP8: 8, K_k: 8, \
                 K_DOWN: 2, K_KP2: 2, K_j: 2}
 #MOVE_KEYS = {K_LEFT: 4, K_KP4: 4, K_h: 4, K_RIGHT: 6, K_KP6: 6, K_l: 6, K_UP: 8, K_KP8: 8, K_k: 8, \

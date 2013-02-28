@@ -38,8 +38,7 @@ class World(object):
         if self.world_state:
             if location in self.world_state:
                 pane_state = self.world_state[location]
-        print "WORLD STATE: " + str(self.world_state)
-        self.panes[location] = Pane(self.seed, location)
+        self.panes[location] = Pane(self.seed, location, load_entities=True, pane_state=None)
         self._merge_tiles(surrounding_locations)
         
         self.panes[location].load_images()
@@ -87,19 +86,16 @@ class Pane(object):
         self.person = {}
         self.background_key = Sprites.get_background(self.seed + str(self.location))
 
-        print "PANE STATE: " + str(pane_state)
         for i in range(PANE_X):
             for j in range(PANE_Y):
                 self.tiles[(i, j)] = Tile(None, True)
                 if load_entities:
                     self.add_obstacle((i, j), RAND_ENTITIES)
                     
-        #print load_entities
         if load_entities:
             if self.pane_state:
                 self.load_state(self.pane_state)
             else:
-                #print "Loading monsters"
                 self.load_monsters()
                 #self.load_items()
 
@@ -133,7 +129,8 @@ class Pane(object):
                 person.ai.add("WANDER", person.ai.wander, person.movementSpeed, pid=id(person), region=r, move_chance=1.0 / (person.movementSpeed))
                 self.person[id(person)] = person
     
-    def load_items(self):
+    def load_items(self, items=None):
+        print "load_items() currently does nothing :)"
         pass
     
     def load_images(self):
@@ -199,15 +196,15 @@ class Pane(object):
     def get_combat_pane(self, focus_tile, monster = None):
         return CombatPane(self, focus_tile, monster)
 
-    MONSTER_KEY = "monsters"
-    ITEM_KEY = "items"
     def load_state(self, state):
         #Get Monsters
-        if "monsters" in state:
-            pass
+        if MONSTER_KEY in state:
+            self.load_monsters(monsters=state[MONSTER_KEY])
         #Get Items
+        if ITEM_KEY in state:
+            self.load_items(items=state[ITEM_KEY])
         #Get Anything Else
-        
+        pass
     
     def save_state(self):
         pass
