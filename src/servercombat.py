@@ -108,11 +108,9 @@ class CombatServer():
                 self.server.player.values()]:
             if player.AP != 0:
                 APRemains = True
-        turnOver = False
-        if not APRemains or timeExpired:
-            turnOver = True
-        if turnOver:
+        if not APRemains:
             self.combatStates[combatPane].turnTimer.cancel()
+        if timeExpired or not APRemains:
             self.end_turn(combatPane)
         # TODO: check to see if remaining AP is not enough to do anything
         # with.
