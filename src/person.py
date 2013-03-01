@@ -362,7 +362,8 @@ class Person(en.Entity):
         """Is comprised only of the value given at character creation.
         This public access is given only to avoid inconsistency with the
         way other variables are accessed."""
-        return self._totalMeleeAttackAPCost
+        return self._baseMeleeAttackAPCost
+        # Add more later?
         
     @property
     def baseMeleeAttackAPCost(self):

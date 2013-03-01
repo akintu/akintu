@@ -7,20 +7,60 @@ import listener
 
 class Ability(object):
     
-    def __init__(self, name, owner):
-        self.name = name
-        info = Ability.allAbilities[name]
-        self.level = info['level']
-        self.HPCost = info['HPCost']
-        self.APCost = info['APCost']
-        self.range = info['range']
-        self.targetType = info['target']
-        self.action = info['action']
-        self.cooldown = info['cooldown']
-        self.checkFunction = info['checkFunction']
-        self.breakStealth = info['breakStealth']
+    def _basicAttack(self, target):
+        source = self.owner
+        hit = Combat.calcHit(source, target, "Physical")
+        Combat.basicAttack(source, target, hit)
+        
+    def _basicMeleeAttackCheck(self, target):
+        source = self.owner
+        if source.usingWeaponStyle("Melee"):
+            return (True, "")
+        return (False, "Must be using a melee weapon to perform: " + self.name)
+        
+    def _basicRangedAttackCheck(self, target):
+        source = self.owner
+        if source.usingWeaponStyle("Ranged"):
+            return (True, "")
+        return (False, "Must be using a ranged weapon to perform: " + self.name)
+    
+    def __init__(self, name, owner, basicAttackType=None):
         self.owner = owner
-       
+        if not basicAttackType:
+            info = Ability.allAbilities[name]   
+            self.name = name
+            self.level = info['level']
+            self.HPCost = info['HPCost']
+            self.APCost = info['APCost']
+            self.range = info['range']
+            self.targetType = info['target']
+            self.action = info['action']
+            self.cooldown = info['cooldown']
+            self.checkFunction = info['checkFunction']
+            self.breakStealth = info['breakStealth']
+        elif basicAttackType == "Melee":
+            self.name = "Melee Attack"
+            self.level = 1
+            self.HPCost = 0
+            self.APCost = owner.totalMeleeAttackAPCost
+            self.range = 1
+            self.targetType = "hostile"
+            self.action = Ability._basicAttack
+            self.cooldown = 0
+            self.checkFunction = Ability._basicMeleeAttackCheck
+            self.breakStealth = 100
+        elif basicAttackType == "Ranged":
+            self.name = "Ranged Attack"
+            self.level = 1
+            self.HPCost = 0
+            self.APCost = owner.totalRangedAttackAPCost
+            self.range = -1
+            self.targetType = "hostile"
+            self.action = Ability._basicAttack
+            self.cooldown = 0
+            self.checkFunction = Ability._basicRangedAttackCheck
+            self.breakStealth = 100
+            
     @staticmethod       
     def convertAbilityName(aName):
         firstChar = aName[0].lower()
@@ -65,7 +105,7 @@ class Ability(object):
         if self.canUse(target)[0]:
             hpLoss = self.HPCost
             if "Percent" in str(self.HPCost):
-                hpLoss = round(int(self.HPCost.split(" ")[0]) / 100 * self.owner.totalHP)
+                hpLoss = round(int(self.HPCost.split(" ")[0]) / 100.0 * self.owner.totalHP)
             Combat.modifyResource(self.owner, "HP", -hpLoss)
             Combat.modifyResource(self.owner, "AP", -self.APCost)
             if self.cooldown:

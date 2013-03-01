@@ -197,12 +197,13 @@ class PlayerCharacter(p.Person):
             self.spellList.append(spellThree)
         
         self.abilities = []
+        self.registerBasicAttacks()
         for abil in ability.Ability.allAbilities:
             current = ability.Ability.allAbilities[abil]
             if current['class'] == self.baseClass or current['class'] == self.secondaryClass or current['class'] == self.characterClass:
                 if current['level'] == 1:
                     newAbil = ability.Ability(abil, self)
-                    self.abilities.append(newAbil)
+                    self.abilities.append(newAbil)        
                 
         self.passiveAbilities = []
         for pAbil in passiveability.PassiveAbility.allContentByName:
@@ -233,6 +234,10 @@ class PlayerCharacter(p.Person):
         self.attacksPerformed = [0,0] 
         # TODO: Need to update attacksPerformed each turn.  The previous turn's number of attacks is in position 0, this turn's
         # in position 1.  Need to also shift those at the end of each turn...        
+    
+    def registerBasicAttacks(self):
+        self.abilities.append(ability.Ability("Basic Attack", self, "Melee"))
+        self.abilities.append(ability.Ability("Ranged Attack", self, "Ranged"))
     
     def getDetailTuple(self):
         '''Should be overriden by PlayerCharacters and other
