@@ -404,6 +404,7 @@
 
 [NAME: Arcane Ward]
   [TYPE: Display]
+  [IMAGE: juggler.png]
   [ELEMENT: Arcane]
   [INTERNAL: Dodge_bonus]
     [MAGNITUDE: 0]
@@ -415,6 +416,7 @@
 	
 [NAME: Mystic Shield]
   [TYPE: Display]
+  [IMAGE: energy-shield.png]
   [ELEMENT: Arcane]
   [INTERNAL: HP_buffer]
     [MAGNITUDE: 0]
@@ -422,6 +424,7 @@
   
 [NAME: Stone Guard]
   [TYPE: Display]
+  [IMAGE: stone-sphere.png]
   [ELEMENT: None]
   [INTERNAL: DR_bonus]
     [MAGNITUDE: 0]
@@ -432,6 +435,7 @@
 
 [NAME: Chill]
   [TYPE: Display]
+  [IMAGE: snowflake-2.png]
   [ELEMENT: Cold]
   [INTERNAL: Dodge_penalty]
     [MAGNITUDE: 0]
@@ -439,6 +443,7 @@
 
 [NAME: Suggest Laziness]
   [TYPE: Display]
+  [IMAGE: oppression.png]
   [ELEMENT: None]
   [INTERNAL: AI_attack_nearby]
     [MAGNITUDE: 0]
@@ -446,6 +451,7 @@
     
 [NAME: Stutter]
   [TYPE: Display]
+  [IMAGE: drama-masks.png]
   [ELEMENT: None]
   [INTERNAL: Spell_failure_chance]
     [MAGNITUDE: 10]
@@ -455,6 +461,7 @@
 
 [NAME: Cloud Vision]
   [TYPE: Display]
+  [IMAGE: sunken-eye.png]
   [ELEMENT: Shadow]
   [INTERNAL: Melee_accuracy_penalty]
     [MAGNITUDE: 0]
@@ -464,14 +471,14 @@
 	
 [NAME: Haunt]
   [TYPE: Display]
+  [IMAGE: ghost.png]
   [ELEMENT: Shadow]
   [INTERNAL: Damage_over_time]
     [MAGNITUDE: 0]
-	[MIN: 0]
-	[MAX: 0]
 	
 [NAME: Zone of Silence]
   [TYPE: Display]
+  [IMAGE: nothing-to-say.png]
   [ELEMENT: None]
   [INTERNAL: Sneak_bonus]
     [MAGNITUDE: 10]
@@ -480,6 +487,7 @@
 	
 [NAME: Blurry]
   [TYPE: Display]
+  [IMAGE: two-shadows.png]
   [ELEMENT: None]
   [INTERNAL: Sneak_bonus]
     [MAGNITUDE: 0]
@@ -489,6 +497,7 @@
 	
 [NAME: Weapon Enhance Striking]
   [TYPE: Display]
+  [IMAGE: sparkling-saber.png]
   [ELEMENT: None]
   [INTERNAL: Melee_accuracy_bonus]
     [MAGNITUDE: 0]
@@ -500,6 +509,7 @@
 	
 [NAME: Weapon Enhance Punishing]
   [TYPE: Display]
+  [IMAGE: sparkling-saber.png]
   [ELEMENT: None]
   [INTERNAL: Critical_magnitude_bonus]
     [MAGNITUDE: 0]
@@ -508,6 +518,7 @@
    
 [NAME: Weapon Enhance Precision]
   [TYPE: Display]
+  [IMAGE: sparkling-saber.png]
   [ELEMENT: None]
   [INTERNAL: Critical_chance_bonus]
     [MAGNITUDE: 0]
@@ -516,6 +527,7 @@
   
 [NAME: Flaming Weapon]
   [TYPE: Display]
+  [IMAGE: flaming-trident.png]
   [ELEMENT: Fire]
   [INTERNAL: Weapon_damage_bonus]
     [MAGNITUDE: 0]
@@ -526,6 +538,7 @@
 	
 [NAME: Identification]
   [TYPE: Display]
+  [IMAGE: uncertainty.png]
   [ELEMENT: Arcane]
   [INTERNAL: Spellpower_bonus]
     [MAGNITUDE: 0]
@@ -533,6 +546,7 @@
 	
 [NAME: Hovering Shield]
   [TYPE: Display]
+  [IMAGE: winged-shield.png]
   [ELEMENT: Arcane]
   [INTERNAL: Ranged_dodge_bonus]
     [MAGNITUDE: 0]
@@ -540,6 +554,7 @@
 	
 [NAME: Fright]
   [TYPE: Display]
+  [IMAGE: terror.png]
   [ELEMENT: Shadow]
   [INTERNAL: Elemental_vulnerability]
     [MAGNITUDE: 20]
@@ -549,6 +564,7 @@
 
 [NAME: Infection]
   [TYPE: Display]
+  [IMAGE: syringe.png]
   [ELEMENT: Poison]
   [INTERNAL: Damage_over_time]
     [MAGNITUDE: 0]
@@ -557,6 +573,7 @@
   
 [NAME: Elemental Boon]
   [TYPE: Display]
+  [IMAGE: magic-shield.png]
   [ELEMENT: Fire]
   [INTERNAL: Elemental_resistance_fire]
     [MAGNITUDE: 0]
@@ -568,6 +585,7 @@
 	
 [NAME: Suggest Cowardice]
   [TYPE: Display]
+  [IMAGE: back-pain.png]
   [ELEMENT: None]
   [INTERNAL: AI_flee]
     [MAGNITUDE: 0]
@@ -575,6 +593,7 @@
 	
 [NAME: Smoke Screen]
   [TYPE: Display]
+  [IMAGE: heat-haze.png]
   [ELEMENT: Fire]
   [INTERNAL: Dodge_bonus]
     [MAGNITUDE: 10]
@@ -583,6 +602,7 @@
 	
 [NAME: Shrink]
   [TYPE: Display]
+  [IMAGE: inner-self.png]
   [ELEMENT: Divine]
   [INTERNAL: Attack_power_penalty]
     [MAGNITUDE: 10]
@@ -592,6 +612,7 @@
 
 #[NAME: Frost Weapon]
 #  [TYPE: Display]
+#  [IMAGE: frozen-arrow.png]
 #  [ELEMENT: Cold]
 #  [INTERNAL: Weapon_damage_bonus]
 #    [MAGNITUDE: 0]
@@ -606,6 +627,7 @@
 
 [NAME: Brace]
   [TYPE: Display]
+  [IMAGE: guarded-tower.png]
   [ELEMENT: None]
   [INTERNAL: Dodge_bonus]
     [MAGNITUDE: 5]
@@ -613,6 +635,7 @@
 	
 [NAME: Wound Leg]
   [TYPE: Display]
+  [IMAGE: nailed-foot.png]
   [ELEMENT: None]
   [INTERNAL: Dodge_penalty]
     [MAGNITUDE: 15]
@@ -622,6 +645,7 @@
 	
 [NAME: Wound Arm]
   [TYPE: Display]
+  [IMAGE: cut-palm.png]
   [ELEMENT: None]
   [INTERNAL: Melee_accuracy_penalty]
     [MAGNITUDE: 6]
@@ -633,6 +657,7 @@
 	
 [NAME: Combo Attack]
   [TYPE: Display]
+  [IMAGE: sword-aray.png]
   [ELEMENT: None]
   [INTERNAL: Combo_attack_internal]
     [MAGNITUDE: 0]
@@ -641,6 +666,7 @@
 
 [NAME: Tunnel Vision]
   [TYPE: Display]
+  [IMAGE: spectacle-lenses.png]
   [ELEMENT: None]
   [INTERNAL: Ranged_accuracy_bonus]
     [MAGNITUDE: 10]
@@ -654,6 +680,7 @@
 	
 [NAME: Sticky Trap]
   [TYPE: Display]
+  [IMAGE: goo-explosion.png]
   [ELEMENT: None]
   [INTERNAL: Movement_speed_penalty]
     [MAGNITUDE: 1]
@@ -661,6 +688,7 @@
 	
 [NAME: Ranger's Aim]
   [TYPE: Display]
+  [IMAGE: target-arrows.png]
   [ELEMENT: None]
   [INTERNAL: Ranged_accuracy_bonus]
     [MAGNITUDE: 5]
@@ -672,6 +700,7 @@
 	
 [NAME: Defensive Slash]
   [TYPE: Display]
+  [IMAGE: quick-slash.png]
   [ELEMENT: None]
   [INTERNAL: Dodge_bonus]
     [MAGNITUDE: 10]
@@ -679,6 +708,7 @@
 	
 [NAME: Tar Trap]
   [TYPE: Display]
+  [IMAGE: burst-blob.png]
   [ELEMENT: Fire]
   [INTERNAL: Elemental_vulnerability]
     [MAGNITUDE: 20]
@@ -690,6 +720,7 @@
 
 [NAME: Magic Guard]
   [TYPE: Display]
+  [IMAGE: eye-shield.png]
   [ELEMENT: Arcane]
   [INTERNAL: Elemental_resistance_arcane]
     [MAGNITUDE: 10]
@@ -699,6 +730,7 @@
 
 [NAME: Gather]
   [TYPE: Display]
+  [IMAGE: magic-swirl.png]
   [ELEMENT: Arcane]
   [INTERNAL: Spellpower_bonus]
     [MAGNITUDE: 5]
@@ -706,6 +738,7 @@
 	
 [NAME: Spell Sight]
   [TYPE: Display]
+  [IMAGE: brass-eye.png]
   [ELEMENT: Arcane]
   [REMOVED_ON: Ranged Attack]
   [REMOVED_ON: Spell Cast]
@@ -717,6 +750,7 @@
 
 [NAME: Runic Dust]
   [TYPE: Display]
+  [IMAGE: smoking-finger.png]
   [ELEMENT: Arcane]
   [INTERNAL: Magic_resist_penalty]
     [MAGNITUDE: 0]
@@ -726,6 +760,7 @@
 
 [NAME: Stealth]
   [TYPE: Display]
+  [IMAGE: hidden.png]
   [ELEMENT: None]
   [INTERNAL: Set_movement_AP_cost]
     [MAGNITUDE: 6]
@@ -737,6 +772,7 @@
 	
 [NAME: Chain Grasp]
   [TYPE: Display]
+  [IMAGE: andromeda-chain.png]
   [ELEMENT: None]
   [INTERNAL: Movement_speed_penalty]
     [MAGNITUDE: 1]
@@ -748,6 +784,7 @@
 	
 [NAME: Agile Position]
   [TYPE: Display]
+  [IMAGE: batwing-emblem.png]
   [ELEMENT: None]
   [INTERNAL: Dodge_bonus]
     [MAGNITUDE: 12]
@@ -755,6 +792,7 @@
 	
 [NAME: Feint]
   [TYPE: Display]
+  [IMAGE: hazard-sign.png]
   [ELEMENT: None]
   [INTERNAL: Dodge_penalty]
     [MAGNITUDE: 10]
@@ -762,6 +800,7 @@
 	
 [NAME: Far-Sighted Focus]
   [TYPE: Display]
+  [IMAGE: cyclops.png]
   [ELEMENT: None]
   [INTERNAL: Dodge_penalty]
     [MAGNITUDE: 5]
@@ -770,10 +809,9 @@
   [INTERNAL: Ranged_dodge_bonus]
     [MAGNITUDE: 7]
 
-# As is, will not display which target the bonuses are given against.	
-	
 [NAME: Shock Factor Attack Penalty]
   [TYPE: Display]
+  [IMAGE: surprised.png]
   [ELEMENT: None]
   [INTERNAL: Attack_power_penalty]
     [MAGNITUDE: 15]
@@ -781,6 +819,7 @@
 
 [NAME: Shock Factor Spell Failure]
   [TYPE: Display]
+  [IMAGE: surprised.png]
   [ELEMENT: None]
   [INTERNAL: Spell_failure_chance]
     [MAGNITUDE: 5]
@@ -790,6 +829,7 @@
 
 [NAME: Shield Deflection]
   [TYPE: Display]
+  [IMAGE: shield-reflection.png]
   [ELEMENT: None]
   [INTERNAL: Ignore_ranged_attacks]
     [MAGNITUDE: 20]
@@ -798,12 +838,14 @@
   
 [NAME: True Friend]
   [TYPE: Display]
+  [IMAGE: heart-inside.png]
   [ELEMENT: None]
   [INTERNAL: DR_bonus]
     [MAGNITUDE: 5]
 	
 #[NAME: True Friend Protection]
 #  [TYPE: Display]
+#  [IMAGE: None]
 #  [ELEMENT: None]
 #  [INTERNAL: Redirect_melee_attacks]
 #    [MAGNITUDE: 90]
@@ -812,6 +854,7 @@
 
 [NAME: Spear-Pierce]
   [TYPE: Display]
+  [IMAGE: pierced-body.png]
   [ELEMENT: None]
   [INTERNAL: Bleeding]
     [MAGNITUDE: 10]
@@ -819,6 +862,7 @@
 	
 [NAME: Restful Jump Attack]
   [TYPE: Display]
+  [IMAGE: bat-blade.png]
   [ELEMENT: None]
   [INTERNAL: DR_bonus]
     [MAGNITUDE: 10]
@@ -828,6 +872,7 @@
 
 [NAME: Berserker Rage]
   [TYPE: Display]
+  [IMAGE: swallow.png]
   [ELEMENT: None]
   [INTERNAL: Might_bonus]
     [MAGNITUDE: 10]
@@ -838,6 +883,7 @@
 	
 [NAME: Improved Berserker Rage]
   [TYPE: Display]
+  [IMAGE: swallow.png]
   [ELEMENT: None]
   [INTERNAL: Might_bonus]
     [MAGNITUDE: 15]
@@ -848,6 +894,7 @@
  
 [NAME: Blood of the Ancients]
   [TYPE: Display]
+  [IMAGE: half-heart.png]
   [ELEMENT: None]
   [INTERNAL: DR_penalty]
     [MAGNITUDE: 5]
@@ -855,13 +902,15 @@
 	
 [NAME: Crush Armor]
   [TYPE: Display]
-  [ELEMENT: None]
+  [IMAGE: None]
+  [ELEMENT: slashed-shield.png]
   [INTERNAL: DR_penalty]
     [MAGNITUDE: 15]
   [CATEGORY: Debuff] 
 	
 [NAME: Guzzle]
   [TYPE: Display]
+  [IMAGE: droplets.png]
   [ELEMENT: None]
   [INTERNAL: Potion_effect_bonus]
     [MAGNITUDE: 30]
@@ -871,6 +920,7 @@
 
 [NAME: Martial Mode]
   [TYPE: Display]
+  [IMAGE: muscle-up.png]
   [ELEMENT: None]
   [INTERNAL: Might_bonus]
     [MAGNITUDE: 5]
@@ -881,6 +931,7 @@
   
 [NAME: Improved Martial Mode]
   [TYPE: Display]
+  [IMAGE: muscle-up.png]
   [ELEMENT: None]
   [INTERNAL: Might_bonus]
     [MAGNITUDE: 7]
@@ -891,6 +942,7 @@
   
 #[NAME: Rebound]
 #  [TYPE: Display]
+#  [IMAGE: None]
 #  [ELEMENT: Arcane]
 #  [INTERNAL: Refund_mana_on_cast]
 #	[TRIGGERED_BY: Spell Cast Resisted] # Hardcoded, do not change.
@@ -901,6 +953,7 @@
 
 [NAME: Trap Worry]
   [TYPE: Display]
+  [IMAGE: eyeball.png]
   [ELEMENT: None]
   [INTERNAL: Dodge_penalty]
     [MAGNITUDE: 8]
@@ -916,6 +969,7 @@
 	
 [NAME: Harmless Grin]
   [TYPE: Display]
+  [IMAGE: mad-scientist.png]
   [ELEMENT: None]
   [INTERNAL: Trap_evade_penalty]
     [MAGNITUDE: 12]
@@ -925,6 +979,7 @@
 
 [NAME: Laying in Wait]
   [TYPE: Display]
+  [IMAGE: hidden.png]
   [ELEMENT: None]
   [INTERNAL: Ranged_accuracy_bonus]
     [MAGNITUDE: 0]
@@ -933,12 +988,14 @@
 
 [NAME: Suppressing Fire]
   [TYPE: Display]
+  [IMAGE: arrow-cluster.png]
   [ELEMENT: None]
   [INTERNAL: On_hit_suppressing_weapon]
     [MAGNITUDE: 0]
 
 [NAME: Suppressed]
   [TYPE: Display]
+  [IMAGE: arrow-cluster.png]
   [ELEMENT: None]
   [INTERNAL: Melee_accuracy_penalty]
     [MAGNITUDE: 5]
@@ -949,6 +1006,7 @@
 	
 [NAME: Crippled]
   [TYPE: Display]
+  [IMAGE: arrow-cluster.png]
   [ELEMENT: None]
   [INTERNAL: Movement_speed_penalty]
     [MAGNITUDE: 3]
@@ -957,11 +1015,10 @@
 
 [NAME: Smoking Projectile]
   [TYPE: Display]
+  [IMAGE: chemical-arrow.png]
   [ELEMENT: Fire]
   [INTERNAL: Damage_over_time]
     [MAGNITUDE: 0]
-	[MIN: 0]
-	[MAX: 0]
   [INTERNAL: Melee_accuracy_penalty]
     [MAGNITUDE: 10]
   [INTERNAL: Ranged_accuracy_penalty]
@@ -970,6 +1027,7 @@
 	
 [NAME: Beacon Trap]
   [TYPE: Display]
+  [IMAGE: land-mine.png]
   [ELEMENT: None]
   [INTERNAL: Ranged_dodge_penalty]
     [MAGNITUDE: 15]
@@ -980,12 +1038,14 @@
 
 [NAME: Deep Wound]
   [TYPE: Display]
+  [IMAGE: ragged-wound.png]
   [ELEMENT: None]
   [INTERNAL: Bleeding]
     [MAGNITUDE: 10]
 	
 [NAME: Painful Shot]
   [TYPE: Display]
+  [IMAGE: spiral-arrow.png]
   [ELEMENT: None]
   [INTERNAL: Attack_power_penalty]
     [MAGNITUDE: 10]
@@ -993,12 +1053,14 @@
 	
 [NAME: Poisonous Touch]
   [TYPE: Display]
+  [IMAGE: pointing.png]
   [ELEMENT: Poison]
   [INTERNAL: Damage_over_time]
     [MAGNITUDE: 0]
 	
 [NAME: Target Throat]
   [TYPE: Display]
+  [IMAGE: targeting.png]
   [ELEMENT: None]
   [INTERNAL: Ranged_critical_magnitude_bonus]
     [MAGNITUDE: 30]
@@ -1012,12 +1074,14 @@
 	
 [NAME: Poison Thorn Trap]
   [TYPE: Display]
+  [IMAGE: barbed-wire.png]
   [ELEMENT: Poison]
   [INTERNAL: Damage_over_time]
     [MAGNITUDE: 0]
 
 [NAME: Lethargic Shot]
   [TYPE: Display]
+  [IMAGE: coma.png]
   [ELEMENT: Poison]
   [INTERNAL: Movement_speed_penalty]
     [MAGNITUDE: 1]
@@ -1031,6 +1095,7 @@
 
 [NAME: Accuracy Favor]
   [TYPE: Display]
+  [IMAGE: on-target.png]
   [ELEMENT: Arcane]
   [INTERNAL: Melee_accuracy_bonus]
     [MAGNITUDE: 0]
@@ -1040,6 +1105,7 @@
 	
 [NAME: Improved Accuracy Favor]
   [TYPE: Display]
+  [IMAGE: on-target.png]
   [ELEMENT: Arcane]
   [INTERNAL: Melee_accuracy_bonus]
     [MAGNITUDE: 0]
@@ -1049,6 +1115,7 @@
 	
 [NAME: Magical Dampening Trap]
   [TYPE: Display]
+  [IMAGE: crystal-cluster.png]
   [ELEMENT: Arcane]
   [INTERNAL: Spellpower_penalty]
     [MAGNITUDE: 0]
@@ -1056,6 +1123,7 @@
 
 [NAME: Mage Hunting]
   [TYPE: Display]
+  [IMAGE: sonic-boom.png]
   [ELEMENT: Arcane]
   [INTERNAL: Ranged_accuracy_bonus]
     [MAGNITUDE: 2]
@@ -1068,12 +1136,14 @@
 
 [NAME: Hunted]
   [TYPE: Display]
+  [IMAGE: sonic-boom.png]
   [ELEMENT: Arcane]
   [INTERNAL: Spell_failure_chance]
     [MAGNITUDE: 8]
   
 [NAME: Mighty Favor]
   [TYPE: Display]
+  [IMAGE: muscle-up.png]
   [ELEMENT: Arcane]
   [INTERNAL: Might_bonus]
     [MAGNITUDE: 0]
@@ -1083,6 +1153,7 @@
 	
 [NAME: Dark Intent]
   [TYPE: Display]
+  [IMAGE: wave-strike.png]
   [ELEMENT: Shadow]
   [INTERNAL: Weapon_damage_bonus]
     [MAGNITUDE: 0]
@@ -1090,6 +1161,7 @@
 	
 [NAME: Seeping Darkness]
   [TYPE: Display]
+  [IMAGE: skull-bolt.png]
   [ELEMENT: Shadow]
   [INTERNAL: Damage_over_time]
     [MAGNITUDE: 0]
@@ -1098,6 +1170,7 @@
 	
 [NAME: Shadow Walk]
   [TYPE: Display]
+  [IMAGE: hidden.png]
   [ELEMENT: None]
   [INTERNAL: Set_movement_AP_cost]
     [MAGNITUDE: 6]
@@ -1107,18 +1180,21 @@
 
 [NAME: Sudden Flurry]
   [TYPE: Display]
+  [IMAGE: sword-array.png]
   [ELEMENT: None]
   [INTERNAL: Sudden_flurry_internal]
     [MAGNITUDE: 0]
 	
 [NAME: Stealthy Sudden Flurry]
   [TYPE: Display]
+  [IMAGE: sword-array.png]
   [ELEMENT: None]
   [INTERNAL: Sudden_flurry_internal_stealth]
     [MAGNITUDE: 0]
 	
 [NAME: Sudden Flurry Surprise]
   [TYPE: Display]
+  [IMAGE: sword-array.png]
   [ELEMENT: None]
   [INTERNAL: Movement_speed_penalty]
     [MAGNITUDE: 5]
@@ -1130,6 +1206,7 @@
 
 [NAME: Sneaky Sneaky]
   [TYPE: Display]
+  [IMAGE: tread.png]
   [ELEMENT: None]
   [INTERNAL: Sneak_bonus]
     [MAGNITUDE: 8]
@@ -1141,6 +1218,7 @@
   
 [NAME: Massive Shot]
   [TYPE: Display]
+  [IMAGE: supersonic-arrow.png]
   [ELEMENT: None]
   [INTERNAL: Sneak_penalty]
     [MAGNITUDE: 5]
@@ -1148,6 +1226,7 @@
 	
 [NAME: Risky Shot]
   [TYPE: Display]
+  [IMAGE: hazard-sign.png]
   [ELEMENT: None]
   [INTERNAL: Bleeding]
     [MAGNITUDE: 5]
@@ -1158,6 +1237,7 @@
 
 [NAME: Conceal]
   [TYPE: Display]
+  [IMAGE: hiddne.png]
   [ELEMENT: None]
   [INTERNAL: Avoidance]
     [MAGNITUDE: 40]
@@ -1167,36 +1247,42 @@
 
 [NAME: Southern Tiger Style]
   [TYPE: Display]
+  [IMAGE: paw.png]
   [ELEMENT: None]
   [INTERNAL: Tiger_style]
     [MAGNITUDE: 0]
 
 [NAME: Flying Crane Style]
   [TYPE: Display]
+  [IMAGE: feathered-wing.png]
   [ELEMENT: None]
   [INTERNAL: Crane_style]
     [MAGNITUDE: 0]
 	
 [NAME: Way of the Serpent Style]
   [TYPE: Display]
+  [IMAGE: snake.png]
   [ELEMENT: None]
   [INTERNAL: Snake_style]
     [MAGNITUDE: 0]
 	
 [NAME: Swift Panther Style]
   [TYPE: Display]
+  [IMAGE: wolf-head.png]
   [ELEMENT: None]
   [INTERNAL: Panther_style]
     [MAGNITUDE: 0]
 	
 [NAME: Dragon Master Style]
   [TYPE: Display]
+  [IMAGE: sea-serpent.png]
   [ELEMENT: None]
   [INTERNAL: Dragon_style]
     [MAGNITUDE: 0]
 	
 [NAME: Pin]
   [TYPE: Display]
+  [IMAGE: needle-drill.png]
   [ELEMENT: None]
   [INTERNAL: Movement_speed_penalty]
     [MAGNITUDE: 5]
@@ -1204,6 +1290,7 @@
 
 [NAME: Bait]
   [TYPE: Display]
+  [IMAGE: angel-outfit.png]
   [ELEMENT: None]
   [REMOVED_ON: Melee Counterattack Complete]
   [INTERNAL: Melee_dodge_bonus]
@@ -1225,6 +1312,7 @@
 	
 [NAME: Whittle Away]
   [TYPE: Display]
+  [IMAGE: tower-fall.png]
   [ELEMENT: None]
   [INTERNAL: Attack_power_penalty]
     [MAGNITUDE: 15]
@@ -1234,6 +1322,7 @@
 
 [NAME: Buffer Strike]
   [TYPE: Display]
+  [IMAGE: energy-sword.png]
   [ELEMENT: Arcane]
   [INTERNAL: HP_buffer]
     [MAGNITUDE: 0]
@@ -1241,6 +1330,7 @@
 	
 [NAME: Inner Might]
   [TYPE: Display]
+  [IMAGE: glowing-hands.png]
   [ELEMENT: Arcane]
   [INTERNAL: Might_bonus]
     [MAGNITUDE: 0]
@@ -1249,6 +1339,7 @@
   
 [NAME: Deflecting Rod]
   [TYPE: Display]
+  [IMAGE: crystal-wand.png]
   [ELEMENT: Electric]
   [INTERNAL: Magic_resist_bonus]
     [MAGNITUDE: 4]
@@ -1260,6 +1351,7 @@
 
 [NAME: Arcane Threading]
   [TYPE: Display]
+  [IMAGE: sewing-needle.png]
   [ELEMENT: Arcane]
   [INTERNAL: Weapon_damage_bonus]
     [MAGNITUDE: 0]
@@ -1268,6 +1360,7 @@
   
 [NAME: Electric Threading]
   [TYPE: Display]
+  [IMAGE: lightning-bow.png]
   [ELEMENT: Electric]
   [INTERNAL: Weapon_damage_bonus]
     [MAGNITUDE: 0]
@@ -1276,6 +1369,7 @@
 	
 [NAME: Warp Shot]
   [TYPE: Display]
+  [IMAGE: tron-arrow.png]
   [ELEMENT: None]
   [INTERNAL: Movement_speed_penalty]
     [MAGNITUDE: 3]
@@ -1283,6 +1377,7 @@
 	
 [NAME: Precision Threading]
   [TYPE: Display]
+  [IMAGE: thorn-helix.png]
   [ELEMENT: None]
   [INTERNAL: Ranged_accuracy_bonus]
     [MAGNITUDE: 9]
@@ -1297,6 +1392,7 @@
 	
 [NAME: Sidestep]
   [TYPE: Display]
+  [IMAGE: footprint.png]
   [ELEMENT: None]
   [INTERNAL: Dodge_bonus]
     [MAGNITUDE: 3]
@@ -1304,6 +1400,7 @@
 	
 [NAME: Risky Focus]
   [TYPE: Display]
+  [IMAGE: dead-eye.png]
   [ELEMENT: None]
   [INTERNAL: Spellpower_bonus]
     [MAGNITUDE: 6]
@@ -1313,6 +1410,7 @@
 	
 [NAME: Weary Bolt]
   [TYPE: Display]
+  [IMAGE: hydra-shot.png]
   [ELEMENT: None]
   [INTERNAL: Attack_power_penalty]
     [MAGNITUDE: 0]
@@ -1320,6 +1418,7 @@
 	
 [NAME: Curious Drain]
   [TYPE: Display]
+  [IMAGE: life-tap.png]
   [ELEMENT: None]
   [INTERNAL: Dodge_bonus]
     [MAGNITUDE: 8]
@@ -1327,6 +1426,7 @@
 	
 [NAME: Curiously Sluggish]
   [TYPE: Display]
+  [IMAGE: life-tap.png]
   [ELEMENT: None]
   [INTERNAL: Dodge_penalty]
     [MAGNITUDE: 8]
@@ -1334,6 +1434,7 @@
 	
 [NAME: Slightly Smugger]
   [TYPE: Display]
+  [IMAGE: morbid-humour.png]
   [ELEMENT: Arcane]
   [INTERNAL: Spellpower_bonus]
     [MAGNITUDE: 3]
@@ -1343,6 +1444,7 @@
 	
 [NAME: Bolster Guardian]
   [TYPE: Display]
+  [IMAGE: armoured-shell.png]
   [ELEMENT: Arcane]
   [INTERNAL: Melee_accuracy_bonus]
     [MAGNITUDE: 3]
@@ -1354,6 +1456,7 @@
 
 [NAME: Empathy Shell]
   [TYPE: Display]
+  [IMAGE: mesh-ball.png]
   [ELEMENT: Arcane]
   [INTERNAL: Send_empathy_damage_to_summon]  
     [MAGNITUDE: 50]
@@ -1364,6 +1467,7 @@
 
 [NAME: Wounding Projectiles]
   [TYPE: Display]
+  [IMAGE: nailed-foot.png]
   [ELEMENT: None]
   [INTERNAL: Dodge_penalty]
     [MAGNITUDE: 0]
@@ -1371,6 +1475,7 @@
 	
 [NAME: Follow-up Expert Accuracy]
   [TYPE: Display]
+  [IMAGE: striking-diamonds.png]
   [ELEMENT: None]
   [INTERNAL: Ranged_accuracy_bonus]
     [MAGNITUDE: 0]
@@ -1378,6 +1483,7 @@
 
 [NAME: Follow-up Expert Force]
   [TYPE: Display]
+  [IMAGE: striking-diamonds.png]
   [ELEMENT: None]
   [INTERNAL: Ranged_force_bonus]
     [MAGNITUDE: 0]
@@ -1385,6 +1491,7 @@
 	
 [NAME: Trap Sadism]
   [TYPE: Display]
+  [IMAGE: tribal-mask.png]
   [ELEMENT: None]
   [INTERNAL: Critical_damage_bonus]
     [MAGNITUDE: 0]
@@ -1394,6 +1501,7 @@
 
 [NAME: Stunning Recovery]
   [TYPE: Display]
+  [IMAGE: interdiction.png]
   [ELEMENT: None]
   [INTERNAL: Stunning_recovery_internal]
     [MAGNITUDE: 0]
@@ -1402,6 +1510,7 @@
 
 [NAME: Blades of Reduction]
   [TYPE: Display]
+  [IMAGE: all-for-one.png]
   [ELEMENT: Arcane]
   [INTERNAL: Magic_resist_penalty]
     [MAGNITUDE: 3]
@@ -1411,6 +1520,7 @@
 
 [NAME: Celebrate Misfortune]
   [TYPE: Display]
+  [IMAGE: sharp-smile.png]
   [ELEMENT: None]
   [INTERNAL: Critical_damage_bonus]
     [MAGNITUDE: 20]
@@ -1424,6 +1534,7 @@
 
 [NAME: Superior Training]
   [TYPE: Display]
+  [IMAGE: archery-target.png]
   [ELEMENT: None]
   [INTERNAL: Ranged_accuracy]
     [MAGNITUDE: 0]
@@ -1435,6 +1546,7 @@
 
 [NAME: Panic Step]
   [TYPE: Display]
+  [IMAGE: boot-stomp.png]
   [ELEMENT: None]
   [INTERNAL: Dodge_bonus]
     [MAGNITUDE: 0]
@@ -1444,6 +1556,7 @@
 
 [NAME: Bleeding Backstab]
   [TYPE: Display]
+  [IMAGE: dripping-knife.png]
   [ELEMENT: None]
   [INTERNAL: Bleeding]
     [MAGNITUDE: 3]
@@ -1453,6 +1566,7 @@
 
 [NAME: Refraction]
   [TYPE: Display]
+  [IMAGE: floating-crystal.png]
   [ELEMENT: Arcane]
   [INTERNAL: DR_bonus]
     [MAGNITUDE: 0]
@@ -1462,6 +1576,7 @@
 
 [NAME: Double Dodge]
   [TYPE: Display]
+  [IMAGE: backup.png]
   [ELEMENT: None]
   [INTERNAL: Double_dodge_internal]
     [MAGNITUDE: 0]
@@ -1471,6 +1586,7 @@
 
 [NAME: Hostile Trap Slow]
   [TYPE: Display]
+  [IMAGE: snowflake-2.png]
   [ELEMENT: Cold]
   [INTERNAL: Movement_tiles_penalty]
     [MAGNITUDE: 0]
@@ -1478,6 +1594,7 @@
 	
 [NAME: Hostile Trap Blind]
   [TYPE: Display]
+  [IMAGE: eyeball.png]
   [ELEMENT: Electric]
   [INTERNAL: Awareness_penalty]
     [MAGNITUDE: 0]
@@ -1487,6 +1604,7 @@
 
 [NAME: Acidic Magic Weapon]
   [TYPE: Display]
+  [IMAGE: None]
   [ELEMENT: Poison]
   [INTERNAL: DR_penalty]
     [MAGNITUDE: 10]
@@ -1494,6 +1612,7 @@
 	
 [NAME: Holy Magic Weapon]
   [TYPE: Display]
+  [IMAGE: None]
   [ELEMENT: Divine]
   [INTERNAL: Elemental_vulnerability]
     [MAGNITUDE: 20]
@@ -1501,12 +1620,14 @@
 	
 [NAME: Ignite Magic Weapon]
   [TYPE: Display]
+  [IMAGE: None]
   [ELEMENT: Fire]
   [INTERNAL: Damage_over_time]
     [MAGNITUDE: 0]
 	
 [NAME: Slowing Magic Weapon]
   [TYPE: Display]
+  [IMAGE: None]
   [ELEMENT: Arcane]
   [INTERNAL: Movement_speed_penalty]
     [MAGNITUDE: 3]
@@ -1514,6 +1635,7 @@
 	
 [NAME: Toxic Magic Weapon]
   [TYPE: Display]
+  [IMAGE: None]
   [ELEMENT: Poison]
   [INTERNAL: Attack_power_penalty]
     [MAGNITUDE: 10]
@@ -1522,6 +1644,7 @@
 	
 [NAME: Weakening Fire Magic Weapon]
   [TYPE: Display]
+  [IMAGE: None]
   [ELEMENT: Fire]
   [INTERNAL: Elemental_vulnerability]
     [MAGNITUDE: 10]
@@ -1529,6 +1652,7 @@
 	
 [NAME: Weakening Cold Magic Weapon]
   [TYPE: Display]
+  [IMAGE: None]
   [ELEMENT: Cold]
   [INTERNAL: Elemental_vulnerability]
     [MAGNITUDE: 10]
@@ -1536,6 +1660,7 @@
   
 [NAME: Weakening Electric Magic Weapon]
   [TYPE: Display]
+  [IMAGE: None]
   [ELEMENT: Electric]
   [INTERNAL: Elemental_vulnerability]
     [MAGNITUDE: 10]
@@ -1543,6 +1668,7 @@
   
 [NAME: Weakening Poison Magic Weapon]
   [TYPE: Display]
+  [IMAGE: None]
   [ELEMENT: Poison]
   [INTERNAL: Elemental_vulnerability]
     [MAGNITUDE: 10]
@@ -1550,6 +1676,7 @@
   
 [NAME: Weakening Divine Magic Weapon]
   [TYPE: Display]
+  [IMAGE: None]
   [ELEMENT: Divine]
   [INTERNAL: Elemental_vulnerability]
     [MAGNITUDE: 10]
@@ -1557,6 +1684,7 @@
   
 [NAME: Weakening Shadow Magic Weapon]
   [TYPE: Display]
+  [IMAGE: None]
   [ELEMENT: Shadow]
   [INTERNAL: Elemental_vulnerability]
     [MAGNITUDE: 10]
@@ -1564,6 +1692,7 @@
   
 [NAME: Weakening Arcane Magic Weapon]
   [TYPE: Display]
+  [IMAGE: None]
   [ELEMENT: Arcane]
   [INTERNAL: Elemental_vulnerability]
     [MAGNITUDE: 10]
@@ -1573,12 +1702,14 @@
 
 [NAME: Stun]
   [TYPE: Display]
+  [IMAGE: None]
   [ELEMENT: None]
   [INTERNAL: Stun_internal]
     [MAGNITUDE: 0]
 	
 [NAME: Bleeding]
   [TYPE: Display]
+  [IMAGE: None]
   [ELEMENT: None]
   [INTERNAL: Bleeding]
     [MAGNITUDE: 0]
@@ -1588,6 +1719,7 @@
 
 [NAME: Rock Potion]
   [TYPE: Display]
+  [IMAGE: None]
   [ELEMENT: None]
   [INTERNAL: DR_bonus]
     [MAGNITUDE: 10]
@@ -1596,6 +1728,7 @@
   
 [NAME: Prismatic Potion]
   [TYPE: Display]
+  [IMAGE: None]
   [ELEMENT: Arcane]
   [INTERNAL: Elemental_resistance_fire]
     [MAGNITUDE: 10]
@@ -1607,6 +1740,7 @@
   
 [NAME: Vaccine]
   [TYPE: Display]
+  [IMAGE: None]
   [ELEMENT: Poison]
   [INTERNAL: Poison_tolerance_bonus]
     [MAGNITUDE: 18]
@@ -1614,6 +1748,7 @@
   
 [NAME: Spirit Potion]
   [TYPE: Display]
+  [IMAGE: None]
   [ELEMENT: Shadow]
   [INTERNAL: Elemental_resistance_shadow]
     [MAGNITUDE: 20]
@@ -1625,6 +1760,7 @@
 
 [NAME: Applied Basic Poison]
   [TYPE: Display]
+  [IMAGE: None]
   [ELEMENT: Poison]
   [INTERNAL: Weapon_damage]
     [MAGNITUDE: 0]
@@ -1633,6 +1769,7 @@
   
 [NAME: Applied Numbing Poison]
   [TYPE: Display]
+  [IMAGE: None]
   [ELEMENT: Poison]
   [INTERNAL: Numbing_poison_internal]
     [MAGNITUDE: 0]
@@ -1641,6 +1778,7 @@
 
 [NAME: Numbing Poison]
   [TYPE: Display]
+  [IMAGE: None]
   [ELEMENT: Poison]
   [INTERNAL: Movement_speed_penalty]
     [MAGNITUDE: 1]
@@ -1648,6 +1786,7 @@
   
 [NAME: Applied Vile Poison]
   [TYPE: Display]
+  [IMAGE: None]
   [ELEMENT: Poison]
   [INTERNAL: Vile_poison_internal]
     [MAGNITUDE: 0]
@@ -1656,6 +1795,7 @@
 
 [NAME: Vile Poison]
   [TYPE: Display]
+  [IMAGE: None]
   [ELEMENT: Poison]
   [INTERNAL: Attack_power_penalty]
     [MAGNITUDE: 10]
@@ -1667,6 +1807,7 @@
 
 [NAME: Draconic Guard]
   [TYPE: Display]
+  [IMAGE: None]
   [ELEMENT: Fire]
   [INTERNAL: Magic_resist_bonus]
     [MAGNITUDE: 0]
@@ -1676,6 +1817,7 @@
 
 [NAME: Endure Beating]
   [TYPE: Display]
+  [IMAGE: None]
   [ELEMENT: None]
   [INTERNAL: DR_bonus]
     [MAGNITUDE: 20]
@@ -1683,6 +1825,7 @@
   
 [NAME: Flaming Rend]
   [TYPE: Display]
+  [IMAGE: None]
   [ELEMENT: Fire]
   [INTERNAL: DR_penalty]
     [MAGNITUDE: 0]
@@ -1690,6 +1833,7 @@
 
 [NAME: Frigid Slash]
   [TYPE: Display]
+  [IMAGE: None]
   [ELEMENT: Cold]
   [INTERNAL: Movement_tiles_penalty]
     [MAGNITUDE: 1]
@@ -1697,6 +1841,7 @@
   
 [NAME: Howl]
   [TYPE: Display]
+  [IMAGE: None]
   [ELEMENT: None]
   [INTERNAL: Might_penalty]
     [MAGNITUDE: 15]
@@ -1706,6 +1851,7 @@
 
 [NAME: Military Valor]
   [TYPE: Display]
+  [IMAGE: None]
   [ELEMENT: Shadow]
   [INTERNAL: Melee_accuracy_bonus]
     [MAGNITUDE: 0]
@@ -1719,6 +1865,7 @@
   
 [NAME: Phantom Stare]
   [TYPE: Display]
+  [IMAGE: None]
   [ELEMENT: Shadow]
   [INTERNAL: Spellpower_penalty]
     [MAGNITUDE: 0]
@@ -1728,6 +1875,7 @@
   
 [NAME: Poison Fang]
   [TYPE: Display]
+  [IMAGE: dripping-knife.png]
   [ELEMENT: Poison]
   [INTERNAL: Poison_tolerance_penalty]
     [MAGNITUDE: 0]
@@ -1735,6 +1883,7 @@
   
 [NAME: Toxic Spit]
   [TYPE: Display]
+  [IMAGE: None]
   [ELEMENT: Poison]
   [INTERNAL: Elemental_vulnerability]
     [MAGNITUDE: 20]

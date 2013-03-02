@@ -68,6 +68,7 @@ class StatusEffectsParser(object):
     def parseAll(self, fileName):
         nameTag = re.compile("(?:\[NAME: )(.*)(?:\])", re.I)
         typeTag = re.compile("(?:\[TYPE: )(.*)(?:\])", re.I)
+        imageTag = re.compile("(?:\[IMAGE: )(.*)(?:\])", re.I)
         elementTag = re.compile("(?:\[ELEMENT: )(.*)(?:\])", re.I)
         internalTag = re.compile("(?:\[INTERNAL: )(.*)(?:\])", re.I)
         magnitudeTag = re.compile("(?:\[MAGNITUDE: )(.*)(?:\])", re.I)
@@ -87,6 +88,7 @@ class StatusEffectsParser(object):
         # if this is to be extended beyond six. Please excuse this magic number.
         name = None
         type = None 
+        image = None
         immune = None
         recurring = None
         element = None
@@ -106,6 +108,7 @@ class StatusEffectsParser(object):
             if(self.state == "Expecting Name"):
                 name = "Undefined"
                 type = "Undefined" 
+                image = "Undefined"
                 immune = "Undefined"
                 recurring = "Undefined"
                 element = "Undefined"
@@ -126,7 +129,7 @@ class StatusEffectsParser(object):
             if(self.state == "Expecting Type"):
                 type = typeTag.match(line).group(1)
                 if(type == "Display"):
-                    self.state = "Expecting Element"
+                    self.state = "Expecting Image"
                     continue
                 elif(type == "Internal"):
                     self.state = "Expecting Recurring"
@@ -147,6 +150,11 @@ class StatusEffectsParser(object):
                 self.state = "Expecting Name"
                 continue
                 
+            if(self.state == "Expecting Image"):
+                image = imageTag.match(line).group(1)
+                self.state = "Expecting Element"
+                continue
+                
             if(self.state == "Expecting Element"):
                 element = elementTag.match(line).group(1)
                 self.state = "Top Level"
@@ -164,7 +172,7 @@ class StatusEffectsParser(object):
                                 iStatus = husk.cloneWithDetails(int(magnitudeList[i]), element, name)
                         internalList.append(iStatus)       
                     displayStatus = status.Status()
-                    displayStatus.populate(name, element, categoryList, internalList)
+                    displayStatus.populate(name, image, element, categoryList, internalList)
                     self.displayStatusList.append(displayStatus)
                     self.state = "Expecting Name"
                     continue
