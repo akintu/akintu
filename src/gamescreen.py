@@ -252,6 +252,8 @@ class GameScreen(object):
         self.sidetext.insert(0, (text, color))
         if self.scrollcount > 0:
             self.scrollcount += 1
+        if len(self.sidetext) > 100:
+            self.sidetext = self.sidetext[:100]
         self._draw_text()
 
     def _draw_text(self):
