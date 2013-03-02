@@ -245,9 +245,9 @@ class Monster(person.Person):
             
         reg = region.Region()
         if range == 1:
-            reg.build(region.RAct.ADD, region.RShape.SQUARE, self.cLocation.move(7, 1), self.cLocation.move(3, 1))
+            reg("ADD", "SQUARE", self.cLocation.move(7, 1), self.cLocation.move(3, 1))
         else:
-            reg.build(region.RAct.ADD, region.RShape.CIRCLE, self.cLocation, range)
+            reg("ADD", "CIRCLE", self.cLocation, range)
         players = []
         allPlayers = [server.person[x] for x in server.pane[combatPane].person if
                       server.person[x].team == "Players"]

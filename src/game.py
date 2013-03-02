@@ -129,6 +129,8 @@ class Game(object):
                     self.pane.person = {}
                 else:
                     self.screen.remove_person(command.id)
+                    if command.id == self.currentTargetId:
+                        self.currentTargetId = None
                     del self.pane.person[command.id]
                     
             ###### StopRunning ######
@@ -151,6 +153,7 @@ class Game(object):
             if isinstance(command, Update) and command.property == UpdateProperties.HP:
                 self.pane.person[command.id].HP = command.value
                 self.screen.update_person(command.id, {'HP': command.value, 'team': self.pane.person[command.id].team})
+            
                 
     def handle_events(self):
         pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])

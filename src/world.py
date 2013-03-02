@@ -124,7 +124,7 @@ class Pane(object):
                 person = TheoryCraft.getMonster(level=2)#TODO, pass in random here
                 person.location = Location(self.location, (random.randrange(PANE_X), random.randrange(PANE_Y)))
                 r = Region()
-                r.build(RAct.ADD, RShape.CIRCLE, person.location, PANE_Y/4)
+                r("ADD", "CIRCLE", person.location, PANE_Y/4)
                 #r.build(RAct.SUBTRACT, RShape.CIRCLE, Location(self.location, CENTER), int(PANE_Y/6))
                 person.ai.add("WANDER", person.ai.wander, person.movementSpeed, pid=id(person), region=r, move_chance=1.0 / (person.movementSpeed))
                 self.person[id(person)] = person
