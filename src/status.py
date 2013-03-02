@@ -45,19 +45,19 @@ class Status(object):
     def activate(self, target):
         for iStatus in self.internalList:
             if iStatus.recurring == "False":
-                iStatus.applyEffect(target, iStatus.magnitude)
+                iStatus.applyEffect(iStatus, target, iStatus.magnitude)
         
     def deactivate(self, target):
         for iStatus in self.internalList:
-            if istatus.unapplyEffect:
-                iStatus.unapplyEffect(target, iStatus.magnitude)
+            if iStatus.unapplyEffect:
+                iStatus.unapplyEffect(iStatus, target, iStatus.magnitude)
             
     def upkeepActivate(self, target):
         """Only applies if this includes components that are to be
         applied on every upkeep phase."""
         for iStatus in self.internalList:
             if iStatus.recurring == "True":
-                iStatus.applyEffect(self, target, iStatus.magnitude)
+                iStatus.applyEffect(iStatus, target, iStatus.magnitude)
     
     
         

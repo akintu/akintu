@@ -221,7 +221,7 @@ class Person(en.Entity):
         self._baseMeleeAttackAPCost = Person.setFrom(argDict, 'meleeAP', Person.ERROR)
         self._baseRangedAttackAPCost = Person.setFrom(argDict, 'rangedAP', Person.ERROR)
         
-        self._statusSpellFailureChance = 0
+        self.spellFailureChance = 0
         
         self.listeners = []
     

@@ -6,7 +6,7 @@ import region
 import monster
 
 # TODO: Use user-defined timed-turns
-seconds = 12
+seconds = 15
 
 class CombatServer():
     def __init__(self, server):
@@ -161,10 +161,16 @@ class CombatServer():
         for cooldown in target.cooldownList:
             cooldown[1] -= 1
         # Remove expired statuseffects and cooldowns
-        target.statusList[:] = [x for x in target.statusList if x.turnsLeft != 0]
+        toRemove = []
+        for stat in target.statusList:
+            if stat.turnsLeft == 0:
+                toRemove.append(stat)
+        for removalStatus in toRemove:
+            Combat.removeStatus(target, removalStatus.name)
         target.cooldownList[:] = [x for x in target.cooldownList if x[1] > 0]
         # Refill AP (performed in end_turn)
-
+        for stat in target.statusList:
+            print target.name + " Has status: " + stat.name + " T=" + str(stat.turnsLeft)
     
         
     def shout_turn_start(self, player, turn="Player"):

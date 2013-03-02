@@ -236,8 +236,8 @@ class PlayerCharacter(p.Person):
         # in position 1.  Need to also shift those at the end of each turn...        
     
     def registerBasicAttacks(self):
-        self.abilities.append(ability.Ability("Basic Attack", self, "Melee"))
-        self.abilities.append(ability.Ability("Ranged Attack", self, "Ranged"))
+        self.abilities.append(ability.Ability("Melee Attack", self))
+        self.abilities.append(ability.Ability("Ranged Attack", self))
     
     def getDetailTuple(self):
         '''Should be overriden by PlayerCharacters and other
@@ -245,6 +245,23 @@ class PlayerCharacter(p.Person):
         this Person object.
         First argument should represent which type of object this is.'''
         return ("Player", self.race, self.characterClass)
+    
+    def applyBonusDamage(self, dieRoll):
+        if element == "Fire":
+            dieRoll *= 1 + (float(self.totalFireBonusDamage) / 100)
+        elif element == "Cold":
+            dieRoll *= 1 + (float(self.totalColdBonusDamage) / 100)         
+        elif element == "Electric":
+            dieRoll *= 1 + (float(self.totalElectricBonusDamage) / 100)
+        elif element == "Poison":
+            dieRoll *= 1 + (float(self.totalPoisonBonusDamage) / 100)    
+        elif element == "Shadow":
+            dieRoll *= 1 + (float(self.totalShadowBonusDamage) / 100)
+        elif element == "Divine":
+            dieRoll *= 1 + (float(self.totalDivineBonusDamage) / 100)
+        elif element == "Arcane":
+            dieRoll *= 1 + (float(self.totalArcaneBonusDamage) / 100)
+        return int(round(dieRoll))
     
     def gainLevelUp(self):
         """Start the levelup process for acquiring a new level.  May need to

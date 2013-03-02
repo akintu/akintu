@@ -13,6 +13,7 @@ from const import *
 class Monster(person.Person):
 
     ERROR = "INITIALIZATION_FAILURE"
+    globalServer = None
 
     @staticmethod
     def setFrom(argDict, variableName, defaultValue=ERROR):
@@ -102,10 +103,15 @@ class Monster(person.Person):
         self.levelupStrength = Monster.setFrom(argDict, 'levelupStrength')
         
         self.levelSet = False
+        self.currentCombatPane = None
         
     def registerBasicAttacks(self):
-        self.abilityList.append(ability.Ability("Basic Attack", self, "Melee"))
-        self.abilityList.append(ability.Ability("Ranged Attack", self, "Ranged"))
+        self.abilityList.append(ability.Ability("Melee Attack", self))
+        self.abilityList.append(ability.Ability("Ranged Attack", self))
+        
+    def applyBonusDamage(self, dieRoll):
+        dieRoll *= (1 + self.attackPower / 100.0)
+        return int(round(dieRoll))
         
     def setLevel(self, level):
         '''Method should only be called once after creation to set the level of a 
@@ -177,7 +183,6 @@ class Monster(person.Person):
                 for player in players:
                     if abil.canUse(player)[0]:
                         usable.append((abil, player))
-            # If location...TODO
             # If friendly...TODO
         return usable
         
@@ -186,14 +191,26 @@ class Monster(person.Person):
         choicesList = self.getUsableAbilities(server, combatPane)
         choice = None
         if not choicesList:
+            print "No more choices found for: " + self.name
             return None
         else:
             return Dice.choose(choicesList)
         
-    def performAction(self, server, combatPane):
+    def performAction(self, server=None, combatPane=None):
         """Select a usable ability, and perform it.
         Returns the name of the ability used if an action was possible and thus completed,
         Returns "Failure" if no action was possible."""
+        # Initialize and update server and combatPane
+        if not server:
+            server = Monster.globalServer
+        else:
+            Monster.globalServer = server
+        if not combatPane:
+            combatPane = self.currentCombatPane
+        else:
+            self.currentCombatPane = combatPane
+            
+        # Select targets and perform actions, if possible.
         actionDuple = self.selectAction(server, combatPane)
         if actionDuple:
             print self.name + " is using ability: " + actionDuple[0].name + " on " + actionDuple[1].name
@@ -203,11 +220,19 @@ class Monster(person.Person):
             return abil.name
         return "Failure"
             
-    def getPlayersInRange(self, range, server, combatPane):
+    def getPlayersInRange(self, range, server=None, combatPane=None):
         """Returns a list of players within a set range of this monster.  Will sort them according
         to distance from this monster."""
+        if not server:
+            server = Monster.globalServer
+        if not combatPane:
+            combatPane = self.currentCombatPane
+            
         reg = region.Region()
-        reg.build(region.RAct.ADD, region.RShape.CIRCLE, self.cLocation, range)
+        if range == 1:
+            reg.build(region.RAct.ADD, region.RShape.SQUARE, self.cLocation.move(7, 1), self.cLocation.move(3, 1))
+        else:
+            reg.build(region.RAct.ADD, region.RShape.CIRCLE, self.cLocation, range)
         players = []
         allPlayers = [server.person[x] for x in server.pane[combatPane].person if
                       server.person[x].team == "Players"]

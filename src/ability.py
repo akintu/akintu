@@ -8,66 +8,29 @@ from combat import Combat
     
 class Ability(object):
     
-    # The selfFiller is a horrible hack that I hope Colton can unravel!
-    def _basicAttack(self, selfFiller, target):
-        source = self.owner
-        hit = Combat.calcHit(source, target, "Physical")
-        Combat.basicAttack(source, target, hit)
-        
-    def _basicMeleeAttackCheck(self, selfFiller, target):
-        source = self.owner
-        if source.usingWeapon("Melee"):
-            return (True, "")
-        return (False, "Must be using a melee weapon to perform: " + self.name)
-        
-    def _basicRangedAttackCheck(self, selfFiller, target):
-        source = self.owner
-        if source.usingWeapon("Ranged"):
-            return (True, "")
-        return (False, "Must be using a ranged weapon to perform: " + self.name)
-    
-    def __init__(self, name, owner, basicAttackType=None):
+    def __init__(self, name, owner):
         self.owner = owner
-        if not basicAttackType:
-            info = Ability.allAbilities[name]   
-            self.name = name
-            self.level = info['level']
-            self.HPCost = info['HPCost']
-            self.APCost = info['APCost']
-            self.range = info['range']
-            self.targetType = info['target']
-            self.action = info['action']
-            self.cooldown = info['cooldown']
-            self.checkFunction = info['checkFunction']
-            self.breakStealth = info['breakStealth']
-        elif basicAttackType == "Melee":
-            self.name = "Melee Attack"
-            self.level = 1
-            self.HPCost = 0
+        self.name = name
+        info = Ability.allAbilities[name]   
+        self.level = info['level']
+        self.HPCost = info['HPCost']
+        self.APCost = info['APCost']
+        self.range = info['range']
+        self.targetType = info['target']
+        self.action = info['action']
+        self.cooldown = info['cooldown']
+        self.checkFunction = info['checkFunction']
+        self.breakStealth = info['breakStealth']
+        if name == "Melee Attack":
             if owner.totalMeleeAttackAPCost <= 0:
                 self.APCost = 99
             else:
                 self.APCost = owner.totalMeleeAttackAPCost
-            self.range = 1
-            self.targetType = "hostile"
-            self.action = self._basicAttack
-            self.cooldown = None
-            self.checkFunction = self._basicMeleeAttackCheck
-            self.breakStealth = 100
-        elif basicAttackType == "Ranged":
-            self.name = "Ranged Attack"
-            self.level = 1
-            self.HPCost = 0
+        elif name == "Ranged Attack":
             if owner.totalRangedAttackAPCost <= 0:
                 self.APCost = 99
             else:
                 self.APCost = owner.totalRangedAttackAPCost
-            self.range = -1
-            self.targetType = "hostile"
-            self.action = self._basicAttack
-            self.cooldown = None
-            self.checkFunction = self._basicRangedAttackCheck
-            self.breakStealth = 100
             
     @staticmethod       
     def convertAbilityName(aName):
@@ -80,7 +43,6 @@ class Ability(object):
         '''
         target: Person (later, Location?)
         '''
-        
         # Check for modifications to ability costs here from listeners TODO
         mod = 0 # dummy code
         source = self.owner
@@ -93,7 +55,7 @@ class Ability(object):
         if not messageCode[0]:
             return messageCode
             
-        if self.targetType == "self" and owner is not target:
+        if self.targetType == "self" and self.owner is not target:
             return (False, "Ability is self-only, and the given target is not the user.")
         if self.targetType == "hostile" and source.team == target.team:
             return (False, "Cannot target own team with hostile ability.")
@@ -125,7 +87,23 @@ class Ability(object):
         else:
             print "WARNING: Ability failed late!"
             # TODO! Make this raise an exception rather than silently return.
+    
+    def _basicAttack(self, target):
+        source = self.owner
+        hit = Combat.calcHit(source, target, "Physical")
+        Combat.basicAttack(source, target, hit)
         
+    def _basicMeleeAttackCheck(self, target):
+        source = self.owner
+        if source.usingWeapon("Melee"):
+            return (True, "")
+        return (False, "Must be using a melee weapon to perform: " + self.name)
+        
+    def _basicRangedAttackCheck(self, target):
+        source = self.owner
+        if source.usingWeapon("Ranged"):
+            return (True, "")
+        return (False, "Must be using a ranged weapon to perform: " + self.name)
     
     def _mightyBlow(self, target):
         source = self.owner
@@ -900,7 +878,7 @@ class Ability(object):
         '''Lowers Might by 15 and causes 3% of spells to fail. in an area of effect,
          and deals a small amount of shadow damage.'''
         source = self.owner
-        targetsList = None # TODO: targetsList = getAllAOETargets("Players", source.location, 4)
+        targetsList = source.getPlayersInRange(4)
         duration = 5
         baseShadowDamage = source.level * 3
         for t in targetsList:
@@ -911,7 +889,11 @@ class Ability(object):
     def _howlCheck(self, target):
         ''' Only used if there is at least one player in range without the Howl debuff.'''
         source = self.owner
-        return (False, "") # TODO: Finish this method!
+        targetsList = source.getPlayersInRange(4)
+        for player in targetsList:
+            if not player.hasStatus("Howl"):
+                return (True, "")                
+        return (False, "")
         
     def _militaryValor(self, target):
         '''Grants bonus accuracy, +15% overall damage, but lowers shadow resistance 25%'''
@@ -948,13 +930,13 @@ class Ability(object):
         source = self.owner
         if Combat.calcHit(source, target, "Physical") != "Miss":
             pRating = 6 + source.level * 2
-            if Combat.calcHit(source, target, "Poison", rating=pRating):
+            if Combat.calcHit(source, target, "Poison", rating=pRating) != "Miss":
                 tolerancePenalty = 5 + source.level
                 duration = 2
                 Combat.addStatus(target, "Poison Fang", duration, tolerancePenalty)
                 pDamMin = 6 + source.level * 2
                 pDamMax = 9 + source.level * 2
-                damage = Combat.calcDamage(source, target, pDamBase, pDamMax, "Poison", "Normal Hit")
+                damage = Combat.calcDamage(source, target, pDamMin, pDamMax, "Poison", "Normal Hit")
                 Combat.lowerHP(target, damage)
         
     def _shadowBurst(self, target):
@@ -1020,6 +1002,35 @@ class Ability(object):
     
     
     allAbilities = {
+    
+        # All
+        'Melee Attack':
+        {
+        'level' : 1,
+        'class' : 'Any',
+        'HPCost' : 0,
+        'APCost' : -1,
+        'range' : 1,
+        'target' : 'hostile',
+        'action' : _basicAttack,
+        'cooldown' : None,
+        'checkFunction' : _basicMeleeAttackCheck,
+        'breakStealth' : 100
+        },
+        'Ranged Attack':
+        {
+        'level' : 1,
+        'class' : 'Any',
+        'HPCost' : 0,
+        'APCost' : -1,
+        'range' : -1,
+        'target' : 'hostile',
+        'action' : _basicAttack,
+        'cooldown' : None,
+        'checkFunction' : _basicRangedAttackCheck,
+        'breakStealth' : 100
+        },
+    
         # Fighter
         'Mighty Blow':
         {
@@ -1934,7 +1945,7 @@ class Ability(object):
         'HPCost' : 0,
         'APCost' : 10,
         'range' : 0,
-        'target' : 'location',
+        'target' : 'self',
         'action' : _howl,
         'cooldown' : 4,
         'checkFunction' : _howlCheck,

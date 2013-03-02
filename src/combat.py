@@ -235,21 +235,26 @@ class Combat(object):
         if (type == "Physical"):
             Combat._shoutAttackStart(source, target)
             if Dice.rollBeneath(target.totalAvoidanceChance):
-                print "Attack *avoided*."
+                print "*avoided*"
                 return ["Miss"]
             attackOne = Combat.physicalHitMechanics(source, target, modifier, critMod, ignoreMeleeBowPenalty)
             if source.team == "Players" and source.usingWeaponStyle("Dual"):
                 Combat._shoutAttackStart(source, target)
                 attackTwo = Combat.physicalHitMechanics(source, target, modifier, critMod, ignoreMeleeBowPenalty)
-                print "Attack (first hand) " + attackOne
-                print "Attack (seond hand) " + attackTwo
+                print "(first hand) " + attackOne
+                print "(second hand) " + attackTwo
                 return [attackOne, attackTwo]
             else:
-                print "Attack " + attackOne
+                print attackOne
                 return [attackOne]            
         
         if (type == "Magical"):
-            return Combat.magicalHitMechanics(source, target)
+            result = Combat.magicalHitMechanics(source, target)
+            if result == "Miss":
+                print "Fully Resisted"
+            else:
+                print result
+            return result
             
         if (type == "Magical Poison" or type == "Poison Magical"):
             if (Combat.poisonHitMechanics(source, target, rating) == "Normal Hit"):
@@ -258,7 +263,12 @@ class Combat(object):
                 return "Miss"
             
         if (type == "Poison"):
-            return Combat.calcPoisonHit(source, target, rating)
+            result = Combat.calcPoisonHit(source, target, rating)
+            if result == "Miss":
+                print "Tolerated"
+            else:
+                print "Poisoned"
+            return result
             
         if (type == "Trap"):
             raise NotImplementedError("This method does not yet support the Trap type.")
@@ -334,7 +344,7 @@ class Combat(object):
                         display.activate(target)
                     else:
                         display.deactivate(target)
-                        removeStatus(target, display.name)
+                        Combat.removeStatus(target, display.name)
                         target.statusList.append(dStatus)
                         dStatus.activate(target)
         
@@ -349,11 +359,10 @@ class Combat(object):
           statusName -- the name of a status effect to remove
         Outputs:
           None"""
-        statusName = statusName.capitalize().strip()
         matchingStatus = None
         for stat in target.statusList:
             if stat.name == statusName:
-                matchingStatus = target.statusList
+                matchingStatus = stat
                 break
         if matchingStatus:
             matchingStatus.deactivate(target)
@@ -438,7 +447,7 @@ class Combat(object):
         # TODO
                 
     @staticmethod
-    def calcDamage(source, target, min, max, element, hitValue, partial=1, critical=1, scalesWith=None, scaleFactor=0):
+    def calcDamage(source, target, minimum, maximum, element, hitValue, partial=1, critical=1, scalesWith=None, scaleFactor=0):
         """Computes the amount of damage that should be dealt to the target after considering all bonuses and penalties
         to the attack that caused this method to be called such as source elemental damage bonuses or target vulnerabilities.
         Does not actually apply any damage to anything.
@@ -474,9 +483,7 @@ class Combat(object):
         if hitValue == "Miss":
             return 0
        
-        if max < min:
-            max = min
-        dieRoll = Dice.roll(min, max)
+        dieRoll = Dice.roll(minimum, maximum)
         
         if scalesWith == "Strength":
             dieRoll *= 1 + (source.totalStrength * scaleFactor)
@@ -492,21 +499,8 @@ class Combat(object):
         elif hitValue == "Partially Resisted":
             dieRoll *= partial
             
-        if isinstance(source, Person):
-            if element == "Fire":
-                dieRoll *= 1 + (float(source.totalFireBonusDamage) / 100)
-            elif element == "Cold":
-                dieRoll *= 1 + (float(source.totalColdBonusDamage) / 100)         
-            elif element == "Electric":
-                dieRoll *= 1 + (float(source.totalElectricBonusDamage) / 100)
-            elif element == "Poison":
-                dieRoll *= 1 + (float(source.totalPoisonBonusDamage) / 100)    
-            elif element == "Shadow":
-                dieRoll *= 1 + (float(source.totalShadowBonusDamage) / 100)
-            elif element == "Divine":
-                dieRoll *= 1 + (float(source.totalDivineBonusDamage) / 100)
-            elif element == "Arcane":
-                dieRoll *= 1 + (float(source.totalArcaneBonusDamage) / 100)
+        dieRoll = source.applyBonusDamage(dieRoll)
+        
 
         if element == "Fire":
             dieRoll *= 1 - (min(80, float(target.totalFireResistance) / 100))
@@ -533,7 +527,7 @@ class Combat(object):
             
         if dieRoll < 0:
             dieRoll = 0
-        return dieRoll.round()
+        return int(round(dieRoll))
         
     @staticmethod
     def basicAttack(source, target, hitType, **params):
