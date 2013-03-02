@@ -6,11 +6,19 @@ import math
 
 class Location(object):
     def __init__(self, pane, tile, direction=2):
-        self.pane = pane
-        self.tile = tile
+        if isinstance(pane, tuple) or pane is None:
+            self.pane = pane
+        else:
+            self.pane = (pane // PANE_X, tile // PANE_Y)
+            
+        if isinstance(tile, tuple) or tile is None:
+            self.tile = tile
+        else:
+            self.tile = (pane % PANE_X, tile % PANE_Y)
+            
         self.direction = direction
 
-    # So it turns out __repr__ is like toString()
+    # So it turns out __str__ is like toString()
     def __repr__(self):
         return "(%s, %s, %d)" % (self.pane, self.tile, self.direction)
         
@@ -21,10 +29,39 @@ class Location(object):
     def __ne__(self, other):
         return not self == other
         
+    def __lt__(self, other):
+        if self.abs_y == other.abs_y:
+            return self.abs_x < other.abs_x
+        else:
+            return self.abs_y < other.abs_y
+            
+    def __le__(self, other):
+        return self < other or self == other
+        
     def __hash__(self):
-        str = "%d0%d0%d0%d" % (self.pane[0], self.pane[1], self.tile[0], self.tile[1])
-        str = str.replace("-", "9")
-        return int(str)
+        str = "%d0%d" % (self.abs_x, self.abs_y)
+        return int(str.replace("-", "9"))
+        
+    @property
+    def abs_x(self):
+        if self.pane:
+            return self.pane[0] * PANE_X + self.tile[0]
+        else:
+            return self.tile[0]
+            
+    @property
+    def abs_y(self):
+        if self.pane:
+            return self.pane[1] * PANE_Y + self.tile[1]
+        else:
+            return self.tile[1]
+    
+    @property
+    def abs_pos(self):
+        if self.pane:
+            return (self.pane[0] * PANE_X + self.tile[0], self.pane[1] * PANE_Y + self.tile[1])
+        else:
+            return (self.tile[0], self.tile[1])
 
     def move(self, direction, distance):
         '''
@@ -104,22 +141,27 @@ class Location(object):
         return {((-dy + 1) * 3) + dx + 2: \
             (self.pane[0] + dx, self.pane[1] + dy) for dx in range(-1, 2) for dy in range(1, -2, -1)}
     
+    def line_to(self, dest):
+        locs = []
+        distx = dest.abs_x - self.abs_x
+        disty = dest.abs_y - self.abs_y
+        dist = max(abs(distx), abs(disty))
+        for x in range(dist + 1):
+            locs.append(Location(self.abs_x + int(float(x) / dist * distx),
+                    self.abs_y + int(float(x) / dist * disty)))
+        return locs
+    
     def distance(self, dest):
-        return  abs((self.pane[0] * PANE_X + self.tile[0]) - \
-                (dest.pane[0] * PANE_X + dest.tile[0])) + \
-                abs((self.pane[1] * PANE_Y + self.tile[1]) - \
-                (dest.pane[1] * PANE_Y + dest.tile[1]))
+        return  abs(self.abs_x - dest.abs_x) + abs(self.abs_y - dest.abs_y)
                 
-    def radius(self, rad):
-        return math.sqrt(((self.pane[0] * PANE_X + self.tile[0]) - \
-                (rad.pane[0] * PANE_X + rad.tile[0]))**2 + \
-                ((self.pane[1] * PANE_Y + self.tile[1]) - \
-                (rad.pane[1] * PANE_Y + rad.tile[1]))**2)
+    def true_distance(self, dest):
+        return math.sqrt((self.abs_x - dest.abs_x)**2 + (self.abs_y - dest.abs_y)**2)
                 
     def in_melee_range(self, dest):
         if self.pane != dest.pane:
             return False
-        if dest.tile in [(self.tile[0] + dx, self.tile[1] + dy) for dx in range(-1, 2) for dy in range(-1, 2)]:
+        if dest.tile in [(self.tile[0] + dx, self.tile[1] + dy) for dx in range(-1, 2) \
+                for dy in range(-1, 2)]:
             return True
         return False
 
@@ -141,7 +183,7 @@ if __name__ == "__main__":
     assert a.in_melee_range(g) == True
     h = Location((3, 1), (15, 18))
     assert a.in_melee_range(h) == False
-    assert a.radius(b) == math.sqrt(200)
+    assert a.true_distance(b) == math.sqrt(200)
     
     #TEST get_surrounding_panes()
     i = Location((0, 0), None)
@@ -168,3 +210,10 @@ if __name__ == "__main__":
     assert k.get_opposite_tile(4).tile == (PANE_X-1, 1)
     assert l.get_opposite_tile(8).tile == (1, PANE_Y-1)
     assert m.get_opposite_tile(2).tile == (4, 0)
+    
+    assert j < k
+    assert k > j
+    assert j <= k
+    assert k >= j
+    assert j != k
+    assert j == j
