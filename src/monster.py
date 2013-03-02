@@ -5,6 +5,9 @@ import person
 import ability
 import passiveability
 import spell
+import region
+import servercombat
+from dice import *
 from const import *
 
 class Monster(person.Person):
@@ -40,6 +43,8 @@ class Monster(person.Person):
         self.spellList = []
         self.passiveAbility = None
         
+        self.registerBasicAttacks()
+
         self.specialAttackOneName = Monster.setFrom(argDict, 'specialAttackOne', None)
         if self.specialAttackOneName:
             if "Spell: " in self.specialAttackOneName:
@@ -98,6 +103,10 @@ class Monster(person.Person):
         
         self.levelSet = False
         
+    def registerBasicAttacks(self):
+        self.abilityList.append(ability.Ability("Basic Attack", self, "Melee"))
+        self.abilityList.append(ability.Ability("Ranged Attack", self, "Ranged"))
+        
     def setLevel(self, level):
         '''Method should only be called once after creation to set the level of a 
         monster.  Will print a warning message if this is called more than once.'''
@@ -148,7 +157,68 @@ class Monster(person.Person):
         '''First argument should represent which type of object this is.'''
         return ("Monster", self.name, self.level)
         
-    def getIdentifier(self):
-        tup = self.getDetailTuple()
-        return tup[0] + ": " + tup[1] + " " + tup[2]
-        # Insert location here?
+    def getUsableAbilities(self, server, combatPane):
+        sufficient = []
+        for abil in self.abilityList:
+            if self.AP >= abil.APCost and abil.name not in self.cooldownList:
+                sufficient.append(abil)
+        for spell in self.spellList:
+            if self.AP >= spell.APCost and not self.onCooldown(spell.name) and self.MP >= spell.MPCost:
+                sufficient.append(spell)
+        # We now have a list of abilities that can be used according to 
+        # AP/MP costs and cooldowns.
+        usable = []
+        for abil in sufficient:
+            if abil.targetType == "self":
+                if abil.canUse(self)[0]: # Target is self
+                    usable.append((abil, self))
+            if abil.targetType == "hostile":
+                players = self.getPlayersInRange(abil.range, server, combatPane)
+                for player in players:
+                    if abil.canUse(player)[0]:
+                        usable.append((abil, player))
+            # If location...TODO
+            # If friendly...TODO
+        return usable
+        
+    def selectAction(self, server, combatPane):
+        """Returns a duple of an ability/spell and its target."""
+        choicesList = self.getUsableAbilities(server, combatPane)
+        choice = None
+        if not choicesList:
+            return None
+        else:
+            return Dice.choose(choicesList)
+        
+    def performAction(self, server, combatPane):
+        """Select a usable ability, and perform it.
+        Returns the name of the ability used if an action was possible and thus completed,
+        Returns "Failure" if no action was possible."""
+        actionDuple = self.selectAction(server, combatPane)
+        if actionDuple:
+            print self.name + " is using ability: " + actionDuple[0].name + " on " + actionDuple[1].name
+            abil = actionDuple[0]
+            target = actionDuple[1]
+            abil.use(target)
+            return abil.name
+        return "Failure"
+            
+    def getPlayersInRange(self, range, server, combatPane):
+        """Returns a list of players within a set range of this monster.  Will sort them according
+        to distance from this monster."""
+        reg = region.Region()
+        reg.build(region.RAct.ADD, region.RShape.CIRCLE, self.cLocation, range)
+        players = []
+        allPlayers = [server.person[x] for x in server.pane[combatPane].person if
+                      server.person[x].team == "Players"]
+        # Will break when traps are introduced TODO
+        for player in allPlayers:
+            if player.cLocation in reg and player.team == "Players":
+                players.append(player)
+        
+        keyFunction = lambda x: self.cLocation.distance(x.cLocation)
+        sortedPlayers = sorted(players, keyFunction)
+        return sortedPlayers
+    
+            
+        

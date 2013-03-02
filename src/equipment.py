@@ -2,7 +2,6 @@
 
 import sys
 import dice
-import combat
 import entity as e
 import magicalproperty
 import copy

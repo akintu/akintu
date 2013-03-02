@@ -32,8 +32,6 @@ class Person(en.Entity):
         en.Entity.__init__(self, location=loc, image=img, passable=False)
         
         self.id = None
-        self.cPane = None
-        self.cLocation = None
 
         self.ai = AI()
         self.anim = None
@@ -1833,9 +1831,7 @@ class Person(en.Entity):
     def totalDexterity(self):
         """Should always equal base + equipment + status Dexterity, except
         when that equation would reduce it to a non-positive value."""
-        return max(self._baseDexterity + 
-                   self._equipmentDexterity + 
-                   self._statusDexterity) 
+        return self._baseDexterity + self._equipmentDexterity + self._statusDexterity 
     
     @property
     def equipmentDexterity(self):
@@ -2374,11 +2370,16 @@ class Person(en.Entity):
           True or False"""
         if range == -1:
             range = self.attackRange
-        selfLoc = self.location
-        otherLoc = target.location
+            
+        otherLoc = target.cLocation
+        selfLoc = self.cLocation
+        if not selfLoc:
+            selfLoc = self.location
+            otherLoc = target.location
+        
         if range == 1:
-            return location.in_melee_range(selfLoc, otherLoc)
-        return location.distance(selfLoc, otherLoc) <= range
+            return selfLoc.in_melee_range(otherLoc)
+        return selfLoc.distance(otherLoc) <= range
            
     def onCooldown(self, abilityName):
         """Returns True if the ability is currently unavailable due to
@@ -2388,7 +2389,10 @@ class Person(en.Entity):
           abilityNAme = The name of the ability being checked
         Outputs:
           True or False"""
-        return (abilityName in self.cooldownList)
+        for cd in self.cooldownList:
+            if cd[0] == abilityName:
+                return True
+        return False
           
           
     def sizeCompare(self, size, smallerThan):

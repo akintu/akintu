@@ -70,7 +70,10 @@ if __name__ == "__main__":
     
     initMonster = theorycraft.TheoryCraft.getMonster(level=4)
     mList = theorycraft.TheoryCraft.generateMonsterGroup(initMonster)
-    #for m in mList:
-    #    print m.name
+    for m in mList:
+        print "\n" + m.name
+        for abil in m.abilityList:
+            print abil.name + " " + str(abil.APCost)
+    
     
     

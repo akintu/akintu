@@ -3,7 +3,8 @@
 import sys
 
 class Entity(object):
-    def __init__(self, location=None, team="Neutral", image=None, passable=False):
+    def __init__(self, location=None, team="Neutral", image=None, passable=False, 
+                 cLocation=None, cPane=None):
         self.location = location
         team = team.capitalize()
         if team not in ["Monsters", "Players", "Neutral"]:
@@ -11,3 +12,6 @@ class Entity(object):
         self.team = team
         self.image = image
         self.passable = passable
+        self.cPane = None
+        self.cLocation = None
+        

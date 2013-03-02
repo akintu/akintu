@@ -9,6 +9,7 @@ import os
 import sys
 import time
 
+from combat import *
 from command import *
 from location import *
 from network import *
@@ -40,7 +41,8 @@ class Game(object):
         if serverip:
             self.serverip = sys.argv[1]
         else:
-            GameServer(self.world)
+            Combat.gameServer = GameServer(self.world)
+            
         # if len(sys.argv) == 1:
             # GameServer(self.world)
         # else:
@@ -135,6 +137,14 @@ class Game(object):
             if isinstance(command, Update) and command.property == UpdateProperties.AP:
                 self.pane.person[command.id].AP = command.value
                 self.screen.update_person(command.id, {'AP': command.value, 'team': self.pane.person[command.id].team})
+            ###### Update MP ######
+            if isinstance(command, Update) and command.property == UpdateProperties.MP:
+                self.pane.person[command.id].MP = command.value
+                self.screen.update_person(command.id, {'MP': command.value, 'team': self.pane.person[command.id].team})
+            ###### Update HP ######
+            if isinstance(command, Update) and command.property == UpdateProperties.HP:
+                self.pane.person[command.id].HP = command.value
+                self.screen.update_person(command.id, {'HP': command.value, 'team': self.pane.person[command.id].team})
                 
     def handle_events(self):
         pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])

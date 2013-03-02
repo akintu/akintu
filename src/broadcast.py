@@ -21,9 +21,15 @@ class AttackBroadcast(Broadcast):
         
         self.direction = argDict['direction']
         self.type = argDict['type']
-        self.inRange = argDict['inRange']
-        self.suffix = argDict['suffix']
-        
+        if 'inRange' in argDict:
+            self.inRange = argDict['inRange']
+        else:
+            self.inRange = None
+        if 'suffix' in argDict:
+            self.suffix = argDict['suffix']
+        else:
+            self.suffix = None
+            
         self.message = (self.direction + " " + self.type + " Attack ")
         if self.inRange:
             self.message += "in range " + str(self.inRange) + " "

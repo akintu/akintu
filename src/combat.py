@@ -1,13 +1,11 @@
 #!/usr/bin/python
 
 import sys
-import dice
-import status as displaystatus
-import playercharacter as pc
+from dice import *
 import broadcast
-import theorycraft
 import location
 import consumable
+import command
 
 class IncompleteMethodCall(Exception):
     def __init__(self, value):
@@ -18,6 +16,31 @@ class IncompleteMethodCall(Exception):
 class Combat(object):
     def __init__(self):
         pass
+       
+    gameServer = None
+    allStatuses = None
+       
+    @staticmethod
+    def getAllPorts():
+        ports = []
+        if not Combat.gameServer:
+            print "Combat has not had its view of gameServer initialized."
+        else:
+            for key in Combat.gameServer.player.keys():
+                ports.append(key)
+        return ports
+        
+    @staticmethod
+    def sendToAll(character, type):
+        messageObj = None
+        if type == "AP":
+             messageObj = command.Update(character.id, command.UpdateProperties.AP, character.AP)
+        elif type == "MP":
+             messageObj = command.Update(character.id, command.UpdateProperties.MP, character.MP)
+        elif type == "HP":
+             messageObj = command.Update(character.id, command.UpdateProperties.HP, character.HP)
+        for port in Combat.getAllPorts():
+            Combat.gameServer.SDF.send(port, messageObj)             
        
     @staticmethod
     def modifyResource(target, type, value):
@@ -32,14 +55,16 @@ class Combat(object):
         type = type.upper()
         if type == "AP":
             target.AP += value
-            Combat._shoutResourceLevel(target, type, target.AP / target.totalAP)
+            Combat.sendToAll(target, "AP")
         elif type == "MP":
             target.MP += value
             if target.totalMP > 0:
-                Combat._shoutResourceLevel(target, type, target.MP / target.totalMP)
+                Combat._shoutResourceLevel(target, type, float(target.MP) / target.totalMP)
+            Combat.sendToAll(target, "MP")
         elif type == "HP":
             target.HP += value
-            Combat._shoutResourceLevel(target, type, target.HP / target.totalHP)
+            Combat._shoutResourceLevel(target, type, float(target.HP) / target.totalHP)
+            Combat.sendToAll(target, "HP")
         else:
             raise TypeError("Type: " + type + " is not valid.  Proper values are: 'HP', 'MP', or 'AP'.")
     
@@ -125,7 +150,7 @@ class Combat(object):
           True or False """
         offense = None
         defense = source.totalPoisonTolerance
-        if isinstance.source(pc.PlayerCharacter):
+        if source.team == "Players":
             offense = source.totalPoisonRatingBous + rating
         else: 
             offense = rating
@@ -212,11 +237,14 @@ class Combat(object):
                 print "Attack *avoided*."
                 return ["Miss"]
             attackOne = Combat.physicalHitMechanics(source, target, modifier, critMod, ignoreMeleeBowPenalty)
-            if source.isinstance(pc.PlayerCharacter) and source.usingWeaponStyle("Dual"):
+            if source.team == "Players" and source.usingWeaponStyle("Dual"):
                 Combat._shoutAttackStart(source, target)
                 attackTwo = Combat.physicalHitMechanics(source, target, modifier, critMod, ignoreMeleeBowPenalty)
+                print "Attack (first hand) " + attackOne
+                print "Attack (seond hand) " + attackTwo
                 return [attackOne, attackTwo]
             else:
+                print "Attack " + attackOne
                 return [attackOne]            
         
         if (type == "Magical"):
@@ -228,6 +256,9 @@ class Combat(object):
             else:
                 return "Miss"
             
+        if (type == "Poison"):
+            return Combat.calcPoisonHit(source, target, rating)
+            
         if (type == "Trap"):
             raise NotImplementedError("This method does not yet support the Trap type.")
             
@@ -236,7 +267,7 @@ class Combat(object):
     @staticmethod
     def addStatus(target, status, duration, magnitude=0, chance=1, 
                   overwrite=True, partial=False, critical=False,
-                  hitValue="Normal Hit", min=0, max=0, charges=0):
+                  hitValue="Normal Hit"):
         """Method is used to apply a Status to a target Person.  The properties
         needed to create and apply the status are mostly provided by default parameters
         and in most cases, they can be ignored.
@@ -285,21 +316,27 @@ class Combat(object):
         Combat._shoutStatusApplied(target, status)
         
         dStatus = None
-        for display in theorycraft.TheoryCraft.statuses:
-            if display.displayName == status:
+        for display in Combat.allStatuses:
+            if display.name == status:
                 dStatus = display
-        dStatus = dStatus.cloneWithDetails(magnitude, duration, min, max, charges)
+        dStatus = dStatus.cloneWithDetails(magnitude, duration)
         
-        for display in target.statusList:
-            if display.displayName == dStatus.displayName:
-                if not overwrite:
-                    dStatus.deactivate(target)
-                    dStatus.stacks += 1
-                    dStatus.activate(target)
-                else:
-                    removeStatus(target, display.displayName)
-                    target.statusList.append(dStatus)
-                    dStatus.activate(target)
+        if dStatus.name not in [x.name for x in target.statusList]:
+            target.statusList.append(dStatus)
+            dStatus.activate(target)
+        else:
+            for display in target.statusList:
+                if display.name == dStatus.name:
+                    if not overwrite:
+                        display.deactivate(target)
+                        display.stacks += 1
+                        display.activate(target)
+                    else:
+                        display.deactivate(target)
+                        removeStatus(target, display.name)
+                        target.statusList.append(dStatus)
+                        dStatus.activate(target)
+        
         # Haven't figured out what to do with immunity: TODO
     
     @staticmethod
@@ -314,7 +351,7 @@ class Combat(object):
         statusName = statusName.capitalize().strip()
         matchingStatus = None
         for stat in target.statusList:
-            if stat.displayName == statusName:
+            if stat.name == statusName:
                 matchingStatus = target.statusList
                 break
         if matchingStatus:
@@ -336,7 +373,7 @@ class Combat(object):
         statusName = statusName.capitalize().strip()
         matchingStatus = None
         for stat in target.statusList:
-            if stat.displayName == statusName:
+            if stat.name == statusName:
                 matchingStatus = target.statusList
                 matchingStatus.turnsLeft = newDuration
                 break
@@ -376,10 +413,10 @@ class Combat(object):
         if removalCandidates:
             if removeAll:
                 for dStatus in removalCandidates:
-                    Combat.removeStatus(target, dStatus.displayName)
+                    Combat.removeStatus(target, dStatus.name)
             else:
                 choice = Dice.roll(0, len(removalCandidates) - 1)
-                Combat.removeStatus(target, removalCandidates[choice].displayName)
+                Combat.removeStatus(target, removalCandidates[choice].name)
         
     
     @staticmethod
@@ -454,7 +491,7 @@ class Combat(object):
         elif hitValue == "Partially Resisted":
             dieRoll *= partial
             
-        if source.isinstance(Person):
+        if isinstance(source, Person):
             if element == "Fire":
                 dieRoll *= 1 + (float(source.totalFireBonusDamage) / 100)
             elif element == "Cold":
@@ -501,7 +538,7 @@ class Combat(object):
     def basicAttack(source, target, hitType, **params):
         if 'noCounter' not in params:
             params['noCounter'] = False
-        if source.isinstance(pc.PlayerCharacter):
+        if source.team == "Players":
             if source.usingWeaponStyle("Dual"):
                 originalCounterStatus = params['noCounter']
                 params['noCounter'] = True
@@ -542,7 +579,8 @@ class Combat(object):
             baseAttackDamage *= 1 - (float(target.totalDivineResistance) / 100)
         elif element == "Arcane":
             baseAttackDamage *= 1 - (float(target.totalArcaneResistance) / 100)
-        baseAttackDamage *= (1 + float(source.attackPower) / 100)
+        baseAttackDamage *= float(source.attackPower) / 100
+        print "Physical Attack dealt:  " + str(int(baseAttackDamage)) + " Points of damage!"
         Combat.lowerHP(target, round(baseAttackDamage))
         Combat._shoutAttackComplete(source, target, params['noCounter'])
     
@@ -787,7 +825,7 @@ class Combat(object):
             elif remaining == current[1]:
                 target.HPBufferList.remove(current)
                 return
-        Combat.modifyResource(target, "HP", remaining)
+        Combat.modifyResource(target, "HP", -remaining)
 
         
     @staticmethod
@@ -800,7 +838,7 @@ class Combat(object):
           amount -- int; the amount of HP to restore
         Outputs:
           None"""
-        if isinstance(source, pc.PlayerCharacter):
+        if source.team == "Players":
             total = round(amount * (1 + float(source.healingBonus) / 100))
         else:
             total = amount
@@ -854,6 +892,7 @@ class Combat(object):
         direction = "Outgoing"
         hearer = source
         otherParty = target
+        hitTypeString = hitType
         if hitType == "Miss":
             hitTypeString = ""
         if source.team == "Monsters":

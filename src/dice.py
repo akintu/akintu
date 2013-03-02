@@ -57,6 +57,16 @@ class Dice(object):
         return rValue
     
     @staticmethod
+    def choose(list):
+        '''Returns a random selection from a given list.'''
+        if not list:
+            return None
+        Dice.stashGen()
+        rValue = random.choice(list)
+        Dice.popGen()
+        return rValue
+    
+    @staticmethod
     def roll(minimum, maximum):
         """Returns an integer somewhere between the minimum and maximum (as an integer)."""
         if minimum == maximum:

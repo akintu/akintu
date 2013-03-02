@@ -1,26 +1,28 @@
 #!/usr/bin/python
 
 import sys
-import combat
-import dice
+from dice import *
 import listener
+from combat import Combat
 
+    
 class Ability(object):
     
-    def _basicAttack(self, target):
+    # The selfFiller is a horrible hack that I hope Colton can unravel!
+    def _basicAttack(self, selfFiller, target):
         source = self.owner
         hit = Combat.calcHit(source, target, "Physical")
         Combat.basicAttack(source, target, hit)
         
-    def _basicMeleeAttackCheck(self, target):
+    def _basicMeleeAttackCheck(self, selfFiller, target):
         source = self.owner
-        if source.usingWeaponStyle("Melee"):
+        if source.usingWeapon("Melee"):
             return (True, "")
         return (False, "Must be using a melee weapon to perform: " + self.name)
         
-    def _basicRangedAttackCheck(self, target):
+    def _basicRangedAttackCheck(self, selfFiller, target):
         source = self.owner
-        if source.usingWeaponStyle("Ranged"):
+        if source.usingWeapon("Ranged"):
             return (True, "")
         return (False, "Must be using a ranged weapon to perform: " + self.name)
     
@@ -42,23 +44,29 @@ class Ability(object):
             self.name = "Melee Attack"
             self.level = 1
             self.HPCost = 0
-            self.APCost = owner.totalMeleeAttackAPCost
+            if owner.totalMeleeAttackAPCost <= 0:
+                self.APCost = 99
+            else:
+                self.APCost = owner.totalMeleeAttackAPCost
             self.range = 1
             self.targetType = "hostile"
-            self.action = Ability._basicAttack
-            self.cooldown = 0
-            self.checkFunction = Ability._basicMeleeAttackCheck
+            self.action = self._basicAttack
+            self.cooldown = None
+            self.checkFunction = self._basicMeleeAttackCheck
             self.breakStealth = 100
         elif basicAttackType == "Ranged":
             self.name = "Ranged Attack"
             self.level = 1
             self.HPCost = 0
-            self.APCost = owner.totalRangedAttackAPCost
+            if owner.totalRangedAttackAPCost <= 0:
+                self.APCost = 99
+            else:
+                self.APCost = owner.totalRangedAttackAPCost
             self.range = -1
             self.targetType = "hostile"
-            self.action = Ability._basicAttack
-            self.cooldown = 0
-            self.checkFunction = Ability._basicRangedAttackCheck
+            self.action = self._basicAttack
+            self.cooldown = None
+            self.checkFunction = self._basicRangedAttackCheck
             self.breakStealth = 100
             
     @staticmethod       
@@ -75,26 +83,27 @@ class Ability(object):
         
         # Check for modifications to ability costs here from listeners TODO
         mod = 0 # dummy code
-        if self.owner.AP < self.APCost - mod:
+        source = self.owner
+        if source.AP < self.APCost - mod:
             return (False, "Insufficient AP")
             
         messageCode = (True, "")
         if self.checkFunction:
-            messageCode = self.checkFunction(self.owner, target)
+            messageCode = self.checkFunction(self, target)
         if not messageCode[0]:
             return messageCode
             
         if self.targetType == "self" and owner is not target:
             return (False, "Ability is self-only, and the given target is not the user.")
-        if self.targetType == "hostile" and self.owner.team == target.team:
+        if self.targetType == "hostile" and source.team == target.team:
             return (False, "Cannot target own team with hostile ability.")
-        if self.targetType == "friendly" and self.owner.team != target.team:
+        if self.targetType == "friendly" and source.team != target.team:
             return (False, "Cannot target hostile with beneficial ability.")
         # Do we need any check for AoE spells?
-        if not self.owner.inRange(target):
+        if not source.inRange(target, self.range):
             return (False, "Target is out of range.")
-        if self.name in self.owner.cooldownList:
-            return (False, "Ability is on Cooldown.")
+        if source.onCooldown(self.name):
+            return (False, self.name + " is on Cooldown.")
         return (True, "")
         
         
@@ -114,7 +123,7 @@ class Ability(object):
             if Dice.rollBeneath(self.breakStealth):
                 Combat.removeStealth(self.owner)
         else:
-            return 
+            print "WARNING: Ability failed late!"
             # TODO! Make this raise an exception rather than silently return.
         
     

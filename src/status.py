@@ -33,25 +33,13 @@ class Status(object):
             if item.magnitude == 0:
                 item.magnitude = magnitude
     
-    def applyMinMax(self, min, max):
-        for item in self.internalList:
-            if min > 0:
-                item.min = min
-            if max > 0:
-                if max < min:
-                    item.max = min
-                else:
-                    item.max = max
-    
-    def cloneWithDetails(self, magnitude, duration, min=0, max=0, charges=0):
+    def cloneWithDetails(self, magnitude, duration):
         clone = Status()
         clone.populate(self.name, self.element, self.categoryList, self.internalList)
         clone.turnsLeft = duration
-        clone.charges = charges
         clone.applyMagnitude(magnitude)
         for iStatus in clone.internalList:
             iStatus.element = clone.element
-        clone.applyMinMax(min, max)
         return clone
         
     def activate(self, target):
@@ -68,7 +56,7 @@ class Status(object):
         applied on every upkeep phase."""
         for iStatus in self.internalList:
             if iStatus.recurring == "True":
-                iStatus.applyEffect(target, iStatus.magnitude)
+                iStatus.applyEffect(self, target, iStatus.magnitude)
     
     
         

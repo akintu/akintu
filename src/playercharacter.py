@@ -15,7 +15,7 @@ class PlayerCharacter(p.Person):
     demoExpRequiredForLevel = {1 : 10, 2 : 25, 3 : 50, 4 : 90, 5 : 170}
     LEVEL_MAX = 5
     
-    def __init__(self, argDict, name="No Name"):  
+    def __init__(self, argDict, name="Guy Threepwood"):  
         p.Person.__init__(self, argDict)
         
         self.team = "Players"

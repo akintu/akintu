@@ -8,9 +8,9 @@ import equipment
 import armorparser
 import weaponsparser
 import statuseffectsparser
-import copy
 import playercharacter
 import location
+from combat import Combat
 from random import randint, choice
 from dice import *
 from const import *
@@ -42,6 +42,9 @@ class TheoryCraft(object):
         TheoryCraft.weapons = parser.parseAll("./data/Weapon_Data.txt")
         parser = statuseffectsparser.StatusEffectsParser()
         TheoryCraft.statuses = parser.parseAll("./data/Status_Effects_Data.txt")
+        
+        Combat.allStatuses = TheoryCraft.statuses
+        
         TheoryCraft.hasLoaded = True
         
     @staticmethod

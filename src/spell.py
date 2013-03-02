@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import sys
-import combat
+from combat import *
 import dice
 
 class Spell(object):
@@ -23,36 +23,37 @@ class Spell(object):
         self.cooldown = info['cooldown']
         self.owner = owner
     
-    def canCast(self, target):
+    def canUse(self, target):
         '''
         target: Person (later, Location?)
         '''
+        source = self.owner
         
         # Check for modifications to spells costs here from listeners TODO
         mod = 0 # dummy code
-        if self.owner.MP < self.MPCost - mod:
+        if source.MP < self.MPCost - mod:
             return (False, "Insufficient Mana")
-        if self.owner.AP < self.APCost - mod:
+        if source.AP < self.APCost - mod:
             return (False, "Insufficient AP")
         if self.targetType == "self" and owner is not target:
             return (False, "Spell is self-only, and the given target is not the caster.")
-        if self.targetType == "hostile" and self.owner.team == target.team:
+        if self.targetType == "hostile" and source.team == target.team:
             return (False, "Cannot target own team with hostile spell.")
-        if self.targetType == "friendly" and self.owner.team != target.team:
+        if self.targetType == "friendly" and source.team != target.team:
             return (False, "Cannot target hostile with beneficial spell.")
         # Do we need any check for AoE spells?
-        if not self.owner.inRange(target):
+        if not source.inRange(target):
             return (False, "Target is out of range.")
-        if self.name in self.owner.cooldownList:
-            return (False, "Spell is on Cooldown.")
+        if source.onCooldown(self.name) :
+            return (False, self.name + " is on Cooldown.")
         return (True, "")
         
         
-    def castSpell(self, target):
+    def use(self, target):
         ''' Casts the given spell on or around the given target Person (Location?)
-        Performs a check if this is possible, but this is not where the canCast
+        Performs a check if this is possible, but this is not where the canUse
         check should be made.  If caught here, it will raise an exception!'''
-        if self.canCast(target)[0]:
+        if self.canUse(target)[0]:
             Combat.modifyResource(self.owner, "MP", -self.MPCost)
             Combat.modifyResource(self.owner, "AP", -self.APCost)
             if self.cooldown:
@@ -65,7 +66,7 @@ class Spell(object):
                     self.action(self, target)
                     self.unapplySchoolResistance()
                 else:
-                    self.action(self, target)
+                    self.action(target)
                 self._shoutSpellCastComplete(self.owner, target)
                 if self.targetType != "friendly" and self.targetType != "self":
                     Combat.removeStealth(self.owner)

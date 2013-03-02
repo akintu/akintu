@@ -2,6 +2,8 @@ from network import *
 import broadcast
 from combat import *
 from location import *
+import region
+import monster
 
 # TODO: Use user-defined timed-turns
 seconds = 12
@@ -134,7 +136,15 @@ class CombatServer():
                 combatPane, True)
 
     def monster_phase(self, combatPane):
-        print "Did monster phase stuff."
+        chars = [self.server.person[x] for x in self.server.pane[combatPane].person] 
+        monsters = [x for x in chars if isinstance(x, monster.Monster)]
+        for mon in monsters:
+            while( True ):
+                message = mon.performAction(self.server, combatPane)
+                if message == "Failure":
+                    break
+                    
+        print "~~END MONSTER PHASE~~."
         return
 
     ### Combat Logic ###
@@ -149,11 +159,15 @@ class CombatServer():
             stat.upkeepActivate(target)
             if stat.turnsLeft > 0:
                 stat.turnsLeft -= 1
-        # Remove expired statuseffects
+        for cooldown in target.cooldownList:
+            cooldown[1] -= 1
+        # Remove expired statuseffects and cooldowns
         target.statusList[:] = [x for x in target.statusList if x.turnsLeft != 0]
-        # Refill AP
+        target.cooldownList[:] = [x for x in target.cooldownList if x[1] > 0]
+        # Refill AP (performed in end_turn)
 
-
+    
+        
     def shout_turn_start(self, player, turn="Player"):
         '''Shouts to the Player that this particular turn is starting.
         Defaults to "Player"; "Monster" is the other valid value.'''
@@ -164,7 +178,11 @@ class CombatServer():
         player.MP = player.totalMP
         player.HP = player.totalHP
         player.AP = player.totalAP
+        
+        
+        
 
 class CombatState(object):
     def __init__(self):
         self.turnTimer = None
+        
