@@ -36,6 +36,11 @@ class Game(object):
         self.running = False
         self.combat = False
         
+        # Selection state
+        self.selectionMode = False
+        self.currentTarget = None
+        self.panePersonList = []
+        
         # Setup server if host
         self.serverip = "localhost"
         if serverip:
@@ -162,6 +167,18 @@ class Game(object):
                     self.keystate = event.key
                 elif event.key in MOVE_KEYS:
                     self.move_person(MOVE_KEYS[event.key], 1)
+                elif event.key == K_f:
+                    if self.combat and not self.selectionMode:
+                        self.selectionMode = True
+                        print "Selection mode enabled"
+                    elif self.combat and self.selectionMode:
+                        self.selectionMode = False
+                        print "Selection mode disabled"
+                elif event.key == K_e and self.selectionMode:
+                    self.cycle_targets()
+                elif event.key == K_w and self.selectionMode:
+                    self.cycle_targets(reverse=True)
+                        
 
     def move_person(self, direction, distance):
         if self.running:
@@ -185,6 +202,29 @@ class Game(object):
                         1.0 / self.pane.person[self.id].movementSpeed)
                     self.pane.person[self.id].location = newloc
 
+    def cycle_targets(self, reverse=False):
+        # Cycles through the current persons in the current combat pane.
+        if not self.combat:
+            return
+        if not self.panePersonList:
+            self.panePersonList = [self.pane.person[x] for x in self.pane.person]
+        if not self.currentTarget:
+            self.currentTarget = self.panePersonList[0]
+        elif not reverse:   
+            if self.currentTarget == self.panePersonList[-1]:
+                self.currentTarget = self.panePersonList[0]
+            else:
+                currentTargetPlace = self.panePersonList.index(self.currentTarget)
+                self.currentTarget = self.panePersonList[currentTargetPlace + 1]
+        else:
+            if self.currentTarget == self.panePersonList[0]: 
+                self.currentTarget = self.panePersonList[-1]
+            else:
+                currentTargetPlace = self.panePersonList.index(self.currentTarget)
+                self.currentTarget = self.panePersonList[currentTargetPlace - 1]        
+        print self.currentTarget.name
+        # TODO: Handle removal (and addition?) to the combat pane's person list.
+                    
     def animate(self, id, source, dest, length):
         xdist = (dest.tile[0] - source.tile[0]) * TILE_SIZE
         ydist = (dest.tile[1] - source.tile[1]) * TILE_SIZE
