@@ -43,8 +43,6 @@ class Monster(person.Person):
         self.abilityList = []
         self.spellList = []
         self.passiveAbility = None
-        
-        self.registerBasicAttacks()
 
         self.specialAttackOneName = Monster.setFrom(argDict, 'specialAttackOne', None)
         if self.specialAttackOneName:
@@ -102,13 +100,17 @@ class Monster(person.Person):
         self.levelupSpellpower = Monster.setFrom(argDict, 'levelupSpellpower')
         self.levelupStrength = Monster.setFrom(argDict, 'levelupStrength')
         
+        self.registerBasicAttacks()
+        
         self.levelSet = False
         self.currentCombatPane = None
         
     def registerBasicAttacks(self):
         self.abilityList.append(ability.Ability("Melee Attack", self))
-        self.abilityList.append(ability.Ability("Ranged Attack", self))
-        
+        rangedAttack = ability.Ability("Ranged Attack", self)
+        rangedAttack.range = self.attackRange
+        self.abilityList.append(rangedAttack)
+
     def applyBonusDamage(self, dieRoll):
         dieRoll *= (1 + self.attackPower / 100.0)
         return int(round(dieRoll))

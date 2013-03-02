@@ -211,6 +211,8 @@ class Person(en.Entity):
         
         self._HPBufferList = []
         
+        self.meleeRangedAttackPenaltyReduction = 0
+        
         self._baseMovementAPCost = Person.setFrom(argDict, 'moveAP', Person.ERROR)
         self._equipmentMovementAPCost = 0
         self._overrideMovementAPCost = -1
@@ -2446,7 +2448,7 @@ class Person(en.Entity):
             if self.attackRange == 1:
                 wep = "Sword"
             else:
-                wep = "Bow"
+                wep = "Shortbow"
             return wep in acceptList
         elif (self.equippedItems.equippedWeapon.name == weaponType or 
              self.equippedItems.equippedOffHand.name == weaponType):

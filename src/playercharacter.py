@@ -120,7 +120,6 @@ class PlayerCharacter(p.Person):
         self._bonusTrapDamage = 0
         self._bonusTrapRating = 0
         self.bonusPoisonRating = 0
-        self.meleeRangedAttackPenaltyReduction = 0
         
         # --- Sorceror ---
         # self._activeSummon

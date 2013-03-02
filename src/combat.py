@@ -171,7 +171,7 @@ class Combat(object):
             offense = source.totalRangedAccuracy + modifier
             if source.inRange(target, 1) and not ignoreMeleeBowPenalty:
                 # Ranged attack with penalty 20% miss chance
-                outrightMissChance = round(20 * (1 - float(source.longbowAccuracyPenaltyReduction) / 100))
+                outrightMissChance = round(20 * (1 - float(source.meleeRangedAttackPenaltyReduction) / 100))
                 if not Dice.rollBeneath(outrightMissChance):
                     return "Miss"
             if source.usingWeapon("Longbow") and not source.baseClass == "Ranger" and not source.secondaryClass == "Ranger":
@@ -554,27 +554,21 @@ class Combat(object):
             Combat._shoutAttackComplete(source, target, params['noCounter'])
             return
         baseAttackDamage = Dice.roll(source.attackMinDamage, source.attackMaxDamage)
-        if source.attackElement == "Bludgeoning":
-            baseAttackDamage *= (1 - (float(target.totalBludgeoningResistance) / 100))
-        elif source.attackElement == "Piercing":
-            baseAttackDamage *= (1 - (float(target.totalPiercingResistance) / 100))
-        elif source.attackElement == "Slashing":
-            baseAttackDamage *= (1 - (float(target.totalSlashingResistance) / 100))
-        elif attackElement == "Fire":
+        if source.attackElement == "Fire":
             baseAttackDamage *= 1 - (float(target.totalFireResistance) / 100)
-        elif attackElement == "Cold":
+        elif source.attackElement == "Cold":
             baseAttackDamage *= 1 - (float(target.totalColdResistance) / 100)           
-        elif attackElement == "Electric":
+        elif source.attackElement == "Electric":
             baseAttackDamage *= 1 - (float(target.totalElectricResistance) / 100)
-        elif attackElement == "Poison":
+        elif source.attackElement == "Poison":
             baseAttackDamage *= 1 - (float(target.totalPoisonResistance) / 100)    
-        elif attackElement == "Shadow":
+        elif source.attackElement == "Shadow":
             baseAttackDamage *= 1 - (float(target.totalShadowResistance) / 100)
-        elif attackElement == "Divine":
+        elif source.attackElement == "Divine":
             baseAttackDamage *= 1 - (float(target.totalDivineResistance) / 100)
-        elif attackElement == "Arcane":
+        elif source.attackElement == "Arcane":
             baseAttackDamage *= 1 - (float(target.totalArcaneResistance) / 100)
-        baseAttackDamage *= float(source.attackPower) / 100
+        baseAttackDamage = source.applyBonusDamage(baseAttackDamage)
         Combat.screen.show_text("Incoming Attack From: " + source.name + " dealing " + str(int(baseAttackDamage)) +
                                 " " + source.attackElement +" damage!", color='red', size=12)
         Combat.lowerHP(target, round(baseAttackDamage))
