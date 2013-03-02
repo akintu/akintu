@@ -4,24 +4,29 @@ import sys
 import internalstatus
 
 class Status(object):
+
+    DEFAULT_IMAGE = "./res/icons/cubeforce.svg"
+
     def __init__(self):
         # Values loaded at startup time
         self.name = None
         self.element = None
         self.categoryList = None
         self.internalList = None
-
-        #self.persistent = None #boolean Not sure where to put this yet TODO
+        self.image = None
         
         # Values given to individual instances of this Status
         self.turnsLeft = None
         self.stacks = 1
         self.charges = None
         
-    def populate(self, name, element, categoryList, internalList):
+    def populate(self, name, image, element, categoryList, internalList):
         """Populates the fields of this status from the information gained
         through a parser from a txt file or a previously created displaystatus."""
         self.name = name
+        self.image = image
+        if image == "None":
+            self.image = Status.DEFAULT_IMAGE
         self.element = element
         self.categoryList = categoryList
         self.internalList = internalList
@@ -35,7 +40,7 @@ class Status(object):
     
     def cloneWithDetails(self, magnitude, duration):
         clone = Status()
-        clone.populate(self.name, self.element, self.categoryList, self.internalList)
+        clone.populate(self.name, self.image, self.element, self.categoryList, self.internalList)
         clone.turnsLeft = duration
         clone.applyMagnitude(magnitude)
         for iStatus in clone.internalList:

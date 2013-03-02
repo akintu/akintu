@@ -35,14 +35,26 @@ class Combat(object):
     def sendToAll(character, type):
         messageObj = None
         if type == "AP":
-             messageObj = command.Update(character.id, command.UpdateProperties.AP, character.AP)
+            messageObj = command.Update(character.id, command.UpdateProperties.AP, character.AP)
         elif type == "MP":
-             messageObj = command.Update(character.id, command.UpdateProperties.MP, character.MP)
+            messageObj = command.Update(character.id, command.UpdateProperties.MP, character.MP)
         elif type == "HP":
-             messageObj = command.Update(character.id, command.UpdateProperties.HP, character.HP)
+            messageObj = command.Update(character.id, command.UpdateProperties.HP, character.HP)
+        elif type == "Status":
+            messageObj = command.Update(character.id, command.UpdateProperties.STATUS, 
+                                        Combat.encodeStatuses(character))
         for port in Combat.getAllPorts():
             Combat.gameServer.SDF.send(port, messageObj)             
        
+    @staticmethod
+    def encodeStatuses(character):
+        '''Returns a version of this character's statusList that only contains the name and turnsLeft.
+        Used for sending updates to the UI and the network.'''
+        encodedList = []
+        for stat in character.statusList:
+            encodedList.append(stat.name, stat.turnsLeft)
+        return encodedList
+        
     @staticmethod
     def modifyResource(target, type, value):
         """Modifies the given resource by the given value.
@@ -613,7 +625,7 @@ class Combat(object):
         else:
             weapon = source.equippedItems.equippedOffHand
         effectiveForce = source.totalForce * forceMod
-        if( source.usingWeapon(ranged) ):
+        if source.usingWeapon("Ranged"):
             effectiveForce *= 1 + (float(source.totalRangedForce) / 100)
         effectiveMight = round(Dice.rollFloat(0.5, 1.0) * (source.totalMight + mightMod) * (float(effectiveForce) / 100))       
         effectiveDR = min(80, max(0, target.totalDR - (armorPenetrationMod + source.totalArmorPenetration)))
@@ -650,6 +662,15 @@ class Combat(object):
      
         Combat.lowerHP(target, totalDamage)
         Combat._shoutAttackComplete(source, target, noCounter) 
+        
+    @staticmethod
+    def applyOnHitEffects(source, target):
+        resultList = []
+        for effect in source.onHitEffects:
+            result = effect.apply(source, target)
+            if result:
+                resultList.append(result)
+        return resultList
         
     @staticmethod
     def sumElementalEffects(elementalEffects, overrideElement=None):

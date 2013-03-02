@@ -7,7 +7,7 @@ from const import enum
 PersonActions = enum(CREATE = 1, MOVE = 2, REMOVE = 3, RUN = 4, STOP = 5)
 InventoryActions = enum(PICKUP = 1, PUTDOWN = 2)
 UpdateProperties = enum(HP = 1, MP = 2, AP = 3, COMBAT = 4)
-AbilityActions = enum(ATTACK = 1)
+AbilityActions = enum(ATTACK = 1, END_TURN = 2)
 
 class Command:
     def __init__(self):

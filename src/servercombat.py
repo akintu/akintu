@@ -59,7 +59,7 @@ class CombatServer():
                         self.server.SDF.send(p, command)
                 self.check_turn_end(self.server.person[command.id].cPane)
         #### Attack Target ####
-        if isinstance(command, AbilityAction) and command.ability == AbilityActions.ATTACK:
+        elif isinstance(command, AbilityAction) and command.ability == AbilityActions.ATTACK:
             source = self.server.person[command.id]
             target = self.server.person[command.targetId]
             abil = source.selectBasicAttack()
@@ -69,7 +69,11 @@ class CombatServer():
             else: 
                 Combat.screen.show_text(useDuple[1])
             self.check_turn_end(self.server.person[command.id].cPane)
-    
+        elif isinstance(command, AbilityAction) and command.ability == AbilityActions.END_TURN:
+            target = self.server.person[command.id]
+            Combat.modifyResource(target, "AP", -target.AP)
+            self.check_turn_end(self.server.person[command.id].cPane)
+            
     ### Utility Methods ###
 
     def tile_is_open(self, location, pid):
