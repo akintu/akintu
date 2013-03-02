@@ -24,6 +24,7 @@ class WelcomeWindow(object):
         self.success = False
         self.charrace = StringVar()
         self.charclass = StringVar()
+        self.charname = StringVar(value='Mysterious Adventurer')
 
         self.mainmenu()
 
@@ -48,13 +49,17 @@ class WelcomeWindow(object):
         racecombo = ttk.Combobox(frame, textvariable=self.charrace, values=RACES)
         classl = ttk.Label(frame, text='Class:')
         racel = ttk.Label(frame, text='Race:')
+        namel = ttk.Label(frame, text='Name:')
+        namebox = ttk.Entry(frame, textvariable=self.charname)
         # Lay out the widgets
-        racel.grid(column=2, row=1, stick=W, padx=5, pady=5)
-        racecombo.grid(column=2, row=2, stick=(N, S), padx=5, pady=5)
-        classl.grid(column=2, row=3, stick=W, padx=5, pady=5)
-        classcombo.grid(column=2, row=4, stick=(N, S), padx=5, pady=5)
-        backb.grid(column=1, row=5, stick=(N, S), padx=20, pady=20)
-        nextb.grid(column=3, row=5, stick=(N, S), padx=20, pady=20)
+        namel.grid(column=2, row=1, stick=W, padx=5, pady=5)
+        namebox.grid(column=2, row=2, stick=(W, E), padx=5, pady=5)
+        racel.grid(column=2, row=3, stick=W, padx=5, pady=5)
+        racecombo.grid(column=2, row=4, stick=(N, S), padx=5, pady=5)
+        classl.grid(column=2, row=5, stick=W, padx=5, pady=5)
+        classcombo.grid(column=2, row=6, stick=(N, S), padx=5, pady=5)
+        backb.grid(column=1, row=7, stick=(N, S), padx=20, pady=20)
+        nextb.grid(column=3, row=7, stick=(N, S), padx=20, pady=20)
         return frame
 
     def mainmenu(self):
@@ -77,6 +82,6 @@ class WelcomeWindow(object):
 
 if __name__ == '__main__':
     root = Tk()
-    root.title("Akintu")
+    root.title('Akintu')
     window = WelcomeWindow(root)
     root.mainloop()
