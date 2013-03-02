@@ -180,6 +180,8 @@ class Game(object):
                     self.cycle_targets(reverse=True)
                 elif event.key == K_a and self.combat:
                     self.attempt_attack()
+                elif event.key == K_n and self.combat:
+                    self.force_end_turn()
 
     def move_person(self, direction, distance):
         if self.running:
@@ -203,11 +205,16 @@ class Game(object):
                         1.0 / self.pane.person[self.id].movementSpeed)
                     self.pane.person[self.id].location = newloc
 
+    def force_end_turn(self):
+        ap = self.pane.person[self.id].AP
+        if ap > 0:
+            action = AbilityAction(AbilityActions.END_TURN, self.id, self.id)
+            self.CDF.send(action)
+                    
     def attempt_attack(self):
         if not self.currentTargetId:
             print "No target selected."
             return
-        print "Target ID to attack: " + str(self.currentTargetId)
         self.CDF.send(AbilityAction(AbilityActions.ATTACK, self.id, self.currentTargetId))
                     
     def cycle_targets(self, reverse=False):
