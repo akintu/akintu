@@ -38,8 +38,8 @@ class Game(object):
         
         # Selection state
         self.selectionMode = False
-        self.currentTarget = None
-        self.panePersonList = []
+        self.currentTargetId = None
+        self.panePersonIdList = []
         
         # Setup server if host
         self.serverip = "localhost"
@@ -101,7 +101,7 @@ class Game(object):
                 persondict = {'location': command.location, 'image': imagepath, 'team': p.team, \
                     'HP': p.HP, 'totalHP': p.totalHP, 'MP': p.MP, \
                     'totalMP': p.totalMP, 'AP': p.AP, 'totalAP': p.totalAP, \
-                    'level': p.level}
+                    'level': p.level, 'name' : p.name}
                 self.screen.add_person(command.id, persondict)
 
             if isinstance(command, Person) and command.id not in self.pane.person:
@@ -204,33 +204,33 @@ class Game(object):
                     self.pane.person[self.id].location = newloc
 
     def attempt_attack(self):
-        if not self.currentTarget:
+        if not self.currentTargetId:
             print "No target selected."
             return
-        print "Target ID to attack: " + str(self.currentTarget.id)
-        self.CDF.send(AbilityAction(AbilityActions.ATTACK, self.id, self.currentTarget.id))
+        print "Target ID to attack: " + str(self.currentTargetId)
+        self.CDF.send(AbilityAction(AbilityActions.ATTACK, self.id, self.currentTargetId))
                     
     def cycle_targets(self, reverse=False):
         # Cycles through the current persons in the current combat pane.
         if not self.combat:
             return
-        if not self.panePersonList:
-            self.panePersonList = [self.pane.person[x] for x in self.pane.person]
-        if not self.currentTarget:
-            self.currentTarget = self.panePersonList[0]
+        if not self.panePersonIdList:
+            self.panePersonIdList = [x for x in self.pane.person]
+        if not self.currentTargetId:
+            self.currentTargetId = self.panePersonIdList[0]
         elif not reverse:   
-            if self.currentTarget == self.panePersonList[-1]:
-                self.currentTarget = self.panePersonList[0]
+            if self.currentTargetId == self.panePersonIdList[-1]:
+                self.currentTargetId = self.panePersonIdList[0]
             else:
-                currentTargetPlace = self.panePersonList.index(self.currentTarget)
-                self.currentTarget = self.panePersonList[currentTargetPlace + 1]
+                currentTargetPlace = self.panePersonIdList.index(self.currentTargetId)
+                self.currentTargetId = self.panePersonIdList[currentTargetPlace + 1]
         else:
-            if self.currentTarget == self.panePersonList[0]: 
-                self.currentTarget = self.panePersonList[-1]
+            if self.currentTargetId == self.panePersonIdList[0]: 
+                self.currentTargetId = self.panePersonIdList[-1]
             else:
-                currentTargetPlace = self.panePersonList.index(self.currentTarget)
-                self.currentTarget = self.panePersonList[currentTargetPlace - 1]        
-        print self.currentTarget.name
+                currentTargetPlace = self.panePersonIdList.index(self.currentTargetId)
+                self.currentTargetId = self.panePersonIdList[currentTargetPlace - 1]        
+        print self.pane.person[self.currentTargetId].name
         # TODO: Handle removal (and addition?) to the combat pane's person list.
                     
     def animate(self, id, source, dest, length):

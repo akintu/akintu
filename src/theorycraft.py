@@ -53,7 +53,7 @@ class TheoryCraft(object):
         specified base item points.'''
         for wep in TheoryCraft.weapons:
             if wep['name'] == name:
-                return equipment.Weapon(**wep).cloneWithMagicalProperties(ip)
+                return equipment.Weapon(wep).cloneWithMagicalProperties(ip)
         print "Weapon name: '" + name + "' not found in master list."
         
     @staticmethod

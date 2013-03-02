@@ -613,7 +613,7 @@ class Combat(object):
         else:
             weapon = source.equippedItems.equippedOffHand
         effectiveForce = source.totalForce * forceMod
-        if( source.usingWeapon(ranged) ):
+        if source.usingWeapon("Ranged"):
             effectiveForce *= 1 + (float(source.totalRangedForce) / 100)
         effectiveMight = round(Dice.rollFloat(0.5, 1.0) * (source.totalMight + mightMod) * (float(effectiveForce) / 100))       
         effectiveDR = min(80, max(0, target.totalDR - (armorPenetrationMod + source.totalArmorPenetration)))
@@ -650,6 +650,15 @@ class Combat(object):
      
         Combat.lowerHP(target, totalDamage)
         Combat._shoutAttackComplete(source, target, noCounter) 
+        
+    @staticmethod
+    def applyOnHitEffects(source, target):
+        resultList = []
+        for effect in source.onHitEffects:
+            result = effect.apply(source, target)
+            if result:
+                resultList.append(result)
+        return resultList
         
     @staticmethod
     def sumElementalEffects(elementalEffects, overrideElement=None):

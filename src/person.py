@@ -2451,11 +2451,13 @@ class Person(en.Entity):
                 wep = "Shortbow"
             return wep in acceptList
         elif (self.equippedItems.equippedWeapon.name == weaponType or 
+             self.equippedItems.equippedOffHand and
              self.equippedItems.equippedOffHand.name == weaponType):
             return True        
         else:
             return (self.equippedItems.equippedWeapon.type in acceptList or
-                    self.equippedItems.equippedOffHand.type in acceptList)
+                    (self.equippedItems.equippedOffHand and
+                    self.equippedItems.equippedOffHand.type in acceptList))
         
     def usingArmor(self, armorLevel):
         """Returns True if the passed armorLevel matches the armor level
