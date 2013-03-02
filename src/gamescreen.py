@@ -308,7 +308,10 @@ class GameScreen(object):
         # Draw a 2 px border 1 px outside of text rect
         borderouter = (PANE_X * TILE_SIZE + 2, 297, 252, 106)
         borderinner = (PANE_X * TILE_SIZE + 4, 299, 248, 102)
-        self.screen.fill(Color('gray'), borderouter)
+        if self.scrollcount == 0:
+            self.screen.fill(Color('gray'), borderouter)
+        else:
+            self.screen.fill(Color('blue'), borderouter)
         self.screen.fill(Color('black'), borderinner)
 
         top = 300
