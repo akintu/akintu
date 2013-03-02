@@ -40,6 +40,10 @@ class GameScreen(object):
         self.sidetext = []
         pygame.display.flip()
 
+        # Draw the sidebar text area and make sure it has at least one item
+        # in it (even though it's a blank item)
+        self.show_text('')
+
     def set_pane(self, pane):
         '''
         Set the Pane for the graphics engine to display
@@ -63,6 +67,9 @@ class GameScreen(object):
                     pygame.image.fromstring(data, size, mode).convert()
         self.pane = pane
         self.draw_world()
+
+        # Redraw the text area
+        self._draw_text()
 
     def draw_world(self):
         '''
