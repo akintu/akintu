@@ -1,129 +1,107 @@
 from location import Location
 from const import *
-
-RAct = enum(ADD = 1, SUBTRACT = 2)
-RShape = enum(SQUARE = 1, DIAMOND = 2, CIRCLE = 3, LINE = 4)
+import os
 
 class Region:
     def __init__(self):
         self.locations = set()
-        
-    def __iter__(self):
-        temp = self.locations
-        while len(temp):
-            yield temp.pop()
 
-    def build(self, method, shape, *details):
-        if shape == RShape.SQUARE:
-            if method == RAct.ADD:
+    def __iter__(self):
+        for x in self.locations:
+            yield x
+            
+    def __contains__(self, item):
+        return item in self.locations
+        
+    def __str__(self):
+        left = right = top = bottom = self.locations.pop()
+        self.locations.add(left)
+        for loc in self.locations:
+            if loc.pane[0] < left.pane[0] or \
+                    (loc.pane[0] == left.pane[0] and loc.tile[0] < left.tile[0]):
+                left = loc
+            if loc.pane[0] > right.pane[0] or \
+                    (loc.pane[0] == right.pane[0] and loc.tile[0] > right.tile[0]):
+                right = loc
+            if loc.pane[1] < top.pane[1] or \
+                    (loc.pane[1] == top.pane[1] and loc.tile[1] < top.tile[1]):
+                top = loc
+            if loc.pane[1] > bottom.pane[1] or \
+                    (loc.pane[1] == bottom.pane[1] and loc.tile[1] > bottom.tile[1]):
+                bottom = loc
+        strrep = ""
+        for y in Location(left.abs_x, top.abs_y).line_to(Location(left.abs_x, bottom.abs_y)):
+            for x in Location(left.abs_x, top.abs_y).line_to(Location(right.abs_x, top.abs_y)):
+                strrep += "@ " if Location((x.pane[0], y.pane[1]), (x.tile[0], y.tile[1])) in R else ". "
+            strrep += os.linesep
+        return strrep
+
+    def __call__(self, method, shape, *details):
+        if shape.upper() == "SQUARE":
+            if method.upper() == "ADD":
                 self.locations |= self.square(*details)
             else:
                 self.locations -= self.square(*details)
-        if shape == RShape.DIAMOND:
-            if method == RAct.ADD:
+        if shape.upper() == "DIAMOND":
+            if method.upper() == "ADD":
                 self.locations |= self.diamond(*details)
             else:
                 self.locations -= self.diamond(*details)
-        if shape == RShape.CIRCLE:
-            if method == RAct.ADD:
+        if shape.upper() == "CIRCLE":
+            if method.upper() == "ADD":
                 self.locations |= self.circle(*details)
             else:
                 self.locations -= self.circle(*details)
 
     def square(self, loc1, loc2):
         locations = set()
-
-        pane_x = min(loc1.pane[0], loc2.pane[0])
-        pane_y = min(loc2.pane[1], loc2.pane[1])
-        tile_x = loc1.tile[0] if loc1.pane[0] < loc2.pane[0] or (loc1.pane[0] == loc2.pane[0] and \
-            loc1.tile[0] <= loc2.tile[0]) else loc2.tile[0]
-        tile_y = loc1.tile[1] if loc1.pane[1] < loc2.pane[1] or (loc1.pane[1] == loc2.pane[1] and \
-            loc1.tile[1] <= loc2.tile[1]) else loc2.tile[1]
-        top_left = Location((pane_x, pane_y), (tile_x, tile_y))
-
-        pane_x = max(loc1.pane[0], loc2.pane[0])
-        pane_y = max(loc2.pane[1], loc2.pane[1])
-        tile_x = loc1.tile[0] if loc1.pane[0] > loc2.pane[0] or (loc1.pane[0] == loc2.pane[0] and \
-            loc1.tile[0] >= loc2.tile[0]) else loc2.tile[0]
-        tile_y = loc1.tile[1] if loc1.pane[1] > loc2.pane[1] or (loc1.pane[1] == loc2.pane[1] and \
-            loc1.tile[1] >= loc2.tile[1]) else loc2.tile[1]
-        bottom_right = Location((pane_x, pane_y), (tile_x, tile_y))
-
-        col = top_left
-        for y in range(top_left.pane[1] * PANE_Y + top_left.tile[1], \
-                        bottom_right.pane[1] * PANE_Y + bottom_right.tile[1] + 1):
-            tile = col
-            for x in range(top_left.pane[0] * PANE_X + top_left.tile[0], \
-                            bottom_right.pane[0] * PANE_X + bottom_right.tile[0] + 1):
-                locations |= {Location(tile.pane, tile.tile)}
-                tile = tile.move(6, 1)
-            col = col.move(2, 1)
-
+        for y in loc1.line_to(Location(loc1.abs_x, loc2.abs_y)):
+            for x in loc1.line_to(Location(loc2.abs_x, loc1.abs_y)):
+                locations |= {Location(x.abs_x, y.abs_y)}
         return locations
 
     def diamond(self, loc, dist):
         locations = set()
-        top_left = loc.move(7, dist)
-        bottom_right = loc.move(3, dist)
 
-        col = top_left
-        for x in range(top_left.pane[0] * PANE_X + top_left.tile[0], \
-                        bottom_right.pane[0] * PANE_X + bottom_right.tile[0] + 1):
-            tile = col
-            for y in range(top_left.pane[1] * PANE_Y + top_left.tile[1], \
-                            bottom_right.pane[1] * PANE_Y + bottom_right.tile[1] + 1):
+        for x in loc.move(7, dist).line_to(loc.move(6, dist)):
+            for y in loc.move(7, dist).line_to(loc.move(2, dist)):
+                tile = Location(x.abs_x, y.abs_y)
                 if loc.distance(tile) <= dist:
-                    locations |= {Location(tile.pane, tile.tile)}
-                tile = tile.move(6, 1)
-            col = col.move(2, 1)
-
+                    locations |= {tile}
         return locations
 
     def circle(self, loc, rad):
         locations = set()
-        top_left = loc.move(7, rad)
-        bottom_right = loc.move(3, rad)
 
-        col = top_left
-        for x in range(top_left.pane[0] * PANE_X + top_left.tile[0], \
-                        bottom_right.pane[0] * PANE_X + bottom_right.tile[0] + 1):
-            tile = col
-            for y in range(top_left.pane[1] * PANE_Y + top_left.tile[1], \
-                            bottom_right.pane[1] * PANE_Y + bottom_right.tile[1] + 1):
-                if loc.radius(tile) <= rad:
-                    locations |= {Location(tile.pane, tile.tile)}
-                tile = tile.move(6, 1)
-            col = col.move(2, 1)
-
+        for x in loc.move(7, rad).line_to(loc.move(6, rad)):
+            for y in loc.move(7, rad).line_to(loc.move(2, rad)):
+                tile = Location(x.abs_x, y.abs_y)
+                if loc.true_distance(tile) <= rad:
+                    locations |= {tile}
         return locations
-
-    def has(self, location):
-        return location in self.locations
 
 if __name__ == "__main__":
     R = Region()
     #This was my first test case.  I like the second one WAY better though!
-    #R.build(RAct.ADD, RShape.SQUARE, Location((0, 0), (5, 8)), Location((0, 0), (15, 18)))
-    #R.build(RAct.SUBTRACT, RShape.SQUARE, Location((0, 0), (7, 10)), Location((0, 0), (13, 16)))
-    #R.build(RAct.ADD, RShape.DIAMOND, Location((0, 0), (22, 10)), 5)
-    #R.build(RAct.SUBTRACT, RShape.DIAMOND, Location((0, 0), (22, 15)), 3)
-    #R.build(RAct.ADD, RShape.CIRCLE, Location((0, 0), (0, 0)), 8)
-    #R.build(RAct.SUBTRACT, RShape.CIRCLE, Location((0, 0), (0, 0)), 5)
+    #R("ADD", "SQUARE", Location((0, 0), (5, 8)), Location((0, 0), (15, 18)))
+    #R("SUB", "SQUARE", Location((0, 0), (7, 10)), Location((0, 0), (13, 16)))
+    #R("ADD", "DIAMOND", Location((0, 0), (22, 10)), 5)
+    #R("SUB", "DIAMOND", Location((0, 0), (22, 15)), 3)
+    #R("ADD", "CIRCLE", Location((0, 0), (0, 0)), 8)
+    #R("SUB", "CIRCLE", Location((0, 0), (0, 0)), 5)
 
     #Build region from shapes
-    R.build(RAct.ADD, RShape.SQUARE, Location((0, 0), (0, 0)), Location((0, 0), (31, 19)))
-    R.build(RAct.SUBTRACT, RShape.SQUARE, Location((0, 0), (1, 1)), Location((0, 0), (30, 18)))
-    R.build(RAct.ADD, RShape.CIRCLE, Location((0, 0), (16, 10)), 7)
-    R.build(RAct.SUBTRACT, RShape.DIAMOND, Location((0, 0), (22, 10)), 6)
-    R.build(RAct.SUBTRACT, RShape.SQUARE, Location((0, 0), (14, 6)), Location((0, 0), (15, 7)))
+    R("ADD", "SQUARE", Location((0, 0), (0, 0)), Location((0, 0), (31, 19)))
+    R("SUB", "SQUARE", Location((0, 0), (1, 1)), Location((0, 0), (30, 18)))
+    R("ADD", "CIRCLE", Location((0, 0), (16, 10)), 7)
+    R("SUB", "DIAMOND", Location((0, 0), (22, 10)), 6)
+    R("SUB", "SQUARE", Location((0, 0), (14, 6)), Location((0, 0), (15, 7)))
 
     #Display the region
-    for y in range(PANE_Y):
-        line = ""
-        for x in range(PANE_X):
-            line += "@ " if R.has(Location((0, 0), (x, y))) else ". "
-        print line
+    print R
 
     l1 = Location((0, 0), (15, 10))
-    assert R.has(l1)
-    assert not R.has(l1.move(6, 2))
+    assert l1 in R
+    assert l1.move(6, 2) not in R
+    for l2 in R:
+        assert l2 in R
