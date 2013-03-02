@@ -7,6 +7,7 @@ from const import enum
 PersonActions = enum(CREATE = 1, MOVE = 2, REMOVE = 3, RUN = 4, STOP = 5)
 InventoryActions = enum(PICKUP = 1, PUTDOWN = 2)
 UpdateProperties = enum(HP = 1, MP = 2, AP = 3, COMBAT = 4)
+AbilityActions = enum(ATTACK = 1)
 
 class Command:
     def __init__(self):
@@ -37,6 +38,7 @@ class InventoryAction(Command):
         self.item_hash = item_hash
 
 class AbilityAction(Command):
-    def __init__(self, ability, targetLocation):
+    def __init__(self, ability, sourceId, targetId):
         self.ability = ability
-        self.targetLocation = targetLocation
+        self.id = sourceId
+        self.targetId = targetId

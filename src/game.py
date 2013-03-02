@@ -178,7 +178,8 @@ class Game(object):
                     self.cycle_targets()
                 elif event.key == K_w and self.selectionMode:
                     self.cycle_targets(reverse=True)
-                        
+                elif event.key == K_a and self.combat:
+                    self.attempt_attack()
 
     def move_person(self, direction, distance):
         if self.running:
@@ -202,6 +203,13 @@ class Game(object):
                         1.0 / self.pane.person[self.id].movementSpeed)
                     self.pane.person[self.id].location = newloc
 
+    def attempt_attack(self):
+        if not self.currentTarget:
+            print "No target selected."
+            return
+        print "Target ID to attack: " + str(self.currentTarget.id)
+        self.CDF.send(AbilityAction(AbilityActions.ATTACK, self.id, self.currentTarget.id))
+                    
     def cycle_targets(self, reverse=False):
         # Cycles through the current persons in the current combat pane.
         if not self.combat:

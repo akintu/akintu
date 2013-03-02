@@ -238,6 +238,19 @@ class PlayerCharacter(p.Person):
         self.abilities.append(ability.Ability("Melee Attack", self))
         self.abilities.append(ability.Ability("Ranged Attack", self))
     
+    def selectBasicAttack(self):
+        if self.usingWeapon("Ranged"):
+            for abil in self.abilities:
+                if abil.name == "Ranged Attack":
+                    return abil
+        else:
+            for abil in self.abilities:
+                if abil.name == "Melee Attack":
+                    return abil
+        print "selectBasicAttack: Cannot find basic attack!!!"
+        return None
+        
+    
     def getDetailTuple(self):
         '''Should be overriden by PlayerCharacters and other
         children.  Returns a tuple of information needed to reconstitute
