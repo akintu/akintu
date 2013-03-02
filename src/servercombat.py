@@ -73,7 +73,8 @@ class CombatServer():
             target = self.server.person[command.id]
             Combat.modifyResource(target, "AP", -target.AP)
             self.check_turn_end(self.server.person[command.id].cPane)
-            
+        self.update_dead_people(self.server.person[command.id].cPane) #TODO: Uncomment.
+        
     ### Utility Methods ###
 
     def tile_is_open(self, location, pid):
@@ -89,6 +90,22 @@ class CombatServer():
         bc = broadcast.TurnBroadcast({'turn':turn})
         bc.shout(player)
 
+    def update_dead_people(self, combatPane):
+        '''Checks the list of Persons on this combat Pane to see if they have HP > 0.
+        If they do not, it will "remove them" from the combatPane and add them to a 
+        deadList associated with this CombatState.'''
+        toUpdateList = []
+        for char in [self.server.person[x] for x in self.server.pane[combatPane].person]:
+            if char.HP <= 0 and isinstance(char, monster.Monster):
+                toUpdateList.append(char)
+                
+        for char in toUpdateList: 
+            self.combatStates[combatPane].deadMonsterList.append(char)
+            for port in Combat.getAllPorts():
+                self.server.SDF.send(port, Person(PersonActions.REMOVE, char.id))
+                Combat.screen.show_text(char.name + " Died!", color='magenta')
+            self.server.pane[combatPane].person.remove(char.id)
+        
     def monsterMove(self, monster):
         tilesLeft = monster.totalMovementTiles
         while tilesLeft > 0:
@@ -168,10 +185,7 @@ class CombatServer():
                 else:
                     # Player is up-right diagonal
                     return Dice.choose([6, 8])
-                    
-    
-        
-            
+
     ### Combat Phase Logic Methods ###
     
     def upkeep(self, target):
@@ -201,7 +215,6 @@ class CombatServer():
     
     def startCombat(self, playerId, monsterId):
         '''Initiates combat'''
-
         combatPane = self.server.person[monsterId].location
         self.combatStates[combatPane] = CombatState()
         if not self.server.person[monsterId].cPane:
@@ -269,7 +282,8 @@ class CombatServer():
 
     def monster_phase(self, combatPane):
         chars = [self.server.person[x] for x in self.server.pane[combatPane].person] 
-        monsters = [x for x in chars if isinstance(x, monster.Monster)]
+        monsters = [x for x in chars if isinstance(x, monster.Monster) and x not in 
+                    self.combatStates[combatPane].deadMonsterList]
         for mon in monsters:
             while( True ):
                 if not mon.getUsableAbilities(self.server, combatPane) and \
@@ -320,4 +334,4 @@ class CombatServer():
 class CombatState(object):
     def __init__(self):
         self.turnTimer = None
-        
+        self.deadMonsterList = []

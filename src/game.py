@@ -221,9 +221,9 @@ class Game(object):
         # Cycles through the current persons in the current combat pane.
         if not self.combat:
             return
-        if not self.panePersonIdList:
+        if not self.panePersonIdList or not self.currentTargetId \
+           or self.currentTargetId not in self.pane.person:
             self.panePersonIdList = [x for x in self.pane.person]
-        if not self.currentTargetId:
             self.currentTargetId = self.panePersonIdList[0]
         elif not reverse:   
             if self.currentTargetId == self.panePersonIdList[-1]:
