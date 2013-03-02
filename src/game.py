@@ -62,6 +62,7 @@ class Game(object):
 
         # Set up game engine
         self.screen = GameScreen()
+        Combat.screen = self.screen
 
         self.CDF.send(Person(PersonActions.CREATE, None, Location((0, 0), (PANE_X/2, PANE_Y/2)), \
             ("Player", "Human", "Barbarian")))

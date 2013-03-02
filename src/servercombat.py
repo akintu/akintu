@@ -143,7 +143,6 @@ class CombatServer():
                 message = mon.performAction(self.server, combatPane)
                 if message == "Failure":
                     break
-                    
         print "~~END MONSTER PHASE~~."
         return
 

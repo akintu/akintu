@@ -18,6 +18,7 @@ class Combat(object):
         pass
        
     gameServer = None
+    screen = None
     allStatuses = None
        
     @staticmethod
@@ -565,22 +566,23 @@ class Combat(object):
             baseAttackDamage *= (1 - (float(target.totalPiercingResistance) / 100))
         elif source.attackElement == "Slashing":
             baseAttackDamage *= (1 - (float(target.totalSlashingResistance) / 100))
-        elif element == "Fire":
+        elif attackElement == "Fire":
             baseAttackDamage *= 1 - (float(target.totalFireResistance) / 100)
-        elif element == "Cold":
+        elif attackElement == "Cold":
             baseAttackDamage *= 1 - (float(target.totalColdResistance) / 100)           
-        elif element == "Electric":
+        elif attackElement == "Electric":
             baseAttackDamage *= 1 - (float(target.totalElectricResistance) / 100)
-        elif element == "Poison":
+        elif attackElement == "Poison":
             baseAttackDamage *= 1 - (float(target.totalPoisonResistance) / 100)    
-        elif element == "Shadow":
+        elif attackElement == "Shadow":
             baseAttackDamage *= 1 - (float(target.totalShadowResistance) / 100)
-        elif element == "Divine":
+        elif attackElement == "Divine":
             baseAttackDamage *= 1 - (float(target.totalDivineResistance) / 100)
-        elif element == "Arcane":
+        elif attackElement == "Arcane":
             baseAttackDamage *= 1 - (float(target.totalArcaneResistance) / 100)
         baseAttackDamage *= float(source.attackPower) / 100
-        print "Physical Attack dealt:  " + str(int(baseAttackDamage)) + " Points of damage!"
+        Combat.screen.show_text("Incoming Attack From: " + source.name + " dealing " + str(int(baseAttackDamage)) +
+                                " " + source.attackElement +" damage!", color='red', size=12)
         Combat.lowerHP(target, round(baseAttackDamage))
         Combat._shoutAttackComplete(source, target, params['noCounter'])
     

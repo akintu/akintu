@@ -49,7 +49,8 @@ class Status(object):
         
     def deactivate(self, target):
         for iStatus in self.internalList:
-            iStatus.unapplyEffect(target, iStatus.magnitude)
+            if istatus.unapplyEffect:
+                iStatus.unapplyEffect(target, iStatus.magnitude)
             
     def upkeepActivate(self, target):
         """Only applies if this includes components that are to be

@@ -86,7 +86,6 @@ class InternalStatus(object):
         target.statusAwareness -= magnitude
         
     def Bleeding_method(self, target, magnitude):
-        print type(magnitude).__name__
         Combat.modifyResource(target, "HP", float(target.HP) * magnitude / -100)
 
     def Combo_attack_internal_method(self, target, magnitude):
