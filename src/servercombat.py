@@ -2,6 +2,7 @@ from network import *
 import broadcast
 from combat import *
 from location import *
+from dice import *
 import region
 import monster
 
@@ -58,7 +59,7 @@ class CombatServer():
                         self.server.SDF.send(p, command)
                 self.check_turn_end(self.server.person[command.id].cPane)
 
-    ### Utility ###
+    ### Utility Methods ###
 
     def tile_is_open(self, location, pid):
         if location.pane not in self.server.pane:
@@ -66,7 +67,123 @@ class CombatServer():
         return self.server.pane[self.server.person[pid].cPane].is_tile_passable(location) and \
                 location.tile not in [self.server.person[i].cLocation.tile \
                 for i in self.server.pane[self.server.person[pid].cPane].person]
+                
+    def shout_turn_start(self, player, turn="Player"):
+        '''Shouts to the Player that this particular turn is starting.
+        Defaults to "Player"; "Monster" is the other valid value.'''
+        bc = broadcast.TurnBroadcast({'turn':turn})
+        bc.shout(player)
 
+    def monsterMove(self, monster):
+        tilesLeft = monster.totalMovementTiles
+        while tilesLeft > 0:
+            print "Monster: " + monster.name + " moveTilesLeft: " + str(tilesLeft)
+            player = monster.getNearestPlayer()
+            direction = self.getRelativeDirection(monster, player)
+            desiredLocation = monster.cLocation.move(direction, 1)
+            if self.tile_is_open(desiredLocation, monster.id):
+                action = Person(PersonActions.MOVE, monster.id, desiredLocation)
+                for port in Combat.getAllPorts():
+                    self.server.SDF.send(port, action)
+                monster.cLocation = desiredLocation
+                tilesLeft -= 1
+            elif tilesLeft == monster.totalMovementTiles:
+                # Monster couldn't move at all.
+                return "Failed"
+            else:
+                break
+        monster.AP -= monster.totalMovementAPCost
+        return "Moved"
+        
+    def getRelativeDirection(self, monster, player):
+        '''Gets the direction best fitting the path between monster and
+        player.
+        Returns a number within 1-4, 6-9 as represented on the numpad.'''
+        playerX = player.cLocation.tile[0]
+        monsterX = monster.cLocation.tile[0]
+        playerY = player.cLocation.tile[1]
+        monsterY = monster.cLocation.tile[1]
+        dy = playerY - monsterY
+        dx = playerX - monsterX
+        if dy >= 0:
+            # Player is below the monster 
+            if dx <= 0:
+                # Player is left of the monster
+                if abs(dx) >= 2 * abs(dy):
+                    # Player is more left than down
+                    return 4
+                elif abs(dx) * 2 <= abs(dy):
+                    # Player is more down than left
+                    return 2
+                else:
+                    # Player is down-left diagonal
+                    return Dice.choose([2, 4])
+            else:
+                # Player is right of the monster
+                if abs(dx) >= 2 * abs(dy):
+                    # Player is more right than down
+                    return 6
+                elif abs(dx) * 2 <= abs(dy):
+                    # Player is more down than right
+                    return 2
+                else:
+                    # Player is down-right diagonal
+                    return Dice.choose([6, 2])
+        else:
+            # Player is above the monster
+            if dx <= 0:
+                # Player is left of the monster
+                if abs(dx) >= 2 * abs(dy):
+                    # Player is more left than up
+                    return 4
+                elif abs(dx) * 2 <= abs(dy):
+                    # Player is more up than left
+                    return 8
+                else:
+                    # Player is up-left diagonal
+                    return Dice.choose([4, 8])
+            else:
+                # Player is right of the monster
+                if abs(dx) >= 2 * abs(dy):
+                    # Player is more right than up
+                    return 6
+                elif abs(dx) * 2 <= abs(dy):
+                    # Player is more up than right
+                    return 8
+                else:
+                    # Player is up-right diagonal
+                    return Dice.choose([6, 8])
+                    
+    
+        
+            
+    ### Combat Phase Logic Methods ###
+    
+    def upkeep(self, target):
+        '''Applies all upkeep operations for this Person.  (Used during the combat
+        phase: "Upkeep"'''
+        if target.HPRegen > 0:
+            Combat.healTarget(target, target.HPRegen)
+        if target.MPRegen > 0:
+            Combat.modifyResource(target, "MP", target.MPRegen)
+        for stat in target.statusList:
+            stat.upkeepActivate(target)
+            if stat.turnsLeft > 0:
+                stat.turnsLeft -= 1
+        for cooldown in target.cooldownList:
+            cooldown[1] -= 1
+        # Remove expired statuseffects and cooldowns
+        toRemove = []
+        for stat in target.statusList:
+            if stat.turnsLeft == 0:
+                toRemove.append(stat)
+        for removalStatus in toRemove:
+            Combat.removeStatus(target, removalStatus.name)
+        target.cooldownList[:] = [x for x in target.cooldownList if x[1] > 0]
+        # Refill AP (performed in end_turn)
+        for stat in target.statusList:
+            print target.name + " Has status: " + stat.name + " T=" + str(stat.turnsLeft)
+    
     def startCombat(self, playerId, monsterId):
         '''Initiates combat'''
 
@@ -140,52 +257,50 @@ class CombatServer():
         monsters = [x for x in chars if isinstance(x, monster.Monster)]
         for mon in monsters:
             while( True ):
+                if not mon.getUsableAbilities(self.server, combatPane) and \
+                       mon.AP >= mon.totalMovementAPCost:
+                    moveResult = self.monsterMove(mon)
+                    if moveResult == "Failed":
+                        break
+                    else:
+                        continue
                 message = mon.performAction(self.server, combatPane)
                 if message == "Failure":
                     break
         print "~~END MONSTER PHASE~~."
         return
-
-    ### Combat Logic ###
-    def upkeep(self, target):
-        '''Applies all upkeep operations for this Person.  (Used during the combat
-        phase: "Upkeep"'''
-        if target.HPRegen > 0:
-            Combat.healTarget(target, target.HPRegen)
-        if target.MPRegen > 0:
-            Combat.modifyResource(target, "MP", target.MPRegen)
-        for stat in target.statusList:
-            stat.upkeepActivate(target)
-            if stat.turnsLeft > 0:
-                stat.turnsLeft -= 1
-        for cooldown in target.cooldownList:
-            cooldown[1] -= 1
-        # Remove expired statuseffects and cooldowns
-        toRemove = []
-        for stat in target.statusList:
-            if stat.turnsLeft == 0:
-                toRemove.append(stat)
-        for removalStatus in toRemove:
-            Combat.removeStatus(target, removalStatus.name)
-        target.cooldownList[:] = [x for x in target.cooldownList if x[1] > 0]
-        # Refill AP (performed in end_turn)
-        for stat in target.statusList:
-            print target.name + " Has status: " + stat.name + " T=" + str(stat.turnsLeft)
     
         
-    def shout_turn_start(self, player, turn="Player"):
-        '''Shouts to the Player that this particular turn is starting.
-        Defaults to "Player"; "Monster" is the other valid value.'''
-        bc = broadcast.TurnBroadcast({'turn':turn})
-        bc.shout(player)
-
+    #### Victory Methods ####
+    
+    def giveVictoryExperience(self, player, monsterList):
+        '''Grants the appropriate amount of EXP to a player at the end of 
+        a victorious combat.'''
+        player.addExperience(Combat.calcExperienceGain(player, monsterList))
+        
     def refill_resources(self, player):
         player.MP = player.totalMP
         player.HP = player.totalHP
         player.AP = player.totalAP
-        
-        
-        
+
+    def removeTemporaryStatuses(self, player):
+        '''Used to remove statuses that don't persist outside of combat'''
+        removalList = [x for x in player.statusList if x.turnsLeft > -1]
+        for removalStatus in removalList:
+            Combat.removeStatus(player, removalStatus.name)
+
+            
+    #### Death Methods ####
+    
+    def softcoreDeath(self, player):
+        goldLoss -= int(round(player.inventory.gold * 0.1))
+        if goldLoss > player.inventory.gold:
+            goldLoss = player.inventory.gold
+        # Display message of gold loss better: TODO
+        Combat.screen.show_text("You lose: " + str(goldLoss) + " gold for dying.", 
+                                color='yellow', size=16)
+        player.inventory.gold -= goldLoss
+        # Transport player to town TODO
 
 class CombatState(object):
     def __init__(self):

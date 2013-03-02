@@ -195,8 +195,11 @@ class Game(object):
         if self.pane.person[id].anim:
             self.pane.person[id].anim.stop()
         self.pane.person[id].anim = LoopingCall(self.do_animation, id, source, dest, xdist, ydist, length)
-        self.pane.person[id].anim.start(float(length) / steps)
-        
+        if steps > 0:
+            self.pane.person[id].anim.start(float(length) / steps)
+        else:
+            self.pane.person[id].anim.start(1)
+            
     def do_animation(self, id, source, dest, xdist, ydist, length):
         completion = min((time.time() - self.pane.person[id].anim_start) / float(length), 1)
         statsdict = {}

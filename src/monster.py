@@ -165,7 +165,7 @@ class Monster(person.Person):
         '''First argument should represent which type of object this is.'''
         return ("Monster", self.name, self.level)
         
-    def getUsableAbilities(self, server, combatPane):
+    def getSufficientAbilities(self):
         sufficient = []
         for abil in self.abilityList:
             if self.AP >= abil.APCost and abil.name not in self.cooldownList:
@@ -173,6 +173,19 @@ class Monster(person.Person):
         for spell in self.spellList:
             if self.AP >= spell.APCost and not self.onCooldown(spell.name) and self.MP >= spell.MPCost:
                 sufficient.append(spell)
+        return sufficient
+        
+    def getUsableAbilities(self, server=None, combatPane=None):
+        if not server:
+            server = Monster.globalServer
+        else:
+            Monster.globalServer = server
+        if not combatPane:
+            combatPane = self.currentCombatPane
+        else:
+            self.currentCombatPane = combatPane
+    
+        sufficient = self.getSufficientAbilities()
         # We now have a list of abilities that can be used according to 
         # AP/MP costs and cooldowns.
         usable = []
@@ -247,5 +260,22 @@ class Monster(person.Person):
         sortedPlayers = sorted(players, keyFunction)
         return sortedPlayers
     
-            
+    def getNearestPlayer(self):
+        '''Returns the nearest player to this monster.'''
+        allPlayers = [Monster.globalServer.person[x] for x in 
+                      Monster.globalServer.pane[self.currentCombatPane].person if
+                      Monster.globalServer.person[x].team == "Players"]
+        if not allPlayers:
+            return None
+        closestDistance = 999
+        closestPlayer = None
+        for player in allPlayers:
+            thisDistance = self.cLocation.distance(player.cLocation)
+            if thisDistance < closestDistance:
+                closestDistance = thisDistance
+                closestPlayer = player
+        return closestPlayer
+        
+
+        
         

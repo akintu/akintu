@@ -856,6 +856,19 @@ class Combat(object):
         return False
      
     @staticmethod
+    def calcExperienceGain(player, monsterList):
+        ''' Calculates the amount of experience this player should gain. '''
+        expGain = 0
+        for mon in monsterList:
+            if player.level <= mon.level:
+                expGain += mon.experienceGiven
+            elif player.level <= mon.level - 2:
+                expGain += round(mon.experienceGiven * 0.75)
+            else:
+                expGain += round(mon.experienceGiven * 0.15)
+        return expGain
+     
+    @staticmethod
     def _shoutAttackDodged(source, target):
         dodger = target
         bc = broadcast.DodgeBroadcast()
