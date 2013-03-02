@@ -35,6 +35,9 @@ class GameScreen(object):
         self.personsgroup = pygame.sprite.RenderUpdates()
         self.playerframes = OrderedDict()
         self.monsterframes = OrderedDict()
+        self.scrollcount = 0
+        self.textsize = 12
+        self.sidetext = []
         pygame.display.flip()
 
     def set_pane(self, pane):
@@ -60,9 +63,6 @@ class GameScreen(object):
                     pygame.image.fromstring(data, size, mode).convert()
         self.pane = pane
         self.draw_world()
-
-        # Clear the text box in sidebar
-        self.show_text('')
 
     def draw_world(self):
         '''
@@ -226,34 +226,67 @@ class GameScreen(object):
         if SHOW_FPS:
             pygame.display.set_caption("%s %f" % (CAPTION, fps))
 
-    def show_text(self, text, color='white', size=13, bold=False, ital=False):
+    def scroll_up(self, scrollamount=1):
         '''
-        Show arbitrary text in the sidebar
+        Scroll the text box up by scrollamount (default 1)
         '''
-        words = text.split(' ')
-        beg = 0
-        end = 1
+        self.scrollcount += scrollamount
+        self._draw_text()
+
+    def scroll_down(self, scrollamount=1):
+        '''
+        Scroll the text box down by scrollamount (default 1)
+        '''
+        self.scrollcount -= scrollamount
+        if self.scrollcount < 0:
+            self.scrollcount = 0
+
+    def show_text(self, text, color='white', size=None):
+        '''
+        Add a text string to the scrolling sidebar text area
+
+        Pass in size argument to set the text size for the whole box
+        '''
+        if size:
+            self.textsize = size
+        self.sidetext.insert(0, (text, color))
+        if self.scrollcount > 0:
+            self.scrollcount += 1
+        self._draw_text()
+
+    def _draw_text(self):
+        '''
+        Draw up to 10 lines of text in the sidebar text box
+
+        Starts from self.scrollcount
+        '''
         lines = []
+        count = self.scrollcount
 
-        font = pygame.font.SysFont("Arial", size, bold=bold, italic=ital)
+        for text, color in self.sidetext[count:count+10]:
+            words = text.split(' ')
+            beg = 0
+            end = 1
 
-        txt = ' '.join(words[beg:end])
-        prev = font.render(txt, True, Color(color))
-        cur = None
+            font = pygame.font.SysFont("Arial", self.textsize)
 
-        while beg < len(words) and end <= len(words):
             txt = ' '.join(words[beg:end])
-            cur = font.render(txt, True, Color(color))
-            rect = cur.get_rect()
-            if rect.width > 246:
-                lines.append(prev)
-                beg = end - 1
+            prev = font.render(txt, True, Color(color))
+            cur = None
+
+            while beg < len(words) and end <= len(words):
                 txt = ' '.join(words[beg:end])
-                prev = font.render(txt, True, Color(color))
-                continue
-            end += 1
-            prev = cur
-        lines.append(prev)
+                cur = font.render(txt, True, Color(color))
+                rect = cur.get_rect()
+                if rect.width > 246:
+                    lines.append(prev)
+                    beg = end - 1
+                    txt = ' '.join(words[beg:end])
+                    prev = font.render(txt, True, Color(color))
+                    continue
+                end += 1
+                prev = cur
+            lines.append(prev)
 
         height = lines[0].get_rect().height
         textarea = pygame.Surface((246, 100))
