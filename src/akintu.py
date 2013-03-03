@@ -8,6 +8,7 @@ from pygame.locals import *
 import sys
 
 from game import Game
+from const import *
 
 
 def main():
@@ -19,7 +20,7 @@ def main():
     ip = None
     if len(sys.argv) != 1:
         ip = sys.argv[1]
-    game = Game(port=1337, serverip=ip, state=("correcthorsebatterystaple!",), player=("Player", "Human", "Barbarian"))
+    game = Game(port=1337, serverip=ip, state={SEED_KEY: "correcthorsebatterystaple!"}, player=("Player", "Human", "Barbarian"))
 
 
 if __name__ == "__main__":

@@ -22,8 +22,8 @@ class World(object):
         seed: the random seed for this world
     '''
 
-    def __init__(self, seed, world_state=None):
-        self.seed = seed
+    def __init__(self, world_state):
+        self.seed = world_state[SEED_KEY]
         self.panes = dict()
         #TODO: Unbox/Open world_state in whatever form it is given
         self.world_state = world_state

@@ -39,17 +39,14 @@ class Game(object):
             assert False
         if not player:
             assert False
-        if isinstance(state, tuple):    #This means we're creating a new game with this seed.
-            self.seed = state[0]
-            self.state = None
-        else:   #This means we're loading the state from a save file
+        if isinstance(state, dict):     #This means we're creating a new game
+            self.state = state
+        else:                           #This means we're loading the state from a save file
             unpickled_state = pickle.load( open( state, "rb" ) )
-            self.seed = unpickled_state["seed"]
             self.state = unpickled_state
-            pass
 
-        Sprites.load(self.seed)
-        self.world = World(self.seed, world_state=self.state)
+        Sprites.load(self.state[SEED_KEY])  #Static method call to load sprites
+        self.world = World(world_state=self.state)
         self.pane = None
 
         # Game state
