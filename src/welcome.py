@@ -141,6 +141,7 @@ class WelcomeWindow(object):
         self.success = True
         self.frame.quit()
 
+
 def runwelcome():
     root = Tk()
     root.title('Akintu')
