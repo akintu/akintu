@@ -13,13 +13,13 @@ class CCTemplatesParser(object):
         self.NUM_CHARACTER_CLASSES = 16
         self.NUM_RACES = 6
         self.combos = []
-    
+
     characterClassTemplates = []
     races = []
-    
+
     @staticmethod
     def getFromText(file, currentLine, tag):
-        if( currentLine == "" ): 
+        if( currentLine == "" ):
             # An empty string indicates the EOF.
             return "EOF"
         currentLine = currentLine.strip()
@@ -35,7 +35,7 @@ class CCTemplatesParser(object):
         else:
             print "Parsing Error: " + currentLine
             return "ERROR!"
-            
+
     def parseAllRaces(self, fileName):
         nameTag = re.compile("(?:\[NAME: )(.*)(?:\])", re.I)
         startingAwarenessTag = re.compile("(?:\[STARTING_AWARENESS: )(.*)(?:\])", re.I)
@@ -52,7 +52,7 @@ class CCTemplatesParser(object):
         startingSneakTag = re.compile("(?:\[STARTING_SNEAK: )(.*)(?:\])", re.I)
         startingSorceryTag = re.compile("(?:\[STARTING_SOR: )(.*)(?:\])", re.I)
         startingStrengthTag = re.compile("(?:\[STARTING_STR: )(.*)(?:\])", re.I)
-        
+
         with open(fileName, 'r') as f:
             for i in range(self.NUM_RACES):
                 raceDict = {}
@@ -70,12 +70,12 @@ class CCTemplatesParser(object):
                 raceDict['startingRangedAccuracy'] = CCTemplatesParser.getFromText(f, f.readline(), startingRangedAccuracyTag)
                 raceDict['startingSneak'] = CCTemplatesParser.getFromText(f, f.readline(), startingSneakTag)
                 raceDict['startingSorcery'] = CCTemplatesParser.getFromText(f, f.readline(), startingSorceryTag)
-                raceDict['startingStrength'] = CCTemplatesParser.getFromText(f, f.readline(), startingStrengthTag)    
+                raceDict['startingStrength'] = CCTemplatesParser.getFromText(f, f.readline(), startingStrengthTag)
                 CCTemplatesParser.races.append(raceDict)
-                
-    
-                
-    
+
+
+
+
     def parseAllCC(self, fileName):
         nameTag = re.compile("(?:\[NAME: )(.*)(?:\])", re.I)
         baseCCTag = re.compile("(?:\[BASE_CLASS: )(.*)(?:\])", re.I)
@@ -106,7 +106,7 @@ class CCTemplatesParser(object):
         levelupHPTag = re.compile("(?:\[LEVELUP_HP: )(.*)(?:\])", re.I)
         levelupMPTag = re.compile("(?:\[LEVELUP_MP: )(.*)(?:\])", re.I)
         imageTag = re.compile("(?:\[IMAGE: )(.*)(?:\])")
-        
+
         with open(fileName, 'r') as f:
             for i in range(self.NUM_CHARACTER_CLASSES):
                 ccDict = {}
@@ -139,7 +139,7 @@ class CCTemplatesParser(object):
                 ccDict['levelupMP'] = CCTemplatesParser.getFromText(f, f.readline(), levelupMPTag)
                 ccDict['image'] = CCTemplatesParser.getFromText(f, f.readline(), imageTag)
                 CCTemplatesParser.characterClassTemplates.append(ccDict)
-                 
+
     def combineRaceAndClass(self):
         comboDict = {}
         for ccDict in CCTemplatesParser.characterClassTemplates:
@@ -148,8 +148,8 @@ class CCTemplatesParser(object):
                 comboDict['name'] = raceDict['name'] + " " + ccDict['name']
                 comboDict = self.combineNotName(ccDict, raceDict, comboDict)
                 self.combos.append(comboDict)
-    
-     
+
+
     def combineNotName(self, dictA, dictB, resultDict):
         for keyA in dictA:
             for keyB in dictB:
@@ -166,7 +166,7 @@ class CCTemplatesParser(object):
         self.parseAllRaces(raceFileName)
         self.combineRaceAndClass()
         return self.combos
-    
+
 if __name__ == "__main__":
     parser = CCTemplatesParser()
     parser.parseAll("./data/Character_Class_Data.txt", "./data/Race_Data.txt")
@@ -175,5 +175,5 @@ if __name__ == "__main__":
             print k + " : " + str(combo[k])
         print "\n"
 
-        
-        
+
+

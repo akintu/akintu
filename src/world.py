@@ -41,22 +41,22 @@ class World(object):
                 pane_state = self.world_state[location]
         self.panes[location] = Pane(self.seed, location, load_entities=True, pane_state=pane_state)
         self._merge_tiles(surrounding_locations)
-        
+
         self.panes[location].load_images()
         if not is_server:
             self.panes[location].person = {}
         return self.panes[location]
-    
+
     def _generate_world(self):
         pass
-    
+
     def _verify_path(self, start_location, end_location):
         pass
-        
+
     def _merge_tiles(self, pane_locations):
         '''
         Merges the edge tiles of the surrounding panes with the current pane
-        
+
         Member Variables
             pane_locations:  A dictionary of tuples that represent the panes to be merged.
                     This is given from Location.get_surrounding_panes()
@@ -65,7 +65,7 @@ class World(object):
         for key, value in pane_locations.iteritems():
             surrounding_pane = self.panes[value]
             edge_tiles = surrounding_pane.get_edge_tiles(10-key)#We request the opposite side
-            curr_pane.merge_tiles(edge_tiles)    
+            curr_pane.merge_tiles(edge_tiles)
 
 class Pane(object):
     '''
@@ -92,7 +92,7 @@ class Pane(object):
                 self.tiles[(i, j)] = Tile(None, True)
                 if load_entities:
                     self.add_obstacle((i, j), RAND_ENTITIES)
-                    
+
         if load_entities:
             if self.pane_state:
                 self.load_state(self.pane_state)
@@ -110,7 +110,7 @@ class Pane(object):
                     s += " "
             s += "|\n"
         return s
-    
+
     def load_monsters(self, monsters=None):
         if monsters:
             for monster in monsters:
@@ -121,7 +121,7 @@ class Pane(object):
                 self.person[id(person)] = person
         else:
             random.seed(self.seed + str(self.location) + "load_monsters")
-            for i in range(3): 
+            for i in range(3):
                 person = TheoryCraft.getMonster(level=2)#TODO, pass in random here
                 person.location = Location(self.location, (random.randrange(PANE_X), random.randrange(PANE_Y)))
                 r = Region()
@@ -129,23 +129,23 @@ class Pane(object):
                 #r.build("SUB", "CIRCLE", Location(self.location, CENTER), int(PANE_Y/6))
                 person.ai.add("WANDER", person.ai.wander, person.movementSpeed, pid=id(person), region=r, move_chance=1.0 / (person.movementSpeed))
                 self.person[id(person)] = person
-    
+
     def load_items(self, items=None):
         print "load_items() currently does nothing :)"
         pass
-    
+
     def load_images(self):
-        self.images = Sprites.get_images_dict()  
+        self.images = Sprites.get_images_dict()
         for i in range(PANE_X):
             for j in range(PANE_Y):
                 self.tiles[(i, j)].set_image(Sprites.get_background_tile(self.background_key, (i, j)))
         for tile, entity_key in self.objects.iteritems():
             obstacle = Sprites.get_object(entity_key, self.seed, self.location, tile)
             self.tiles[tile].entities.append(Entity(tile, image=obstacle))
-        
+
     def is_tile_passable(self, location):
         return self.tiles[location.tile].is_passable()
-    
+
     def get_edge_tiles(self, edge):
         passable_list = dict()
         #Get the corner that edge represents
@@ -183,7 +183,7 @@ class Pane(object):
             self.tiles[tile].passable = False
         if tile in self.objects:
             return self.objects[tile]
-    
+
     def add_region(self, location, size, percentage, entity_type=None):
         r = Region()
         r("ADD", "CIRCLE", location, size)
@@ -193,7 +193,7 @@ class Pane(object):
                 if not loc in self.tiles:
                     self.tiles[loc] = Tile(None, True)
                     self.add_obstacle(loc.tile, 1, entity_type)
-                    
+
     def get_combat_pane(self, focus_tile, monster = None):
         return CombatPane(self, focus_tile, monster)
 
@@ -207,7 +207,7 @@ class Pane(object):
                 self.load_items(items=state[ITEM_KEY])
             #Get Anything Else
             pass
-    
+
     def save_state(self):
         '''
         Saves the current panes monsters and items to a dictionary.
@@ -218,27 +218,27 @@ class Pane(object):
         this pane's (x, y) coordinate as the key.
         '''
         pass
-    
+
 class CombatPane(Pane):
-    
+
     def __init__(self, pane, pane_focus, monster):
         '''
         A subpane of the current pane.  It will contain 10x6 of the original
         tiles which turn into 3x3 grids on the CombatPane.
         Dimensions are 30x18 (there will be a border around the pane)
         Member Variables:
-            pane_focus:     a Location object with the current pane and the 
-                            tile of the monster of focus.  This is the location 
+            pane_focus:     a Location object with the current pane and the
+                            tile of the monster of focus.  This is the location
                             from which we entered combat.  If this location is
                             far enough away from a border, sub pane will be centered
                             from here.
-                            
+
         '''
         super(CombatPane, self).__init__(pane.seed, pane.location, False)
-        
+
         loc_x = pane_focus.tile[0]
         loc_y = pane_focus.tile[1]
-        
+
         dx_min = min(loc_x - 5, 0)     #yields 0 if far enough away from edge,
         dy_min = min(loc_y - 3, 0)     #and negative if too close
         # print "dx_min, dy_min: " + str(dx_min) + ", " + str(dy_min)
@@ -249,12 +249,12 @@ class CombatPane(Pane):
         dy = dy_min + dy_max - 1
         loc_x -= dx
         loc_y -= dy
-        
+
         self.focus_location = Location(pane.location, (PANE_X/2 + dx*3, PANE_Y/2 + dy*3))
         fx = max(0, min(PANE_X - 1, self.focus_location.tile[0]))
         fy = max(0, min(PANE_Y - 1, self.focus_location.tile[1]))
         self.focus_location.tile = (fx, fy)
-        
+
         i = 2
         for x in range(loc_x-4, loc_x+6):
             j = 2
@@ -264,12 +264,12 @@ class CombatPane(Pane):
                     self.add_zoomed_obstacle((i, j), pane.objects[(x,y)])
                 j+=3
             i+=3
-        
+
         self.load_background_images()
-        if monster: 
+        if monster:
             monsters = TheoryCraft.generateMonsterGroup(monster)
             self.place_monsters(monsters, self.focus_location)
-    
+
 
     def place_monsters(self, monsters, start_location):
         loc = temp = start_location
@@ -284,8 +284,8 @@ class CombatPane(Pane):
             self.person[id(person)] = person
             temp = loc
             loc = self.rand_move_within_pane(loc, [1,9], [2,5], 3)
-        
-        
+
+
     def rand_move_within_pane(self, location, dir_range, dist_range, bounds):
         random.seed()
         while True:
@@ -299,22 +299,22 @@ class CombatPane(Pane):
                 #print "Off the pane"
                 continue
             return new_loc
-        
-        
+
+
     def is_passable(self, location):
         for key, person in self.person.iteritems():
             if person.location == location:
                 return False
         return super(CombatPane, self).is_tile_passable(location)
-        
-        
+
+
     def is_within_bounds(self, location, edge):
         #Outside of current pane
         if self.location != location.pane:
             return False
         return True
-        
-    
+
+
     def add_zoomed_obstacle(self, tile_center, entity_key):
         '''
         Zooms the given obstacle to a 3x3 obstacle and centers it on the given tile.
@@ -330,27 +330,27 @@ class CombatPane(Pane):
                 self.tiles[tile].passable = False
                 obstacle = Sprites.get_zoomed_image(entity_key, (di,dj))
                 self.tiles[tile].entities.append(Entity(tile, image=obstacle))
-            
-            
+
+
     def load_background_images(self):
         self.images = Sprites.get_images_dict()
         for i in range(PANE_X):
             for j in range(PANE_Y):
                 self.tiles[(i, j)].set_image(Sprites.get_background_tile(self.background_key, (i, j)))
-        
-        
+
+
 class Tile(object):
     def __init__(self, image = os.path.join("res", "images", "background", "grass.png"), passable = True):
         self.entities = []
         self.image = image
         self.passable = passable
-    
+
     def __repr__(self):
         return "(%s, %s, %s)" % (self.passable, self.image, self.entities)
-    
+
     def set_image(self, image):
         self.image = image
-        
+
     def is_passable(self):
         if self.passable == False:
             return False

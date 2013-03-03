@@ -4,13 +4,13 @@ import sys
 import listener
 
 class PassiveAbility(object):
-    
+
     def __init__(self, name, owner):
         self.name = name
         self.owner = owner
         content = PassiveAbility.allContentByName[name]
         self.requiredClass = content['class']
-        self.level = content['level']        
+        self.level = content['level']
         self.type = content['type']
         self.action = content['action']
         self.onStringList = None
@@ -21,19 +21,19 @@ class PassiveAbility(object):
             self.registerListener()
         if self.type == 'static':
             self.action(self, self.owner)
-        
+
     def registerListener(self):
         newListener = listener.Listener(self, self.owner, self.onStringList, self.action, self.offStringList)
         self.owner.listeners.append(newListener)
-        
-        
+
+
     # Barbarian
     def applyColdEndurance(self, target):
         target.baseColdResistance += 10
-        
+
     def applyMagicalVulnerability(self, target):
         target.baseMagicResist -= 3
-        
+
     def applyMightyWeapon(self, target, reverse=False, other=None):
         if not reverse:
             if target.usingWeaponStyle("Two-Handed"):
@@ -41,7 +41,7 @@ class PassiveAbility(object):
         else:
             if target.usingWeaponStyle("Two-Handed"):
                 target.baseMight -= 6
-    
+
     def applyTwoWeaponTargeting(self, target, reverse=False, other=None):
         if not reverse:
             if target.usingWeaponStyle("Dual"):
@@ -49,7 +49,7 @@ class PassiveAbility(object):
         else:
             if target.usingWeaponStyle("Dual"):
                 target.baseMeleeAccuracy -= 2
-                
+
     def applyBloodOnTheEdge(self, target, reverse=False, damageAmount=0):
         # No reverse possible.
         hpThreshold = round(target.totalHP * 0.30)
@@ -59,18 +59,18 @@ class PassiveAbility(object):
         if damageAmount > hpThreshold:
             return
         return "Ignore Damage"
-            
+
     def applyMagicalIgnorance(self, target):
         target.baseMagicResist -= 3
-        
+
     def applyStunningRecovery(self, target, reverse=False, statusName=None):
         if statusName == "Stun" and not target.hasStatus("Stunning Recovery"):
             healing = round(target.totalHP * 0.05)
             Combat.healTarget(target, healing)
             Combat.addStatus(target, "Stunning Recovery", duration=1)
-    
+
     # Dragoon
-    
+
     def applyPolearmSpecialization(self, target, reverse=False, other=None):
         source = self.owner
         if not reverse:
@@ -81,10 +81,10 @@ class PassiveAbility(object):
             if source.usingWeapon("Polearm"):
                 source.statusForce -= 30
                 source.statusCriticalChance -= 5
-    
+
     def applyDragonFoe(self, target, reverse=False, other=None):
         source = self.owner
-        if not reverse:        
+        if not reverse:
             if other.type == "Dragonkin":
                 source.statusMeleeAccuracy += 2
                 source.statusRangedAccuracy += 2
@@ -93,12 +93,12 @@ class PassiveAbility(object):
             if other.type == "Dragonkin":
                 source.statusMeleeAccuracy -= 2
                 source.statusRangedAccuracy -= 2
-                source.statusDodge -= 2            
-    
+                source.statusDodge -= 2
+
     def applyFireTouched(self, target):
         target.baseFireResistance += 10
-    
-    # Spellsword    
+
+    # Spellsword
     def applySeekerOfEnchantments(self, target, reverse=False, spell=None):
         if not reverse:
             if spell.school == "Enchantment":
@@ -106,17 +106,17 @@ class PassiveAbility(object):
         else:
             if spell.school == "Enchantment":
                 target.statusSepllpower -= 6
-                
+
     def applyDuality(self, target):
         target.baseDR += 1
         target.baseMagicResist += 1
-        
+
     def applyLastingEnchantment(self, target, reverse=False, spell=None):
         if spell.school == "Enchantment":
                 for buff in [x for x in target.statusList if x.name == spell.name]:
                     buff.turnsLeft += 1
         # Has no reverse.
-            
+
     def applyFocalPoint(self, target, reverse=False, other=None):
         if not target.usingWeaponStyle("Two Handed"):
             return
@@ -130,20 +130,20 @@ class PassiveAbility(object):
             holyDamage = (round(15 * (1 + target.totalDivineBonusDamage / 100) *
                                      (1 - other.totalDivineResistance / 100)))
             Combat.lowerHP(other, holyDamage)
-                
+
     def applyBladesOfReduction(self, target, reverse=False, victim=None):
         if not target.usingWeapon("Sword") and not target.usingWeapon("Axe"):
             return
         doApply = Dice.rollPresetChance(target, victim, "Reliable")
         if doApply:
             duration = -1 # Never ends
-            Combat.applyStatus(victim, "Blades of Reduction", duration) 
-             
+            Combat.applyStatus(victim, "Blades of Reduction", duration)
+
     # Marksman
     def applyExcellentVision(self, target):
         target._bonusRange += 2
-        target.baseAwareness += 2        
-                
+        target.baseAwareness += 2
+
     def applyLayingInWait(self, target, reverse=False):
         source = self.owner
         if not reverse:
@@ -152,16 +152,16 @@ class PassiveAbility(object):
             Combat.addStatus(source, "Laying in Wait", duration=-1, magnitude=mag, overwrite=False)
         else:
             Combat.removeStatus(source, "Laying in Wait")
-                
+
     def applyFireHandler(self, target):
         target.baseFireResistance += 5
         target.baseFireBonusDamage += 5
-        
+
     def applyCamouflage(self, target):
         target.baseSneak += 8
         target.baseDodge += 2
         target.baseRangedAccuracy += 2
-                
+
     def applyShortbowNiche(self, target, reverse=False, other=None):
         source = self.owner
         if not reverse:
@@ -172,33 +172,33 @@ class PassiveAbility(object):
             if source.usingWeapon("Shortbow"):
                 source.statusCriticalMagnitude -= 10
                 source.statusRangedAccuracy -= 1
-                
+
     def applyIncredibleFocus(self, target, reverse=False, statusName=None):
         source = self.owner
         if statusName == "Stun" and Dice.rollBeneath(75):
             Combat.removeStatus(source, statusName)
-                
+
     def applySuperiorTraining(self, target, reverse=False, other=None):
         source = self.owner
         duration = 2 # Decremented almost immediately.
         mag = 3
         Combat.addStatus(source, "Superior Training", duration, mag)
-                
+
     # Druid
     def applyKnowledgeOfPoison(self, target):
         target.basePoisonBonusDamage += 30
-        
+
     def applyPotencyOfPoisons(self, target):
         target.basePoisonRatingBonus += 5
-                
+
     def applyExposureToPoison(self, target):
         target.basePoisonTolerance += 5
         target.basePoisonResistance += 20
-                
+
     def applyTimeWithNature(self, target):
         target.basePoisonResistance += 5
         target.baseColdResistance += 5
-                
+
     # Tactician
     def applySpellsOfDeception(self, target, reverse=False, spell=None):
         if not reverse:
@@ -206,23 +206,23 @@ class PassiveAbility(object):
                 target.statusSpellpower += 5
         else:
             if spell.school == "Illusion" or spell.school == "Mental":
-                target.statusSpellpower -= 5        
-                
+                target.statusSpellpower -= 5
+
     # Assassin
     def applyAnatomy(self, target):
         target.baseCriticalChance += 10
-                
+
     def applySlightlySneakier(self, target):
         target.baseSneak += 3
-    
+
     def applyDabblesWithPoison(self, target):
         target.basePoisonRatingBonus += 2
-                
+
     # Shadow
     def applyADabblerOfSorts(self, target):
         target.basePoisonRatingBonus += 3
         target.basePoisonBonusDamage += 5
-                
+
     def applyBackflip(self, target, reverse=False, other=None):
         source = self.owner
         if not reverse:
@@ -231,13 +231,13 @@ class PassiveAbility(object):
         else:
             # if back not against wall
             source.statusDodge -= 3
-                
+
     def applyTreasureBag(self, target):
         target.baseInventoryCapacity += 15
-        
+
     def applyAnEyeForValue(self, target):
         target.goldFind += 2
-        
+
     def applySlingSkills(self, target, reverse=False, other=None):
         source = self.target
         if not reverse:
@@ -246,26 +246,26 @@ class PassiveAbility(object):
         else:
             if source.usingWeapon("Sling"):
                 source.statusRangedAccuracy -= 5
-                
+
     def applyHideInPeril(self, target, reverse=False, amount=None):
         source = self.target
         if amount >= source.totalHP * 0.4 and not source.inStealth():
             Combat.addStatus(source, "Shadow Walk", -1)
-                
+
     def applyBackstabUpgrade(self, target):
         toRemove = None
         for abil in target.abilities:
             if abil.name == "Backstab":
                 toRemove = abil
                 break
-        if toRemove:        
+        if toRemove:
             target.abilities.remove(toRemove)
-                
+
     # Nightblade
     def applyLowLightAdvantage(self, target):
         # TODO: Need to adjust melee accuracy +2/-2 based on indoors/outdoors.
         target.baseAwareness += 1
-                
+
     def applySingleBlade(self, target, reverse=False, other=None):
         source = self.owner
         if not reverse:
@@ -276,7 +276,7 @@ class PassiveAbility(object):
             if source.usingWeaponStyle("Single"):
                 source.statusMeleeAccuracy -= 3
                 source.statusCriticalChance -= 5
-    
+
     def applyUpCloseAndPersonal(self, target, reverse=False, spell=None):
         source = self.owner
         if not reverse:
@@ -285,7 +285,7 @@ class PassiveAbility(object):
         else:
             if spell.school == "Bane" and location.in_melee_range(source.location, target.location):
                 source.statusSpellpower -= 4
-        
+
     # Battle Mage
     def applyCloseRangedMagic(self, target, reverse=False, spell=None):
         if not reverse:
@@ -294,23 +294,23 @@ class PassiveAbility(object):
         else:
             if spell.range < 4:
                 target.baseSpellpower -= 7
-                
+
     def applyManaAttack(self, target, reverse=False, other=None):
         if not reverse:
             target.MP += 9
         else:
             pass
-            
+
     def applyDireMana(self, target, reverse=False, damageAmount=0):
         if not reverse:
             if damageAmount >= target.maxHP * 0.15:
                 target.MP += target.totalMP * 0.10
         else:
             pass
-            
+
     def applyMysticalAccuracy(self, target):
         target.baseMeleeAccuracy += 3
-            
+
     def applyMysticalShieldUse(self, target, reverse=False, other=None):
         if not reverse:
             if target.usingShield("Any"):
@@ -318,14 +318,14 @@ class PassiveAbility(object):
         else:
             if target.usingShield("Any"):
                 target.baseDR -= 3
-                
+
     def applyRapidRetreat(self, target, reverse=False, other=None):
         if not reverse:
             if target.HP < target.totalHP * 0.20:
                 target.overrideMovementAPCost = 2
         else:
             target.overrideMovementAPCost = -1
-            
+
     def applyMilitaryDefensiveTraining(self, target, reverse=False, other=None):
         if not target.usingShield():
             return
@@ -333,7 +333,7 @@ class PassiveAbility(object):
             target.statusMagicResist += 3
         else:
             target.statusMagicResist -= 3
-            
+
     def applyMilitarySpellTraining(self, target, reverse=False, spell=None):
         if target.usingShield():
             return
@@ -341,7 +341,7 @@ class PassiveAbility(object):
             target.statusSpellpower += 2
         else:
             target.statusSpellpower -= 2
-            
+
     def applyMilitaryOffensiveTraining(self, target, reverse=False, spell=None):
         if target.usingWeapon("Club"):
             if not reverse:
@@ -352,14 +352,14 @@ class PassiveAbility(object):
             if not reverse:
                 target.statusMeleeAccuracy += 2
             else:
-                target.statusMeleeAccuracy -= 2            
-            
+                target.statusMeleeAccuracy -= 2
+
     # Arcane Archer
     def applyManaArrows(self, target, reverse=False, other=None):
         source = self.owner
         if source.usingWeapon("Bow") or source.usingWeapon("Crossbow"):
             source.MP += source.arcaneArcherManaRegen
-            
+
     def applyMysticalResearch(self, target, reverse=False, spell=None):
         source = self.owner
         if not reverse:
@@ -368,35 +368,35 @@ class PassiveAbility(object):
         else:
             if spell.school == "Mystic":
                 source.statusSpellpower -= 4
-                
+
     def applyArcaneThreadingUpgrade(self, target):
         toRemove = None
         for abil in target.abilities:
             if abil.name == "Arcane Threading":
                 toRemove = abil
                 break
-        if toRemove:        
+        if toRemove:
             target.abilities.remove(toRemove)
-            
+
     # Trickster
-    
+
     def applyWildSurvival(self, target):
         target.baseDodge += 10
-            
+
     def applyGlee(self, target, reverse=False):
         source = self.owner
         source.MP += source.level * 2 + 18
-            
+
     def applyInfuriatingBlows(self, target, reverse=False, other=None):
         source = self.owner
         source.MP += 2
-            
+
     def applyDoubleDodge(self, target, reverse=False):
         source = self.owner
         Combat.addStatus(source, "Double Dodge", 1)
         magnitude = min(15, 5 * source.getStatusStackCount("Double Dodge"))
         source.statusDodge += magnitude
-            
+
     def applyRiskyFighting(self, target, reverse=False, other=None):
         source = self.owner
         if not reverse:
@@ -407,20 +407,20 @@ class PassiveAbility(object):
             if source.usingWeaponStyle("Dual"):
                 source.statusMeleeAccuracy -= 4
                 source.statusCriticalChance -= 5
-            
+
     def applySlightlySmugger(self, target, reverse=False):
         source = self.owner
         duration = 2
         magnitude = 3
         Combat.addStatus(source, "Slightly Smugger", duration, magnitude)
-            
+
     # Monsters
 
     def applyDeflectMissiles(self, target, reverse=False, hero=None):
         ''' Monsters with Deflect Missiles gain 10 Dodge and 5% DR against Ranged
         attacks.'''
         source = self.owner
-        if not reverse: 
+        if not reverse:
             source.statusDR += 5
             source.statusDodge += 10
         else:
@@ -428,16 +428,16 @@ class PassiveAbility(object):
             source.statusDodge -= 10
 
     def applyGrowingBoldness(self, target, reverse=False, hero=None):
-        ''' Monsters with Growing Boldness gain +2 Strength and 1% attack power after 
+        ''' Monsters with Growing Boldness gain +2 Strength and 1% attack power after
         every attempt to attack in melee. '''
         source = self.owner
         source.statusStrength += 2
         source.attackPower += 1
-            
+
     def applyMonsterAgility(self, target):
         ''' Monsters with 'Monster Agility' have +10-30 Dodge (based on level). '''
         target.baseDodge += target.level + 10
-            
+
     def applyPanic(self, target, reverse=False, hero=None):
         ''' Monsters that Panic gain Dexterity (increasing their accuracy and
         dodge) every time they are hit with melee attacks when at half health
@@ -445,20 +445,20 @@ class PassiveAbility(object):
         source = self.owner
         if source.HP <= 0.5 * source.totalHP:
             source.statusDexterity += 2
-            
+
     def applyRegeneration(self, target, reverse=False):
         ''' Monsters with regerenation recover 15% of their max HP each turn.'''
         source = self.owner
         source.HP += round(source.totalHP * 0.15)
-            
+
     allContentByName = {
-        'Cold Endurance': 
+        'Cold Endurance':
         {
         'class' : 'Barbarian',
         'level' : 1,
         'type' : 'static',
         'action' : applyColdEndurance
-        },       
+        },
         'Magical Vulnerability':
         {
         'class' : 'Barbarian',
@@ -509,7 +509,7 @@ class PassiveAbility(object):
         'onStringList' : ['Incoming Status Applied'],
         'offStringList' : []
         },
-        
+
         'Polearm Specialization':
         {
         'class' : 'Dragoon',
@@ -525,10 +525,10 @@ class PassiveAbility(object):
         'level' : 1,
         'type' : 'dynamic',
         'action' : applyDragonFoe,
-        'onStringList' : ['Outgoing Melee Attack', 'Outgoing Ranged Attack', 
+        'onStringList' : ['Outgoing Melee Attack', 'Outgoing Ranged Attack',
                           'Incoming Melee Attack', 'Incoming Ranged Attack'],
         'offStringList' : ['Outgoing Melee Attack Complete', 'Outgoing Ranged Attack Complete',
-                           'Incmoing Melee Attack Complete', 'Incoming Ranged Attack Complete']                           
+                           'Incmoing Melee Attack Complete', 'Incoming Ranged Attack Complete']
         },
         'Fire-Touched':
         {
@@ -537,8 +537,8 @@ class PassiveAbility(object):
         'type' : 'static',
         'action' : applyFireTouched,
         },
-        
-        
+
+
         'Seeker of Enchantments':
         {
         'class' : 'Spellsword',
@@ -582,7 +582,7 @@ class PassiveAbility(object):
         'onStringList' : ['Outgoing Melee Attack Hit', 'Outgoing Melee Attack Critical Hit'],
         'offStringList' : []
         },
-        
+
         'Excellent Vision':
         {
         'class' : 'Marksman',
@@ -640,7 +640,7 @@ class PassiveAbility(object):
         'onStringList' : ['Incoming Ranged Attack Hit'],
         'offStringList' : []
         },
-        
+
         'Knowledge of Poison':
         {
         'class' : 'Druid',
@@ -669,7 +669,7 @@ class PassiveAbility(object):
         'type' : 'static',
         'action' : applyTimeWithNature
         },
-        
+
         # Tactician
         'Spells of Deception':
         {
@@ -680,7 +680,7 @@ class PassiveAbility(object):
         'onStringList' : ['Outgoing Spell Cast'],
         'offStringList' : ['Outgoing Spell Cast Complete']
         },
-        
+
         # Assassin
         'Anatomy':
         {
@@ -703,8 +703,8 @@ class PassiveAbility(object):
         'type' : 'static',
         'action' : applyDabblesWithPoison
         },
-        
-        
+
+
         # Shadow
         'A Dabbler of Sorts':
         {
@@ -761,8 +761,8 @@ class PassiveAbility(object):
         'onStringList' : ['Incmoing Damage'],
         'offStringList' : []
         },
-        
-        
+
+
         # Nightblade
         'Low-Light Advantage':
         {
@@ -789,8 +789,8 @@ class PassiveAbility(object):
         'onStringList' : ['Outgoing Spell Cast'],
         'offStringList' : ['Outgoing Spell Cast Complete']
         },
-        
-        
+
+
         # Battle Mage
         'Close-Ranged Magic':
         {
@@ -801,7 +801,7 @@ class PassiveAbility(object):
         'onStringList' : ['Outgoing Spell Cast'],
         'offStringList' : ['Outgoing Spell Cast Complete']
         },
-        
+
         'Mana Attack':
         {
         'class' : 'Battle Mage',
@@ -871,8 +871,8 @@ class PassiveAbility(object):
         'action' : applyMilitaryOffensiveTraining,
         'onStringList' : ['Outgoing Melee Attack'],
         'offStringList' : ['Outgoing Melee Attack Complete']
-        },        
-        
+        },
+
         # Arcane Archer
         'Mana Arrows':
         {
@@ -899,7 +899,7 @@ class PassiveAbility(object):
         'type' : 'static',
         'action' : applyArcaneThreadingUpgrade
         },
-        
+
         # Trickster
         'Wild Survival':
         {
@@ -953,7 +953,7 @@ class PassiveAbility(object):
         'onStringList' : ['Attack Dodged'],
         'offStringList' : [] # Removed on status removal
         },
-        
+
         # Monsters
         'Deflect Missiles':
         {
@@ -998,15 +998,15 @@ class PassiveAbility(object):
         'onStringList' : ['Monster Turn Start'],
         'offStringList' : []
         }
-        
-        
-        
+
+
+
     }
 
 
-                
-    
-    
-        
-        
-        
+
+
+
+
+
+

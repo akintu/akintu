@@ -10,9 +10,9 @@ import statuseffectsparser as sep
 class WeaponsParser(object):
 
     def __init__(self):
-        """Prepares the parser.  
+        """Prepares the parser.
         Possible states are:
-          "Expecting Name" -- not currently parsing an object, 
+          "Expecting Name" -- not currently parsing an object,
              may have just finished parsing an object.
           "Expecting Type"
           "Expecting Class"
@@ -27,9 +27,9 @@ class WeaponsParser(object):
           "Expecting Range"
           """
         self.state = "Expecting Name"
-        
+
         self.weaponList = []
-    
+
     def parseAll(self, fileName):
         nameTag = re.compile("(?:\[NAME: )(.*)(?:\])", re.I)
         typeTag = re.compile("(?:\[TYPE: )(.*)(?:\])", re.I)
@@ -44,9 +44,9 @@ class WeaponsParser(object):
         goldTag = re.compile("(?:\[GOLD_VALUE: )(.*)(?:\])", re.I)
         weightTag = re.compile("(?:\[WEIGHT: )(.*)(?:\])", re.I)
         rangeTag = re.compile("(?:\[RANGE: )(.*)(?:\])", re.I)
-        
+
         f = open(fileName, 'r')
-        
+
         name = None
         wType = None
         wepClass = None
@@ -60,10 +60,10 @@ class WeaponsParser(object):
         gold = None
         weight = None
         wRange = None
-        
+
         for line in f:
             line = line.strip()
-            
+
             if(self.state == "Expecting Name"):
                 name = None
                 wType = None
@@ -83,12 +83,12 @@ class WeaponsParser(object):
                 name = nameTag.match(line).group(1)
                 self.state = "Expecting Type"
                 continue
-                
+
             if(self.state == "Expecting Type"):
                 wType = typeTag.match(line).group(1)
                 self.state = "Expecting Class"
                 continue
-                
+
             if(self.state == "Expecting Class"):
                 wepClass = wepClassTag.match(line).group(1)
                 if(wepClass == "1H-"):
@@ -99,32 +99,32 @@ class WeaponsParser(object):
                     wepClass = "Two-Handed"
                 self.state = "Expecting Damage Base"
                 continue
-                
+
             if(self.state == "Expecting Damage Base"):
                 dBase = dBaseTag.match(line).group(1)
                 self.state = "Expecting Damage Gradient"
                 continue
-                
+
             if(self.state == "Expecting Damage Gradient"):
                 dGrad = dGradTag.match(line).group(1)
                 self.state = "Expecting Damage Type"
                 continue
-                
+
             if(self.state == "Expecting Damage Type"):
                 dType = dTypeTag.match(line).group(1)
                 self.state = "Expecting Force"
                 continue
-                
+
             if(self.state == "Expecting Force"):
                 force = forceTag.match(line).group(1)
                 self.state = "Expecting Crit Mult"
                 continue
-                
+
             if(self.state == "Expecting Crit Mult"):
                 crit = critTag.match(line).group(1)
                 self.state = "Expecting Bonus Tendency"
                 continue
-        
+
             if(self.state == "Expecting Bonus Tendency"):
                 if( bonusTendencyTag.match(line) ):
                     bonusTendencyList.append(bonusTendencyTag.match(line).group(1))
@@ -132,32 +132,32 @@ class WeaponsParser(object):
                     bonusMod = bonusModTag.match(line).group(1)
                     self.state = "Expecting Gold Value"
                 continue
-                
+
             if(self.state == "Expecting Gold Value"):
                 gold = goldTag.match(line).group(1)
                 self.state = "Expecting Weight"
                 continue
-                
+
             if(self.state == "Expecting Weight"):
                 weight = weightTag.match(line).group(1)
                 self.state = "Expecting Range"
                 continue
-                
+
             if(self.state == "Expecting Range"):
                 wRange = rangeTag.match(line).group(1)
                 self.state = "Expecting Name"
-                weaponDict = {'name' : name, 'goldValue' : gold, 'weight' : weight, 'type' : wType, 
-                              'handsRequired' : wepClass, 'damageBase' : dBase, 'damageGradient' : dGrad, 
-                              'damageType' : dType, 'force' : force, 'criticalMultiplier' : crit, 
+                weaponDict = {'name' : name, 'goldValue' : gold, 'weight' : weight, 'type' : wType,
+                              'handsRequired' : wepClass, 'damageBase' : dBase, 'damageGradient' : dGrad,
+                              'damageType' : dType, 'force' : force, 'criticalMultiplier' : crit,
                               'bonusTendencyList' : bonusTendencyList, 'bonusMod' : bonusMod, 'range' : wRange}
                 self.weaponList.append(weaponDict)
                 continue
-                
+
             raise sep.InvalidDataFileSyntax("Unknown Tag: " + line + " .")
-                    
+
         f.close()
         return self.weaponList
-        
+
 if __name__ == "__main__":
     parser = WeaponsParser()
     parser.parseAll("./data/Weapon_Data.txt")
@@ -166,6 +166,6 @@ if __name__ == "__main__":
         print wep.criticalMultiplier
         print wep.goldValue
         print wep.bonusTendencyList
-        
-        
-        
+
+
+

@@ -9,7 +9,7 @@ class Consumable(entity.Entity):
 
     AP_COST = 7
     COOLDOWN = 3
-    
+
     def __init__(self, name, location=None):
         entity.Entity.__init__(self, location)
         self.name = name
@@ -32,13 +32,13 @@ class Consumable(entity.Entity):
             self.level = Consumable.allPoisons[name]['level']
             self.effect = Consumable.allPoisons[name]['effect']
             self.ip = Consumable.allPoisons[name]['ip']
-        
+
     def canUse(self, user):
         if self.type in user.cooldownList:
             return False
         if user.AP >= 7:
             return True
-        
+
     def use(self, user):
         if self.canUse(user):
             self.effect(user)
@@ -47,94 +47,94 @@ class Consumable(entity.Entity):
             print "Used item: " + self.name + "."
         else:
             print "Attempted to use " + self.name + " but it cannot be used at this time."
-        
-        
+
+
     def _basicHealingPotion(self, user):
         healing = Dice.roll(3, 10)
         healing *= (1 + float(user.totalPotionEffect) / 100)
         Combat.healTarget(user, user, round(healing))
-        
+
     def _lesserHealingPotion(self, user):
         healing = Dice.roll(6, 20)
         healing *= (1 + float(user.totalPotionEffect) / 100)
         Combat.healTarget(user, user, round(healing))
-        
+
     def _moderateHealingPotion(self, user):
         healing = Dice.roll(9, 30)
         healing *= (1 + float(user.totalPotionEffect) / 100)
         Combat.healTarget(user, user, round(healing))
-        
+
     # Healing functions go above
-    
+
     def _basicManaPotion(self, user):
         mana = Dice.roll(5, 8)
         mana *= (1 + float(user.totalPotionEffect) / 100)
         Combat.modifyResource(user, "MP", mana)
-        
+
     def _lesserManaPotion(self, user):
         mana = Dice.roll(10, 17)
         mana *= (1 + float(user.totalPotionEffect) / 100)
         Combat.modifyResource(user, "MP", mana)
-        
+
     def _moderateManaPotion(self, user):
         mana = Dice.roll(18, 30)
         mana *= (1 + float(user.totalPotionEffect) / 100)
-        Combat.modifyResource(user, "MP", mana)        
-        
+        Combat.modifyResource(user, "MP", mana)
+
     # Mana functions go above
-    
+
     def _antidote(self, user):
         Combat.removeStatusOfType(user, "Poison")
-        
+
     def _thawingPotion(self, user):
         Combat.removeStatusOfType(user, "Cold")
-        
+
     def _quenchingPotion(self, user):
         Combat.removeStatusOfType(user, "Fire")
-        
+
     def _neutralizingPotion(self, user):
         Combat.removeStatusOfType(user, "Electric")
-        
+
     def _clottingPotion(self, user):
         Combat.removeStatusOfType(user, "Bleeding", True) # removeAll
-        
+
     def _rockPotion(self, user):
         if user.hasStatus(statusCategory="Stone") and not user.hasStatus("Rock Potion"):
             Combat.addStatus(user, "Rock Potion", duration=8)
         else:
-            print "Cannot stack Stone effects."      
+            print "Cannot stack Stone effects."
 
     def _prismaticPotion(self, user):
         Combat.addStatus(user, "Prismatic Potion", duration=8)
-        
+
     def _vaccine(self, user):
         Combat.addStatus(user, "Vaccine", duration=99)
         damage = round(Dice.roll(1, 8) * (1 - float(user.totalPoisonResistance) / 100))
         Combat.lowerHP(user, damage)
-        
+
     def _spiritPotion(self, user):
         Combat.addStatus(user, "Spirit Potion", duration = 8)
-    
+
     # Buffing potions go above.
-    
+
     def _basicPoison(self, user):
         bonus = 20 * (1 + float(user.totalPoisonBonusDamage) / 100)
         base = Consumable._calcWeaponAverageDamage(user.equippedItems.equippedWeapon)
         total = round(float(bonus) / 100 * base)
         duration = 8
         Combat.addStatus(user, "Applied Basic Poison", duration, total)
-        
+
     def _vilePoison(self, user):
         duration = 8 # Duration of poison on weapon, not on affected monster.
         Combat.addStatus(user, "Applied Vile Poison", duration)
-        
+
     def _numbingPoison(self, user):
         duration = 8 # Duration of poison on weapon, not on affected monster.
-        Combat.addStatus(user, "Applied Numbing Poison", duration)        
-     
+        Combat.addStatus(user, "Applied Numbing Poison", duration)
+
     # Poisons go above
     # Scrolls, effusions, oils go here...
-        
+
     @staticmethod
     def _calcWeaponAverageDamage(weapon):
         if not weapon:
@@ -142,7 +142,7 @@ class Consumable(entity.Entity):
         minDam = weapon.damageMin + weapon.damageMinBonus
         maxDam = weapon.damageMax + weapon.damageMaxBonus
         return round((minDam + maxDam) / 2)
-        
+
     allPotions = {
         'Basic Healing Potion' :
             {
@@ -244,7 +244,7 @@ class Consumable(entity.Entity):
             'effect' : _vaccine,
             'ip' : 4
             },
-        'Spirit Potion' : 
+        'Spirit Potion' :
             {
             'goldValue' : 250,
             'level' : 8,
@@ -254,14 +254,14 @@ class Consumable(entity.Entity):
             # TODO: Other buffing potions go here.
         }
     allPoisons = {
-        'Basic Poison' : 
+        'Basic Poison' :
             {
             'goldValue' : 10,
             'level' : 1,
             'effect' : _basicPoison,
             'ip' : 1
             },
-        'Numbing Poison' : 
+        'Numbing Poison' :
             {
             'goldValue' : 15,
             'level' : 1,
@@ -278,27 +278,27 @@ class Consumable(entity.Entity):
             }
 
             # TODO: Fill in other poisons.
-        }   
+        }
         # TODO: Scrolls/Oils and Effusions
-    
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-        
-        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

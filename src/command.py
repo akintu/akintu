@@ -31,7 +31,7 @@ class Update(Command):
         self.value = value
         self.location = location
         self.details = details
-        
+
 class InventoryAction(Command):
     def __init__(self, action, item_hash):
         self.action = action

@@ -13,7 +13,7 @@ class AI():
         self.server = server
         for name in self.behavior.keys():
             self.start(name)
-        
+
     ###### AI BEHAVIORS ######
     def run(self, name, pid=None, direction=None, region=None):
         newloc = self.server.person[pid].location.move(direction, 1)
@@ -32,7 +32,7 @@ class AI():
                     return
                 direction = random.choice(dirs)
                 newloc = self.server.person[pid].location.move(direction, 1)
-            
+
             self.server.SDF.queue.put((None, Person(PersonActions.MOVE, pid, newloc)))
             self.behavior[name]['time'] = time() + (1.0 / self.behavior[name]['frequency'])
 
@@ -42,7 +42,7 @@ class AI():
         self.behavior[name]['frequency'] = frequency
         self.behavior[name]['running'] = False
         self.behavior[name]['task'] = LoopingCall(ai_func, name, **details)
-        
+
     def remove(self, name):
         if name in self.behavior:
             self.stop(name)
@@ -54,12 +54,12 @@ class AI():
         self.behavior[name]['running'] = True
         self.behavior[name]['time'] = time()
         self.behavior[name]['task'].start(1.0 / self.behavior[name]['frequency'])
-        
+
     def stop(self, name):
         if self.behavior[name]['running'] and not self.paused:
             self.behavior[name]['task'].stop()
             self.behavior[name]['running'] = False
-        
+
     def update_frequency(self, name, frequency):
         self.behavior[name]['frequency'] = frequency
         self.stop(name)
@@ -71,14 +71,14 @@ class AI():
                 if self.behavior[name]['running']:
                     self.behavior[name]['task'].stop()
             self.paused = True
-        
+
     def resume(self):
         if self.paused:
             for name in self.behavior.keys():
                 if self.behavior[name]['running']:
                     self.start(name)
             self.paused = False
-        
+
     def shutdown(self):
         for name in self.behavior.keys():
             self.remove(name)

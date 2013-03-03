@@ -12,7 +12,7 @@ from game import Game
 
 def main():
     pygame.init()
-    
+
     #TODO: all this can be changed when the menu is integrated
     #state is undefined right now, but we could pass in a directory
     #or a pickled object

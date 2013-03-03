@@ -39,7 +39,7 @@ class Monster(person.Person):
         self.GP = Monster.setFrom(argDict, 'GP')
 
         self.type = Monster.setFrom(argDict, 'type')
-        
+
         self.abilityList = []
         self.spellList = []
         self.passiveAbility = None
@@ -51,7 +51,7 @@ class Monster(person.Person):
                 self.spellList.append(spell.Spell(spellName, self))
             else:
                 self.abilityList.append(ability.Ability(self.specialAttackOneName, self))
-            
+
         self.specialAttackTwoName = Monster.setFrom(argDict, 'specialAttackTwo', None)
         if self.specialAttackTwoName:
             if "Spell: " in self.specialAttackTwoName:
@@ -59,7 +59,7 @@ class Monster(person.Person):
                 self.spellList.append(spell.Spell(spellName, self))
             else:
                 self.abilityList.append(ability.Ability(self.specialAttackTwoName, self))
-            
+
         self.specialAttackThreeName = Monster.setFrom(argDict, 'specialAttackThree', None)
         if self.specialAttackThreeName:
             if "Spell: " in self.specialAttackThreeName:
@@ -67,16 +67,16 @@ class Monster(person.Person):
                 self.spellList.append(spell.Spell(spellName, self))
             else:
                 self.abilityList.append(ability.Ability(self.specialAttackThreeName, self))
-            
+
         self.specialPropertyName = Monster.setFrom(argDict, 'specialProperty', None)
         if self.specialPropertyName:
             self.passiveAbility = passiveability.PassiveAbility(self.specialPropertyName, self)
-        
+
         self.attackElement = Monster.setFrom(argDict, 'attackElement')
         self.attackMinDamage = Monster.setFrom(argDict, 'attackMin')
         self.attackMaxDamage = Monster.setFrom(argDict, 'attackMax')
         self.attackRange = Monster.setFrom(argDict, 'attackRange')
-        
+
         self.levelupArmorPenetration = Monster.setFrom(argDict, 'levelupArmorPenetration')
         self.levelupCunning = Monster.setFrom(argDict, 'levelupCunning')
         self.levelupDexterity = Monster.setFrom(argDict, 'levelupDexterity')
@@ -99,12 +99,12 @@ class Monster(person.Person):
         self.levelupPoisonTolerance = Monster.setFrom(argDict, 'levelupPoisonTolerance')
         self.levelupSpellpower = Monster.setFrom(argDict, 'levelupSpellpower')
         self.levelupStrength = Monster.setFrom(argDict, 'levelupStrength')
-        
+
         self.registerBasicAttacks()
-        
+
         self.levelSet = False
         self.currentCombatPane = None
-        
+
     def registerBasicAttacks(self):
         self.abilityList.append(ability.Ability("Melee Attack", self))
         rangedAttack = ability.Ability("Ranged Attack", self)
@@ -114,9 +114,9 @@ class Monster(person.Person):
     def applyBonusDamage(self, dieRoll):
         dieRoll *= (1 + self.attackPower / 100.0)
         return int(round(dieRoll))
-        
+
     def setLevel(self, level):
-        '''Method should only be called once after creation to set the level of a 
+        '''Method should only be called once after creation to set the level of a
         monster.  Will print a warning message if this is called more than once.'''
         if self.levelSet:
             print "WARNING: Level for this monster has been set previously.  Statistics will be incorrect."
@@ -149,8 +149,8 @@ class Monster(person.Person):
         self.basePoisonTolerance += self.levelupPoisonTolerance * diff
         self.baseSpellpower += self.levelupSpellpower * diff
         self.baseStrength += self.levelupStrength * diff
-        
-        
+
+
     def adjustMaxHP(self, numberOfPlayers):
         if numberOfPlayers == 1:
             pass
@@ -160,11 +160,11 @@ class Monster(person.Person):
             self.baseHP = round(self.baseHP * 2)
         elif numberOfPlayers == 4:
             self.baseHP = round(self.baseHP * 2.5)
-        
+
     def getDetailTuple(self):
         '''First argument should represent which type of object this is.'''
         return ("Monster", self.name, self.level)
-        
+
     def getSufficientAbilities(self):
         sufficient = []
         for abil in self.abilityList:
@@ -174,7 +174,7 @@ class Monster(person.Person):
             if self.AP >= spell.APCost and not self.onCooldown(spell.name) and self.MP >= spell.MPCost:
                 sufficient.append(spell)
         return sufficient
-        
+
     def getUsableAbilities(self, server=None, combatPane=None):
         if not server:
             server = Monster.globalServer
@@ -184,9 +184,9 @@ class Monster(person.Person):
             combatPane = self.currentCombatPane
         else:
             self.currentCombatPane = combatPane
-    
+
         sufficient = self.getSufficientAbilities()
-        # We now have a list of abilities that can be used according to 
+        # We now have a list of abilities that can be used according to
         # AP/MP costs and cooldowns.
         usable = []
         for abil in sufficient:
@@ -200,7 +200,7 @@ class Monster(person.Person):
                         usable.append((abil, player))
             # If friendly...TODO
         return usable
-        
+
     def selectAction(self, server, combatPane):
         """Returns a duple of an ability/spell and its target."""
         choicesList = self.getUsableAbilities(server, combatPane)
@@ -210,7 +210,7 @@ class Monster(person.Person):
             return None
         else:
             return Dice.choose(choicesList)
-        
+
     def performAction(self, server=None, combatPane=None):
         """Select a usable ability, and perform it.
         Returns the name of the ability used if an action was possible and thus completed,
@@ -224,7 +224,7 @@ class Monster(person.Person):
             combatPane = self.currentCombatPane
         else:
             self.currentCombatPane = combatPane
-            
+
         # Select targets and perform actions, if possible.
         actionDuple = self.selectAction(server, combatPane)
         if actionDuple:
@@ -234,7 +234,7 @@ class Monster(person.Person):
             abil.use(target)
             return abil.name
         return "Failure"
-            
+
     def getPlayersInRange(self, range, server=None, combatPane=None):
         """Returns a list of players within a set range of this monster.  Will sort them according
         to distance from this monster."""
@@ -242,7 +242,7 @@ class Monster(person.Person):
             server = Monster.globalServer
         if not combatPane:
             combatPane = self.currentCombatPane
-            
+
         reg = region.Region()
         if range == 1:
             reg("ADD", "SQUARE", self.cLocation.move(7, 1), self.cLocation.move(3, 1))
@@ -255,14 +255,14 @@ class Monster(person.Person):
         for player in allPlayers:
             if player.cLocation in reg and player.team == "Players":
                 players.append(player)
-        
+
         keyFunction = lambda x: self.cLocation.distance(x.cLocation)
         sortedPlayers = sorted(players, keyFunction)
         return sortedPlayers
-    
+
     def getNearestPlayer(self):
         '''Returns the nearest player to this monster.'''
-        allPlayers = [Monster.globalServer.person[x] for x in 
+        allPlayers = [Monster.globalServer.person[x] for x in
                       Monster.globalServer.pane[self.currentCombatPane].person if
                       Monster.globalServer.person[x].team == "Players"]
         if not allPlayers:
@@ -275,7 +275,7 @@ class Monster(person.Person):
                 closestDistance = thisDistance
                 closestPlayer = player
         return closestPlayer
-        
 
-        
-        
+
+
+

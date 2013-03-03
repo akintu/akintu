@@ -16,22 +16,22 @@ from dice import *
 from const import *
 
 class TheoryCraft(object):
-    
+
     GROUP_GP = 10 # TODO: Move to const.py
-    
+
     hasLoaded = False
-    
+
     classes = []
     statuses = []
     armors = []
     weapons = []
     monsters = []
-    
+
     @staticmethod
     def loadAll():
         if TheoryCraft.hasLoaded:
             print "Warning: The parsers have already loaded their data."
-            
+
         parser = monstersparser.MonstersParser()
         TheoryCraft.monsters = parser.parseAll("./data/Monster_Data.txt")
         parser = cctemplatesparser.CCTemplatesParser()
@@ -42,11 +42,11 @@ class TheoryCraft(object):
         TheoryCraft.weapons = parser.parseAll("./data/Weapon_Data.txt")
         parser = statuseffectsparser.StatusEffectsParser()
         TheoryCraft.statuses = parser.parseAll("./data/Status_Effects_Data.txt")
-        
+
         Combat.allStatuses = TheoryCraft.statuses
-        
+
         TheoryCraft.hasLoaded = True
-        
+
     @staticmethod
     def getWeaponByName(name, ip=0):
         '''Gets a weapon with the given name and the
@@ -55,7 +55,7 @@ class TheoryCraft(object):
             if wep['name'] == name:
                 return equipment.Weapon(wep).cloneWithMagicalProperties(ip)
         print "Weapon name: '" + name + "' not found in master list."
-        
+
     @staticmethod
     def getArmorByName(name, ip=0):
         '''Gets a piece of armor with the given name and the
@@ -63,11 +63,11 @@ class TheoryCraft(object):
         for arm in TheoryCraft.armors:
             if arm['name'] == name:
                 return equipment.Armor(arm).cloneWithMagicalProperties(ip)
-        print "Armor name: '" + name + "' not found in master list."    
-        
+        print "Armor name: '" + name + "' not found in master list."
+
     @staticmethod
     def convertFromDetails(tuple):
-        '''Converts a 'detail tuple' representing the intermediate state of 
+        '''Converts a 'detail tuple' representing the intermediate state of
         a Person to an actual instance of a Person.'''
         if tuple[0] == "Monster":
             return TheoryCraft.getMonster(name=tuple[1], level=tuple[2])
@@ -75,7 +75,7 @@ class TheoryCraft(object):
             return TheoryCraft.getNewPlayerCharacter(race=tuple[1], characterClass=tuple[2])
         else:
             print "Warning: Attempted to convert from invalid tuple: " + str(tuple[0]) + " ."
-        
+
     @staticmethod
     def getMonster(index=None, loc=location.Location((0, 0), (PANE_X/2, PANE_Y/2)), level=None, name=None, tolerance=1, ignoreMaxLevel=False):
         ''' Generates a monster for the overworld.
@@ -101,10 +101,10 @@ class TheoryCraft(object):
             levelChoice = None
             if lower == upper:
                 levelChoice = lower
-            else:    
+            else:
                 levelChoice = randint(lower, upper)
-                
-            if ignoreMaxLevel: 
+
+            if ignoreMaxLevel:
                 inLevelList = [x for x in TheoryCraft.monsters if x['minLevel'] <= levelChoice]
             else:
                 inLevelList = [x for x in TheoryCraft.monsters if x['minLevel'] <= levelChoice and x['maxLevel'] >= levelChoice]
@@ -116,7 +116,7 @@ class TheoryCraft(object):
         theMonster.location = loc
         theMonster.setLevel(levelChoice)
         return theMonster
-        
+
     @staticmethod
     def getNewPlayerCharacter(race, characterClass, loc=location.Location((0, 0), (PANE_X/2, PANE_Y/2))):
         race = race.lower()
@@ -128,7 +128,7 @@ class TheoryCraft(object):
                 pc.location = loc
                 return pc
         print "Bad character name/race, returning nothing; you're so stupid."
-        
+
     @staticmethod
     def generateMonsterGroup(initialMonster, levelTolerance=1, numberOfPlayers=1, ignoreMaxLevel=False):
         ''' Generates a 'random' grouping of monsters
@@ -179,10 +179,10 @@ class TheoryCraft(object):
                 listOfMonsters.append(monster.Monster(subList[selection]))
                 currentGP += subList[selection]['GP']
                 numMonsters += 1
-                
+
         for mon in listOfMonsters:
             mon.adjustMaxHP(numberOfPlayers)
         return listOfMonsters
-        
-        
-        
+
+
+

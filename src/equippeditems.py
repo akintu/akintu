@@ -17,7 +17,7 @@ class EquippedItems(object):
                         'Main Hand' : None,
                         'Off Hand' : None}
         self._moreRecentFinger = 'Left'
-    
+
     def _equipArmor(self, newPiece):
         oldPiece = []
         if newPiece.type == "Chest":
@@ -37,9 +37,9 @@ class EquippedItems(object):
             self._allGear['Feet'] = newPiece
         elif newPiece.type == "Neck":
             oldPiece = self._allGear['Neck']
-            self._allGear['Neck'] = newPiece    
+            self._allGear['Neck'] = newPiece
         return [oldPiece]
-    
+
     def _equipRing(self, newPiece, hand=None):
         oldPiece = []
         if hand == "Left":
@@ -63,7 +63,7 @@ class EquippedItems(object):
             self._allGear['Left Finger'] = newPiece
             self._moreRecentFinger = 'Left'
         return [oldPiece]
-    
+
     def _equipWeapon(self, newPiece, hand="Right"):
         if hand == "Main" or not hand:
             hand = "Right"
@@ -71,7 +71,7 @@ class EquippedItems(object):
             hand = "Left"
 
         handsUsed = newPiece.handsRequired
-        
+
         oldPieceOne = None
         oldPieceTwo = None
         if handsUsed == "Two-Handed" or handsUsed == "One-Handed Exclusive":
@@ -89,7 +89,7 @@ class EquippedItems(object):
                 oldPieceOne = self._allGear['Main Hand']
                 oldPieceTwo = self._allGear['Off Hand']
                 self._allGear['Main Hand'] = newPiece
-                self._allGear['Off Hand'] = None        
+                self._allGear['Off Hand'] = None
         elif handsUsed == "One-Handed" and hand == "Right":
             oldPieceOne = self._allGear['Main Hand']
             self._allGear['Main Hand'] = newPiece
@@ -103,7 +103,7 @@ class EquippedItems(object):
             return [oldPieceOne, oldPieceTwo]
         else:
             return [oldPieceOne]
-  
+
     def _equipShield(self, newPiece):
         oldPiece = None
         mainHand = self._allGear['Main Hand']
@@ -114,14 +114,14 @@ class EquippedItems(object):
             oldPiece = self._allGear['Off Hand']
         self._allGear['Off Hand'] = newPiece
         return [oldPiece]
-  
+
     def equip(self, newPiece, hand=None):
         """Equips the given 'newPiece' of Equipment.  If the new piece is
-        either a ring or a one-handed weapon, specifying the 'hand' will 
+        either a ring or a one-handed weapon, specifying the 'hand' will
         determine which weapon/shield/ring it replaces.  Otherwise a default
-        value will be used.  Returns the equipment previously equipped in a 
+        value will be used.  Returns the equipment previously equipped in a
         list.
-        Inputs: 
+        Inputs:
           newPiece -- Equipment; The piece of equipment to put on.
           hand -- string*; Possible values: "Right", "Left" (The primary hand
                             is considered to be "Right".)
@@ -135,53 +135,53 @@ class EquippedItems(object):
         if newPiece.type == "Finger":
             return self._equipRing(newPiece, hand)
         if newPiece.type == "Shield":
-            return self._equipShield(newPiece)        
+            return self._equipShield(newPiece)
         else:
             return self._equipArmor(newPiece)
-  
+
     @property
     def equippedOffHand(self):
         return self._allGear['Off Hand']
-    
+
     @property
     def equippedWeapon(self):
         return self._allGear['Main Hand']
-        
+
     @property
     def equippedShield(self):
         if( self._allGear['Off Hand'].isinstance(equipment.Armor) ):
             return self._allGear['Off Hand']
         else:
             return None
-    
+
     @property
     def equippedChestArmor(self):
         return self._allGear['Chest']
-        
+
     @property
     def equippedHeadArmor(self):
         return self._allGear['Head']
-        
+
     @property
     def equippedHandsArmor(self):
         return self._allGear['Hands']
-        
+
     @property
     def equippedLegsArmor(self):
         return self._allGear['Legs']
-        
+
     @property
     def equippedFeetArmor(self):
         return self._allGear['Feet']
-        
+
     @property
     def equippedFingers(self):
         return [self._allGear['Left Finger'], self._allGear['Right Finger']]
-        
+
     @property
     def equippedNeck(self):
         return self._allGear['Neck']
-        
+
     @property
     def totalArmorGrade(self):
         ag = 0
@@ -196,7 +196,7 @@ class EquippedItems(object):
         if self._allGear['Feet']:
             ag += self.allGear['Feet'].armorGrade
         return ag
-        
+
     @property
     def armorLevel(self):
         grade = self.totalArmorGrade()
@@ -208,7 +208,7 @@ class EquippedItems(object):
             return "Medium"
         if 20 < grade:
             return "Heavy"
-            
+
     @property
     def equippedWeight(self):
         totalWeight = 0
@@ -221,12 +221,12 @@ class EquippedItems(object):
         if self._allGear['Hands']:
             totalWeight += self.allGear['Hands'].weight
         if self._allGear['Feet']:
-            totalWeight += self.allGear['Feet'].weight        
+            totalWeight += self.allGear['Feet'].weight
         if self._allGear['Main Hand']:
             totalWeight += self.allGear['Main Hand'].weight
         if self._allGear['Off Hand']:
             totalWeight += self.allGear['Off Hand'].weight
         return totalWeight
-        
-        
-    
+
+
+

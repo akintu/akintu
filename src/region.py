@@ -9,10 +9,10 @@ class Region:
     def __iter__(self):
         for x in self.locations:
             yield x
-            
+
     def __contains__(self, item):
         return item in self.locations
-        
+
     def __str__(self):
         left = right = top = bottom = self.locations.pop()
         self.locations.add(left)
