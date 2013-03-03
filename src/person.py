@@ -1161,7 +1161,7 @@ class Person(en.Entity):
         anywhere else.
         """
         cunningBonus = max(0, self.totalCunning - 10)
-        if isinstance(self, playercharacter) and self.characterClass == "Shadow":
+        if self.team == "Players" and self.characterClass == "Shadow":
             cunningBonus *= 2
         return (cunningBonus +
                 self._equipmentSneak +
@@ -2327,7 +2327,7 @@ class Person(en.Entity):
              None (Usually the case)
              PlayerCharacter pc (If a summon/guardian)
              Monster m (If a minion of a monster)"""
-        if ((value is None) or (value.isinstance(Person))):
+        if ((value is None) or (isinstance(value, Person))):
             self._owner = value
         # TODO, if not None, set the link the other direction as well.
 

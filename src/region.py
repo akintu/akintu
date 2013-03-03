@@ -5,6 +5,8 @@ import os
 class Region:
     def __init__(self):
         self.locations = set()
+        self.shape = {"SQUARE": self.square, "DIAMOND": self.diamond, "CIRCLE": self.circle,
+                      "LINE": self.line, "CURVE": self.curve}
 
     def __iter__(self):
         for x in self.locations:
@@ -32,27 +34,17 @@ class Region:
         strrep = ""
         for y in Location(left.abs_x, top.abs_y).line_to(Location(left.abs_x, bottom.abs_y)):
             for x in Location(left.abs_x, top.abs_y).line_to(Location(right.abs_x, top.abs_y)):
-                strrep += "@ " if Location((x.pane[0], y.pane[1]), (x.tile[0], y.tile[1])) in R else ". "
+                strrep += "@ " if Location((x.pane[0], y.pane[1]), (x.tile[0], y.tile[1])) in R else "  "
             strrep += os.linesep
         return strrep
 
     def __call__(self, method, shape, *details):
-        if shape.upper() == "SQUARE":
+        if shape.upper() in self.shape:
             if method.upper() == "ADD":
-                self.locations |= self.square(*details)
+                self.locations |= self.shape[shape.upper()](*details)
             else:
-                self.locations -= self.square(*details)
-        if shape.upper() == "DIAMOND":
-            if method.upper() == "ADD":
-                self.locations |= self.diamond(*details)
-            else:
-                self.locations -= self.diamond(*details)
-        if shape.upper() == "CIRCLE":
-            if method.upper() == "ADD":
-                self.locations |= self.circle(*details)
-            else:
-                self.locations -= self.circle(*details)
-
+                self.locations -= self.shape[shape.upper()](*details)
+                
     def square(self, loc1, loc2):
         locations = set()
         for y in loc1.line_to(Location(loc1.abs_x, loc2.abs_y)):
@@ -76,8 +68,26 @@ class Region:
         for x in loc.move(7, rad).line_to(loc.move(6, rad)):
             for y in loc.move(7, rad).line_to(loc.move(2, rad)):
                 tile = Location(x.abs_x, y.abs_y)
-                if loc.true_distance(tile) <= rad:
+                if round(loc.true_distance(tile)) <= rad:
                     locations |= {tile}
+        return locations
+        
+    def line(self, loc1, loc2, width=1):
+        locations = set()
+        
+        for x in range(-(width - 1) / 2, ((width - 1) / 2) + 1):
+            if abs(loc1.abs_x - loc2.abs_x) > abs(loc1.abs_y - loc2.abs_y):
+                locations |= set(Location(loc1.abs_x, loc1.abs_y + x).line_to(
+                        Location(loc2.abs_x, loc2.abs_y + x)))
+            else:
+                locations |= set(Location(loc1.abs_x + x, loc1.abs_y).line_to(
+                        Location(loc2.abs_x + x, loc2.abs_y)))
+        return locations
+        
+    def curve(self, center, radius, width=1):
+        locations = set()
+        locations |= self.circle(center, radius + width / 2)
+        locations -= self.circle(center, radius - width / 2)
         return locations
 
 if __name__ == "__main__":
@@ -96,6 +106,8 @@ if __name__ == "__main__":
     R("ADD", "CIRCLE", Location((0, 0), (16, 10)), 7)
     R("SUB", "DIAMOND", Location((0, 0), (22, 10)), 6)
     R("SUB", "SQUARE", Location((0, 0), (14, 6)), Location((0, 0), (15, 7)))
+    R("ADD", "LINE", Location(20, 10), Location(22, 10), 3)
+    #R("ADD", "CURVE", Location(20, 18), 5, 3)
 
     #Display the region
     print R
