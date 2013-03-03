@@ -32,6 +32,7 @@ class Game(object):
             state:      state={SEED_KEY: "seed"} if new game, or 
                         state="SaveFile.###" if loading game
             player:     ("Name", "Race", "Class") if new player
+                        
         '''
 
         TheoryCraft.loadAll()   #Static method call, Devin's stuff.
@@ -75,6 +76,7 @@ class Game(object):
             person = Person(PersonActions.CREATE, None, Location((0, 0), (PANE_X/2, PANE_Y/2)), \
             ("Player", player[1], player[2]))
         else: 
+            #TODO: Might need to unpickle a player/rehydrate it
             person = player
         self.setup = LoopingCall(self.setup_game, person)
         self.setup.start(0)

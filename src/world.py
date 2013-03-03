@@ -35,11 +35,11 @@ class World(object):
                 self.panes[loc] = Pane(self.seed, loc)
 
         #This is the pane we will return, current pane
-        pane_state = None
+        state = None
         if self.world_state:
             if location in self.world_state:
-                pane_state = self.world_state[location]
-        self.panes[location] = Pane(self.seed, location, load_entities=True, pane_state=pane_state)
+                state = self.world_state[location]
+        self.panes[location] = Pane(self.seed, location, load_entities=True, pane_state=state)
         self._merge_tiles(surrounding_locations)
 
         self.panes[location].load_images()
@@ -112,14 +112,28 @@ class Pane(object):
         return s
 
     def load_monsters(self, monsters=None):
+        '''
+        Parameters:
+            monsters:   A list of monster tuples in the following format:
+                        ("Name", "Level", "Location", "Region", "AI")
+                        Where: 
+                            Name and Level are strings
+                            Location is the tile tuple (x, y)
+                            Region and AI will be some sort of hash that their
+                                respective classes can use to rehydrate them
+        '''
+    
         if monsters:
             for monster in monsters:
                 person = TheoryCraft.getMonster(name=monster[0], level=monster[1])
                 person.location = Location(self.location, monster[2])
                 r = Region()#region=monster[3])
+                #TODO: Rehydrate r with monsters[3]
+                #TODO: Somehow rehydrate AI...
                 #person.ai(monster[4])
                 self.person[id(person)] = person
-        else:
+                assert False
+        else:   #TODO: Make this better. We're creating monsters from scratch here
             random.seed(self.seed + str(self.location) + "load_monsters")
             for i in range(3):
                 person = TheoryCraft.getMonster(level=2)#TODO, pass in random here
@@ -131,7 +145,19 @@ class Pane(object):
                 self.person[id(person)] = person
 
     def load_items(self, items=None):
+        '''
+        Parameters:
+            items:  A list of item tuples in the following format:
+                    ("Name", "Location", ...)
+                    
+                    TODO: STILL UNIMPLEMENTED, need info on creating items from name...
+        '''
+
         print "load_items() currently does nothing :)"
+        if items:
+            for item in items:
+                #TODO: Do something with this item
+                pass
         pass
 
     def load_images(self):
