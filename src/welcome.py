@@ -129,8 +129,24 @@ class WelcomeWindow(object):
         #TODO implement hosting a game (default port 1337)
         pass
 
-if __name__ == '__main__':
+    def finishjoin(self):
+        try:
+            self.port = int(self.portstr.get())
+        except ValueError:
+            return
+        if self.joinip.get().strip() == '':
+            return
+
+        self.hosting = False
+        self.success = True
+        self.frame.quit()
+
+def runwelcome():
     root = Tk()
     root.title('Akintu')
     window = WelcomeWindow(root)
     root.mainloop()
+    return ()
+
+if __name__ == '__main__':
+    runwelcome()
