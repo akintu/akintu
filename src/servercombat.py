@@ -211,53 +211,13 @@ class CombatServer():
         # Refill AP (performed in end_turn)
         for stat in target.statusList:
             print target.name + " Has status: " + stat.name + " T=" + str(stat.turnsLeft)
-
-    def joinCombat(self, playerId, monsterId):
-        combatPane = self.server.person[monsterId].location
-        currentPlayer = self.server.person[playerId]
-        
-        # Put player into combat -- Stop running if needed.
-        currentPlayer.ai.remove("RUN")
-        currentPlayer.cPane = combatPane
-        self.server.pane[combatPane].person.append(playerId)
-            
-        #TODO: Calculate starting location for reals
-        currentPlayer.cLocation = Location((0, 0), (0, 1))
-        
-        for port in Combat.getAllCombatPorts():
-            self.server.SDF.send(port, Person(PersonActions.REMOVE, playerId))
-            self.server.SDF.send(port, Update(playerId, UpdateProperties.COMBAT, True))
-            self.server.SDF.send(port, Person(PersonActions.CREATE, playerId,
-                                 currentPlayer.cLocation, currentPlayer.getDetailTuple()))  
-            
-        # TODO: I don't really know if this is the right way to do this, but I think it isn't.
-        allCharIds = [charId for charId in self.server.pane[combatPane].person]
-        for charId in allCharIds:
-            char = self.server.person[charId]
-            imagepath = os.path.join('res', 'images', 'sprites', char.image)
-            persondict = {'location': char.cLocation, 'image': imagepath, 'team': char.team,
-                    'HP': char.HP, 'totalHP': char.totalHP, 'MP': char.MP,
-                    'totalMP': char.totalMP, 'AP': char.AP, 'totalAP': char.totalAP,
-                    'level': char.level, 'name' : char.name}
-            Combat.screen.add_person(charId, persondict)
-        # END of not knowing what I'm doing.
-        
-        # Set AP at 0 upon entering.
-        Combat.modifyResource(currentPlayer, "AP", -currentPlayer.AP)
-        
-        ## Debug area ##
-        j = 0
-        for per in self.server.pane[combatPane].person:
-            j += 1
-            print "In combat pane: " + "#" + str(j) + ": " + self.server.person[per].name
-        ## Debug end ##
-            
+     
     def startCombat(self, playerId, monsterId):
         '''Initiates combat for the first player to enter combat.
         monsterId is the identifier for the Monster on the overworld
         that triggered combat.'''
         combatPane = self.server.person[monsterId].location
-        self.combatStates[combatPane] = CombatState(monsterId)
+        self.combatStates[combatPane] = CombatState()
         monsterLeader = self.server.person[monsterId]
         currentPlayer = self.server.person[playerId]
         
@@ -283,7 +243,8 @@ class CombatServer():
             self.server.SDF.send(port, Update(playerId, UpdateProperties.COMBAT, True))
             self.server.SDF.send(port, Person(PersonActions.CREATE, playerId,
                                  currentPlayer.cLocation, currentPlayer.getDetailTuple()))
-                             
+
+                                 
         # Populate the combat pane with all of the monsters.
             for id in self.server.pane[combatPane].person:
                 if playerId != id:
@@ -307,7 +268,10 @@ class CombatServer():
             if player.AP != 0:
                 APRemains = True
         if not APRemains:
-            self.combatStates[combatPane].turnTimer.cancel()
+            if not self.combatStates[combatPane].turnTimer:
+                print "No timer found!"
+            else:
+                self.combatStates[combatPane].turnTimer.cancel()
         if timeExpired or not APRemains:
             self.end_turn(combatPane)
         # TODO: check to see if remaining AP is not enough to do anything
@@ -350,7 +314,6 @@ class CombatServer():
         allCharIds = [charId for charId in self.server.pane[combatPane].person]
         for charId in allCharIds:
             char = self.server.person[charId]
-            Combat.screen.update_person(charId, {'location': char.location})
         print "~~END MONSTER PHASE~~."
         return
 
@@ -387,7 +350,6 @@ class CombatServer():
         # Transport player to town TODO
 
 class CombatState(object):
-    def __init__(self, leadMonsterId):
+    def __init__(self):
         self.turnTimer = None
         self.deadMonsterList = []
-        self.leadMonsterId = leadMonsterId

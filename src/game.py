@@ -122,7 +122,7 @@ class Game(object):
                 persondict = {'location': command.location, 'image': imagepath, 'team': p.team, \
                     'HP': p.HP, 'totalHP': p.totalHP, 'MP': p.MP, \
                     'totalMP': p.totalMP, 'AP': p.AP, 'totalAP': p.totalAP, \
-                    'level': p.level, 'name' : p.name}
+                    'level': p.level, 'name' : p.name, 'cLocation' : p.cLocation}
                 self.screen.add_person(command.id, persondict)
 
             if isinstance(command, Person) and command.id not in self.pane.person:
