@@ -147,8 +147,8 @@ class Location(object):
         disty = dest.abs_y - self.abs_y
         dist = max(abs(distx), abs(disty))
         for x in range(dist + 1):
-            locs.append(Location(self.abs_x + int(float(x) / dist * distx),
-                    self.abs_y + int(float(x) / dist * disty)))
+            locs.append(Location(self.abs_x + int(round(float(x) / dist * distx)),
+                    self.abs_y + int(round(float(x) / dist * disty))))
         return locs
 
     def distance(self, dest):
