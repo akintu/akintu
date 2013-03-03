@@ -46,9 +46,8 @@ class CombatServer():
                 self.server.unload_panes()
 
             # If this is a legal move request
-
             elif self.tile_is_open(command.location, command.id) and \
-                 activePlayer.AP >= activePlayer.totalMovementAPCost:
+                    activePlayer.AP >= activePlayer.totalMovementAPCost:
                 activePlayer.AP -= activePlayer.totalMovementAPCost
                 self.server.SDF.send(port, Update(command.id, UpdateProperties.AP, activePlayer.AP))
                 # Update location and broadcast

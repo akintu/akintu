@@ -61,7 +61,7 @@ class Spell(object):
             spellSuccess = Dice.rollSuccess(100 - self.owner.spellFailureChance)
             if spellSuccess:
                 self._shoutSpellCast(self.owner, target)
-                if self.targetType == "hostile" and self.owner.isinstance(PlayerCharacter):
+                if self.targetType == "hostile" and self.owner.team == "Players":
                     self.applySchoolResistance()
                     self.action(self, target)
                     self.unapplySchoolResistance()
