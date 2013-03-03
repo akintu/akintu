@@ -26,7 +26,7 @@ import treasurechest
 import wealth
 
 class Testy(object):
-    
+
     @staticmethod
     def methodOne(A, **params):
         print A
@@ -34,7 +34,7 @@ class Testy(object):
         print params['C']
         params['B'] = "Jello"
         Testy.methodTwo(**params)
-        
+
     @staticmethod
     def methodTwo(**params):
         print params['B']
@@ -43,7 +43,7 @@ class Testy(object):
     @staticmethod
     def actionOne():
         print "Sample Output"
-        
+
 if __name__ == "__main__":
     theorycraft.TheoryCraft.loadAll()
     char = None
@@ -52,11 +52,11 @@ if __name__ == "__main__":
         className = theorycraft.TheoryCraft.classes[i]['name'].split(' ', 1)[1]
         char = theorycraft.TheoryCraft.getNewPlayerCharacter(raceName, className)
         if i % 12 == 0:
-            print "\n" + char.characterClass 
+            print "\n" + char.characterClass
             for abil in char.abilities:
                 print abil.name + " " + str(abil.APCost)
         #print "   " + char.equippedItems.equippedWeapon.name
-        
+
     # tc = treasurechest.TreasureChest("Small", 1, None, 12)
     # for i in range(3):
         # tc.generateTreasure([char])
@@ -67,13 +67,13 @@ if __name__ == "__main__":
                     # print mag.name + ":  " + str(mag.counts)
         # print str(int(char.inventory.gold)) + "\n"
     # print char.equippedItems.equippedWeapon.name
-    
+
     initMonster = theorycraft.TheoryCraft.getMonster(level=4)
     mList = theorycraft.TheoryCraft.generateMonsterGroup(initMonster)
     for m in mList:
         print "\n" + m.name
         for abil in m.abilityList:
             print abil.name + " " + str(abil.APCost)
-    
-    
-    
+
+
+

@@ -6,12 +6,12 @@ import location
 from combat import *
 
 class Trait(object):
-    
+
     def __init__(self, name, owner):
         self.name = name
         self.owner = owner
         content = allContentByName[name]
-        self.requiredClass = content['class']    
+        self.requiredClass = content['class']
         self.type = content['type']
         self.action = content['action']
         self.rank = 1
@@ -22,13 +22,13 @@ class Trait(object):
             self.onStringList = content['onString']
             self.offStringList = content['offString']
             self.registerListener()
-        else: 
+        else:
             self.action(self.owner)
         if self.type == "dynamic and static":
             self.extraStaticAction = content['staticAction']
             self.extraStaticAction(self.owner)
-        
-        
+
+
     def advanceTier(self):
         if self.rank == 4:
             return
@@ -41,18 +41,18 @@ class Trait(object):
         self.rank += 1
         if self.type == "static":
             self.action(self.owner)
-            
+
     @staticmethod
     def getTraitRank(player, traitName):
         for t in player.traits:
             if t.name == traitName:
                 return t.rank
         return 0
- 
+
     def registerListener(self):
         newListener = listener.Listener(self.owner, self.onStringList, self.action, self.offStringList)
-        owner.listeners.append(newListener) 
-            
+        owner.listeners.append(newListener)
+
     @staticmethod
     def applyParry(target, reverse=False, attacker=None):
         #if target.facingAttacker() TODO
@@ -75,7 +75,7 @@ class Trait(object):
                 target.statusDodge -= 6
             elif tRank == 4:
                 target.statusDodge -= 11
-                
+
     @staticmethod
     def applyPreparation(target, reverse=False, other=None):
         if target.attacksPerformed[0] > 0:
@@ -106,8 +106,8 @@ class Trait(object):
                 target.statusRangedAccuracy -= 14
             elif tRank == 4:
                 target.statusMeleeAccuracy -= 18
-                target.statusRangedAccuracy -= 18        
-    
+                target.statusRangedAccuracy -= 18
+
     @staticmethod
     def applyTank(target, reverse=False, other=None):
         if not target.usingArmor("Heavy"):
@@ -130,8 +130,8 @@ class Trait(object):
             elif tRank == 3:
                 target.statusDR -= 4
             elif tRank == 4:
-                target.statusDR -= 7            
-            
+                target.statusDR -= 7
+
     @staticmethod
     def applyFencer(target, reverse=False, other=None):
         if not target.usingArmor("Medium"):
@@ -154,7 +154,7 @@ class Trait(object):
             elif tRank == 3:
                 target.statusMeleeAccuracy -= 6
             elif tRank == 4:
-                target.statusMeleeAccuracy -= 9            
+                target.statusMeleeAccuracy -= 9
 
     @staticmethod
     def applyShieldResilience(target, reverse=False, other=None):
@@ -186,8 +186,8 @@ class Trait(object):
                 target.statusRangedDodge -= 3
             elif tRank == 4:
                 target.knockbackResistance -= 100
-                target.statusRangedDodge -= 4            
-         
+                target.statusRangedDodge -= 4
+
     @staticmethod
     def applyBully(target, reverse=False, victim=None):
         if not target.usingWeaponStyle("Two-Handed") or victim.size == "Large" or victim.size == "Huge":
@@ -234,8 +234,8 @@ class Trait(object):
                 target.statusForce -= 25
                 target.statusMeleeAccuracy -= 5
                 target.statusRangedAccuracy -= 5
-                target.statusCriticalChance -= 2        
-                
+                target.statusCriticalChance -= 2
+
     @staticmethod
     def applyBoldness(target, reverse=False, victim=None):
         if victim.size == "Small" or victim.size == "Medium":
@@ -278,9 +278,9 @@ class Trait(object):
                 if tRank == 3:
                     target.statusForce -= 45
                 if tRank == 4:
-                    target.statusForce -= 60        
-    
-    @staticmethod    
+                    target.statusForce -= 60
+
+    @staticmethod
     def applyWellTraveled(target):
         tRank = getTraitRank(target, "Well-Traveled")
         if tRank == 1:
@@ -298,13 +298,13 @@ class Trait(object):
         if tRank == 4:
             target._baseInventoryCapacity += 25
             target.baseFireResistance += 2
-            target.baseColdResistance += 2            
-        
+            target.baseColdResistance += 2
+
     @staticmethod
     def applyHammerAndAnvil(target, reverse=False, victim=None):
         # TODO: if target has back against wall...
         tRank = getTraitRank(target, "Hammer and Anvil")
-        if not reverse: 
+        if not reverse:
             if tRank == 1:
                 target.baseOverallDamageBonus += 5
             elif tRank == 2:
@@ -322,7 +322,7 @@ class Trait(object):
                 target.baseOverallDamageBonus -= 15
             elif tRank == 4:
                 target.baseOverallDamageBonus -= 20
-    
+
     # Ranger
     @staticmethod
     def applyWoundingProjectiles(target, reverse=False, victim=None):
@@ -344,7 +344,7 @@ class Trait(object):
             magnitude = 8
         if Dice.rollBeneath(chance):
             Combat.addStatus(victim, "Wounding Projectiles", duration, magnitude)
-            
+
     @staticmethod
     def applyMeleeArcheryStatic(target):
         tRank = getTraitRank(target, "Melee Archery")
@@ -353,7 +353,7 @@ class Trait(object):
         elif tRank == 2 or tRank == 3 or tRank == 4:
             target.meleeRangedAttackPenaltyReduction = 100
         #TODO: Read from this variable in Combat class
-            
+
     @staticmethod
     def applyMeleeArchery(target, reverse=False, victim=None):
         if not location.in_melee_range(target.location, victim.location):
@@ -378,8 +378,8 @@ class Trait(object):
                 target.statusRangedAccuracy -= 4
             elif tRank == 4:
                 target.statusRangedAccuracy -= 4
-                target.statusOverallDamageBonus -= 10        
-    
+                target.statusOverallDamageBonus -= 10
+
     @staticmethod
     def applyNatureTraining(target):
         tRank = getTraitRank(target, "Nature Training")
@@ -394,7 +394,7 @@ class Trait(object):
             target.basePoisonResistance += 2
         elif tRank == 4:
             target.basePoisonTolerance += 2
-            target.basePoisonResistance += 3   
+            target.basePoisonResistance += 3
 
     @staticmethod
     def applyExplorer(target):
@@ -407,15 +407,15 @@ class Trait(object):
             target.baseTrapEvade += 1
             target.baseAwareness += 1
             target.goldFind += 1
-        elif tRank == 3:            
+        elif tRank == 3:
             target.baseTrapEvade += 1
             target.baseAwareness += 1
             target.goldFind += 1
-        elif tRank == 4:            
+        elif tRank == 4:
             target.baseTrapEvade += 1
             target.baseAwareness += 1
-            target.goldFind += 1            
-            
+            target.goldFind += 1
+
     @staticmethod
     def applyTrapsmith(target):
         tRank = getTraitRank(target, "Trapsmith")
@@ -431,13 +431,13 @@ class Trait(object):
         elif tRank == 4:
             target.bonusTrapDamage += 5
             # No penalty at this rank
-            
+
     @staticmethod
     def applyMastermind(target, reverse=False, trap=None):
         pass
         # TODO: We need to be able to track the total number of player
         # traps on the combat arena in order to implement this trait.
-    
+
     @staticmethod
     def applyFollowupExpert(target, reverse=False, victim=None):
         duration = 2
@@ -457,8 +457,8 @@ class Trait(object):
             magnitudeAccuracy = 8
             magnitudeForce = 50
         Combat.addStatus(target, "Follow-up Expert Accuracy", duration, magnitudeAccuracy)
-        Combat.addStatus(target, "Follow-up Expert Force", duration, magnitudeForce)  
-            
+        Combat.addStatus(target, "Follow-up Expert Force", duration, magnitudeForce)
+
     @staticmethod
     def applyTrapSadism(target, reverse=False, trap=None):
         duration = 2
@@ -473,7 +473,7 @@ class Trait(object):
         elif tRank == 4:
             magnitude = 65
         Combat.addStatus(target, "Trap Sadism", duration, magnitude)
-            
+
     # Thief
     @staticmethod
     def applyUncannyEvasion(target):
@@ -486,7 +486,7 @@ class Trait(object):
             target.statusRangedDodge += 3
         elif tRank == 4:
             target.statusRangedDodge += 3
-    
+
     @staticmethod
     def applyStealthyDaggers(target, reverse=False, victim=None):
         if not target.usingWeapon("Knife"):
@@ -504,7 +504,7 @@ class Trait(object):
                     target.statusMeleeAccuracy += 6
                 else:
                     target.statusMeleeAccuracy += 2
-                target.statusOverallDamageBonus += 3            
+                target.statusOverallDamageBonus += 3
             elif tRank == 3:
                 if target.inStealth():
                     target.statusMeleeAccuracy += 9
@@ -529,7 +529,7 @@ class Trait(object):
                     target.statusMeleeAccuracy -= 6
                 else:
                     target.statusMeleeAccuracy -= 2
-                target.statusOverallDamageBonus -= 3            
+                target.statusOverallDamageBonus -= 3
             elif tRank == 3:
                 if target.inStealth():
                     target.statusMeleeAccuracy -= 9
@@ -541,7 +541,7 @@ class Trait(object):
                     target.statusMeleeAccuracy -= 12
                 else:
                     target.statusMeleeAccuracy -= 4
-                target.statusOverallDamageBonus -= 5        
+                target.statusOverallDamageBonus -= 5
 
     @staticmethod
     def applyDueling(target, reverse=False, other=None):
@@ -589,8 +589,8 @@ class Trait(object):
                 target.statusDodge -= 5
                 target.statusMeleeAccuracy -= 5
                 target.statusRangedAccuracy -= 5
-                target.statusCriticalChance -= 8        
-                        
+                target.statusCriticalChance -= 8
+
     @staticmethod
     def applyTwoWeaponFighting(target, reverse=False, other=None):
         if not target.usingWeaponStyle("Dual"):
@@ -613,8 +613,8 @@ class Trait(object):
             elif tRank == 3:
                 target.statusCriticalMagnitude -= 10
             elif tRank == 4:
-                target.statusCriticalMagnitude -= 13        
-            
+                target.statusCriticalMagnitude -= 13
+
     @staticmethod
     def applyClever(target):
         tRank = getTraitRank(target, "Clever")
@@ -626,7 +626,7 @@ class Trait(object):
             target.baseMagicResist += 2
         elif tRank == 4:
             target.baseMagicResist += 2
-        
+
     @staticmethod
     def applyLucky(target):
         tRank = getTraitRank(target, "Lucky")
@@ -641,8 +641,8 @@ class Trait(object):
             target.baseCriticalChance += 0.5
         elif tRank == 4:
             target.baseTrapEvace += 2
-            target.baseCriticalChance += 0.5            
-        
+            target.baseCriticalChance += 0.5
+
     @staticmethod
     def applyDiscerningEyes(target):
         tRank = getTraitRank(target, "Discerning Eyes")
@@ -651,14 +651,14 @@ class Trait(object):
             target.trapDisarmBonus += 1
         elif tRank == 2:
             target.baseAwareness += 2
-            target.trapDisarmBonus += 1            
+            target.trapDisarmBonus += 1
         elif tRank == 3:
             target.baseAwareness += 2
             target.trapDisarmBonus += 1
         elif tRank == 4:
             target.baseAwareness += 2
             target.trapDisarmBonus += 1
-        
+
     @staticmethod
     def applyTreasureHunter(target):
         tRank = getTraitRank(target, "Treasure Hunter")
@@ -670,7 +670,7 @@ class Trait(object):
             target.goldFind += 2
         elif tRank == 4:
             target.goldFind += 3
-        
+
     @staticmethod
     def applyDilatant(target):
         tRank = getTraitRank(target, "Dilatant")
@@ -693,7 +693,7 @@ class Trait(object):
             target.baseCarryingCapacity += 10
             target.baseAwareness += 2
             target.baseShadowResistance += 2
-            
+
     # Wizard
     @staticmethod
     def applyReservoir(target):
@@ -706,7 +706,7 @@ class Trait(object):
             target.baseMP += 5
         elif tRank == 4:
             target.baseMP += 5
-            
+
     @staticmethod
     def applySurvivor(target):
         tRank = getTraitRank(target, "Survivor")
@@ -730,7 +730,7 @@ class Trait(object):
             target.illusionResist += 1
         elif tRank == 4:
             target.illusionResist += 2
-            
+
     @staticmethod
     def applyIllusionSpellFocus(target, reverse=False, spell=None):
         if spell.school != "Illusion":
@@ -761,8 +761,8 @@ class Trait(object):
                 target.statusSpellpower -= 3
             elif tRank == 4:
                 spell.MPCost += 2
-                target.statusSpellpower -= 5        
-            
+                target.statusSpellpower -= 5
+
     @staticmethod
     def applyPrimalSpellFocusStatic(target):
         tRank = getTraitRank(target, "Primal Spell Focus")
@@ -776,7 +776,7 @@ class Trait(object):
         elif tRank == 4:
             target.baseMP += 2
             target.primalResist += 2
-            
+
     @staticmethod
     def applyPrimalSpellFocus(target, reverse=False, spell=None):
         if spell.school != "Primal":
@@ -799,8 +799,8 @@ class Trait(object):
             if tRank == 3:
                 target.statusSpellpower -= 6
             if tRank == 4:
-                target.statusSpellpower -= 8        
-            
+                target.statusSpellpower -= 8
+
     @staticmethod
     def applyNaturalSpellFocus(target, reverse=False, spell=None):
         if spell.school != "Natural":
@@ -831,8 +831,8 @@ class Trait(object):
                 target.healingBonus -= 15
             elif tRank == 4:
                 target.statusSpellpower -= 4
-                target.healingBonus -= 20        
-            
+                target.healingBonus -= 20
+
     @staticmethod
     def applyMysticSpellFocusStatic(target):
         tRank = getTraitRank(target, "Mystic Spell Focus")
@@ -867,8 +867,8 @@ class Trait(object):
             elif tRank == 3:
                 target.statusSpellpower -= 6
             elif tRank == 4:
-                target.statusSpellpower -= 8             
-            
+                target.statusSpellpower -= 8
+
     @staticmethod
     def applyBaneSpellFocusStatic(target):
         tRank = getTraitRank(target, "Bane Spell Focus")
@@ -883,7 +883,7 @@ class Trait(object):
                     spell.APCost -= 1
         elif tRank == 4:
             target.baseShadowBonusDamage += 7
-            
+
     @staticmethod
     def applyBaneSpellFocus(target, reverse=False, spell=None):
         if spell.school != "Bane":
@@ -906,8 +906,8 @@ class Trait(object):
             elif tRank == 3:
                 target.statusSpellpower -= 3
             elif tRank == 4:
-                target.statusSpellpower -= 4        
-            
+                target.statusSpellpower -= 4
+
     @staticmethod
     def applyEnchantmentSpellFocus(target, reverse=False, spell=None):
         if spell.school != "Enchantment":
@@ -919,7 +919,7 @@ class Trait(object):
             elif tRank == 2:
                 target.statusSpellpower += 2
             elif tRank == 3:
-                target.statusSpellpower += 4        
+                target.statusSpellpower += 4
             elif tRank == 4:
                 target.statusSpellpower += 5
         else:
@@ -928,10 +928,10 @@ class Trait(object):
             elif tRank == 2:
                 target.statusSpellpower -= 2
             elif tRank == 3:
-                target.statusSpellpower -= 4          
+                target.statusSpellpower -= 4
             elif tRank == 4:
-                target.statusSpellpower -= 5      
-            
+                target.statusSpellpower -= 5
+
     @staticmethod
     def applyEnchantmentSpellFocusStatic(target):
         tRank = getTraitRank(target, "Enchantment Spell Focus")
@@ -945,7 +945,7 @@ class Trait(object):
                     break
                 elif tRank == 4:
                     spellMPCost = min(5, spell.MPCost - 1)
-       
+
     @staticmethod
     def applyMentalSpellFocusStatic(target):
         tRank = getTraitRank(target, "Mental Spell Focus")
@@ -957,7 +957,7 @@ class Trait(object):
             target.baseHP += 2
         elif tRank == 4:
             target.baseHP += 2
-            
+
     @staticmethod
     def applyMentalSpellFocus(target, reverse=False, spell=None):
         if spell.school != "Mental":
@@ -982,11 +982,11 @@ class Trait(object):
             elif tRank == 4:
                 target.statusSpellpower -= 8
 
-    
-        
+
+
     allContentByName = {
         # Fighter Traits
-        'Parry': 
+        'Parry':
             {
             'class' : 'Fighter',
             'type' : 'dynamic',
@@ -1056,7 +1056,7 @@ class Trait(object):
             'onStringList' : ['Outgoing Melee Attack'],
             'offStringList' : ['Outgoing Melee Attack Complete']
             },
-        
+
         # Ranger Traits
         'Wounding Projectiles':
             {
@@ -1074,7 +1074,7 @@ class Trait(object):
             'onStringList' : ['Outgoing Ranged Attack'],
             'offStringList' : ['Outgoing Ranged Attack Complete'],
             'staticAction' : applyMeleeArcheryStatic
-            },            
+            },
         'Nature Training':
             {
             'class' : 'Ranger',
@@ -1117,7 +1117,7 @@ class Trait(object):
             'onStringList' : ['Monster Hit By Trap Complete'],
             'offStringList' : []
             },
-    
+
         # Thief Traits
         'Uncanny Evasion':
             {
@@ -1132,7 +1132,7 @@ class Trait(object):
             'action' : applyStealthyDaggers,
             'onStringList' : ['Outgoing Melee Attack'],
             'offStringList' : ['Outgoing Melee Attack Complete']
-            },            
+            },
         'Dueling':
             {
             'class' : 'Thief',
@@ -1154,7 +1154,7 @@ class Trait(object):
             'class' : 'Thief',
             'type' : 'static',
             'action' : applyClever
-            },            
+            },
         'Lucky':
             {
             'class' : 'Thief',
@@ -1179,7 +1179,7 @@ class Trait(object):
             'type' : 'static',
             'action' : applyDilatant
             },
-    
+
         # Wizard Traits
         'Reservoir':
             {

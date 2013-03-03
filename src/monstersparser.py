@@ -36,8 +36,8 @@ class MonstersParser(object):
             mDict[levelKey] = int(data.partition("+")[2])
         else:
             mDict[baseKey] = int(data)
-            mDict[levelKey] = 0           
-           
+            mDict[levelKey] = 0
+
     @staticmethod
     def associate(file, currentLine, tag, mDict, baseKey, levelKey=None):
         data = MonstersParser.getFromText(file, currentLine, tag)
@@ -45,7 +45,7 @@ class MonstersParser(object):
             MonstersParser.baseAndLevel(mDict, data, baseKey, levelKey)
         else:
             mDict[baseKey] = data
-            
+
     def parseAll(self, fileName):
         nameTag = re.compile("(?:\[NAME: )(.*)(?:\])", re.I)
         APTag = re.compile("(?:\[AP: )(.*)(?:\])", re.I)
@@ -96,7 +96,7 @@ class MonstersParser(object):
                 if mDict['name'] == "EOF":
                     break
                 MonstersParser.associate(f, f.readline(), APTag, mDict, 'AP')
-                MonstersParser.associate(f, f.readline(), armorPenetrationTag, mDict, 'startingArmorPenetration', 
+                MonstersParser.associate(f, f.readline(), armorPenetrationTag, mDict, 'startingArmorPenetration',
                                                                                'levelupArmorPenetration')
                 MonstersParser.associate(f, f.readline(), attackElementTag, mDict, 'attackElement')
                 MonstersParser.associate(f, f.readline(), attackMinTag, mDict, 'attackMin', 'levelupMinDamage')
@@ -118,13 +118,13 @@ class MonstersParser(object):
                 MonstersParser.associate(f, f.readline(), fireResistTag, mDict, 'startingFireResistance',
                                                                          'levelupFireResistance')
                 MonstersParser.associate(f, f.readline(), piercingResistTag, mDict, 'startingPiercingResistance',
-                                                                                'levelupPiercingResistance')                                                         
+                                                                                'levelupPiercingResistance')
                 MonstersParser.associate(f, f.readline(), poisonResistTag, mDict, 'startingPoisonResistance',
                                                                            'levelupPoisonResistance')
                 MonstersParser.associate(f, f.readline(), shadowResistTag, mDict, 'startingShadowResistance',
                                                                            'levelupShadowResistance')
                 MonstersParser.associate(f, f.readline(), slashingResistTag, mDict, 'startingSlashingResistance',
-                                                                           'levelupSlashingResistance')                                                        
+                                                                           'levelupSlashingResistance')
                 MonstersParser.associate(f, f.readline(), experienceTag, mDict, 'experience')
                 MonstersParser.associate(f, f.readline(), GPTag, mDict, 'GP')
                 MonstersParser.associate(f, f.readline(), HPTag, mDict, 'startingHP', 'levelupHP')
@@ -148,7 +148,7 @@ class MonstersParser(object):
                                                                          'levelupSpellpower')
                 MonstersParser.associate(f, f.readline(), strengthTag, mDict, 'startingStrength',
                                                                        'levelupStrength')
-                MonstersParser.associate(f, f.readline(), typeTag, mDict, 'type')                                                       
+                MonstersParser.associate(f, f.readline(), typeTag, mDict, 'type')
                 self.allMonsters.append(mDict)
 
         return self.allMonsters

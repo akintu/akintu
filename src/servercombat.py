@@ -66,7 +66,7 @@ class CombatServer():
             useDuple = abil.canUse(target)
             if useDuple[0]:
                 abil.use(target)
-            else: 
+            else:
                 Combat.screen.show_text(useDuple[1])
             self.check_turn_end(self.server.person[command.id].cPane)
         elif isinstance(command, AbilityAction) and command.ability == AbilityActions.END_TURN:
@@ -74,7 +74,7 @@ class CombatServer():
             Combat.modifyResource(target, "AP", -target.AP)
             self.check_turn_end(self.server.person[command.id].cPane)
         self.update_dead_people(self.server.person[command.id].cPane) #TODO: Uncomment.
-        
+
     ### Utility Methods ###
 
     def tile_is_open(self, location, pid):
@@ -83,7 +83,7 @@ class CombatServer():
         return self.server.pane[self.server.person[pid].cPane].is_tile_passable(location) and \
                 location.tile not in [self.server.person[i].cLocation.tile \
                 for i in self.server.pane[self.server.person[pid].cPane].person]
-                
+
     def shout_turn_start(self, player, turn="Player"):
         '''Shouts to the Player that this particular turn is starting.
         Defaults to "Player"; "Monster" is the other valid value.'''
@@ -92,20 +92,20 @@ class CombatServer():
 
     def update_dead_people(self, combatPane):
         '''Checks the list of Persons on this combat Pane to see if they have HP > 0.
-        If they do not, it will "remove them" from the combatPane and add them to a 
+        If they do not, it will "remove them" from the combatPane and add them to a
         deadList associated with this CombatState.'''
         toUpdateList = []
         for char in [self.server.person[x] for x in self.server.pane[combatPane].person]:
             if char.HP <= 0 and isinstance(char, monster.Monster):
                 toUpdateList.append(char)
-                
-        for char in toUpdateList: 
+
+        for char in toUpdateList:
             self.combatStates[combatPane].deadMonsterList.append(char)
             for port in Combat.getAllPorts():
                 self.server.SDF.send(port, Person(PersonActions.REMOVE, char.id))
                 Combat.screen.show_text(char.name + " Died!", color='magenta')
             self.server.pane[combatPane].person.remove(char.id)
-        
+
     def monsterMove(self, monster):
         tilesLeft = monster.totalMovementTiles
         while tilesLeft > 0:
@@ -126,7 +126,7 @@ class CombatServer():
                 break
         monster.AP -= monster.totalMovementAPCost
         return "Moved"
-        
+
     def getRelativeDirection(self, monster, player):
         '''Gets the direction best fitting the path between monster and
         player.
@@ -138,7 +138,7 @@ class CombatServer():
         dy = playerY - monsterY
         dx = playerX - monsterX
         if dy >= 0:
-            # Player is below the monster 
+            # Player is below the monster
             if dx <= 0:
                 # Player is left of the monster
                 if abs(dx) >= 2 * abs(dy):
@@ -187,7 +187,7 @@ class CombatServer():
                     return Dice.choose([6, 8])
 
     ### Combat Phase Logic Methods ###
-    
+
     def upkeep(self, target):
         '''Applies all upkeep operations for this Person.  (Used during the combat
         phase: "Upkeep"'''
@@ -212,7 +212,7 @@ class CombatServer():
         # Refill AP (performed in end_turn)
         for stat in target.statusList:
             print target.name + " Has status: " + stat.name + " T=" + str(stat.turnsLeft)
-    
+
     def startCombat(self, playerId, monsterId):
         '''Initiates combat'''
         combatPane = self.server.person[monsterId].location
@@ -281,8 +281,8 @@ class CombatServer():
                 combatPane, True)
 
     def monster_phase(self, combatPane):
-        chars = [self.server.person[x] for x in self.server.pane[combatPane].person] 
-        monsters = [x for x in chars if isinstance(x, monster.Monster) and x not in 
+        chars = [self.server.person[x] for x in self.server.pane[combatPane].person]
+        monsters = [x for x in chars if isinstance(x, monster.Monster) and x not in
                     self.combatStates[combatPane].deadMonsterList]
         for mon in monsters:
             while( True ):
@@ -298,15 +298,15 @@ class CombatServer():
                     break
         print "~~END MONSTER PHASE~~."
         return
-    
-        
+
+
     #### Victory Methods ####
-    
+
     def giveVictoryExperience(self, player, monsterList):
-        '''Grants the appropriate amount of EXP to a player at the end of 
+        '''Grants the appropriate amount of EXP to a player at the end of
         a victorious combat.'''
         player.addExperience(Combat.calcExperienceGain(player, monsterList))
-        
+
     def refill_resources(self, player):
         player.MP = player.totalMP
         player.HP = player.totalHP
@@ -318,15 +318,15 @@ class CombatServer():
         for removalStatus in removalList:
             Combat.removeStatus(player, removalStatus.name)
 
-            
+
     #### Death Methods ####
-    
+
     def softcoreDeath(self, player):
         goldLoss -= int(round(player.inventory.gold * 0.1))
         if goldLoss > player.inventory.gold:
             goldLoss = player.inventory.gold
         # Display message of gold loss better: TODO
-        Combat.screen.show_text("You lose: " + str(goldLoss) + " gold for dying.", 
+        Combat.screen.show_text("You lose: " + str(goldLoss) + " gold for dying.",
                                 color='yellow', size=16)
         player.inventory.gold -= goldLoss
         # Transport player to town TODO

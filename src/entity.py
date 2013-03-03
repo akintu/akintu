@@ -3,7 +3,7 @@
 import sys
 
 class Entity(object):
-    def __init__(self, location=None, team="Neutral", image=None, passable=False, 
+    def __init__(self, location=None, team="Neutral", image=None, passable=False,
                  cLocation=None, cPane=None):
         self.location = location
         team = team.capitalize()
@@ -14,4 +14,4 @@ class Entity(object):
         self.passable = passable
         self.cPane = None
         self.cLocation = None
-        
+

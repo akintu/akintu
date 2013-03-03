@@ -20,7 +20,7 @@ class GameServer():
     def server_loop(self):
         while not self.SDF.queue.empty():
             port, command = self.SDF.queue.get()
-            
+
             if command.id and self.person[command.id] and self.person[command.id].cPane:
                 self.CS.handle(port, command)
                 continue
@@ -54,7 +54,7 @@ class GameServer():
             ###### MovePerson ######
             if isinstance(command, Person) and command.action == PersonActions.MOVE:
                 self.load_pane(command.location.pane)
-                    
+
                 # If this is a legal move request
                 if self.tile_is_open(command.location):
 
@@ -97,7 +97,7 @@ class GameServer():
                                             self.person[i].location, self.person[i].getDetailTuple()))
 
                         self.unload_panes()
-                        
+
                     # Check for combat range and initiate combat states
                     if command.id in self.player.values():
                         p = [p for p, i in self.player.iteritems() if i == command.id][0]
@@ -106,8 +106,8 @@ class GameServer():
                                     self.person[person].location) and \
                                     self.person[person].team == "Monsters":
                                 self.CS.startCombat(command.id, person)
-                                    
-                                
+
+
                 else:
                     if port:
                         command.location = self.person[command.id].location

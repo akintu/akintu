@@ -5,23 +5,23 @@ import random
 
 class Dice(object):
     """A utility class used for purely chance events."""
-    
+
     oldGenerator = None
-    
+
     @staticmethod
     def stashGen():
         """Saves the old position in the RNG and loads a new position."""
         Dice.oldGenerator = random.getstate()
         random.seed()
-    
-    @staticmethod    
+
+    @staticmethod
     def popGen():
         """Loads the old position in the RNG"""
         random.setstate(Dice.oldGenerator)
-    
+
     @staticmethod
     def rollSuccess(chanceOfSuccess):
-        """rolls between [1 and 100]  If the roll is <= chanceOfSuccess, 
+        """rolls between [1 and 100]  If the roll is <= chanceOfSuccess,
            returns "Normal Hit", otherwise "Miss".
            Inputs:
              chanceOfSuccess -- int from 1 to 100
@@ -34,7 +34,7 @@ class Dice(object):
         else:
             Dice.popGen()
             return "Miss"
-            
+
     @staticmethod
     def scale(scaleAttributeValue, value, scale, cap=0):
         """Returns a modified version of the given value based on the scaling
@@ -55,7 +55,7 @@ class Dice(object):
             rValue = round(value * (1 + scaleAttributeValue * scale))
         Dice.popGen()
         return rValue
-    
+
     @staticmethod
     def choose(list):
         '''Returns a random selection from a given list.'''
@@ -65,7 +65,7 @@ class Dice(object):
         rValue = random.choice(list)
         Dice.popGen()
         return rValue
-    
+
     @staticmethod
     def roll(minimum, maximum):
         """Returns an integer somewhere between the minimum and maximum (as an integer)."""
@@ -75,17 +75,17 @@ class Dice(object):
         rValue = random.randint(minimum, maximum)
         Dice.popGen()
         return rValue
-        
+
     @staticmethod
     def rollFloat(minFloat, maxFloat):
         Dice.stashGen()
         rValue = random.uniform(minFloat, maxFloat)
         Dice.popGen()
         return rValue
-        
+
     @staticmethod
     def rollBeneath(targetRoll):
-        """rolls between [1 and 100]  If the roll is <= chanceOfSuccess, 
+        """rolls between [1 and 100]  If the roll is <= chanceOfSuccess,
            returns True, otherwise False.
            Inputs:
              chanceOfSuccess -- int from 1 to 100
@@ -95,14 +95,14 @@ class Dice(object):
         rValue = random.randint(1,100) <= targetRoll
         Dice.popGen()
         return rValue
-    
+
     @staticmethod
     def chanceFromSize(target, sizeRules, defaultChance=0):
         """Returns either True or False based upon the given size rules, the size of the
         target, and the default chance if the size isn't defined in the size rules.
-        Inputs: 
+        Inputs:
           target -- Person to grab size from
-          sizeRules -- List of duples of the form ["Small", 0.8] that define 
+          sizeRules -- List of duples of the form ["Small", 0.8] that define
             that Small targets should have a chance of 80% to succeed.
           defaultChace -- optional float indicating the default chance if the target's size
             is not in the list.  Defaults to 0%.
@@ -120,7 +120,7 @@ class Dice(object):
         else:
             Dice.popGen()
             return False
-    
+
     @staticmethod
     def rollTrapHit(trap, target):
         """Determines if the target is hit by the trap, or if he evades it.
@@ -138,11 +138,11 @@ class Dice(object):
             return False
         else:
             return True
-    
+
     @staticmethod
     def rollPresetChance(source, target, chance):
         """Rolls the level-adjusted present chance roll as defined on the Misc. page of the wiki.
-        Inputs: 
+        Inputs:
           source -- Person doing ability
           target -- Person receiving ability
           chance -- a preset chance string, possible values:
@@ -159,7 +159,7 @@ class Dice(object):
                 endChance += 10 * (source.level - target.level)
             else:
                 endChance -= 5 * (target.level - source.level)
-            rValue = Dice.roll(1, 100) <= endChance      
+            rValue = Dice.roll(1, 100) <= endChance
         elif name == "Frequent" or name == "Frequently":
             endChance = 60
             if( source.level > target.level ):
@@ -190,7 +190,7 @@ class Dice(object):
             rValue = Dice.roll(1,100) <= min(endChance, 50)
         Dice.popGen()
         return rValue
-        
-                
-                
-                
+
+
+
+

@@ -17,8 +17,8 @@ class ArmorParser(object):
         """Prepares the parser."""
         self.MAX_ARMORS = 24
         self.armorList = []
-    
-    
+
+
     @staticmethod
     def getFromText(file, currentLine, tag):
         currentLine = currentLine.strip()
@@ -34,8 +34,8 @@ class ArmorParser(object):
         else:
             print "Parsing Error: " + currentLine
             return "ERROR!"
-            
-            
+
+
     def parseAll(self, fileName):
         nameTag = re.compile("(?:\[Name: )(.*)(?:\])", re.I)
         bonusModTag = re.compile("(?:\[Bonus Mod: )(.*)(?:\])", re.I)
@@ -53,7 +53,7 @@ class ArmorParser(object):
         typeTag = re.compile("(?:\[Type: )(.*)(?:\])", re.I)
         gradeTag = re.compile("(?:\[Grade: )(.*)(?:\])", re.I)
         weightTag = re.compile("(?:\[Weight: )(.*)(?:\])", re.I)
-        
+
         with open(fileName, 'r') as f:
             for i in range(self.MAX_ARMORS):
                 armorDict = {}
@@ -74,9 +74,9 @@ class ArmorParser(object):
                 armorDict['grade'] = ArmorParser.getFromText(f, f.readline(), gradeTag)
                 armorDict['weight'] = ArmorParser.getFromText(f, f.readline(), weightTag)
                 self.armorList.append(armorDict)
-        
+
         return self.armorList
-                
+
 if __name__ == "__main__":
     parser = ArmorParser()
     parser.parseAll("./data/Armor_Data.txt")
@@ -84,8 +84,8 @@ if __name__ == "__main__":
         for k in armorDict.keys():
             print k + " : " + str(armorDict[k])
         print "\n"
-        
-        
-        
-        
-        
+
+
+
+
+

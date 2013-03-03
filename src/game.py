@@ -29,7 +29,7 @@ class Game(object):
             port: required for both host and client
             serverip: None if hosting, required for client
             state: state=("Some Seed",) if new game, or, state="SaveFile.###" if loading game
-            player: 
+            player:
         '''
         #seed = "CorrectHorseStapleBattery"
         TheoryCraft.loadAll()   #Static method call, Devin's stuff.
@@ -43,24 +43,24 @@ class Game(object):
             #Open file
             #self.seed = file["seed"]
             pass
-        
+
         Sprites.load(self.seed)
         self.world = World(self.seed, world_state=state)
         self.pane = None
-        
+
         # Game state
         self.id = -1
         self.keystate = 0
         self.running = False
         self.combat = False
-        
+
         # Selection state
         self.selectionMode = False
         self.currentTargetId = None
         self.panePersonIdList = []
-        
+
         # Setup server if host
-        
+
         self.port = port
         if serverip:
             self.serverip = serverip
@@ -107,10 +107,10 @@ class Game(object):
                 if self.id == -1:  # Need to setup the pane
                     self.id = command.id
                     self.switch_panes(command.location, self.combat)
-            
+
                 self.pane.person[command.id] = TheoryCraft.convertFromDetails(command.details)
                 self.pane.person[command.id].location = command.location
-                    
+
                 imagepath = os.path.join('res', 'images', 'sprites', self.pane.person[command.id].image)
                 p = self.pane.person[command.id]
                 persondict = {'location': command.location, 'image': imagepath, 'team': p.team, \
@@ -121,7 +121,7 @@ class Game(object):
 
             if isinstance(command, Person) and command.id not in self.pane.person:
                 continue
-                
+
             ###### MovePerson ######
             if isinstance(command, Person) and command.action == PersonActions.MOVE:
                 if command.details:
@@ -147,16 +147,16 @@ class Game(object):
                     if command.id == self.currentTargetId:
                         self.currentTargetId = None
                     del self.pane.person[command.id]
-                    
+
             ###### StopRunning ######
             if isinstance(command, Person) and command.action == PersonActions.STOP:
                 if command.id == self.id:
                     self.running = False
-                    
+
             ###### Initiate Combat ######
             if isinstance(command, Update) and command.property == UpdateProperties.COMBAT:
                 self.combat = command.value
-            ###### Update AP ######    
+            ###### Update AP ######
             if isinstance(command, Update) and command.property == UpdateProperties.AP:
                 self.pane.person[command.id].AP = command.value
                 self.screen.update_person(command.id, {'AP': command.value, 'team': self.pane.person[command.id].team})
@@ -168,8 +168,8 @@ class Game(object):
             if isinstance(command, Update) and command.property == UpdateProperties.HP:
                 self.pane.person[command.id].HP = command.value
                 self.screen.update_person(command.id, {'HP': command.value, 'team': self.pane.person[command.id].team})
-            
-                
+
+
     def handle_events(self):
         pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
         for event in pygame.event.get():
@@ -208,12 +208,12 @@ class Game(object):
                     Combat.screen.scroll_down(1000)
                 elif event.key == K_PLUS:
                     Combat.screen.scroll_up(1000)
-            
+
     def move_person(self, direction, distance):
         if self.running:
             self.CDF.send(Person(PersonActions.STOP, self.id))
             self.running = False
-            
+
         newloc = self.pane.person[self.id].location.move(direction, distance)
         if not self.pane.person[self.id].anim and ((self.pane.person[self.id].location.pane == \
                 newloc.pane and self.pane.is_tile_passable(newloc) and \
@@ -223,7 +223,7 @@ class Game(object):
             if self.keystate in [K_LSHIFT, K_RSHIFT] and not self.combat:
                 self.CDF.send(Person(PersonActions.RUN, self.id, direction))
                 self.running = True
-                
+
             elif self.pane.person[self.id].AP >= self.pane.person[self.id].totalMovementAPCost:
                 self.CDF.send(Person(PersonActions.MOVE, self.id, newloc))
                 if self.pane.person[self.id].location.pane == newloc.pane:
@@ -236,13 +236,13 @@ class Game(object):
         if ap > 0:
             action = AbilityAction(AbilityActions.END_TURN, self.id, self.id)
             self.CDF.send(action)
-                    
+
     def attempt_attack(self):
         if not self.currentTargetId:
             print "No target selected."
             return
         self.CDF.send(AbilityAction(AbilityActions.ATTACK, self.id, self.currentTargetId))
-                    
+
     def cycle_targets(self, reverse=False):
         # Cycles through the current persons in the current combat pane.
         if not self.combat:
@@ -251,26 +251,26 @@ class Game(object):
            or self.currentTargetId not in self.pane.person:
             self.panePersonIdList = [x for x in self.pane.person]
             self.currentTargetId = self.panePersonIdList[0]
-        elif not reverse:   
+        elif not reverse:
             if self.currentTargetId == self.panePersonIdList[-1]:
                 self.currentTargetId = self.panePersonIdList[0]
             else:
                 currentTargetPlace = self.panePersonIdList.index(self.currentTargetId)
                 self.currentTargetId = self.panePersonIdList[currentTargetPlace + 1]
         else:
-            if self.currentTargetId == self.panePersonIdList[0]: 
+            if self.currentTargetId == self.panePersonIdList[0]:
                 self.currentTargetId = self.panePersonIdList[-1]
             else:
                 currentTargetPlace = self.panePersonIdList.index(self.currentTargetId)
-                self.currentTargetId = self.panePersonIdList[currentTargetPlace - 1]        
+                self.currentTargetId = self.panePersonIdList[currentTargetPlace - 1]
         print self.pane.person[self.currentTargetId].name
-                    
+
     def animate(self, id, source, dest, length):
         xdist = (dest.tile[0] - source.tile[0]) * TILE_SIZE
         ydist = (dest.tile[1] - source.tile[1]) * TILE_SIZE
         steps = max(abs(xdist), abs(ydist))
         source.direction = dest.direction
-        
+
         self.pane.person[id].anim_start = time.time()
         if self.pane.person[id].anim:
             self.pane.person[id].anim.stop()
@@ -279,7 +279,7 @@ class Game(object):
             self.pane.person[id].anim.start(float(length) / steps)
         else:
             self.pane.person[id].anim.start(1)
-            
+
     def do_animation(self, id, source, dest, xdist, ydist, length):
         completion = min((time.time() - self.pane.person[id].anim_start) / float(length), 1)
         statsdict = {}
@@ -298,7 +298,7 @@ class Game(object):
             self.pane.person[id].anim = None
             self.pane.person[id].anim_start = 0
         self.screen.update_person(id, statsdict)
-            
+
     def switch_panes(self, location, combat=False):
         #TODO we can add transitions here.
         if combat:

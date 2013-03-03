@@ -22,13 +22,13 @@ class Spell(object):
         self.action = info['action']
         self.cooldown = info['cooldown']
         self.owner = owner
-    
+
     def canUse(self, target):
         '''
         target: Person (later, Location?)
         '''
         source = self.owner
-        
+
         # Check for modifications to spells costs here from listeners TODO
         mod = 0 # dummy code
         if source.MP < self.MPCost - mod:
@@ -47,8 +47,8 @@ class Spell(object):
         if source.onCooldown(self.name) :
             return (False, self.name + " is on Cooldown.")
         return (True, "")
-        
-        
+
+
     def use(self, target):
         ''' Casts the given spell on or around the given target Person (Location?)
         Performs a check if this is possible, but this is not where the canUse
@@ -70,15 +70,15 @@ class Spell(object):
                 self._shoutSpellCastComplete(self.owner, target)
                 if self.targetType != "friendly" and self.targetType != "self":
                     Combat.removeStealth(self.owner)
-                
+
             else:
                 return
                 print "Spell casting failed."
                 # TODO, notify of spell failure?
         else:
-            return 
+            return
             # TODO! Make this raise an exception rather than silently return.
-            
+
     def applySchoolResistance(self):
         hero = self.owner
         if self.school == "Enchantment":
@@ -95,7 +95,7 @@ class Spell(object):
             hero.magicResist += hero.mysticResist
         elif self.school == "Natural":
             hero.magicResist += hero.naturalResist
-            
+
     def unapplySchoolResistance(self):
         hero = self.owner
         if self.school == "Enchantment":
@@ -112,9 +112,9 @@ class Spell(object):
             hero.magicResist -= hero.mysticResist
         elif self.school == "Natural":
             hero.magicResist -= hero.naturalResist
-            
-    # Monster Only Spells           
-           
+
+    # Monster Only Spells
+
     def _shadowField(self, target):
         '''Deals massive shadow damage to a 3x3 area centered on a player.
         Partial Resistance = 33% Damage Dealt.'''
@@ -125,29 +125,29 @@ class Spell(object):
                                    partial=0.33, scalesWith="Spellpower", scaleFactor=0.02)
         #TODO: This hits a 3x3 area.  Include all targets!
         Combat.lowerHP(target, damage)
-        
-        
+
+
     # Player & Monster Spells
-            
+
     def _arcaneDart(self, target):
         source = self.owner
         hitType = Combat.calcHit(source, target, "Magical")
-        damage = (Combat.calcDamage(source, target, min=2, max=4, element="Arcane", 
-                                    hitValue=hitType, critical=1.2, scalesWith="Spellpower", scaleFactor=0.03)) 
+        damage = (Combat.calcDamage(source, target, min=2, max=4, element="Arcane",
+                                    hitValue=hitType, critical=1.2, scalesWith="Spellpower", scaleFactor=0.03))
         Combat.lowerHP(target, damage)
-        
+
     def _arcaneWard(self, target):
         source = self.owner
         duration = Dice.scale(source.totalSpellpower, 3, 0.1, cap=6)
         magnitude = Dice.scale(source.totalSpellpower, 5, 0.01)
         Combat.addStatus(target, self.name, duration, magnitude)
-        
+
     def _mysticShield(self, target):
         source = self.owner
         duration = 5
         magnitude = Dice.scale(source.totalSpellpower, 10, 0.06)
-        Combat.addStatus(target, self.name, duration, magnitude)        
-    
+        Combat.addStatus(target, self.name, duration, magnitude)
+
     def _flickerOfLife(self, target):
         source = self.owner
         magnitude = Dice.scale(source.totalSpellpower, Dice.roll(10,20), 0.02)
@@ -158,7 +158,7 @@ class Spell(object):
         duration = Dice.scale(source.totalSpellpower, 4, 0.05, cap=6)
         magnitude = Dice.scale(source.totalSpellpower, 10, 0.008)
         Combat.addStatus(target, self.name, duration, magnitude)
-        
+
     def _singe(self, target):
         source = self.owner
         hitType = Combat.calcHit(source, target, "Magical")
@@ -166,7 +166,7 @@ class Spell(object):
                                     hitValue=hitType, critical=1.2, partial=0.5,
                                     scalesWith="Spellpower", scaleFactor=0.05))
         Combat.lowerHP(target, damage)
-        
+
     def _chill(self, target):
         source = self.owner
         hitType = Combat.calcHit(source, target, "Magical")
@@ -177,14 +177,14 @@ class Spell(object):
         chance = Dice.rollPresetChance(source, target, "Frequent")
         magnitude = Dice.scale(source.totalSpellpower, 5, 0.012),
         Combat.addStatus(target, self.name, duration, magnitude, hitValue=hitType, chance=chance)
-        
+
     def _shock(self, target):
         source = self.owner
         hitType = Combat.calcHit(source, target, "Magical")
         damage = Combat.calcDamage(source, target, min=15, max=22, element="Electric", hitValue=hitType,
                                    scalesWith="Spellpower", scaleFactor=0.014)
         Combat.lowerHP(target, damage)
-        
+
     def _suggestLaziness(self, target):
         source = self.owner
         hitType = Combat.calcHit(source, target, "Magical")
@@ -197,7 +197,7 @@ class Spell(object):
         duration = 5
         magnitude = Dice.scale(source.totalSpellpower, 5, 0.02)
         Combat.addStatus(target, self.name, duration, magnitude, hitValue=hitType)
-        
+
     def _cloudVision(self, target):
         source = self.owner
         hitType = Combat.calcHit(source, target, "Magical")
@@ -206,22 +206,22 @@ class Spell(object):
         if hitType == "Partially Resisted":
             magnitude /= 2
         Combat.addStatus(target, self.name, duration, magnitude, hitValue=hitType)
-        
+
     def _haunt(self, target):
         source = self.owner
         hitType = Combat.calcHit(source, target, "Magical")
         damage = Combat.calcDamage(source, target, min=13, max=20, element="Shadow", hitValue=hitType,
                                    scalesWith="Spellpower", scaleFactor=0.01)
         Combat.lowerHP(target, damage)
-        
+
         duration = Dice.scale(source.totalSpellpower, 3, 0.02, cap=4)
         magnitude = round(Dice.roll(2,8) * (1 + source.totalSpellpower * 0.005))
         Combat.addStatus(target, self.name, duration, magnitude, hitValue=hitType)
-        
+
     def _zoneOfSilence(self, target):
         pass
         # TODO!!
-        
+
     def _blurry(self, target):
         source = self.owner
         duration = 1
@@ -237,36 +237,36 @@ class Spell(object):
         Combat.addStatus(target, "Weapon Enhance Striking", duration, magnitudeA)
         Combat.addStatus(target, "Weapon Enhance Punishing", duration, magnitudeB)
         Combat.addStatus(target, "Weapon Enhance Precision", duration, magnitudeC)
-        
+
     def _flamingWeapon(self, target):
         source = self.owner
         duration = Dice.scale(source.totalSpellpower, 3, 0.03, cap=7)
         magnitude = round(Dice.roll(1,8) * (1 + source.totalSpellpower * 0.01))
         Combat.addStatus(target, self.name, duration, magnitude)
-        
+
     def _hoveringShield(self, target):
         source = self.owner
         duration = 5
         magnitude = 12 + source.totalSpellpower / 10
         Combat.addStatus(target, self.name, duration, magnitude)
-    
+
     def _fright(self, target):
         source = self.owner
         duration = 4
         Combat.addStatus(target, self.name, duration)
-    
+
     def _infection(self, target):
         source = self.owner
-        minDam = round(7 * (1 + source.totalSpellpower * 0.03) * 
+        minDam = round(7 * (1 + source.totalSpellpower * 0.03) *
                            (1 + float(source.totalPoisonBonusDamage) / 100))
-        maxDam = round(10 * (1 + source.totalSpellpower * 0.03) * 
+        maxDam = round(10 * (1 + source.totalSpellpower * 0.03) *
                            (1 + float(source.totalPoisonBonusDamage) / 100))
         dieRoll = Dice.roll(minDam, maxDam)
         rating = round(35 + 0.4 * source.totalSpellpower)
         duration = 4 + source.totalSpellpower / 20
         if Combat.calcPoisonHit(source, target, rating):
             Combat.addStatus(target, "Infection", duration, dieRoll)
-    
+
     monsterSpells = {
         'Shadow Field':
         {
@@ -280,7 +280,7 @@ class Spell(object):
         'cooldown' : 5
         }
     }
-    
+
     allSpells = {
         # Player/Monster Spells
         'Arcane Dart':
@@ -294,7 +294,7 @@ class Spell(object):
         'action' : _arcaneDart,
         'cooldown' : None
         },
-        
+
         'Arcane Ward':
         {
         'tier' : 1,
@@ -306,7 +306,7 @@ class Spell(object):
         'action' : _arcaneWard,
         'cooldown' : None
         },
-        
+
         'Mystic Shield':
         {
         'tier' : 1,
@@ -318,7 +318,7 @@ class Spell(object):
         'action' : _mysticShield,
         'cooldown' : 4
         },
-        
+
         'Flicker of Life':
         {
         'tier' : 1,
@@ -330,7 +330,7 @@ class Spell(object):
         'action' : _flickerOfLife,
         'cooldown' : None
         },
-        
+
         'Stone Guard':
         {
         'tier' : 1,
@@ -342,7 +342,7 @@ class Spell(object):
         'action' : _stoneGuard,
         'cooldown' : None
         },
-        
+
         'Singe':
         {
         'tier' : 1,
@@ -354,7 +354,7 @@ class Spell(object):
         'action' : _singe,
         'cooldown' : None
         },
-        
+
         'Chill':
         {
         'tier' : 1,
@@ -366,7 +366,7 @@ class Spell(object):
         'action' : _chill,
         'cooldown' : None
         },
-        
+
         'Shock':
         {
         'tier' : 1,
@@ -378,7 +378,7 @@ class Spell(object):
         'action' : _shock,
         'cooldown' : 1
         },
-        
+
         'Suggest Laziness':
         {
         'tier' : 1,
@@ -390,7 +390,7 @@ class Spell(object):
         'action' : _suggestLaziness,
         'cooldown' : None
         },
-        
+
         'Stutter':
         {
         'tier' : 1,
@@ -402,7 +402,7 @@ class Spell(object):
         'action' : _stutter,
         'cooldown' : None
         },
-        
+
         'Cloud Vision':
         {
         'tier' : 1,
@@ -414,7 +414,7 @@ class Spell(object):
         'action' : _cloudVision,
         'cooldown' : None
         },
-        
+
         'Haunt':
         {
         'tier' : 1,
@@ -426,7 +426,7 @@ class Spell(object):
         'action' : _haunt,
         'cooldown' : 3
         },
-        
+
         'Zone of Silence':
         {
         'tier' : 1,
@@ -438,7 +438,7 @@ class Spell(object):
         'action' : _zoneOfSilence,
         'cooldown' : None
         },
-    
+
         'Blurry':
         {
         'tier' : 1,
@@ -450,7 +450,7 @@ class Spell(object):
         'action' : _blurry,
         'cooldown' : None
         },
-        
+
         'Weapon Enhance':
         {
         'tier' : 1,
@@ -462,7 +462,7 @@ class Spell(object):
         'action' : _weaponEnhance,
         'cooldown' : None
         },
-        
+
         'Flaming Weapon':
         {
         'tier' : 1,
@@ -474,7 +474,7 @@ class Spell(object):
         'action' : _flamingWeapon,
         'cooldown' : None
         },
-        
+
         # Tier 2
         # Burst
         # Identification
@@ -511,7 +511,7 @@ class Spell(object):
         'action' : _infection,
         'cooldown' : None
         }
-    }      
+    }
 
     def _shoutSpellCast(self, source, target):
         s = self
@@ -536,7 +536,7 @@ class Spell(object):
             bc = broadcast.SpellBroadcast(bundle)
             hearer = source
             bc.shout(hearer)
-        
+
     def _shoutSpellCastComplete(self, source, target):
         s = self
         direction = None
@@ -559,5 +559,5 @@ class Spell(object):
             bundle = {'direction' : double, 'suffix' : 'Complete', 'spell' : s}
             bc = broadcast.SpellBroadcast(bundle)
             hearer = source
-            bc.shout(hearer)    
-    
+            bc.shout(hearer)
+

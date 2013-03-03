@@ -16,11 +16,11 @@ class IncompleteMethodCall(Exception):
 class Combat(object):
     def __init__(self):
         pass
-       
+
     gameServer = None
     screen = None
     allStatuses = None
-       
+
     @staticmethod
     def getAllPorts():
         ports = []
@@ -30,7 +30,7 @@ class Combat(object):
             for key in Combat.gameServer.player.keys():
                 ports.append(key)
         return ports
-        
+
     @staticmethod
     def sendToAll(character, type):
         messageObj = None
@@ -41,11 +41,11 @@ class Combat(object):
         elif type == "HP":
             messageObj = command.Update(character.id, command.UpdateProperties.HP, character.HP)
         elif type == "Status":
-            messageObj = command.Update(character.id, command.UpdateProperties.STATUS, 
+            messageObj = command.Update(character.id, command.UpdateProperties.STATUS,
                                         Combat.encodeStatuses(character))
         for port in Combat.getAllPorts():
-            Combat.gameServer.SDF.send(port, messageObj)             
-       
+            Combat.gameServer.SDF.send(port, messageObj)
+
     @staticmethod
     def encodeStatuses(character):
         '''Returns a version of this character's statusList that only contains the name and turnsLeft.
@@ -54,7 +54,7 @@ class Combat(object):
         for stat in character.statusList:
             encodedList.append(stat.name, stat.turnsLeft)
         return encodedList
-        
+
     @staticmethod
     def modifyResource(target, type, value):
         """Modifies the given resource by the given value.
@@ -63,7 +63,7 @@ class Combat(object):
           target == Person
           type == "AP", "MP", "HP"
           value == int, non-zero.
-        Outputs: 
+        Outputs:
           None"""
         type = type.upper()
         if type == "AP":
@@ -80,13 +80,13 @@ class Combat(object):
             Combat.sendToAll(target, "HP")
         else:
             raise TypeError("Type: " + type + " is not valid.  Proper values are: 'HP', 'MP', or 'AP'.")
-    
+
     @staticmethod
     def applyCooldown(target, abilityName, duration):
         """Adds the ability to the target's list of current cooldowns with the given
         duration.  No behavior is guaranteed if the character already has this ability on
         cooldown.
-        Inputs: 
+        Inputs:
           target == Person
           abilityName == "ExampleAbility"
           duration = positive int
@@ -96,14 +96,14 @@ class Combat(object):
             return
         target.cooldownList.append([abilityName, duration])
         # Should we check here if the abilityName matches any known ability?  That is, check for typos?
-        
+
     @staticmethod
     def calcPhysicalHitChance(offense, defense, outrightMiss=False):
         """Uses the game rules' dodge mechanics to compute how likely a
         dodge vs. accuracy lineup would be.
         Inputs:
           offense -- int probably accuracy
-          defense -- int probably dodge   
+          defense -- int probably dodge
         Outputs:
           [int, int]
             index[0] == chanceToHit (5 to 100)
@@ -122,15 +122,15 @@ class Combat(object):
         elif(-27 <= delta < -6):
             chanceToHit = 72 - (delta + 6) * 2
         elif(-47 <= delta < -27):
-            chanceToHit = 30 - (delta + 27) * 1                    
+            chanceToHit = 30 - (delta + 27) * 1
         elif(-57 <= delta < -47):
             chanceToHit = 10 - (delta + 47) * 0.5
         else:
             chanceToHit = 5
             accCritMod = (delta + 57) * (-2)
         return [chanceToHit, accCritMod]
-        
-    @staticmethod 
+
+    @staticmethod
     def calcMagicalHit(offense, defense):
         """Uses the game rules' magical resistance mechanics to compute
         which kind of hit this attack is.
@@ -148,15 +148,15 @@ class Combat(object):
             return "Partially Resisted"
         elif(defense <= offense and offense <= defense * 2):
             return "Normal Hit"
-        else: 
+        else:
             # Defense less than 1/2 offense
-            return "Critical Hit" 
-        
+            return "Critical Hit"
+
     @staticmethod
     def calcPoisonHit(source, target, rating):
         """Uses the game rules' poison tolerance mechanics to compute whether
         this poison hit works or is ignored.
-        Inputs: 
+        Inputs:
           source -- attacker (Person)
           target -- victim (Person)
         Outputs:
@@ -165,7 +165,7 @@ class Combat(object):
         defense = source.totalPoisonTolerance
         if source.team == "Players":
             offense = source.totalPoisonRatingBous + rating
-        else: 
+        else:
             offense = rating
         offense *= Dice.rollFloat(0.5, 1.0)
         defense *= Dice.rollFloat(0.5, 1.0)
@@ -191,7 +191,7 @@ class Combat(object):
                 offense = round(offense * 0.75)
             elif source.usingWeapon("Shuriken") and not source.characterClass == "Ninja":
                 offense = round(offense * 0.25)
-            hitDuple = Combat.calcPhysicalHitChance(offense, defense)  
+            hitDuple = Combat.calcPhysicalHitChance(offense, defense)
         else:
             # Melee attack
             defense = target.totalDodge + target.totalMeleeDodge
@@ -209,18 +209,18 @@ class Combat(object):
                 return "Normal Hit"
         else:
             return "Miss"
-        
+
     @staticmethod
     def magicalHitMechanics(source, target):
         offense = source.totalSpellpower
         defense = target.totalMagicResist
         return Combat.calcMagicalHit(offense, defense)
-        
+
     @staticmethod
     def calcHit(source, target, type, rating=0, modifier=0, critMod=0, ignoreMeleeBowPenalty=False):
-        """Determies if the attack performed from the source to the target is successful, and returns 
+        """Determies if the attack performed from the source to the target is successful, and returns
         a HitType string to indicate this.
-        Inputs:        
+        Inputs:
           source -- Person performing attack
           target -- Person receiving attack
           type -- The type of attack in question; possible values:
@@ -258,8 +258,8 @@ class Combat(object):
                 return [attackOne, attackTwo]
             else:
                 print attackOne
-                return [attackOne]            
-        
+                return [attackOne]
+
         if (type == "Magical"):
             result = Combat.magicalHitMechanics(source, target)
             if result == "Miss":
@@ -267,13 +267,13 @@ class Combat(object):
             else:
                 print result
             return result
-            
+
         if (type == "Magical Poison" or type == "Poison Magical"):
             if (Combat.poisonHitMechanics(source, target, rating) == "Normal Hit"):
                 return Combat.magicalHitMechanics(source, target)
             else:
                 return "Miss"
-            
+
         if (type == "Poison"):
             result = Combat.calcPoisonHit(source, target, rating)
             if result == "Miss":
@@ -281,14 +281,14 @@ class Combat(object):
             else:
                 print "Poisoned"
             return result
-            
+
         if (type == "Trap"):
             raise NotImplementedError("This method does not yet support the Trap type.")
-            
-        raise TypeError("Unknown Attack Type: " + type + " .")            
-        
+
+        raise TypeError("Unknown Attack Type: " + type + " .")
+
     @staticmethod
-    def addStatus(target, status, duration, magnitude=0, chance=1, 
+    def addStatus(target, status, duration, magnitude=0, chance=1,
                   overwrite=True, partial=False, critical=False,
                   hitValue="Normal Hit"):
         """Method is used to apply a Status to a target Person.  The properties
@@ -304,28 +304,28 @@ class Combat(object):
                             if it is not needed, it can be kept at its default value of
                             zero.
           chance -- float*; the chance this status will be applied at all.  It defaults
-                            to 1, which indicates a 100% chance of application.  This 
+                            to 1, which indicates a 100% chance of application.  This
                             parameter was included to aid with the logic of the data files.
-          overwrite -- boolean*; whether or not this Status should be overwritten by 
+          overwrite -- boolean*; whether or not this Status should be overwritten by
                                  a Status of the same exact type.  It should typically be
                                  kept at its default value of True, but if it is a status
                                  that needs to 'stack', it should be False.
-          partial -- boolean*; whether or not this Status will be ignored should the 
-                               hitValue be "Partially Resisted".  If True and the 
+          partial -- boolean*; whether or not this Status will be ignored should the
+                               hitValue be "Partially Resisted".  If True and the
                                hitValue is "Partially Resisted", this method will have
                                no effect.
           critical -- boolean*; whether or not this Status requires a hitValue of
-                                "Critical Hit" in order to take effect.  Defaults to 
+                                "Critical Hit" in order to take effect.  Defaults to
                                 False.
           hitValue -- hit type string*; defaults to "Normal Hit".  If the value is provided
                                and is "Miss", the method will have no effect.  Otherwise it
-                               may only have varied behavior if either the critical or 
+                               may only have varied behavior if either the critical or
                                partial booleans are set to True.
           min -- int*; some Statuses require a range of values to be supplied.  If this is
                        the case, this should be a non-negative value.
           max -- int*; some Statuses require a range of values to be supplied.  If this is
                        the case, this should be a non-negative value greater than 'min'.
-          charges -- int*; some statuses have a number of charges until they expire instead of 
+          charges -- int*; some statuses have a number of charges until they expire instead of
                            a duration.  Is set to a default of zero if not time based.
         Outputs:
           None"""
@@ -335,15 +335,15 @@ class Combat(object):
             return
         if(Dice.rollSuccess(100 * chance) == "Miss"):
             return
-        
+
         Combat._shoutStatusApplied(target, status)
-        
+
         dStatus = None
         for display in Combat.allStatuses:
             if display.name == status:
                 dStatus = display
         dStatus = dStatus.cloneWithDetails(magnitude, duration)
-        
+
         if dStatus.name not in [x.name for x in target.statusList]:
             target.statusList.append(dStatus)
             dStatus.activate(target)
@@ -359,14 +359,14 @@ class Combat(object):
                         Combat.removeStatus(target, display.name)
                         target.statusList.append(dStatus)
                         dStatus.activate(target)
-        
+
         # Haven't figured out what to do with immunity: TODO
-    
+
     @staticmethod
     def removeStatus(target, statusName):
         """Removes a specific status effect from a given Person.
         Will simply do nothing if the status is not found.
-        Inputs: 
+        Inputs:
           target -- Person
           statusName -- the name of a status effect to remove
         Outputs:
@@ -379,7 +379,7 @@ class Combat(object):
         if matchingStatus:
             matchingStatus.deactivate(target)
             target.statusList.remove(matchingStatus)
-            
+
     @staticmethod
     def setStatusDuration(target, statusName, newDuration):
         """Applies a new duration to an existing status.
@@ -399,12 +399,12 @@ class Combat(object):
                 matchingStatus = target.statusList
                 matchingStatus.turnsLeft = newDuration
                 break
-            
+
     @staticmethod
     def removeStealth(target):
         """Removes any form of stealth (other than invisibility) from
         the given Person.
-        Inputs: 
+        Inputs:
           target -- Person
         Outputs:
           None"""
@@ -412,7 +412,7 @@ class Combat(object):
         Combat.removeStatus(target, "Conceal")
         Combat.removeStatus(target, "Shadow Walk")
         Combat.removeStatus(target, "Sneaky Sneaky") # assassin ability
-    
+
     @staticmethod
     def removeStatusOfType(target, category, removeAll=False):
         """Removes a random status from the given 'category' from the target.
@@ -423,7 +423,7 @@ class Combat(object):
           category -- string; a status category identifying a set of statuses
                       possible values: TODO
           removeAll -- boolean*; if set, will remove all statuses belonging to
-                       the given category instead of a single random status 
+                       the given category instead of a single random status
                        belonging to the category
         Output:
           None"""
@@ -431,7 +431,7 @@ class Combat(object):
         for dStatus in target.statusList:
             if category in dStatus.caterogyList or category == dStatus.element:
                 removalCandidates.add(dStatus)
-        
+
         if removalCandidates:
             if removeAll:
                 for dStatus in removalCandidates:
@@ -439,13 +439,13 @@ class Combat(object):
             else:
                 choice = Dice.roll(0, len(removalCandidates) - 1)
                 Combat.removeStatus(target, removalCandidates[choice].name)
-        
-    
+
+
     @staticmethod
     def knockback(target, sourceOfImpact, distance, ignoreResistance=False, didHit=True):
-        """Moves the target via 'knockback' a set number of tiles away from the source of 
+        """Moves the target via 'knockback' a set number of tiles away from the source of
         impact.
-        Inputs: 
+        Inputs:
           target -- Person to move
           sourceOfImpact -- Tile from which the knockback originated
           distance -- int number of tiles to move
@@ -457,7 +457,7 @@ class Combat(object):
             return
         pass
         # TODO
-                
+
     @staticmethod
     def calcDamage(source, target, minimum, maximum, element, hitValue, partial=1, critical=1, scalesWith=None, scaleFactor=0):
         """Computes the amount of damage that should be dealt to the target after considering all bonuses and penalties
@@ -473,7 +473,7 @@ class Combat(object):
                      "Bludegoning", "Piercing", "Slashing"
           hitValue -- hitType string; Possible values:
                      "Miss", "Normal Hit", "Partially Resisted", "Critical Hit"
-          partial -- (optional) float, non-negative; the amount to multiply the damage by if the attack 
+          partial -- (optional) float, non-negative; the amount to multiply the damage by if the attack
                      was partially resisted
           critical -- (optional) float, non-negative; the amount to multiply the damage by if the attack
                      was a critical hit
@@ -490,13 +490,13 @@ class Combat(object):
         hitValue = hitValue.strip().capitalize()
         if scalesWith:
             scalesWith = scalesWith.strip().capitalize()
-        
+
         # Actual method:
         if hitValue == "Miss":
             return 0
-       
+
         dieRoll = Dice.roll(minimum, maximum)
-        
+
         if scalesWith == "Strength":
             dieRoll *= 1 + (source.totalStrength * scaleFactor)
         elif scalesWith == "Cunning":
@@ -505,23 +505,23 @@ class Combat(object):
             dieRoll *= 1 + (source.totalSpellpower * scaleFactor)
         elif scalesWith is not None:
             raise TypeError("calcDamage cannot be called with scaling attribute: " + scalesWith + " .")
-        
+
         if hitValue == "Critical Hit":
             dieRoll *= critical
         elif hitValue == "Partially Resisted":
             dieRoll *= partial
-            
+
         dieRoll = source.applyBonusDamage(dieRoll)
-        
+
 
         if element == "Fire":
             dieRoll *= 1 - (min(80, float(target.totalFireResistance) / 100))
         elif element == "Cold":
-            dieRoll *= 1 - (min(80, float(target.totalColdResistance) / 100))           
+            dieRoll *= 1 - (min(80, float(target.totalColdResistance) / 100))
         elif element == "Electric":
             dieRoll *= 1 - (min(80, float(target.totalElectricResistance) / 100))
         elif element == "Poison":
-            dieRoll *= 1 - (min(80, float(target.totalPoisonResistance) / 100))   
+            dieRoll *= 1 - (min(80, float(target.totalPoisonResistance) / 100))
         elif element == "Shadow":
             dieRoll *= 1 - (min(80, float(target.totalShadowResistance) / 100))
         elif element == "Divine":
@@ -536,11 +536,11 @@ class Combat(object):
             dieRoll *= 1 - (min(80, float(target.totalSlashingResistance) / 100))
         else:
             raise TypeError("Encountered an unknown element: " + element + " .")
-            
+
         if dieRoll < 0:
             dieRoll = 0
         return int(round(dieRoll))
-        
+
     @staticmethod
     def basicAttack(source, target, hitType, **params):
         if 'noCounter' not in params:
@@ -556,8 +556,8 @@ class Combat(object):
             else:
                 Combat.weaponAttack(source, target, hitType[0], **params)
         else:
-            Combat.monsterAttack(source, target, hitType[0], **params)   
-                
+            Combat.monsterAttack(source, target, hitType[0], **params)
+
     @staticmethod
     def monsterAttack(source, target, hitType, **params):
         Combat._shoutAttackHit(source, target, hitType)
@@ -569,11 +569,11 @@ class Combat(object):
         if source.attackElement == "Fire":
             baseAttackDamage *= 1 - (float(target.totalFireResistance) / 100)
         elif source.attackElement == "Cold":
-            baseAttackDamage *= 1 - (float(target.totalColdResistance) / 100)           
+            baseAttackDamage *= 1 - (float(target.totalColdResistance) / 100)
         elif source.attackElement == "Electric":
             baseAttackDamage *= 1 - (float(target.totalElectricResistance) / 100)
         elif source.attackElement == "Poison":
-            baseAttackDamage *= 1 - (float(target.totalPoisonResistance) / 100)    
+            baseAttackDamage *= 1 - (float(target.totalPoisonResistance) / 100)
         elif source.attackElement == "Shadow":
             baseAttackDamage *= 1 - (float(target.totalShadowResistance) / 100)
         elif source.attackElement == "Divine":
@@ -585,10 +585,10 @@ class Combat(object):
                                 " " + source.attackElement +" damage!", color='red', size=12)
         Combat.lowerHP(target, round(baseAttackDamage))
         Combat._shoutAttackComplete(source, target, params['noCounter'])
-    
+
     @staticmethod
     def weaponAttack(source, target, hitType, forceMod=1, criticalDamageMod=1, armorPenetrationMod=0,
-                     elementOverride=None, noCounter=False, overallDamageMod=1, mightMod=0, 
+                     elementOverride=None, noCounter=False, overallDamageMod=1, mightMod=0,
                      ignoreOnHitEffects=False, poisonRatingMod=0, backstab=False, hand="Right"):
         """Performs a weapon attack against the target from the source.  Calls actually apply the damage
         to the target, unlike 'calcDamage()'.
@@ -614,10 +614,10 @@ class Combat(object):
         Outputs:
           None"""
         Combat._shoutAttackHit(source, target, hitType)
-        
+
         if hitType == "Miss":
             # Enemy still counters
-            Combat._shoutAttackComplete(source, target, noCounter) 
+            Combat._shoutAttackComplete(source, target, noCounter)
             return
         # TODO: Barehands...
         if hand == "Right":
@@ -627,13 +627,13 @@ class Combat(object):
         effectiveForce = source.totalForce * forceMod
         if source.usingWeapon("Ranged"):
             effectiveForce *= 1 + (float(source.totalRangedForce) / 100)
-        effectiveMight = round(Dice.rollFloat(0.5, 1.0) * (source.totalMight + mightMod) * (float(effectiveForce) / 100))       
+        effectiveMight = round(Dice.rollFloat(0.5, 1.0) * (source.totalMight + mightMod) * (float(effectiveForce) / 100))
         effectiveDR = min(80, max(0, target.totalDR - (armorPenetrationMod + source.totalArmorPenetration)))
-        outgoingDamage = (Dice.roll(weapon.damageMin + weapon.damageMinBonus, 
-                                    weapon.damageMax + weapon.damageMaxBonus) * 
+        outgoingDamage = (Dice.roll(weapon.damageMin + weapon.damageMinBonus,
+                                    weapon.damageMax + weapon.damageMaxBonus) *
                          (1 - (float(effectiveDR) / 100)))
         outgoingDamage *= overallDamageMod
-        
+
         if hitType == "Critical Hit":
             outgoingDamage += outgoingDamage * criticalDamageMod * float(weapon.criticalMultiplier) / 100
 
@@ -657,12 +657,12 @@ class Combat(object):
                 outgoingDamage *= (1 - (float(resistance / 100)))
             elif weapon.damageType == "Bludgeoning & Slashing" or wepaon.damageType == "Slashing & Bludgeoning":
                 resistance = min(target.totalBludgeoningResistance, target.totalSlashingResistance)
-                outgoingDamage *= (1 - (float(resistance / 100)))            
-        totalDamage = Combat.sumElementalEffects(elementalEffects, elementOverride) + outgoingDamage     
-     
+                outgoingDamage *= (1 - (float(resistance / 100)))
+        totalDamage = Combat.sumElementalEffects(elementalEffects, elementOverride) + outgoingDamage
+
         Combat.lowerHP(target, totalDamage)
-        Combat._shoutAttackComplete(source, target, noCounter) 
-        
+        Combat._shoutAttackComplete(source, target, noCounter)
+
     @staticmethod
     def applyOnHitEffects(source, target):
         resultList = []
@@ -671,7 +671,7 @@ class Combat(object):
             if result:
                 resultList.append(result)
         return resultList
-        
+
     @staticmethod
     def sumElementalEffects(elementalEffects, overrideElement=None):
         damSum = 0
@@ -685,7 +685,7 @@ class Combat(object):
             elif duple[0] == "Cold":
                 currentDamage = round(duple[1] * (1 + float(source.totalColdBonusDamage) / 100))
                 currentDamage = round(currentDamage * (1 - float(target.totalColdResistance) / 100))
-                damSum += currentDamage                
+                damSum += currentDamage
             elif duple[0] == "Divine":
                 currentDamage = round(duple[1] * (1 + float(source.totalDivineBonusDamage) / 100))
                 currentDamage = round(currentDamage * (1 - float(target.totalDivineResistance) / 100))
@@ -707,7 +707,7 @@ class Combat(object):
                 currentDamage = round(currentDamage * (1 - float(target.totalShadowResistance) / 100))
                 damSum += currentDamage
         return damSum
-        
+
     @staticmethod
     def setMovementCost(target, newCost, numberOfMoves=1, duration=-1, inStealth=False):
         """Sets the AP cost of the next move of the target Person to the specified value.
@@ -715,13 +715,13 @@ class Combat(object):
         Inputs:
           target -- Person; the target whose movement cost we are adjusting
           newCost -- int; a non-negative value to assign the AP cost of movement to.
-          numberOfMoves* -- int; the number of moves at this adjusted AP cost.  Once 
+          numberOfMoves* -- int; the number of moves at this adjusted AP cost.  Once
                            expired, this method will reset the AP movement cost to its
                            default value.  If this is to be time based and not based
                            on the number of movements, this parameter should be set
                            to -1.
           duration -- int*; the number of turns this AP cost should be assigned to the target.
-                           By default, it is -1 which indicates it is not based on the 
+                           By default, it is -1 which indicates it is not based on the
                            number of turns, but rather the number of movements.
           inStealth -- boolean*; If set, will cause the AP cost to reset to its default value
                                  upon exiting stealth.
@@ -733,7 +733,7 @@ class Combat(object):
         target.overrideMovements = numberOfMoves
         target.overrideMovementTurns = duration
         #TODO -- trigger duration/number of moves/break on stealth??
-        
+
     @staticmethod
     def movePerson(target, destination, instant=False):
         """Will move the player character from its current location to the given
@@ -746,7 +746,7 @@ class Combat(object):
         Outputs:
           None"""
         pass #TODO
-        
+
     @staticmethod
     def endTurn(player):
         """Will end the turn of the given player-character.
@@ -755,10 +755,10 @@ class Combat(object):
         Outputs:
           None"""
         pass #TODO
-        
+
     @staticmethod
     def modifyThreat(source, target, threatAdjustment):
-        """Alters the threat of the given source toward the target specified by 
+        """Alters the threat of the given source toward the target specified by
         multiplying the existing level by threatAdjustment.
         Inputs:
           source -- Person; the monster whose threat level will be modified
@@ -768,7 +768,7 @@ class Combat(object):
         Outputs:
           None"""
         pass #TODO
-          
+
     @staticmethod
     def unsummonGuardian(target):
         """Removes the current guardian of the player from the battlefield.
@@ -785,12 +785,12 @@ class Combat(object):
         name.
         Inputs:
           owner -- Person; the Sorcerer performing the summon
-          name -- string; the name of the particular summon, must match an 
+          name -- string; the name of the particular summon, must match an
                   actual summon's name
         Outputs:
           None"""
         pass #TODO
-    
+
     @staticmethod
     def disarmTrap(thief, trap, wasSuccessful):
         """Disarm the trap specified with the thief and his allies gaining
@@ -798,17 +798,17 @@ class Combat(object):
         Inputs:
           thief -- Person; the thief disarming the trap
           trap -- Trap; the trap being disarmed
-          wasSuccessful -- boolean*; If False, will cause this method to do 
+          wasSuccessful -- boolean*; If False, will cause this method to do
                            nothing.  It was included to simplify data file
-                           logic and possibly for extension later with 
+                           logic and possibly for extension later with
                            'critical failure' type penalties etc.
         Outputs:
           None"""
         if not wasSuccessful:
             return
-        pass 
+        pass
         #TODO
-    
+
     @staticmethod
     def lowerHP(target, amount):
         """Used to actually lower the amount of HP a Person has.  May kill that person.
@@ -816,14 +816,14 @@ class Combat(object):
         Inputs:
           target -- Person; the person taking damage
           amount -- the final amount to deal to the target
-        Outputs: 
+        Outputs:
           None"""
         if amount <= 0:
             return
         interruptCodes = Combat._shoutDamage(target, amount)
         if interruptCodes and "Ignore Damage" in interruptCodes:
             return
-            
+
         remaining = amount
         while( target.HPBufferList ):
             current = target.HPBufferList[0]
@@ -838,7 +838,7 @@ class Combat(object):
                 return
         Combat.modifyResource(target, "HP", -remaining)
 
-        
+
     @staticmethod
     def healTarget(source, target, amount):
         """Used to actually perform healing to the target from the source.
@@ -855,7 +855,7 @@ class Combat(object):
             total = amount
         # Listeners here?
         Combat.modifyResource(target, "HP", total)
-     
+
     @staticmethod
     def applyElementalEffects(source):
         ee = []
@@ -865,7 +865,7 @@ class Combat(object):
                 if duple:
                     ee.append(duple)
         return ee
-     
+
     @staticmethod
     def useConsumable(playerChar, item):
         ''' Attempts to use a consumable.  If successful, returns True.
@@ -875,7 +875,7 @@ class Combat(object):
             item.use(playerChar)
             return True
         return False
-     
+
     @staticmethod
     def calcExperienceGain(player, monsterList):
         ''' Calculates the amount of experience this player should gain. '''
@@ -888,13 +888,13 @@ class Combat(object):
             else:
                 expGain += round(mon.experienceGiven * 0.15)
         return expGain
-     
+
     @staticmethod
     def _shoutAttackDodged(source, target):
         dodger = target
         bc = broadcast.DodgeBroadcast()
         bc.shout(dodger)
-     
+
     @staticmethod
     def _shoutAttackStart(source, target):
         direction = "Outgoing"
@@ -910,7 +910,7 @@ class Combat(object):
         bundle = {'direction' : direction, 'type' : attackType, 'otherPerson' : otherParty}
         bc = broadcast.AttackBroadcast(bundle)
         bc.shout(hearer)
-    
+
     @staticmethod
     def _shoutAttackHit(source, target, hitType):
         direction = "Outgoing"
@@ -929,7 +929,7 @@ class Combat(object):
         bundle = {'direction' : direction, 'type' : attackType, 'otherPerson' : otherParty, 'suffix' : hitTypeString}
         bc = broadcast.AttackBroadcast(bundle)
         bc.shout(hearer)
-        
+
     @staticmethod
     def _shoutAttackComplete(source, target, noCounter):
         direction = "Outgoing"
@@ -945,7 +945,7 @@ class Combat(object):
         bundle = {'direction' : direction, 'type' : attackType, 'otherPerson' : otherParty, 'suffix' : 'Complete', 'noCounter' : noCounter}
         bc = broadcast.AttackBroadcast(bundle)
         bc.shout(hearer)
-        
+
     @staticmethod
     def _shoutDamage(target, amount):
         direction = "Incoming"
@@ -954,19 +954,19 @@ class Combat(object):
         bundle = {'direction' : direction, 'amount' : amount}
         bc = broadcast.DamageBroadcast(bundle)
         return bc.shout(target)
-        
+
     @staticmethod
     def _shoutStatusApplied(target, statusName):
         if target.team != "Players":
             return
         bc = broadcast.StatusBroadcast({'statusName' : statusName})
         bc.shout(target)
-        
+
     @staticmethod
     def _shoutResourceLevel(target, resourceType, resourcePercent):
         if target.team != "Players":
             return
         bc = broadcast.ResourceLevelBroadcast({'resource' : resourceType, 'percent' : resourcePercent})
         bc.shout(target)
-        
-    
+
+

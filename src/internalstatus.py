@@ -7,10 +7,10 @@ from combat import Combat
 # The lifetime of a Status object:
 #   1. Status is loaded into memory from the data file on game startup.
 #       --STATE-- Common Fields are initialized but the Status is unusable.
-#   2. A call to Combat.addStatus() is made, referencing a name: "abc" 
+#   2. A call to Combat.addStatus() is made, referencing a name: "abc"
 #         The datastructure is searched for a Status object with named "abc".
 #         Such as Status (hopefully unique!) is found and a copy is made.
-#   3. The addStatus() method takes this copy and fills it in with additional 
+#   3. The addStatus() method takes this copy and fills it in with additional
 #         information needed to complete its functionality.
 #       --STATE-- Only now is the Status ready to be used by anything.
 #   4. The addStatus() method adds the new Status to a character who deals with it
@@ -20,18 +20,18 @@ from combat import Combat
 #
 
 # The lifetime of an InternalStatus object:
-#   1. IStatus is defined via the data file and is given a name, an immunity, and 
+#   1. IStatus is defined via the data file and is given a name, an immunity, and
 #          a recurring boolean.
 #         --STATE-- Only a husk of an IStatus exists here, it cannot be used.
 #   2. IStatus is referred to by the definition of a Display Status.  The IStatus
-#         is looked up by name.  The properties of this IStatus are copied over to 
+#         is looked up by name.  The properties of this IStatus are copied over to
 #         a new IStatus and additional information now fills the new IStatus which
 #         is stored with the Display Status.
 #         --STATE-- This IStatus is theoretically ready to be used.  The magnitude
 #            and possibly the min/max fields may be overridden later, but some IStatuses
 #            will never change from here.
 #   3. An addStatus() call is performed which applys a Display Status and, along with it,
-#       all of its IStatuses who also get magnitude information and element.      
+#       all of its IStatuses who also get magnitude information and element.
 #         --STATE-- This IStatus has been fully instantiated and is ready to have work
 #                   done by it.
 #
@@ -46,16 +46,16 @@ class InternalStatus(object):
         self.immunity = immunity
         self.applyEffect = InternalStatus.applyFunctionDict[name]
         self.unapplyEffect = InternalStatus.unapplyFunctionDict[name]
-        
+
         # Known only from loaded data file instantiation:
         self.parentName = None
-        
+
         # May only be known at apply time:
-        self.magnitude = None # inherit magnitude from caller if 0.      
+        self.magnitude = None # inherit magnitude from caller if 0.
         self.duration = None # Not typically used or kept track of here.  Only for HP Buffers
                              # thus far.
         self.element = element
-            
+
     def cloneWithDetails(self, magnitude, element, parent):
         """Returns a Status with 'ready-to-use' values based off of a previously defined InternalStatus."""
         cloneStatus = InternalStatus(self.name, self.recurring, self.immunity, self.element)
@@ -84,7 +84,7 @@ class InternalStatus(object):
 
     def Awareness_penalty_method(self, target, magnitude):
         target.statusAwareness -= magnitude
-        
+
     def Bleeding_method(self, target, magnitude):
         Combat.modifyResource(target, "HP", float(target.HP) * magnitude / -100)
 
@@ -103,7 +103,7 @@ class InternalStatus(object):
     def Damage_over_time_method(self, target, magnitude):
         dam = calcDamage(None, target, magnitude, magnitude, self.element, "Normal Hit")
         target.lowerHP(target, dam)
-        
+
     def Dodge_bonus_method(self, target, magnitude):
         target.statusDodge += magnitude
 
@@ -112,7 +112,7 @@ class InternalStatus(object):
 
     def Double_dodge_method(self, target, magnitude):
         pass
-        
+
     def Dragon_style_method(self, target, magnitude):
         pass
 
@@ -181,39 +181,39 @@ class InternalStatus(object):
 
     def Might_penalty_method(self, target, magnitude):
         target.statusMight -= magnitude
-        
+
     def Movement_speed_penalty_method(self, target, magnitude):
         target.movementTiles -= magnitude
         # TODO: Ensure monsters can always move at least one tile.
 
     def Movement_tiles_penalty_method(self, target, magnitude):
         target.movementTiles -= magnitude
-        
+
     def Nothing_method(self, target, magnitude):
         pass
-        
+
     def No_turn_method(self, target, magnitude):
         target.AP = 0
-        
+
     def Numbing_poison_method(self, target, magnitude):
         target.onHitEffects.append(onhiteffect.OnHitEffect(magnitude, onhiteffect.OnHitEffect.applyNumbingPoison))
-        
+
     def On_hit_cripple_weapon_method(target, chance, conditional, magnitude):
         target.applyOnHitMod('On_hit_cripple_weapon', conditional, chance, magnitude)
-        
+
     def On_hit_frost_weapon_method(target, chance, conditional, magnitude1, magnitude2):
         target.applyOnHitMod('On_hit_frost_weapon', conditional, chance, magnitude1, 'Movement_speed_penalty', magnitude2, 'Dodge_penalty')
 
     def On_hit_mage_hunting_method(self, target, magnitude):
         target.onHitEffects.append(onhiteffect.OnHitEffect(magnitude, onhiteffect.OnHitEffect.applyMageHunting))
-        
+
     def On_hit_stun_method(target, chance, conditional):
         target.applyOnHitMod('On_hit_stun', conditional, chance, 0, 'No_turn')
 
     def On_hit_suppressing_weapon_method(self, target, magnitude):
         target.onHitEffects.append(onhiteffect.OnHitEffect(magnitude, onhiteffect.OnHitEffect.applySuppressed))
         target.statusCriticalChance -= 10
-        
+
     def Overall_damage_bonus_method(self, target, magnitude):
         target.statusOverallDamageBonus += magnitude
 
@@ -249,7 +249,7 @@ class InternalStatus(object):
 
     def Ranged_dodge_penalty_method(self, target, mangitude):
         target.statusRangedDodge -= magnitude
-        
+
     def Ranged_force_bonus_method(self, target, magnitude):
         target.statusRangedForce += magnitude
 
@@ -291,10 +291,10 @@ class InternalStatus(object):
 
     def Spell_failure_chance_method(self, target, magnitude):
         target.spellFailureChance += magnitude
-        
+
     def Target_throat_method(self, target, magnitude):
         target.onHitEffects.appedn(onhiteffect.OnHitEffect(magnitude, onhiteffect.OnHitEffect.applyTargetThroat))
-        
+
     def Tiger_style_method(self, target, magnitude):
         pass
 
@@ -303,13 +303,13 @@ class InternalStatus(object):
 
     def Trap_evade_penalty_method(self, target, magnitude):
         target.statusTrapEvade -= magnitude
-        
+
     def Vile_poison_method(self, target, magnitude):
         target.onHitEffects.append(onhiteffect.OnHitEffect(magnitude, onhiteffect.OnHitEffect.applyVilePoison))
-        
+
     def Weapon_damage_bonus_method(self, target, magnitude):
         target.onHitEffects.append(onhiteffect.OnHitEffect(magnitude, onhiteffect.OnHitEffect.applyFlatElementalDamage, self.element))
-        
+
     def Applied_poison_rating_bonus_method_reverse(self, target, magnitude):
         target.equipmentPoisonRatingBonus -= magnitude
 
@@ -330,7 +330,7 @@ class InternalStatus(object):
 
     def Awareness_penalty_method_reverse(self, target, magnitude):
         target.statusAwareness += magnitude
-        
+
     def Bleeding_method_reverse(self, target, magnitude):
         pass
 
@@ -354,11 +354,11 @@ class InternalStatus(object):
 
     def Dodge_penalty_method_reverse(self, target, magnitude):
         target.statusDodge += magnitude
-        
+
     def Double_dodge_method_reverse(self, target, magnitude):
         stacks = target.getStatusStackCount("Double Dodge")
         target.statusDodge -= min(15, stacks * 5)
-        
+
     def Dragon_style_method_reverse(self, target, magnitude):
         pass
 
@@ -379,7 +379,7 @@ class InternalStatus(object):
 
     def Elemental_resistance_divine_method_reverse(self, target, magnitude):
         target.statusDivineResistance -= magnitude
-        
+
     def Elemental_resistance_fire_method_reverse(self, target, magnitude):
         target.statusFireResistance -= magnitude
 
@@ -424,7 +424,7 @@ class InternalStatus(object):
 
     def Might_bonus_method_reverse(self, target, magnitude):
         target.statusMight -= magnitude
-        
+
     def Might_penalty_method_reverse(self, target, magnitude):
         target.statusMight += magnitude
 
@@ -433,22 +433,22 @@ class InternalStatus(object):
 
     def Movement_tiles_penalty_method_reverse(self, target, magnitude):
         target.movementTiles += magnitude
-        
+
     def Nothing_method_reverse(self, target, magnitude):
         pass
-        
+
     def No_turn_method_reverse(self, target, magnitude):
         pass
 
     def Numbing_poison_method_reverse(self, target, magnitude):
         target.removeOnHitEffect("NumbingPoison", magnitude)
-        
+
     def On_hit_cripple_weapon_method_reverse(self, target, magnitude):
         target.removeOnHitMod('On_hit_cripple_weapon')
-        
+
     def On_hit_frost_weapon_method_reverse(self, target, magnitude):
         target.removeOnHitMod('On_hit_frost_weapon')
-        
+
     def On_hit_mage_hunting_method_reverse(self, target, magnitude):
         target.removeOnHitEffect("MageHunting", magnitude)
 
@@ -458,7 +458,7 @@ class InternalStatus(object):
     def On_hit_suppressing_weapon_method_reverse(self, target, magnitude):
         target.removeOnHitEffect('On_hit_suppressing_weapon', magnitude)
         target.statusCriticalChance += 10
-        
+
     def Overall_damage_bonus_method_reverse(self, target, magnitude):
         target.statusOverallDamageBonus -= magnitude
 
@@ -494,7 +494,7 @@ class InternalStatus(object):
 
     def Ranged_dodge_penalty_method_reverse(self, target, mangitude):
         target.statusRangedDodge += magnitude
-        
+
     def Ranged_force_bonus_method_reverse(self, target, magnitude):
         target.statusRangedForce -= magnitude
 
@@ -539,10 +539,10 @@ class InternalStatus(object):
 
     def Spell_failure_chance_method_reverse(self, target, magnitude):
         target.spellFailureChance -= magnitude
-        
+
     def Target_throat_method_reverse(self, target, magnitude):
         target.removeOnHitEffect("TargetThroat", magnitude)
-        
+
     def Tiger_style_method_reverse(self, target, magnitude):
         pass
 
@@ -554,10 +554,10 @@ class InternalStatus(object):
 
     def Vile_poison_method_reverse(self, target, magnitude):
         target.removeOnHitEffect("VilePoison", magnitude)
-        
+
     def Weapon_damage_bonus_method_reverse(self, target, magnitude):
         target.removeOnHitEffect("FlatElementalDamage " + self.element, magnitude)
-    
+
     applyFunctionDict = {
         'Applied_poison_rating_bonus' : Applied_poison_rating_bonus_method,
         'Attack_power_bonus' : Attack_power_bonus_method,
@@ -641,11 +641,11 @@ class InternalStatus(object):
         'Vile_poison_internal' : Vile_poison_method,
         'Weapon_damage_bonus' : Weapon_damage_bonus_method
     }
-            
-            #'AI_attack_nearby' : 
+
+            #'AI_attack_nearby' :
             #'AI_flee' : # Need decent AI to implement these...
             # 'Redirect_melee_attacks': None, # Save this one for last?
-            
+
     unapplyFunctionDict = {
         'Applied_poison_rating_bonus' : Applied_poison_rating_bonus_method_reverse,
         'Attack_power_bonus' : Attack_power_bonus_method_reverse,
@@ -730,6 +730,6 @@ class InternalStatus(object):
         'Vile_poison_internal' : Vile_poison_method_reverse,
         'Weapon_damage_bonus' : Weapon_damage_bonus_method_reverse
     }
-    
-    
-    
+
+
+

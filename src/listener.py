@@ -9,8 +9,8 @@ class Listener(object):
         self.action = action
         self.offStringList = offStringList
         self.host = host
-        self.callObject = callObject 
-    
+        self.callObject = callObject
+
     def hear(self, bCast):
         for string in self.onStringList:
             if string == bCast.message.strip():
@@ -41,10 +41,10 @@ class Listener(object):
                     return
                 elif bCast.isinstance(broadcast.AttackBroadcast):
                     self.action(self.callObject, self.host, reverse=True, other=bCast.otherPerson)
-                    return                
+                    return
                 elif bCast.isinstance(broadcast.DamageBroadcast):
                     self.action(self.callObject, self.host, reverse=True, damage=bCast.amount)
-                    return        
+                    return
                 elif bCast.isinstance(broadcast.StatusBroadcast):
                     self.action(self.callObject, self.host, reverse=True, statusName=bCast.statusName)
                     return
@@ -53,8 +53,8 @@ class Listener(object):
                     return
                 elif bCast.isinstance(broadcast.DodgeBroadcast):
                     self.action(self.callObject, self.host, reverse=True)
-                    return    
+                    return
                 elif bCast.isinstance(broadcast.TurnBroadcast):
                     self.action(self.callObject, self.host, reverse=True)
-                    return    
-                    
+                    return
+

@@ -28,7 +28,7 @@ ENTITY_KEYS = sorted(ENTITIES.keys())
 #ZOOMED_KEYS = sorted(ZOOMED_ENTITIES.keys())
 
 class Sprites(object):
-    
+
     hasLoaded = False
     trees = []
     rocks = []
@@ -36,12 +36,12 @@ class Sprites(object):
     objects = dict()
     zoomed_objects = dict()
     images = dict()
-    
+
     @staticmethod
     def load(seed):
         if Sprites.hasLoaded:
             print "Sprites.load() has already been called."
-        
+
         for key, image in BACKGROUNDS.iteritems():
             background = crop_helper(image)
             Sprites.background[key] = background
@@ -64,7 +64,7 @@ class Sprites(object):
     @staticmethod
     def get_background_tile(key, tile):
         return Sprites.background[key].getimage(tile)
-    
+
     @staticmethod
     def get_images_dict():
         return Sprites.images
@@ -72,14 +72,14 @@ class Sprites(object):
     @staticmethod
     def get_object(key, seed, pane, tile):
         return Sprites.objects[key].get_random_image(seed, pane, tile)
-        
+
     @staticmethod
     def get_zoomed_image(key, tile_loc):
         return Sprites.objects[key].get_zoomed_image(tile_loc)
 
 def crop_helper(const):
     return Crop(const[0], const[1], const[2], const[3], const[4])
-    
+
 class Crop(object):
     def __init__(self, pathDIR, name, tilesize, cropsize = None, size = None, zoom = False):
         if not cropsize:
@@ -122,7 +122,7 @@ class Crop(object):
         i = location[0] % self.x
         j = location[1] % self.y
         return self.tile_id[(i, j)]
-        
+
     def get_zoomed_image(self, location):
         return self.tile_id[str(location)]
 
@@ -134,14 +134,14 @@ class SpriteSheet(object):
 
         self.zoom = Crop(sheet[0], sheet[1], sheet[2], sheet[3], TILE_SIZE*3, True)
         self.images.update(self.zoom.images.items())
-        
+
         self.name = self.crop.name
         self.sheet = sheet
-        
+
     def get_zoomed_image(self, tile_loc):
         '''
         Returns the cropped image of size TILE_SIZE given a tile_loc
-        
+
         Member Variables
             tile_loc:   an tuple representing the portion of an image
                         that is divided into 9 pieces:
@@ -150,7 +150,7 @@ class SpriteSheet(object):
                         (0,2)   (1,2)   (2,2)
         '''
         return self.zoom.get_zoomed_image(tile_loc)
-        
+
     def get_random_image(self, seed, pane, tile):#, percentage):
         random.seed(seed + str(pane) + self.name + str(tile))
         i = random.randrange(self.crop.x)# / percentage)
@@ -159,4 +159,4 @@ class SpriteSheet(object):
         if i <= self.crop.x and j <= self.crop.x:
             image = self.crop.getimage((i,j))
         return image
-        
+

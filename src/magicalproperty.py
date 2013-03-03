@@ -17,7 +17,7 @@ class MagicalProperty(object):
             if self.name == "Damage":
                 self.cost = item.gradientPoints
             elif self.name == "DR":
-                self.DR = item.DRGradientPoints            
+                self.DR = item.DRGradientPoints
         self.effect = argDict['effect']
         self.max = argDict['max']
         self.doubled = argDict['doubled']
@@ -26,23 +26,23 @@ class MagicalProperty(object):
         self.goldMod = argDict['goldMod']
         self._counts = counts
         self.item = item
-        
+
         self.itemIsTwoHanded = False
         if (isinstance(item, equipment.Weapon) and item.type == "Two Handed" or
            item.type == "Two-Handed"):
             self.itemIsTwoHanded = True
-                    
+
 
     @property
     def counts(self):
         if self.doubled and self.itemIsTwoHanded:
             return min(self._counts * 2, self.max)
         return self._counts
-            
+
     @counts.setter
     def counts(self, value):
         self._counts = value
-            
+
     @staticmethod
     def generateProperties(item, ipScore):
         ''' Rolls a list of properties for a normal treasure chest,
@@ -57,7 +57,7 @@ class MagicalProperty(object):
         ip = ipScore + int(item.bonusMod)
         if item.type == "Finger":
             ip *= 2
-        elif item.type == "Neck": 
+        elif item.type == "Neck":
             ip *= 3
         if ip <= 0:
             return []
@@ -65,10 +65,10 @@ class MagicalProperty(object):
         #subList = MagicalProperty.adjustWeights(subList, item)
         totalWeight = MagicalProperty.getTotalWeight(subList)
         maxProperties = MagicalProperty.getMaxProperties(ip)
-        
+
         return MagicalProperty.rollProperties(subList, maxProperties, ip, totalWeight, item)
-        
-    @staticmethod 
+
+    @staticmethod
     def getMaxProperties(ip):
         if ip <= 4:
             return 1
@@ -80,7 +80,7 @@ class MagicalProperty(object):
             return 4
         elif ip > 25:
             return 5
-        
+
     @staticmethod
     def rollProperties(subList, maxListSize, givenIp, totalWeight, item):
         chosenList = []
@@ -92,11 +92,11 @@ class MagicalProperty(object):
                 dieRoll = Dice.roll(1, totalWeight)
                 possibleProperty = MagicalProperty.selection(subList, dieRoll)
                 #print "Ip to match: " + str(ip) + " IP of " + possibleProperty[0] + " = " + str(possibleProperty[1]['cost'])
-                
+
                 chosenNames = [x.name for x in chosenList]
                 if possibleProperty[0] in chosenNames:
                     continue
-                    
+
                 thisIp = possibleProperty[1]['cost']
                 if possibleProperty[0] == "DR":
                     thisIp = item.DRGradientPoints
@@ -108,7 +108,7 @@ class MagicalProperty(object):
                     #print "Damage Gradient points = " + str(thisIp)
                 if thisIp > ip:
                     continue
-                else: 
+                else:
                     ip -= thisIp
                     property = MagicalProperty(possibleProperty[1], item, possibleProperty[0])
                     chosenList.append(property)
@@ -117,9 +117,9 @@ class MagicalProperty(object):
                     if attempts > 10:
                         ip = givenIp
                         chosenList = []
-                        position = 0 
+                        position = 0
                         continue
-                    else: 
+                    else:
                         attempts += 1
                         position = Dice.roll(0, len(chosenList) - 1)
                 currentProperty = chosenList[position]
@@ -137,8 +137,8 @@ class MagicalProperty(object):
                     position = Dice.roll(0, len(chosenList) - 1)
                     #print currentProperty.name + " counts " + str(currentProperty.counts)
         return chosenList
-        
-        
+
+
     @staticmethod
     def selection(subList, dieRoll):
         remaining = dieRoll
@@ -147,25 +147,25 @@ class MagicalProperty(object):
             remaining -= currentWeight
             if remaining <= 0:
                 return prop
-        
+
     @staticmethod
     def getTotalWeight(subList):
         total = 0
         for prop in subList:
             total += prop[1]['weight']
         return total
-        
+
     @staticmethod
     def cacheList():
         for key, value in MagicalProperty.allProperties.iteritems():
             current = [key, value]
-            MagicalProperty.fullList.append(current)        
-        
+            MagicalProperty.fullList.append(current)
+
     @staticmethod
     def getFilledList(item):
         subList = []
         if isinstance(item, equipment.Armor):
-            subList.extend([prop for prop in MagicalProperty.fullList 
+            subList.extend([prop for prop in MagicalProperty.fullList
                             if prop[1]['exclusion'] != "Weapon Only" and
                                prop[1]['exclusion'] != "Melee Weapon Only" and
                                prop[1]['exclusion'] != "Ranged Weapon Only"])
@@ -178,8 +178,8 @@ class MagicalProperty(object):
                 subList.extend([prop for prop in MagicalProperty.fullList if
                                 prop[1]['exclusion'] != "Armor Only" and
                                 prop[1]['exclusion'] != "Melee Weapon Only"])
-        return subList                                
-        
+        return subList
+
     # Method balloons values!! TODO: Fix!
     @staticmethod
     def adjustWeights(subList, item):
@@ -192,16 +192,16 @@ class MagicalProperty(object):
                 if tName == prop[0] or tName in prop[1]['categories']:
                     print prop[0] + " " + str(prop[1]['weight']) + " " + str(1 + float(tAmount) / 100)
                     prop[1]['weight'] = round(prop[1]['weight'] * (1 + float(tAmount) / 100))
-        return subList                    
-        
-        
+        return subList
+
+
     def _AP(self, owner, reverse=False):
         APIncrease = max(self.max)
         if not reverse:
             owner.equipmentAP += APIncrease
         else:
             owner.equipmentAP -= APIncrease
-        
+
     def _allAccuracy(self, owner, reverse=False):
         bonus = self.counts * 2
         if not reverse:
@@ -209,131 +209,131 @@ class MagicalProperty(object):
             owner.rangedMeleeAccuracy += bonus
         else:
             owner.equipmentMeleeAccuracy -= bonus
-            owner.rangedMeleeAccuracy -= bonus        
-        
+            owner.rangedMeleeAccuracy -= bonus
+
     def _armorPenetration(self, owner, reverse=False):
         bonus = 0.5 * self.counts
         if not reverse:
             owner.equipmentArmorPenetration += bonus
         else:
             owner.equipmentArmorPenetration -= bonus
-            
+
     def _awareness(self, owner, reverse=False):
         bonus = self.counts
         if not reverse:
             owner.equipmentAwareness += bonus
         else:
             owner.equipmentAwareness -= bonus
-        
+
     def _constitution(self, owner, reverse=False):
         bonus = self.counts
         if not reverse:
             owner.equipmentConstitution += bonus
         else:
             owner.equipmentConstitution -= bonus
-            
+
     def _carryingCapacity(self, owner, reverse=False):
         bonus = self.counts * 2
         if not reverse:
             owner.equipment
-        
+
     def _criticalHitChance(self, owner, reverse=False):
         bonus = self.counts * 0.50
         if not reverse:
             owner.equipmentCriticalChance += bonus
         else:
             owner.equipmentCriticalChance -= bonus
-            
+
     def _criticalHitMagnitude(self, owner, reverse=False):
         bonus = self.counts
         if not reverse:
             owner.equipmentCriticalMagnitude += bonus
         else:
             owner.equipmentCriticalMagnitude -= bonus
-            
+
     def _cunning(self, owner, reverse=False):
         bonus = self.counts
         if not reverse:
             owner.equipmentCunning += bonus
         else:
             owner.equipmentCunning -= bonus
-            
+
     def _damage(self, owner, reverse=False):
         if self.item.gradientPoints == 0:
             raise TypeError("Cannot increase damage on item: " + str(self.item.name) + ".")
         if not reverse:
             self.item.damageMinBonus += self.counts * int(self.item.gradientMin)
             self.item.damageMaxBonus += self.counts * int(self.item.gradientMax)
-    
+
     def _DR(self, owner, reverse=False):
         if self.item.DRGradientPoints == 0:
             raise TypeError("Cannot increase DR on item: " + str(self.item.name) + ".")
         if not reverse:
             self.item.DR += self.counts * self.item.DRGradient
-    
+
     def _dexterity(self, owner, reverse=False):
         bonus = self.counts
         if not reverse:
             owner.equipmentDexterity += bonus
         else:
             owner.equipmentDexterity -= bonus
-            
+
     def _dodge(self, owner, reverse=False):
         bonus = self.counts
         if not reverse:
             owner.equipmentDodge += bonus
         else:
             owner.equipmentDodge -= bonus
-            
+
     def _elementalEnhancementFire(self, owner, reverse=False):
         bonus = self.counts
         if not reverse:
             owner.equipmentFireBonusDamage += bonus
         else:
             owner.equipmentFireBonusDamage -= bonus
-            
+
     def _elementalEnhancementCold(self, owner, reverse=False):
         bonus = self.counts
         if not reverse:
             owner.equipmentColdBonusDamage += bonus
         else:
-            owner.equipmentColdBonusDamage -= bonus    
-    
+            owner.equipmentColdBonusDamage -= bonus
+
     def _elementalEnhancementElectric(self, owner, reverse=False):
         bonus = self.counts
         if not reverse:
             owner.equipmentElectricBonusDamage += bonus
         else:
             owner.equipmentElectricBonusDamage -= bonus
-    
+
     def _elementalEnhancementPoison(self, owner, reverse=False):
         bonus = self.counts
         if not reverse:
             owner.equipmentPoisonBonusDamage += bonus
         else:
             owner.equipmentPoisonBonusDamage -= bonus
-    
+
     def _elementalEnhancementDivine(self, owner, reverse=False):
         bonus = self.counts
         if not reverse:
             owner.equipmentDivineBonusDamage += bonus
         else:
             owner.equipmentDivineBonusDamage -= bonus
-    
+
     def _elementalEnhancementShadow(self, owner, reverse=False):
         bonus = self.counts
         if not reverse:
             owner.equipmentShadowBonusDamage += bonus
         else:
             owner.equipmentShadowBonusDamage -= bonus
-    
+
     def _elementalEnhancementArcane(self, owner, reverse=False):
         bonus = self.counts
         if not reverse:
             owner.equipmentArcaneBonusDamage += bonus
         else:
             owner.equipmentArcaneBonusDamage -= bonus
-    
+
     def _elementalDamageFire(self, owner, reverse=False):
         bonusMin = self.counts
         bonusMax = self.counts * 2
@@ -353,7 +353,7 @@ class MagicalProperty(object):
         else:
             owner.unregisterOnHitEffect(self.counts, onhiteffect.OnHitEffect.applyElementalDamage, "Cold")
             # TODO Write unregisterOnHitEffect method in PlayerCharacter class.
-        
+
     def _elementalDamageElectric(self, owner, reverse=False):
         bonusMin = self.counts
         bonusMax = self.counts * 2
@@ -373,7 +373,7 @@ class MagicalProperty(object):
             owner.onHitEffects.append(hitEffect)
         else:
             owner.unregisterOnHitEffect(self.counts, onhiteffect.OnHitEffect.applyElementalDamage, "Poison")
-    
+
     def _elementalDamageShadow(self, owner, reverse=False):
         bonusMin = self.counts
         bonusMax = self.counts * 2
@@ -383,7 +383,7 @@ class MagicalProperty(object):
             owner.onHitEffects.append(hitEffect)
         else:
             owner.unregisterOnHitEffect(self.counts, onhiteffect.OnHitEffect.applyElementalDamage, "Shadow")
-        
+
     def _elementalDamageDivine(self, owner, reverse=False):
         bonusMin = self.counts
         bonusMax = self.counts * 3
@@ -403,14 +403,14 @@ class MagicalProperty(object):
             owner.onHitEffects.append(hitEffect)
         else:
             owner.unregisterOnHitEffect(self.counts, onhiteffect.OnHitEffect.applyElementalDamage, "Arcane")
-        
+
     def _elementalResistanceFire(self, owner, reverse=False):
         bonus = self.counts
         if not reverse:
             owner.equipmentFireResistance += bonus
         else:
             owner.equipmentFireResistance -= bonus
-            
+
     def _elementalResistanceCold(self, owner, reverse=False):
         bonus = self.counts
         if not reverse:
@@ -431,144 +431,144 @@ class MagicalProperty(object):
             owner.equipmentPoisonResistance += bonus
         else:
             owner.equipmentPoisonResistance -= bonus
-            
+
     def _elementalResistanceDivine(self, owner, reverse=False):
         bonus = self.counts
         if not reverse:
             owner.equipmentDivineResistance += bonus
         else:
             owner.equipmentDivineResistance -= bonus
-            
+
     def _elementalResistanceShadow(self, owner, reverse=False):
         bonus = self.counts
         if not reverse:
             owner.equipmentShadowResistance += bonus
         else:
             owner.equipmentShadowResistance -= bonus
-            
+
     def _elementalResistanceArcane(self, owner, reverse=False):
         bonus = self.counts
         if not reverse:
             owner.equipmentArcaneResistance += bonus
         else:
             owner.equipmentArcaneResistance -= bonus
-            
+
     def _HP(self, owner, reverse=False):
         bonus = self.counts * 3
         if not reverse:
             owner.equipmentHP += bonus
         else:
             owner.equipmentHP -= bonus
-            
+
     def _identification(self, owner, reverse=False):
         bonus = self.counts
         if not reverse:
             owner.equipmentIdentification += bonus
         else:
             owner.equipmentIdentification -= bonus
-            
+
     def _magicResist(self, owner, reverse=False):
         bonus = self.counts
         if not reverse:
             owner.equipmentMagicResist += bonus
         else:
             owner.equipmentMagicResist -= bonus
-            
+
     def _MP(self, owner, reverse=False):
         bonus = self.counts * 2
         if not reverse:
             owner.equipmentMP += bonus
         else:
             owner.equipmentMP -= bonus
-            
+
     def _manaOnImpact(self, owner, reverse=False):
         pass
         # TODO
-            
+
     def _meleeAccuracy(self, owner, reverse=False):
         bonus = self.counts
         if not reverse:
             owner.equipmentMeleeAccuracy += bonus
         else:
             owner.equipmentMeleeAccuracy -= bonus
-            
+
     def _might(self, owner, reverse=False):
         bonus = self.counts
         if not reverse:
             owner.equipmentMight += bonus
         else:
             owner.equipmentMight -= bonus
-            
+
     def _movementBonus(self, owner, reverse=False):
         bonus = self.counts
         if not reverse:
             owner.equipmentMovementTiles += bonus
         else:
             owner.equipmentMovementTiles -= bonus
-            
+
     def _piety(self, owner, reverse=False):
         bonus = self.counts
         if not reverse:
             owner.equipmentPiety += bonus
         else:
             owner.equipmentPiety -= bonus
-            
+
     def _poisonTolerance(self, owner, reverse=False):
         bonus = self.counts
         if not reverse:
             owner.equipmentPoisonTolerance += bonus
         else:
             owner.equipmentPoisonTolerance -= bonus
-            
+
     def _potionEffectiveness(self, owner, reverse=False):
         bonus = self.counts * 4
         if not reverse:
             owner.equipmentPotionEffect += bonus
         else:
             owner.equipmentPotionEffect -= bonus
-            
+
     def _rangedAccuracy(self, owner, reverse=False):
         bonus = self.counts
         if not reverse:
             owner.equipmentRangedAccuracy += bonus
         else:
             owner.equipmentRangedAccuracy -= bonus
-           
+
     def _regenerationHP(self, owner, reverse=False):
         bonus = self.counts
         if not reverse:
             owner.HPRegen += bonus
         else:
             owner.HPRegen -= bonus
-            
+
     def _regenerationMP(self, owner, reverse=False):
         bonus = self.counts
         if not reverse:
             owner.MPRegen += bonus
         else:
             owner.MPRegen -= bonus
-            
+
     def _shopkeeperBonus(self, owner, reverse=False):
         bonus = self.counts / 2
         if not reverse:
             owner.equipmentShopBonus += bonus
         else:
             owner.equipmentShopBonus -= bonus
-            
+
     def _sorcery(self, owner, reverse=False):
         bonus = self.counts
         if not reverse:
             owner.equipmentSorcery += bonus
         else:
             owner.equipmentSorcery -= bonus
-            
+
     def _spellpower(self, owner, reverse=False):
         bonus = self.counts
         if not reverse:
             owner.equipmentSpellpower += bonus
         else:
             owner.equipmentSpellpower -= bonus
-            
+
     def _strength(self, owner, reverse=False):
         bonus = self.counts
         if not reverse:
@@ -581,21 +581,21 @@ class MagicalProperty(object):
             owner.equipmentTrapEvade += self.counts
         else:
             owner.equipmentTrapEvade -= self.counts
-            
+
     def _registerAcidic(self, owner, reverse=False):
         if not reverse:
             onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyAcidic)
             owner.onHitEffects.append(onHit)
         else:
             owner.removeOnHitEffect(self.name, self.counts)
-            
+
     def _registerEvil(self, owner, reverse=False):
         if not reverse:
             onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyEvil)
             owner.onHitEffects.append(onHit)
         else:
             owner.removeOnHitEffect(self.name, self.counts)
-         
+
     def _registerHoly(self, owner, reverse=False):
         if not reverse:
             onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyHoly)
@@ -609,70 +609,70 @@ class MagicalProperty(object):
             owner.onHitEffects.append(onHit)
         else:
             owner.removeOnHitEffect(self.name, self.counts)
-            
+
     def _registerSlowing(self, owner, reverse=False):
         if not reverse:
             onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applySlowing)
             owner.onHitEffects.append(onHit)
         else:
             owner.removeOnHitEffect(self.name, self.counts)
-            
+
     def _registerSpellhunger(self, owner, reverse=False):
         if not reverse:
             onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applySpellhunger)
             owner.onHitEffects.append(onHit)
         else:
             owner.removeOnHitEffect(self.name, self.counts)
-            
+
     def _registerStunning(self, owner, reverse=False):
         if not reverse:
             onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyStunning)
             owner.onHitEffects.append(onHit)
         else:
             owner.removeOnHitEffect(self.name, self.counts)
-            
+
     def _registerMinorBleeding(self, owner, reverse=False):
         if not reverse:
             onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyMinorBleeding)
             owner.onHitEffects.append(onHit)
         else:
             owner.removeOnHitEffect(self.name, self.counts)
-            
+
     def _registerModerateBleeding(self, owner, reverse=False):
         if not reverse:
             onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyModerateBleeding)
             owner.onHitEffects.append(onHit)
         else:
             owner.removeOnHitEffect(self.name, self.counts)
-            
+
     def _registerSeriousBleeding(self, owner, reverse=False):
         if not reverse:
             onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applySeriousBleeding)
             owner.onHitEffects.append(onHit)
         else:
-            owner.removeOnHitEffect(self.name, self.counts)   
-         
+            owner.removeOnHitEffect(self.name, self.counts)
+
     def _registerHealthSteal(self, owner, reverse=False):
         if not reverse:
             onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyHealthSteal)
             owner.onHitEffects.append(onHit)
         else:
             owner.removeOnHitEffect(self.name, self.counts)
-            
+
     def _registerManaSteal(self, owner, reverse=False):
         if not reverse:
             onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyManaSteal)
             owner.onHitEffects.append(onHit)
         else:
             owner.removeOnHitEffect(self.name, self.counts)
-            
+
     def _registerToxic(self, owner, reverse=False):
         if not reverse:
             onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyToxic)
             owner.onHitEffects.append(onHit)
         else:
             owner.removeOnHitEffect(self.name, self.counts)
-            
+
     def _registerWeakeningFire(self, owner, reverse=False):
         if not reverse:
             onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyWeakeningFire)
@@ -685,45 +685,45 @@ class MagicalProperty(object):
             onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyWeakeningCold)
             owner.onHitEffects.append(onHit)
         else:
-            owner.removeOnHitEffect(self.name, self.counts)            
-            
+            owner.removeOnHitEffect(self.name, self.counts)
+
     def _registerWeakeningElectric(self, owner, reverse=False):
         if not reverse:
             onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyWeakeningElectric)
             owner.onHitEffects.append(onHit)
         else:
             owner.removeOnHitEffect(self.name, self.counts)
-            
+
     def _registerWeakeningPoison(self, owner, reverse=False):
         if not reverse:
             onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyWeakeningPoison)
             owner.onHitEffects.append(onHit)
         else:
             owner.removeOnHitEffect(self.name, self.counts)
-            
+
     def _registerWeakeningDivine(self, owner, reverse=False):
         if not reverse:
             onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyWeakeningDivine)
             owner.onHitEffects.append(onHit)
         else:
             owner.removeOnHitEffect(self.name, self.counts)
-            
+
     def _registerWeakeningShadow(self, owner, reverse=False):
         if not reverse:
             onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyWeakeningShadow)
             owner.onHitEffects.append(onHit)
         else:
             owner.removeOnHitEffect(self.name, self.counts)
-            
+
     def _registerWeakeningArcane(self, owner, reverse=False):
         if not reverse:
             onHit = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyWeakeningArcane)
             owner.onHitEffects.append(onHit)
         else:
             owner.removeOnHitEffect(self.name, self.counts)
-            
 
-            
+
+
     allProperties = {
         'AP':
             {
@@ -736,7 +736,7 @@ class MagicalProperty(object):
             'categories' : [],
             'goldMod' : 200
             },
-        'All Accuracy': 
+        'All Accuracy':
             {
             'weight' : 10,
             'cost' : 3,
@@ -889,7 +889,7 @@ class MagicalProperty(object):
             'exclusion' : None,
             'categories' : ['Wizard', 'Elemental_Casting'],
             'goldMod' : 12
-            },        
+            },
         'Elemental Enhancement: Electric':
             {
             'weight' : 4,
@@ -900,7 +900,7 @@ class MagicalProperty(object):
             'exclusion' : None,
             'categories' : ['Wizard', 'Elemental_Casting'],
             'goldMod' : 12
-            },            
+            },
         'Elemental Enhancement: Poison':
             {
             'weight' : 3,
@@ -911,7 +911,7 @@ class MagicalProperty(object):
             'exclusion' : None,
             'categories' : ['Wizard', 'Elemental_Casting', 'Thief'],
             'goldMod' : 12
-            },            
+            },
         'Elemental Enhancement: Shadow':
             {
             'weight' : 3,
@@ -922,7 +922,7 @@ class MagicalProperty(object):
             'exclusion' : None,
             'categories' : ['Wizard', 'Elemental_Casting', 'Thief'],
             'goldMod' : 12
-            },            
+            },
         'Elemental Enhancement: Divine':
             {
             'weight' : 3,
@@ -966,7 +966,7 @@ class MagicalProperty(object):
             'exclusion': 'Weapon Only',
             'categories' : ['Elemental_Damage'],
             'goldMod' : 45
-            },            
+            },
         'Elemental Damage: Electric':
             {
             'weight' : 10,
@@ -1043,7 +1043,7 @@ class MagicalProperty(object):
             'exclusion' : 'Armor Only',
             'categories' : ['Elemental_Resist', 'Defense'],
             'goldMod' : 12
-            },        
+            },
         'Elemental Resistance : Electric':
             {
             'weight' : 10,
@@ -1483,7 +1483,7 @@ class MagicalProperty(object):
             'exclusion' : 'Weapon Only',
             'categories' : ['On Hit'],
             'goldMod' : 10
-            },        
+            },
         'Weakening: Divine':
             {
             'weight' : 4,

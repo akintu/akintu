@@ -9,7 +9,7 @@ import copy
 class Equipment(e.Entity):
 
     ERROR = "INITIALIZATION_FAILURE"
-    
+
     @staticmethod
     def setFrom(argDict, variableName, defaultValue=ERROR):
         if( (variableName not in argDict) or (argDict[variableName] == "None") ):
@@ -29,8 +29,8 @@ class Equipment(e.Entity):
         self.goldValue = int(goldValue)
         self.weight = weight
         self.identifier = "TODO"
-        self.bonusTendencyList = None        
-    
+        self.bonusTendencyList = None
+
     def cloneWithMagicalProperties(self, ip):
         """Method applys random magical properties.  This method WILL adjust the gold value,
         possibly the damage Min and Max, and definitely the 'identifier'.
@@ -40,12 +40,12 @@ class Equipment(e.Entity):
         Outputs:
           Equipment of the same type as was input (as self)"""
         propertyList = magicalproperty.MagicalProperty.generateProperties(self, ip)
-          
+
         newIdentifier = self.name
         goldModSum = 0
         for property in propertyList:
             goldModSum += property.goldMod * property.counts
-            newIdentifier += " ; mProp: " + property.name + " counts: " + str(property.counts)  
+            newIdentifier += " ; mProp: " + property.name + " counts: " + str(property.counts)
 
         newCopy = copy.copy(self)
         newCopy.goldValue = round(self.goldValue * (1 + float(goldModSum / 100)))
@@ -55,11 +55,11 @@ class Equipment(e.Entity):
             if property.name == "Damage":
                 property.effect(property, None) # No 'Owner' needed, thus None is passed.
             elif property.name == "DR":
-                property.effect(property, None) # No 'Owner' needed, thus None is passed.       
+                property.effect(property, None) # No 'Owner' needed, thus None is passed.
         newPropertyList = [x for x in propertyList if x.name != "Damage" and x.name != "DR"]
         newCopy.propertyList = newPropertyList
         return newCopy
-        
+
 class Armor(Equipment):
     def __init__(self, argDict):
         Equipment.__init__(self, argDict['name'], argDict['goldValue'], argDict['weight'])
@@ -69,11 +69,11 @@ class Armor(Equipment):
         self.dodgeMod = Equipment.setFrom(argDict, 'dodgeMod')
         self.stealthMod = Equipment.setFrom(argDict, 'stealthMod')
         self.DR = Equipment.setFrom(argDict, 'DR')
-        
+
         gradientBundle = Equipment.setFrom(argDict, 'DRGradient')
         self.DRGradient = int(gradientBundle.split(",")[0])
         self.DRGradientPoints = int(gradientBundle.split(",")[1])
-                
+
         self.bonusMod = Equipment.setFrom(argDict, 'bonusMod')
         bonusOne = Equipment.setFrom(argDict, 'bonusTendencyOne', None)
         bonusTwo = Equipment.setFrom(argDict, 'bonusTendencyTwo', None)
@@ -94,12 +94,12 @@ class Armor(Equipment):
             self.bonusTendencyList.append(bonusFive)
         if bonusSix:
             self.bonusTendencyList.append(bonusSix)
-            
+
         self.propertyList = []
         self.identifier = "TODO: " + self.name
-        
+
         self.DRBonus = 0
-            
+
     @staticmethod
     def convertToGradePoints(grade, type):
         points = 0
@@ -109,7 +109,7 @@ class Armor(Equipment):
             points = 2
         elif grade == "Light":
             points = 1
-            
+
         if type == "Head" or type == "Hands" or type == "Feet":
             pass
         elif type == "Legs" or type == "Shield":
@@ -117,7 +117,7 @@ class Armor(Equipment):
         elif type == "Chest":
             points *= 3
         return points
-        
+
 class Weapon(Equipment):
     def __init__(self, argDict):
         Equipment.__init__(self, argDict['name'], argDict['goldValue'], argDict['weight'])
@@ -139,17 +139,17 @@ class Weapon(Equipment):
         self.range = Equipment.setFrom(argDict, 'range')
         self.identifier = "TODO: " + self.name
         self.propertyList = []
-        
+
         self.damageMinBonus = 0
         self.damageMaxBonus = 0
-        
 
-        
-        
-        
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
+
+
+
+

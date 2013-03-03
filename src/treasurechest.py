@@ -12,7 +12,7 @@ class TreasureChest(entity.Entity):
 
     GOLD_PER_IP = 25
     CHANCE_OF_LOCK = 20
-    
+
     def __init__(self, type, treasureLevel, location, ip=None, locked=None):
         entity.Entity.__init__(self, location)
         if type.capitalize() not in ["Small", "Large", "Gilded"]:
@@ -40,7 +40,7 @@ class TreasureChest(entity.Entity):
                 self.lockComplexity = 11 + self.treasureLevel * 3
             else:
                 self.lockComplexity = 21 + self.treasureLevel * 2
-        
+
     def generateTreasure(self, playerList=None):
         if not playerList:
             print "TreasureChest.generateTreasure -- Warning: No player specified for this treasure!"
@@ -58,7 +58,7 @@ class TreasureChest(entity.Entity):
         else:
             pass # TODO
             #valuables = self._generateGildedTreasure(playerList)
-            
+
     def _generateSmallTreasure(self):
         selection = Dice.roll(1, 100)
         if selection <= 20:
@@ -80,12 +80,12 @@ class TreasureChest(entity.Entity):
             if currentIp > 0:
                 consList.append(TreasureChest._selectGold(currentIp))
             return consList
-            
+
     @staticmethod
     def _selectCons(givenIp, givenLevel):
         selectionDict = None
         selection = Dice.roll(1, 100)
-        # Ideal distribution: 
+        # Ideal distribution:
         #
         # Potions  : 65%
         # Poisons  : 15%
@@ -105,8 +105,8 @@ class TreasureChest(entity.Entity):
         else:
             choice = Dice.roll(0, len(possibleItems) - 1)
             return consumable.Consumable(possibleItems[choice])
-   
-    
+
+
     @staticmethod
     def _selectGear(givenIp):
         selectedItem = None
@@ -118,18 +118,18 @@ class TreasureChest(entity.Entity):
             baseArmorSelection = Dice.roll(0, len(TheoryCraft.armors) - 1)
             selectedItem = equipment.Armor(TheoryCraft.armors[baseArmorSelection])
         return selectedItem.cloneWithMagicalProperties(givenIp)
-        
+
     @staticmethod
     def _selectGold(givenIp):
         modifier = Dice.rollFloat(0.6, 1.4)
         gold = round(givenIp * modifier * TreasureChest.GOLD_PER_IP)
         return wealth.Wealth("Gold", gold)
-        
+
     def _generateLargeTreasure(self):
         selection = Dice.roll(1, 100)
         if selection <= 60:
             # Two pieces of gear ip=50/50
-            return [TreasureChest.selectGear(self.ip / 2), TreasureChest.selectGear(self.ip / 2)] 
+            return [TreasureChest.selectGear(self.ip / 2), TreasureChest.selectGear(self.ip / 2)]
         elif selection <= 90:
             # Two pieces of gear and gold, ip=40/40/20
             return [TreasureChest.selectGear(round(self.ip * 0.4)),
@@ -138,12 +138,12 @@ class TreasureChest(entity.Entity):
         else:
             # One piece of gear ip=100
             return [TreasureChest._selectGear(self.ip)]
-           
-            
+
+
     def _generateGildedTreasure(self, playerList):
         return []
         # TODO: Two pieces of class-approriate gear.
-        
+
     def bash(self, player):
         ''' Attempts to have the player bash open the lock on this
         chest.  Will lower the IP content of the chest appropriately.
@@ -159,15 +159,15 @@ class TreasureChest(entity.Entity):
             self.ip = round(self.baseIp * 0.5)
             print "Chest IP unaffected."
         else:
-            print "Chest IP reduced by " + lowerAmount + "."        
+            print "Chest IP reduced by " + lowerAmount + "."
         success = min(100, max(10, 25 + player.totalStrength - self.lockComplexity))
         if Dice.rollBeneath(success):
             return True
         else:
             return False
-    
+
     def pickLock(self, player):
-        ''' Attempts to have the player unlock the chest via 
+        ''' Attempts to have the player unlock the chest via
         lockpicking.  Will return True if the chest was already
         unlocked or if successful, otherwise will return False. '''
         if not self.locked:
@@ -178,12 +178,12 @@ class TreasureChest(entity.Entity):
         print "Lock picking successful."
         # TODO: Give experience?  Decide.
         return True
-            
-    
-    
-    
-    
-    
-        
-        
-        
+
+
+
+
+
+
+
+
+
