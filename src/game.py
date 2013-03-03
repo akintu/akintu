@@ -185,7 +185,15 @@ class Game(object):
                     self.attempt_attack()
                 elif event.key == K_n and self.combat:
                     self.force_end_turn()
-
+                elif event.key == K_EQUALS or event.key == K_PAGEUP:
+                    Combat.screen.scroll_up()
+                elif event.key == K_MINUS or event.key == K_PAGEDOWN:
+                    Combat.screen.scroll_down()
+                elif event.key == K_UNDERSCORE:
+                    Combat.screen.scroll_down(1000)
+                elif event.key == K_PLUS:
+                    Combat.screen.scroll_up(1000)
+            
     def move_person(self, direction, distance):
         if self.running:
             self.CDF.send(Person(PersonActions.STOP, self.id))
@@ -241,7 +249,6 @@ class Game(object):
                 currentTargetPlace = self.panePersonIdList.index(self.currentTargetId)
                 self.currentTargetId = self.panePersonIdList[currentTargetPlace - 1]        
         print self.pane.person[self.currentTargetId].name
-        # TODO: Handle removal (and addition?) to the combat pane's person list.
                     
     def animate(self, id, source, dest, length):
         xdist = (dest.tile[0] - source.tile[0]) * TILE_SIZE
