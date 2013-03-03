@@ -9,18 +9,14 @@ import sys
 
 from game import Game
 from const import *
+import welcome
 
 
 def main():
-    pygame.init()
+    player, state, ip, port = welcome.runwelcome()
 
-    #TODO: all this can be changed when the menu is integrated
-    #state is undefined right now, but we could pass in a directory
-    #or a pickled object
-    ip = None
-    if len(sys.argv) != 1:
-        ip = sys.argv[1]
-    game = Game(port=1337, serverip=ip, state={SEED_KEY: "correcthorsebatterystaple!"}, player=("Player", "Human", "Barbarian"))
+    pygame.init()
+    game = Game(port=port, serverip=ip, state=state, player=player)
 
 
 if __name__ == "__main__":
