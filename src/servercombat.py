@@ -95,7 +95,7 @@ class CombatServer():
         deadList associated with this CombatState.'''
         toUpdateList = []
         for char in [self.server.person[x] for x in self.server.pane[combatPane].person]:
-            if char.HP <= 0 and isinstance(char, monster.Monster):
+            if char.HP <= 0 and char.team == "Monsters":
                 toUpdateList.append(char)
 
         for char in toUpdateList:
@@ -281,7 +281,7 @@ class CombatServer():
 
     def monster_phase(self, combatPane):
         chars = [self.server.person[x] for x in self.server.pane[combatPane].person]
-        monsters = [x for x in chars if isinstance(x, monster.Monster) and x not in
+        monsters = [x for x in chars if x.team == "Monsters" and x not in
                     self.combatStates[combatPane].deadMonsterList]
         for mon in monsters:
             while( True ):
