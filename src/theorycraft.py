@@ -123,9 +123,9 @@ class TheoryCraft(object):
         race = race.lower()
         characterClass = characterClass.lower()
         selection = race + " " + characterClass
-        for char in TheoryCraft.classes:
-            if char['name'].lower() == race + " " + characterClass:
-                pc = playercharacter.PlayerCharacter(char)
+        for char_dict in TheoryCraft.classes:
+            if char_dict['name'].lower() == race + " " + characterClass:
+                pc = playercharacter.PlayerCharacter(char_dict, name=name)
                 pc.location = loc
                 return pc
         print "Bad character name/race, returning nothing; you're so stupid."
