@@ -125,7 +125,7 @@ class Pane(object):
                 person.location = Location(self.location, (random.randrange(PANE_X), random.randrange(PANE_Y)))
                 r = Region()
                 r("ADD", "CIRCLE", person.location, PANE_Y/4)
-                #r.build(RAct.SUBTRACT, RShape.CIRCLE, Location(self.location, CENTER), int(PANE_Y/6))
+                #r.build("SUB", "CIRCLE", Location(self.location, CENTER), int(PANE_Y/6))
                 person.ai.add("WANDER", person.ai.wander, person.movementSpeed, pid=id(person), region=r, move_chance=1.0 / (person.movementSpeed))
                 self.person[id(person)] = person
     
@@ -185,7 +185,7 @@ class Pane(object):
     
     def add_region(self, location, size, percentage, entity_type=None):
         r = Region()
-        r.build(RAct.ADD, RShape.CIRCLE, location, size)
+        r("ADD", "CIRCLE", location, size)
         entity_type = self.add_obstacle(location.tile, percentage, entity_type)
         if entity_type:
             for loc in r:
