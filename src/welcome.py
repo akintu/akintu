@@ -7,6 +7,7 @@ import ttk
 import socket
 import const
 import sys
+import re
 
 CLASSES = ('Barbarian', 'Dragoon', 'Weapon Master', 'Spellsword', 'Anarchist',
            'Marksman', 'Druid', 'Tactician', 'Ninja', 'Assassin', 'Shadow',
@@ -106,15 +107,27 @@ class WelcomeWindow(object):
 
     def _gethostgame(self):
         frame = ttk.Frame(self.master, padding='50 50 50 50')
+
         # Try to get your ip
+        localip = ''
         try:
-            localip = socket.gethostbyname(socket.gethostname())
+            fullhtml = urllib2.urlopen('http://www.internetfrog.com/myinternet/traceroute/').read()
+            match = re.search('(?<=Your IP is: )\d\+\.\d\+\.\d\+\.\d\+', fullhtml)
+            localip = match.group(0)
         except:
+            pass
+        if not localip:
+            try:
+                localip = socket.gethostbyname(socket.gethostname())
+            except:
+                pass
+        if not localip:
             localip = '127.0.0.1'
+
         # Create the widgets
         backb = ttk.Button(frame, text='Back', command=self.playtype)
         finishb = ttk.Button(frame, text='Start', command=self.finishhost)
-        ipl = ttk.Label(frame, text='Your local IP:  ' + localip)
+        ipl = ttk.Label(frame, text='Your IP address:  ' + localip)
         portl = ttk.Label(frame, text='Port to listen on:')
         portbox = ttk.Entry(frame, textvariable=self.portstr)
         newworldr = ttk.Radiobutton(frame, text='New World', variable=self.loadingworldvar, value='New World')
