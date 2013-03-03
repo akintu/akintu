@@ -103,13 +103,15 @@ class WelcomeWindow(object):
         self.frame.pack()
 
     def newchar(self):
+        self.loadingchar = False
         self.frame.pack_forget()
         self.frame = self._getnewchar()
         self.frame.pack()
         self.prevplaytype = self.newchar
 
     def loadchar(self):
-        pass
+        #TODO implement loading a character
+        self.loadingchar = True
 
     def playtype(self):
         if self.charrace.get() == '' or self.charclass.get() == '':
