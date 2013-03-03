@@ -200,7 +200,27 @@ def runwelcome():
     root.title('Akintu')
     window = WelcomeWindow(root)
     root.mainloop()
-    return ()
+    root.destroy()
+    ret = []
+
+    if window.loadingchar:
+        ret.append('')  # TODO will be window.charsave.get() instead of ''
+    else:
+        ret.append((window.charname.get(), window.charrace.get(), window.charclass.get()))
+
+    if window.hosting:
+        if window.loadingworld:
+            ret.append(window.worldsave.get())
+        else:
+            ret.append({const.SEED_KEY: window.worldseed.get()})
+        ret.append(None)
+    else:
+        ret.append(None)
+        ret.append(window.joinip.get())
+
+    ret.append(window.port)
+
+    return tuple(ret)
 
 if __name__ == '__main__':
     runwelcome()
