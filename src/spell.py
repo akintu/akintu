@@ -42,7 +42,7 @@ class Spell(object):
         if self.targetType == "friendly" and source.team != target.team:
             return (False, "Cannot target hostile with beneficial spell.")
         # Do we need any check for AoE spells?
-        if not source.inRange(target):
+        if not source.inRange(target, self.range):
             return (False, "Target is out of range.")
         if source.onCooldown(self.name) :
             return (False, self.name + " is on Cooldown.")
@@ -58,10 +58,10 @@ class Spell(object):
             Combat.modifyResource(self.owner, "AP", -self.APCost)
             if self.cooldown:
                 Combat.applyCooldown(self.owner, self.name, self.cooldown)
-            spellSuccess = Dice.rollSuccess(100 - self.owner.statusSpellFailureChance)
+            spellSuccess = Dice.rollSuccess(100 - self.owner.spellFailureChance)
             if spellSuccess:
                 self._shoutSpellCast(self.owner, target)
-                if self.targetType == "hostile" and self.owner.isinstance(PlayerCharacter):
+                if self.targetType == "hostile" and self.owner.team == "Players":
                     self.applySchoolResistance()
                     self.action(self, target)
                     self.unapplySchoolResistance()

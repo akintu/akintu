@@ -75,7 +75,7 @@ class Game(object):
         if isinstance(player, tuple):
             #TODO: Right now name is being ignored.
             person = Person(PersonActions.CREATE, None, Location((0, 0), (PANE_X/2, PANE_Y/2)), \
-            ("Player", player[1], player[2]))
+            ("Player", player[0], player[1], player[2]))
         else: 
             #TODO: Might need to unpickle a player/rehydrate it
             person = player

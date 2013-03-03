@@ -72,7 +72,7 @@ class TheoryCraft(object):
         if tuple[0] == "Monster":
             return TheoryCraft.getMonster(name=tuple[1], level=tuple[2])
         elif tuple[0] == "Player":
-            return TheoryCraft.getNewPlayerCharacter(race=tuple[1], characterClass=tuple[2])
+            return TheoryCraft.getNewPlayerCharacter(name=tuple[1], race=tuple[2], characterClass=tuple[3])
         else:
             print "Warning: Attempted to convert from invalid tuple: " + str(tuple[0]) + " ."
 
@@ -118,13 +118,14 @@ class TheoryCraft(object):
         return theMonster
 
     @staticmethod
-    def getNewPlayerCharacter(race, characterClass, loc=location.Location((0, 0), (PANE_X/2, PANE_Y/2))):
+    def getNewPlayerCharacter(race, characterClass, loc=location.Location((0, 0), (PANE_X/2, PANE_Y/2)),
+                              name="Milton Filbert"):
         race = race.lower()
         characterClass = characterClass.lower()
         selection = race + " " + characterClass
-        for char in TheoryCraft.classes:
-            if char['name'].lower() == race + " " + characterClass:
-                pc = playercharacter.PlayerCharacter(char)
+        for char_dict in TheoryCraft.classes:
+            if char_dict['name'].lower() == race + " " + characterClass:
+                pc = playercharacter.PlayerCharacter(char_dict, name=name)
                 pc.location = loc
                 return pc
         print "Bad character name/race, returning nothing; you're so stupid."

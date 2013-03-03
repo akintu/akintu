@@ -18,7 +18,7 @@ class Location(object):
 
         self.direction = direction
 
-    # So it turns out __str__ is like toString()
+    # So it turns out __repr__ is like toString()
     def __repr__(self):
         return "(%s, %s, %d)" % (self.pane, self.tile, self.direction)
 
@@ -58,10 +58,7 @@ class Location(object):
 
     @property
     def abs_pos(self):
-        if self.pane:
-            return (self.pane[0] * PANE_X + self.tile[0], self.pane[1] * PANE_Y + self.tile[1])
-        else:
-            return (self.tile[0], self.tile[1])
+        return (self.abs_x, self.abs_y)
 
     def move(self, direction, distance):
         '''
@@ -147,8 +144,8 @@ class Location(object):
         disty = dest.abs_y - self.abs_y
         dist = max(abs(distx), abs(disty))
         for x in range(dist + 1):
-            locs.append(Location(self.abs_x + int(float(x) / dist * distx),
-                    self.abs_y + int(float(x) / dist * disty)))
+            locs.append(Location(self.abs_x + int(round(float(x) / dist * distx)),
+                    self.abs_y + int(round(float(x) / dist * disty))))
         return locs
 
     def distance(self, dest):
