@@ -29,14 +29,15 @@ class Game(object):
         Parameters:
             port:       required for both host and client
             serverip:   None if hosting, required for client
-            state:      state={SEED_KEY: "seed"} if new game, or 
+            state:      state={SEED_KEY: "seed"} if new game, or
                         state="SaveFile.###" if loading game
             player:     ("Name", "Race", "Class") if new player
                         
         '''
 
         TheoryCraft.loadAll()   #Static method call, Devin's stuff.
-        assert state
+        if not state:  # This is a hack, should be getting seed from host
+            state = {SEED_KEY: 'correcthorsestaplebattery!'}
         assert player
 
         if isinstance(state, dict):     #This means we're creating a new game

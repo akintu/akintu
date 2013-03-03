@@ -386,7 +386,7 @@ class GameScreen(object):
         else:
             level = str(statsdict['level'])
 
-        hstring = str(HP) + ' / ' + (str(totalHP) if totalHP else '0')
+        hstring = str(HP)
         mstring = str(MP) + ' / ' + (str(totalMP) if totalMP else '0')
         astring = str(AP) + ' / ' + (str(reducedAP) if totalAP else '0')
 
@@ -490,7 +490,7 @@ class GameScreen(object):
         else:
             level = 'L' + str(statsdict['level'])
 
-        hstring = str(HP) + ' / ' + (str(totalHP) if totalHP else '0')
+        hstring = str(HP)
 
         barx = 32 + 4 + 35
         barlabelx = 32 + 4 + 4

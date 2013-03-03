@@ -4,6 +4,9 @@ Welcome screens implemented using Tkinter GUI library
 
 from Tkinter import *
 import ttk
+import socket
+import const
+import sys
 
 CLASSES = ('Barbarian', 'Dragoon', 'Weapon Master', 'Spellsword', 'Anarchist',
            'Marksman', 'Druid', 'Tactician', 'Ninja', 'Assassin', 'Shadow',
@@ -30,6 +33,10 @@ class WelcomeWindow(object):
         self.port = 1337
         self.hosting = True
         self.loadingchar = False
+        self.loadingworld = False
+        self.loadingworldvar = StringVar()
+        self.worldseed = StringVar()
+        self.worldsave = StringVar()
 
         self.mainmenu()
 
@@ -97,6 +104,35 @@ class WelcomeWindow(object):
         finishb.grid(column=3, row=5, stick=(N, S), padx=20, pady=20)
         return frame
 
+    def _gethostgame(self):
+        frame = ttk.Frame(self.master, padding='50 50 50 50')
+        # Try to get your ip
+        try:
+            localip = socket.gethostbyname(socket.gethostname())
+        except:
+            localip = '127.0.0.1'
+        # Create the widgets
+        backb = ttk.Button(frame, text='Back', command=self.playtype)
+        finishb = ttk.Button(frame, text='Start', command=self.finishhost)
+        ipl = ttk.Label(frame, text='Your local IP:  ' + localip)
+        portl = ttk.Label(frame, text='Port to listen on:')
+        portbox = ttk.Entry(frame, textvariable=self.portstr)
+        newworldr = ttk.Radiobutton(frame, text='New World', variable=self.loadingworldvar, value='New World')
+        loadworldr = ttk.Radiobutton(frame, text='Load World', variable=self.loadingworldvar, value='Load World')
+        newworldbox = Entry(frame, textvariable=self.worldseed)
+        loadworldcombo = ttk.Combobox(frame, textvariable=self.worldsave, values=(), state='readonly')
+        # Lay out the widgets
+        ipl.grid(column=2, row=1, stick=W, padx=5, pady=5)
+        portl.grid(column=2, row=2, stick=W, padx=5, pady=5)
+        portbox.grid(column=2, row=3, stick=(W, E), padx=5, pady=5)
+        newworldr.grid(column=1, row=4, stick=W, padx=5, pady=5)
+        loadworldr.grid(column=1, row=5, stick=W, padx=5, pady=5)
+        newworldbox.grid(column=2, row=4, stick=(W, E), padx=5, pady=5)
+        loadworldcombo.grid(column=2, row=5, stick=(W, E), padx=5, pady=5)
+        backb.grid(column=1, row=6, stick=(N, S), padx=20, pady=20)
+        finishb.grid(column=3, row=6, stick=(N, S), padx=20, pady=20)
+        return frame
+
     def mainmenu(self):
         self.frame.pack_forget()
         self.frame = self._getmainmenu()
@@ -126,8 +162,9 @@ class WelcomeWindow(object):
         self.frame.pack()
 
     def hostgame(self):
-        #TODO implement hosting a game (default port 1337)
-        pass
+        self.frame.pack_forget()
+        self.frame = self._gethostgame()
+        self.frame.pack()
 
     def finishjoin(self):
         try:
@@ -141,13 +178,54 @@ class WelcomeWindow(object):
         self.success = True
         self.frame.quit()
 
+    def finishhost(self):
+        try:
+            self.port = int(self.portstr.get())
+        except ValueError:
+            return
+        if self.loadingworldvar.get() == '' or self.worldseed.get() == '':
+            return
+        if self.loadingworldvar.get() == 'New World':
+            self.loadingworld = False
+        else:
+            self.loadingworld = True
+            return
+
+        self.hosting = True
+        self.success = True
+        self.frame.quit()
+
 
 def runwelcome():
     root = Tk()
     root.title('Akintu')
     window = WelcomeWindow(root)
     root.mainloop()
-    return ()
+    try:
+        root.destroy()
+    except:
+        sys.exit()
+    ret = []
+
+    if window.loadingchar:
+        ret.append('')  # TODO will be window.charsave.get() instead of ''
+    else:
+        ret.append((window.charname.get(), window.charrace.get(), window.charclass.get()))
+
+    if window.hosting:
+        if window.loadingworld:
+            ret.append(window.worldsave.get())
+        else:
+            ret.append({const.SEED_KEY: window.worldseed.get()})
+        ret.append(None)
+    else:
+        ret.append(None)
+        ret.append(window.joinip.get())
+
+    ret.append(window.port)
+
+    # Return (player, state, ip, port)
+    return tuple(ret)
 
 if __name__ == '__main__':
     runwelcome()
