@@ -137,8 +137,11 @@ class Pane(object):
             random.seed(self.seed + str(self.location) + "load_monsters")
             for i in range(3):
                 lvl = max(abs(self.location[0]), abs(self.location[1]))
-                lvl = max(lvl, 1)
-                person = TheoryCraft.getMonster(level=lvl)#TODO, pass in random here
+                tolerance = 1
+                if lvl == 0:
+                    lvl = 1
+                    tolerance = 0
+                person = TheoryCraft.getMonster(level=lvl, tolerance=tolerance)#TODO, pass in random here
                 person.location = Location(self.location, (random.randrange(PANE_X), random.randrange(PANE_Y)))
                 r = Region()
                 r("ADD", "CIRCLE", person.location, PANE_Y/4)

@@ -58,7 +58,7 @@ class Spell(object):
             Combat.modifyResource(self.owner, "AP", -self.APCost)
             if self.cooldown:
                 Combat.applyCooldown(self.owner, self.name, self.cooldown)
-            spellSuccess = Dice.rollSuccess(100 - self.owner.statusSpellFailureChance)
+            spellSuccess = Dice.rollSuccess(100 - self.owner.spellFailureChance)
             if spellSuccess:
                 self._shoutSpellCast(self.owner, target)
                 if self.targetType == "hostile" and self.owner.isinstance(PlayerCharacter):
