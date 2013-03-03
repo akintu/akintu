@@ -25,6 +25,7 @@ class World(object):
     def __init__(self, seed, world_state=None):
         self.seed = seed
         self.panes = dict()
+        #TODO: Unbox/Open world_state in whatever form it is given
         self.world_state = world_state
 
     def get_pane(self, location, is_server=False):
@@ -38,7 +39,7 @@ class World(object):
         if self.world_state:
             if location in self.world_state:
                 pane_state = self.world_state[location]
-        self.panes[location] = Pane(self.seed, location, load_entities=True, pane_state=None)
+        self.panes[location] = Pane(self.seed, location, load_entities=True, pane_state=pane_state)
         self._merge_tiles(surrounding_locations)
         
         self.panes[location].load_images()
@@ -197,16 +198,25 @@ class Pane(object):
         return CombatPane(self, focus_tile, monster)
 
     def load_state(self, state):
-        #Get Monsters
-        if MONSTER_KEY in state:
-            self.load_monsters(monsters=state[MONSTER_KEY])
-        #Get Items
-        if ITEM_KEY in state:
-            self.load_items(items=state[ITEM_KEY])
-        #Get Anything Else
-        pass
+        if state:
+            #Get Monsters
+            if MONSTER_KEY in state:
+                self.load_monsters(monsters=state[MONSTER_KEY])
+            #Get Items
+            if ITEM_KEY in state:
+                self.load_items(items=state[ITEM_KEY])
+            #Get Anything Else
+            pass
     
     def save_state(self):
+        '''
+        Saves the current panes monsters and items to a dictionary.
+        Returns a dictionary with the following attributes:
+            {MONSTER_KEY: [(name, level, location, region, ai), (...)],
+                ITEM_KEY: [(name, attributes, location, ...), (...)]}
+        The server can then add this dictionary to its master dictionary using
+        this pane's (x, y) coordinate as the key.
+        '''
         pass
     
 class CombatPane(Pane):

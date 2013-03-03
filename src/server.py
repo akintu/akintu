@@ -5,11 +5,11 @@ from playercharacter import *
 from servercombat import *
 
 class GameServer():
-    def __init__(self, world):
+    def __init__(self, world, port):
         self.world = world
         self.SDF = ServerDataFactory()
         self.CS = CombatServer(self)
-        reactor.listenTCP(1337, self.SDF)
+        reactor.listenTCP(port, self.SDF)
 
         LoopingCall(self.server_loop).start(0)
 

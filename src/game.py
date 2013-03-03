@@ -23,11 +23,29 @@ from world import *
 clock = pygame.time.Clock()
 
 class Game(object):
-    def __init__(self, seed, serverip=None, state=None):
+    def __init__(self, port, serverip=None, state=None, player=None):
+        '''
+        Parameters:
+            port: required for both host and client
+            serverip: None if hosting, required for client
+            state: state=("Some Seed",) if new game, or, state="SaveFile.###" if loading game
+            player: 
+        '''
         #seed = "CorrectHorseStapleBattery"
         TheoryCraft.loadAll()   #Static method call, Devin's stuff.
-        Sprites.load(seed)
-        self.world = World(seed, world_state=state)
+        if not state:
+            assert False
+        if not player:
+            assert False
+        if isinstance(state, tuple):
+            self.seed = state[0]
+        else:
+            #Open file
+            #self.seed = file["seed"]
+            pass
+        
+        Sprites.load(self.seed)
+        self.world = World(self.seed, world_state=state)
         self.pane = None
         
         # Game state
@@ -42,26 +60,23 @@ class Game(object):
         self.panePersonIdList = []
         
         # Setup server if host
-        self.serverip = "localhost"
+        
+        self.port = port
         if serverip:
-            self.serverip = sys.argv[1]
+            self.serverip = serverip
         else:
-            Combat.gameServer = GameServer(self.world)
-            
-        # if len(sys.argv) == 1:
-            # GameServer(self.world)
-        # else:
-            # self.serverip = sys.argv[1]
+            self.serverip = "localhost"
+            Combat.gameServer = GameServer(self.world, self.port)
 
         self.CDF = ClientDataFactory()
-        reactor.connectTCP(self.serverip, 1337, self.CDF)
+        reactor.connectTCP(self.serverip, self.port, self.CDF)
 
-        self.setup = LoopingCall(self.setup_game)
+        self.setup = LoopingCall(self.setup_game, player)
         self.setup.start(0)
 
         reactor.run()
 
-    def setup_game(self):
+    def setup_game(self, person):
         if not self.CDF.port:
             return
 
@@ -70,7 +85,7 @@ class Game(object):
         Combat.screen = self.screen
 
         self.CDF.send(Person(PersonActions.CREATE, None, Location((0, 0), (PANE_X/2, PANE_Y/2)), \
-            ("Player", "Human", "Barbarian")))
+            person))
 
         self.setup.stop()
         LoopingCall(self.game_loop).start(1.0 / DESIRED_FPS)
