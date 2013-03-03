@@ -6,6 +6,7 @@ from Tkinter import *
 import ttk
 import socket
 import const
+import sys
 
 CLASSES = ('Barbarian', 'Dragoon', 'Weapon Master', 'Spellsword', 'Anarchist',
            'Marksman', 'Druid', 'Tactician', 'Ninja', 'Assassin', 'Shadow',
@@ -200,7 +201,10 @@ def runwelcome():
     root.title('Akintu')
     window = WelcomeWindow(root)
     root.mainloop()
-    root.destroy()
+    try:
+        root.destroy()
+    except:
+        sys.exit()
     ret = []
 
     if window.loadingchar:
