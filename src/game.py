@@ -8,6 +8,7 @@ from pygame.locals import *
 import os
 import sys
 import time
+import pickle
 
 from combat import *
 from command import *
@@ -33,19 +34,22 @@ class Game(object):
         '''
         #seed = "CorrectHorseStapleBattery"
         TheoryCraft.loadAll()   #Static method call, Devin's stuff.
+        
         if not state:
             assert False
         if not player:
             assert False
-        if isinstance(state, tuple):
+        if isinstance(state, tuple):    #This means we're creating a new game with this seed.
             self.seed = state[0]
-        else:
-            #Open file
-            #self.seed = file["seed"]
+            self.state = None
+        else:   #This means we're loading the state from a save file
+            unpickled_state = pickle.load( open( state, "rb" ) )
+            self.seed = unpickled_state["seed"]
+            self.state = unpickled_state
             pass
         
         Sprites.load(self.seed)
-        self.world = World(self.seed, world_state=state)
+        self.world = World(self.seed, world_state=self.state)
         self.pane = None
         
         # Game state
@@ -60,7 +64,6 @@ class Game(object):
         self.panePersonIdList = []
         
         # Setup server if host
-        
         self.port = port
         if serverip:
             self.serverip = serverip
