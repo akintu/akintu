@@ -61,12 +61,12 @@ class Spell(object):
             spellSuccess = Dice.rollSuccess(100 - self.owner.spellFailureChance)
             if spellSuccess:
                 self._shoutSpellCast(self.owner, target)
-                if self.targetType == "hostile" and self.owner.isinstance(PlayerCharacter):
+                if self.targetType == "hostile" and self.owner.team == "Players":
                     self.applySchoolResistance()
                     self.action(self, target)
                     self.unapplySchoolResistance()
                 else:
-                    self.action(target)
+                    self.action(self, target)
                 self._shoutSpellCastComplete(self.owner, target)
                 if self.targetType != "friendly" and self.targetType != "self":
                     Combat.removeStealth(self.owner)
@@ -132,7 +132,7 @@ class Spell(object):
     def _arcaneDart(self, target):
         source = self.owner
         hitType = Combat.calcHit(source, target, "Magical")
-        damage = (Combat.calcDamage(source, target, min=2, max=4, element="Arcane",
+        damage = (Combat.calcDamage(source, target, minimum=2, maximum=4, element="Arcane",
                                     hitValue=hitType, critical=1.2, scalesWith="Spellpower", scaleFactor=0.03))
         Combat.lowerHP(target, damage)
 
@@ -162,7 +162,7 @@ class Spell(object):
     def _singe(self, target):
         source = self.owner
         hitType = Combat.calcHit(source, target, "Magical")
-        damage = (Combat.calcDamage(source, target, min=2, max=9, element="Fire",
+        damage = (Combat.calcDamage(source, target, minimum=2, maximum=9, element="Fire",
                                     hitValue=hitType, critical=1.2, partial=0.5,
                                     scalesWith="Spellpower", scaleFactor=0.05))
         Combat.lowerHP(target, damage)
@@ -170,7 +170,7 @@ class Spell(object):
     def _chill(self, target):
         source = self.owner
         hitType = Combat.calcHit(source, target, "Magical")
-        damage = Combat.calcDamage(source, target, min=1, max=12, element="Cold",
+        damage = Combat.calcDamage(source, target, minimum=1, maximum=12, element="Cold",
                                    hitValue=hitType, scalesWith="Spellpower",
                                    scaleFactor=0.01)
         duration = 2
@@ -181,7 +181,7 @@ class Spell(object):
     def _shock(self, target):
         source = self.owner
         hitType = Combat.calcHit(source, target, "Magical")
-        damage = Combat.calcDamage(source, target, min=15, max=22, element="Electric", hitValue=hitType,
+        damage = Combat.calcDamage(source, target, minimum=15, maximum=22, element="Electric", hitValue=hitType,
                                    scalesWith="Spellpower", scaleFactor=0.014)
         Combat.lowerHP(target, damage)
 
@@ -210,7 +210,7 @@ class Spell(object):
     def _haunt(self, target):
         source = self.owner
         hitType = Combat.calcHit(source, target, "Magical")
-        damage = Combat.calcDamage(source, target, min=13, max=20, element="Shadow", hitValue=hitType,
+        damage = Combat.calcDamage(source, target, minimum=13, maximum=20, element="Shadow", hitValue=hitType,
                                    scalesWith="Spellpower", scaleFactor=0.01)
         Combat.lowerHP(target, damage)
 

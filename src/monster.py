@@ -256,8 +256,12 @@ class Monster(person.Person):
             if player.cLocation in reg and player.team == "Players":
                 players.append(player)
 
-        keyFunction = lambda x: self.cLocation.distance(x.cLocation)
-        sortedPlayers = sorted(players, keyFunction)
+        distanceTuples = []
+        for p in players:
+            distanceTuples.append((p, self.cLocation.distance(p.cLocation)))
+        
+        sortedTuples = sorted(distanceTuples, key=lambda x: x[1])
+        sortedPlayers = [x[0] for x in sortedTuples]
         return sortedPlayers
 
     def getNearestPlayer(self):

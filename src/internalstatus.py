@@ -108,6 +108,7 @@ class InternalStatus(object):
         target.statusDodge += magnitude
 
     def Dodge_penalty_method(self, target, magnitude):
+        print magnitude
         target.statusDodge -= magnitude
 
     def Double_dodge_method(self, target, magnitude):

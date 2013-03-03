@@ -49,7 +49,7 @@ class CombatServer():
 
             elif self.tile_is_open(command.location, command.id) and \
                  activePlayer.AP >= activePlayer.totalMovementAPCost:
-                activePlayer.AP -= activePlayer.totalMovementAPCost
+                Combat.modifyResource(activePlayer, "AP", -activePlayer.totalMovementAPCost)
                 self.server.SDF.send(port, Update(command.id, UpdateProperties.AP, activePlayer.AP))
                 # Update location and broadcast
                 self.server.person[command.id].cLocation = command.location
@@ -101,15 +101,14 @@ class CombatServer():
 
         for char in toUpdateList:
             self.combatStates[combatPane].deadMonsterList.append(char)
-            for port in Combat.getAllPorts():
-                self.server.SDF.send(port, Person(PersonActions.REMOVE, char.id))
-                Combat.screen.show_text(char.name + " Died!", color='magenta')
+            port = Combat.getAllPorts()[0]
+            self.server.SDF.send(port, Person(PersonActions.REMOVE, char.id))
+            Combat.screen.show_text(char.name + " Died!", color='magenta')
             self.server.pane[combatPane].person.remove(char.id)
 
     def monsterMove(self, monster):
         tilesLeft = monster.totalMovementTiles
         while tilesLeft > 0:
-            print "Monster: " + monster.name + " moveTilesLeft: " + str(tilesLeft)
             player = monster.getNearestPlayer()
             direction = self.getRelativeDirection(monster, player)
             desiredLocation = monster.cLocation.move(direction, 1)
@@ -213,39 +212,91 @@ class CombatServer():
         for stat in target.statusList:
             print target.name + " Has status: " + stat.name + " T=" + str(stat.turnsLeft)
 
-    def startCombat(self, playerId, monsterId):
-        '''Initiates combat'''
+    def joinCombat(self, playerId, monsterId):
         combatPane = self.server.person[monsterId].location
-        self.combatStates[combatPane] = CombatState()
-        if not self.server.person[monsterId].cPane:
+        currentPlayer = self.server.person[playerId]
+        
+        # Put player into combat -- Stop running if needed.
+        currentPlayer.ai.remove("RUN")
+        currentPlayer.cPane = combatPane
+        self.server.pane[combatPane].person.append(playerId)
+            
+        #TODO: Calculate starting location for reals
+        currentPlayer.cLocation = Location((0, 0), (0, 1))
+        
+        for port in Combat.getAllCombatPorts():
+            self.server.SDF.send(port, Person(PersonActions.REMOVE, playerId))
+            self.server.SDF.send(port, Update(playerId, UpdateProperties.COMBAT, True))
+            self.server.SDF.send(port, Person(PersonActions.CREATE, playerId,
+                                 currentPlayer.cLocation, currentPlayer.getDetailTuple()))  
+            
+        # TODO: I don't really know if this is the right way to do this, but I think it isn't.
+        allCharIds = [charId for charId in self.server.pane[combatPane].person]
+        for charId in allCharIds:
+            char = self.server.person[charId]
+            imagepath = os.path.join('res', 'images', 'sprites', char.image)
+            persondict = {'location': char.cLocation, 'image': imagepath, 'team': char.team,
+                    'HP': char.HP, 'totalHP': char.totalHP, 'MP': char.MP,
+                    'totalMP': char.totalMP, 'AP': char.AP, 'totalAP': char.totalAP,
+                    'level': char.level, 'name' : char.name}
+            Combat.screen.add_person(charId, persondict)
+        # END of not knowing what I'm doing.
+        
+        # Set AP at 0 upon entering.
+        Combat.modifyResource(currentPlayer, "AP", -currentPlayer.AP)
+        
+        ## Debug area ##
+        j = 0
+        for per in self.server.pane[combatPane].person:
+            j += 1
+            print "In combat pane: " + "#" + str(j) + ": " + self.server.person[per].name
+        ## Debug end ##
+            
+    def startCombat(self, playerId, monsterId):
+        '''Initiates combat for the first player to enter combat.
+        monsterId is the identifier for the Monster on the overworld
+        that triggered combat.'''
+        combatPane = self.server.person[monsterId].location
+        self.combatStates[combatPane] = CombatState(monsterId)
+        monsterLeader = self.server.person[monsterId]
+        currentPlayer = self.server.person[playerId]
+        
+        if not monsterLeader.cPane:
             # Put monster into combat
-            self.server.person[monsterId].ai.pause()
-            self.server.person[monsterId].cPane = combatPane
-            self.server.load_pane(self.server.person[monsterId].cPane, monsterId)
+            monsterLeader.ai.pause()
+            monsterLeader.cPane = combatPane
+            self.server.load_pane(combatPane, monsterId)
             # Timer set
             self.combatStates[combatPane].turnTimer = reactor.callLater(seconds, self.check_turn_end,
                     combatPane, True)
 
-        # Put player into combat
-        self.server.person[playerId].ai.remove("RUN")
-        self.server.person[playerId].cPane = self.server.person[monsterId].location
+        # Put player into combat -- Stop running if needed.
+        currentPlayer.ai.remove("RUN")
+        currentPlayer.cPane = combatPane
         self.server.pane[combatPane].person.append(playerId)
 
         #TODO: Calculate starting location for reals
-        self.server.person[playerId].cLocation = Location((0, 0), (0, 0))
+        currentPlayer.cLocation = Location((0, 0), (0, 0))
 
-        p = [p for p, i in self.server.player.iteritems() if i == playerId][0]
-        self.server.SDF.send(p, Person(PersonActions.REMOVE, i))
-        self.server.SDF.send(p, Update(i, UpdateProperties.COMBAT, \
-                True))
-        self.server.SDF.send(p, Person(PersonActions.CREATE, i, \
-                self.server.person[playerId].cLocation, \
-                self.server.person[playerId].getDetailTuple()))
-        for i in self.server.pane[combatPane].person:
-            if playerId != i:
-                self.server.SDF.send(p, Person(PersonActions.CREATE, i, \
-                        self.server.person[i].cLocation, self.server.person[i].getDetailTuple()))
-
+        for port in Combat.getAllCombatPorts():
+            self.server.SDF.send(port, Person(PersonActions.REMOVE, playerId))
+            self.server.SDF.send(port, Update(playerId, UpdateProperties.COMBAT, True))
+            self.server.SDF.send(port, Person(PersonActions.CREATE, playerId,
+                                 currentPlayer.cLocation, currentPlayer.getDetailTuple()))
+                             
+        # Populate the combat pane with all of the monsters.
+            for id in self.server.pane[combatPane].person:
+                if playerId != id:
+                    self.server.SDF.send(port, Person(PersonActions.CREATE, id,
+                            self.server.person[id].cLocation, self.server.person[id].getDetailTuple()))
+                        
+        ## Debug area ##
+        # j = 0
+        # for per in self.server.pane[combatPane].person:
+            # j += 1
+            # print "In combat pane: " + "#" + str(j) + ": " + self.server.person[per].name
+        ## Debug end ##
+            
         self.shout_turn_start(self.server.person[playerId], turn="Player")
 
     def check_turn_end(self, combatPane, timeExpired=False):
@@ -296,6 +347,10 @@ class CombatServer():
                 message = mon.performAction(self.server, combatPane)
                 if message == "Failure":
                     break
+        allCharIds = [charId for charId in self.server.pane[combatPane].person]
+        for charId in allCharIds:
+            char = self.server.person[charId]
+            Combat.screen.update_person(charId, {'location': char.location})
         print "~~END MONSTER PHASE~~."
         return
 
@@ -332,6 +387,7 @@ class CombatServer():
         # Transport player to town TODO
 
 class CombatState(object):
-    def __init__(self):
+    def __init__(self, leadMonsterId):
         self.turnTimer = None
         self.deadMonsterList = []
+        self.leadMonsterId = leadMonsterId

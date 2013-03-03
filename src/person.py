@@ -2432,12 +2432,20 @@ class Person(en.Entity):
                        "Shuriken", "Mage Weapon", "Sling", "Knife"
         Outputs:
           True or False"""
-        weaponType = weaponType.capitalize().strip()
+        weaponType = weaponType.strip()
         acceptList = [weaponType]
         if weaponType == "Melee":
+            if self.team == "Players":
+                if self.attackRange == 1:
+                    return True
+                return False
             acceptList.extend(["Sword", "Club", "Axe", "Polearm",
                                "Mage Weapon", "Knife"])
         elif weaponType == "Ranged":
+            if self.team == "Players":
+                if self.attackRange > 1:
+                    return True
+                return False
             acceptList.extend(["Longbow", "Shortbow", "Sling", "Crossbow",
                                "Shuriken"])
         elif weaponType == "Bow":
@@ -2512,7 +2520,7 @@ class Person(en.Entity):
            handTwo is not None):
             return handOne.type == handTwo.type
         if (style == "Dual"):
-            return (handOne is not None and handTwo is not None)
+            return (handOne is not None and handTwo is not None and not self.usingShield("Any"))
         if (style == "Two Handed"):
             return (handOne is not None and handTwo == "Occupied")
         if (style == "Single"):

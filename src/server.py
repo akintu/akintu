@@ -101,12 +101,20 @@ class GameServer():
                     # Check for combat range and initiate combat states
                     if command.id in self.player.values():
                         p = [p for p, i in self.player.iteritems() if i == command.id][0]
-                        for person in self.pane[self.person[command.id].location.pane].person:
-                            if self.person[command.id].location.in_melee_range( \
-                                    self.person[person].location) and \
-                                    self.person[person].team == "Monsters":
-                                self.CS.startCombat(command.id, person)
-
+                        for potentialMonster in self.pane[self.person[command.id].location.pane].person:
+                            if self.person[command.id].location.in_melee_range(
+                                    self.person[potentialMonster].location) and \
+                                    self.person[potentialMonster].team == "Monsters":
+                                battleStarted = False
+                                for combatState in self.CS.combatStates.values():
+                                    if combatState.leadMonsterId == potentialMonster:
+                                        # This battle has already started with another player.
+                                        battleStarted = True
+                                if battleStarted:
+                                    self.CS.joinCombat(command.id, potentialMonster)
+                                else:       
+                                    # This is fresh combat; start it for the first time.
+                                    self.CS.startCombat(command.id, potentialMonster)
 
                 else:
                     if port:
@@ -128,8 +136,8 @@ class GameServer():
 
                 #Notify clients in the affected pane
                 for p, i in self.player.iteritems():
-                    if self.person[i].location.pane == self.person[command.id].location.pane and \
-                            i not in self.combat:
+                    if self.person[i].location.pane == self.person[command.id].location.pane:
+                            #i not i.combat:
                         self.SDF.send(p, command)
                 del self.person[command.id]
                 self.unload_panes()

@@ -37,7 +37,7 @@ class Game(object):
 
         TheoryCraft.loadAll()   #Static method call, Devin's stuff.
         if not state:  # This is a hack, should be getting seed from host
-            state = {SEED_KEY: 'correcthorsestaplebattery!'}
+            state = {SEED_KEY: 'a'}
         assert player
 
         if isinstance(state, dict):     #This means we're creating a new game
@@ -73,7 +73,6 @@ class Game(object):
         reactor.connectTCP(self.serverip, self.port, self.CDF)
         
         if isinstance(player, tuple):
-            #TODO: Right now name is being ignored.
             person = Person(PersonActions.CREATE, None, Location((0, 0), (PANE_X/2, PANE_Y/2)), \
             ("Player", player[0], player[1], player[2]))
         else: 

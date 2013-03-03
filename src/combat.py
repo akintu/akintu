@@ -32,6 +32,26 @@ class Combat(object):
         return ports
 
     @staticmethod
+    def getAllCombatPorts():
+        ports = []
+        if not Combat.gameServer:
+            print "Combat has not had its view of gameServer initialized."
+        else:
+            for port, id in Combat.gameServer.player.iteritems():
+                if Combat.gameServer.person[id].cLocation:
+                    # In combat
+                    ports.append(port)
+        return ports
+        
+    @staticmethod
+    def getPlayerPort(character):
+        ''' Assumes "character" is a PlayerCharacter '''
+        for port in Combat.gameServer.player:
+            if Combat.gameServer.player[port] == character.id:
+                return port
+        return None
+        
+    @staticmethod
     def sendToAll(character, type):
         messageObj = None
         if type == "AP":

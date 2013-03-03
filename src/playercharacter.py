@@ -245,7 +245,7 @@ class PlayerCharacter(p.Person):
             for abil in self.abilities:
                 if abil.name == "Ranged Attack":
                     return abil
-        else:
+        elif self.usingWeapon("Melee"):
             for abil in self.abilities:
                 if abil.name == "Melee Attack":
                     return abil
