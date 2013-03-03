@@ -27,18 +27,17 @@ class Game(object):
     def __init__(self, port, serverip=None, state=None, player=None):
         '''
         Parameters:
-            port: required for both host and client
-            serverip: None if hosting, required for client
-            state: state=("Some Seed",) if new game, or, state="SaveFile.###" if loading game
-            player:
+            port:       required for both host and client
+            serverip:   None if hosting, required for client
+            state:      state={SEED_KEY: "seed"} if new game, or 
+                        state="SaveFile.###" if loading game
+            player:     ("Name", "Race", "Class") if new player
         '''
-        #seed = "CorrectHorseStapleBattery"
+
         TheoryCraft.loadAll()   #Static method call, Devin's stuff.
-        
-        if not state:
-            assert False
-        if not player:
-            assert False
+        assert state
+        assert player
+
         if isinstance(state, dict):     #This means we're creating a new game
             self.state = state
         else:                           #This means we're loading the state from a save file
@@ -70,8 +69,14 @@ class Game(object):
 
         self.CDF = ClientDataFactory()
         reactor.connectTCP(self.serverip, self.port, self.CDF)
-
-        self.setup = LoopingCall(self.setup_game, player)
+        
+        if isinstance(player, tuple):
+            #TODO: Right now name is being ignored.
+            person = Person(PersonActions.CREATE, None, Location((0, 0), (PANE_X/2, PANE_Y/2)), \
+            ("Player", player[1], player[2]))
+        else: 
+            person = player
+        self.setup = LoopingCall(self.setup_game, person)
         self.setup.start(0)
 
         reactor.run()
@@ -84,8 +89,7 @@ class Game(object):
         self.screen = GameScreen()
         Combat.screen = self.screen
 
-        self.CDF.send(Person(PersonActions.CREATE, None, Location((0, 0), (PANE_X/2, PANE_Y/2)), \
-            person))
+        self.CDF.send(person)
 
         self.setup.stop()
         LoopingCall(self.game_loop).start(1.0 / DESIRED_FPS)
