@@ -44,7 +44,7 @@ class WelcomeWindow(object):
         frame = ttk.Frame(self.master, padding='50 50 50 50')
         # Create the widgets
         backb = ttk.Button(frame, text='Back', command=self.mainmenu)
-        nextb = ttk.Button(frame, text='Next', command=self.mapselect)
+        nextb = ttk.Button(frame, text='Next', command=self.playtype)
         classcombo = ttk.Combobox(frame, textvariable=self.charclass, values=CLASSES)
         racecombo = ttk.Combobox(frame, textvariable=self.charrace, values=RACES)
         classl = ttk.Label(frame, text='Class:')
@@ -62,6 +62,18 @@ class WelcomeWindow(object):
         nextb.grid(column=3, row=7, stick=(N, S), padx=20, pady=20)
         return frame
 
+    def _getplaytype(self):
+        frame = ttk.Frame(self.master, padding='50 50 50 50')
+        # Create the widgets
+        backb = ttk.Button(frame, text='Back', command=self.prevplaytype)
+        joinb = ttk.Button(frame, text='Join Game', command=self.joingame)
+        hostb = ttk.Button(frame, text='Host Game', command=self.hostgame)
+        # Lay out the widgets
+        joinb.grid(column=1, row=1, stick=(N, S), padx=5, pady=5)
+        hostb.grid(column=1, row=2, stick=(N, S), padx=5, pady=5)
+        backb.grid(column=1, row=3, stick=(N, S), padx=20, pady=20)
+        return frame
+
     def mainmenu(self):
         self.frame.pack_forget()
         self.frame = self._getmainmenu()
@@ -71,14 +83,23 @@ class WelcomeWindow(object):
         self.frame.pack_forget()
         self.frame = self._getnewchar()
         self.frame.pack()
+        self.prevplaytype = self.newchar
 
     def loadchar(self):
         pass
 
-    def mapselect(self):
+    def playtype(self):
         if self.charrace.get() == '' or self.charclass.get() == '':
             return
-        print self.charrace.get(), self.charclass.get()
+        self.frame.pack_forget()
+        self.frame = self._getplaytype()
+        self.frame.pack()
+
+    def joingame(self):
+        pass
+
+    def hostgame(self):
+        pass
 
 if __name__ == '__main__':
     root = Tk()
