@@ -256,7 +256,7 @@ class PlayerCharacter(p.Person):
         children.  Returns a tuple of information needed to reconstitute
         this Person object.
         First argument should represent which type of object this is.'''
-        return ("Player", self.race, self.characterClass)
+        return ("Player", self.name, self.race, self.characterClass)
 
     def applyBonusDamage(self, dieRoll):
         if element == "Fire":

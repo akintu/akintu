@@ -42,7 +42,7 @@ class Spell(object):
         if self.targetType == "friendly" and source.team != target.team:
             return (False, "Cannot target hostile with beneficial spell.")
         # Do we need any check for AoE spells?
-        if not source.inRange(target):
+        if not source.inRange(target, self.range):
             return (False, "Target is out of range.")
         if source.onCooldown(self.name) :
             return (False, self.name + " is on Cooldown.")
