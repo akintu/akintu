@@ -235,7 +235,7 @@ class GameScreen(object):
 
     def scroll_down(self, scrollamount=1):
         '''
-        Scroll the text box up by scrollamount (default 1)
+        Scroll the text box down by scrollamount (default 1)
         '''
         self.scrollcount += scrollamount
         if self.scrollcount >= len(self.sidetext):
@@ -244,7 +244,7 @@ class GameScreen(object):
 
     def scroll_up(self, scrollamount=1):
         '''
-        Scroll the text box down by scrollamount (default 1)
+        Scroll the text box up by scrollamount (default 1)
         '''
         self.scrollcount -= scrollamount
         if self.scrollcount < 0:
