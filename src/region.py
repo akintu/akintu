@@ -52,6 +52,11 @@ class Region:
                 self.locations |= self.circle(*details)
             else:
                 self.locations -= self.circle(*details)
+        if shape.upper() == "LINE":
+            if method.upper() == "ADD":
+                self.locations |= self.line(*details)
+            else:
+                self.locations -= self.line(*details)
 
     def square(self, loc1, loc2):
         locations = set()
@@ -76,9 +81,12 @@ class Region:
         for x in loc.move(7, rad).line_to(loc.move(6, rad)):
             for y in loc.move(7, rad).line_to(loc.move(2, rad)):
                 tile = Location(x.abs_x, y.abs_y)
-                if loc.true_distance(tile) <= rad:
+                if round(loc.true_distance(tile)) <= rad:
                     locations |= {tile}
         return locations
+        
+    def line(self, loc1, loc2):
+        return set(loc1.line_to(loc2))
 
 if __name__ == "__main__":
     R = Region()
@@ -96,6 +104,7 @@ if __name__ == "__main__":
     R("ADD", "CIRCLE", Location((0, 0), (16, 10)), 7)
     R("SUB", "DIAMOND", Location((0, 0), (22, 10)), 6)
     R("SUB", "SQUARE", Location((0, 0), (14, 6)), Location((0, 0), (15, 7)))
+    R("ADD", "LINE", Location(19, 10), Location(27, 13))
 
     #Display the region
     print R
