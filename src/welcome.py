@@ -50,8 +50,8 @@ class WelcomeWindow(object):
         # Create the widgets
         backb = ttk.Button(frame, text='Back', command=self.mainmenu)
         nextb = ttk.Button(frame, text='Next', command=self.playtype)
-        classcombo = ttk.Combobox(frame, textvariable=self.charclass, values=CLASSES)
-        racecombo = ttk.Combobox(frame, textvariable=self.charrace, values=RACES)
+        classcombo = ttk.Combobox(frame, textvariable=self.charclass, values=CLASSES, state='readonly')
+        racecombo = ttk.Combobox(frame, textvariable=self.charrace, values=RACES, state='readonly')
         classl = ttk.Label(frame, text='Class:')
         racel = ttk.Label(frame, text='Race:')
         namel = ttk.Label(frame, text='Name:')
