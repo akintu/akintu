@@ -8,6 +8,7 @@ import socket
 import const
 import sys
 import re
+import urllib2
 
 CLASSES = ('Barbarian', 'Dragoon', 'Weapon Master', 'Spellsword', 'Anarchist',
            'Marksman', 'Druid', 'Tactician', 'Ninja', 'Assassin', 'Shadow',
@@ -112,7 +113,7 @@ class WelcomeWindow(object):
         localip = ''
         try:
             fullhtml = urllib2.urlopen('http://www.internetfrog.com/myinternet/traceroute/').read()
-            match = re.search('(?<=Your IP is: )\d\+\.\d\+\.\d\+\.\d\+', fullhtml)
+            match = re.search('(?<=Your IP is: )\d+\.\d+\.\d+\.\d+', fullhtml)
             localip = match.group(0)
         except:
             pass
