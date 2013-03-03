@@ -233,7 +233,7 @@ class GameScreen(object):
         if SHOW_FPS:
             pygame.display.set_caption("%s %f" % (CAPTION, fps))
 
-    def scroll_up(self, scrollamount=1):
+    def scroll_down(self, scrollamount=1):
         '''
         Scroll the text box up by scrollamount (default 1)
         '''
@@ -242,13 +242,14 @@ class GameScreen(object):
             self.scrollcount = len(self.sidetext) - 1
         self._draw_text()
 
-    def scroll_down(self, scrollamount=1):
+    def scroll_up(self, scrollamount=1):
         '''
         Scroll the text box down by scrollamount (default 1)
         '''
         self.scrollcount -= scrollamount
         if self.scrollcount < 0:
             self.scrollcount = 0
+        self._draw_text()
 
     def show_text(self, text, color='white', size=None):
         '''
