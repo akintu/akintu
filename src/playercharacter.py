@@ -22,6 +22,8 @@ class PlayerCharacter(p.Person):
         self.name = name
         if name in ["Kyle Rich", "Devin Ekins", "Joshua Belcher", "Colton Myers"]:
             self.name = "Awesome Dude"
+        elif name == "jabelch":
+            self.name = "Flagrant Noob"
 
         self.level = 1
         self._experience = 0
