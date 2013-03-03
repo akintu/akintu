@@ -220,6 +220,7 @@ def runwelcome():
 
     ret.append(window.port)
 
+    # Return (player, state, ip, port)
     return tuple(ret)
 
 if __name__ == '__main__':
