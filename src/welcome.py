@@ -25,6 +25,11 @@ class WelcomeWindow(object):
         self.charrace = StringVar()
         self.charclass = StringVar()
         self.charname = StringVar(value='Mysterious Adventurer')
+        self.joinip = StringVar()
+        self.portstr = StringVar(value='1337')
+        self.port = 1337
+        self.hosting = True
+        self.loadingchar = False
 
         self.mainmenu()
 
@@ -74,6 +79,24 @@ class WelcomeWindow(object):
         backb.grid(column=1, row=3, stick=(N, S), padx=20, pady=20)
         return frame
 
+    def _getjoingame(self):
+        frame = ttk.Frame(self.master, padding='50 50 50 50')
+        # Create the widgets
+        backb = ttk.Button(frame, text='Back', command=self.playtype)
+        finishb = ttk.Button(frame, text='Start', command=self.finishjoin)
+        ipl = ttk.Label(frame, text='Host IP:')
+        portl = ttk.Label(frame, text='Host Port:')
+        ipbox = ttk.Entry(frame, textvariable=self.joinip)
+        portbox = ttk.Entry(frame, textvariable=self.portstr)
+        # Lay out the widgets
+        ipl.grid(column=2, row=1, stick=W, padx=5, pady=5)
+        ipbox.grid(column=2, row=2, stick=(W, E), padx=5, pady=5)
+        portl.grid(column=2, row=3, stick=W, padx=5, pady=5)
+        portbox.grid(column=2, row=4, stick=(W, E), padx=5, pady=5)
+        backb.grid(column=1, row=5, stick=(N, S), padx=20, pady=20)
+        finishb.grid(column=3, row=5, stick=(N, S), padx=20, pady=20)
+        return frame
+
     def mainmenu(self):
         self.frame.pack_forget()
         self.frame = self._getmainmenu()
@@ -96,9 +119,12 @@ class WelcomeWindow(object):
         self.frame.pack()
 
     def joingame(self):
-        pass
+        self.frame.pack_forget()
+        self.frame = self._getjoingame()
+        self.frame.pack()
 
     def hostgame(self):
+        #TODO implement hosting a game (default port 1337)
         pass
 
 if __name__ == '__main__':
