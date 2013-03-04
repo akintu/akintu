@@ -243,8 +243,15 @@ class Combat(object):
     def magicalHitMechanics(source, target):
         offense = source.totalSpellpower
         defense = target.totalMagicResist
-        return Combat.calcMagicalHit(offense, defense)
-
+        result = Combat.calcMagicalHit(offense, defense)
+        if source.team == "Monsters":
+            Combat.sendCombatMessage("Roll: " + result + "(" + str(offense) + " vs " + str(defense) + ")", 
+                                    target)
+        else:
+            Combat.sendCombatMessage("Roll: " + result + "(" + str(offense) + " vs " + str(defense) + ")", 
+                                    source)
+        return result
+        
     @staticmethod
     def calcHit(source, target, type, rating=0, modifier=0, critMod=0, ignoreMeleeBowPenalty=False):
         """Determies if the attack performed from the source to the target is successful, and returns
@@ -301,10 +308,6 @@ class Combat(object):
 
         if (type == "Magical"):
             result = Combat.magicalHitMechanics(source, target)
-            if result == "Miss":
-                print "Fully Resisted"
-            else:
-                print result
             return result
 
         if (type == "Magical Poison" or type == "Poison Magical"):

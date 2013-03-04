@@ -115,10 +115,12 @@ class CombatServer():
             self.server.SDF.send(port, Person(PersonActions.REMOVE, char.id))
             self.server.pane[combatPane].person.remove(char.id)
 
-    def monsterMove(self, monster):
+    def monsterMove(self, monster, visiblePlayers):
         tilesLeft = monster.totalMovementTiles
         while tilesLeft > 0:
-            player = monster.getNearestPlayer()
+            player = monster.getNearestPlayer(visiblePlayers)
+            if not player:
+                return "Failed"
             direction = self.getRelativeDirection(monster, player)
             desiredLocation = monster.cLocation.move(direction, 1)
             if self.tile_is_open(desiredLocation, monster.id):
@@ -300,13 +302,23 @@ class CombatServer():
 
     def monster_phase(self, combatPane):
         chars = [self.server.person[x] for x in self.server.pane[combatPane].person]
+        players = [x for x in chars if x.team == "Players"]
         monsters = [x for x in chars if x.team == "Monsters" and x not in
                     self.combatStates[combatPane].deadMonsterList]
         for mon in monsters:
+            visiblePlayers = []
+            for player in players:
+                if not player.inStealth() or player.hasStatus("Conceal"):
+                    visiblePlayers.append(player)
+                elif mon.detectStealth(player):
+                    visiblePlayers.append(player)
+                    Combat.sendCombatMessage("Detected " + player.name + "! (" + 
+                                str(player.totalSneak) + " vs " + str(mon.totalAwareness) + ")",
+                                player, color='red')
             while( True ):
-                if not mon.getUsableAbilities(self.server, combatPane) and \
+                if not mon.getUsableAbilities(self.server, combatPane, visiblePlayers) and \
                        mon.AP >= mon.totalMovementAPCost:
-                    moveResult = self.monsterMove(mon)
+                    moveResult = self.monsterMove(mon, visiblePlayers)
                     if moveResult == "Failed":
                         break
                     else:
@@ -317,7 +329,6 @@ class CombatServer():
         allCharIds = [charId for charId in self.server.pane[combatPane].person]
         for charId in allCharIds:
             char = self.server.person[charId]
-        print "~~END MONSTER PHASE~~."
         return
 
 

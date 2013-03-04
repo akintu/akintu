@@ -4,6 +4,7 @@ import sys
 import entity as en
 from network import *
 from ai import AI
+from dice import *
 
 class IncompleteDataInitialization(Exception):
     def __init__(self, value):
@@ -50,7 +51,7 @@ class Person(en.Entity):
         self._equipmentConstitution = 0
         self._statusConstitution = 0
 
-        self._baseCunning = Person.setFrom(argDict, 'startignCunning', 0)
+        self._baseCunning = Person.setFrom(argDict, 'startingCunning', 0)
         self._equipmentCunning = 0
         self._statusCunning = 0
 
@@ -1218,7 +1219,7 @@ class Person(en.Entity):
         "static" abililties that boost MagicResist, and "dynamic"
         statuses that boost or reduce MagicResist.
         """
-        return (self.totalCunning +
+        return (self.totalPiety +
                 self._equipmentMagicResist +
                 self._statusMagicResist +
                 self._baseMagicResist)

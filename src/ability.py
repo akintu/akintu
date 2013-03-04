@@ -3,7 +3,7 @@
 import sys
 from dice import *
 import listener
-from combat import Combat
+from combat import *
 
 
 class Ability(object):
@@ -175,11 +175,18 @@ class Ability(object):
 
     def _chainGrasp(self, target):
         source = self.owner
-        success = Dice.rollBeneath(min(90, (source.totalCunning - target.totalCunning) * 9))
+        chance = min(90, (source.totalCunning - target.totalCunning) * 9)
+        print source.totalCunning
+        print target.totalCunning
+        success = Dice.rollBeneath(chance)
+        
         if success:
+            Combat.sendCombatMessage("Success! (" + str(chance) + ")", source, color="darkorange")  
             duration = 3
             Combat.addStatus(target, "Chain Grasp", duration)
-
+        else:
+            Combat.sendCombatMessage("Failed. (" + str(chance) + ")", source, color="darkorange")  
+            
     def _chainGraspCheck(self, target):
         if target.size == "Huge":
             return (False, self.name + " cannot be used on Huge targets.")
@@ -415,6 +422,7 @@ class Ability(object):
         Combat.addStatus(source, "Stealth", duration=-1)
 
     def _stealthCheck(self, target):
+        source = self.owner
         if source.inStealth():
             return (False, "Already in Stealth")
         return (True, "")
@@ -1441,19 +1449,6 @@ class Ability(object):
         },
 
         #Druid
-        'Druid Stealth':
-        {
-        'level' : 1,
-        'class' : 'Druid',
-        'HPCost' : 0,
-        'APCost' : 7,
-        'range' : 0,
-        'target' : 'self',
-        'action' : _stealth,
-        'cooldown' : 3,
-        'checkFunction' : _stealthCheck,
-        'breakStealth' : 0
-        },
         'Deep Wound':
         {
         'level' : 1,
@@ -1642,6 +1637,19 @@ class Ability(object):
         },
 
         # Assassin
+        'Assassin Stealth':
+        {
+        'level' : 1,
+        'class' : 'Assassin',
+        'HPCost' : 0,
+        'APCost' : 7,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _stealth,
+        'cooldown' : 3,
+        'checkFunction' : _stealthCheck,
+        'breakStealth' : 0
+        },
         'Ranged Backstab':
         {
         'level' : 1,

@@ -184,11 +184,11 @@ class InternalStatus(object):
         target.statusMight -= magnitude
 
     def Movement_speed_penalty_method(self, target, magnitude):
-        target.movementTiles -= magnitude
+        target.statusMovementTiles -= magnitude
         # TODO: Ensure monsters can always move at least one tile.
 
     def Movement_tiles_penalty_method(self, target, magnitude):
-        target.movementTiles -= magnitude
+        target.statusMovementTiles -= magnitude
 
     def Nothing_method(self, target, magnitude):
         pass
@@ -430,10 +430,10 @@ class InternalStatus(object):
         target.statusMight += magnitude
 
     def Movement_speed_penalty_method_reverse(self, target, magnitude):
-        target.movementTiles += magnitude
+        target.statusMovementTiles += magnitude
 
     def Movement_tiles_penalty_method_reverse(self, target, magnitude):
-        target.movementTiles += magnitude
+        target.statusMovementTiles += magnitude
 
     def Nothing_method_reverse(self, target, magnitude):
         pass
