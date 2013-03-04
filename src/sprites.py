@@ -8,13 +8,14 @@ import random
 from const import *
 from PIL import Image
 
-
+#OBSTACLES
 #(Path, Name, Tilesize, Cropsize, Size)
 TREE = (OBSTACLES_IMAGES_PATH, "tree_green.png", TILE_SIZE, None, TILE_SIZE)
 TREE_ZOOM = TREE
 ROCK = (OBSTACLES_IMAGES_PATH, "rock.png", TILE_SIZE, None, TILE_SIZE)
 ROCK_ZOOM = (OBSTACLES_IMAGES_PATH, "rock_zoom.png", TILE_SIZE, None, TILE_SIZE)
 
+#BACKGROUNDS
 GRASS1 = (BACKGROUND_IMAGES_PATH, "grass1.jpg", TILE_SIZE, None, None)
 GRASS2 = (BACKGROUND_IMAGES_PATH, "grass2.jpg", TILE_SIZE, None, None)
 GRASS3 = (BACKGROUND_IMAGES_PATH, "grass3.jpg", TILE_SIZE, None, None)
@@ -25,17 +26,20 @@ ENTITIES = {'tree': TREE, 'rock': ROCK}
 ZOOMED_ENTITIES = {'rock_zoom': ROCK_ZOOM, 'tree_zoom': TREE_ZOOM}
 BACKGROUNDS = {'summer': GRASS2, 'fall': GRASS3, 'desert': GRAVEL1}
 ENTITY_KEYS = sorted(ENTITIES.keys())
-#ZOOMED_KEYS = sorted(ZOOMED_ENTITIES.keys())
+
+#ITEMS AND SUCH
+CHEST = (ITEMS_IMAGES_PATH, "treasure_chest.png", TILE_SIZE, None, None)
+
+SHEETS = {CHEST_KEY: CHEST}
 
 class Sprites(object):
 
     hasLoaded = False
-    trees = []
-    rocks = []
     background = dict()
     objects = dict()
     zoomed_objects = dict()
     images = dict()
+    sheets = dict()
 
     @staticmethod
     def load(seed):
@@ -54,6 +58,11 @@ class Sprites(object):
             spritesheet = SpriteSheet(image)
             Sprites.objects[key] = spritesheet
             Sprites.images.update(spritesheet.images.items())
+            
+        for key, image in SHEETS.iteritems():
+            spritesheet = crop_helper(image)
+            Sprites.sheets[key] = spritesheet
+            Sprites.images.update(spritesheet.images.items())
         Sprites.hasLoaded = True
 
     @staticmethod
@@ -70,12 +79,16 @@ class Sprites(object):
         return Sprites.images
 
     @staticmethod
-    def get_object(key, seed, pane, tile):
+    def get_obstacle(key, seed, pane, tile):
         return Sprites.objects[key].get_random_image(seed, pane, tile)
 
     @staticmethod
     def get_zoomed_image(key, tile_loc):
         return Sprites.objects[key].get_zoomed_image(tile_loc)
+    
+    @staticmethod
+    def get_sheet(key):
+        return Sprites.sheets[key]
 
 def crop_helper(const):
     return Crop(const[0], const[1], const[2], const[3], const[4])
@@ -126,6 +139,22 @@ class Crop(object):
     def get_zoomed_image(self, location):
         return self.tile_id[str(location)]
 
+    def get_row(self, y):
+        image_list = []
+        x = 0
+        while x < self.x:
+            image_list.append(self.getimage((x, y)))
+            x+=1
+        return image_list
+        
+    def get_column(self, x):
+        image_list = []
+        y = 0
+        while y < self.y:
+            image_list.append(self.getimage((x, y)))
+            y += 1
+        return image_list
+
 class SpriteSheet(object):
     def __init__(self, sheet):
         self.images = dict()
@@ -159,4 +188,3 @@ class SpriteSheet(object):
         if i <= self.crop.x and j <= self.crop.x:
             image = self.crop.getimage((i,j))
         return image
-

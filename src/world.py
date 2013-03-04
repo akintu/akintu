@@ -13,6 +13,7 @@ from location import Location
 from theorycraft import TheoryCraft
 from region import *
 from ai import AI
+from treasurechest import *
 
 class World(object):
     '''
@@ -83,7 +84,8 @@ class Pane(object):
         self.pane_state = pane_state
         self.curr_state = dict()
         self.tiles = dict()
-        self.objects = dict()
+        self.obstacles = dict()
+        self.items = dict()
         self.person = {}
         self.background_key = Sprites.get_background(self.seed + str(self.location))
 
@@ -94,6 +96,7 @@ class Pane(object):
                     self.add_obstacle((i, j), RAND_ENTITIES)
 
         if load_entities:
+            self.add_chest((10, 10), TreasureChest.CHEST_TYPE[random.randrange(len(TreasureChest.CHEST_TYPE))])
             if self.pane_state:
                 self.load_state(self.pane_state)
             else:
@@ -104,7 +107,7 @@ class Pane(object):
         s = ""
         for j in range(PANE_Y):
             for i in range(PANE_X):
-                if (i, j) in self.objects:
+                if (i, j) in self.obstacles:
                     s += "X"
                 else:
                     s += " "
@@ -170,8 +173,9 @@ class Pane(object):
         for i in range(PANE_X):
             for j in range(PANE_Y):
                 self.tiles[(i, j)].set_image(Sprites.get_background_tile(self.background_key, (i, j)))
-        for tile, entity_key in self.objects.iteritems():
-            obstacle = Sprites.get_object(entity_key, self.seed, self.location, tile)
+        for tile, entity_key in self.obstacles.iteritems():
+            #print entity_key
+            obstacle = Sprites.get_obstacle(entity_key, self.seed, self.location, tile)
             self.tiles[tile].entities.append(Entity(tile, image=obstacle))
 
     def is_tile_passable(self, location):
@@ -184,7 +188,7 @@ class Pane(object):
             tile_loc = Pane.PaneCorners[edge]
             opposite = Location(None, tile_loc).get_opposite_tile(edge).tile
             if not self.is_tile_passable(Location(self.location, tile_loc)):
-                passable_list[opposite] = self.objects[tile_loc]
+                passable_list[opposite] = self.obstacles[tile_loc]
         #Get the edge
         if edge in Pane.PaneEdges:
             edge_range = Pane.PaneEdges[edge]
@@ -192,7 +196,7 @@ class Pane(object):
                 for y in range(edge_range[0][1], edge_range[1][1]+1):
                     opposite = Location(None, (x, y)).get_opposite_tile(edge).tile
                     if not self.is_tile_passable(Location(self.location, (x, y))):
-                        passable_list[opposite] = self.objects[(x, y)]
+                        passable_list[opposite] = self.obstacles[(x, y)]
         return passable_list
 
     def merge_tiles(self, tiles):
@@ -207,13 +211,19 @@ class Pane(object):
             random.seed(str(self.seed) + str(self.location) + str(tile))
             if random.randrange(100) <= percentage*100:
                 index = random.randrange(len(ENTITY_KEYS))
-                self.objects[tile] = ENTITY_KEYS[index]
+                self.obstacles[tile] = ENTITY_KEYS[index]
                 self.tiles[tile].passable = False
         else:
-            self.objects[tile] = entity_type
+            self.obstacles[tile] = entity_type
             self.tiles[tile].passable = False
-        if tile in self.objects:
-            return self.objects[tile]
+        if tile in self.obstacles:
+            return self.obstacles[tile]
+            
+    def add_chest(self, tile, chest_type):
+        lvl = max(abs(self.location[0]), abs(self.location[1]))
+        lvl = max(lvl, 1)
+        #print chest_type
+        self.tiles[tile].add_item(TreasureChest(chest_type, lvl, tile))
 
     def add_region(self, location, size, percentage, entity_type=None):
         r = Region()
@@ -386,7 +396,7 @@ class CombatPane(Pane):
                 tile = (tile_center[0]+(di-1), tile_center[1]+(dj-1))
                 if not tile in self.tiles:
                     self.tiles[tile] = Tile(None, True)
-                self.objects[tile] = entity_key
+                self.obstacles[tile] = entity_key
                 self.tiles[tile].passable = False
                 obstacle = Sprites.get_zoomed_image(entity_key, (di,dj))
                 self.tiles[tile].entities.append(Entity(tile, image=obstacle))

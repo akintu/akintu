@@ -4,6 +4,7 @@ import sys
 import entity
 from dice import *
 from theorycraft import *
+from sprites import*
 import wealth
 import equipment
 import consumable
@@ -13,21 +14,33 @@ class TreasureChest(entity.Entity):
     GOLD_PER_IP = 25
     CHANCE_OF_LOCK = 20
 
+    CHEST_TYPE = ["Small", "Large"]
+    
     def __init__(self, type, treasureLevel, location, ip=None, locked=None):
-        entity.Entity.__init__(self, location)
+        sheet = Sprites.get_sheet(CHEST_KEY)
+        self.type = type
+        if self.type == "Small":
+            column = 0
+        elif self.type == "Large":
+            column = 1
+        else:
+            column = 2
+        self.animationImages = sheet.get_column(column)
+        
+        entity.Entity.__init__(self, location, image=self.animationImages[0], passable=True)
         if type.capitalize() not in ["Small", "Large", "Gilded"]:
             raise TypeError("Invalid Chest Type: " + type + ".")
         self.ip = ip
         self.baseIp = self.ip # Used for treasure chest bashing reductions.
-        self.type = type
+        
         if treasureLevel < 1:
             treasureLevel = 1
         self.treasureLevel = treasureLevel
         if not ip:
-            self.ip = (treausureLevel - 1) * 2
+            self.ip = (treasureLevel - 1) * 2
             if treasureLevel > 5:
                 self.ip = round(self.ip * 1.5)
-            if treaureLevel > 10:
+            if treasureLevel > 10:
                 self.ip = round(self.ip * 1.5)
             if treasureLevel > 18:
                 self.ip = round(self.ip * 1.5)
@@ -178,7 +191,25 @@ class TreasureChest(entity.Entity):
         print "Lock picking successful."
         # TODO: Give experience?  Decide.
         return True
-
+    
+    def open(self, player_list):
+        '''
+        Called by server, adds items to all inventories
+        '''
+        
+        # if self.locked:
+            # return False
+        self.generateTreasure(player_list)
+        return True
+        
+    def get_animation_images(self):
+        '''
+        Provides the images necessary to animate this chest as a list (in order of opening)
+        
+        Contains 4 images, including the original closed image.
+        ''' 
+        
+        return self.animationImages
 
 
 

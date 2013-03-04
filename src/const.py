@@ -39,8 +39,12 @@ IMAGES_PATH = os.path.join("res", "images")
 OBSTACLES_IMAGES_PATH = os.path.join(IMAGES_PATH, "obstacles")
 BACKGROUND_IMAGES_PATH = os.path.join(IMAGES_PATH, "background")
 MONSTERS_IMAGES_PATH = os.path.join(IMAGES_PATH, "monsters")
+ITEMS_IMAGES_PATH = os.path.join(IMAGES_PATH, "items")
 
-#======================SAVE/LOAD==========================
+#IMAGE KEYS
+CHEST_KEY = "chests"
+
+#======================SAVE/LOAD KEYS==========================
 SEED_KEY = "seed"
 MONSTER_KEY = "monsters"
 ITEM_KEY = "items"
