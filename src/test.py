@@ -56,7 +56,10 @@ if __name__ == "__main__":
             for abil in char.abilities:
                 print abil.name + " " + str(abil.APCost)
         #print "   " + char.equippedItems.equippedWeapon.name
-
+    char = theorycraft.TheoryCraft.getNewPlayerCharacter("Elf", "Assassin")
+    print "\nTotal Dodge: " + str(char.totalDodge)
+    print "Total Dexterity: " + str(char.totalDexterity)
+    print "Total Ranged Dodge: " + str(char.totalRangedDodge)
     # tc = treasurechest.TreasureChest("Small", 1, None, 12)
     # for i in range(3):
         # tc.generateTreasure([char])
@@ -74,6 +77,8 @@ if __name__ == "__main__":
         print "\n" + m.name
         for abil in m.abilityList:
             print abil.name + " " + str(abil.APCost)
+        print "Dodge: " + str(m.totalDodge)
+        print "Dex: " + str(m.totalDexterity)
 
 
 

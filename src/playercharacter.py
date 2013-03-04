@@ -235,6 +235,11 @@ class PlayerCharacter(p.Person):
         self.attacksPerformed = [0,0]
         # TODO: Need to update attacksPerformed each turn.  The previous turn's number of attacks is in position 0, this turn's
         # in position 1.  Need to also shift those at the end of each turn...
+        
+        #### Used for dual wielding mechanics ####
+        self.lastUsedRating = None
+        self.lastUsedCritMod = None
+        self.lastUsedModifier = None
 
     def registerBasicAttacks(self):
         self.abilities.append(ability.Ability("Melee Attack", self))

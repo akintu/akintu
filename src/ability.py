@@ -219,7 +219,7 @@ class Ability(object):
 
     def _balm(self, target):
         source = self.owner
-        Combat.healTarget(source, round(source.totalHP * 0.05))
+        Combat.healTarget(source, source, round(source.totalHP * 0.05))
 
     def _rapidReload(self, target):
         source = self.owner
@@ -327,7 +327,7 @@ class Ability(object):
 
     def _bloodOfTheAncients(self, target):
         source = self.owner
-        Combat.healTarget(source, round(source.totalHP * 0.15))
+        Combat.healTarget(source, source, round(source.totalHP * 0.15))
         duration = 1
         Combat.addStatus(source, "Blood of the Ancients", duration)
 
@@ -657,7 +657,7 @@ class Ability(object):
     def _stealthRecovery(self, target):
         source = self.owner
         healing = round(source.totalHP * 0.03)
-        Combat.healTarget(source, healing)
+        Combat.healTarget(source, source, healing)
 
     def _stealthRecoveryCheck(self, target):
         source = self.owner
@@ -814,7 +814,7 @@ class Ability(object):
         ''' Heal 10% of max HP, raise magic resist and fire resist briefly. '''
         source = self.owner
         healing = round(source.totalHP * 0.1)
-        Combat.healTarget(source, healing)
+        Combat.healTarget(source, source, healing)
         duration = 3
         # Fire resist magnitude set at +15%, this magnitude is for spell resist.
         magnitude = 2 * self.level
@@ -991,7 +991,7 @@ class Ability(object):
         source = self.owner
         percentToHeal = Dice.roll(15, 30)
         amountToHeal = float(percentToHeal) / 100 * source.totalHP
-        Combat.healTarget(source, amountToHeal)
+        Combat.healTarget(source, source, amountToHeal)
 
     def _quaffPotionCheck(self, target):
         ''' Monsters should only use this if they are below 65% HP '''

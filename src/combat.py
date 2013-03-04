@@ -211,21 +211,22 @@ class Combat(object):
             offense = source.totalRangedAccuracy + modifier
             if source.inRange(target, 1) and not ignoreMeleeBowPenalty:
                 # Ranged attack with penalty 20% miss chance
-                outrightMissChance = round(20 * (1 - float(source.meleeRangedAttackPenaltyReduction) / 100))
+                outrightMissChance = int(round(20 * (1 - float(source.meleeRangedAttackPenaltyReduction) / 100)))
                 if not Dice.rollBeneath(outrightMissChance):
+                    Combat.sendCombatMessage("Jammed (" + str(outrightMissChance) + "\%)", source) 
                     return "Miss"
             if source.usingWeapon("Longbow") and not source.baseClass == "Ranger" and not source.secondaryClass == "Ranger":
                 # -25% Accuracy
-                offense = round(offense * 0.75)
+                offense = int(round(offense * 0.75))
             elif source.usingWeapon("Shuriken") and not source.characterClass == "Ninja":
-                offense = round(offense * 0.25)
+                offense = int(round(offense * 0.25))
             hitDuple = Combat.calcPhysicalHitChance(offense, defense)
         else:
             # Melee attack
             defense = target.totalDodge + target.totalMeleeDodge
             offense = source.totalMeleeAccuracy + modifier
             if source.usingWeapon("Katana") and not source.characterClass == "Ninja":
-                offense = round(offense * 0.9)
+                offense = int(round(offense * 0.9))
             hitDuple = Combat.calcPhysicalHitChance(offense, defense)
         chanceToHit = hitDuple[0]
         accuracyCritMod = hitDuple[1]
@@ -271,22 +272,32 @@ class Combat(object):
                             although most of the latter ignore whether the spell was a critical or not.)
           If the attack was physical, it will return a list of those strings containing either one or
           two strings, depending on whether the attacker is using one or two weapons."""
-        type = type.capitalize().strip().replace("-", " ")
+        type = type.strip().replace("-", " ")
+        ### Caching for dual weilding weapons.
+        if source.team == "Players":
+            if source.usingWeaponStyle("Dual") and not source.lastUsedModifier:
+                source.lastUsedRating = rating
+                source.lastUsedCritMod = critMod
+                source.lastUsedModifier = modifier
+            else:
+                source.lastUsedRating = None
+                source.lastUsedCritMod = None
+                source.lastUsedModifier = None
+                
         if (type == "Physical"):
             Combat._shoutAttackStart(source, target)
             if Dice.rollBeneath(target.totalAvoidanceChance):
-                print "*avoided*"
-                return ["Miss"]
+                Combat.sendCombatMessage("Avoided attack (" + str(target.totalAvoidanceChance) + "\%)",
+                                         target)
+                return "Miss"
             attackOne = Combat.physicalHitMechanics(source, target, modifier, critMod, ignoreMeleeBowPenalty)
-            if source.team == "Players" and source.usingWeaponStyle("Dual"):
-                Combat._shoutAttackStart(source, target)
-                attackTwo = Combat.physicalHitMechanics(source, target, modifier, critMod, ignoreMeleeBowPenalty)
-                print "(first hand) " + attackOne
-                print "(second hand) " + attackTwo
-                return [attackOne, attackTwo]
-            else:
-                print attackOne
-                return [attackOne]
+            offenseMessage = str(source.totalMeleeAccuracy + modifier)
+            if source.usingWeapon("Ranged"):
+                offenseMessage = str(source.totalRangedAccuracy + modifier)
+            Combat.sendCombatMessage("Rolled: " + attackOne + " (" + offenseMessage + " vs " + 
+                                     str(target.totalDodge) + ")", source)
+                   
+            return attackOne
 
         if (type == "Magical"):
             result = Combat.magicalHitMechanics(source, target)
@@ -513,12 +524,6 @@ class Combat(object):
                          value, it will raise an IncompleteMethodCall Error.
         Outputs:
           non-negative int representing the damage that should be dealt to the target"""
-        # Massage input.
-        element = element.strip().capitalize()
-        hitValue = hitValue.strip().capitalize()
-        if scalesWith:
-            scalesWith = scalesWith.strip().capitalize()
-
         # Actual method:
         if hitValue == "Miss":
             return 0
@@ -571,20 +576,27 @@ class Combat(object):
 
     @staticmethod
     def basicAttack(source, target, hitType, **params):
+        '''Performs an attack with a provided hitType.  If two weapons are equipped,
+        this method will cal calcHit the second time.'''
         if 'noCounter' not in params:
             params['noCounter'] = False
         if source.team == "Players":
             if source.usingWeaponStyle("Dual"):
                 originalCounterStatus = params['noCounter']
                 params['noCounter'] = True
-                Combat.weaponAttack(source, target, hitType[0], **params)
+                Combat.weaponAttack(source, target, hitType, **params)
                 params['noCounter'] = originalCounterStatus
                 params['hand'] = "Left"
-                Combat.weaponAttack(source, target, hitType[1], **params)
+                modifier = source.lastUsedModifier
+                critMod = source.lastUsedCritMod
+                pRating = source.lastUsedRating
+                hitType2 = Combat.calcHit(source, target, "Physical", modifier=modifier, critMod=critMod,
+                                          rating=pRating)
+                Combat.weaponAttack(source, target, hitType2, **params)
             else:
-                Combat.weaponAttack(source, target, hitType[0], **params)
+                Combat.weaponAttack(source, target, hitType, **params)
         else:
-            Combat.monsterAttack(source, target, hitType[0], **params)
+            Combat.monsterAttack(source, target, hitType, **params)
 
     @staticmethod
     def monsterAttack(source, target, hitType, **params):

@@ -69,8 +69,11 @@ class CombatServer():
                 abilToUse = source.selectBasicAttack()
             useDuple = abilToUse.canUse(target)
             if useDuple[0]:
+                color = 'orange'
+                if abilToUse.targetType == 'friendly' or abilToUse.targetType == 'self':
+                    color = 'green'
                 Combat.sendCombatMessage(source.name + " is using " + abilToUse.name + " on " + target.name,
-                                         source, color='green')
+                                         source, color=color)
                 abilToUse.use(target)
             else:
                 Combat.screen.show_text(useDuple[1])

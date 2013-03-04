@@ -762,8 +762,7 @@ class Person(en.Entity):
         statuses that boost or reduce Dodge.  Does not include
         rangedDodge or meleeDodge (even when relevant.)
         """
-        return (self.totalDexterity +
-                self._equipmentDodge +
+        return (self._equipmentDodge +
                 self._statusDodge +
                 self._baseDodge)
 
