@@ -174,7 +174,9 @@ class Game(object):
             if isinstance(command, Update) and command.property == UpdateProperties.HP:
                 self.pane.person[command.id].HP = command.value
                 self.screen.update_person(command.id, {'HP': command.value, 'team': self.pane.person[command.id].team})
-
+            ###### Update Text #####
+            if isinstance(command, Update) and command.property == UpdateProperties.TEXT:
+                self.screen.show_text(command.value, color=command.details)
 
     def handle_events(self):
         pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])

@@ -31,14 +31,18 @@ class Combat(object):
         return ports
 
     @staticmethod
-    def getAllCombatPorts():
+    def getAllCombatPorts(character):
+        '''Get all ports in the same combat instance as this playerCharacter.'''
         ports = []
         if not Combat.gameServer:
             print "Combat has not had its view of gameServer initialized."
+        if not character.cLocation:
+            print "getAllCombatPorts() error: Character is not in battle."
         else:
+            toMatch = character.cLocation
             for port, id in Combat.gameServer.player.iteritems():
-                if Combat.gameServer.person[id].cLocation:
-                    # In combat
+                if Combat.gameServer.person[id].cLocation == toMatch:
+                    # In same combat
                     ports.append(port)
         return ports
         
@@ -52,6 +56,8 @@ class Combat(object):
         
     @staticmethod
     def sendToAll(character, type):
+        '''Send an update of a given type to all players in the
+        same combat instance as the updated player.'''
         messageObj = None
         if type == "AP":
             messageObj = command.Update(character.id, command.UpdateProperties.AP, character.AP)
@@ -62,9 +68,22 @@ class Combat(object):
         elif type == "Status":
             messageObj = command.Update(character.id, command.UpdateProperties.STATUS,
                                         Combat.encodeStatuses(character))
-        for port in Combat.getAllPorts():
+        for port in Combat.getAllCombatPorts(character):
             Combat.gameServer.SDF.send(port, messageObj)
 
+    @staticmethod
+    def sendCombatMessage(message, character, color="white", toAll=True):
+        '''Send a message to all players in combat with the provided character.'''
+        portList = []
+        if not toAll:
+            portList.append(Combat.getPlayerPort(character))
+        else:
+            portList.append(Combat.getAllCombatPorts(character))
+        messageObj = command.Update(id=None, property=command.UpdateProperties.TEXT, 
+                                    value=message, details=color)
+        for port in portList:
+            Combat.gameServer.SDF.send(port, messageObj)
+            
     @staticmethod
     def encodeStatuses(character):
         '''Returns a version of this character's statusList that only contains the name and turnsLeft.
@@ -600,8 +619,9 @@ class Combat(object):
         elif source.attackElement == "Arcane":
             baseAttackDamage *= 1 - (float(target.totalArcaneResistance) / 100)
         baseAttackDamage = source.applyBonusDamage(baseAttackDamage)
-        Combat.screen.show_text("Incoming Attack From: " + source.name + " dealing " + str(int(baseAttackDamage)) +
-                                " " + source.attackElement +" damage!", color='red', size=12)
+        Combat.sendCombatMessage("Incoming Attack From: " + source.name + " dealing " + 
+                                str(int(baseAttackDamage)) + " " + source.attackElement + " damage!", 
+                                color='red', character=target)
         Combat.lowerHP(target, round(baseAttackDamage))
         Combat._shoutAttackComplete(source, target, params['noCounter'])
 
