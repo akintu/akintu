@@ -269,6 +269,11 @@ class Pane(object):
         #TODO: loop through tile entity lists to pull these items and 
         #add their representation to item_list.
         pass
+        save_dict[ITEM_KEY] = item_list
+        
+        #Return this panes dictionary to caller to add to the master
+        #save dictionary.
+        return save_dict
         
 
 class CombatPane(Pane):
