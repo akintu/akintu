@@ -50,7 +50,6 @@ class CombatServer():
                  activePlayer.AP >= activePlayer.totalMovementAPCost:
                 Combat.modifyResource(activePlayer, "AP", -activePlayer.totalMovementAPCost)
 
-                self.server.SDF.send(port, Update(command.id, UpdateProperties.AP, activePlayer.AP))
                 # Update location and broadcast
                 self.server.person[command.id].cLocation = command.location
                 for p, i in self.server.player.iteritems():

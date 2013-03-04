@@ -164,6 +164,7 @@ class Game(object):
                 self.combat = command.value
             ###### Update AP ######
             if isinstance(command, Update) and command.property == UpdateProperties.AP:
+                print str(command.value)
                 self.pane.person[command.id].AP = command.value
                 self.screen.update_person(command.id, {'AP': command.value, 'team': self.pane.person[command.id].team})
             ###### Update MP ######

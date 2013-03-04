@@ -16,7 +16,7 @@ class OnHitEffect(object):
             print "Invalid physical elemental damage type: " + self.elementalDamageType + "."
 
     def apply(self, source, target):
-        self.function(self.count, source, target)
+        self.function(self, self.count, source, target)
 
     def applyElementalDamage(self, magnitude, source, target):
         damage = 0
