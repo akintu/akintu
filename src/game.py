@@ -182,6 +182,10 @@ class Game(object):
             ###### Update Movement AP Cost ####
             if isinstance(command, Update) and command.property == UpdateProperties.MOVE_AP_COST:
                 self.pane.person[command.id].overrideMovementAPCost = command.value
+            ###### Update Movement Tiles #####
+            if isinstance(command, Update) and command.property == UpdateProperties.MOVE_TILES:
+                self.pane.person[command.id].remainingMovementTiles = command.value
+               
                 
     def handle_events(self):
         pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
@@ -253,7 +257,8 @@ class Game(object):
                 self.CDF.send(Person(PersonActions.RUN, self.id, direction))
                 self.running = True
             
-            elif self.pane.person[self.id].AP >= self.pane.person[self.id].totalMovementAPCost:
+            elif self.pane.person[self.id].remainingMovementTiles > 0 or \
+                 self.pane.person[self.id].AP >= self.pane.person[self.id].totalMovementAPCost:
                 self.CDF.send(Person(PersonActions.MOVE, self.id, newloc))
                 if self.pane.person[self.id].location.pane == newloc.pane:
                     self.animate(self.id, self.pane.person[self.id].location, newloc, \

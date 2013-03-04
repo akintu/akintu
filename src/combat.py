@@ -51,6 +51,9 @@ class Combat(object):
         messageObj = None
         if type == "AP":
             messageObj = command.Update(character.id, command.UpdateProperties.AP, character.AP)
+        elif type == "MOVE_TILES":
+            messageObj = command.Update(character.id, command.UpdateProperties.MOVE_TILES, 
+                                        character.remainingMovementTiles)
         elif type == "MP":
             messageObj = command.Update(character.id, command.UpdateProperties.MP, character.MP)
         elif type == "HP":
@@ -504,6 +507,22 @@ class Combat(object):
         # TODO
 
     @staticmethod
+    def decrementMovementTiles(target):
+        ''' Decrease the number of tiles a player can move without incurring an AP cost. '''
+        if target.remainingMovementTiles == 0:
+            print "ERROR: Attempting to decrement Movement tiles when none remain!"
+        else:
+            target.remainingMovementTiles -= 1
+            Combat.sendToAll(target, "MOVE_TILES")
+            
+    @staticmethod
+    def resetMovementTiles(target):
+        ''' Reset the movement tiles to maximum minus this last move.  
+        (Used after an AP cost has been incurred.) '''
+        target.remainingMovementTiles = target.totalMovementTiles - 1
+        Combat.sendToAll(target, "MOVE_TILES")
+        
+    @staticmethod
     def calcDamage(source, target, minimum, maximum, element, hitValue, partial=1, critical=1, scalesWith=None, scaleFactor=0):
         """Computes the amount of damage that should be dealt to the target after considering all bonuses and penalties
         to the attack that caused this method to be called such as source elemental damage bonuses or target vulnerabilities.
@@ -551,7 +570,6 @@ class Combat(object):
             dieRoll *= partial
 
         dieRoll = source.applyBonusDamage(dieRoll)
-
 
         if element == "Fire":
             dieRoll *= 1 - (min(80, float(target.totalFireResistance) / 100))

@@ -47,8 +47,13 @@ class CombatServer():
 
             # If this is a legal move request
             elif self.tile_is_open(command.location, command.id) and \
-                 activePlayer.AP >= activePlayer.totalMovementAPCost:
-                Combat.modifyResource(activePlayer, "AP", -activePlayer.totalMovementAPCost)
+                 activePlayer.AP >= activePlayer.totalMovementAPCost or\
+                 activePlayer.remainingMovementTiles > 0:
+                if activePlayer.remainingMovementTiles == 0:
+                    Combat.modifyResource(activePlayer, "AP", -activePlayer.totalMovementAPCost)
+                    Combat.resetMovementTiles(activePlayer)
+                else:
+                    Combat.decrementMovementTiles(activePlayer)
 
                 # Update location and broadcast
                 self.server.person[command.id].cLocation = command.location
@@ -214,7 +219,7 @@ class CombatServer():
         APRemains = False
         for player in [self.server.person[x] for x in self.server.pane[combatPane].person if x in
                 self.server.player.values()]:
-            if player.AP != 0:
+            if player.AP != 0 or player.remainingMovementTiles != 0:
                 APRemains = True
         if not APRemains:
             if not self.combatStates[combatPane].turnTimer:

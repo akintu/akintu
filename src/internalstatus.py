@@ -521,7 +521,7 @@ class InternalStatus(object):
         target.stealthBreakMaxOverride = 100
 
     def Set_movement_AP_cost_method_reverse(self, target, magnitude):
-        Combat.setMovmentAPCost(target, -1)
+        Combat.setMovementCost(target, -1)
 
     def Snake_style_method_reverse(self, target, magnitude):
         pass
