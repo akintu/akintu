@@ -14,6 +14,8 @@ import welcome
 
 def main():
     #JAB: Added this debugging backdoor to bypass the menu
+    #argv[1] = "1" if server, anything else if client
+    #argv[2] = character name
     port = 1337
     if len(sys.argv) > 1:
         num_players = sys.argv[1]
