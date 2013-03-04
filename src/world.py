@@ -239,7 +239,7 @@ class Pane(object):
             #Get Anything Else
             pass
 
-    def save_state(self):
+    def save_state(self, person_dict):
         '''
         Saves the current panes monsters and items to a dictionary.
         Returns a dictionary with the following attributes:
@@ -248,7 +248,28 @@ class Pane(object):
         The server can then add this dictionary to its master dictionary using
         this pane's (x, y) coordinate as the key.
         '''
+        
+        save_dict = dict()
+        monster_list = []
+        item_list = []
+        
+        #Save Monsters.  
+        #Using pane's person list which contains the keys to 
+        #pull the people from supplied dictionary
+        for id in self.person:
+            if not id in person_dict:
+                print "ID (" + str(id) + ") not found in person_dict."
+                assert False
+            monster = person_dict[id]
+            monster_list.append((monster.name, monster.level, \
+                monster.location, monster.region, monster.ai))
+        save_dict[MONSTER_KEY] = monster_list
+        
+        #SAVE ITEMS
+        #TODO: loop through tile entity lists to pull these items and 
+        #add their representation to item_list.
         pass
+        
 
 class CombatPane(Pane):
 
