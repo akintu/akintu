@@ -149,7 +149,7 @@ class EquippedItems(object):
 
     @property
     def equippedShield(self):
-        if( self._allGear['Off Hand'].isinstance(equipment.Armor) ):
+        if isinstance(self._allGear['Off Hand'], equipment.Armor) :
             return self._allGear['Off Hand']
         else:
             return None

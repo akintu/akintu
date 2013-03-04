@@ -177,7 +177,7 @@ class Game(object):
             ###### Update Text #####
             if isinstance(command, Update) and command.property == UpdateProperties.TEXT:
                 self.screen.show_text(command.value, color=command.details)
-
+                
     def handle_events(self):
         pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
         for event in pygame.event.get():

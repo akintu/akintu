@@ -36,14 +36,16 @@ class Combat(object):
         ports = []
         if not Combat.gameServer:
             print "Combat has not had its view of gameServer initialized."
-        if not character.cLocation:
+        if not character.cPane:
             print "getAllCombatPorts() error: Character is not in battle."
         else:
-            toMatch = character.cLocation
+            toMatch = character.cPane
             for port, id in Combat.gameServer.player.iteritems():
-                if Combat.gameServer.person[id].cLocation == toMatch:
+                if Combat.gameServer.person[id].cPane == toMatch:
                     # In same combat
                     ports.append(port)
+        if not ports:
+           print "Failed to find any ports."
         return ports
         
     @staticmethod
@@ -78,7 +80,7 @@ class Combat(object):
         if not toAll:
             portList.append(Combat.getPlayerPort(character))
         else:
-            portList.append(Combat.getAllCombatPorts(character))
+            portList = Combat.getAllCombatPorts(character)
         messageObj = command.Update(id=None, property=command.UpdateProperties.TEXT, 
                                     value=message, details=color)
         for port in portList:
