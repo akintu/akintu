@@ -162,30 +162,30 @@ class Game(object):
                     self.running = False
 
             ###### Initiate Combat ######
-            if isinstance(command, Update) and command.property == UpdateProperties.COMBAT:
+            elif isinstance(command, Update) and command.property == UpdateProperties.COMBAT:
                 self.combat = command.value
             ###### Update AP ######
-            if isinstance(command, Update) and command.property == UpdateProperties.AP:
+            elif isinstance(command, Update) and command.property == UpdateProperties.AP:
                 self.pane.person[command.id].AP = command.value
                 self.screen.update_person(command.id, {'AP': command.value, 'team': self.pane.person[command.id].team})
             ###### Update MP ######
-            if isinstance(command, Update) and command.property == UpdateProperties.MP:
+            elif isinstance(command, Update) and command.property == UpdateProperties.MP:
                 self.pane.person[command.id].MP = command.value
                 self.screen.update_person(command.id, {'MP': command.value, 'team': self.pane.person[command.id].team})
             ###### Update HP ######
-            if isinstance(command, Update) and command.property == UpdateProperties.HP:
+            elif isinstance(command, Update) and command.property == UpdateProperties.HP:
                 self.pane.person[command.id].HP = command.value
                 self.screen.update_person(command.id, {'HP': command.value, 'team': self.pane.person[command.id].team})
             ###### Update Text #####
-            if isinstance(command, Update) and command.property == UpdateProperties.TEXT:
+            elif isinstance(command, Update) and command.property == UpdateProperties.TEXT:
                 self.screen.show_text(command.value, color=command.details)
             ###### Update Movement AP Cost ####
-            if isinstance(command, Update) and command.property == UpdateProperties.MOVE_AP_COST:
+            elif isinstance(command, Update) and command.property == UpdateProperties.MOVE_AP_COST:
                 self.pane.person[command.id].overrideMovementAPCost = command.value
             ###### Update Movement Tiles #####
-            if isinstance(command, Update) and command.property == UpdateProperties.MOVE_TILES:
+            elif isinstance(command, Update) and command.property == UpdateProperties.MOVE_TILES:
                 self.pane.person[command.id].remainingMovementTiles = command.value
-               
+                
                 
     def handle_events(self):
         pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
@@ -267,7 +267,8 @@ class Game(object):
 
     def force_end_turn(self):
         ap = self.pane.person[self.id].AP
-        if ap > 0:
+        movesLeft = self.pane.person[self.id].remainingMovementTiles
+        if ap > 0 or movesLeft > 0:
             action = AbilityAction(AbilityActions.END_TURN, self.id, self.id)
             self.CDF.send(action)
 

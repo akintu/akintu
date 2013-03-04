@@ -507,9 +507,12 @@ class Combat(object):
         # TODO
 
     @staticmethod
-    def decrementMovementTiles(target):
+    def decrementMovementTiles(target, removeAll=False):
         ''' Decrease the number of tiles a player can move without incurring an AP cost. '''
-        if target.remainingMovementTiles == 0:
+        if removeAll:
+            target.remainingMovementTiles = 0
+            Combat.sendToAll(target, "MOVE_TILES")
+        elif target.remainingMovementTiles == 0:
             print "ERROR: Attempting to decrement Movement tiles when none remain!"
         else:
             target.remainingMovementTiles -= 1

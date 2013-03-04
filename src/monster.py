@@ -7,6 +7,7 @@ import passiveability
 import spell
 import region
 import servercombat
+import command
 from dice import *
 from const import *
 from combat import *
@@ -233,9 +234,16 @@ class Monster(person.Person):
             abil = actionDuple[0]
             target = actionDuple[1]
             abil.use(target)
+            self.faceTarget(target)
             return abil.name
         return "Failure"
 
+    def faceTarget(self, target):
+        dir = Combat.getRelativeDirection(self, target)
+        if dir != self.cLocation.direction:
+            self.cLocation.direciton = dir
+            messageObj = command.Person(self.id, command.PersonActions.MOVE, self.cLocation)
+       
     def getPlayersInRange(self, range, server=None, combatPane=None, visiblePlayers="All"):
         """Returns a list of players within a set range of this monster.  Will sort them according
         to distance from this monster."""

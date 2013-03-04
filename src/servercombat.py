@@ -86,6 +86,7 @@ class CombatServer():
         elif isinstance(command, AbilityAction) and command.ability == AbilityActions.END_TURN:
             target = self.server.person[command.id]
             Combat.modifyResource(target, "AP", -target.AP)
+            Combat.decrementMovementTiles(target, removeAll=True)
             self.check_turn_end(self.server.person[command.id].cPane)
         self.update_dead_people(self.server.person[command.id].cPane) #TODO: Uncomment.
 
