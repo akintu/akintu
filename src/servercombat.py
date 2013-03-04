@@ -162,7 +162,10 @@ class CombatServer():
         target.cooldownList[:] = [x for x in target.cooldownList if x[1] > 0]
         # Refill AP (performed in end_turn)
         for stat in target.statusList:
-            print target.name + " Has status: " + stat.name + " T=" + str(stat.turnsLeft)
+            if stat.turnsLeft == -1:
+                print target.name + " has status enabled: " + stat.name
+            else:
+                print target.name + " has status: " + stat.name + " T=" + str(stat.turnsLeft)
      
     def startCombat(self, playerId, monsterId):
         '''Initiates combat for the first player to enter combat.

@@ -294,8 +294,8 @@ class Person(en.Entity):
         components: base, equipment, and status, but it also
         checks to see if the override value is not -1.  When it
         is a valid value, that value will be returned instead."""
-        if self._overrideMovementAPCost >= 0:
-            return self._overrideMovementAPCost
+        if self.overrideMovementAPCost >= 0:
+            return self.overrideMovementAPCost
         else:
             return max(self._baseMovementAPCost +
                        self._equipmentMovementAPCost +

@@ -55,6 +55,9 @@ class Combat(object):
             messageObj = command.Update(character.id, command.UpdateProperties.MP, character.MP)
         elif type == "HP":
             messageObj = command.Update(character.id, command.UpdateProperties.HP, character.HP)
+        elif type == "MoveAPCost":
+            messageObj = command.Update(character.id, command.UpdateProperties.MOVE_AP_COST,
+                                        character.totalMovementAPCost)
         elif type == "Status":
             messageObj = command.Update(character.id, command.UpdateProperties.STATUS,
                                         Combat.encodeStatuses(character))
@@ -754,9 +757,8 @@ class Combat(object):
         return damSum
 
     @staticmethod
-    def setMovementCost(target, newCost, numberOfMoves=1, duration=-1, inStealth=False):
+    def setMovementCost(target, newCost, numberOfMoves=1, duration=-1):
         """Sets the AP cost of the next move of the target Person to the specified value.
-        By default, this will only apply to the next movement.
         Inputs:
           target -- Person; the target whose movement cost we are adjusting
           newCost -- int; a non-negative value to assign the AP cost of movement to.
@@ -764,20 +766,16 @@ class Combat(object):
                            expired, this method will reset the AP movement cost to its
                            default value.  If this is to be time based and not based
                            on the number of movements, this parameter should be set
-                           to -1.
+                           to -1. TODO
           duration -- int*; the number of turns this AP cost should be assigned to the target.
                            By default, it is -1 which indicates it is not based on the
-                           number of turns, but rather the number of movements.
-          inStealth -- boolean*; If set, will cause the AP cost to reset to its default value
-                                 upon exiting stealth.
+                           number of turns, but rather the number of movements. TODO
+
         Outputs:
           None"""
-        if newCost < 0:
-            return
         target.overrideMovementAPCost = newCost
-        target.overrideMovements = numberOfMoves
-        target.overrideMovementTurns = duration
-        #TODO -- trigger duration/number of moves/break on stealth??
+        Combat.sendToAll(target, "MoveAPCost")
+
 
     @staticmethod
     def movePerson(target, destination, instant=False):

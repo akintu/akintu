@@ -179,6 +179,9 @@ class Game(object):
             ###### Update Text #####
             if isinstance(command, Update) and command.property == UpdateProperties.TEXT:
                 self.screen.show_text(command.value, color=command.details)
+            ###### Update Movement AP Cost ####
+            if isinstance(command, Update) and command.property == UpdateProperties.MOVE_AP_COST:
+                self.pane.person[command.id].overrideMovementAPCost = command.value
                 
     def handle_events(self):
         pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
@@ -249,7 +252,7 @@ class Game(object):
             if self.keystate in [K_LSHIFT, K_RSHIFT] and not self.combat:
                 self.CDF.send(Person(PersonActions.RUN, self.id, direction))
                 self.running = True
-
+            
             elif self.pane.person[self.id].AP >= self.pane.person[self.id].totalMovementAPCost:
                 self.CDF.send(Person(PersonActions.MOVE, self.id, newloc))
                 if self.pane.person[self.id].location.pane == newloc.pane:

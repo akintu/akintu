@@ -763,7 +763,7 @@
   [IMAGE: hidden.png]
   [ELEMENT: None]
   [INTERNAL: Set_movement_AP_cost]
-    [MAGNITUDE: 6]
+    [MAGNITUDE: 0]
   [INTERNAL: Avoidance]
     [MAGNITUDE: 15]
   [INTERNAL: Hidden]

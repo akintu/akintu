@@ -419,7 +419,10 @@ class Ability(object):
 
     def _stealth(self, target):
         source = self.owner
-        Combat.addStatus(source, "Stealth", duration=-1)
+        newAPCost = 6
+        if source.characterClass == "Assassin":
+            newAPCost = 8
+        Combat.addStatus(source, "Stealth", magnitude=newAPCost, duration=-1)
 
     def _stealthCheck(self, target):
         source = self.owner
