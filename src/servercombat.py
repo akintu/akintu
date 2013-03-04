@@ -238,18 +238,17 @@ class CombatServer():
         #TODO: Calculate starting location for reals
         currentPlayer.cLocation = Location((0, 0), (0, 0))
 
-        for port in Combat.getAllCombatPorts():
-            self.server.SDF.send(port, Person(PersonActions.REMOVE, playerId))
-            self.server.SDF.send(port, Update(playerId, UpdateProperties.COMBAT, True))
-            self.server.SDF.send(port, Person(PersonActions.CREATE, playerId,
-                                 currentPlayer.cLocation, currentPlayer.getDetailTuple()))
-
+        port = [p for p, i in self.server.player.iteritems() if i == playerId][0]
+        self.server.SDF.send(port, Person(PersonActions.REMOVE, playerId))
+        self.server.SDF.send(port, Update(playerId, UpdateProperties.COMBAT, True))
+        self.server.SDF.send(port, Person(PersonActions.CREATE, playerId,
+                             currentPlayer.cLocation, currentPlayer.getDetailTuple()))
                                  
         # Populate the combat pane with all of the monsters.
-            for id in self.server.pane[combatPane].person:
-                if playerId != id:
-                    self.server.SDF.send(port, Person(PersonActions.CREATE, id,
-                            self.server.person[id].cLocation, self.server.person[id].getDetailTuple()))
+        for id in self.server.pane[combatPane].person:
+            if playerId != id:
+                self.server.SDF.send(port, Person(PersonActions.CREATE, id,
+                        self.server.person[id].cLocation, self.server.person[id].getDetailTuple()))
                         
         ## Debug area ##
         # j = 0

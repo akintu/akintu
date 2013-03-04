@@ -122,7 +122,7 @@ class Game(object):
                 persondict = {'location': command.location, 'image': imagepath, 'team': p.team, \
                     'HP': p.HP, 'totalHP': p.totalHP, 'MP': p.MP, \
                     'totalMP': p.totalMP, 'AP': p.AP, 'totalAP': p.totalAP, \
-                    'level': p.level, 'name' : p.name, 'cLocation' : p.cLocation}
+                    'level': p.level, 'name' : p.name}
                 self.screen.add_person(command.id, persondict)
 
             if isinstance(command, Person) and command.id not in self.pane.person:
@@ -174,7 +174,9 @@ class Game(object):
             if isinstance(command, Update) and command.property == UpdateProperties.HP:
                 self.pane.person[command.id].HP = command.value
                 self.screen.update_person(command.id, {'HP': command.value, 'team': self.pane.person[command.id].team})
-
+            ###### Update Text #####
+            if isinstance(command, Update) and command.property == UpdateProperties.TEXT:
+                self.screen.show_text(command.value, color=command.details)
 
     def handle_events(self):
         pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
@@ -207,13 +209,13 @@ class Game(object):
                 elif event.key == K_n and self.combat:
                     self.force_end_turn()
                 elif event.key == K_EQUALS or event.key == K_PAGEUP:
-                    Combat.screen.scroll_up()
+                    self.screen.scroll_up()
                 elif event.key == K_MINUS or event.key == K_PAGEDOWN:
-                    Combat.screen.scroll_down()
+                    self.screen.scroll_down()
                 elif event.key == K_UNDERSCORE:
-                    Combat.screen.scroll_down(1000)
+                    self.screen.scroll_down(1000)
                 elif event.key == K_PLUS:
-                    Combat.screen.scroll_up(1000)
+                    self.screen.scroll_up(1000)
 
     def move_person(self, direction, distance):
         if self.running:
