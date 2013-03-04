@@ -65,7 +65,8 @@ class Ability(object):
         if not source.inRange(target, self.range):
             return (False, "Target is out of range.")
         if source.onCooldown(self.name):
-            return (False, self.name + " is on Cooldown.")
+            return (False, self.name + " is on Cooldown " + source.getCooldownTurns(self.name) +
+                                       " turns left.")
         return (True, "")
 
 
@@ -168,7 +169,8 @@ class Ability(object):
         source = self.owner
         if not source.inStealth():
             return (False, "Must be in stealth to perform " + self.name + " .")
-        # If not in backstab position : TODO
+        if not Combat.inBackstabPosition(source, target):
+            return (False, "Must be in backstab position to perform " + self.name + " .")
         if not source.usingWeapon("Sword") and not source.usingWeapon("Knife"):
             return (False, "Must be using either swords or knives to preform " + self.name + " .")
 
@@ -176,8 +178,6 @@ class Ability(object):
     def _chainGrasp(self, target):
         source = self.owner
         chance = min(90, (source.totalCunning - target.totalCunning) * 9)
-        print source.totalCunning
-        print target.totalCunning
         success = Dice.rollBeneath(chance)
         
         if success:
@@ -508,7 +508,8 @@ class Ability(object):
         source = self.owner
         if not source.inStealth():
             return (False, "Must be in stealth to perform " + self.name + " .")
-        # If not in ranged backstab position : TODO
+        if not Combat.inBackstabPosition(source, target):
+            return (False, "Must be behind target to perform " + self.name + " .")
         if not source.usingWeapon("Ranged"):
             return (False, "Must be using a ranged weapon to perform " + self.name + " .")
         if source.usingWeapon("Longbow"):
@@ -616,7 +617,8 @@ class Ability(object):
         source = self.owner
         if not source.inStealth():
             return (False, "Must be in stealth to perform " + self.name + " .")
-        # If not in backstab position : TODO
+        if not Combat.inBackstabPosition(source, target):
+            return (False, "Must be in backstab position to perform " + self.name + " .")
         if not source.usingWeapon("Sword") and not source.usingWeapon("Knife"):
             return (False, "Must be using either swords or knives to preform " + self.name + " .")
 
@@ -647,7 +649,8 @@ class Ability(object):
         source = self.owner
         if source.inStealth():
             return (False, "Must not be in stealth to perform " + self.name + " .")
-        # If not in backstab position : TODO
+        if not Combat.inBackstabPosition(source, target):
+            return (False, "Must be in backstab position to perform " + self.name + " .")
         if not source.usingWeapon("Sword") and not source.usingWeapon("Knife"):
             return (False, "Must be using either swords or knives to preform " + self.name + " .")
 
@@ -1656,7 +1659,7 @@ class Ability(object):
         'class' : 'Assassin',
         'HPCost' : 0,
         'APCost' : 10,
-        'range' : 1,
+        'range' : -1,
         'target' : 'hostile',
         'action' : _rangedBackstab,
         'cooldown' : 2,

@@ -121,7 +121,7 @@ class CombatServer():
             player = monster.getNearestPlayer(visiblePlayers)
             if not player:
                 return "Failed"
-            direction = self.getRelativeDirection(monster, player)
+            direction = Combat.getRelativeDirection(monster, player)
             desiredLocation = monster.cLocation.move(direction, 1)
             if self.tile_is_open(desiredLocation, monster.id):
                 action = Person(PersonActions.MOVE, monster.id, desiredLocation)
@@ -136,65 +136,6 @@ class CombatServer():
                 break
         monster.AP -= monster.totalMovementAPCost
         return "Moved"
-
-    def getRelativeDirection(self, monster, player):
-        '''Gets the direction best fitting the path between monster and
-        player.
-        Returns a number within 1-4, 6-9 as represented on the numpad.'''
-        playerX = player.cLocation.tile[0]
-        monsterX = monster.cLocation.tile[0]
-        playerY = player.cLocation.tile[1]
-        monsterY = monster.cLocation.tile[1]
-        dy = playerY - monsterY
-        dx = playerX - monsterX
-        if dy >= 0:
-            # Player is below the monster
-            if dx <= 0:
-                # Player is left of the monster
-                if abs(dx) >= 2 * abs(dy):
-                    # Player is more left than down
-                    return 4
-                elif abs(dx) * 2 <= abs(dy):
-                    # Player is more down than left
-                    return 2
-                else:
-                    # Player is down-left diagonal
-                    return Dice.choose([2, 4])
-            else:
-                # Player is right of the monster
-                if abs(dx) >= 2 * abs(dy):
-                    # Player is more right than down
-                    return 6
-                elif abs(dx) * 2 <= abs(dy):
-                    # Player is more down than right
-                    return 2
-                else:
-                    # Player is down-right diagonal
-                    return Dice.choose([6, 2])
-        else:
-            # Player is above the monster
-            if dx <= 0:
-                # Player is left of the monster
-                if abs(dx) >= 2 * abs(dy):
-                    # Player is more left than up
-                    return 4
-                elif abs(dx) * 2 <= abs(dy):
-                    # Player is more up than left
-                    return 8
-                else:
-                    # Player is up-left diagonal
-                    return Dice.choose([4, 8])
-            else:
-                # Player is right of the monster
-                if abs(dx) >= 2 * abs(dy):
-                    # Player is more right than up
-                    return 6
-                elif abs(dx) * 2 <= abs(dy):
-                    # Player is more up than right
-                    return 8
-                else:
-                    # Player is up-right diagonal
-                    return Dice.choose([6, 8])
 
     ### Combat Phase Logic Methods ###
 

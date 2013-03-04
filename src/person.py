@@ -2396,6 +2396,13 @@ class Person(en.Entity):
                 return True
         return False
 
+    def getCooldownTurns(self, abilityName):
+        if not self.onCooldown(abilityName):
+            return abilityName + " is not on cooldown."
+        else:
+            for cd in self.cooldownList:
+                if cd[0] == abilityName:
+                    return str(cd[1])
 
     def sizeCompare(self, size, smallerThan):
         """Returns True if the size of this Person is smaller than the given
