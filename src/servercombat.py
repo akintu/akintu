@@ -165,6 +165,8 @@ class CombatServer():
         for removalStatus in toRemove:
             Combat.removeStatus(target, removalStatus.name)
         target.cooldownList[:] = [x for x in target.cooldownList if x[1] > 0]
+        if target.team == "Players":
+            Combat.resetMovementTiles(target)
         # Refill AP (performed in end_turn)
         for stat in target.statusList:
             if stat.turnsLeft == -1:
