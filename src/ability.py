@@ -49,6 +49,9 @@ class Ability(object):
         if source.AP < self.APCost - mod:
             return (False, "Insufficient AP")
 
+        if self.targetType == "self" and self.owner is not target:
+            target = self.owner
+            
         messageCode = (True, "")
         if self.checkFunction:
             messageCode = self.checkFunction(self, target)
@@ -83,11 +86,12 @@ class Ability(object):
             if self.cooldown:
                 Combat.applyCooldown(self.owner, self.name, self.cooldown)
             self.action(self, target)
-            if Dice.rollBeneath(self.breakStealth):
-                Combat.removeStealth(self.owner)
+            if self.owner.inStealth():
+                if Dice.rollBeneath(self.breakStealth):
+                    Combat.removeStealth(self.owner)
+                    Combat.sendCombatMessage(self.owner.name + " exited stealth.", self.owner, color='white')
         else:
             print "WARNING: Ability failed late!"
-            # TODO! Make this raise an exception rather than silently return.
 
     def _basicAttack(self, target):
         source = self.owner

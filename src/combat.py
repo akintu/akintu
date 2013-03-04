@@ -218,8 +218,8 @@ class Combat(object):
             if source.inRange(target, 1) and not ignoreMeleeBowPenalty:
                 # Ranged attack with penalty 20% miss chance
                 outrightMissChance = int(round(20 * (1 - float(source.meleeRangedAttackPenaltyReduction) / 100)))
-                if not Dice.rollBeneath(outrightMissChance):
-                    Combat.sendCombatMessage("Jammed (" + str(outrightMissChance) + "\%)", source) 
+                if Dice.rollBeneath(outrightMissChance):
+                    Combat.sendCombatMessage("Jammed (" + str(outrightMissChance) + "%)", source) 
                     return "Miss"
             if source.usingWeapon("Longbow") and not source.baseClass == "Ranger" and not source.secondaryClass == "Ranger":
                 # -25% Accuracy
@@ -300,7 +300,7 @@ class Combat(object):
         if (type == "Physical"):
             Combat._shoutAttackStart(source, target)
             if Dice.rollBeneath(target.totalAvoidanceChance):
-                Combat.sendCombatMessage("Avoided attack (" + str(target.totalAvoidanceChance) + "\%)",
+                Combat.sendCombatMessage("Avoided attack (" + str(target.totalAvoidanceChance) + "%)",
                                          target)
                 return "Miss"
             attackOne = Combat.physicalHitMechanics(source, target, modifier, critMod, ignoreMeleeBowPenalty)

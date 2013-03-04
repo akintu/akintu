@@ -37,7 +37,7 @@ class Game(object):
 
         TheoryCraft.loadAll()   #Static method call, Devin's stuff.
         if not state:  # This is a hack, should be getting seed from host
-            state = {SEED_KEY: 'a'}
+            state = {SEED_KEY: 'fdsa'}
         assert player
 
         if isinstance(state, dict):     #This means we're creating a new game
@@ -297,7 +297,9 @@ class Game(object):
             else:
                 abilityIndex = self.abilityList.index(self.currentAbility)
                 self.currentAbility = self.abilityList[abilityIndex - 1]
-        print self.currentAbility.name + " AP COST: " + str(self.currentAbility.APCost)
+        self.screen.show_text("Selected: " + self.currentAbility.name + " AP COST: " + 
+                                str(self.currentAbility.APCost),
+                                color='lightblue')
         
     def cycle_targets(self, reverse=False):
         # Cycles through the current persons in the current combat pane.
@@ -319,7 +321,8 @@ class Game(object):
             else:
                 currentTargetPlace = self.panePersonIdList.index(self.currentTargetId)
                 self.currentTargetId = self.panePersonIdList[currentTargetPlace - 1]
-        print self.pane.person[self.currentTargetId].name
+        self.screen.show_text("Targeting: " + self.pane.person[self.currentTargetId].name, 
+                                color='lightblue')
 
     def animate(self, id, source, dest, length):
         xdist = (dest.tile[0] - source.tile[0]) * TILE_SIZE

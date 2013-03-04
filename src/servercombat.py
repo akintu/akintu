@@ -77,8 +77,12 @@ class CombatServer():
                 color = 'orange'
                 if abilToUse.targetType == 'friendly' or abilToUse.targetType == 'self':
                     color = 'green'
-                Combat.sendCombatMessage(source.name + " is using " + abilToUse.name + " on " + target.name,
-                                         source, color=color)
+                if abilToUse.targetType != 'self':
+                    Combat.sendCombatMessage(source.name + " is using " + abilToUse.name + " on " + target.name,
+                                             source, color=color)
+                else:
+                    Combat.sendCombatMessage(source.name + " is using " + abilToUse.name,
+                                             source, color=color)
                 abilToUse.use(target)
             else:
                 Combat.screen.show_text(useDuple[1])
@@ -167,7 +171,7 @@ class CombatServer():
             Combat.removeStatus(target, removalStatus.name)
         target.cooldownList[:] = [x for x in target.cooldownList if x[1] > 0]
         if target.team == "Players":
-            Combat.resetMovementTiles(target)
+            Combat.decrementMovementTiles(target, removeAll=True)
         # Refill AP (performed in end_turn)
         for stat in target.statusList:
             if stat.turnsLeft == -1:
