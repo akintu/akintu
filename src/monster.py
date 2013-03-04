@@ -112,7 +112,7 @@ class Monster(person.Person):
         self.abilityList.append(rangedAttack)
 
     def applyBonusDamage(self, dieRoll):
-        dieRoll *= (1 + self.attackPower / 100.0)
+        dieRoll *= self.attackPower / 100.0
         return int(round(dieRoll))
 
     def setLevel(self, level):
