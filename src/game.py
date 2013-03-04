@@ -31,8 +31,8 @@ class Game(object):
             serverip:   None if hosting, required for client
             state:      state={SEED_KEY: "seed"} if new game, or
                         state="SaveFile.###" if loading game
-            player:     ("Name", "Race", "Class") if new player
-                        
+            player:     player=("Name", "Race", "Class") if new player
+                        player="PlayerRepresentation.whatever" if loading
         '''
 
         TheoryCraft.loadAll()   #Static method call, Devin's stuff.
