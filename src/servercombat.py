@@ -247,21 +247,16 @@ class CombatServer():
         port = [p for p, i in self.server.player.iteritems() if i == playerId][0]
         self.server.SDF.send(port, Person(PersonActions.REMOVE, playerId))
         self.server.SDF.send(port, Update(playerId, UpdateProperties.COMBAT, True))
-        self.server.SDF.send(port, Person(PersonActions.CREATE, playerId,
-                             currentPlayer.cLocation, currentPlayer.getDetailTuple()))
+        
+        for p in Combat.getAllCombatPorts(self.server.person[playerId]):
+            self.server.SDF.send(p, Person(PersonActions.CREATE, playerId,
+                    currentPlayer.cLocation, currentPlayer.getDetailTuple()))
                                  
         # Populate the combat pane with all of the monsters.
         for id in self.server.pane[combatPane].person:
             if playerId != id:
                 self.server.SDF.send(port, Person(PersonActions.CREATE, id,
                         self.server.person[id].cLocation, self.server.person[id].getDetailTuple()))
-                        
-        ## Debug area ##
-        # j = 0
-        # for per in self.server.pane[combatPane].person:
-            # j += 1
-            # print "In combat pane: " + "#" + str(j) + ": " + self.server.person[per].name
-        ## Debug end ##
             
         self.shout_turn_start(self.server.person[playerId], turn="Player")
 

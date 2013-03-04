@@ -33,21 +33,9 @@ class Combat(object):
     @staticmethod
     def getAllCombatPorts(character):
         '''Get all ports in the same combat instance as this playerCharacter.'''
-        ports = []
-        if not Combat.gameServer:
-            print "Combat has not had its view of gameServer initialized."
-        if not character.cPane:
-            print "getAllCombatPorts() error: Character is not in battle."
-        else:
-            toMatch = character.cPane
-            for port, id in Combat.gameServer.player.iteritems():
-                if Combat.gameServer.person[id].cPane == toMatch:
-                    # In same combat
-                    ports.append(port)
-        if not ports:
-           print "Failed to find any ports."
-        return ports
-        
+        return [port for port, id in Combat.gameServer.player.iteritems() \
+                if Combat.gameServer.person[id].cPane == character.cPane]
+
     @staticmethod
     def getPlayerPort(character):
         ''' Assumes "character" is a PlayerCharacter '''
