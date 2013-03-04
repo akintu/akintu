@@ -18,7 +18,6 @@ class Combat(object):
         pass
 
     gameServer = None
-    screen = None
     allStatuses = None
 
     @staticmethod

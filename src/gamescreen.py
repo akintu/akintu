@@ -200,8 +200,6 @@ class GameScreen(object):
         '''
         if 'location' in statsdict:
             self.persons[personid].current_coord = statsdict['location']
-            if not self.persons[personid].current_coord:
-                self.persons[personid].current_coord = statsdict['cLocation']
         self.persons[personid].update_dict(statsdict)
 
         for key in statsdict:
@@ -598,8 +596,6 @@ class PersonSprite(pygame.sprite.DirtySprite):
 
         # Location and rect info
         loc = self.statsdict['location']
-        if not loc:
-            loc = self.statsdict['cLocation']
         foot = self.statsdict['foot']
         xoff = self.statsdict['xoffset']
         yoff = self.statsdict['yoffset']
