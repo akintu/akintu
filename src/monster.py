@@ -206,7 +206,6 @@ class Monster(person.Person):
         choicesList = self.getUsableAbilities(server, combatPane)
         choice = None
         if not choicesList:
-            print "No more choices found for: " + self.name
             return None
         else:
             return Dice.choose(choicesList)

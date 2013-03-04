@@ -38,7 +38,9 @@ class InventoryAction(Command):
         self.item_hash = item_hash
 
 class AbilityAction(Command):
-    def __init__(self, ability, sourceId, targetId):
+    def __init__(self, ability, sourceId, targetId, abilityName=""):
         self.ability = ability
         self.id = sourceId
         self.targetId = targetId
+        self.abilityName = abilityName
+        

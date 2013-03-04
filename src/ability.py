@@ -415,7 +415,7 @@ class Ability(object):
         Combat.addStatus(source, "Stealth", duration=-1)
 
     def _stealthCheck(self, target):
-        if self.inStealth():
+        if source.inStealth():
             return (False, "Already in Stealth")
         return (True, "")
 

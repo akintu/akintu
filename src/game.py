@@ -57,9 +57,11 @@ class Game(object):
         self.combat = False
 
         # Selection state
-        self.selectionMode = False
+        self.selectionMode = "targeting"
         self.currentTargetId = None
         self.panePersonIdList = []
+        self.currentAbility = None
+        self.abilityList = []
 
         # Setup server if host
         self.port = port
@@ -164,7 +166,6 @@ class Game(object):
                 self.combat = command.value
             ###### Update AP ######
             if isinstance(command, Update) and command.property == UpdateProperties.AP:
-                print str(command.value)
                 self.pane.person[command.id].AP = command.value
                 self.screen.update_person(command.id, {'AP': command.value, 'team': self.pane.person[command.id].team})
             ###### Update MP ######
@@ -195,16 +196,22 @@ class Game(object):
                 elif event.key in MOVE_KEYS:
                     self.move_person(MOVE_KEYS[event.key], 1)
                 elif event.key == K_f:
-                    if self.combat and not self.selectionMode:
-                        self.selectionMode = True
-                        print "Selection mode enabled"
-                    elif self.combat and self.selectionMode:
-                        self.selectionMode = False
-                        print "Selection mode disabled"
-                elif event.key == K_e and self.selectionMode:
-                    self.cycle_targets()
-                elif event.key == K_w and self.selectionMode:
-                    self.cycle_targets(reverse=True)
+                    if self.combat and self.selectionMode == "targeting":
+                        self.selectionMode = "abilities"
+                        print "Selection mode: ability selection"
+                    elif self.combat and self.selectionMode == "abilities":
+                        self.selectionMode = "targeting"
+                        print "Selection mode: targeting"
+                elif event.key == K_e:
+                    if self.selectionMode == "targeting":
+                        self.cycle_targets()
+                    else:
+                        self.cycle_abilities()
+                elif event.key == K_w: 
+                    if self.selectionMode == "targeting":
+                        self.cycle_targets(reverse=True)
+                    else:
+                        self.cycle_abilities(reverse=True)
                 elif event.key == K_a and self.combat:
                     self.attempt_attack()
                 elif event.key == K_n and self.combat:
@@ -227,7 +234,7 @@ class Game(object):
         # If the chest is locked, send a message to the screen.
         # If the chest is unlocked, distribute treasure to this player
         #    and all others on this pane.
-                    
+            
     def move_person(self, direction, distance):
         if self.running:
             self.CDF.send(Person(PersonActions.STOP, self.id))
@@ -260,8 +267,29 @@ class Game(object):
         if not self.currentTargetId:
             print "No target selected."
             return
-        self.CDF.send(AbilityAction(AbilityActions.ATTACK, self.id, self.currentTargetId))
+        self.CDF.send(AbilityAction(AbilityActions.ATTACK, self.id, self.currentTargetId, 
+                      self.currentAbility.name))
 
+    def cycle_abilities(self, reverse=False):
+        if not self.combat:
+            return
+        if not self.abilityList or not self.currentAbility or self.currentAbility not in self.abilityList:
+            self.abilityList = self.pane.person[self.id].abilities
+            self.currentAbility = self.abilityList[0]
+        elif not reverse:
+            if self.currentAbility == self.abilityList[-1]:
+                self.currentAbility = self.abilityList[0]
+            else:
+                abilityIndex = self.abilityList.index(self.currentAbility)
+                self.currentAbility = self.abilityList[abilityIndex + 1]
+        else:
+            if self.currentAbility == self.abilityList[0]:
+                self.currentAbility = self.abilityList[-1]
+            else:
+                abilityIndex = self.abilityList.index(self.currentAbility)
+                self.currentAbility = self.abilityList[abilityIndex - 1]
+        print self.currentAbility.name + " AP COST: " + str(self.currentAbility.APCost)
+        
     def cycle_targets(self, reverse=False):
         # Cycles through the current persons in the current combat pane.
         if not self.combat:

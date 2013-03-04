@@ -7,7 +7,7 @@ import region
 import monster
 
 # TODO: Use user-defined timed-turns
-seconds = 15
+seconds = 45
 
 class CombatServer():
     def __init__(self, server):
@@ -61,10 +61,17 @@ class CombatServer():
         elif isinstance(command, AbilityAction) and command.ability == AbilityActions.ATTACK:
             source = self.server.person[command.id]
             target = self.server.person[command.targetId]
-            abil = source.selectBasicAttack()
-            useDuple = abil.canUse(target)
+            abilToUse = None
+            for abil in source.abilities:
+                if abil.name == command.abilityName:
+                    abilToUse = abil
+            if not abilToUse:
+                abilToUse = source.selectBasicAttack()
+            useDuple = abilToUse.canUse(target)
             if useDuple[0]:
-                abil.use(target)
+                Combat.sendCombatMessage(source.name + " is using " + abilToUse.name + " on " + target.name,
+                                         source, color='green')
+                abilToUse.use(target)
             else:
                 Combat.screen.show_text(useDuple[1])
             self.check_turn_end(self.server.person[command.id].cPane)
