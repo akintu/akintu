@@ -205,10 +205,10 @@ class Game(object):
                 elif event.key == K_f:
                     if self.combat and self.selectionMode == "targeting":
                         self.selectionMode = "abilities"
-                        print "Selection mode: ability selection"
+                        self.screen.show_text("Selection mode: ability selection", color='yellow')
                     elif self.combat and self.selectionMode == "abilities":
                         self.selectionMode = "targeting"
-                        print "Selection mode: targeting"
+                        self.screen.show_text("Selection mode: targeting", color="yellow")
                 elif event.key == K_e:
                     if self.selectionMode == "targeting":
                         self.cycle_targets()

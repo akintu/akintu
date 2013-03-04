@@ -818,7 +818,8 @@ class Combat(object):
           player -- Person; the player whose turn will be ended
         Outputs:
           None"""
-        pass #TODO
+        Combat.decrementMovementTiles(player, removeAll=True)
+        Combat.modifyResource(player, "AP", -player.AP)
 
     @staticmethod
     def modifyThreat(source, target, threatAdjustment):

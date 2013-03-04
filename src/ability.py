@@ -127,9 +127,8 @@ class Ability(object):
         Combat.endTurn(source)
 
     def _dash(self, target):
-        newCost = 0
-        numberOfMoves = 1
-        Combat.setMovementCost(target, newCost, numberOfMoves)
+        source = self.owner
+        source.remainingMovementTiles += source.totalMovementTiles
 
     def _quickStrike(self, target):
         source = self.owner
@@ -1085,7 +1084,7 @@ class Ability(object):
         'range' : 0,
         'target' : 'self',
         'action' : _dash,
-        'cooldown' : None,
+        'cooldown' : 1,
         'checkFunction' : None,
         'breakStealth' : 100
         },
