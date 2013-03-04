@@ -236,8 +236,11 @@ class Pane(object):
             #Get Items
             if ITEM_KEY in state:
                 self.load_items(items=state[ITEM_KEY])
-            #Get Anything Else
-            pass
+            #Anything Else
+            if CMDS_KEY in state:
+                #Any server commands that need to be run
+                #These could be passed to the server...
+                pass
 
     def save_state(self, person_dict):
         '''
@@ -266,15 +269,15 @@ class Pane(object):
         save_dict[MONSTER_KEY] = monster_list
         
         #SAVE ITEMS
-        #TODO: loop through tile entity lists to pull these items and 
-        #add their representation to item_list.
-        pass
+        for key, tile in self.tiles.iteritems():
+            for item in tile.get_items():
+                item_list.append((item.name, Location(self.location, key)))
         save_dict[ITEM_KEY] = item_list
         
         #Return this panes dictionary to caller to add to the master
         #save dictionary.
         return save_dict
-        
+
 
 class CombatPane(Pane):
 
@@ -399,6 +402,7 @@ class CombatPane(Pane):
 class Tile(object):
     def __init__(self, image = os.path.join("res", "images", "background", "grass.png"), passable = True):
         self.entities = []
+        self.items = []
         self.image = image
         self.passable = passable
 
@@ -415,6 +419,13 @@ class Tile(object):
             if ent.passable == False:
                 return False
         return True
+    
+    def add_item(self, entity):
+        self.entities.append(entity)
+        self.items.append(entity)
+    
+    def get_items(self):
+        return self.items
 
 if __name__ == "__main__":
     '''
