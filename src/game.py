@@ -217,7 +217,17 @@ class Game(object):
                     self.screen.scroll_down(1000)
                 elif event.key == K_PLUS:
                     self.screen.scroll_up(1000)
+                elif event.key == K_g:
+                    self.get_item()
 
+    def get_item(self):
+        pass
+        # If player is on an item, pick it up (the top item).
+        # If player is on a treasure chest, attempt to open it.
+        # If the chest is locked, send a message to the screen.
+        # If the chest is unlocked, distribute treasure to this player
+        #    and all others on this pane.
+                    
     def move_person(self, direction, distance):
         if self.running:
             self.CDF.send(Person(PersonActions.STOP, self.id))
