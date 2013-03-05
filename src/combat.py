@@ -146,15 +146,15 @@ class Combat(object):
         accCritMod = 0
         chanceToHit = None
         delta = offense - defense
-        if(10 < delta):
+        if(15 < delta):
             chanceToHit = 100
             accCritMod = (delta - 10) * 0.25
-        elif(0 <= delta <= 10):
-            chanceToHit = 90 + delta
-        elif(-6 <= delta < 0):
-            chanceToHit = 90 - delta * 3
-        elif(-27 <= delta < -6):
-            chanceToHit = 72 - (delta + 6) * 2
+        elif(0 <= delta <= 15):
+            chanceToHit = 85 + delta
+        elif(-5 <= delta < 0):
+            chanceToHit = 85 - delta * 3
+        elif(-27 <= delta < -5):
+            chanceToHit = 70 - (delta + 6) * 2
         elif(-47 <= delta < -27):
             chanceToHit = 30 - (delta + 27) * 1
         elif(-57 <= delta < -47):
