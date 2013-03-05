@@ -224,6 +224,12 @@ class Pane(object):
         lvl = max(lvl, 1)
         #print chest_type
         self.tiles[tile].add_item(TreasureChest(chest_type, lvl, tile))
+        
+    def get_treasure_chest(self, location_tuple):
+        tiles = Location(self.location, location_tuple).get_surrounding_tiles()
+        for key, tile in tiles:
+            if tile in self.tiles:
+                self.tiles[tile].get_chest()
 
     def add_region(self, location, size, percentage, entity_type=None):
         r = Region()
@@ -414,6 +420,7 @@ class Tile(object):
         self.entities = []
         self.obstacles = []
         self.items = []
+        self.chest = None
         self.image = image
         self.passable = passable
 
@@ -436,8 +443,8 @@ class Tile(object):
         self.items.append(entity)
     
     def remove_item(self, item):
-        assert False
-        pass
+        self.entities.remove(item)
+        self.items.remove(item)
     
     def get_items(self):
         return self.items
@@ -445,6 +452,24 @@ class Tile(object):
     def add_obstacle(self, entity):
         self.entities.append(entity)
         self.obstacles.append(entity)
+        
+    def remove_obstacle(self, entity):
+        assert False
+        pass
+        
+    def get_obstacles(self):
+        return self.obstacles
+        
+    def add_chest(self, chest):
+        self.add_item(chest)
+        self.chest = chest
+        
+    def remove_chest(self):
+        self.remove_item(chest)
+        self.chest = None
+        
+    def get_chest(self):
+        return self.chest
 
 if __name__ == "__main__":
     '''

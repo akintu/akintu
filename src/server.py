@@ -146,9 +146,11 @@ class GameServer():
             ###### Get Item / Open Chest ######
             if isinstance(command, Person) and command.action == PersonActions.OPEN:
                 activePlayer = self.person[command.id]
+                currentPane = self.pane[activePlayer.location.pane]
                 # if activePlayer near treasure chest tile --> JOSH <--
+                chest = currentPane.get_treasure_chest(activePlayer.location)
                 # select that chest --> JOSH <-- (e.g. chest = functionToGetAChest() )
-                # currentPane = activePlayer.location.pane
+                
                 # playerPorts = getAllPortsOnThisPaneAsAList(currentPane) --> KYLE/JOSH? <--
                 # for playerPort in playerList:
                 #     itemList = chest.generateTreasure()
