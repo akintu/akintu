@@ -123,7 +123,7 @@ class CombatServer():
             Combat.sendCombatMessage(message=char.name + " Died!", color='magenta', character=char)
             port = Combat.getAllCombatPorts(char)[0]
             self.server.SDF.send(port, Person(PersonActions.REMOVE, char.id))
-            self.server.pane[combatPane].person.remove(char.id)
+            #self.server.pane[combatPane].person.remove(char.id)
 
     def monsterMove(self, monster, visiblePlayers):
         tilesLeft = monster.totalMovementTiles
