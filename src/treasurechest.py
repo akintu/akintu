@@ -142,12 +142,12 @@ class TreasureChest(entity.Entity):
         selection = Dice.roll(1, 100)
         if selection <= 60:
             # Two pieces of gear ip=50/50
-            return [TreasureChest._selectGear(self.ip / 2), TreasureChest.selectGear(self.ip / 2)]
+            return [TreasureChest._selectGear(self.ip / 2), TreasureChest._selectGear(self.ip / 2)]
         elif selection <= 90:
             # Two pieces of gear and gold, ip=40/40/20
-            return [TreasureChest.selectGear(round(self.ip * 0.4)),
-                    TreasureChest.selectGear(round(self.ip * 0.4)),
-                    TreasureChest.selectGold((self.ip * 2) / 10)]
+            return [TreasureChest._selectGear(round(self.ip * 0.4)),
+                    TreasureChest._selectGear(round(self.ip * 0.4)),
+                    TreasureChest._selectGold((self.ip * 2) / 10)]
         else:
             # One piece of gear ip=100
             return [TreasureChest._selectGear(self.ip)]
