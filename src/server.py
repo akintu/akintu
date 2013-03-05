@@ -148,22 +148,21 @@ class GameServer():
                 activePlayer = self.person[command.id]
                 currentPane = self.pane[activePlayer.location.pane]
                 chest, loc = currentPane.get_treasure_chest(activePlayer.location)
-                # playerPorts = getAllPortsOnThisPaneAsAList(currentPane) --> KYLE/JOSH? <--
                 if chest:
-                    chest.open([activePlayer])    #Replace this with list of players on current pane
+                    #chest.open([activePlayer])    #Replace this with list of players on current pane
                     
                     #Notify clients in the affected pane
                     for p, i in self.player.iteritems():
                         if self.person[i].location.pane == self.person[command.id].location.pane:
                             self.SDF.send(p, command)
-                # for playerPort in playerList:
-                #     itemList = chest.generateTreasure()
-                #     thisPlayer = self.person[self.player[playerPort]]
-                #         for item in itemList:
-                #             thisPlayer.inventory.addItem(item)
-                #             action = Update(UpdateProperties.TEXT, thisPlayer.id, 
-                #             value='Found item: ' + item.name, details='lightskyblue')
-                #             self.SDF.send(playerPort, action)
+                            itemList = chest.generateTreasure()
+                            thisPlayer = self.person[self.player[p]]
+                            for item in itemList:
+                                thisPlayer.inventory.addItem(item)
+                                action = Update(UpdateProperties.TEXT, thisPlayer.id, 
+                                value='Found item: ' + item.name, details='lightskyblue')
+                                self.SDF.send(p, action)
+                            
             # Get items: TODO
             
                 

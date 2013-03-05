@@ -126,7 +126,7 @@ class TreasureChest(entity.Entity):
         giveWeapon = Dice.rollBeneath(40)
         if giveWeapon:
             baseWeaponSelection = Dice.roll(0, len(TheoryCraft.weapons) - 1)
-            selectedItem = equipment.Weapon(**TheoryCraft.weapons[baseWeaponSelection])
+            selectedItem = equipment.Weapon(TheoryCraft.weapons[baseWeaponSelection])
         else:
             baseArmorSelection = Dice.roll(0, len(TheoryCraft.armors) - 1)
             selectedItem = equipment.Armor(TheoryCraft.armors[baseArmorSelection])
