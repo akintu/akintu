@@ -27,7 +27,7 @@ class TreasureChest(entity.Entity):
             column = 2
         self.animationImages = sheet.get_column(column)
         
-        entity.Entity.__init__(self, location, image=self.animationImages[0], passable=True)
+        entity.Entity.__init__(self, location, image=self.animationImages[0], passable=False)
         if type.capitalize() not in ["Small", "Large", "Gilded"]:
             raise TypeError("Invalid Chest Type: " + type + ".")
         self.ip = ip

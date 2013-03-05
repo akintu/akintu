@@ -223,13 +223,21 @@ class Pane(object):
         lvl = max(abs(self.location[0]), abs(self.location[1]))
         lvl = max(lvl, 1)
         #print chest_type
-        self.tiles[tile].add_item(TreasureChest(chest_type, lvl, tile))
+        self.tiles[tile].add_chest(TreasureChest(chest_type, lvl, tile))
         
-    def get_treasure_chest(self, location_tuple):
-        tiles = Location(self.location, location_tuple).get_surrounding_tiles()
-        for key, tile in tiles:
+    def get_treasure_chest(self, location):
+        if location.pane != self.location:
+            print "Tried to get chest from pane " + str(location.pane) + ","
+            print "but requested it from " + str(self.location)
+            return
+            #assert False
+        tiles = location.get_surrounding_tiles()
+        for key, tile in tiles.iteritems():
             if tile in self.tiles:
-                self.tiles[tile].get_chest()
+                chest = self.tiles[tile].get_chest()
+                if chest:
+                    print "Found chest on tile " + str(tile)
+                    return chest
 
     def add_region(self, location, size, percentage, entity_type=None):
         r = Region()
