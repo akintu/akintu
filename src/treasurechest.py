@@ -192,23 +192,23 @@ class TreasureChest(entity.Entity):
         # TODO: Give experience?  Decide.
         return True
     
-    def open(self, player_list):
+    def open(self, playerList):
         '''
         Called by server, adds items to all inventories
+        Returns True if items were given, False if they weren't
+        due to the chest being locked.
         '''
-        
         # if self.locked:
             # return False
-        self.generateTreasure(player_list)
+        self.generateTreasure(playerList)
         return True
         
-    def get_animation_images(self):
+    def getAnimationImages(self):
         '''
         Provides the images necessary to animate this chest as a list (in order of opening)
         
         Contains 4 images, including the original closed image.
         ''' 
-        
         return self.animationImages
 
 

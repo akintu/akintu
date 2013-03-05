@@ -143,6 +143,25 @@ class GameServer():
             if isinstance(command, Person) and command.action == PersonActions.STOP:
                 self.person[command.id].ai.remove("RUN")
 
+            ###### Get Item / Open Chest ######
+            if isinstance(command, Person) and command.action == PersonActions.OPEN:
+                activePlayer = self.person[command.id]
+                # if activePlayer on treasure chest tile
+                # select that chest
+                # currentPane = activePlayer.location.pane
+                # playerPorts = []
+                # for playerId in currentPane.person:
+                #     playerPorts.append(??? TODO ???)
+                # for playerPort in playerList:
+                #     itemList = chest.generateTreasure()
+                #     thisPlayer = self.person[self.player[playerPort]]
+                #         for item in itemList:
+                #             thisPlayer.inventory.addItem(item)
+                #             action = InventoryAction(InventoryActions.PICKUP, item.hash)
+                #             self.SDF.send(playerPort, action)
+            # Get items: TODO
+            
+                
     def tile_is_open(self, location):
         if location.pane not in self.pane:
             return False
