@@ -202,8 +202,10 @@ class TreasureChest(entity.Entity):
         '''
         # if self.locked:
             # return False
-        self.generateTreasure(playerList)
-        return True
+        added_inventory = dict()
+        for player in playerList:
+            added_inventory[player] = self.generateTreasure(player)
+        return added_inventory
         
     def getAnimationImages(self):
         '''

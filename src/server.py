@@ -149,15 +149,17 @@ class GameServer():
                 currentPane = self.pane[activePlayer.location.pane]
                 chest, loc = currentPane.get_treasure_chest(activePlayer.location)
                 if chest:
-                    chest.open([activePlayer])    #Replace this with list of players on current pane
+                    inventories = chest.open([activePlayer])    #Replace this with list of players on current pane
                     
                     #Notify clients in the affected pane
-                    for p, i in self.player.iteritems():
+                    for p, i in self.player.iteritems():    #Replace this with list of players on current pane
                         if self.person[i].location.pane == self.person[command.id].location.pane:
                             self.SDF.send(p, command)
-                            itemList = chest.generateTreasure(self.person[i])
                             thisPlayer = self.person[self.player[p]]
+                            itemList = inventories[thisPlayer]
+                            print str(thisPlayer.name) + " got:"
                             for item in itemList:
+                                print "  " + str(item.name)
                                 #thisPlayer.inventory.addItem(item)
                                 action = Update(UpdateProperties.TEXT, thisPlayer.id, 
                                 value='Found item: ' + item.name, details='lightskyblue')
