@@ -279,6 +279,10 @@ class Game(object):
         self.CDF.send(AbilityAction(AbilityActions.ATTACK, self.id, self.currentTargetId, 
                       self.currentAbility.name))
 
+    def display_size(self):
+        pass
+        # Switch between displaying monster levels and monster sizes
+                      
     def cycle_abilities(self, reverse=False):
         if not self.combat:
             return

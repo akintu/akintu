@@ -92,7 +92,7 @@ class CombatServer():
             Combat.modifyResource(target, "AP", -target.AP)
             Combat.decrementMovementTiles(target, removeAll=True)
             self.check_turn_end(self.server.person[command.id].cPane)
-        self.update_dead_people(self.server.person[command.id].cPane) #TODO: Uncomment.
+        self.update_dead_people(self.server.person[command.id].cPane)
 
     ### Utility Methods ###
 
@@ -123,7 +123,7 @@ class CombatServer():
             Combat.sendCombatMessage(message=char.name + " Died!", color='magenta', character=char)
             for port in Combat.getAllCombatPorts(char):
                 self.server.SDF.send(port, Person(PersonActions.REMOVE, char.id))
-            #self.server.pane[combatPane].person.remove(char.id)
+            self.server.pane[combatPane].person.remove(char.id)
 
     def monsterMove(self, monster, visiblePlayers):
         tilesLeft = monster.totalMovementTiles
@@ -152,6 +152,7 @@ class CombatServer():
     def upkeep(self, target):
         '''Applies all upkeep operations for this Person.  (Used during the combat
         phase: "Upkeep"'''
+        
         if target.HPRegen > 0:
             Combat.healTarget(target, target.HPRegen)
         if target.MPRegen > 0:
@@ -240,6 +241,8 @@ class CombatServer():
 
     def end_turn(self, combatPane):
         ''' stuff '''
+        self.update_dead_people(combatPane)
+        print "Got this far"
         for character in [self.server.person[x] for x in self.server.pane[combatPane].person]:
             self.shout_turn_start(character, turn="Monster")
         self.monster_phase(combatPane)
