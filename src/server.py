@@ -155,10 +155,10 @@ class GameServer():
                     for p, i in self.player.iteritems():
                         if self.person[i].location.pane == self.person[command.id].location.pane:
                             self.SDF.send(p, command)
-                            itemList = chest.generateTreasure()
+                            itemList = chest.generateTreasure(self.person[i])
                             thisPlayer = self.person[self.player[p]]
                             for item in itemList:
-                                thisPlayer.inventory.addItem(item)
+                                #thisPlayer.inventory.addItem(item)
                                 action = Update(UpdateProperties.TEXT, thisPlayer.id, 
                                 value='Found item: ' + item.name, details='lightskyblue')
                                 self.SDF.send(p, action)

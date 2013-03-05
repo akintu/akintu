@@ -54,20 +54,22 @@ class TreasureChest(entity.Entity):
             else:
                 self.lockComplexity = 21 + self.treasureLevel * 2
 
-    def generateTreasure(self, playerList=None):
-        if not playerList:
+    def generateTreasure(self, player):
+        if not player:
             print "TreasureChest.generateTreasure - Warning: No player specified for this treasure!"
             return
         if self.type == "Small":
-            for p in playerList:
-                valuables = self._generateSmallTreasure()
-                for v in valuables:
-                    p.inventory.addItem(v)
+            #for p in playerList:
+            valuables = self._generateSmallTreasure()
+            for v in valuables:
+                player.inventory.addItem(v)
+            return valuables
         elif self.type == "Large":
-            for p in playerList:
-                valuables = self._generateLargeTreasure()
-                for v in valuables:
-                    p.inventory.addItem(v)
+            #for p in playerList:
+            valuables = self._generateLargeTreasure()
+            for v in valuables:
+                player.inventory.addItem(v)
+            return valuables
         else:
             pass # TODO
             #valuables = self._generateGildedTreasure(playerList)
