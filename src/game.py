@@ -235,7 +235,7 @@ class Game(object):
                     self.get_item()
 
     def get_item(self):
-        pass
+        self.CDF.send(Person(PersonActions.OPEN), self.id)
         # If player is on an item, pick it up (the top item).
         # If player is on a treasure chest, attempt to open it.
         # If the chest is locked, send a message to the screen.
