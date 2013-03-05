@@ -70,6 +70,9 @@ class CombatServer():
             for abil in source.abilities:
                 if abil.name == command.abilityName:
                     abilToUse = abil
+            for spl in source.spellList:
+                if spl.name == command.abilityName:
+                    abilToUse = spl
             if not abilToUse:
                 abilToUse = source.selectBasicAttack()
             useDuple = abilToUse.canUse(target)
@@ -85,7 +88,7 @@ class CombatServer():
                                              source, color=color)
                 abilToUse.use(target)
             else:
-                Combat.screen.show_text(useDuple[1])
+                Combat.sendCombatMessage(useDuple[1], source)
             self.check_turn_end(self.server.person[command.id].cPane)
         elif isinstance(command, AbilityAction) and command.ability == AbilityActions.END_TURN:
             target = self.server.person[command.id]
@@ -229,6 +232,7 @@ class CombatServer():
                 self.server.player.values()]:
             if player.AP != 0 or player.remainingMovementTiles != 0:
                 APRemains = True
+                break
         if not APRemains:
             if not self.combatStates[combatPane].turnTimer:
                 print "No timer found!"
@@ -242,7 +246,6 @@ class CombatServer():
     def end_turn(self, combatPane):
         ''' stuff '''
         self.update_dead_people(combatPane)
-        print "Got this far"
         for character in [self.server.person[x] for x in self.server.pane[combatPane].person]:
             self.shout_turn_start(character, turn="Monster")
         self.monster_phase(combatPane)

@@ -197,8 +197,8 @@ class Person(en.Entity):
         # Physical Damage Resistances
 
         self._baseBludgeoningResistance = Person.setFrom(argDict, 'startingBludgeoningResistance', 0)
-        self._equipmentBludegoningResistance = 0
-        self._statusBludegoningResistance = 0
+        self._equipmentBludgeoningResistance = 0
+        self._statusBludgeoningResistance = 0
 
         self._basePiercingResistance = Person.setFrom(argDict, 'startingPiercingResistance', 0)
         self._equipmentPiercingResistance = 0
@@ -311,7 +311,7 @@ class Person(en.Entity):
 
     @property
     def equipmentMovementAPCost(self):
-        return self._eqiupmentMovementAPCost
+        return self._equipmentMovementAPCost
 
     @equipmentMovementAPCost.setter
     def equipmentMovementAPCost(self, value):
@@ -679,10 +679,10 @@ class Person(en.Entity):
         self._baseBludgeoningResistance = value
 
     @property
-    def eqiupmentBludgeoningResistance(self):
+    def equipmentBludgeoningResistance(self):
         return self._equipmentBludgeoningResistance
 
-    @eqiupmentBludgeoningResistance.setter
+    @equipmentBludgeoningResistance.setter
     def equipmentBludgeoningResistance(self, value):
         self._equipmentBludgeoningResistance = value
 
@@ -709,10 +709,10 @@ class Person(en.Entity):
         self._basePiercingResistance = value
 
     @property
-    def eqiupmentPiercingResistance(self):
+    def equipmentPiercingResistance(self):
         return self._equipmentPiercingResistance
 
-    @eqiupmentPiercingResistance.setter
+    @equipmentPiercingResistance.setter
     def equipmentPiercingResistance(self, value):
         self._equipmentPiercingResistance = value
 
@@ -739,10 +739,10 @@ class Person(en.Entity):
         self._baseSlashingResistance = value
 
     @property
-    def eqiupmentSlashingResistance(self):
+    def equipmentSlashingResistance(self):
         return self._equipmentSlashingResistance
 
-    @eqiupmentSlashingResistance.setter
+    @equipmentSlashingResistance.setter
     def equipmentSlashingResistance(self, value):
         self._equipmentSlashingResistance = value
 
@@ -1097,7 +1097,7 @@ class Person(en.Entity):
 
     @equipmentRangedDodge.setter
     def equipmentRangedDodge(self, value):
-        self._eqiupmentRangedDodge = value
+        self._equipmentRangedDodge = value
 
     @property
     def statusRangedDodge(self):
@@ -1814,7 +1814,7 @@ class Person(en.Entity):
     @property
     def equipmentMovementTiles(self):
         """It should be ultra-rare for an item to modify this."""
-        return self._eqiupmentMovementTiles
+        return self._equipmentMovementTiles
 
     @equipmentMovementTiles.setter
     def equipmentMovementTiles(self, value):
@@ -2178,7 +2178,7 @@ class Person(en.Entity):
     @property
     def baseAP(self):
         """A value for the adjusted total AP for the player.
-        this value can change only by equipping magical eqiupment
+        this value can change only by equipping magical equipment
         that improves the max AP of a player."""
         return self._baseAP
 
@@ -2208,7 +2208,7 @@ class Person(en.Entity):
 
     @property
     def totalHP(self):
-        """The maximum HP of the player.  Is determined by eqiupment,
+        """The maximum HP of the player.  Is determined by equipment,
         skills, statuses, and base attributes."""
         if self.totalConstitution == 0:
             return self.baseHP

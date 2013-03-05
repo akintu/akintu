@@ -35,7 +35,7 @@ class Spell(object):
             return (False, "Insufficient Mana")
         if source.AP < self.APCost - mod:
             return (False, "Insufficient AP")
-        if self.targetType == "self" and owner is not target:
+        if self.targetType == "self" and source is not target:
             return (False, "Spell is self-only, and the given target is not the caster.")
         if self.targetType == "hostile" and source.team == target.team:
             return (False, "Cannot target own team with hostile spell.")
@@ -61,7 +61,7 @@ class Spell(object):
             spellSuccess = Dice.rollSuccess(100 - self.owner.spellFailureChance)
             if spellSuccess:
                 self._shoutSpellCast(self.owner, target)
-                if self.targetType == "hostile" and self.owner.team == "Players":
+                if self.targetType == "hostile" and target.team == "Players":
                     self.applySchoolResistance()
                     self.action(self, target)
                     self.unapplySchoolResistance()
@@ -72,9 +72,10 @@ class Spell(object):
                     Combat.removeStealth(self.owner)
 
             else:
+                Combat.sendCombatMessage("Spell Casting Failed! (" + str(self.owner.spellFailureChance) +
+                                         "%)", self.owner)
                 return
-                print "Spell casting failed."
-                # TODO, notify of spell failure?
+                
         else:
             return
             # TODO! Make this raise an exception rather than silently return.
@@ -82,36 +83,36 @@ class Spell(object):
     def applySchoolResistance(self):
         hero = self.owner
         if self.school == "Enchantment":
-            hero.magicResist += hero.enchantmentResist
+            hero.statusMagicResist += hero.enchantmentResist
         elif self.school == "Bane":
-            hero.magicResist += hero.baneResist
+            hero.statusMagicResist += hero.baneResist
         elif self.school == "Mental":
-            hero.magicResist += hero.mentalResist
+            hero.statusMagicResist += hero.mentalResist
         elif self.school == "Illusion":
-            hero.magicResist += hero.illusionResist
+            hero.statusMagicResist += hero.illusionResist
         elif self.school == "Primal":
-            hero.magicResist += hero.primalResist
+            hero.statusMagicResist += hero.primalResist
         elif self.school == "Mystic":
-            hero.magicResist += hero.mysticResist
+            hero.statusMagicResist += hero.mysticResist
         elif self.school == "Natural":
-            hero.magicResist += hero.naturalResist
+            hero.statusMagicResist += hero.naturalResist
 
     def unapplySchoolResistance(self):
         hero = self.owner
         if self.school == "Enchantment":
-            hero.magicResist -= hero.enchantmentResist
+            hero.statusMagicResist -= hero.enchantmentResist
         elif self.school == "Bane":
-            hero.magicResist -= hero.baneResist
+            hero.statusMagicResist -= hero.baneResist
         elif self.school == "Mental":
-            hero.magicResist -= hero.mentalResist
+            hero.statusMagicResist -= hero.mentalResist
         elif self.school == "Illusion":
-            hero.magicResist -= hero.illusionResist
+            hero.statusMagicResist -= hero.illusionResist
         elif self.school == "Primal":
-            hero.magicResist -= hero.primalResist
+            hero.statusMagicResist -= hero.primalResist
         elif self.school == "Mystic":
-            hero.magicResist -= hero.mysticResist
+            hero.statusMagicResist -= hero.mysticResist
         elif self.school == "Natural":
-            hero.magicResist -= hero.naturalResist
+            hero.statusMagicResist -= hero.naturalResist
 
     # Monster Only Spells
 

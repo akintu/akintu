@@ -288,6 +288,7 @@ class Game(object):
             return
         if not self.abilityList or not self.currentAbility or self.currentAbility not in self.abilityList:
             self.abilityList = self.pane.person[self.id].abilities
+            self.abilityList.extend(self.pane.person[self.id].spellList)
             self.currentAbility = self.abilityList[0]
         elif not reverse:
             if self.currentAbility == self.abilityList[-1]:

@@ -572,7 +572,7 @@ class Combat(object):
         elif hitValue == "Partially Resisted":
             dieRoll *= partial
 
-        dieRoll = source.applyBonusDamage(dieRoll)
+        dieRoll = source.applyBonusDamage(dieRoll, element)
 
         if element == "Fire":
             dieRoll *= 1 - (min(80, float(target.totalFireResistance) / 100))
@@ -647,7 +647,7 @@ class Combat(object):
             baseAttackDamage *= 1 - (float(target.totalDivineResistance) / 100)
         elif source.attackElement == "Arcane":
             baseAttackDamage *= 1 - (float(target.totalArcaneResistance) / 100)
-        baseAttackDamage = source.applyBonusDamage(baseAttackDamage)
+        baseAttackDamage = source.applyBonusDamage(baseAttackDamage, source.attackElement)
         Combat.sendCombatMessage("Incoming Attack From: " + source.name + " dealing " + 
                                 str(int(baseAttackDamage)) + " " + source.attackElement + " damage!", 
                                 color='red', character=target)

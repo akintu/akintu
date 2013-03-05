@@ -113,7 +113,8 @@ class Monster(person.Person):
         rangedAttack.range = self.attackRange
         self.abilityList.append(rangedAttack)
 
-    def applyBonusDamage(self, dieRoll):
+    def applyBonusDamage(self, dieRoll, ignoreVar):
+        ''' Python doesn't support the ability to overload methods... thus the ignoreVar.'''
         dieRoll *= self.attackPower / 100.0
         return int(round(dieRoll))
 

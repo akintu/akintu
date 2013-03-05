@@ -47,19 +47,19 @@ class Testy(object):
 if __name__ == "__main__":
     theorycraft.TheoryCraft.loadAll()
     char = None
-    for i in range(96):
-        raceName = theorycraft.TheoryCraft.classes[i]['name'].split(' ', 1)[0]
-        className = theorycraft.TheoryCraft.classes[i]['name'].split(' ', 1)[1]
-        char = theorycraft.TheoryCraft.getNewPlayerCharacter(raceName, className)
-        if i % 12 == 0:
-            print "\n" + char.characterClass
-            for abil in char.abilities:
-                print abil.name + " " + str(abil.APCost)
+    # for i in range(96):
+        # raceName = theorycraft.TheoryCraft.classes[i]['name'].split(' ', 1)[0]
+        # className = theorycraft.TheoryCraft.classes[i]['name'].split(' ', 1)[1]
+        # char = theorycraft.TheoryCraft.getNewPlayerCharacter(raceName, className)
+        # if i % 12 == 0:
+            # print "\n" + char.characterClass
+            # for abil in char.abilities:
+                # print abil.name + " " + str(abil.APCost)
         #print "   " + char.equippedItems.equippedWeapon.name
-    char = theorycraft.TheoryCraft.getNewPlayerCharacter("Elf", "Assassin")
-    print "\nTotal Dodge: " + str(char.totalDodge)
-    print "Total Dexterity: " + str(char.totalDexterity)
-    print "Total Ranged Dodge: " + str(char.totalRangedDodge)
+    char = theorycraft.TheoryCraft.getNewPlayerCharacter("Elf", "Battle Mage")
+    print char.baseClass
+    print char.characterClass
+    print char.secondaryClass
     # tc = treasurechest.TreasureChest("Small", 1, None, 12)
     # for i in range(3):
         # tc.generateTreasure([char])
@@ -71,14 +71,14 @@ if __name__ == "__main__":
         # print str(int(char.inventory.gold)) + "\n"
     # print char.equippedItems.equippedWeapon.name
 
-    initMonster = theorycraft.TheoryCraft.getMonster(level=4)
-    mList = theorycraft.TheoryCraft.generateMonsterGroup(initMonster)
-    for m in mList:
-        print "\n" + m.name
-        for abil in m.abilityList:
-            print abil.name + " " + str(abil.APCost)
-        print "Dodge: " + str(m.totalDodge)
-        print "Dex: " + str(m.totalDexterity)
+    # initMonster = theorycraft.TheoryCraft.getMonster(level=4)
+    # mList = theorycraft.TheoryCraft.generateMonsterGroup(initMonster)
+    # for m in mList:
+        # print "\n" + m.name
+        # for abil in m.abilityList:
+            # print abil.name + " " + str(abil.APCost)
+        # print "Dodge: " + str(m.totalDodge)
+        # print "Dex: " + str(m.totalDexterity)
 
 
 

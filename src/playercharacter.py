@@ -267,7 +267,7 @@ class PlayerCharacter(p.Person):
         First argument should represent which type of object this is.'''
         return ("Player", self.name, self.race, self.characterClass)
 
-    def applyBonusDamage(self, dieRoll):
+    def applyBonusDamage(self, dieRoll, element):
         if element == "Fire":
             dieRoll *= 1 + (float(self.totalFireBonusDamage) / 100)
         elif element == "Cold":
@@ -497,7 +497,7 @@ class PlayerCharacter(p.Person):
     def totalArcaneBonusDamage(self):
         """int, a value of 45 would indicate +45% damage dealt via Arcane attacks."""
         return (self._baseArcaneBonusDamage +
-               self._eqiupmentArcaneBonusDamage +
+               self._equipmentArcaneBonusDamage +
                self._statusArcaneBonusDamage)
 
     @property
@@ -528,7 +528,7 @@ class PlayerCharacter(p.Person):
     def totalColdBonusDamage(self):
         """int, a value of 45 would indicate +45% damage dealt via Cold attacks."""
         return (self._baseColdBonusDamage +
-               self._eqiupmentColdBonusDamage +
+               self._equipmentColdBonusDamage +
                self._statusColdBonusDamage)
 
     @property
@@ -559,7 +559,7 @@ class PlayerCharacter(p.Person):
     def totalDivineBonusDamage(self):
         """int, a value of 45 would indicate +45% damage dealt via Divine attacks."""
         return (self._baseDivineBonusDamage +
-               self._eqiupmentDivineBonusDamage +
+               self._equipmentDivineBonusDamage +
                self._statusDivineBonusDamage)
 
     @property
@@ -590,7 +590,7 @@ class PlayerCharacter(p.Person):
     def totalElectricBonusDamage(self):
         """int, a value of 45 would indicate +45% damage dealt via Electric attacks."""
         return (self._baseElectricBonusDamage +
-               self._eqiupmentElectricBonusDamage +
+               self._equipmentElectricBonusDamage +
                self._statusElectricBonusDamage)
 
     @property
@@ -621,7 +621,7 @@ class PlayerCharacter(p.Person):
     def totalFireBonusDamage(self):
         """int, a value of 45 would indicate +45% damage dealt via Fire attacks."""
         return (self._baseFireBonusDamage +
-               self._eqiupmentFireBonusDamage +
+               self._equipmentFireBonusDamage +
                self._statusFireBonusDamage)
 
     @property
@@ -652,7 +652,7 @@ class PlayerCharacter(p.Person):
     def totalPoisonBonusDamage(self):
         """int, a value of 45 would indicate +45% damage dealt via Poison attacks."""
         return (self._basePoisonBonusDamage +
-               self._eqiupmentPoisonBonusDamage +
+               self._equipmentPoisonBonusDamage +
                self._statusPoisonBonusDamage)
 
     @property
@@ -683,7 +683,7 @@ class PlayerCharacter(p.Person):
     def totalShadowBonusDamage(self):
         """int, a value of 45 would indicate +45% damage dealt via Shadow attacks."""
         return (self._baseShadowBonusDamage +
-               self._eqiupmentShadowBonusDamage +
+               self._equipmentShadowBonusDamage +
                self._statusShadowBonusDamage)
 
     @property
