@@ -51,10 +51,16 @@ class Combat(object):
         messageObj = None
         if type == "AP":
             messageObj = command.Update(character.id, command.UpdateProperties.AP, character.AP)
+        elif type == "MOVE_TILES":
+            messageObj = command.Update(character.id, command.UpdateProperties.MOVE_TILES, 
+                                        character.remainingMovementTiles)
         elif type == "MP":
             messageObj = command.Update(character.id, command.UpdateProperties.MP, character.MP)
         elif type == "HP":
             messageObj = command.Update(character.id, command.UpdateProperties.HP, character.HP)
+        elif type == "MoveAPCost":
+            messageObj = command.Update(character.id, command.UpdateProperties.MOVE_AP_COST,
+                                        character.totalMovementAPCost)
         elif type == "Status":
             messageObj = command.Update(character.id, command.UpdateProperties.STATUS,
                                         Combat.encodeStatuses(character))
@@ -211,21 +217,22 @@ class Combat(object):
             offense = source.totalRangedAccuracy + modifier
             if source.inRange(target, 1) and not ignoreMeleeBowPenalty:
                 # Ranged attack with penalty 20% miss chance
-                outrightMissChance = round(20 * (1 - float(source.meleeRangedAttackPenaltyReduction) / 100))
-                if not Dice.rollBeneath(outrightMissChance):
+                outrightMissChance = int(round(20 * (1 - float(source.meleeRangedAttackPenaltyReduction) / 100)))
+                if Dice.rollBeneath(outrightMissChance):
+                    Combat.sendCombatMessage("Jammed (" + str(outrightMissChance) + "%)", source) 
                     return "Miss"
             if source.usingWeapon("Longbow") and not source.baseClass == "Ranger" and not source.secondaryClass == "Ranger":
                 # -25% Accuracy
-                offense = round(offense * 0.75)
+                offense = int(round(offense * 0.75))
             elif source.usingWeapon("Shuriken") and not source.characterClass == "Ninja":
-                offense = round(offense * 0.25)
+                offense = int(round(offense * 0.25))
             hitDuple = Combat.calcPhysicalHitChance(offense, defense)
         else:
             # Melee attack
             defense = target.totalDodge + target.totalMeleeDodge
             offense = source.totalMeleeAccuracy + modifier
             if source.usingWeapon("Katana") and not source.characterClass == "Ninja":
-                offense = round(offense * 0.9)
+                offense = int(round(offense * 0.9))
             hitDuple = Combat.calcPhysicalHitChance(offense, defense)
         chanceToHit = hitDuple[0]
         accuracyCritMod = hitDuple[1]
@@ -242,8 +249,15 @@ class Combat(object):
     def magicalHitMechanics(source, target):
         offense = source.totalSpellpower
         defense = target.totalMagicResist
-        return Combat.calcMagicalHit(offense, defense)
-
+        result = Combat.calcMagicalHit(offense, defense)
+        if source.team == "Monsters":
+            Combat.sendCombatMessage("Roll: " + result + "(" + str(offense) + " vs " + str(defense) + ")", 
+                                    target)
+        else:
+            Combat.sendCombatMessage("Roll: " + result + "(" + str(offense) + " vs " + str(defense) + ")", 
+                                    source)
+        return result
+        
     @staticmethod
     def calcHit(source, target, type, rating=0, modifier=0, critMod=0, ignoreMeleeBowPenalty=False):
         """Determies if the attack performed from the source to the target is successful, and returns
@@ -271,29 +285,35 @@ class Combat(object):
                             although most of the latter ignore whether the spell was a critical or not.)
           If the attack was physical, it will return a list of those strings containing either one or
           two strings, depending on whether the attacker is using one or two weapons."""
-        type = type.capitalize().strip().replace("-", " ")
+        type = type.strip().replace("-", " ")
+        ### Caching for dual weilding weapons.
+        if source.team == "Players":
+            if source.usingWeaponStyle("Dual") and not source.lastUsedModifier:
+                source.lastUsedRating = rating
+                source.lastUsedCritMod = critMod
+                source.lastUsedModifier = modifier
+            else:
+                source.lastUsedRating = None
+                source.lastUsedCritMod = None
+                source.lastUsedModifier = None
+                
         if (type == "Physical"):
             Combat._shoutAttackStart(source, target)
             if Dice.rollBeneath(target.totalAvoidanceChance):
-                print "*avoided*"
-                return ["Miss"]
+                Combat.sendCombatMessage("Avoided attack (" + str(target.totalAvoidanceChance) + "%)",
+                                         target)
+                return "Miss"
             attackOne = Combat.physicalHitMechanics(source, target, modifier, critMod, ignoreMeleeBowPenalty)
-            if source.team == "Players" and source.usingWeaponStyle("Dual"):
-                Combat._shoutAttackStart(source, target)
-                attackTwo = Combat.physicalHitMechanics(source, target, modifier, critMod, ignoreMeleeBowPenalty)
-                print "(first hand) " + attackOne
-                print "(second hand) " + attackTwo
-                return [attackOne, attackTwo]
-            else:
-                print attackOne
-                return [attackOne]
+            offenseMessage = str(source.totalMeleeAccuracy + modifier)
+            if source.usingWeapon("Ranged"):
+                offenseMessage = str(source.totalRangedAccuracy + modifier)
+            Combat.sendCombatMessage("Rolled: " + attackOne + " (" + offenseMessage + " vs " + 
+                                     str(target.totalDodge) + ")", source)
+                   
+            return attackOne
 
         if (type == "Magical"):
             result = Combat.magicalHitMechanics(source, target)
-            if result == "Miss":
-                print "Fully Resisted"
-            else:
-                print result
             return result
 
         if (type == "Magical Poison" or type == "Poison Magical"):
@@ -487,6 +507,25 @@ class Combat(object):
         # TODO
 
     @staticmethod
+    def decrementMovementTiles(target, removeAll=False):
+        ''' Decrease the number of tiles a player can move without incurring an AP cost. '''
+        if removeAll:
+            target.remainingMovementTiles = 0
+            Combat.sendToAll(target, "MOVE_TILES")
+        elif target.remainingMovementTiles == 0:
+            print "ERROR: Attempting to decrement Movement tiles when none remain!"
+        else:
+            target.remainingMovementTiles -= 1
+            Combat.sendToAll(target, "MOVE_TILES")
+            
+    @staticmethod
+    def resetMovementTiles(target):
+        ''' Reset the movement tiles to maximum minus this last move.  
+        (Used after an AP cost has been incurred.) '''
+        target.remainingMovementTiles = target.totalMovementTiles - 1
+        Combat.sendToAll(target, "MOVE_TILES")
+        
+    @staticmethod
     def calcDamage(source, target, minimum, maximum, element, hitValue, partial=1, critical=1, scalesWith=None, scaleFactor=0):
         """Computes the amount of damage that should be dealt to the target after considering all bonuses and penalties
         to the attack that caused this method to be called such as source elemental damage bonuses or target vulnerabilities.
@@ -513,12 +552,6 @@ class Combat(object):
                          value, it will raise an IncompleteMethodCall Error.
         Outputs:
           non-negative int representing the damage that should be dealt to the target"""
-        # Massage input.
-        element = element.strip().capitalize()
-        hitValue = hitValue.strip().capitalize()
-        if scalesWith:
-            scalesWith = scalesWith.strip().capitalize()
-
         # Actual method:
         if hitValue == "Miss":
             return 0
@@ -540,7 +573,6 @@ class Combat(object):
             dieRoll *= partial
 
         dieRoll = source.applyBonusDamage(dieRoll)
-
 
         if element == "Fire":
             dieRoll *= 1 - (min(80, float(target.totalFireResistance) / 100))
@@ -571,20 +603,27 @@ class Combat(object):
 
     @staticmethod
     def basicAttack(source, target, hitType, **params):
+        '''Performs an attack with a provided hitType.  If two weapons are equipped,
+        this method will cal calcHit the second time.'''
         if 'noCounter' not in params:
             params['noCounter'] = False
         if source.team == "Players":
             if source.usingWeaponStyle("Dual"):
                 originalCounterStatus = params['noCounter']
                 params['noCounter'] = True
-                Combat.weaponAttack(source, target, hitType[0], **params)
+                Combat.weaponAttack(source, target, hitType, **params)
                 params['noCounter'] = originalCounterStatus
                 params['hand'] = "Left"
-                Combat.weaponAttack(source, target, hitType[1], **params)
+                modifier = source.lastUsedModifier
+                critMod = source.lastUsedCritMod
+                pRating = source.lastUsedRating
+                hitType2 = Combat.calcHit(source, target, "Physical", modifier=modifier, critMod=critMod,
+                                          rating=pRating)
+                Combat.weaponAttack(source, target, hitType2, **params)
             else:
-                Combat.weaponAttack(source, target, hitType[0], **params)
+                Combat.weaponAttack(source, target, hitType, **params)
         else:
-            Combat.monsterAttack(source, target, hitType[0], **params)
+            Combat.monsterAttack(source, target, hitType, **params)
 
     @staticmethod
     def monsterAttack(source, target, hitType, **params):
@@ -664,7 +703,7 @@ class Combat(object):
         outgoingDamage *= overallDamageMod
 
         if hitType == "Critical Hit":
-            outgoingDamage += outgoingDamage * criticalDamageMod * float(weapon.criticalMultiplier) / 100
+            outgoingDamage += int(round(outgoingDamage * criticalDamageMod * float(weapon.criticalMultiplier) / 100))
 
         elementalEffects = Combat.applyOnHitEffects(source, target)
         if elementOverride:
@@ -687,7 +726,8 @@ class Combat(object):
             elif weapon.damageType == "Bludgeoning & Slashing" or wepaon.damageType == "Slashing & Bludgeoning":
                 resistance = min(target.totalBludgeoningResistance, target.totalSlashingResistance)
                 outgoingDamage *= (1 - (float(resistance / 100)))
-        totalDamage = Combat.sumElementalEffects(elementalEffects, elementOverride) + outgoingDamage
+        totalDamage = int(round(Combat.sumElementalEffects(elementalEffects, elementOverride) + outgoingDamage))
+        Combat.sendCombatMessage("Dealt " + str(totalDamage) + " total Damage.", source, color="yellow")
 
         Combat.lowerHP(target, totalDamage)
         Combat._shoutAttackComplete(source, target, noCounter)
@@ -738,9 +778,8 @@ class Combat(object):
         return damSum
 
     @staticmethod
-    def setMovementCost(target, newCost, numberOfMoves=1, duration=-1, inStealth=False):
+    def setMovementCost(target, newCost, numberOfMoves=1, duration=-1):
         """Sets the AP cost of the next move of the target Person to the specified value.
-        By default, this will only apply to the next movement.
         Inputs:
           target -- Person; the target whose movement cost we are adjusting
           newCost -- int; a non-negative value to assign the AP cost of movement to.
@@ -748,20 +787,16 @@ class Combat(object):
                            expired, this method will reset the AP movement cost to its
                            default value.  If this is to be time based and not based
                            on the number of movements, this parameter should be set
-                           to -1.
+                           to -1. TODO
           duration -- int*; the number of turns this AP cost should be assigned to the target.
                            By default, it is -1 which indicates it is not based on the
-                           number of turns, but rather the number of movements.
-          inStealth -- boolean*; If set, will cause the AP cost to reset to its default value
-                                 upon exiting stealth.
+                           number of turns, but rather the number of movements. TODO
+
         Outputs:
           None"""
-        if newCost < 0:
-            return
         target.overrideMovementAPCost = newCost
-        target.overrideMovements = numberOfMoves
-        target.overrideMovementTurns = duration
-        #TODO -- trigger duration/number of moves/break on stealth??
+        Combat.sendToAll(target, "MoveAPCost")
+
 
     @staticmethod
     def movePerson(target, destination, instant=False):
@@ -783,7 +818,8 @@ class Combat(object):
           player -- Person; the player whose turn will be ended
         Outputs:
           None"""
-        pass #TODO
+        Combat.decrementMovementTiles(player, removeAll=True)
+        Combat.modifyResource(player, "AP", -player.AP)
 
     @staticmethod
     def modifyThreat(source, target, threatAdjustment):
@@ -838,6 +874,71 @@ class Combat(object):
         pass
         #TODO
 
+    @staticmethod
+    def inBackstabPosition(source, target):
+        direction = Combat.getRelativeDirection(source, target)
+        return target.cLocation.direction == direction
+        
+    @staticmethod
+    def getRelativeDirection(source, target):
+        '''Gets the direction best fitting the path between monster and
+        player. TODO: Fix non-determinism for backstabs.
+        Returns a number within 1-4, 6-9 as represented on the numpad.'''
+        targetX = target.cLocation.tile[0]
+        sourceX = source.cLocation.tile[0]
+        targetY = target.cLocation.tile[1]
+        sourceY = source.cLocation.tile[1]
+        dy = targetY - sourceY
+        dx = targetX - sourceX
+        if dy >= 0:
+            # Target is below the source
+            if dx <= 0:
+                # Target is left of the source
+                if abs(dx) >= 2 * abs(dy):
+                    # Target is more left than down
+                    return 4
+                elif abs(dx) * 2 <= abs(dy):
+                    # Target is more down than left
+                    return 2
+                else:
+                    # Target is down-left diagonal
+                    return Dice.choose([2, 4])
+            else:
+                # Target is right of the source
+                if abs(dx) >= 2 * abs(dy):
+                    # Target is more right than down
+                    return 6
+                elif abs(dx) * 2 <= abs(dy):
+                    # Target is more down than right
+                    return 2
+                else:
+                    # Target is down-right diagonal
+                    return Dice.choose([6, 2])
+        else:
+            # Target is above the source
+            if dx <= 0:
+                # Target is left of the source
+                if abs(dx) >= 2 * abs(dy):
+                    # Target is more left than up
+                    return 4
+                elif abs(dx) * 2 <= abs(dy):
+                    # Target is more up than left
+                    return 8
+                else:
+                    # Target is up-left diagonal
+                    return Dice.choose([4, 8])
+            else:
+                # Target is right of the source
+                if abs(dx) >= 2 * abs(dy):
+                    # Target is more right than up
+                    return 6
+                elif abs(dx) * 2 <= abs(dy):
+                    # Target is more up than right
+                    return 8
+                else:
+                    # Target is up-right diagonal
+                    return Dice.choose([6, 8])
+        
     @staticmethod
     def lowerHP(target, amount):
         """Used to actually lower the amount of HP a Person has.  May kill that person.

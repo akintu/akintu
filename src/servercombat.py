@@ -47,8 +47,13 @@ class CombatServer():
 
             # If this is a legal move request
             elif self.tile_is_open(command.location, command.id) and \
-                 activePlayer.AP >= activePlayer.totalMovementAPCost:
-                Combat.modifyResource(activePlayer, "AP", -activePlayer.totalMovementAPCost)
+                 activePlayer.AP >= activePlayer.totalMovementAPCost or\
+                 activePlayer.remainingMovementTiles > 0:
+                if activePlayer.remainingMovementTiles == 0:
+                    Combat.modifyResource(activePlayer, "AP", -activePlayer.totalMovementAPCost)
+                    Combat.resetMovementTiles(activePlayer)
+                else:
+                    Combat.decrementMovementTiles(activePlayer)
 
                 # Update location and broadcast
                 self.server.person[command.id].cLocation = command.location
@@ -69,8 +74,15 @@ class CombatServer():
                 abilToUse = source.selectBasicAttack()
             useDuple = abilToUse.canUse(target)
             if useDuple[0]:
-                Combat.sendCombatMessage(source.name + " is using " + abilToUse.name + " on " + target.name,
-                                         source, color='green')
+                color = 'orange'
+                if abilToUse.targetType == 'friendly' or abilToUse.targetType == 'self':
+                    color = 'green'
+                if abilToUse.targetType != 'self':
+                    Combat.sendCombatMessage(source.name + " is using " + abilToUse.name + " on " + target.name,
+                                             source, color=color)
+                else:
+                    Combat.sendCombatMessage(source.name + " is using " + abilToUse.name,
+                                             source, color=color)
                 abilToUse.use(target)
             else:
                 Combat.screen.show_text(useDuple[1])
@@ -78,6 +90,7 @@ class CombatServer():
         elif isinstance(command, AbilityAction) and command.ability == AbilityActions.END_TURN:
             target = self.server.person[command.id]
             Combat.modifyResource(target, "AP", -target.AP)
+            Combat.decrementMovementTiles(target, removeAll=True)
             self.check_turn_end(self.server.person[command.id].cPane)
         self.update_dead_people(self.server.person[command.id].cPane) #TODO: Uncomment.
 
@@ -112,11 +125,13 @@ class CombatServer():
             self.server.SDF.send(port, Person(PersonActions.REMOVE, char.id))
             self.server.pane[combatPane].person.remove(char.id)
 
-    def monsterMove(self, monster):
+    def monsterMove(self, monster, visiblePlayers):
         tilesLeft = monster.totalMovementTiles
         while tilesLeft > 0:
-            player = monster.getNearestPlayer()
-            direction = self.getRelativeDirection(monster, player)
+            player = monster.getNearestPlayer(visiblePlayers)
+            if not player:
+                return "Failed"
+            direction = Combat.getRelativeDirection(monster, player)
             desiredLocation = monster.cLocation.move(direction, 1)
             if self.tile_is_open(desiredLocation, monster.id):
                 action = Person(PersonActions.MOVE, monster.id, desiredLocation)
@@ -131,65 +146,6 @@ class CombatServer():
                 break
         monster.AP -= monster.totalMovementAPCost
         return "Moved"
-
-    def getRelativeDirection(self, monster, player):
-        '''Gets the direction best fitting the path between monster and
-        player.
-        Returns a number within 1-4, 6-9 as represented on the numpad.'''
-        playerX = player.cLocation.tile[0]
-        monsterX = monster.cLocation.tile[0]
-        playerY = player.cLocation.tile[1]
-        monsterY = monster.cLocation.tile[1]
-        dy = playerY - monsterY
-        dx = playerX - monsterX
-        if dy >= 0:
-            # Player is below the monster
-            if dx <= 0:
-                # Player is left of the monster
-                if abs(dx) >= 2 * abs(dy):
-                    # Player is more left than down
-                    return 4
-                elif abs(dx) * 2 <= abs(dy):
-                    # Player is more down than left
-                    return 2
-                else:
-                    # Player is down-left diagonal
-                    return Dice.choose([2, 4])
-            else:
-                # Player is right of the monster
-                if abs(dx) >= 2 * abs(dy):
-                    # Player is more right than down
-                    return 6
-                elif abs(dx) * 2 <= abs(dy):
-                    # Player is more down than right
-                    return 2
-                else:
-                    # Player is down-right diagonal
-                    return Dice.choose([6, 2])
-        else:
-            # Player is above the monster
-            if dx <= 0:
-                # Player is left of the monster
-                if abs(dx) >= 2 * abs(dy):
-                    # Player is more left than up
-                    return 4
-                elif abs(dx) * 2 <= abs(dy):
-                    # Player is more up than left
-                    return 8
-                else:
-                    # Player is up-left diagonal
-                    return Dice.choose([4, 8])
-            else:
-                # Player is right of the monster
-                if abs(dx) >= 2 * abs(dy):
-                    # Player is more right than up
-                    return 6
-                elif abs(dx) * 2 <= abs(dy):
-                    # Player is more up than right
-                    return 8
-                else:
-                    # Player is up-right diagonal
-                    return Dice.choose([6, 8])
 
     ### Combat Phase Logic Methods ###
 
@@ -214,9 +170,14 @@ class CombatServer():
         for removalStatus in toRemove:
             Combat.removeStatus(target, removalStatus.name)
         target.cooldownList[:] = [x for x in target.cooldownList if x[1] > 0]
+        if target.team == "Players":
+            Combat.decrementMovementTiles(target, removeAll=True)
         # Refill AP (performed in end_turn)
         for stat in target.statusList:
-            print target.name + " Has status: " + stat.name + " T=" + str(stat.turnsLeft)
+            if stat.turnsLeft == -1:
+                print target.name + " has status enabled: " + stat.name
+            else:
+                print target.name + " has status: " + stat.name + " T=" + str(stat.turnsLeft)
      
     def startCombat(self, playerId, monsterId):
         '''Initiates combat for the first player to enter combat.
@@ -265,7 +226,7 @@ class CombatServer():
         APRemains = False
         for player in [self.server.person[x] for x in self.server.pane[combatPane].person if x in
                 self.server.player.values()]:
-            if player.AP != 0:
+            if player.AP != 0 or player.remainingMovementTiles != 0:
                 APRemains = True
         if not APRemains:
             if not self.combatStates[combatPane].turnTimer:
@@ -297,13 +258,23 @@ class CombatServer():
 
     def monster_phase(self, combatPane):
         chars = [self.server.person[x] for x in self.server.pane[combatPane].person]
+        players = [x for x in chars if x.team == "Players"]
         monsters = [x for x in chars if x.team == "Monsters" and x not in
                     self.combatStates[combatPane].deadMonsterList]
         for mon in monsters:
+            visiblePlayers = []
+            for player in players:
+                if not player.inStealth() or player.hasStatus("Conceal"):
+                    visiblePlayers.append(player)
+                elif mon.detectStealth(player):
+                    visiblePlayers.append(player)
+                    Combat.sendCombatMessage("Detected " + player.name + "! (" + 
+                                str(player.totalSneak) + " vs " + str(mon.totalAwareness) + ")",
+                                player, color='red')
             while( True ):
-                if not mon.getUsableAbilities(self.server, combatPane) and \
+                if not mon.getUsableAbilities(self.server, combatPane, visiblePlayers) and \
                        mon.AP >= mon.totalMovementAPCost:
-                    moveResult = self.monsterMove(mon)
+                    moveResult = self.monsterMove(mon, visiblePlayers)
                     if moveResult == "Failed":
                         break
                     else:
@@ -314,7 +285,6 @@ class CombatServer():
         allCharIds = [charId for charId in self.server.pane[combatPane].person]
         for charId in allCharIds:
             char = self.server.person[charId]
-        print "~~END MONSTER PHASE~~."
         return
 
 

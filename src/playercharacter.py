@@ -235,6 +235,13 @@ class PlayerCharacter(p.Person):
         self.attacksPerformed = [0,0]
         # TODO: Need to update attacksPerformed each turn.  The previous turn's number of attacks is in position 0, this turn's
         # in position 1.  Need to also shift those at the end of each turn...
+        
+        self.remainingMovementTiles = 0
+        
+        #### Used for dual wielding mechanics ####
+        self.lastUsedRating = None
+        self.lastUsedCritMod = None
+        self.lastUsedModifier = None
 
     def registerBasicAttacks(self):
         self.abilities.append(ability.Ability("Melee Attack", self))
@@ -318,6 +325,8 @@ class PlayerCharacter(p.Person):
         # Select/Gain Spell(s): TODO
         # TODO: Check to see if we need to alter the MP/AP cost of learned spells based on traits!
 
+        
+        
     @property
     def experience(self):
         return self._experience
@@ -353,7 +362,7 @@ class PlayerCharacter(p.Person):
                 self.level += 1
             return self.level
         #TODO: Demo mode
-
+        
     @property
     def totalOverallDamageBonus(self):
         """ Should be 0 for 0% by default.

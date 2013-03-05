@@ -7,8 +7,10 @@ import passiveability
 import spell
 import region
 import servercombat
+import command
 from dice import *
 from const import *
+from combat import *
 
 class Monster(person.Person):
 
@@ -175,7 +177,7 @@ class Monster(person.Person):
                 sufficient.append(spell)
         return sufficient
 
-    def getUsableAbilities(self, server=None, combatPane=None):
+    def getUsableAbilities(self, server=None, combatPane=None, visiblePlayers="All"):
         if not server:
             server = Monster.globalServer
         else:
@@ -194,7 +196,7 @@ class Monster(person.Person):
                 if abil.canUse(self)[0]: # Target is self
                     usable.append((abil, self))
             if abil.targetType == "hostile":
-                players = self.getPlayersInRange(abil.range, server, combatPane)
+                players = self.getPlayersInRange(abil.range, server, combatPane, visiblePlayers)
                 for player in players:
                     if abil.canUse(player)[0]:
                         usable.append((abil, player))
@@ -227,14 +229,22 @@ class Monster(person.Person):
         # Select targets and perform actions, if possible.
         actionDuple = self.selectAction(server, combatPane)
         if actionDuple:
-            print self.name + " is using ability: " + actionDuple[0].name + " on " + actionDuple[1].name
+            Combat.sendCombatMessage(self.name + " is using ability: " + actionDuple[0].name + " on " + 
+                                     actionDuple[1].name, actionDuple[1], color='red')
             abil = actionDuple[0]
             target = actionDuple[1]
             abil.use(target)
+            self.faceTarget(target)
             return abil.name
         return "Failure"
 
-    def getPlayersInRange(self, range, server=None, combatPane=None):
+    def faceTarget(self, target):
+        dir = Combat.getRelativeDirection(self, target)
+        if dir != self.cLocation.direction:
+            self.cLocation.direciton = dir
+            messageObj = command.Person(self.id, command.PersonActions.MOVE, self.cLocation)
+       
+    def getPlayersInRange(self, range, server=None, combatPane=None, visiblePlayers="All"):
         """Returns a list of players within a set range of this monster.  Will sort them according
         to distance from this monster."""
         if not server:
@@ -248,8 +258,11 @@ class Monster(person.Person):
         else:
             reg("ADD", "CIRCLE", self.cLocation, range)
         players = []
-        allPlayers = [server.person[x] for x in server.pane[combatPane].person if
-                      server.person[x].team == "Players"]
+        if visiblePlayers == "All":
+            allPlayers = [server.person[x] for x in server.pane[combatPane].person if
+                        server.person[x].team == "Players"]
+        else:
+            allPlayers = visiblePlayers
         # Will break when traps are introduced TODO
         for player in allPlayers:
             if player.cLocation in reg and player.team == "Players":
@@ -263,16 +276,16 @@ class Monster(person.Person):
         sortedPlayers = [x[0] for x in sortedTuples]
         return sortedPlayers
 
-    def getNearestPlayer(self):
+    def getNearestPlayer(self, visiblePlayers):
         '''Returns the nearest player to this monster.'''
-        allPlayers = [Monster.globalServer.person[x] for x in
-                      Monster.globalServer.pane[self.currentCombatPane].person if
-                      Monster.globalServer.person[x].team == "Players"]
-        if not allPlayers:
+        #allPlayers = [Monster.globalServer.person[x] for x in
+        #              Monster.globalServer.pane[self.currentCombatPane].person if
+        #              Monster.globalServer.person[x].team == "Players"]
+        if not visiblePlayers:
             return None
         closestDistance = 999
         closestPlayer = None
-        for player in allPlayers:
+        for player in visiblePlayers:
             thisDistance = self.cLocation.distance(player.cLocation)
             if thisDistance < closestDistance:
                 closestDistance = thisDistance

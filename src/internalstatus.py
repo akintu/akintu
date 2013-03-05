@@ -184,11 +184,11 @@ class InternalStatus(object):
         target.statusMight -= magnitude
 
     def Movement_speed_penalty_method(self, target, magnitude):
-        target.movementTiles -= magnitude
+        target.statusMovementTiles -= magnitude
         # TODO: Ensure monsters can always move at least one tile.
 
     def Movement_tiles_penalty_method(self, target, magnitude):
-        target.movementTiles -= magnitude
+        target.statusMovementTiles -= magnitude
 
     def Nothing_method(self, target, magnitude):
         pass
@@ -273,7 +273,7 @@ class InternalStatus(object):
         target.stealthBreakMaxOverride = magnitude
 
     def Set_movement_AP_cost_method(self, target, magnitude):
-        target.overrideMovementAPCost = magnitude
+        Combat.setMovementCost(target, magnitude)
 
     def Snake_style_method(self, target, magnitude):
         pass
@@ -430,10 +430,10 @@ class InternalStatus(object):
         target.statusMight += magnitude
 
     def Movement_speed_penalty_method_reverse(self, target, magnitude):
-        target.movementTiles += magnitude
+        target.statusMovementTiles += magnitude
 
     def Movement_tiles_penalty_method_reverse(self, target, magnitude):
-        target.movementTiles += magnitude
+        target.statusMovementTiles += magnitude
 
     def Nothing_method_reverse(self, target, magnitude):
         pass
@@ -521,7 +521,7 @@ class InternalStatus(object):
         target.stealthBreakMaxOverride = 100
 
     def Set_movement_AP_cost_method_reverse(self, target, magnitude):
-        target.overrideMovementAPCost = -1
+        Combat.setMovementCost(target, -1)
 
     def Snake_style_method_reverse(self, target, magnitude):
         pass

@@ -4,6 +4,7 @@ import sys
 import entity as en
 from network import *
 from ai import AI
+from dice import *
 
 class IncompleteDataInitialization(Exception):
     def __init__(self, value):
@@ -50,7 +51,7 @@ class Person(en.Entity):
         self._equipmentConstitution = 0
         self._statusConstitution = 0
 
-        self._baseCunning = Person.setFrom(argDict, 'startignCunning', 0)
+        self._baseCunning = Person.setFrom(argDict, 'startingCunning', 0)
         self._equipmentCunning = 0
         self._statusCunning = 0
 
@@ -293,8 +294,8 @@ class Person(en.Entity):
         components: base, equipment, and status, but it also
         checks to see if the override value is not -1.  When it
         is a valid value, that value will be returned instead."""
-        if self._overrideMovementAPCost >= 0:
-            return self._overrideMovementAPCost
+        if self.overrideMovementAPCost >= 0:
+            return self.overrideMovementAPCost
         else:
             return max(self._baseMovementAPCost +
                        self._equipmentMovementAPCost +
@@ -762,8 +763,7 @@ class Person(en.Entity):
         statuses that boost or reduce Dodge.  Does not include
         rangedDodge or meleeDodge (even when relevant.)
         """
-        return (self.totalDexterity +
-                self._equipmentDodge +
+        return (self._equipmentDodge +
                 self._statusDodge +
                 self._baseDodge)
 
@@ -1219,7 +1219,7 @@ class Person(en.Entity):
         "static" abililties that boost MagicResist, and "dynamic"
         statuses that boost or reduce MagicResist.
         """
-        return (self.totalCunning +
+        return (self.totalPiety +
                 self._equipmentMagicResist +
                 self._statusMagicResist +
                 self._baseMagicResist)
@@ -2396,6 +2396,13 @@ class Person(en.Entity):
                 return True
         return False
 
+    def getCooldownTurns(self, abilityName):
+        if not self.onCooldown(abilityName):
+            return abilityName + " is not on cooldown."
+        else:
+            for cd in self.cooldownList:
+                if cd[0] == abilityName:
+                    return str(cd[1])
 
     def sizeCompare(self, size, smallerThan):
         """Returns True if the size of this Person is smaller than the given

@@ -37,7 +37,7 @@ class Game(object):
 
         TheoryCraft.loadAll()   #Static method call, Devin's stuff.
         if not state:  # This is a hack, should be getting seed from host
-            state = {SEED_KEY: 'a'}
+            state = {SEED_KEY: 'fdsa'}
         assert player
 
         if isinstance(state, dict):     #This means we're creating a new game
@@ -162,23 +162,30 @@ class Game(object):
                     self.running = False
 
             ###### Initiate Combat ######
-            if isinstance(command, Update) and command.property == UpdateProperties.COMBAT:
+            elif isinstance(command, Update) and command.property == UpdateProperties.COMBAT:
                 self.combat = command.value
             ###### Update AP ######
-            if isinstance(command, Update) and command.property == UpdateProperties.AP:
+            elif isinstance(command, Update) and command.property == UpdateProperties.AP:
                 self.pane.person[command.id].AP = command.value
                 self.screen.update_person(command.id, {'AP': command.value, 'team': self.pane.person[command.id].team})
             ###### Update MP ######
-            if isinstance(command, Update) and command.property == UpdateProperties.MP:
+            elif isinstance(command, Update) and command.property == UpdateProperties.MP:
                 self.pane.person[command.id].MP = command.value
                 self.screen.update_person(command.id, {'MP': command.value, 'team': self.pane.person[command.id].team})
             ###### Update HP ######
-            if isinstance(command, Update) and command.property == UpdateProperties.HP:
+            elif isinstance(command, Update) and command.property == UpdateProperties.HP:
                 self.pane.person[command.id].HP = command.value
                 self.screen.update_person(command.id, {'HP': command.value, 'team': self.pane.person[command.id].team})
             ###### Update Text #####
-            if isinstance(command, Update) and command.property == UpdateProperties.TEXT:
+            elif isinstance(command, Update) and command.property == UpdateProperties.TEXT:
                 self.screen.show_text(command.value, color=command.details)
+            ###### Update Movement AP Cost ####
+            elif isinstance(command, Update) and command.property == UpdateProperties.MOVE_AP_COST:
+                self.pane.person[command.id].overrideMovementAPCost = command.value
+            ###### Update Movement Tiles #####
+            elif isinstance(command, Update) and command.property == UpdateProperties.MOVE_TILES:
+                self.pane.person[command.id].remainingMovementTiles = command.value
+                
                 
     def handle_events(self):
         pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
@@ -198,10 +205,10 @@ class Game(object):
                 elif event.key == K_f:
                     if self.combat and self.selectionMode == "targeting":
                         self.selectionMode = "abilities"
-                        print "Selection mode: ability selection"
+                        self.screen.show_text("Selection mode: ability selection", color='yellow')
                     elif self.combat and self.selectionMode == "abilities":
                         self.selectionMode = "targeting"
-                        print "Selection mode: targeting"
+                        self.screen.show_text("Selection mode: targeting", color="yellow")
                 elif event.key == K_e:
                     if self.selectionMode == "targeting":
                         self.cycle_targets()
@@ -249,8 +256,9 @@ class Game(object):
             if self.keystate in [K_LSHIFT, K_RSHIFT] and not self.combat:
                 self.CDF.send(Person(PersonActions.RUN, self.id, direction))
                 self.running = True
-
-            elif self.pane.person[self.id].AP >= self.pane.person[self.id].totalMovementAPCost:
+            
+            elif self.pane.person[self.id].remainingMovementTiles > 0 or \
+                 self.pane.person[self.id].AP >= self.pane.person[self.id].totalMovementAPCost:
                 self.CDF.send(Person(PersonActions.MOVE, self.id, newloc))
                 if self.pane.person[self.id].location.pane == newloc.pane:
                     self.animate(self.id, self.pane.person[self.id].location, newloc, \
@@ -259,7 +267,8 @@ class Game(object):
 
     def force_end_turn(self):
         ap = self.pane.person[self.id].AP
-        if ap > 0:
+        movesLeft = self.pane.person[self.id].remainingMovementTiles
+        if ap > 0 or movesLeft > 0:
             action = AbilityAction(AbilityActions.END_TURN, self.id, self.id)
             self.CDF.send(action)
 
@@ -288,7 +297,9 @@ class Game(object):
             else:
                 abilityIndex = self.abilityList.index(self.currentAbility)
                 self.currentAbility = self.abilityList[abilityIndex - 1]
-        print self.currentAbility.name + " AP COST: " + str(self.currentAbility.APCost)
+        self.screen.show_text("Selected: " + self.currentAbility.name + " AP COST: " + 
+                                str(self.currentAbility.APCost),
+                                color='lightblue')
         
     def cycle_targets(self, reverse=False):
         # Cycles through the current persons in the current combat pane.
@@ -310,7 +321,8 @@ class Game(object):
             else:
                 currentTargetPlace = self.panePersonIdList.index(self.currentTargetId)
                 self.currentTargetId = self.panePersonIdList[currentTargetPlace - 1]
-        print self.pane.person[self.currentTargetId].name
+        self.screen.show_text("Targeting: " + self.pane.person[self.currentTargetId].name, 
+                                color='lightblue')
 
     def animate(self, id, source, dest, length):
         xdist = (dest.tile[0] - source.tile[0]) * TILE_SIZE

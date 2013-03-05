@@ -49,7 +49,7 @@ class Status(object):
 
     def activate(self, target):
         for iStatus in self.internalList:
-            if iStatus.recurring == "False":
+            if iStatus.recurring == "False" and iStatus.applyEffect:
                 iStatus.applyEffect(iStatus, target, iStatus.magnitude)
 
     def deactivate(self, target):

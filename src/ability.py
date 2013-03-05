@@ -3,7 +3,7 @@
 import sys
 from dice import *
 import listener
-from combat import Combat
+from combat import *
 
 
 class Ability(object):
@@ -49,6 +49,9 @@ class Ability(object):
         if source.AP < self.APCost - mod:
             return (False, "Insufficient AP")
 
+        if self.targetType == "self" and self.owner is not target:
+            target = self.owner
+            
         messageCode = (True, "")
         if self.checkFunction:
             messageCode = self.checkFunction(self, target)
@@ -65,7 +68,8 @@ class Ability(object):
         if not source.inRange(target, self.range):
             return (False, "Target is out of range.")
         if source.onCooldown(self.name):
-            return (False, self.name + " is on Cooldown.")
+            return (False, self.name + " is on Cooldown " + source.getCooldownTurns(self.name) +
+                                       " turns left.")
         return (True, "")
 
 
@@ -82,11 +86,12 @@ class Ability(object):
             if self.cooldown:
                 Combat.applyCooldown(self.owner, self.name, self.cooldown)
             self.action(self, target)
-            if Dice.rollBeneath(self.breakStealth):
-                Combat.removeStealth(self.owner)
+            if self.owner.inStealth():
+                if Dice.rollBeneath(self.breakStealth):
+                    Combat.removeStealth(self.owner)
+                    Combat.sendCombatMessage(self.owner.name + " exited stealth.", self.owner, color='white')
         else:
             print "WARNING: Ability failed late!"
-            # TODO! Make this raise an exception rather than silently return.
 
     def _basicAttack(self, target):
         source = self.owner
@@ -122,9 +127,8 @@ class Ability(object):
         Combat.endTurn(source)
 
     def _dash(self, target):
-        newCost = 0
-        numberOfMoves = 1
-        Combat.setMovementCost(target, newCost, numberOfMoves)
+        source = self.owner
+        source.remainingMovementTiles += source.totalMovementTiles
 
     def _quickStrike(self, target):
         source = self.owner
@@ -168,18 +172,24 @@ class Ability(object):
         source = self.owner
         if not source.inStealth():
             return (False, "Must be in stealth to perform " + self.name + " .")
-        # If not in backstab position : TODO
+        if not Combat.inBackstabPosition(source, target):
+            return (False, "Must be in backstab position to perform " + self.name + " .")
         if not source.usingWeapon("Sword") and not source.usingWeapon("Knife"):
             return (False, "Must be using either swords or knives to preform " + self.name + " .")
 
 
     def _chainGrasp(self, target):
         source = self.owner
-        success = Dice.rollBeneath(min(90, (source.totalCunning - target.totalCunning) * 9))
+        chance = min(90, (source.totalCunning - target.totalCunning) * 9)
+        success = Dice.rollBeneath(chance)
+        
         if success:
+            Combat.sendCombatMessage("Success! (" + str(chance) + ")", source, color="darkorange")  
             duration = 3
             Combat.addStatus(target, "Chain Grasp", duration)
-
+        else:
+            Combat.sendCombatMessage("Failed. (" + str(chance) + ")", source, color="darkorange")  
+            
     def _chainGraspCheck(self, target):
         if target.size == "Huge":
             return (False, self.name + " cannot be used on Huge targets.")
@@ -219,7 +229,7 @@ class Ability(object):
 
     def _balm(self, target):
         source = self.owner
-        Combat.healTarget(source, round(source.totalHP * 0.05))
+        Combat.healTarget(source, source, round(source.totalHP * 0.05))
 
     def _rapidReload(self, target):
         source = self.owner
@@ -327,7 +337,7 @@ class Ability(object):
 
     def _bloodOfTheAncients(self, target):
         source = self.owner
-        Combat.healTarget(source, round(source.totalHP * 0.15))
+        Combat.healTarget(source, source, round(source.totalHP * 0.15))
         duration = 1
         Combat.addStatus(source, "Blood of the Ancients", duration)
 
@@ -412,9 +422,13 @@ class Ability(object):
 
     def _stealth(self, target):
         source = self.owner
-        Combat.addStatus(source, "Stealth", duration=-1)
+        newAPCost = 6
+        if source.characterClass == "Assassin":
+            newAPCost = 8
+        Combat.addStatus(source, "Stealth", magnitude=newAPCost, duration=-1)
 
     def _stealthCheck(self, target):
+        source = self.owner
         if source.inStealth():
             return (False, "Already in Stealth")
         return (True, "")
@@ -500,7 +514,8 @@ class Ability(object):
         source = self.owner
         if not source.inStealth():
             return (False, "Must be in stealth to perform " + self.name + " .")
-        # If not in ranged backstab position : TODO
+        if not Combat.inBackstabPosition(source, target):
+            return (False, "Must be behind target to perform " + self.name + " .")
         if not source.usingWeapon("Ranged"):
             return (False, "Must be using a ranged weapon to perform " + self.name + " .")
         if source.usingWeapon("Longbow"):
@@ -608,7 +623,8 @@ class Ability(object):
         source = self.owner
         if not source.inStealth():
             return (False, "Must be in stealth to perform " + self.name + " .")
-        # If not in backstab position : TODO
+        if not Combat.inBackstabPosition(source, target):
+            return (False, "Must be in backstab position to perform " + self.name + " .")
         if not source.usingWeapon("Sword") and not source.usingWeapon("Knife"):
             return (False, "Must be using either swords or knives to preform " + self.name + " .")
 
@@ -639,7 +655,8 @@ class Ability(object):
         source = self.owner
         if source.inStealth():
             return (False, "Must not be in stealth to perform " + self.name + " .")
-        # If not in backstab position : TODO
+        if not Combat.inBackstabPosition(source, target):
+            return (False, "Must be in backstab position to perform " + self.name + " .")
         if not source.usingWeapon("Sword") and not source.usingWeapon("Knife"):
             return (False, "Must be using either swords or knives to preform " + self.name + " .")
 
@@ -657,7 +674,7 @@ class Ability(object):
     def _stealthRecovery(self, target):
         source = self.owner
         healing = round(source.totalHP * 0.03)
-        Combat.healTarget(source, healing)
+        Combat.healTarget(source, source, healing)
 
     def _stealthRecoveryCheck(self, target):
         source = self.owner
@@ -814,7 +831,7 @@ class Ability(object):
         ''' Heal 10% of max HP, raise magic resist and fire resist briefly. '''
         source = self.owner
         healing = round(source.totalHP * 0.1)
-        Combat.healTarget(source, healing)
+        Combat.healTarget(source, source, healing)
         duration = 3
         # Fire resist magnitude set at +15%, this magnitude is for spell resist.
         magnitude = 2 * self.level
@@ -991,7 +1008,7 @@ class Ability(object):
         source = self.owner
         percentToHeal = Dice.roll(15, 30)
         amountToHeal = float(percentToHeal) / 100 * source.totalHP
-        Combat.healTarget(source, amountToHeal)
+        Combat.healTarget(source, source, amountToHeal)
 
     def _quaffPotionCheck(self, target):
         ''' Monsters should only use this if they are below 65% HP '''
@@ -1067,7 +1084,7 @@ class Ability(object):
         'range' : 0,
         'target' : 'self',
         'action' : _dash,
-        'cooldown' : None,
+        'cooldown' : 1,
         'checkFunction' : None,
         'breakStealth' : 100
         },
@@ -1441,19 +1458,6 @@ class Ability(object):
         },
 
         #Druid
-        'Druid Stealth':
-        {
-        'level' : 1,
-        'class' : 'Druid',
-        'HPCost' : 0,
-        'APCost' : 7,
-        'range' : 0,
-        'target' : 'self',
-        'action' : _stealth,
-        'cooldown' : 3,
-        'checkFunction' : _stealthCheck,
-        'breakStealth' : 0
-        },
         'Deep Wound':
         {
         'level' : 1,
@@ -1642,13 +1646,26 @@ class Ability(object):
         },
 
         # Assassin
+        'Assassin Stealth':
+        {
+        'level' : 1,
+        'class' : 'Assassin',
+        'HPCost' : 0,
+        'APCost' : 7,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _stealth,
+        'cooldown' : 3,
+        'checkFunction' : _stealthCheck,
+        'breakStealth' : 0
+        },
         'Ranged Backstab':
         {
         'level' : 1,
         'class' : 'Assassin',
         'HPCost' : 0,
         'APCost' : 10,
-        'range' : 1,
+        'range' : -1,
         'target' : 'hostile',
         'action' : _rangedBackstab,
         'cooldown' : 2,
