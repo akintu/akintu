@@ -121,8 +121,8 @@ class CombatServer():
         for char in toUpdateList:
             self.combatStates[combatPane].deadMonsterList.append(char)
             Combat.sendCombatMessage(message=char.name + " Died!", color='magenta', character=char)
-            port = Combat.getAllCombatPorts(char)[0]
-            self.server.SDF.send(port, Person(PersonActions.REMOVE, char.id))
+            for port in Combat.getAllCombatPorts(char):
+                self.server.SDF.send(port, Person(PersonActions.REMOVE, char.id))
             #self.server.pane[combatPane].person.remove(char.id)
 
     def monsterMove(self, monster, visiblePlayers):
