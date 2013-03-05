@@ -243,6 +243,7 @@ class Monster(person.Person):
         if dir != self.cLocation.direction:
             self.cLocation.direciton = dir
             messageObj = command.Person(self.id, command.PersonActions.MOVE, self.cLocation)
+            self.globalServer.SDF.send(messageObj, None)
        
     def getPlayersInRange(self, range, server=None, combatPane=None, visiblePlayers="All"):
         """Returns a list of players within a set range of this monster.  Will sort them according
