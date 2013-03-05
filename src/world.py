@@ -96,7 +96,7 @@ class Pane(object):
                     self.add_obstacle((i, j), RAND_ENTITIES)
 
         if load_entities:
-            self.add_chest((10, 10), TreasureChest.CHEST_TYPE[random.randrange(len(TreasureChest.CHEST_TYPE))])
+            self.add_chest((random.randrange(PANE_X), random.randrange(PANE_Y)), TreasureChest.CHEST_TYPE[random.randrange(len(TreasureChest.CHEST_TYPE))])
             if self.pane_state:
                 self.load_state(self.pane_state)
             else:
@@ -226,18 +226,46 @@ class Pane(object):
         self.tiles[tile].add_chest(TreasureChest(chest_type, lvl, tile))
         
     def get_treasure_chest(self, location):
+        '''
+        Loops through the surrounding tiles and returns the first chest it finds.
+        Currently it looks for chests in front of the player as the first option
+        but remaining checks are undefined.
+        
+        '''
+
         if location.pane != self.location:
             print "Tried to get chest from pane " + str(location.pane) + ","
             print "but requested it from " + str(self.location)
-            return
-            #assert False
+            print "pane.get_treasure_chest(self, location)"
+            return (None, None)
+
         tiles = location.get_surrounding_tiles()
+        
+        #First attempt to get a chest in front of you
+        facing = tiles[location.direction]
+        if facing in self.tiles:
+            chest = self.tiles[facing].get_chest()
+            if chest:
+                print "Found chest in front of you on tile " + str(facing)
+                self.tiles[facing].remove_chest()
+                return (chest, facing)
+        
+        #If there was no chest, look on surrounding tiles
         for key, tile in tiles.iteritems():
             if tile in self.tiles:
                 chest = self.tiles[tile].get_chest()
                 if chest:
                     print "Found chest on tile " + str(tile)
-                    return chest
+                    return (chest, tile)
+        return (None, None)
+        
+    def get_item(self, location):
+        '''
+        
+        '''
+        pass
+        assert False
+        
 
     def add_region(self, location, size, percentage, entity_type=None):
         r = Region()
@@ -473,7 +501,7 @@ class Tile(object):
         self.chest = chest
         
     def remove_chest(self):
-        self.remove_item(chest)
+        self.remove_item(self.chest)
         self.chest = None
         
     def get_chest(self):

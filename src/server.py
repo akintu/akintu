@@ -147,11 +147,15 @@ class GameServer():
             if isinstance(command, Person) and command.action == PersonActions.OPEN:
                 activePlayer = self.person[command.id]
                 currentPane = self.pane[activePlayer.location.pane]
-                # if activePlayer near treasure chest tile --> JOSH <--
-                chest = currentPane.get_treasure_chest(activePlayer.location)
-                # select that chest --> JOSH <-- (e.g. chest = functionToGetAChest() )
-                
+                chest, loc = currentPane.get_treasure_chest(activePlayer.location)
                 # playerPorts = getAllPortsOnThisPaneAsAList(currentPane) --> KYLE/JOSH? <--
+                if chest:
+                    chest.open([activePlayer])    #Replace this with list of players on current pane
+                    
+                    #Notify clients in the affected pane
+                    for p, i in self.player.iteritems():
+                        if self.person[i].location.pane == self.person[command.id].location.pane:
+                            self.SDF.send(p, command)
                 # for playerPort in playerList:
                 #     itemList = chest.generateTreasure()
                 #     thisPlayer = self.person[self.player[playerPort]]
