@@ -2,6 +2,7 @@
 
 import sys
 import listener
+from combat import *
 
 class PassiveAbility(object):
 
@@ -26,7 +27,6 @@ class PassiveAbility(object):
         newListener = listener.Listener(self, self.owner, self.onStringList, self.action, self.offStringList)
         self.owner.listeners.append(newListener)
 
-
     # Barbarian
     def applyColdEndurance(self, target):
         target.baseColdResistance += 10
@@ -50,13 +50,13 @@ class PassiveAbility(object):
             if target.usingWeaponStyle("Dual"):
                 target.baseMeleeAccuracy -= 2
 
-    def applyBloodOnTheEdge(self, target, reverse=False, damageAmount=0):
+    def applyBloodOnTheEdge(self, target, reverse=False, damage=0):
         # No reverse possible.
         hpThreshold = round(target.totalHP * 0.30)
         if target.HP > hpThreshold:
             return
         hpThreshold = round(target.totalHP * 0.05)
-        if damageAmount > hpThreshold:
+        if damage > hpThreshold:
             return
         return "Ignore Damage"
 
@@ -297,14 +297,14 @@ class PassiveAbility(object):
 
     def applyManaAttack(self, target, reverse=False, other=None):
         if not reverse:
-            target.MP += 9
+            Combat.modifyResource(target, "MP", 9)
         else:
             pass
 
-    def applyDireMana(self, target, reverse=False, damageAmount=0):
+    def applyDireMana(self, target, reverse=False, damage=0):
         if not reverse:
-            if damageAmount >= target.maxHP * 0.15:
-                target.MP += target.totalMP * 0.10
+            if damage >= target.totalHP * 0.15:
+                Combat.modifyResource(target, "MP", int(round(target.totalMP * 0.10)))
         else:
             pass
 

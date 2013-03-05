@@ -213,7 +213,7 @@ class PlayerCharacter(p.Person):
                 if current['level'] == 1:
                     newPAbil = passiveability.PassiveAbility(pAbil, self)
                     self.passiveAbilities.append(newPAbil)
-        self.listeners = []
+
         self.traits = []
 
         # Items

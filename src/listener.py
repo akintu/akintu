@@ -12,49 +12,50 @@ class Listener(object):
         self.callObject = callObject
 
     def hear(self, bCast):
+        print bCast.message + " Recvd"
         for string in self.onStringList:
             if string == bCast.message.strip():
-                if bCast.isinstance(broadcast.SpellBroadcast):
+                if isinstance(bCast, broadcast.SpellBroadcast):
                     self.action(self.callObject, self.host, reverse=False, spell=bCast.spell)
                     return
-                elif bCast.isinstance(broadcast.AttackBroadcast):
+                elif isinstance(bCast, broadcast.AttackBroadcast):
                     self.action(self.callObject, self.host, reverse=False, other=bCast.otherPerson)
                     return
-                elif bCast.isinstance(broadcast.DamageBroadcast):
+                elif isinstance(bCast, broadcast.DamageBroadcast):
                     return self.action(self.callObject, self.host, reverse=False, damage=bCast.amount)
-                elif bCast.isinstance(broadcast.StatusBroadcast):
+                elif isinstance(bCast, broadcast.StatusBroadcast):
                     self.action(self.callObject, self.host, reverse=False, statusName=bCast.statusName)
                     return
-                elif bCast.isinstance(broadcast.ResourceLevelBroadcast):
+                elif isinstance(bCast, broadcast.ResourceLevelBroadcast):
                     self.action(self.callObject, self.host, reverse=False, percent = bCast.resourceLevel)
                     return
-                elif bCast.isinstance(broadcast.DodgeBroadcast):
+                elif isinstance(bCast, broadcast.DodgeBroadcast):
                     self.action(self.callObject, self.host, reverse=False)
                     return
-                elif bCast.isinstance(broadcast.TurnBroadcast):
+                elif isinstance(bCast, broadcast.TurnBroadcast):
                     self.action(self.callObject, self.host, reverse=False)
                     return
         for string in self.offStringList:
             if string == bCast.message.strip():
-                if bCast.isinstance(broadcast.SpellBroadcast):
+                if isinstance(bCast, broadcast.SpellBroadcast):
                     self.action(self.callObject, self.host, reverse=True, spell=bCast.spell)
                     return
-                elif bCast.isinstance(broadcast.AttackBroadcast):
+                elif isinstance(bCast, broadcast.AttackBroadcast):
                     self.action(self.callObject, self.host, reverse=True, other=bCast.otherPerson)
                     return
-                elif bCast.isinstance(broadcast.DamageBroadcast):
+                elif isinstance(bCast, broadcast.DamageBroadcast):
                     self.action(self.callObject, self.host, reverse=True, damage=bCast.amount)
                     return
-                elif bCast.isinstance(broadcast.StatusBroadcast):
+                elif isinstance(bCast, broadcast.StatusBroadcast):
                     self.action(self.callObject, self.host, reverse=True, statusName=bCast.statusName)
                     return
-                elif bCast.isinstance(broadcast.ResourceLevelBroadcast):
+                elif isinstance(bCast, broadcast.ResourceLevelBroadcast):
                     self.action(self.callObject, self.host, reverse=True)
                     return
-                elif bCast.isinstance(broadcast.DodgeBroadcast):
+                elif isinstance(bCast, broadcast.DodgeBroadcast):
                     self.action(self.callObject, self.host, reverse=True)
                     return
-                elif bCast.isinstance(broadcast.TurnBroadcast):
+                elif isinstance(bCast, broadcast.TurnBroadcast):
                     self.action(self.callObject, self.host, reverse=True)
                     return
 

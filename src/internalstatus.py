@@ -154,8 +154,6 @@ class InternalStatus(object):
         pass
 
     def HP_buffer_method(self, target, magnitude):
-        print str(magnitude)
-        print str(self.duration)
         target.applyHPBuffer(self.parentName, magnitude, self.duration)
 
     def Increased_movement_AP_cost_method(self, target, magnitude):

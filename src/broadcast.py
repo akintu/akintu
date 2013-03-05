@@ -40,6 +40,7 @@ class AttackBroadcast(Broadcast):
         self.noCounter = False
         if 'noCounter' in argDict:
             self.noCounter = argDict['noCounter']
+        print self.message
 
 
 class SpellBroadcast(Broadcast):
@@ -79,7 +80,7 @@ class ResourceLevelBroadcast(Broadcast):
         self.message = "Player " + self.resourceType + " level changed"
 
 class DodgeBroadcast(Broadcast):
-    def __init(self):
+    def __init__(self):
         Broadcast.__init__(self)
 
         self.message = "Attack Dodged"

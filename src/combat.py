@@ -179,7 +179,7 @@ class Combat(object):
           Any Hit type string"""
         offense *= Dice.rollFloat(0.75, 1.00)
         defense *= Dice.rollFloat(0.75, 1.00)
-        if(offense <= 3 * defense):
+        if(offense * 3 <= defense):
             # Spell fails Listener TODO
             return "Fully Resisted"
         elif(offense < defense):
@@ -1053,6 +1053,8 @@ class Combat(object):
         hearer = source
         otherParty = target
         hitTypeString = hitType
+        if hitType == "Normal Hit":
+            hitTypeString = "Hit"
         if hitType == "Miss":
             hitTypeString = ""
         if source.team == "Monsters":
@@ -1065,6 +1067,7 @@ class Combat(object):
         bundle = {'direction' : direction, 'type' : attackType, 'otherPerson' : otherParty, 'suffix' : hitTypeString}
         bc = broadcast.AttackBroadcast(bundle)
         bc.shout(hearer)
+        print hearer.name
 
     @staticmethod
     def _shoutAttackComplete(source, target, noCounter):
@@ -1087,6 +1090,7 @@ class Combat(object):
         direction = "Incoming"
         if target.team == "Monsters":
             direction = "Outgoing"
+        # This won't shout outgoing to players. TODO
         bundle = {'direction' : direction, 'amount' : amount}
         bc = broadcast.DamageBroadcast(bundle)
         return bc.shout(target)

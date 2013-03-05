@@ -103,7 +103,7 @@ class Person(en.Entity):
         self._equipmentCriticalMagnitude = 0
         self._statusCriticalMagnitude = 0
 
-        self._baseDodge = Person.setFrom(argDict, 'startingDexterity', 0)
+        self._baseDodge = Person.setFrom(argDict, 'startingBaseDodge', 0)
         self._equipmentDodge = 0
         self._statusDodge = 0
 
@@ -115,7 +115,7 @@ class Person(en.Entity):
         self._equipmentForce = 0
         self._statusForce = 0
 
-        self._baseMagicResist = Person.setFrom(argDict, 'startingPiety', 0)
+        self._baseMagicResist = Person.setFrom(argDict, 'startingMagicResist', 0)
         self._equipmentMagicResist = 0
         self._statusMagicResist = 0
 
@@ -764,7 +764,8 @@ class Person(en.Entity):
         statuses that boost or reduce Dodge.  Does not include
         rangedDodge or meleeDodge (even when relevant.)
         """
-        return (self._equipmentDodge +
+        return (self.totalDexterity +
+                self._equipmentDodge +
                 self._statusDodge +
                 self._baseDodge)
 
