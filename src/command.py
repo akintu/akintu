@@ -6,7 +6,8 @@ from const import enum
 
 PersonActions = enum(CREATE = 1, MOVE = 2, REMOVE = 3, RUN = 4, STOP = 5, OPEN = 6)
 InventoryActions = enum(PICKUP = 1, PUTDOWN = 2)
-UpdateProperties = enum(HP = 1, MP = 2, AP = 3, COMBAT = 4, TEXT = 5, MOVE_AP_COST = 6, MOVE_TILES = 7)
+UpdateProperties = enum(HP = 1, MP = 2, AP = 3, COMBAT = 4, TEXT = 5, MOVE_AP_COST = 6, MOVE_TILES = 7,
+                        HP_BUFFER = 8)
 AbilityActions = enum(ATTACK = 1, END_TURN = 2)
 
 class Command:

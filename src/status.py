@@ -45,6 +45,7 @@ class Status(object):
         clone.applyMagnitude(magnitude)
         for iStatus in clone.internalList:
             iStatus.element = clone.element
+            iStatus.duration = duration
         return clone
 
     def activate(self, target):

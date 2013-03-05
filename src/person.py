@@ -5,6 +5,7 @@ import entity as en
 from network import *
 from ai import AI
 from dice import *
+from combat import *
 
 class IncompleteDataInitialization(Exception):
     def __init__(self, value):
@@ -2810,7 +2811,10 @@ class Person(en.Entity):
             oldBuffer[1] = HPMagnitude
             oldBuffer[2] += turnsToLive
         else:
-            self.HPBuffer.append([bufferName, HPMagnitude, turnsToLive])
+            self.HPBufferList.append([bufferName, HPMagnitude, turnsToLive])
+        print "Got this far"
+        print str(self.getHPBufferSum())
+        Combat.sendToAll(self, "HP_BUFFER")
 
     def unapplyHPBuffer(self, bufferName, turnsToLive):
         """Removes an existing HPBuffer from the list or reduces the time left to live
@@ -2827,6 +2831,7 @@ class Person(en.Entity):
                 buff[2] -= turnsToLive
                 if buff[2] <= 0:
                     self.HPBufferList.remove(buff)
+        Combat.sendToAll(self, "HP_BUFFER")
 
     def getHPBufferSum(self):
         '''Returns the total buffered HP from all active HPBuffers on this person.

@@ -185,7 +185,10 @@ class Game(object):
             ###### Update Movement Tiles #####
             elif isinstance(command, Update) and command.property == UpdateProperties.MOVE_TILES:
                 self.pane.person[command.id].remainingMovementTiles = command.value
-                
+            ###### Update HP Buffers ######
+            elif isinstance(command, Update) and command.property == UpdateProperties.HP_BUFFER:
+                self.screen.update_person(command.id, {'buffedHP' : command.value, 'totalHP' : self.pane.person[command.id].totalHP,
+                                                    'team' : self.pane.person[command.id].team})
                 
     def handle_events(self):
         pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])

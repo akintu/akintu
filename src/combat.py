@@ -57,6 +57,7 @@ class Combat(object):
         elif type == "MP":
             messageObj = command.Update(character.id, command.UpdateProperties.MP, character.MP)
         elif type == "HP":
+            Combat.sendToAll(character, "HP_BUFFER")
             messageObj = command.Update(character.id, command.UpdateProperties.HP, character.HP)
         elif type == "MoveAPCost":
             messageObj = command.Update(character.id, command.UpdateProperties.MOVE_AP_COST,
@@ -64,6 +65,9 @@ class Combat(object):
         elif type == "Status":
             messageObj = command.Update(character.id, command.UpdateProperties.STATUS,
                                         Combat.encodeStatuses(character))
+        elif type == "HP_BUFFER":
+            messageObj = command.Update(character.id, command.UpdateProperties.HP_BUFFER,
+                                        character.getHPBufferSum())
         for port in Combat.getAllCombatPorts(character):
             Combat.gameServer.SDF.send(port, messageObj)
 
@@ -177,7 +181,7 @@ class Combat(object):
         defense *= Dice.rollFloat(0.75, 1.00)
         if(offense <= 3 * defense):
             # Spell fails Listener TODO
-            return "Miss"
+            return "Fully Resisted"
         elif(offense < defense):
             return "Partially Resisted"
         elif(defense <= offense and offense <= defense * 2):
@@ -553,7 +557,7 @@ class Combat(object):
         Outputs:
           non-negative int representing the damage that should be dealt to the target"""
         # Actual method:
-        if hitValue == "Miss":
+        if hitValue == "Miss" or hitValue == "Fully Resisted":
             return 0
 
         dieRoll = Dice.roll(minimum, maximum)
@@ -962,9 +966,11 @@ class Combat(object):
                 target.HPBufferList.remove(current)
             elif remaining < current[1]:
                 current[1] -= remaining
+                Combat.sendToAll(target, "HP_BUFFER")
                 return
             elif remaining == current[1]:
                 target.HPBufferList.remove(current)
+                Combat.sendToAll(target, "HP_BUFFER")
                 return
         Combat.modifyResource(target, "HP", -remaining)
 

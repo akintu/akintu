@@ -78,7 +78,8 @@ class Monster(person.Person):
         self.attackMinDamage = Monster.setFrom(argDict, 'attackMin')
         self.attackMaxDamage = Monster.setFrom(argDict, 'attackMax')
         self.attackRange = Monster.setFrom(argDict, 'attackRange')
-
+        self.baseMagicResist = Monster.setFrom(argDict, 'magicResist')
+        
         self.levelupArmorPenetration = Monster.setFrom(argDict, 'levelupArmorPenetration')
         self.levelupCunning = Monster.setFrom(argDict, 'levelupCunning')
         self.levelupDexterity = Monster.setFrom(argDict, 'levelupDexterity')

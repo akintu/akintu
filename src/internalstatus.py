@@ -154,6 +154,8 @@ class InternalStatus(object):
         pass
 
     def HP_buffer_method(self, target, magnitude):
+        print str(magnitude)
+        print str(self.duration)
         target.applyHPBuffer(self.parentName, magnitude, self.duration)
 
     def Increased_movement_AP_cost_method(self, target, magnitude):
@@ -185,7 +187,6 @@ class InternalStatus(object):
 
     def Movement_speed_penalty_method(self, target, magnitude):
         target.statusMovementTiles -= magnitude
-        # TODO: Ensure monsters can always move at least one tile.
 
     def Movement_tiles_penalty_method(self, target, magnitude):
         target.statusMovementTiles -= magnitude
@@ -399,8 +400,8 @@ class InternalStatus(object):
     def Hidden_double_cunning_method_reverse(self, target, magnitude):
         pass
 
-    def HP_buffer_method_reverse(self, target, magnitude, name, duration):
-        target.unapplyHPBuffer(name, duration)
+    def HP_buffer_method_reverse(self, target, magnitude):
+        target.unapplyHPBuffer(self.parentName, self.duration)
 
     def Increased_movement_AP_cost_method_reverse(self, target, magnitude):
         target.statusMovementAPCost -= magnitude

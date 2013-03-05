@@ -62,9 +62,9 @@ class Spell(object):
             if spellSuccess:
                 self._shoutSpellCast(self.owner, target)
                 if self.targetType == "hostile" and target.team == "Players":
-                    self.applySchoolResistance()
+                    self.applySchoolResistance(target)
                     self.action(self, target)
-                    self.unapplySchoolResistance()
+                    self.unapplySchoolResistance(target)
                 else:
                     self.action(self, target)
                 self._shoutSpellCastComplete(self.owner, target)
@@ -80,39 +80,37 @@ class Spell(object):
             return
             # TODO! Make this raise an exception rather than silently return.
 
-    def applySchoolResistance(self):
-        hero = self.owner
+    def applySchoolResistance(self, target):
         if self.school == "Enchantment":
-            hero.statusMagicResist += hero.enchantmentResist
+            target.statusMagicResist += target.enchantmentResist
         elif self.school == "Bane":
-            hero.statusMagicResist += hero.baneResist
+            target.statusMagicResist += target.baneResist
         elif self.school == "Mental":
-            hero.statusMagicResist += hero.mentalResist
+            target.statusMagicResist += target.mentalResist
         elif self.school == "Illusion":
-            hero.statusMagicResist += hero.illusionResist
+            target.statusMagicResist += target.illusionResist
         elif self.school == "Primal":
-            hero.statusMagicResist += hero.primalResist
+            target.statusMagicResist += target.primalResist
         elif self.school == "Mystic":
-            hero.statusMagicResist += hero.mysticResist
+            target.statusMagicResist += target.mysticResist
         elif self.school == "Natural":
-            hero.statusMagicResist += hero.naturalResist
+            target.statusMagicResist += target.naturalResist
 
-    def unapplySchoolResistance(self):
-        hero = self.owner
+    def unapplySchoolResistance(self, target):
         if self.school == "Enchantment":
-            hero.statusMagicResist -= hero.enchantmentResist
+            target.statusMagicResist -= target.enchantmentResist
         elif self.school == "Bane":
-            hero.statusMagicResist -= hero.baneResist
+            target.statusMagicResist -= target.baneResist
         elif self.school == "Mental":
-            hero.statusMagicResist -= hero.mentalResist
+            target.statusMagicResist -= target.mentalResist
         elif self.school == "Illusion":
-            hero.statusMagicResist -= hero.illusionResist
+            target.statusMagicResist -= target.illusionResist
         elif self.school == "Primal":
-            hero.statusMagicResist -= hero.primalResist
+            target.statusMagicResist -= target.primalResist
         elif self.school == "Mystic":
-            hero.statusMagicResist -= hero.mysticResist
+            target.statusMagicResist -= target.mysticResist
         elif self.school == "Natural":
-            hero.statusMagicResist -= hero.naturalResist
+            target.statusMagicResist -= target.naturalResist
 
     # Monster Only Spells
 
@@ -176,7 +174,7 @@ class Spell(object):
                                    scaleFactor=0.01)
         duration = 2
         chance = Dice.rollPresetChance(source, target, "Frequent")
-        magnitude = Dice.scale(source.totalSpellpower, 5, 0.012),
+        magnitude = Dice.scale(source.totalSpellpower, 5, 0.012)
         Combat.addStatus(target, self.name, duration, magnitude, hitValue=hitType, chance=chance)
 
     def _shock(self, target):
