@@ -21,7 +21,7 @@ def main():
         num_players = sys.argv[1]
         name = sys.argv[2]
         player = (name, "Elf", "Assassin")
-        state = {SEED_KEY: "a"}
+        state = {SEED_KEY: "fsda"}
         if num_players == "1":
             ip = None
         else:

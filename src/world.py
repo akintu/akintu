@@ -196,7 +196,8 @@ class Pane(object):
                 for y in range(edge_range[0][1], edge_range[1][1]+1):
                     opposite = Location(None, (x, y)).get_opposite_tile(edge).tile
                     if not self.is_tile_passable(Location(self.location, (x, y))):
-                        passable_list[opposite] = self.objects[(x, y)]
+                        if (x, y) in self.objects:
+                            passable_list[opposite] = self.objects[(x, y)]
         return passable_list
 
     def merge_tiles(self, tiles):
