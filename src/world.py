@@ -237,7 +237,7 @@ class Pane(object):
             print "Tried to get chest from pane " + str(location.pane) + ","
             print "but requested it from " + str(self.location)
             print "pane.get_treasure_chest(self, location)"
-            return
+            return (None, None)
 
         tiles = location.get_surrounding_tiles()
         
@@ -248,7 +248,7 @@ class Pane(object):
             if chest:
                 print "Found chest in front of you on tile " + str(facing)
                 self.tiles[facing].remove_chest()
-                return chest
+                return (chest, facing)
         
         #If there was no chest, look on surrounding tiles
         for key, tile in tiles.iteritems():
@@ -256,8 +256,9 @@ class Pane(object):
                 chest = self.tiles[tile].get_chest()
                 if chest:
                     print "Found chest on tile " + str(tile)
-                    return chest
-                    
+                    return (chest, tile)
+        return (None, None)
+        
     def get_item(self, location):
         '''
         
