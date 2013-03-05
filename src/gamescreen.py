@@ -618,6 +618,7 @@ class PersonSprite(pygame.sprite.DirtySprite):
         self.rect.topleft = (loc.tile[0] * TILE_SIZE + xoff,
                              loc.tile[1] * TILE_SIZE + yoff)
         self.image = self.images[foot][loc.direction]
+        self.dirty = 1
 
     def update_dict(self, statsdict):
         '''
