@@ -149,7 +149,7 @@ class GameServer():
                 currentPane = self.pane[activePlayer.location.pane]
                 chest, loc = currentPane.get_treasure_chest(activePlayer.location)
                 if chest:
-                    #chest.open([activePlayer])    #Replace this with list of players on current pane
+                    chest.open([activePlayer])    #Replace this with list of players on current pane
                     
                     #Notify clients in the affected pane
                     for p, i in self.player.iteritems():
