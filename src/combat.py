@@ -154,7 +154,7 @@ class Combat(object):
         elif(-5 <= delta < 0):
             chanceToHit = 85 - delta * 3
         elif(-27 <= delta < -5):
-            chanceToHit = 70 - (delta + 6) * 2
+            chanceToHit = 70 - (delta + 5) * 2
         elif(-47 <= delta < -27):
             chanceToHit = 30 - (delta + 27) * 1
         elif(-57 <= delta < -47):
