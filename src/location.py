@@ -138,6 +138,17 @@ class Location(object):
         return {((-dy + 1) * 3) + dx + 2: \
             (self.pane[0] + dx, self.pane[1] + dy) for dx in range(-1, 2) for dy in range(1, -2, -1)}
 
+    def get_surrounding_tiles(self):
+        '''
+        Gets the locations of the surrounding tiles
+        Only returns locations on the current pane, so edge cases will 
+        contain invalid tile locations.
+        Returns a dictionary with the facing direction as the key
+        '''
+
+        return {((-dy + 1) * 3) + dx + 2: \
+            (self.tile[0] + dx, self.tile[1] + dy) for dx in range(-1, 2) for dy in range(1, -2, -1)}        
+    
     def line_to(self, dest):
         locs = []
         distx = dest.abs_x - self.abs_x
