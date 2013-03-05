@@ -412,6 +412,7 @@ class CombatPane(Pane):
 class Tile(object):
     def __init__(self, image = os.path.join("res", "images", "background", "grass.png"), passable = True):
         self.entities = []
+        self.obstacles = []
         self.items = []
         self.image = image
         self.passable = passable
@@ -434,8 +435,16 @@ class Tile(object):
         self.entities.append(entity)
         self.items.append(entity)
     
+    def remove_item(self, item):
+        assert False
+        pass
+    
     def get_items(self):
         return self.items
+        
+    def add_obstacle(self, entity):
+        self.entities.append(entity)
+        self.obstacles.append(entity)
 
 if __name__ == "__main__":
     '''
