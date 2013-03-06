@@ -113,7 +113,7 @@ class Ability(object):
     def _mightyBlow(self, target):
         source = self.owner
         hit = Combat.calcHit(source, target, "Physical", modifier=-5)
-        Combat.basicAttack(source, target, hit, forceMod=1.5)
+        Combat.basicAttack(source, target, hit, forceMod=1.6, mightMod=2)
 
     def _mightyBlowCheck(self, target):
         if self.owner.usingWeapon("Melee"):
@@ -1054,7 +1054,7 @@ class Ability(object):
         'level' : 1,
         'class' : 'Fighter',
         'HPCost' : 0,
-        'APCost' : 9,
+        'APCost' : 8,
         'range' : 1,
         'target' : 'hostile',
         'action' : _mightyBlow,

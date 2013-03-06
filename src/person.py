@@ -2251,10 +2251,11 @@ class Person(en.Entity):
     def totalMP(self):
         """The maximum MP of the player.  Is determined by class, level,
         equipment, skills, statuses, and base attributes."""
-        if( self.totalPiety == 0 ):
+        if( self.totalPiety == 0 or self._baseMP == 0):
             return self._baseMP
         else:
-            return max(0, self._baseMP + (self.totalPiety - 10) * 4 + self.equipmentMP)
+            pietyBonus = max(0, (self.totalPiety - 10) * 4)
+            return max(0, self._baseMP + pietyBonus + self.equipmentMP)
 
     @property
     def baseMP(self):
