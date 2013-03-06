@@ -77,15 +77,15 @@ class Inventory(object):
     def allItems(self):
         return self._allItems
 
-    def depositGold(self, goldObject):
-        if isinstance(goldObject, wealth.Wealth) and goldObject.name == "Gold":
-            self.gold += goldObject.goldValue
-        else:
-            print "Warning: Attempted to deposit non-gold object to inventory!"
+    #def depositGold(self, goldAmount):
+        # if isinstance(goldObject, wealth.Wealth) and goldObject.name == "Gold":
+            # self.gold += goldObject.goldValue
+        # else:
+            # print "Warning: Attempted to deposit non-gold object to inventory!"
 
     def addItem(self, item):
-        if isinstance(item, wealth.Wealth) and item.name == "Gold":
-            self.depositGold(item)
+        if isinstance(item, int):
+            self.gold += item
         else:
             self._allItems.append(item)
             item.location = None

@@ -125,7 +125,7 @@ class MonstersParser(object):
                                                                            'levelupShadowResistance')
                 MonstersParser.associate(f, f.readline(), slashingResistTag, mDict, 'startingSlashingResistance',
                                                                            'levelupSlashingResistance')
-                MonstersParser.associate(f, f.readline(), experienceTag, mDict, 'experience')
+                MonstersParser.associate(f, f.readline(), experienceTag, mDict, 'experience', 'levelupExperience')
                 MonstersParser.associate(f, f.readline(), GPTag, mDict, 'GP')
                 MonstersParser.associate(f, f.readline(), HPTag, mDict, 'startingHP', 'levelupHP')
                 MonstersParser.associate(f, f.readline(), imageTag, mDict, 'image')

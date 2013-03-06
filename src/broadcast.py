@@ -40,7 +40,6 @@ class AttackBroadcast(Broadcast):
         self.noCounter = False
         if 'noCounter' in argDict:
             self.noCounter = argDict['noCounter']
-        print self.message
 
 
 class SpellBroadcast(Broadcast):

@@ -12,7 +12,6 @@ class Listener(object):
         self.callObject = callObject
 
     def hear(self, bCast):
-        print bCast.message + " Recvd"
         for string in self.onStringList:
             if string == bCast.message.strip():
                 if isinstance(bCast, broadcast.SpellBroadcast):

@@ -1083,7 +1083,6 @@ class Combat(object):
         bundle = {'direction' : direction, 'type' : attackType, 'otherPerson' : otherParty, 'suffix' : hitTypeString}
         bc = broadcast.AttackBroadcast(bundle)
         bc.shout(hearer)
-        print hearer.name
 
     @staticmethod
     def _shoutAttackComplete(source, target, noCounter):

@@ -115,18 +115,30 @@ class CombatServer():
     def update_dead_people(self, combatPane):
         '''Checks the list of Persons on this combat Pane to see if they have HP > 0.
         If they do not, it will "remove them" from the combatPane and add them to a
-        deadList associated with this CombatState.'''
+        deadList associated with this CombatState.  If all monsters are dead and at least
+        one player remains, enters the victory phase.'''
         toUpdateList = []
         for char in [self.server.person[x] for x in self.server.pane[combatPane].person]:
             if char.HP <= 0 and char.team == "Monsters":
                 toUpdateList.append(char)
-
+                
         for char in toUpdateList:
             self.combatStates[combatPane].deadMonsterList.append(char)
             Combat.sendCombatMessage(message=char.name + " Died!", color='magenta', character=char)
             for port in Combat.getAllCombatPorts(char):
                 self.server.SDF.send(port, Person(PersonActions.REMOVE, char.id))
             self.server.pane[combatPane].person.remove(char.id)
+            
+        monstersAlive = False
+        livingPlayers = []
+        for char in [self.server.person[x] for x in self.server.pane[combatPane].person]:
+            if char.team == "Monsters":
+                monstersAlive = True
+            if char.team == "Players":
+                livingPlayers.append(char)
+                
+        if not monstersAlive and livingPlayers:
+            self.victory_phase(livingPlayers, combatPane)    
 
     def monsterMove(self, monster, visiblePlayers):
         tilesLeft = monster.totalMovementTiles
@@ -293,15 +305,44 @@ class CombatServer():
             char = self.server.person[charId]
         return
 
+    def victory_phase(self, livingPlayers, combatPane):
+        '''Cleans up arena, gives experience/gold to players, 
+        restores their health to full, and kicks them out of combat.'''
+        state = self.combatStates[combatPane]
+        try:
+            state.turnTimer.cancel()
+        except:
+            pass
+        for player in livingPlayers:
+            self.giveVictoryExperience(player, state.deadMonsterList)
+            self.giveGold(player, state.deadMonsterList)
+            self.removeTemporaryStatuses(player)
+            self.refillResources(player)
+        # Cleanup, exit combat TODO
+        
 
     #### Victory Methods ####
 
     def giveVictoryExperience(self, player, monsterList):
         '''Grants the appropriate amount of EXP to a player at the end of
         a victorious combat.'''
-        player.addExperience(Combat.calcExperienceGain(player, monsterList))
-
-    def refill_resources(self, player):
+        exp = Combat.calcExperienceGain(player, monsterList)
+        Combat.sendCombatMessage("Gained " + str(exp) + " Experience.", player, 
+                                  color='magenta', toAll=False)
+        oldLevel = player.level
+        newLevel = player.addExperience(exp)
+        if oldLevel != newLevel:
+            Combat.sendCombatMessage(player.name + " LEVELUP!", player, color='magenta')
+        
+        
+    def giveGold(self, player, monsterList):
+        gold = 0
+        for monster in monsterList:
+            gold += monster.level * 3 + monster.GP * 2
+        player.inventory.addItem(gold)
+        Combat.sendCombatMessage("Gained " + str(gold) + " gold.", player, color='magenta', toAll=False)
+        
+    def refillResources(self, player):
         player.MP = player.totalMP
         player.HP = player.totalHP
         player.AP = player.totalAP
