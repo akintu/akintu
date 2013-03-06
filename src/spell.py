@@ -144,7 +144,7 @@ class Spell(object):
     def _mysticShield(self, target):
         source = self.owner
         duration = 5
-        magnitude = Dice.scale(source.totalSpellpower, 10, 0.06)
+        magnitude = Dice.scale(source.totalSpellpower, 8, 0.06)
         Combat.addStatus(target, self.name, duration, magnitude)
 
     def _flickerOfLife(self, target):
@@ -310,7 +310,7 @@ class Spell(object):
         {
         'tier' : 1,
         'school' : 'Mystic',
-        'MPCost' : 15,
+        'MPCost' : 16,
         'APCost' : 12,
         'range' : 0,
         'target' : 'self',

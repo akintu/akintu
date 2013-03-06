@@ -523,11 +523,15 @@ class Combat(object):
             Combat.sendToAll(target, "MOVE_TILES")
             
     @staticmethod
-    def resetMovementTiles(target):
+    def resetMovementTiles(target, freeMove=False):
         ''' Reset the movement tiles to maximum minus this last move.  
         (Used after an AP cost has been incurred.) '''
-        target.remainingMovementTiles = target.totalMovementTiles - 1
+        if freeMove:
+            target.remainingMovementTiles = target.totalMovementTiles
+        else:
+            target.remainingMovementTiles = target.totalMovementTiles - 1
         Combat.sendToAll(target, "MOVE_TILES")
+        
         
     @staticmethod
     def calcDamage(source, target, minimum, maximum, element, hitValue, partial=1, critical=1, scalesWith=None, scaleFactor=0):
@@ -601,9 +605,19 @@ class Combat(object):
         else:
             raise TypeError("Encountered an unknown element: " + element + " .")
 
-        if dieRoll < 0:
-            dieRoll = 0
-        return int(round(dieRoll))
+        if dieRoll <= 0:
+            print "0 damage dealt"
+            return 0
+            
+        result = int(round(dieRoll))
+        color = 'orange'
+        receiver = source
+        if source.team == "Monsters":
+            color = 'red'
+            receiver = target
+        Combat.sendCombatMessage(source.name + " --> " + target.name + ": " + str(result) + " " + 
+                                element + " damage", receiver, color)
+        return result
 
     @staticmethod
     def basicAttack(source, target, hitType, **params):
@@ -710,7 +724,7 @@ class Combat(object):
             outgoingDamage += int(round(outgoingDamage * criticalDamageMod * float(weapon.criticalMultiplier) / 100))
 
         elementalEffects = Combat.applyOnHitEffects(source, target)
-        print source.onHitEffects
+
         if elementOverride:
             # Treat all damage thus far as elemental.
             elementalEffects.append([elementOverride, outgoingDamage])

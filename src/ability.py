@@ -128,7 +128,7 @@ class Ability(object):
 
     def _dash(self, target):
         source = self.owner
-        source.remainingMovementTiles += source.totalMovementTiles
+        Combat.resetMovementTiles(source, freeMove=True)
 
     def _quickStrike(self, target):
         source = self.owner
