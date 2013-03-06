@@ -105,7 +105,7 @@ class PassiveAbility(object):
                 target.statusSpellpower += 6
         else:
             if spell.school == "Enchantment":
-                target.statusSepllpower -= 6
+                target.statusSpellpower -= 6
 
     def applyDuality(self, target):
         target.baseDR += 1
@@ -358,7 +358,8 @@ class PassiveAbility(object):
     def applyManaArrows(self, target, reverse=False, other=None):
         source = self.owner
         if source.usingWeapon("Bow") or source.usingWeapon("Crossbow"):
-            source.MP += source.arcaneArcherManaRegen
+            Combat.modifyResource(source, "MP", source.arcaneArcherManaRegen)
+        
 
     def applyMysticalResearch(self, target, reverse=False, spell=None):
         source = self.owner
@@ -880,7 +881,7 @@ class PassiveAbility(object):
         'level' : 1,
         'type' : 'dynamic',
         'action' : applyManaArrows,
-        'onStringList' : ['Ougoing Ranged Attack Complete'],
+        'onStringList' : ['Outgoing Ranged Attack Complete'],
         'offStringList' : []
         },
         'Mystical Research':

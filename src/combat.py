@@ -710,6 +710,7 @@ class Combat(object):
             outgoingDamage += int(round(outgoingDamage * criticalDamageMod * float(weapon.criticalMultiplier) / 100))
 
         elementalEffects = Combat.applyOnHitEffects(source, target)
+        print source.onHitEffects
         if elementOverride:
             # Treat all damage thus far as elemental.
             elementalEffects.append([elementOverride, outgoingDamage])
@@ -730,7 +731,8 @@ class Combat(object):
             elif weapon.damageType == "Bludgeoning & Slashing" or wepaon.damageType == "Slashing & Bludgeoning":
                 resistance = min(target.totalBludgeoningResistance, target.totalSlashingResistance)
                 outgoingDamage *= (1 - (float(resistance / 100)))
-        totalDamage = int(round(Combat.sumElementalEffects(elementalEffects, elementOverride) + outgoingDamage))
+        totalDamage = int(round(Combat.sumElementalEffects(elementalEffects, source, target, 
+                                elementOverride) + outgoingDamage))
         Combat.sendCombatMessage("Dealt " + str(totalDamage) + " total Damage.", source, color="yellow")
 
         Combat.lowerHP(target, totalDamage)
@@ -746,7 +748,7 @@ class Combat(object):
         return resultList
 
     @staticmethod
-    def sumElementalEffects(elementalEffects, overrideElement=None):
+    def sumElementalEffects(elementalEffects, source, target, overrideElement=None):
         damSum = 0
         for duple in elementalEffects:
             if overrideElement:

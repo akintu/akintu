@@ -100,9 +100,9 @@ class PlayerCharacter(p.Person):
         # Class specific properties and weird things:
 
         # --- Arcane Archer ---
-        self._arcaneArcherManaRegen = None
+        self._arcaneArcherManaRegenBase = None
         if (self.characterClass == "Arcane Archer"):
-            self._arcaneArcherManaRegen = 6
+            self._arcaneArcherManaRegenBase = 6
 
         # --- Marksman ---
         self._bonusRange = 0

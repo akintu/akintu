@@ -288,7 +288,7 @@ class Spell(object):
         'school' : 'Mystic',
         'MPCost' : 2,
         'APCost' : 5,
-        'range' : 8,
+        'range' : 11,
         'target' : 'hostile',
         'action' : _arcaneDart,
         'cooldown' : None

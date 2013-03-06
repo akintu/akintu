@@ -740,7 +740,7 @@ class Ability(object):
         source = self.owner
         Combat.removeStatusOfType(source, "Threading")
         duration = -1
-        magnitude = 2
+        magnitude = 4
         Combat.addStatus(source, "Arcane Threading", duration, magnitude)
 
     def _arcaneThreadingCheck(self, target):
@@ -765,7 +765,7 @@ class Ability(object):
         source = self.owner
         Combat.removeStatusOfType(source, "Threading")
         duration = -1
-        magnitude = 5
+        magnitude = 7
         Combat.addStatus(source, "Arcane Threading", duration, magnitude)
 
     def _improvedArcaneThreadingCheck(self, target):
@@ -778,7 +778,7 @@ class Ability(object):
         source = self.owner
         Combat.removeStatusOfType(source, "Threading")
         duration = -1
-        magnitude = 6
+        magnitude = 8
         Combat.addStatus(source, "Electric Threading", duration, magnitude)
 
     def _electricThreadingCheck(self, target):
@@ -1135,7 +1135,7 @@ class Ability(object):
         'class' : 'Thief',
         'HPCost' : 0,
         'APCost' : 6,
-        'range' : 4,
+        'range' : 6,
         'target' : 'hostile',
         'action' : _chainGrasp,
         'cooldown' : 7,
@@ -1810,7 +1810,7 @@ class Ability(object):
         },
         'Improved Arcane Threading':
         {
-        'level' : 1,
+        'level' : 4,
         'class' : 'Arcane Archer',
         'HPCost' : 0,
         'APCost' : 1,
