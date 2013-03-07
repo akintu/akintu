@@ -347,7 +347,7 @@ class CombatPane(Pane):
                             from here.
 
         '''
-        super(CombatPane, self).__init__(pane.seed, pane.location, False)
+        super(CombatPane, self).__init__(pane.seed, (0, 0), False)
 
         loc_x = pane_focus.tile[0]
         loc_y = pane_focus.tile[1]
@@ -363,7 +363,7 @@ class CombatPane(Pane):
         loc_x -= dx
         loc_y -= dy
 
-        self.focus_location = Location(pane.location, (PANE_X/2 + dx*3, PANE_Y/2 + dy*3))
+        self.focus_location = Location((0, 0), (PANE_X/2 + dx*3, PANE_Y/2 + dy*3))
         fx = max(0, min(PANE_X - 1, self.focus_location.tile[0]))
         fy = max(0, min(PANE_Y - 1, self.focus_location.tile[1]))
         self.focus_location.tile = (fx, fy)
