@@ -24,7 +24,9 @@ class PlayerCharacter(p.Person):
             self.name = "Awesome Dude"
         elif name == "jabelch":
             self.name = "Flagrant Noob"
-
+        elif name == "yourself":
+            self.name = "Ugly Grue"
+            
         self.level = 1
         self._experience = 0
 

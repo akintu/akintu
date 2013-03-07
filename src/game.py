@@ -258,7 +258,7 @@ class Game(object):
                     elif event.key == K_n:
                         self.force_end_turn()
                     elif event.key == K_s:
-                        #self.select_self()
+                        self.select_self()
                         pass
                     elif event.key == K_i:
                         #self.begin_select_consumable() -- Cycling will be used as well as A for accept and
@@ -371,9 +371,21 @@ class Game(object):
             else:
                 currentTargetPlace = self.panePersonIdList.index(self.currentTargetId)
                 self.currentTargetId = self.panePersonIdList[currentTargetPlace - 1]
-        self.screen.show_text("Targeting: " + self.pane.person[self.currentTargetId].name, 
+        if self.id == self.currentTargetId:
+            self.screen.show_text("Targeting: yourself", color='lightblue')
+        else:
+            self.screen.show_text("Targeting: " + self.pane.person[self.currentTargetId].name, 
                                 color='lightblue')
 
+    def select_self(self):
+        if not self.combat or self.id not in self.pane.person:
+            return
+        if not self.panePersonIdList:
+            self.panePersonIdList = [x for x in self.pane.person]
+        selfIndex = self.panePersonIdList.index(self.id)
+        self.currentTargetId = self.panePersonIdList[selfIndex]
+        self.screen.show_text("Targeting: yourself", color='lightblue')
+                                
     def display_target_details(self):
         if not self.currentTargetId or self.currentTargetId not in self.pane.person:
             return
