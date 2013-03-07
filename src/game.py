@@ -265,7 +265,7 @@ class Game(object):
                         # C for cancel.
                         pass
                     elif event.key == K_PERIOD:
-                        #self.display_target_details()
+                        self.display_target_details()
                         pass
                     elif event.key == K_SLASH:
                         #self.toggle_size_display()
@@ -374,6 +374,18 @@ class Game(object):
         self.screen.show_text("Targeting: " + self.pane.person[self.currentTargetId].name, 
                                 color='lightblue')
 
+    def display_target_details(self):
+        if not self.currentTargetId or self.currentTargetId not in self.pane.person:
+            return
+        target = self.pane.person[self.currentTargetId]
+        self.screen.show_text("Details of " + target.name + ":", color='greenyellow')
+        allElements = ['Arcane', 'Bludgeoning', 'Cold', 'Divine', 'Electric', 'Fire', 'Piercing',
+                        'Poison', 'Shadow', 'Slashing', 'Physical']
+        for element in allElements:
+            detail = target.getCombatDetails(element)
+            if detail:
+                self.screen.show_text(detail, color='greenyellow')
+                                
     def animate(self, id, source, dest, length):
         xdist = (dest.tile[0] - source.tile[0]) * TILE_SIZE
         ydist = (dest.tile[1] - source.tile[1]) * TILE_SIZE

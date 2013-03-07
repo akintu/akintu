@@ -2846,6 +2846,48 @@ class Person(en.Entity):
             totalBuffedHP += buff[1]
         return totalBuffedHP
 
+    def getCombatDetails(self, element):
+        '''Returns a string of information on a given element's effects on this target.'''
+        testValue = 0
+        if element == "Arcane":
+            testValue = self.totalArcaneResistance
+        elif element == "Bludgeoning":
+            testValue = self.totalBludgeoningResistance
+        elif element == "Cold":
+            testValue = self.totalColdResistance
+        elif element == "Divine":
+            testValue = self.totalDivineResistance
+        elif element == "Electric":
+            testValue = self.totalElectricResistance
+        elif element == "Fire":
+            testValue = self.totalElectricResistance
+        elif element == "Piercing":
+            testValue = self.totalPiercingResistance
+        elif element == "Poison":
+            testValue = self.totalPoisonResistance
+        elif element == "Shadow":
+            testValue = self.totalShadowResistance
+        elif element == "Slashing":
+            testValue = self.totalSlashingResistance
+        elif element == "Physical":
+            if self.totalDR > 0:
+                testValue = max(1, self.totalDR - 2 * self.level)
+            
+        if 50 <= testValue:
+            return "Strong vs " + element + " +++"
+        elif 20 <= testValue and testValue < 50:
+            return "Strong vs " + element + " ++"
+        elif 0 < testValue and testValue < 20:
+            return "Strong vs " + element + " +"
+            # Skip == 0, uninteresting.
+        elif -20 < testValue and testValue < 0:
+            return "Weak vs " + element + " -"
+        elif -50 < testValue and testValue <= -20:
+            return "Weak vs " + element + " --"
+        elif testValue <= -50:
+            return "Weak vs " + element + " ---"
+        
+        
     def detectStealth(self, stealthedTarget):
         ''' Rolls to see if this Person can detect the stealthed
         target.  Currently does not factor in "boss" monsters etc.
