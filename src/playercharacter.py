@@ -898,6 +898,7 @@ class PlayerCharacter(p.Person):
                 return
                 # Need to return immediately to remove exactly one fx.
 
+    # TODO: Change the amount Rings/Amulets affect you based on Sorcery.
     def equip(self, newPiece):
         """Equips a piece of gear, and places any replaced gear in the inventory."""
         oldPieces = self.equippedItems.equip(newPiece)

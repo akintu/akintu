@@ -26,6 +26,7 @@ class Equipment(e.Entity):
     def __init__(self, name, goldValue, weight):
         e.Entity.__init__(self)
         self.name = name
+        self.displayName = self.name
         self.goldValue = int(goldValue)
         self.weight = weight
         self.identifier = "TODO"
@@ -58,8 +59,32 @@ class Equipment(e.Entity):
                 property.effect(property, None) # No 'Owner' needed, thus None is passed.
         newPropertyList = [x for x in propertyList if x.name != "Damage" and x.name != "DR"]
         newCopy.propertyList = newPropertyList
+        newCopy.assignDisplayName()
         return newCopy
 
+    def assignDisplayName(self):
+        ''' Assigns a more colorful name to this item
+        based on its magical properties.  If the item
+        has no magical properties, it will not assign
+        a different name. '''
+        firstProperty = None
+        secondProperty = None
+        maxValue = 0
+        for prop in self.propertyList:
+            value = prop.cost * prop.counts
+            if value > maxValue or \
+              (firstProperty and value == maxValue and prop.name > firstProperty.name):
+                secondProperty = firstProperty
+                firstProperty = prop
+                maxValue = value
+        if firstProperty and secondProperty:
+            self.displayName = secondProperty.prefix + " " + self.name + " " + firstProperty.suffix
+        elif firstProperty:
+            self.displayName = self.name + " " + firstProperty.suffix
+        else:
+            self.displayName = self.name
+            
+            
 class Armor(Equipment):
     def __init__(self, argDict):
         Equipment.__init__(self, argDict['name'], argDict['goldValue'], argDict['weight'])

@@ -11,6 +11,8 @@ class MagicalProperty(object):
 
     def __init__(self, argDict, item, name, counts=1):
         self.name = name
+        self.prefix = argDict['prefix']
+        self.suffix = argDict['suffix']
         self.weight = argDict['weight']
         self.cost = argDict['cost']
         if self.cost == 'Varies':
@@ -42,7 +44,7 @@ class MagicalProperty(object):
     @counts.setter
     def counts(self, value):
         self._counts = value
-
+        
     @staticmethod
     def generateProperties(item, ipScore):
         ''' Rolls a list of properties for a normal treasure chest,
@@ -734,7 +736,9 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion' : None,
             'categories' : [],
-            'goldMod' : 200
+            'goldMod' : 200,
+            'prefix' : 'Active',
+            'suffix' : 'of Action'
             },
         'All Accuracy':
             {
@@ -745,7 +749,9 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion' : 'Armor Only',
             'categories' : ['Accuracy'],
-            'goldMod' : 35
+            'goldMod' : 35,
+            'prefix' : 'Precise',
+            'suffix' : 'of Precision'
             },
         'Armor Penetration':
             {
@@ -756,7 +762,9 @@ class MagicalProperty(object):
             'doubled' : True,
             'exclusion' : 'Weapon Only',
             'categories' : [],
-            'goldMod' : 30
+            'goldMod' : 30,
+            'prefix' : 'Carving',
+            'suffix' : 'of Perforation'
             },
         'Awareness':
             {
@@ -767,7 +775,9 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion': 'Armor Only',
             'categories' : ['Thief', 'Ranger'],
-            'goldMod' : 12
+            'goldMod' : 12,
+            'prefix' : 'Alert',
+            'suffix' : 'of Perception'
             },
         'Constitution':
             {
@@ -778,7 +788,9 @@ class MagicalProperty(object):
             'doubled' : True,
             'exclusion' : None,
             'categories' : ['Fighter'],
-            'goldMod' : 30
+            'goldMod' : 30,
+            'prefix' : 'Hearty',
+            'suffix' : 'of Constitution'
             },
         'Carrying Capacity':
             {
@@ -789,7 +801,9 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion' : 'Armor Only',
             'categories' : ['Wizard'],
-            'goldMod' : 12
+            'goldMod' : 12,
+            'prefix' : 'Uplifting',
+            'suffix' : 'of Packing'
             },
         'Critical Hit Chance':
             {
@@ -800,7 +814,9 @@ class MagicalProperty(object):
             'doubled' : True,
             'exclusion' : None,
             'categories' : ['Thief', 'Critical'],
-            'goldMod' : 15
+            'goldMod' : 15,
+            'prefix' : 'Exact',
+            'suffix' : 'Eviscerating'
             },
         'Critical Hit Magnitude':
             {
@@ -811,7 +827,9 @@ class MagicalProperty(object):
             'doubled' : True,
             'exclusion' : None,
             'categories' : ['Critical'],
-            'goldMod' : 15
+            'goldMod' : 15,
+            'prefix' : 'Deadly',
+            'suffix' : 'of Death'
             },
         'Cunning':
             {
@@ -822,7 +840,9 @@ class MagicalProperty(object):
             'doubled' : True,
             'exclusion' : None,
             'categories' : ['Thief'],
-            'goldMod' : 35
+            'goldMod' : 35,
+            'prefix' : 'Clever',
+            'suffix' : 'of Cunning'
             },
         'Damage':
             {
@@ -833,7 +853,9 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion' : 'Weapon Only',
             'categories' : [],
-            'goldMod' : 40
+            'goldMod' : 40,
+            'prefix' : 'Masterpiece',
+            'suffix' : 'of Mastery'
             },
         'DR':
             {
@@ -844,7 +866,9 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion' : 'Armor Only',
             'categories' : [],
-            'goldMod' : 40
+            'goldMod' : 40,
+            'prefix' : 'Masterpiece',
+            'suffix' : 'of Mastery'
             },
         'Dexterity':
             {
@@ -855,7 +879,9 @@ class MagicalProperty(object):
             'doubled' : True,
             'exclusion' : None,
             'categories' : ['Ranger', 'Thief'],
-            'goldMod' : 35
+            'goldMod' : 35,
+            'prefix' : 'Adroit',
+            'suffix' : ' of Dexterity'
             },
         'Dodge':
             {
@@ -866,7 +892,9 @@ class MagicalProperty(object):
             'doubled' : True,
             'exclusion' : None,
             'categories' : ['Thief'],
-            'goldMod' : 12
+            'goldMod' : 12,
+            'prefix' : 'Evasive',
+            'suffix' : 'of Agility'
             },
         'Elemental Enhancement: Fire':
             {
@@ -877,7 +905,9 @@ class MagicalProperty(object):
             'doubled' : True,
             'exclusion' : None,
             'categories' : ['Wizard', 'Elemental_Casting'],
-            'goldMod' : 12
+            'goldMod' : 12,
+            'prefix' : 'Warm',
+            'suffix' : 'of Warmth'
             },
         'Elemental Enhancement: Cold':
             {
@@ -888,7 +918,9 @@ class MagicalProperty(object):
             'doubled' : True,
             'exclusion' : None,
             'categories' : ['Wizard', 'Elemental_Casting'],
-            'goldMod' : 12
+            'goldMod' : 12,
+            'prefix' : 'Chilled',
+            'suffix' : 'of Frost'
             },
         'Elemental Enhancement: Electric':
             {
@@ -899,7 +931,9 @@ class MagicalProperty(object):
             'doubled' : True,
             'exclusion' : None,
             'categories' : ['Wizard', 'Elemental_Casting'],
-            'goldMod' : 12
+            'goldMod' : 12,
+            'prefix' : 'Static',
+            'suffix' : 'of Sparks'
             },
         'Elemental Enhancement: Poison':
             {
@@ -910,7 +944,9 @@ class MagicalProperty(object):
             'doubled' : True,
             'exclusion' : None,
             'categories' : ['Wizard', 'Elemental_Casting', 'Thief'],
-            'goldMod' : 12
+            'goldMod' : 12,
+            'prefix' : 'Natural',
+            'suffix' : 'of Nature'
             },
         'Elemental Enhancement: Shadow':
             {
@@ -921,7 +957,9 @@ class MagicalProperty(object):
             'doubled' : True,
             'exclusion' : None,
             'categories' : ['Wizard', 'Elemental_Casting', 'Thief'],
-            'goldMod' : 12
+            'goldMod' : 12,
+            'prefix' : 'Dark',
+            'suffix' : 'of the Deep'
             },
         'Elemental Enhancement: Divine':
             {
@@ -932,7 +970,9 @@ class MagicalProperty(object):
             'doubled' : True,
             'exclusion' : None,
             'categories' : ['Wizard', 'Elemental_Casting'],
-            'goldMod' : 15
+            'goldMod' : 15,
+            'prefix' : 'Blessed',
+            'suffix' : 'of Blessings'
             },
         'Elemental Enhancement: Arcane':
             {
@@ -943,7 +983,9 @@ class MagicalProperty(object):
             'doubled' : True,
             'exclusion' : None,
             'categories' : ['Wizard', 'Elemental_Casting'],
-            'goldMod' : 10
+            'goldMod' : 10,
+            'prefix' : 'Mystical',
+            'suffix' : 'of Thought'
             },
         'Elemental Damage: Fire':
             {
@@ -954,7 +996,9 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion': 'Weapon Only',
             'categories' : ['Elemental_Damage'],
-            'goldMod' : 45
+            'goldMod' : 45,
+            'prefix' : 'Burning',
+            'suffix' : 'of Fire'
             },
         'Elemental Damage: Cold':
             {
@@ -965,7 +1009,9 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion': 'Weapon Only',
             'categories' : ['Elemental_Damage'],
-            'goldMod' : 45
+            'goldMod' : 45,
+            'prefix' : 'Frigid',
+            'suffix' : 'of the North'
             },
         'Elemental Damage: Electric':
             {
@@ -976,7 +1022,9 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion': 'Weapon Only',
             'categories' : ['Elemental_Damage'],
-            'goldMod' : 45
+            'goldMod' : 45,
+            'prefix' : 'Electric',
+            'suffix' : 'of Voltage'
             },
         'Elemental Damage: Poison':
             {
@@ -987,7 +1035,9 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion': 'Weapon Only',
             'categories' : ['Elemental_Damage'],
-            'goldMod' : 45
+            'goldMod' : 45,
+            'prefix' : 'Venom',
+            'suffix' : 'of Poison'
             },
         'Elemental Damage: Divine':
             {
@@ -998,7 +1048,9 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion': 'Weapon Only',
             'categories' : ['Elemental_Damage'],
-            'goldMod' : 60
+            'goldMod' : 60,
+            'prefix' : 'Divine',
+            'suffix' : 'of the Priest'
             },
         'Elemental Damage: Shadow':
             {
@@ -1009,7 +1061,9 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion': 'Weapon Only',
             'categories' : ['Elemental_Damage'],
-            'goldMod' : 45
+            'goldMod' : 45,
+            'prefix' : 'Unholy',
+            'suffix' : 'of Shadow'
             },
         'Elemental Damage: Arcane':
             {
@@ -1020,7 +1074,9 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion': 'Weapon Only',
             'categories' : ['Elemental_Damage', 'Wizard'],
-            'goldMod' : 45
+            'goldMod' : 45,
+            'prefix' : "Mage's",
+            'suffix' : 'of the Arcane'
             },
         'Elemental Resistance : Fire':
             {
@@ -1031,7 +1087,9 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion' : 'Armor Only',
             'categories' : ['Elemental_Resist', 'Defense'],
-            'goldMod' : 12
+            'goldMod' : 12,
+            'prefix' : 'Dragonscale',
+            'suffix' : 'of Fire Warding'
             },
         'Elemental Resistance : Cold':
             {
@@ -1042,7 +1100,9 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion' : 'Armor Only',
             'categories' : ['Elemental_Resist', 'Defense'],
-            'goldMod' : 12
+            'goldMod' : 12,
+            'prefix' : 'Drakescale',
+            'suffix' : 'of Cold Warding'
             },
         'Elemental Resistance : Electric':
             {
@@ -1053,7 +1113,9 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion' : 'Armor Only',
             'categories' : ['Elemental_Resist', 'Defense'],
-            'goldMod' : 12
+            'goldMod' : 12,
+            'prefix' : 'Wyrmscale',
+            'suffix' : 'of Electric Warding'
             },
         'Elemental Resistance : Poison':
             {
@@ -1064,7 +1126,9 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion' : 'Armor Only',
             'categories' : ['Elemental_Resist', 'Defense'],
-            'goldMod' : 10
+            'goldMod' : 10,
+            'prefix' : 'Snakeskin',
+            'suffix' : 'of Poison Warding'
             },
         'Elemental Resistance : Divine':
             {
@@ -1075,7 +1139,9 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion' : 'Armor Only',
             'categories' : ['Elemental_Resist', 'Defense'],
-            'goldMod' : 12
+            'goldMod' : 12,
+            'prefix' : 'Prayer',
+            'suffix' : 'of Divine Warding'
             },
         'Elemental Resistance : Shadow':
             {
@@ -1086,7 +1152,9 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion' : 'Armor Only',
             'categories' : ['Elemental_Resist', 'Defense'],
-            'goldMod' : 12
+            'goldMod' : 12,
+            'prefix' : 'Demonhide',
+            'suffix' : 'of Shadow Warding'
             },
         'Elemental Resistance : Arcane':
             {
@@ -1097,7 +1165,9 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion' : 'Armor Only',
             'categories' : ['Elemental_Resist', 'Defense'],
-            'goldMod' : 12
+            'goldMod' : 12,
+            'prefix' : 'Ethereal',
+            'suffix' : 'of Arcane Warding'
             },
         'HP':
             {
@@ -1108,7 +1178,9 @@ class MagicalProperty(object):
             'doubled' : True,
             'exclusion' : None,
             'categories' : ['Fighter', 'Defense'],
-            'goldMod' : 30
+            'goldMod' : 30,
+            'prefix' : 'Stout',
+            'suffix' : 'of the Tortoise'
             },
         'Identification':
             {
@@ -1119,7 +1191,9 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion' : 'Armor Only',
             'categories' : [],
-            'goldMod' : 10
+            'goldMod' : 10,
+            'prefix' : 'Illuminating',
+            'suffix' : 'of Elucidation'
             },
         'Magic Resist':
             {
@@ -1130,7 +1204,9 @@ class MagicalProperty(object):
             'doubled' : True,
             'exclusion' : None,
             'categories' : ['Wizard', 'Defense'],
-            'goldMod' : 12
+            'goldMod' : 12,
+            'prefix' : "Sage's",
+            'suffix' : 'of the Council'
             },
         'MP':
             {
@@ -1141,7 +1217,9 @@ class MagicalProperty(object):
             'doubled' : True,
             'exclusion' : None,
             'categories' : ['Wizard'],
-            'goldMod' : 50
+            'goldMod' : 50,
+            'prefix' : 'Wellspring',
+            'suffix' : 'of Deep Thought'
             },
         'Melee Accuracy':
             {
@@ -1152,7 +1230,9 @@ class MagicalProperty(object):
             'doubled' : True,
             'exclusion' : "Melee Weapon Only",
             'categories' : ['Fighter', 'Thief', 'Accuracy'],
-            'goldMod' : 12
+            'goldMod' : 12,
+            'prefix' : 'Fine',
+            'suffix' : 'of Striking'
             },
         'Might':
             {
@@ -1163,7 +1243,9 @@ class MagicalProperty(object):
             'doubled' : True,
             'exclusion' : None,
             'categories' : ['Fighter', 'Ranger'],
-            'goldMod' : 12
+            'goldMod' : 12,
+            'prefix' : 'Mighty',
+            'suffix' : 'of Might'
             },
         'Movement Bonus':
             {
@@ -1174,7 +1256,9 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion' : "Armor Only",
             'categories' : ['Movement'],
-            'goldMod' : 2000
+            'goldMod' : 2000,
+            'prefix' : 'Swift',
+            'suffix' : 'of Alacrity'
             },
         'Piety':
             {
@@ -1185,7 +1269,9 @@ class MagicalProperty(object):
             'doubled' : True,
             'exclusion' : None,
             'categories' : ['Wizard'],
-            'goldMod' : 30
+            'goldMod' : 30,
+            'prefix' : 'Pious',
+            'suffix' : 'of the Devout'
             },
         'Poison Tolerance':
             {
@@ -1196,7 +1282,9 @@ class MagicalProperty(object):
             'doubled' : True,
             'exclusion' : None,
             'categories' : [],
-            'goldMod' : 12
+            'goldMod' : 12,
+            'prefix' : 'Tolerant',
+            'suffix' : 'of Immunity'
             },
         'Potion Effectiveness':
             {
@@ -1207,7 +1295,9 @@ class MagicalProperty(object):
             'doubled' : True,
             'exclusion' : None,
             'categories' : [],
-            'goldMod' : 20
+            'goldMod' : 20,
+            'prefix' : 'Strange',
+            'suffix' : 'of Metabolism'
             },
         'Ranged Accuracy':
             {
@@ -1218,7 +1308,9 @@ class MagicalProperty(object):
             'doubled' : True,
             'exclusion' : "Ranged Weapon Only",
             'categories' : ['Ranger', 'Accuracy'],
-            'goldMod' : 12
+            'goldMod' : 12,
+            'prefix' : 'Ornate',
+            'suffix' : 'of Elegance'
             },
         'Regeneration: HP':
             {
@@ -1229,7 +1321,9 @@ class MagicalProperty(object):
             'doubled' : True,
             'exclusion' : None,
             'categories' : ['Defense'],
-            'goldMod' : 100
+            'goldMod' : 100,
+            'prefix' : 'Regenerating',
+            'suffix' : 'of the Lizard'
             },
         'Regeneration MP':
             {
@@ -1240,7 +1334,9 @@ class MagicalProperty(object):
             'doubled' : True,
             'exclusion' : None,
             'categories' : ['Wizard'],
-            'goldMod' : 135
+            'goldMod' : 135,
+            'prefix' : 'Rejuvinating',
+            'suffix' : 'of the Owl'
             },
         'Shopkeeper Bonus':
             {
@@ -1251,7 +1347,9 @@ class MagicalProperty(object):
             'doubled' : True,
             'exclusion' : None,
             'categories': [],
-            'goldMod' : 25
+            'goldMod' : 25,
+            'prefix' : 'Thrifty',
+            'suffix' : 'of Thrift'
             },
         'Sorcery':
             {
@@ -1262,7 +1360,9 @@ class MagicalProperty(object):
             'doubled' : True,
             'exclusion' : None,
             'categories' : ['Wizard'],
-            'goldMod' : 30
+            'goldMod' : 30,
+            'prefix' : "Magister's",
+            'suffix' : 'of Sorcery'
             },
         'Spellpower':
             {
@@ -1273,7 +1373,9 @@ class MagicalProperty(object):
             'doubled' : True,
             'exclusion' : None,
             'categories' : ['Wizard'],
-            'goldMod' : 12
+            'goldMod' : 12,
+            'prefix' : 'Spellbound',
+            'suffix' : 'of Power'
             },
         'Strength':
             {
@@ -1284,7 +1386,9 @@ class MagicalProperty(object):
             'doubled' : True,
             'exclusion' : None,
             'categories' : ['Fighter', 'Ranger'],
-            'goldMod' : 30
+            'goldMod' : 30,
+            'prefix' : 'Brave',
+            'suffix' : 'of Strength'
             },
         'Trap Avoidance':
             {
@@ -1295,7 +1399,9 @@ class MagicalProperty(object):
             'doubled' : True,
             'exclusion' : None,
             'categories' : ['Thief', 'Ranger'],
-            'goldMod' : 12
+            'goldMod' : 12,
+            'prefix' : 'Cautious',
+            'suffix' : 'of Reflexes'
             },
         'Acidic':
             {
@@ -1306,7 +1412,9 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion' : 'Weapon Only',
             'categories' : ['On Hit'],
-            'goldMod' : 12
+            'goldMod' : 12,
+            'prefix' : 'Acidic',
+            'suffix' : 'of Acid'
             },
         'Evil':
             {
@@ -1317,7 +1425,9 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion' : 'Weapon Only',
             'categories' : ['On Hit'],
-            'goldMod' : 180
+            'goldMod' : 180,
+            'prefix' : 'Evil',
+            'suffix' : 'of the Devil'
             },
         'Holy':
             {
@@ -1328,7 +1438,9 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion' : 'Weapon Only',
             'categories' : ['On Hit'],
-            'goldMod' : 180
+            'goldMod' : 180,
+            'prefix' : 'Holy',
+            'suffix' : 'of Angels'
             },
         'Ignite':
             {
@@ -1339,7 +1451,9 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion' : 'Weapon Only',
             'categories' : ['On Hit'],
-            'goldMod' : 55
+            'goldMod' : 55,
+            'prefix' : 'Igniting',
+            'suffix' : 'of Flames'
             },
         'Slowing':
             {
@@ -1350,7 +1464,9 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion' : 'Weapon Only',
             'categories' : ['On Hit'],
-            'goldMod' : 35
+            'goldMod' : 35,
+            'prefix' : 'Slowing',
+            'suffix' : 'of Fatigue'
             },
         'Spellhunger':
             {
@@ -1361,7 +1477,9 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion' : 'Weapon Only',
             'categories' : ['On Hit'],
-            'goldMod' : 12
+            'goldMod' : 12,
+            'prefix' : 'Spellhunger',
+            'suffix' : 'of the Void'
             },
         'Stunning':
             {
@@ -1372,7 +1490,9 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion' : 'Weapon Only',
             'categories' : ['On Hit'],
-            'goldMod': 45
+            'goldMod': 45,
+            'prefix' : 'Stunning',
+            'suffix' : 'of Concussion'
             },
         'Minor Bleeding':
             {
@@ -1383,7 +1503,9 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion' : 'Weapon Only',
             'categories' : ['On Hit'],
-            'goldMod' : 18
+            'goldMod' : 18,
+            'prefix' : 'Thorny',
+            'suffix' : 'of Bleeding'
             },
         'Moderate Bleeding':
             {
@@ -1394,7 +1516,9 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion' : 'Weapon Only',
             'categories' : ['On Hit'],
-            'goldMod' : 60
+            'goldMod' : 60,
+            'prefix' : 'Barbed',
+            'suffix' : 'of Wounding'
             },
         'Serious Bleeding':
             {
@@ -1405,7 +1529,9 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion': 'Weapon Only',
             'categories' : ['On Hit'],
-            'goldMod' : 200
+            'goldMod' : 200,
+            'prefix' : 'Jagged',
+            'suffix' : 'of Gutting'
             },
         'Health Steal':
             {
@@ -1416,7 +1542,9 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion' : 'Weapon Only',
             'categories' : ['On Hit'],
-            'goldMod' : 60
+            'goldMod' : 60,
+            'prefix' : 'Vampiric',
+            'suffix' : 'of Draining'
             },
         'Mana Steal':
             {
@@ -1427,7 +1555,9 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion' : 'Weapon Only',
             'categories' : ['On Hit'],
-            'goldMod' : 50
+            'goldMod' : 50,
+            'prefix' : 'Mysterious',
+            'suffix' : 'of the Vortex'
             },
         'Toxic':
             {
@@ -1438,7 +1568,9 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion' : 'Weapon Only',
             'categories' : ['On Hit'],
-            'goldMod' : 40
+            'goldMod' : 40,
+            'prefix' : 'Toxic',
+            'suffix' : 'of Illness'
             },
         'Weakening: Fire':
             {
@@ -1449,7 +1581,9 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion' : 'Weapon Only',
             'categories' : ['On Hit'],
-            'goldMod' : 10
+            'goldMod' : 10,
+            'prefix' : 'Kindling',
+            'suffix' : 'of Dehydration'
             },
         'Weakening: Cold':
             {
@@ -1460,7 +1594,9 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion' : 'Weapon Only',
             'categories' : ['On Hit'],
-            'goldMod' : 10
+            'goldMod' : 10,
+            'prefix' : 'Frosty',
+            'suffix' : 'of Frostbite'
             },
         'Weakening: Electric':
             {
@@ -1471,7 +1607,9 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion' : 'Weapon Only',
             'categories' : ['On Hit'],
-            'goldMod' : 10
+            'goldMod' : 10,
+            'prefix' : 'Magnetic',
+            'suffix' : 'of Magnetism'
             },
         'Weakening: Poison':
             {
@@ -1482,7 +1620,9 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion' : 'Weapon Only',
             'categories' : ['On Hit'],
-            'goldMod' : 10
+            'goldMod' : 10,
+            'prefix' : 'Ancient',
+            'suffix' : 'of Weakening'
             },
         'Weakening: Divine':
             {
@@ -1493,7 +1633,9 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion' : 'Weapon Only',
             'categories' : ['On Hit'],
-            'goldMod' : 10
+            'goldMod' : 10,
+            'prefix' : 'Judicious',
+            'suffix' : 'of Judgement'
             },
         'Weakening: Shadow':
             {
@@ -1504,7 +1646,9 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion' : 'Weapon Only',
             'categories' : ['On Hit'],
-            'goldMod' : 10
+            'goldMod' : 10,
+            'prefix' : 'Tempting',
+            'suffix' : 'of the Liar'
             },
         'Weakening: Arcane':
             {
@@ -1515,6 +1659,8 @@ class MagicalProperty(object):
             'doubled' : False,
             'exclusion' : 'Weapon Only',
             'categories' : ['On Hit'],
-            'goldMod' : 10
+            'goldMod' : 10,
+            'prefix' : 'Confounding',
+            'suffix' : 'of Confusion'
             }
     }
