@@ -113,7 +113,7 @@ class Ability(object):
     def _mightyBlow(self, target):
         source = self.owner
         hit = Combat.calcHit(source, target, "Physical", modifier=-5)
-        Combat.basicAttack(source, target, hit, forceMod=1.6, mightMod=2)
+        Combat.basicAttack(source, target, hit, forceMod=1.6, mightMod=3)
 
     def _mightyBlowCheck(self, target):
         if self.owner.usingWeapon("Melee"):
@@ -584,6 +584,7 @@ class Ability(object):
             return (False, "Must be using a Ranged weapon to perform " + self.name + " .")
         return (True, "")
 
+        
     # Shadow
 
     def _shadowWalk(self, target):
@@ -683,6 +684,17 @@ class Ability(object):
         return (False, "Must be in stealth to use " + self.name + ".")
 
     # Nightblade
+    
+    def _shroud(self, target):
+        source = self.owner
+        # Get all melee targets
+        # Apply Shroud buff
+        
+    def _shroudCheck(self, targt):
+        # MP > 50%
+        # TODO
+        return (False, "")
+    
     def _shadowstep(self, target):
         source = self.owner
         Combat.movePerson(source, target.location, instant=True)
@@ -1739,6 +1751,19 @@ class Ability(object):
         },
 
         # Nightblade
+        'Shroud':
+        {
+        'level' : 1,
+        'class' : 'Nightblade',
+        'HPCost' : 0,
+        'APCost' : 6,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _shroud,
+        'cooldown' : 5,
+        'checkFunction' : _shroudCheck,
+        'breakStealth' : 100
+        },
         'Shadowstep':
         {
         'level' : 4,

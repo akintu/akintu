@@ -324,7 +324,7 @@ class Spell(object):
         'school' : 'Natural',
         'MPCost' : 15,
         'APCost' : 9,
-        'range' : 6,
+        'range' : 7,
         'target' : 'friendly',
         'action' : _flickerOfLife,
         'cooldown' : None
@@ -372,7 +372,7 @@ class Spell(object):
         'school' : 'Primal',
         'MPCost' : 13,
         'APCost' : 7,
-        'range' : 2,
+        'range' : 3,
         'target' : 'hostile',
         'action' : _shock,
         'cooldown' : 1
@@ -396,7 +396,7 @@ class Spell(object):
         'school' : 'Mental',
         'MPCost' : 14,
         'APCost' : 9,
-        'range' : 6,
+        'range' : 7,
         'target' : 'hostile',
         'action' : _stutter,
         'cooldown' : None
@@ -407,8 +407,8 @@ class Spell(object):
         'tier' : 1,
         'school' : 'Bane',
         'MPCost' : 9,
-        'APCost' : 9,
-        'range' : 6,
+        'APCost' : 5,
+        'range' : 7,
         'target' : 'hostile',
         'action' : _cloudVision,
         'cooldown' : None
@@ -432,7 +432,7 @@ class Spell(object):
         'school' : 'Illusion',
         'MPCost' : 20,
         'APCost' : 6,
-        'range' : 3,
+        'range' : 4,
         'target' : 'terrain',
         'action' : _zoneOfSilence,
         'cooldown' : None
@@ -456,7 +456,7 @@ class Spell(object):
         'school' : 'Enchantment',
         'MPCost' : 9,
         'APCost' : 5,
-        'range' : 3,
+        'range' : 4,
         'target' : 'friendly',
         'action' : _weaponEnhance,
         'cooldown' : None
@@ -468,7 +468,7 @@ class Spell(object):
         'school' : 'Enchantment',
         'MPCost' : 12,
         'APCost' : 8,
-        'range' : 3,
+        'range' : 4,
         'target' : 'friendly',
         'action' : _flamingWeapon,
         'cooldown' : None

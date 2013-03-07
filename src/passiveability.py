@@ -262,9 +262,8 @@ class PassiveAbility(object):
             target.abilities.remove(toRemove)
 
     # Nightblade
-    def applyLowLightAdvantage(self, target):
-        # TODO: Need to adjust melee accuracy +2/-2 based on indoors/outdoors.
-        target.baseAwareness += 1
+    def applyForbiddenStudies(self, target):
+        target.baseShadowBonusDamage += 5
 
     def applySingleBlade(self, target, reverse=False, other=None):
         source = self.owner
@@ -290,14 +289,14 @@ class PassiveAbility(object):
     def applyCloseRangedMagic(self, target, reverse=False, spell=None):
         if not reverse:
             if spell.range < 4:
-                target.baseSpellpower += 7
+                target.baseSpellpower += 6
         else:
             if spell.range < 4:
-                target.baseSpellpower -= 7
+                target.baseSpellpower -= 6
 
     def applyManaAttack(self, target, reverse=False, other=None):
         if not reverse:
-            Combat.modifyResource(target, "MP", 9)
+            Combat.modifyResource(target, "MP", 8)
         else:
             pass
 
@@ -309,7 +308,7 @@ class PassiveAbility(object):
             pass
 
     def applyMysticalAccuracy(self, target):
-        target.baseMeleeAccuracy += 3
+        target.baseMeleeAccuracy += 2
 
     def applyMysticalShieldUse(self, target, reverse=False, other=None):
         if not reverse:
@@ -360,6 +359,9 @@ class PassiveAbility(object):
         if source.usingWeapon("Bow") or source.usingWeapon("Crossbow"):
             Combat.modifyResource(source, "MP", source.arcaneArcherManaRegen)
         
+    def applyConduit(self, target):
+        target.baseArcaneBonusDamage += 15
+        target.baseCriticalMagnitude += 5
 
     def applyMysticalResearch(self, target, reverse=False, spell=None):
         source = self.owner
@@ -382,7 +384,7 @@ class PassiveAbility(object):
     # Trickster
 
     def applyWildSurvival(self, target):
-        target.baseDodge += 10
+        target.baseDodge += 12
 
     def applyGlee(self, target, reverse=False):
         source = self.owner
@@ -765,12 +767,12 @@ class PassiveAbility(object):
 
 
         # Nightblade
-        'Low-Light Advantage':
+        'Forbidden Studies':
         {
         'class' : 'Nightblade',
         'level' : 1,
         'type' : 'static',
-        'action' : applyLowLightAdvantage
+        'action' : applyForbiddenStudies
         },
         'Single Blade':
         {
@@ -883,6 +885,13 @@ class PassiveAbility(object):
         'action' : applyManaArrows,
         'onStringList' : ['Outgoing Ranged Attack Complete'],
         'offStringList' : []
+        },
+        'Conduit':
+        {
+        'class' : 'Arcane Archer',
+        'level' : 1,
+        'type' : 'static',
+        'action' : applyConduit
         },
         'Mystical Research':
         {
