@@ -200,6 +200,8 @@ class GameServer():
     def unload_panes(self):
         current_panes = []
         for i in self.player.values():
+            if self.person[i].cPane:
+                current_panes.append(self.person[i].cPane)
             x, y = self.person[i].location.pane
             for (dx, dy) in [(_x, _y) for _x in range(-1, 2) for _y in range(-1, 2)]:
                 current_panes.append((x + dx, y + dy))

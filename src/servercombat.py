@@ -64,8 +64,23 @@ class CombatServer():
                         self.server.SDF.send(p, command)
                 self.check_turn_end(self.server.person[command.id].cPane)
         
+        ###### RemovePerson ######
+        elif command.type == "PERSON" and command.action == "REMOVE":
+            if command.id in self.server.person:
+                if port:
+                    command.id = self.server.player[port]
+                    del self.server.player[port]
+                self.server.pane[self.server.person[command.id].cPane].person.remove(command.id)
+
+                #Notify clients in the affected pane
+                for p, i in self.server.player.iteritems():
+                    if self.server.person[i].cPane == self.server.person[command.id].cPane:
+                        self.server.SDF.send(p, command)
+                del self.server.person[command.id]
+                self.server.unload_panes()
+        
         #### Attack Target ####
-        elif command.type=="ABILITY" and command.action == "ATTACK":
+        elif command.type == "ABILITY" and command.action == "ATTACK":
             source = self.server.person[command.id]
             target = self.server.person[command.targetId]
             abilToUse = None
@@ -97,7 +112,8 @@ class CombatServer():
             Combat.modifyResource(target, "AP", -target.AP)
             Combat.decrementMovementTiles(target, removeAll=True)
             self.check_turn_end(self.server.person[command.id].cPane)
-        self.update_dead_people(self.server.person[command.id].cPane)
+        if command.id in self.server.person:
+            self.update_dead_people(self.server.person[command.id].cPane)
 
     ### Utility Methods ###
 
@@ -128,10 +144,6 @@ class CombatServer():
             self.combatStates[combatPane].deadMonsterList.append(char)
             Combat.sendCombatMessage(message=char.name + " Died!", color='magenta', character=char)
             self.server.SDF.queue.put((None, Command("PERSON", "REMOVE", id=char.id)))
-            #for port in Combat.getAllCombatPorts(char):
-            #    self.server.SDF.send(port, Command("PERSON", "REMOVE", id=char.id))
-
-            #self.server.pane[combatPane].person.remove(char.id)
             
         monstersAlive = False
         livingPlayers = []
