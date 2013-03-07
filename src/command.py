@@ -11,8 +11,10 @@ UpdateProperties = enum(HP = 1, MP = 2, AP = 3, COMBAT = 4, TEXT = 5, MOVE_AP_CO
 AbilityActions = enum(ATTACK = 1, END_TURN = 2)
 
 class Command:
-    def __init__(self):
-        self.id = None
+    def __init__(self, action, *args, **kwargs):
+        self.action = action
+        self.args = args
+        self.__dict__.update(kwargs)
 
     def __repr__(self):
         return self.__class__.__name__ + "(" + ", ".join([attr + ": " + str(val) for attr, val in \
