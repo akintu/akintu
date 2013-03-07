@@ -314,14 +314,14 @@ class Game(object):
         ap = self.pane.person[self.id].AP
         movesLeft = self.pane.person[self.id].remainingMovementTiles
         if ap > 0 or movesLeft > 0:
-            action = Command("ABILITY", "END_TURN", sourceId=self.id, targetId=self.id)
+            action = Command("ABILITY", "END_TURN", id=self.id)
             self.CDF.send(action)
 
     def attempt_attack(self):
         if not self.currentTargetId:
             print "No target selected."
             return
-        self.CDF.send(Command("ABILITY", "ATTACK", sourceId=self.id, targetId=self.currentTargetId,
+        self.CDF.send(Command("ABILITY", "ATTACK", id=self.id, targetId=self.currentTargetId,
                 abilityName=self.currentAbility.name))
 
     def display_size(self):
