@@ -104,7 +104,8 @@ class Monster(person.Person):
         # self.levelupPoisonTolerance = Monster.setFrom(argDict, 'levelupPoisonTolerance')
         # self.levelupSpellpower = Monster.setFrom(argDict, 'levelupSpellpower')
         # self.levelupStrength = Monster.setFrom(argDict, 'levelupStrength')
-
+        self.remainingMovementTiles = 0 # Dummy stat used to avoid type checking -- what a lame hack.
+                
         self.registerBasicAttacks()
 
         self.levelSet = False
