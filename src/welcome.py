@@ -14,7 +14,7 @@ CLASSES = ('Barbarian', 'Dragoon', 'Weapon Master', 'Spellsword', 'Anarchist',
            'Marksman', 'Druid', 'Tactician', 'Ninja', 'Assassin', 'Shadow',
            'Nightblade', 'Battle Mage', 'Arcane Archer', 'Trickster',
            'Sorcerer')
-RACES = ('Human', 'Dwarf', 'Elf', 'Halfling', 'Orc', 'Khajiit')
+RACES = ('Human', 'Dwarf', 'Elf', 'Halfling', 'Orc')
 
 
 class WelcomeWindow(object):
