@@ -17,7 +17,7 @@ class AI():
     ###### AI BEHAVIORS ######
     def run(self, name, pid=None, direction=None, region=None):
         newloc = self.server.person[pid].location.move(direction, 1)
-        self.server.SDF.queue.put((None, Person(PersonActions.MOVE, pid, newloc)))
+        self.server.SDF.queue.put((None, Command("PERSON", "MOVE", id=pid, location=newloc)))
 
     def wander(self, name, pid=None, region=None, move_chance=0):
         if time() < self.behavior[name]['time']:
@@ -33,7 +33,7 @@ class AI():
                 direction = random.choice(dirs)
                 newloc = self.server.person[pid].location.move(direction, 1)
 
-            self.server.SDF.queue.put((None, Person(PersonActions.MOVE, pid, newloc)))
+            self.server.SDF.queue.put((None, Command("PERSON", "MOVE", id=pid, location=newloc)))
             self.behavior[name]['time'] = time() + (1.0 / self.behavior[name]['frequency'])
 
     ###### AI MANAGEMENT ######

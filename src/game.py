@@ -75,8 +75,9 @@ class Game(object):
         reactor.connectTCP(self.serverip, self.port, self.CDF)
         
         if isinstance(player, tuple):
-            person = Person(PersonActions.CREATE, None, Location((0, 0), (PANE_X/2, PANE_Y/2)), \
-            ("Player", player[0], player[1], player[2]))
+            person = Command("PERSON", "CREATE", id=None, \
+                    location=Location((0, 0), (PANE_X/2, PANE_Y/2)), \
+                    details=("Player", player[0], player[1], player[2]))
         else: 
             #TODO: Might need to unpickle a player/rehydrate it
             person = player
@@ -111,28 +112,33 @@ class Game(object):
             command = self.CDF.queue.get()
 
             ###### CreatePerson ######
-            if isinstance(command, Person) and command.action == PersonActions.CREATE:
+            if command.type == "PERSON" and command.action == "CREATE":
                 if self.id == -1:  # Need to setup the pane
                     self.id = command.id
-                    self.switch_panes(command.location, self.combat)
+                    #TODO: This call to switch_panes doesn't currently handle combat well
+                    #It passes the location of the player instead of the focus location
+                    if self.combat:
+                        self.switch_panes(command.cPane, self.combat)
+                    else:
+                        self.switch_panes(command.location)
 
                 self.pane.person[command.id] = TheoryCraft.convertFromDetails(command.details)
-                self.pane.person[command.id].location = command.location
-
-                imagepath = os.path.join('res', 'images', 'sprites', self.pane.person[command.id].image)
                 p = self.pane.person[command.id]
+                p.location = command.location
+
+                imagepath = os.path.join('res', 'images', 'sprites', p.image)
                 persondict = {'location': command.location, 'image': imagepath, 'team': p.team, \
                     'HP': p.HP, 'totalHP': p.totalHP, 'MP': p.MP, \
                     'totalMP': p.totalMP, 'AP': p.AP, 'totalAP': p.totalAP, \
                     'level': p.level, 'name' : p.name}
                 self.screen.add_person(command.id, persondict)
 
-            if isinstance(command, Person) and command.id not in self.pane.person:
+            if command.type == "PERSON" and command.id not in self.pane.person:
                 continue
 
             ###### MovePerson ######
-            if isinstance(command, Person) and command.action == PersonActions.MOVE:
-                if command.details:
+            if command.type == "PERSON" and command.action == "MOVE":
+                if 'details' in command.__dict__:
                     if self.pane.person[command.id].anim:
                         self.pane.person[command.id].anim.stop()
                         self.pane.person[command.id].anim = None
@@ -143,7 +149,7 @@ class Game(object):
                 self.pane.person[command.id].location = command.location
 
             ###### RemovePerson ######
-            if isinstance(command, Person) and command.action == PersonActions.REMOVE:
+            if command.type == "PERSON" and command.action == "REMOVE":
                 if command.id == self.id:
                     self.id = -1
                     for person in self.pane.person.values():
@@ -157,38 +163,50 @@ class Game(object):
                     del self.pane.person[command.id]
 
             ###### StopRunning ######
-            if isinstance(command, Person) and command.action == PersonActions.STOP:
+            if command.type == "PERSON" and command.action == "STOP":
                 if command.id == self.id:
                     self.running = False
 
-            ###### Initiate Combat ######
-            elif isinstance(command, Update) and command.property == UpdateProperties.COMBAT:
-                self.combat = command.value
-            ###### Update AP ######
-            elif isinstance(command, Update) and command.property == UpdateProperties.AP:
-                self.pane.person[command.id].AP = command.value
-                self.screen.update_person(command.id, {'AP': command.value, 'team': self.pane.person[command.id].team})
-            ###### Update MP ######
-            elif isinstance(command, Update) and command.property == UpdateProperties.MP:
-                self.pane.person[command.id].MP = command.value
-                self.screen.update_person(command.id, {'MP': command.value, 'team': self.pane.person[command.id].team})
-            ###### Update HP ######
-            elif isinstance(command, Update) and command.property == UpdateProperties.HP:
-                self.pane.person[command.id].HP = command.value
-                self.screen.update_person(command.id, {'HP': command.value, 'team': self.pane.person[command.id].team})
+            ###### Update Person Stats ######
+            if command.type == "PERSON" and command.action == "UPDATE":
+                for k, v in command.__dict__.iteritems():
+                    if k not in ['type', 'action', 'id']:
+                        self.pane.person[command.id].__dict__[k] = v
+                        if k in ['HP', 'MP', 'AP']:
+                            self.screen.update_person(command.id, {k: v, \
+                                    'team': self.pane.person[command.id].team})
+                        
             ###### Update Text #####
-            elif isinstance(command, Update) and command.property == UpdateProperties.TEXT:
-                self.screen.show_text(command.value, color=command.details)
-            ###### Update Movement AP Cost ####
-            elif isinstance(command, Update) and command.property == UpdateProperties.MOVE_AP_COST:
-                self.pane.person[command.id].overrideMovementAPCost = command.value
-            ###### Update Movement Tiles #####
-            elif isinstance(command, Update) and command.property == UpdateProperties.MOVE_TILES:
-                self.pane.person[command.id].remainingMovementTiles = command.value
+            elif command.type == "UPDATE" and command.action == "TEXT":
+                self.screen.show_text(command.text, color=command.color)
+            
+            ###### Initiate Combat ######
+            elif command.type == "UPDATE" and command.action == "COMBAT":
+                self.combat = command.combat
+            
             ###### Update HP Buffers ######
-            elif isinstance(command, Update) and command.property == UpdateProperties.HP_BUFFER:
-                self.screen.update_person(command.id, {'buffedHP' : command.value, 'totalHP' : self.pane.person[command.id].totalHP,
-                                                    'team' : self.pane.person[command.id].team})
+            elif command.type == "UPDATE" and command.action == "HP_BUFFER":
+                self.screen.update_person(command.id, {'buffedHP' : command.bufferSum, \
+                        'totalHP' : self.pane.person[command.id].totalHP, \
+                        'team' : self.pane.person[command.id].team})
+            
+            #elif isinstance(command, Update) and command.property == UpdateProperties.AP:
+            #    self.pane.person[command.id].AP = command.value
+            #    self.screen.update_person(command.id, {'AP': command.value, 'team': self.pane.person[command.id].team})
+            ####### Update MP ######
+            #elif isinstance(command, Update) and command.property == UpdateProperties.MP:
+            #    self.pane.person[command.id].MP = command.value
+            #    self.screen.update_person(command.id, {'MP': command.value, 'team': self.pane.person[command.id].team})
+            ####### Update HP ######
+            #elif isinstance(command, Update) and command.property == UpdateProperties.HP:
+            #    self.pane.person[command.id].HP = command.value
+            #    self.screen.update_person(command.id, {'HP': command.value, 'team': self.pane.person[command.id].team})
+            ####### Update Movement AP Cost ####
+            #elif isinstance(command, Update) and command.property == UpdateProperties.MOVE_AP_COST:
+            #    self.pane.person[command.id].overrideMovementAPCost = command.value
+            ####### Update Movement Tiles #####
+            #elif isinstance(command, Update) and command.property == UpdateProperties.MOVE_TILES:
+            #    self.pane.person[command.id].remainingMovementTiles = command.value
             
             
     def handle_events(self):
@@ -215,7 +233,7 @@ class Game(object):
                         self.screen.scroll_down(1000)
                 elif event.key == K_PLUS:
                         self.screen.scroll_up(1000)   
-                        
+
                 ### Combat Only Commands ###
                 if self.combat:
                     if event.key == K_f:
@@ -262,7 +280,7 @@ class Game(object):
                         pass
                     
     def get_item(self):
-        self.CDF.send(Person(PersonActions.OPEN, self.id))
+        self.CDF.send(Command("PERSON", "OPEN", id=self.id))
         # If player is on an item, pick it up (the top item).
         # If player is on a treasure chest, attempt to open it.
         # If the chest is locked, send a message to the screen.
@@ -271,7 +289,7 @@ class Game(object):
             
     def move_person(self, direction, distance):
         if self.running:
-            self.CDF.send(Person(PersonActions.STOP, self.id))
+            self.CDF.send(Command("PERSON", "STOP", id=self.id))
             self.running = False
 
         newloc = self.pane.person[self.id].location.move(direction, distance)
@@ -281,12 +299,12 @@ class Game(object):
                 self.pane.person[self.id].location.pane != newloc.pane):
 
             if self.keystate in [K_LSHIFT, K_RSHIFT] and not self.combat:
-                self.CDF.send(Person(PersonActions.RUN, self.id, direction))
+                self.CDF.send(Command("PERSON", "RUN", id=self.id, direction=direction))
                 self.running = True
             
             elif self.pane.person[self.id].remainingMovementTiles > 0 or \
                  self.pane.person[self.id].AP >= self.pane.person[self.id].totalMovementAPCost:
-                self.CDF.send(Person(PersonActions.MOVE, self.id, newloc))
+                self.CDF.send(Command("PERSON", "MOVE", id=self.id, location=newloc))
                 if self.pane.person[self.id].location.pane == newloc.pane:
                     self.animate(self.id, self.pane.person[self.id].location, newloc, \
                         1.0 / self.pane.person[self.id].movementSpeed)
@@ -296,15 +314,15 @@ class Game(object):
         ap = self.pane.person[self.id].AP
         movesLeft = self.pane.person[self.id].remainingMovementTiles
         if ap > 0 or movesLeft > 0:
-            action = AbilityAction(AbilityActions.END_TURN, self.id, self.id)
+            action = Command("ABILITY", "END_TURN", sourceId=self.id, targetId=self.id)
             self.CDF.send(action)
 
     def attempt_attack(self):
         if not self.currentTargetId:
             print "No target selected."
             return
-        self.CDF.send(AbilityAction(AbilityActions.ATTACK, self.id, self.currentTargetId, 
-                      self.currentAbility.name))
+        self.CDF.send(Command("ABILITY", "ATTACK", sourceId=self.id, targetId=self.currentTargetId,
+                abilityName=self.currentAbility.name))
 
     def display_size(self):
         pass

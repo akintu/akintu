@@ -50,24 +50,24 @@ class Combat(object):
         same combat instance as the updated player.'''
         messageObj = None
         if type == "AP":
-            messageObj = command.Update(character.id, command.UpdateProperties.AP, character.AP)
+            messageObj = command.Command("PERSON", "UPDATE", id=character.id, AP=character.AP)
         elif type == "MOVE_TILES":
-            messageObj = command.Update(character.id, command.UpdateProperties.MOVE_TILES, 
-                                        character.remainingMovementTiles)
+            messageObj = command.Command("PERSON", "UPDATE", id=character.id, \
+                    remainingMovementTiles=character.remainingMovementTiles)
         elif type == "MP":
-            messageObj = command.Update(character.id, command.UpdateProperties.MP, character.MP)
+            messageObj = command.Command("PERSON", "UPDATE", id=character.id, MP=character.MP)
         elif type == "HP":
             Combat.sendToAll(character, "HP_BUFFER")
-            messageObj = command.Update(character.id, command.UpdateProperties.HP, character.HP)
+            messageObj = command.Command("PERSON", "UPDATE", id=character.id, HP=character.HP)
         elif type == "MoveAPCost":
-            messageObj = command.Update(character.id, command.UpdateProperties.MOVE_AP_COST,
-                                        character.totalMovementAPCost)
+            messageObj = command.Command("PERSON", "UPDATE", id=character.id, \
+                    totalMovementAPCost=character.totalMovementAPCost)
         elif type == "Status":
-            messageObj = command.Update(character.id, command.UpdateProperties.STATUS,
-                                        Combat.encodeStatuses(character))
+            messageObj = command.Command("PERSON", "UPDATE", id=character.id, \
+                    statuses=Combat.encodeStatuses(character))
         elif type == "HP_BUFFER":
-            messageObj = command.Update(character.id, command.UpdateProperties.HP_BUFFER,
-                                        character.getHPBufferSum())
+            messageObj = command.Command("UPDATE", "HP_BUFFER", id=character.id, \
+                    bufferSum=character.getHPBufferSum())
         for port in Combat.getAllCombatPorts(character):
             Combat.gameServer.SDF.send(port, messageObj)
 
@@ -79,8 +79,7 @@ class Combat(object):
             portList.append(Combat.getPlayerPort(character))
         else:
             portList = Combat.getAllCombatPorts(character)
-        messageObj = command.Update(id=None, property=command.UpdateProperties.TEXT, 
-                                    value=message, details=color)
+        messageObj = command.Command("UPDATE", "TEXT", text=message, color=color)
         for port in portList:
             Combat.gameServer.SDF.send(port, messageObj)
             
