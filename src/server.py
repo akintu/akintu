@@ -21,7 +21,7 @@ class GameServer():
         while not self.SDF.queue.empty():
             port, command = self.SDF.queue.get()
 
-            if command.id and self.person[command.id] and self.person[command.id].cPane:
+            if id in command.__dict__ and self.person[command.id] and self.person[command.id].cPane:
                 self.CS.handle(port, command)
                 continue
 
