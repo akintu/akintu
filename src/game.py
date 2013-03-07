@@ -189,10 +189,12 @@ class Game(object):
             elif isinstance(command, Update) and command.property == UpdateProperties.HP_BUFFER:
                 self.screen.update_person(command.id, {'buffedHP' : command.value, 'totalHP' : self.pane.person[command.id].totalHP,
                                                     'team' : self.pane.person[command.id].team})
-                
+            
+            
     def handle_events(self):
         pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
         for event in pygame.event.get():
+            #### General commands ####
             if event.type == QUIT:
                 reactor.stop()
             if event.type == KEYUP:
@@ -205,11 +207,22 @@ class Game(object):
                     self.keystate = event.key
                 elif event.key in MOVE_KEYS:
                     self.move_person(MOVE_KEYS[event.key], 1)
-                elif event.key == K_f:
-                    if self.combat and self.selectionMode == "targeting":
+            elif event.key == K_EQUALS or event.key == K_PAGEUP:
+                    self.screen.scroll_up()
+            elif event.key == K_MINUS or event.key == K_PAGEDOWN:
+                    self.screen.scroll_down()
+            elif event.key == K_UNDERSCORE:
+                    self.screen.scroll_down(1000)
+            elif event.key == K_PLUS:
+                    self.screen.scroll_up(1000)   
+                    
+            ### Combat Only Commands ###
+            if self.combat:
+                if event.key == K_f:
+                    if self.selectionMode == "targeting":
                         self.selectionMode = "abilities"
                         self.screen.show_text("Selection mode: ability selection", color='yellow')
-                    elif self.combat and self.selectionMode == "abilities":
+                    elif self.selectionMode == "abilities":
                         self.selectionMode = "targeting"
                         self.screen.show_text("Selection mode: targeting", color="yellow")
                 elif event.key == K_e:
@@ -222,21 +235,32 @@ class Game(object):
                         self.cycle_targets(reverse=True)
                     else:
                         self.cycle_abilities(reverse=True)
-                elif event.key == K_a and self.combat:
+                elif event.key == K_a:
                     self.attempt_attack()
-                elif event.key == K_n and self.combat:
+                elif event.key == K_n:
                     self.force_end_turn()
-                elif event.key == K_EQUALS or event.key == K_PAGEUP:
-                    self.screen.scroll_up()
-                elif event.key == K_MINUS or event.key == K_PAGEDOWN:
-                    self.screen.scroll_down()
-                elif event.key == K_UNDERSCORE:
-                    self.screen.scroll_down(1000)
-                elif event.key == K_PLUS:
-                    self.screen.scroll_up(1000)
-                elif event.key == K_g:
+                elif event.key == K_s:
+                    #self.select_self()
+                    pass
+                elif event.key == K_i:
+                    #self.begin_select_consumable() -- Cycling will be used as well as A for accept and
+                    # C for cancel.
+                    pass
+                elif event.key == K_PERIOD:
+                    #self.display_target_details()
+                    pass
+                elif event.key == K_SLASH:
+                    #self.toggle_size_display()
+                    pass
+            ### Strictly non-combat commands ###
+            if not self.combat:
+                if event.key == K_g:
                     self.get_item()
-
+                if event.key == K_b:
+                    #self.break_in() -- Will bash/pick-lock chests.  Will attempt a picklock first if
+                    # you are a thief primary class.  If that fails, all other attempts will be bashes.
+                    pass
+                    
     def get_item(self):
         self.CDF.send(Person(PersonActions.OPEN, self.id))
         # If player is on an item, pick it up (the top item).
