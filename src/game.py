@@ -195,7 +195,6 @@ class Game(object):
         pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
         for event in pygame.event.get():
             #### General commands ####
-            print event.type
             if event.type == QUIT:
                 reactor.stop()
             if event.type == KEYUP:
