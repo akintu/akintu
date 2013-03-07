@@ -114,6 +114,8 @@ class Game(object):
             if isinstance(command, Person) and command.action == PersonActions.CREATE:
                 if self.id == -1:  # Need to setup the pane
                     self.id = command.id
+                    #TODO: This call to switch_panes doesn't currently handle combat well
+                    #It passes the location of the player instead of the focus location
                     self.switch_panes(command.location, self.combat)
 
                 self.pane.person[command.id] = TheoryCraft.convertFromDetails(command.details)
