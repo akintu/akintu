@@ -26,7 +26,7 @@ class GameServer():
                 continue
 
             ###### CreatePerson ######
-            if isinstance(command, Person) and command.action == PersonActions.CREATE:
+            if command.type == "PERSON" and command.action == "CREATE":
                 self.load_pane(command.location.pane)
 
                 person = TheoryCraft.convertFromDetails(command.details)
@@ -48,11 +48,12 @@ class GameServer():
                 if port:
                     for i in self.pane[command.location.pane].person:
                         if i != command.id:
-                            self.SDF.send(port, Person(PersonActions.CREATE, i, \
-                                    self.person[i].location, self.person[i].getDetailTuple()))
+                            self.SDF.send(port, Command("PERSON", "CREATE", id=i, \
+                                    location=self.person[i].location, \
+                                    details=self.person[i].getDetailTuple()))
 
             ###### MovePerson ######
-            if isinstance(command, Person) and command.action == PersonActions.MOVE:
+            if command.type == "PERSON" and command.action == "MOVE":
                 self.load_pane(command.location.pane)
 
                 # If this is a legal move request
@@ -74,14 +75,14 @@ class GameServer():
                         for p, i in self.player.iteritems():
                             if self.person[i].location.pane == self.person[command.id].location.pane \
                                     and not self.person[i].cPane:
-                                self.SDF.send(p, Person(PersonActions.REMOVE, command.id))
+                                self.SDF.send(p, Command("PERSON", "REMOVE", id=command.id))
 
                         # Update location in server memory
                         self.person[command.id].location = command.location
 
                         # Add player to new pane lists and send to clients in the affected pane
                         self.pane[command.location.pane].person.append(command.id)
-                        command.action = PersonActions.CREATE
+                        command.action = "CREATE"
                         command.details = self.person[command.id].getDetailTuple()
                         for p, i in self.player.iteritems():
                             if self.person[i].location.pane == command.location.pane and \
@@ -93,8 +94,9 @@ class GameServer():
                             p = [p for p, i in self.player.iteritems() if i == command.id][0]
                             for i in self.pane[command.location.pane].person:
                                 if i != command.id:
-                                    self.SDF.send(p, Person(PersonActions.CREATE, i, \
-                                            self.person[i].location, self.person[i].getDetailTuple()))
+                                    self.SDF.send(p, Command("PERSON", "CREATE", id=i, \
+                                            location=self.person[i].location, \
+                                            details=self.person[i].getDetailTuple()))
 
                         self.unload_panes()
 
@@ -107,7 +109,6 @@ class GameServer():
                                     self.person[person].team == "Monsters":
                                 self.CS.startCombat(command.id, person)
 
-
                 else:
                     if port:
                         command.location = self.person[command.id].location
@@ -117,10 +118,10 @@ class GameServer():
                         self.person[command.id].ai.remove("RUN")
                         for p, i in self.player.iteritems():
                             if i == command.id:
-                                self.SDF.send(p, Person(PersonActions.STOP, i))
+                                self.SDF.send(p, Command("PERSON", "STOP", id=i))
 
             ###### RemovePerson ######
-            if isinstance(command, Person) and command.action == PersonActions.REMOVE:
+            if command.type == "PERSON" and command.action == "REMOVE":
                 if port:
                     command.id = self.player[port]
                     del self.player[port]
@@ -134,17 +135,17 @@ class GameServer():
                 self.unload_panes()
 
             ###### RunPerson ######
-            if isinstance(command, Person) and command.action == PersonActions.RUN:
+            if command.type == "PERSON" and command.action == "RUN":
                 self.person[command.id].ai.add("RUN", self.person[command.id].ai.run, \
-                        self.person[command.id].movementSpeed, pid=command.id, direction=command.location)
+                        self.person[command.id].movementSpeed, pid=command.id, direction=command.direction)
                 self.person[command.id].ai.start("RUN")
 
             ###### StopPerson ######
-            if isinstance(command, Person) and command.action == PersonActions.STOP:
+            if command.type == "PERSON" and command.action == "STOP":
                 self.person[command.id].ai.remove("RUN")
 
             ###### Get Item / Open Chest ######
-            if isinstance(command, Person) and command.action == PersonActions.OPEN:
+            if command.type == "PERSON" and command.action == "OPEN":
                 activePlayer = self.person[command.id]
                 currentPane = self.pane[activePlayer.location.pane]
                 chest, loc = currentPane.get_treasure_chest(activePlayer.location)
@@ -161,8 +162,8 @@ class GameServer():
                             for item in itemList:
                                 print "  " + str(item.name)
                                 #thisPlayer.inventory.addItem(item)
-                                action = Update(UpdateProperties.TEXT, thisPlayer.id, 
-                                value='Found item: ' + item.name, details='lightskyblue')
+                                action = Command("UPDATE", "TEXT", 
+                                text='Found item: ' + item.name, color='lightskyblue')
                                 self.SDF.send(p, action)
                             
             # Get items: TODO

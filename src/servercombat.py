@@ -16,21 +16,21 @@ class CombatServer():
 
     def handle(self, port, command):
         ###### MovePerson ######
-        if isinstance(command, Person) and command.action == PersonActions.MOVE:
+        if command.type == "PERSON" and command.action == "MOVE":
             activePlayer = self.server.person[command.id]
 
             # Exit combat
             if command.location.pane != (0, 0):
-                self.server.SDF.send(port, Person(PersonActions.REMOVE, command.id))
-                self.server.SDF.send(port, Update(command.id, UpdateProperties.COMBAT, \
-                        False))
-                self.server.SDF.send(port, Person(PersonActions.CREATE, command.id, \
-                        self.server.person[command.id].location, \
-                        self.server.person[command.id].getDetailTuple()))
+                self.server.SDF.send(port, Command("PERSON", "REMOVE", id=command.id))
+                self.server.SDF.send(port, Command("UPDATE", "COMBAT", False))
+                self.server.SDF.send(port, Command("PERSON", "CREATE", id=command.id, \
+                        location=self.server.person[command.id].location, \
+                        details=self.server.person[command.id].getDetailTuple()))
                 for i in self.server.pane[self.server.person[command.id].location.pane].person:
                     if i != command.id:
-                        self.server.SDF.send(port, Person(PersonActions.CREATE, i, \
-                                self.server.person[i].location, self.server.person[i].getDetailTuple()))
+                        self.server.SDF.send(port, Command("PERSON", "CREATE", id=i, \
+                                location=self.server.person[i].location, \
+                                details=self.server.person[i].getDetailTuple()))
 
                 i = [i for i, p in self.server.person.iteritems() if p.location == \
                         self.server.person[command.id].cPane][0]
@@ -40,7 +40,8 @@ class CombatServer():
 
                 newloc = self.server.person[command.id].location.move( \
                         10 - self.server.person[command.id].location.direction, 1)
-                self.server.SDF.queue.put((None, Person(PersonActions.MOVE, command.id, newloc, True)))
+                self.server.SDF.queue.put((None, Command("PERSON", "MOVE", id=command.id, \
+                        location=newloc, details=True)))
                 activePlayer.cPane = None
                 activePlayer.cLocation = None
                 self.server.unload_panes()
@@ -62,8 +63,9 @@ class CombatServer():
                             self.server.person[i].cPane:
                         self.server.SDF.send(p, command)
                 self.check_turn_end(self.server.person[command.id].cPane)
+        
         #### Attack Target ####
-        elif isinstance(command, AbilityAction) and command.ability == AbilityActions.ATTACK:
+        elif command.type=="ABILITY" and command.action == "ATTACK":
             source = self.server.person[command.id]
             target = self.server.person[command.targetId]
             abilToUse = None
@@ -90,7 +92,7 @@ class CombatServer():
             else:
                 Combat.sendCombatMessage(useDuple[1], source)
             self.check_turn_end(self.server.person[command.id].cPane)
-        elif isinstance(command, AbilityAction) and command.ability == AbilityActions.END_TURN:
+        elif command.type == "ABILITY" and command.action == "END_TURN":
             target = self.server.person[command.id]
             Combat.modifyResource(target, "AP", -target.AP)
             Combat.decrementMovementTiles(target, removeAll=True)
@@ -125,6 +127,7 @@ class CombatServer():
         for char in toUpdateList:
             self.combatStates[combatPane].deadMonsterList.append(char)
             Combat.sendCombatMessage(message=char.name + " Died!", color='magenta', character=char)
+            #self.server.SDF.queue.put((None, Command("PERSON", "REMOVE", id=char.id)))
             for port in Combat.getAllCombatPorts(char):
                 self.server.SDF.send(port, Person(PersonActions.REMOVE, char.id))
             self.server.pane[combatPane].person.remove(char.id)
@@ -149,10 +152,12 @@ class CombatServer():
             direction = Combat.getRelativeDirection(monster, player)
             desiredLocation = monster.cLocation.move(direction, 1)
             if self.tile_is_open(desiredLocation, monster.id):
-                action = Person(PersonActions.MOVE, monster.id, desiredLocation)
+                action = Command("PERSON", "MOVE", id=monster.id, location=desiredLocation)
+                #self.server.SDF.queue.put((None, action))
                 for port in Combat.getAllPorts():
                     self.server.SDF.send(port, action)
                 monster.cLocation = desiredLocation
+
                 tilesLeft -= 1
             elif tilesLeft == monster.totalMovementTiles:
                 # Monster couldn't move at all.
@@ -222,18 +227,20 @@ class CombatServer():
         currentPlayer.cLocation = Location((0, 0), (0, 0))
 
         port = [p for p, i in self.server.player.iteritems() if i == playerId][0]
-        self.server.SDF.send(port, Person(PersonActions.REMOVE, playerId))
-        self.server.SDF.send(port, Update(playerId, UpdateProperties.COMBAT, True))
+        self.server.SDF.send(port, Command("PERSON", "REMOVE", id=playerId))
+        self.server.SDF.send(port, Command("UPDATE", "COMBAT", combat=True))
         
         for p in Combat.getAllCombatPorts(self.server.person[playerId]):
-            self.server.SDF.send(p, Person(PersonActions.CREATE, playerId,
-                    currentPlayer.cLocation, currentPlayer.getDetailTuple()))
+            self.server.SDF.send(p, Command("PERSON", "CREATE", id=playerId,
+                    location=currentPlayer.cLocation, cPane=currentPlayer.cPane,
+                    details=currentPlayer.getDetailTuple()))
                                  
         # Populate the combat pane with all of the monsters.
         for id in self.server.pane[combatPane].person:
             if playerId != id:
-                self.server.SDF.send(port, Person(PersonActions.CREATE, id,
-                        self.server.person[id].cLocation, self.server.person[id].getDetailTuple()))
+                self.server.SDF.send(port, Command("PERSON", "CREATE", id=id,
+                        location=self.server.person[id].cLocation, 
+                        details=self.server.person[id].getDetailTuple()))
             
         self.shout_turn_start(self.server.person[playerId], turn="Player")
 
@@ -268,7 +275,7 @@ class CombatServer():
             character.AP = character.totalAP
             for port in [p for p,i in self.server.player.iteritems() if i in
                     self.server.pane[combatPane].person]:
-                self.server.SDF.send(port, Update(character.id, UpdateProperties.AP, character.AP))
+                self.server.SDF.send(port, Command("PERSON", "UPDATE", id=character.id, AP=character.AP))
         for character in [self.server.person[x] for x in self.server.pane[combatPane].person]:
             self.shout_turn_start(character, turn="Player")
         self.combatStates[combatPane].turnTimer = reactor.callLater(seconds, self.check_turn_end,
