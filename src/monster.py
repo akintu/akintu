@@ -247,7 +247,7 @@ class Monster(person.Person):
         if dir != self.cLocation.direction:
             self.cLocation.direciton = dir
             messageObj = command.Command("PERSON", "MOVE", id=self.id, location=self.cLocation)
-            self.globalServer.SDF.queue.put((None, messageObj))
+            #self.globalServer.SDF.queue.put((None, messageObj))
        
     def getPlayersInRange(self, range, server=None, combatPane=None, visiblePlayers="All"):
         """Returns a list of players within a set range of this monster.  Will sort them according
