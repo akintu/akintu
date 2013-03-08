@@ -112,9 +112,30 @@ class CombatServer():
             Combat.modifyResource(target, "AP", -target.AP)
             Combat.decrementMovementTiles(target, removeAll=True)
             self.check_turn_end(self.server.person[command.id].cPane)
+        #### Using Items ####
+        elif command.type == "ITEM" and command.action == "USE":
+            user = self.server.person[command.id]
+            item = None
+            for x in user.inventory.allConsumables:
+                if x.name == command.itemName:
+                    item = x
+                    break
+            if not item:
+                print " Item not found: " + itemName
+                return
+            usable = item.canUse(user)[0]
+            itemMessage = item.use(user)
+            Combat.sendCombatMessage(itemMessage, user, color='purple', toAll=False)
+            if usable:
+                self.server.SDF.send(port, Command("ITEM", "REMOVE", id=command.id, 
+                                                    itemName=command.itemName))
+            
         if command.id in self.server.person:
             self.update_dead_people(self.server.person[command.id].cPane)
-
+        
+        
+            
+            
     ### Utility Methods ###
 
     def tile_is_open(self, location, pid):
@@ -318,7 +339,7 @@ class CombatServer():
                 elif mon.detectStealth(player):
                     visiblePlayers.append(player)
                     Combat.sendCombatMessage("Detected " + player.name + "! (" + 
-                                str(player.totalSneak) + " vs " + str(mon.totalAwareness) + ")",
+                                 str(mon.totalAwareness) + " vs " + str(player.totalSneak) + ")",
                                 player, color='red')
             while( True ):
                 if not mon.getUsableAbilities(self.server, combatPane, visiblePlayers) and \
@@ -344,6 +365,7 @@ class CombatServer():
             state.turnTimer.cancel()
         except:
             pass
+        
         for player in livingPlayers:
             self.giveVictoryExperience(player, state.deadMonsterList)
             self.giveGold(player, state.deadMonsterList)
@@ -358,13 +380,14 @@ class CombatServer():
         '''Grants the appropriate amount of EXP to a player at the end of
         a victorious combat.'''
         exp = Combat.calcExperienceGain(player, monsterList)
-        Combat.sendCombatMessage("Gained " + str(exp) + " Experience. (" + str(player.experience) +
-                                 "/" + str(player.getExpForNextLevel()) + ")", 
-                                 player, color='magenta', toAll=False)
         oldLevel = player.level
         newLevel = player.addExperience(exp)
         if oldLevel != newLevel:
             Combat.sendCombatMessage(player.name + " LEVELUP!", player, color='magenta')
+        Combat.sendCombatMessage("Gained " + str(exp) + " Experience. (" + str(player.experience) +
+                                 "/" + str(player.getExpForNextLevel()) + ")", 
+                                 player, color='magenta', toAll=False)
+        
         
     def giveGold(self, player, monsterList):
         gold = 0

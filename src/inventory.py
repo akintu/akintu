@@ -77,6 +77,10 @@ class Inventory(object):
     def allItems(self):
         return self._allItems
 
+    @property
+    def allConsumables(self):
+        return [x for x in self._allItems if isinstance(x, consumable.Consumable)]
+        
     #def depositGold(self, goldAmount):
         # if isinstance(goldObject, wealth.Wealth) and goldObject.name == "Gold":
             # self.gold += goldObject.goldValue
@@ -93,20 +97,32 @@ class Inventory(object):
                 print "Warning: Item added to inventory caused the inventory to exceed the MAX_SLOTS of " + str(Inventory.MAX_SLOTS) + " items."
             # Check for weight here?
 
-    def removeItem(self, item):
+    def removeItem(self, item=None, itemName=None):
         '''Removes and returns a given item from this
         inventory, if it is in it.  Otherwise returns
         None.'''
-        toReturn = None
-        for x in self._allItems:
-            if item.identifier == x.identifier:
-                toReturn = x
-                break
-        if toReturn:
-            self._allItems.remove(toReturn)
-            return toReturn
-        else:
-            return None
+        if not itemName and item:
+            toReturn = None
+            for x in self._allItems:
+                if item.name == x.identifier:
+                    toReturn = x
+                    break
+            if toReturn:
+                self._allItems.remove(toReturn)
+                return toReturn
+            else:
+                return None 
+        elif not item and itemName:
+            toReturn = None
+            for x in self._allItems:
+                if itemName == x.identifier:
+                    toReturn = x
+                    break
+            if toReturn:
+                self._allItems.remove(toReturn)
+                return toReturn
+            else:
+                return None
         # Check for weight here?
         # Caller needs to provide a location for this object if it was dropped.
 

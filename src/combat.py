@@ -4,7 +4,6 @@ import sys
 from dice import *
 import broadcast
 import location
-import consumable
 import command
 
 class IncompleteMethodCall(Exception):
@@ -456,7 +455,7 @@ class Combat(object):
           None"""
         removalCandidates = []
         for dStatus in target.statusList:
-            if category in dStatus.caterogyList or category == dStatus.element:
+            if category in dStatus.categoryList or category == dStatus.element:
                 removalCandidates.add(dStatus)
 
         if removalCandidates:
@@ -942,16 +941,6 @@ class Combat(object):
                 if duple:
                     ee.append(duple)
         return ee
-
-    @staticmethod
-    def useConsumable(playerChar, item):
-        ''' Attempts to use a consumable.  If successful, returns True.
-        If unsucessful, returns False and does nothing.'''
-        if item.canUse(playerChar):
-            Combat.modifyResource(playerChar, "AP", -consumable.Consumable.AP_COST)
-            item.use(playerChar)
-            return True
-        return False
 
     @staticmethod
     def calcExperienceGain(player, monsterList):

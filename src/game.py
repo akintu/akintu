@@ -62,6 +62,8 @@ class Game(object):
         self.panePersonIdList = []
         self.currentAbility = None
         self.abilityList = []
+        self.currentItem = None
+        self.itemList = []
 
         # Setup server if host
         self.port = port
@@ -190,6 +192,10 @@ class Game(object):
                         'totalHP' : self.pane.person[command.id].totalHP, \
                         'team' : self.pane.person[command.id].team})
             
+            ###### Remove Item ######
+            elif command.type == "ITEM" and command.action == "REMOVE":
+                self.pane.person[command.id].inventory.removeItem(itemName=command.itemName)
+            
     def handle_events(self):
         pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
         for event in pygame.event.get():
@@ -216,7 +222,7 @@ class Game(object):
                 ### Combat Only Commands ###
                 if self.combat:
                     if event.key == K_f:
-                        if self.selectionMode == "targeting":
+                        if self.selectionMode == "targeting" or self.selectionMode == "items":
                             self.selectionMode = "abilities"
                             self.screen.show_text("Selection mode: ability selection", color='yellow')
                         elif self.selectionMode == "abilities":
@@ -225,23 +231,30 @@ class Game(object):
                     elif event.key == K_e:
                         if self.selectionMode == "targeting":
                             self.cycle_targets()
-                        else:
+                        elif self.selectionMode == "abilities":
                             self.cycle_abilities()
+                        elif self.selectionMode == "items":
+                            self.cycle_items()
                     elif event.key == K_w: 
                         if self.selectionMode == "targeting":
                             self.cycle_targets(reverse=True)
-                        else:
+                        elif self.selectionMode == "abilities":
                             self.cycle_abilities(reverse=True)
+                        elif self.selectionMode == "items":
+                            self.cycle_items(reverse=True)
                     elif event.key == K_a:
-                        self.attempt_attack()
+                        if self.selectionMode == "items":
+                            self.use_item()
+                        else:
+                            self.attempt_attack()
                     elif event.key == K_n:
                         self.force_end_turn()
                     elif event.key == K_s:
                         self.select_self()
                         pass
                     elif event.key == K_i:
-                        #self.begin_select_consumable() -- Cycling will be used as well as A for accept and
-                        # C for cancel.
+                        self.selectionMode = "items"
+                        self.screen.show_text("Selection mode: items", color="yellow")
                         pass
                     elif event.key == K_PERIOD:
                         self.display_target_details()
@@ -302,10 +315,44 @@ class Game(object):
             return
         self.CDF.send(Command("ABILITY", "ATTACK", id=self.id, targetId=self.currentTargetId,
                 abilityName=self.currentAbility.name))
-
+       
+    def use_item(self):
+        if not self.currentItem or \
+          self.currentItem not in self.pane.person[self.id].inventory.allConsumables:
+            self.screen.show_text("No item selected", color='white')
+            return
+        self.CDF.send(Command("ITEM", "USE", id=self.id, itemName=self.currentItem.name))
+        self.selectionMode = "abilities"
+        self.itemList = []
+        
     def display_size(self):
         pass
         # Switch between displaying monster levels and monster sizes
+                      
+    def begin_select_consumable(self):
+        pass
+                      
+    def cycle_items(self, reverse=False):
+        if not self.combat:
+            return
+        if not self.itemList or not self.currentItem or self.currentItem not in self.itemList:
+            self.itemList = self.pane.person[self.id].inventory.allConsumables
+            if not self.itemList:
+                return
+            self.currentItem = self.itemList[0]
+        elif not reverse:
+            if self.currentItem == self.itemList[-1]:
+                self.currentItem = self.itemList[0]
+            else:
+                itemIndex = self.itemList.index(self.currentItem)
+                self.currentItem = self.itemList[itemIndex + 1]
+        else:
+            if self.currentItem == self.itemList[0]:
+                self.currentItem = self.itemList[-1]
+            else:
+                itemIndex = self.itemList.index(self.currentItem)
+                self.currentItem = self.itemList[itemIndex - 1]
+        self.screen.show_text("Selected item: " + self.currentItem.name, color='lightblue')
                       
     def cycle_abilities(self, reverse=False):
         if not self.combat:

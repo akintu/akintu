@@ -34,19 +34,25 @@ class Consumable(entity.Entity):
             self.ip = Consumable.allPoisons[name]['ip']
 
     def canUse(self, user):
-        if self.type in user.cooldownList:
-            return False
-        if user.AP >= 7:
-            return True
+        if self.type in [x[0] for x in user.cooldownList]:
+            durationLeft = [x[1] for x in user.cooldownList][0]
+            return (False, "Item type: " + self.type + " is on cooldown (" + str(durationLeft) + ")")
+        if user.AP >= Consumable.AP_COST:
+            return (True, "")
+        else:
+            return (False, "Not enough AP to use " + self.name + " (" + 
+                        str(Consumable.AP_COST) + " needed)")
 
     def use(self, user):
-        if self.canUse(user):
-            self.effect(user)
-            self.user.inventory.removeItem(self)
+        usable = self.canUse(user)
+        if usable[0]:
+            self.effect(self, user)
+            user.inventory.removeItem(self)
             Combat.applyCooldown(user, self.type, self.cooldownLength)
-            print "Used item: " + self.name + "."
+            Combat.modifyResource(user, "AP", -Consumable.AP_COST)
+            return "Used item: " + self.name + "."
         else:
-            print "Attempted to use " + self.name + " but it cannot be used at this time."
+            return usable[1]
 
 
     def _basicHealingPotion(self, user):
