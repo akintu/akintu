@@ -37,8 +37,7 @@ class Combat(object):
             messageObj = command.Command("PERSON", "UPDATE", id=character.id, HP=character.HP)
         elif type == "MoveAPCost":
             messageObj = command.Command("PERSON", "UPDATE", id=character.id, \
-                    overrideMovementAPCost=character.overrideMovementAPCost, spellFailureChance=90)
-            print "server thinks: " + str(character.overrideMovementAPCost)
+                    overrideMovementAPCost=character.overrideMovementAPCost)
         elif type == "Status":
             messageObj = command.Command("PERSON", "UPDATE", id=character.id, \
                     statuses=Combat.encodeStatuses(character))
@@ -792,7 +791,6 @@ class Combat(object):
           None"""
         target.overrideMovementAPCost = newCost
         Combat.sendToAll(target, "MoveAPCost")
-        print "got this far"
 
 
     @staticmethod

@@ -22,7 +22,7 @@ class CombatServer():
             # Exit combat
             if command.location.pane != (0, 0):
                 self.server.SDF.send(port, Command("PERSON", "REMOVE", id=command.id))
-                self.server.SDF.send(port, Command("UPDATE", "COMBAT", False))
+                self.server.SDF.send(port, Command("UPDATE", "COMBAT", combat=False))
                 self.server.SDF.send(port, Command("PERSON", "CREATE", id=command.id, \
                         location=self.server.person[command.id].location, \
                         details=self.server.person[command.id].getDetailTuple()))

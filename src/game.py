@@ -171,7 +171,7 @@ class Game(object):
             if command.type == "PERSON" and command.action == "UPDATE":
                 for k, v in command.__dict__.iteritems():
                     if k not in ['type', 'action', 'id']:
-                        self.pane.person[command.id].__dict__[k] = v
+                        setattr(self.pane.person[command.id], k, v)
                         if k in ['HP', 'MP', 'AP']:
                             self.screen.update_person(command.id, {k: v, \
                                     'team': self.pane.person[command.id].team})
@@ -283,8 +283,6 @@ class Game(object):
             
             elif self.pane.person[self.id].remainingMovementTiles > 0 or \
                  self.pane.person[self.id].AP >= self.pane.person[self.id].totalMovementAPCost:
-                print "Client thinks: " + str(self.pane.person[self.id].overrideMovementAPCost)
-                print "Debug: " + str(self.pane.person[self.id].spellFailureChance)
                 self.CDF.send(Command("PERSON", "MOVE", id=self.id, location=newloc))
                 if self.pane.person[self.id].location.pane == newloc.pane:
                     self.animate(self.id, self.pane.person[self.id].location, newloc, \
