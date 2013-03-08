@@ -20,11 +20,12 @@ class GameServer():
     def server_loop(self):
         while not self.SDF.queue.empty():
             port, command = self.SDF.queue.get()
-
+            
             if 'id' in command.__dict__ and command.id in self.person and self.person[command.id].cPane:
                 self.CS.handle(port, command)
                 continue
 
+            print "MAIN SERVER PROCESSING:", command, "FROM", port
             ###### CreatePerson ######
             if command.type == "PERSON" and command.action == "CREATE":
                 self.load_pane(command.location.pane)
@@ -122,17 +123,18 @@ class GameServer():
 
             ###### RemovePerson ######
             if command.type == "PERSON" and command.action == "REMOVE":
-                if port:
-                    command.id = self.player[port]
-                    del self.player[port]
-                self.pane[self.person[command.id].location.pane].person.remove(command.id)
+                if command.id in self.server.person:
+                    if port:
+                        command.id = self.player[port]
+                        del self.player[port]
+                    self.pane[self.person[command.id].location.pane].person.remove(command.id)
 
-                #Notify clients in the affected pane
-                for p, i in self.player.iteritems():
-                    if self.person[i].location.pane == self.person[command.id].location.pane:
-                        self.SDF.send(p, command)
-                del self.person[command.id]
-                self.unload_panes()
+                    #Notify clients in the affected pane
+                    for p, i in self.player.iteritems():
+                        if self.person[i].location.pane == self.person[command.id].location.pane:
+                            self.SDF.send(p, command)
+                    del self.person[command.id]
+                    self.unload_panes()
 
             ###### RunPerson ######
             if command.type == "PERSON" and command.action == "RUN":
@@ -168,7 +170,6 @@ class GameServer():
                             
             # Get items: TODO
             
-                
     def tile_is_open(self, location):
         if location.pane not in self.pane:
             return False
