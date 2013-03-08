@@ -163,10 +163,22 @@ class Location(object):
         if self == dest:
             return 5
         distx = dest.abs_x - self.abs_x
-        disty = -(dest.abs_y - self.abs_y)
+        #disty is negated because our y axis in game is flipped from the cartesian plane
+        disty = -(dest.abs_y - self.abs_y) 
         mag = self.true_distance(dest)
-        y = round(disty / mag + 1)
-        x = round(distx / mag + 1)
+        
+        x = distx / mag
+        y = disty / mag
+        
+        if abs(x) < 0.38268343236508984:
+            x = 1
+        else:
+            x = cmp(x, 0) + 1
+            
+        if abs(y) < 0.38268343236508984:
+            y = 1
+        else:
+            y = cmp(y, 0) + 1
         return int((y * 3) + x + 1)
 
     def distance(self, dest):
@@ -246,8 +258,9 @@ if __name__ == "__main__":
     assert Location(5, 5).direction_to(Location(5, 3)) == 8
     assert Location(5, 5).direction_to(Location(7, 3)) == 9
 
-    for y in range(0, 11):
+    radius = 15
+    for y in range(0, 2 * radius + 1):
         strrep = ""
-        for x in range(0, 11):
-            strrep += str(Location(5, 5).direction_to(Location(x, y))) + " "
+        for x in range(0, 2 * radius + 1):
+            strrep += str(Location(radius, radius).direction_to(Location(x, y))) + " "
         print strrep
