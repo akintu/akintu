@@ -52,7 +52,7 @@ class Game(object):
 
         # Game state
         self.id = -1
-        self.keystate = 0
+        self.keystate = []
         self.running = False
         self.combat = False
 
@@ -190,25 +190,6 @@ class Game(object):
                         'totalHP' : self.pane.person[command.id].totalHP, \
                         'team' : self.pane.person[command.id].team})
             
-            #elif isinstance(command, Update) and command.property == UpdateProperties.AP:
-            #    self.pane.person[command.id].AP = command.value
-            #    self.screen.update_person(command.id, {'AP': command.value, 'team': self.pane.person[command.id].team})
-            ####### Update MP ######
-            #elif isinstance(command, Update) and command.property == UpdateProperties.MP:
-            #    self.pane.person[command.id].MP = command.value
-            #    self.screen.update_person(command.id, {'MP': command.value, 'team': self.pane.person[command.id].team})
-            ####### Update HP ######
-            #elif isinstance(command, Update) and command.property == UpdateProperties.HP:
-            #    self.pane.person[command.id].HP = command.value
-            #    self.screen.update_person(command.id, {'HP': command.value, 'team': self.pane.person[command.id].team})
-            ####### Update Movement AP Cost ####
-            #elif isinstance(command, Update) and command.property == UpdateProperties.MOVE_AP_COST:
-            #    self.pane.person[command.id].overrideMovementAPCost = command.value
-            ####### Update Movement Tiles #####
-            #elif isinstance(command, Update) and command.property == UpdateProperties.MOVE_TILES:
-            #    self.pane.person[command.id].remainingMovementTiles = command.value
-            
-            
     def handle_events(self):
         pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
         for event in pygame.event.get():
@@ -216,23 +197,21 @@ class Game(object):
             if event.type == QUIT:
                 reactor.stop()
             if event.type == KEYUP:
-                if event.key in [K_LSHIFT, K_RSHIFT]:
-                    self.keystate = 0
+                if event.key in MODIFIER_KEYS:
+                    self.keystate.remove(event.key)
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     reactor.stop()
-                elif event.key in [K_LSHIFT, K_RSHIFT]:
-                    self.keystate = event.key
+                elif event.key in MODIFIER_KEYS:
+                    self.keystate.append(event.key)
                 elif event.key in MOVE_KEYS:
                     self.move_person(MOVE_KEYS[event.key], 1)
                 elif event.key == K_EQUALS or event.key == K_PAGEUP:
-                        self.screen.scroll_up()
+                    self.screen.scroll_up(1 if not any(mod in [K_LSHIFT, K_RSHIFT] \
+                            for mod in self.keystate) else 1000)
                 elif event.key == K_MINUS or event.key == K_PAGEDOWN:
-                        self.screen.scroll_down()
-                elif event.key == K_UNDERSCORE:
-                        self.screen.scroll_down(1000)
-                elif event.key == K_PLUS:
-                        self.screen.scroll_up(1000)   
+                    self.screen.scroll_down(1 if not any(mod in [K_LSHIFT, K_RSHIFT] \
+                            for mod in self.keystate) else 1000)
 
                 ### Combat Only Commands ###
                 if self.combat:
@@ -298,7 +277,7 @@ class Game(object):
                 newloc.tile not in [x.location.tile for x in self.pane.person.values()]) or \
                 self.pane.person[self.id].location.pane != newloc.pane):
 
-            if self.keystate in [K_LSHIFT, K_RSHIFT] and not self.combat:
+            if any(mod in [K_LSHIFT, K_RSHIFT] for mod in self.keystate) and not self.combat:
                 self.CDF.send(Command("PERSON", "RUN", id=self.id, direction=direction))
                 self.running = True
             
