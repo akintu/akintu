@@ -347,25 +347,26 @@ class CombatServer():
         '''Grants the appropriate amount of EXP to a player at the end of
         a victorious combat.'''
         exp = Combat.calcExperienceGain(player, monsterList)
-        Combat.sendCombatMessage("Gained " + str(exp) + " Experience.", player, 
-                                  color='magenta', toAll=False)
+        Combat.sendCombatMessage("Gained " + str(exp) + " Experience. (" + str(player.experience) +
+                                 "/" + str(player.getExpForNextLevel()) + ")", 
+                                 player, color='magenta', toAll=False)
         oldLevel = player.level
         newLevel = player.addExperience(exp)
         if oldLevel != newLevel:
             Combat.sendCombatMessage(player.name + " LEVELUP!", player, color='magenta')
-        
         
     def giveGold(self, player, monsterList):
         gold = 0
         for monster in monsterList:
             gold += monster.level * 3 + monster.GP * 2
         player.inventory.addItem(gold)
-        Combat.sendCombatMessage("Gained " + str(gold) + " gold.", player, color='magenta', toAll=False)
+        Combat.sendCombatMessage("Gained " + str(gold) + " gold. (total: " + str(player.inventory.gold) +
+                                 ")", player, color='magenta', toAll=False)
         
     def refillResources(self, player):
-        player.MP = player.totalMP
-        player.HP = player.totalHP
-        player.AP = player.totalAP
+        Combat.modifyResource(player, "MP", player.totalMP)
+        Combat.modifyResource(player, "HP", player.totalHP)
+        Combat.modifyResource(player, "AP", player.totalAP)
 
     def removeTemporaryStatuses(self, player):
         '''Used to remove statuses that don't persist outside of combat'''
