@@ -163,6 +163,15 @@ class CombatServer():
             if not player:
                 return "Failed"
             direction = monster.cLocation.direction_to(player.cLocation)
+            # Monsters cannot move in diagonal directions.
+            if direction == 7:
+                direction = Dice.choose([4,8])
+            elif direction == 1:
+                direction = Dice.choose([2,4])
+            elif direction == 9:
+                direction = Dice.choose([6,8])
+            elif direction == 3:
+                direction = Dice.choose([2,6])
             desiredLocation = monster.cLocation.move(direction, 1)
             if self.tile_is_open(desiredLocation, monster.id):
                 action = Command("PERSON", "MOVE", id=monster.id, location=desiredLocation)

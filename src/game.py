@@ -283,6 +283,8 @@ class Game(object):
             
             elif self.pane.person[self.id].remainingMovementTiles > 0 or \
                  self.pane.person[self.id].AP >= self.pane.person[self.id].totalMovementAPCost:
+                print "Client thinks: " + str(self.pane.person[self.id].overrideMovementAPCost)
+                print "Debug: " + str(self.pane.person[self.id].spellFailureChance)
                 self.CDF.send(Command("PERSON", "MOVE", id=self.id, location=newloc))
                 if self.pane.person[self.id].location.pane == newloc.pane:
                     self.animate(self.id, self.pane.person[self.id].location, newloc, \

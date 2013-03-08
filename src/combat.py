@@ -37,7 +37,8 @@ class Combat(object):
             messageObj = command.Command("PERSON", "UPDATE", id=character.id, HP=character.HP)
         elif type == "MoveAPCost":
             messageObj = command.Command("PERSON", "UPDATE", id=character.id, \
-                    totalMovementAPCost=character.totalMovementAPCost)
+                    overrideMovementAPCost=character.overrideMovementAPCost, spellFailureChance=90)
+            print "server thinks: " + str(character.overrideMovementAPCost)
         elif type == "Status":
             messageObj = command.Command("PERSON", "UPDATE", id=character.id, \
                     statuses=Combat.encodeStatuses(character))
@@ -791,6 +792,7 @@ class Combat(object):
           None"""
         target.overrideMovementAPCost = newCost
         Combat.sendToAll(target, "MoveAPCost")
+        print "got this far"
 
 
     @staticmethod
@@ -871,8 +873,18 @@ class Combat(object):
 
     @staticmethod
     def inBackstabPosition(source, target):
+        # Make sure you are facing the enemy's back.
         direction = source.cLocation.direction_to(target.cLocation)
-        return target.cLocation.direction == direction
+        directionValues = [direction]
+        if direction == 7:
+            directionValues = [4,8]
+        elif direction == 1:
+            directionValues = [2,4]
+        elif direction == 9:
+            directionValues = [6,8]
+        elif direction == 3:
+            directionValues = [2,6]
+        return target.cLocation.direction in directionValues
         
     @staticmethod
     def lowerHP(target, amount):

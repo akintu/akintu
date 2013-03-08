@@ -122,7 +122,7 @@ class GameServer():
 
             ###### RemovePerson ######
             if command.type == "PERSON" and command.action == "REMOVE":
-                if command.id in self.server.person:
+                if command.id in self.person:
                     if port:
                         command.id = self.player[port]
                         del self.player[port]

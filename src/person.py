@@ -254,22 +254,6 @@ class Person(en.Entity):
         self._baseRangedAttackAPCost = value
 
     @property
-    def totalSpellFailureChance(self):
-       """Is comprised of only the status value, but the accessor pattern
-       is preserved for consistency."""
-       return self._statusSpellFailureChance
-
-    @property
-    def statusSpellFailureChance(self):
-        """ An int that represents a percent."""
-        return self._statusSpellFailureChance
-
-    @statusSpellFailureChance.setter
-    def statusSpellFailureChance(self, value):
-        self._statusSpellFailureChance = value
-
-
-    @property
     def HPBufferList(self):
         """The list of any HP buffers that should absorb damage before
         continuing on to lower the person's actual HP.
