@@ -245,7 +245,7 @@ class Monster(person.Person):
         return "Failure"
 
     def faceTarget(self, target):
-        dir = Combat.getRelativeDirection(self, target)
+        dir = self.cLocation.direction_to(target.cLocation)
         if dir != self.cLocation.direction:
             self.cLocation.direciton = dir
             messageObj = command.Command("PERSON", "MOVE", id=self.id, location=self.cLocation)

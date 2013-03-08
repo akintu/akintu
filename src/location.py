@@ -158,6 +158,16 @@ class Location(object):
             locs.append(Location(self.abs_x + int(round(float(x) / dist * distx)),
                     self.abs_y + int(round(float(x) / dist * disty))))
         return locs
+        
+    def direction_to(self, dest):
+        if self == dest:
+            return 5
+        distx = dest.abs_x - self.abs_x
+        disty = -(dest.abs_y - self.abs_y)
+        mag = self.true_distance(dest)
+        y = round(disty / mag + 1)
+        x = round(distx / mag + 1)
+        return int((y * 3) + x + 1)
 
     def distance(self, dest):
         return  abs(self.abs_x - dest.abs_x) + abs(self.abs_y - dest.abs_y)
@@ -225,3 +235,19 @@ if __name__ == "__main__":
     assert k >= j
     assert j != k
     assert j == j
+
+    assert Location(5, 5).direction_to(Location(3, 7)) == 1
+    assert Location(5, 5).direction_to(Location(5, 7)) == 2
+    assert Location(5, 5).direction_to(Location(7, 7)) == 3
+    assert Location(5, 5).direction_to(Location(3, 5)) == 4
+    assert Location(5, 5).direction_to(Location(5, 5)) == 5
+    assert Location(5, 5).direction_to(Location(7, 5)) == 6
+    assert Location(5, 5).direction_to(Location(3, 3)) == 7
+    assert Location(5, 5).direction_to(Location(5, 3)) == 8
+    assert Location(5, 5).direction_to(Location(7, 3)) == 9
+
+    for y in range(0, 11):
+        strrep = ""
+        for x in range(0, 11):
+            strrep += str(Location(5, 5).direction_to(Location(x, y))) + " "
+        print strrep

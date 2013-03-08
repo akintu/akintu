@@ -871,68 +871,8 @@ class Combat(object):
 
     @staticmethod
     def inBackstabPosition(source, target):
-        direction = Combat.getRelativeDirection(source, target)
+        direction = source.cLocation.direction_to(target.cLocation)
         return target.cLocation.direction == direction
-        
-    @staticmethod
-    def getRelativeDirection(source, target):
-        '''Gets the direction best fitting the path between monster and
-        player. TODO: Fix non-determinism for backstabs.
-        Returns a number within 1-4, 6-9 as represented on the numpad.'''
-        targetX = target.cLocation.tile[0]
-        sourceX = source.cLocation.tile[0]
-        targetY = target.cLocation.tile[1]
-        sourceY = source.cLocation.tile[1]
-        dy = targetY - sourceY
-        dx = targetX - sourceX
-        if dy >= 0:
-            # Target is below the source
-            if dx <= 0:
-                # Target is left of the source
-                if abs(dx) >= 2 * abs(dy):
-                    # Target is more left than down
-                    return 4
-                elif abs(dx) * 2 <= abs(dy):
-                    # Target is more down than left
-                    return 2
-                else:
-                    # Target is down-left diagonal
-                    return Dice.choose([2, 4])
-            else:
-                # Target is right of the source
-                if abs(dx) >= 2 * abs(dy):
-                    # Target is more right than down
-                    return 6
-                elif abs(dx) * 2 <= abs(dy):
-                    # Target is more down than right
-                    return 2
-                else:
-                    # Target is down-right diagonal
-                    return Dice.choose([6, 2])
-        else:
-            # Target is above the source
-            if dx <= 0:
-                # Target is left of the source
-                if abs(dx) >= 2 * abs(dy):
-                    # Target is more left than up
-                    return 4
-                elif abs(dx) * 2 <= abs(dy):
-                    # Target is more up than left
-                    return 8
-                else:
-                    # Target is up-left diagonal
-                    return Dice.choose([4, 8])
-            else:
-                # Target is right of the source
-                if abs(dx) >= 2 * abs(dy):
-                    # Target is more right than up
-                    return 6
-                elif abs(dx) * 2 <= abs(dy):
-                    # Target is more up than right
-                    return 8
-                else:
-                    # Target is up-right diagonal
-                    return Dice.choose([6, 8])
         
     @staticmethod
     def lowerHP(target, amount):

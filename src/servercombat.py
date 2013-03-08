@@ -162,7 +162,7 @@ class CombatServer():
             player = monster.getNearestPlayer(visiblePlayers)
             if not player:
                 return "Failed"
-            direction = Combat.getRelativeDirection(monster, player)
+            direction = monster.cLocation.direction_to(player.cLocation)
             desiredLocation = monster.cLocation.move(direction, 1)
             if self.tile_is_open(desiredLocation, monster.id):
                 action = Command("PERSON", "MOVE", id=monster.id, location=desiredLocation)
@@ -237,7 +237,9 @@ class CombatServer():
         self.server.pane[combatPane].person.append(playerId)
 
         #TODO: Calculate starting location for reals
-        currentPlayer.cLocation = Location((0, 0), (0, 0))
+        spawn = monsterLeader.location.direction_to(currentPlayer.location)
+        spawn = Location(((spawn - 1) % 3) * (PANE_X - 1) / 2, ((9 - spawn) // 3) * (PANE_Y - 1) / 2)
+        currentPlayer.cLocation = spawn
 
         port = [p for p, i in self.server.player.iteritems() if i == playerId][0]
         self.server.SDF.send(port, Command("PERSON", "REMOVE", id=playerId))
