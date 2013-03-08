@@ -167,7 +167,7 @@ class CombatServer():
             if self.tile_is_open(desiredLocation, monster.id):
                 action = Command("PERSON", "MOVE", id=monster.id, location=desiredLocation)
                 #self.server.SDF.queue.put((None, action))
-                for port in Combat.getAllPorts():
+                for port in self.server.player.keys():
                     self.server.SDF.send(port, action)
                 monster.cLocation = desiredLocation
 
@@ -243,7 +243,7 @@ class CombatServer():
         self.server.SDF.send(port, Command("PERSON", "REMOVE", id=playerId))
         self.server.SDF.send(port, Command("UPDATE", "COMBAT", combat=True))
         
-        for p in Combat.getAllCombatPorts(self.server.person[playerId]):
+        for p in self.server.getAllCombatPorts(playerId):
             self.server.SDF.send(p, Command("PERSON", "CREATE", id=playerId,
                     location=currentPlayer.cLocation, cPane=currentPlayer.cPane,
                     details=currentPlayer.getDetailTuple()))

@@ -21,30 +21,6 @@ class Combat(object):
     allStatuses = None
 
     @staticmethod
-    def getAllPorts():
-        ports = []
-        if not Combat.gameServer:
-            print "Combat has not had its view of gameServer initialized."
-        else:
-            for key in Combat.gameServer.player.keys():
-                ports.append(key)
-        return ports
-
-    @staticmethod
-    def getAllCombatPorts(character):
-        '''Get all ports in the same combat instance as this playerCharacter.'''
-        return [port for port, id in Combat.gameServer.player.iteritems() \
-                if Combat.gameServer.person[id].cPane == character.cPane]
-
-    @staticmethod
-    def getPlayerPort(character):
-        ''' Assumes "character" is a PlayerCharacter '''
-        for port in Combat.gameServer.player:
-            if Combat.gameServer.player[port] == character.id:
-                return port
-        return None
-        
-    @staticmethod
     def sendToAll(character, type):
         '''Send an update of a given type to all players in the
         same combat instance as the updated player.'''
@@ -68,7 +44,7 @@ class Combat(object):
         elif type == "HP_BUFFER":
             messageObj = command.Command("UPDATE", "HP_BUFFER", id=character.id, \
                     bufferSum=character.getHPBufferSum())
-        for port in Combat.getAllCombatPorts(character):
+        for port in Combat.gameServer.getAllCombatPorts(character):
             Combat.gameServer.SDF.send(port, messageObj)
 
     @staticmethod
@@ -76,9 +52,9 @@ class Combat(object):
         '''Send a message to all players in combat with the provided character.'''
         portList = []
         if not toAll:
-            portList.append(Combat.getPlayerPort(character))
+            portList.append(Combat.gameServer.getPlayerPort(character))
         else:
-            portList = Combat.getAllCombatPorts(character)
+            portList = Combat.gameServer.getAllCombatPorts(character)
         messageObj = command.Command("UPDATE", "TEXT", text=message, color=color)
         for port in portList:
             Combat.gameServer.SDF.send(port, messageObj)

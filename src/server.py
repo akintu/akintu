@@ -25,7 +25,6 @@ class GameServer():
                 self.CS.handle(port, command)
                 continue
 
-            print "MAIN SERVER PROCESSING:", command, "FROM", port
             ###### CreatePerson ######
             if command.type == "PERSON" and command.action == "CREATE":
                 self.load_pane(command.location.pane)
@@ -103,7 +102,7 @@ class GameServer():
 
                     # Check for combat range and initiate combat states
                     if command.id in self.player.values():
-                        p = [p for p, i in self.player.iteritems() if i == command.id][0]
+                        p = self.getPlayerPort(command.id)
                         for person in self.pane[self.person[command.id].location.pane].person:
                             if self.person[command.id].location.in_melee_range( \
                                     self.person[person].location) and \
@@ -170,6 +169,8 @@ class GameServer():
                             
             # Get items: TODO
             
+    ###### Utility Methods ######
+    
     def tile_is_open(self, location):
         if location.pane not in self.pane:
             return False
@@ -217,3 +218,18 @@ class GameServer():
                     del self.person[i]
 
                 del self.pane[pane]
+                
+    def getAllCombatPorts(self, character):
+        '''Get all ports in the same combat instance as this playerCharacter.'''
+        if isinstance(character, int):
+            return [p for p, i in self.player.iteritems() \
+                    if self.person[i].cPane == self.person[character].cPane]
+        else:
+            return [p for p, i in self.player.iteritems() if self.person[i].cPane == character.cPane]
+
+    def getPlayerPort(self, character):
+        ''' Assumes "character" is a PlayerCharacter '''
+        if isinstance(character, int):
+            return [p for p, i in self.player.iteritems() if i == character][0]
+        else:
+            return [p for p, i in self.player.iteritems() if i == character.id][0]
