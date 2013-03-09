@@ -127,10 +127,18 @@ class Game(object):
                 p.location = command.location
 
                 imagepath = os.path.join('res', 'images', 'sprites', p.image)
+                sizeAbbr = "M"
+                if self.pane.person[command.id].team == "Monsters":
+                    if self.pane.person[command.id].size == "Small":
+                        sizeAbbr = "S"
+                    elif self.pane.person[command.id].size == "Large":
+                        sizeAbbr = "L"
+                    elif self.pane.person[command.id].size == "Huge":
+                        sizeAbbr = "H"
                 persondict = {'location': command.location, 'image': imagepath, 'team': p.team, \
                     'HP': p.HP, 'totalHP': p.totalHP, 'MP': p.MP, \
                     'totalMP': p.totalMP, 'AP': p.AP, 'totalAP': p.totalAP, \
-                    'level': p.level, 'name' : p.name}
+                    'level': p.level, 'name' : p.name, 'size' : sizeAbbr}
                 self.screen.add_person(command.id, persondict)
 
             if command.type == "PERSON" and command.id not in self.pane.person:
@@ -295,9 +303,6 @@ class Game(object):
                     elif event.key == K_PERIOD:
                         self.display_target_details()
                         pass
-                    elif event.key == K_SLASH:
-                        #self.toggle_size_display()
-                        pass
                 ### Strictly non-combat commands ###
                 if not self.combat:
                     if event.key == K_g:
@@ -366,11 +371,7 @@ class Game(object):
         self.CDF.send(Command("ITEM", "USE", id=self.id, itemName=self.currentItem.name))
         self.selectionMode = "abilities"
         self.itemList = []
-        
-    def display_size(self):
-        pass
-        # Switch between displaying monster levels and monster sizes
-                      
+                    
     def begin_select_consumable(self):
         pass
                       

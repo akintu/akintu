@@ -164,6 +164,9 @@ class GameServer():
 
                             thisPlayer = self.person[self.player[p]]
                             itemList = inventories[thisPlayer]
+                            if not itemList:
+                                action = Command("UPDATE", "TEXT", text='Chest was empty', color='lightskyblue')
+                                self.SDF.send(p, action)
                             for item in itemList:
                                 equipped = False
                                 action = Command("ITEM", "CREATE", itemIdentifier=item.identifier, id=thisPlayer.id)
@@ -251,3 +254,10 @@ class GameServer():
         pane = self.person[personId].cPane if self.person[personId].cPane else \
                 self.person[personId].location.pane
         return [self.person[i] for i in self.player.values() if i in self.pane[pane].person]
+
+    def get_monster_leader(self, character):
+        if not character.cPane:
+            return None
+        for i, p in self.person.iteritems():
+            if character.cPane == p.location:
+                return p

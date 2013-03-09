@@ -130,6 +130,7 @@ class GameScreen(object):
         Required entries in statsdict:
             - 'image'
             - 'location'
+            - 'team'
 
         Supported entries in statsdict:
             - 'image'
@@ -146,8 +147,8 @@ class GameScreen(object):
             - 'totalMP'
             - 'totalAP'
             - 'restrictedAP'
-            - 'team'
             - 'level'
+            - 'size'
 
         To be supported in the future:
             - 'statusList'
@@ -203,11 +204,11 @@ class GameScreen(object):
         self.persons[personid].update_dict(statsdict)
 
         for key in statsdict:
-            if key in ['name', 'HP', 'MP', 'AP', 'buffedHP', 'totalHP',
+            if key in ['name', 'HP', 'MP', 'AP', 'buffedHP', 'totalHP', 'size',
                        'totalMP', 'totalAP', 'restrictedAP', 'level']:
                 if statsdict['team'] == "Players":
                     self.playerframes[personid] = \
-                            self._generateplayerframe(personid)
+                        self._generateplayerframe(personid)
                     self._drawplayerframes()
                 elif statsdict['team'] == "Monsters":
                     self.monsterframes[personid] = \
@@ -489,6 +490,10 @@ class GameScreen(object):
             level = 'L0'
         else:
             level = 'L' + str(statsdict['level'])
+        if 'size' not in statsdict:
+            size = ''
+        else:
+            size = statsdict['size']
 
         hstring = str(HP)
 
@@ -526,7 +531,7 @@ class GameScreen(object):
         frame.blit(namefont, (barlabelx, 2))
 
         font = pygame.font.SysFont("Arial", 9, bold=True)
-        levelfont = font.render(level, True, Color('black'))
+        levelfont = font.render(size + ' ' + level, True, Color('black'))
         frame.blit(levelfont, (barlabelx, hbary + 12))
 
         return frame
