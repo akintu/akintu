@@ -21,9 +21,6 @@ class GameServer():
         while not self.SDF.queue.empty():
             port, command = self.SDF.queue.get()
             
-            # if port and command.id in self.person:
-                # print self.get_nearby_players(command.id)
-            
             if 'id' in command.__dict__ and command.id in self.person and self.person[command.id].cPane:
                 self.CS.handle(port, command)
                 continue
@@ -191,7 +188,6 @@ class GameServer():
                     p.cLocation = p.location
                     p.location = None
                     p.cPane = pane
-                #print self.pane[pane.pane].person
             else:
                 self.pane[pane] = self.world.get_pane(pane, True)
 
