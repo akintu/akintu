@@ -21,6 +21,9 @@ class GameServer():
         while not self.SDF.queue.empty():
             port, command = self.SDF.queue.get()
             
+            if port and command.id in self.person:
+                print self.get_nearby_players(command.id)
+            
             if 'id' in command.__dict__ and command.id in self.person and self.person[command.id].cPane:
                 self.CS.handle(port, command)
                 continue
@@ -234,3 +237,8 @@ class GameServer():
             return [p for p, i in self.player.iteritems() if i == character][0]
         else:
             return [p for p, i in self.player.iteritems() if i == character.id][0]
+            
+    def get_nearby_players(self, personId):
+        pane = self.person[personId].cPane if self.person[personId].cPane else \
+                self.person[personId].location.pane
+        return [self.person[i] for i in self.player.values() if i in self.pane[pane].person]
