@@ -131,7 +131,7 @@ class TheoryCraft(object):
         print "Bad character name/race, returning nothing; you're so stupid."
 
     @staticmethod
-    def generateMonsterGroup(initialMonster, levelTolerance=1, numberOfPlayers=1, ignoreMaxLevel=False):
+    def generateMonsterGroup(initialMonster, numberOfPlayers=1, ignoreMaxLevel=False):
         ''' Generates a 'random' grouping of monsters
         based on the Monster this method is called on.
         The initialMonster supplied will be in the group,
@@ -150,17 +150,18 @@ class TheoryCraft(object):
                       level.
         Outputs:
           list of Monsters '''
+        
         # Add in category logic when we have regions?  Do we want this ever?
         firstMonster = TheoryCraft.getMonster(loc=initialMonster.location, level=initialMonster.level,
                                               name=initialMonster.name)
         listOfMonsters = [firstMonster]
         if ignoreMaxLevel:
             subList = [x for x in TheoryCraft.monsters if
-                       x['minLevel'] <= initialMonster.level + levelTolerance]
+                       x['minLevel'] <= initialMonster.level]
         else:
             subList = [x for x in TheoryCraft.monsters if
-                       x['minLevel'] <= initialMonster.level + levelTolerance and
-                       x['maxLevel'] >= initialMonster.level - levelTolerance]
+                       x['minLevel'] <= initialMonster.level and
+                       x['maxLevel'] >= initialMonster.level]
         minGP = initialMonster.GP
         for m in subList:
             if m['GP'] < minGP:

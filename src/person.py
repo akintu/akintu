@@ -2734,7 +2734,7 @@ class Person(en.Entity):
         else:
             return None
 
-    def lowerElementalResistance(elementName, magnitude):
+    def lowerElementalResistance(self, elementName, magnitude):
         elementName = elementName.strip().capitalize()
         if elementName == "Fire":
             self.statusFireResistance -= magnitude
@@ -2756,7 +2756,7 @@ class Person(en.Entity):
             else:
                 raise TypeError("Unkown Element used: " + elementName + " .")
 
-    def raiseElementalResistance(elementName, magnitude):
+    def raiseElementalResistance(self, elementName, magnitude):
         elementName = elementName.strip().capitalize()
         if elementName == "Fire":
             self.statusFireResistance += magnitude

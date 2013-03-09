@@ -206,6 +206,15 @@ class Game(object):
                     self.animate_entity(command.location)
                     print "Animating entities at " + str(command.location)
             
+            elif command.type == "CLIENT" and command.action == "RESET_TARGETING" and command.id == self.id:
+                self.selectionMode = "targeting"
+                self.currentTargetId = None
+                self.panePersonIdList = []
+                self.currentAbility = None
+                self.abilityList = []
+                self.currentItem = None
+                self.itemList = []
+            
     def handle_events(self):
         pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
         for event in pygame.event.get():

@@ -248,7 +248,7 @@ class CombatServer():
             if stat.turnsLeft == -1:
                 print target.name + " has status enabled: " + stat.name
             else:
-                print target.name + " has status: " + stat.name + " T=" + str(stat.turnsLeft)
+                print target.name + " has status: " + stat.name + " T=" + `int(stat.turnsLeft)`
      
     def startCombat(self, playerId, monsterId):
         '''Initiates combat for the first player to enter combat.
@@ -445,7 +445,9 @@ class CombatServer():
         player.cLocation = None
         
         self.server.unload_panes()
-            
+        self.server.SDF.queue.put((None, Command("CLIENT", "RESET_TARGETS", id=player.id)))
+        
+        
     def softcoreDeath(self, player):
         '''Kicks player out of combat, back to Pane 0,0 and subtracts 10% of gold.
         Will restore HP/MP/AP to maximum, and remove all temporary status effects.'''

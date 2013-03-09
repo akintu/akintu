@@ -157,6 +157,7 @@ class Monster(person.Person):
         self.basePoisonTolerance += self.levelupPoisonTolerance * diff
         self.baseSpellpower += self.levelupSpellpower * diff
         self.baseStrength += self.levelupStrength * diff
+        self.level = level
 
 
     def adjustMaxHP(self, numberOfPlayers):

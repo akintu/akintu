@@ -101,8 +101,8 @@ class InternalStatus(object):
         target.statusCriticalMagnitude += magnitude
 
     def Damage_over_time_method(self, target, magnitude):
-        dam = calcDamage(None, target, magnitude, magnitude, self.element, "Normal Hit")
-        target.lowerHP(target, dam)
+        dam = Combat.calcDamage(None, target, magnitude, magnitude, self.element, "Normal Hit")
+        Combat.lowerHP(target, dam)
 
     def Dodge_bonus_method(self, target, magnitude):
         target.statusDodge += magnitude
@@ -144,7 +144,7 @@ class InternalStatus(object):
     def Elemental_resistance_shadow_method(self, target, magnitude):
         target.statusShadowResistance += magnitude
 
-    def Elemental_vulnerability_method(self, target, magnitude, element):
+    def Elemental_vulnerability_method(self, target, magnitude):
         target.lowerElementalResistance(self.element, magnitude)
 
     def Hidden_method(self, target, magnitude):
@@ -389,8 +389,8 @@ class InternalStatus(object):
     def Elemental_resistance_shadow_method_reverse(self, target, magnitude):
         target.statusShadowResistance -= magnitude
 
-    def Elemental_vulnerability_method_reverse(self, target, magnitude, element):
-        target.raiseElementalResistance(element, magnitude)
+    def Elemental_vulnerability_method_reverse(self, target, magnitude):
+        target.raiseElementalResistance(self.element, magnitude)
 
     def Hidden_method_reverse(self, target, magnitude):
         pass

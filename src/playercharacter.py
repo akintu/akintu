@@ -337,7 +337,7 @@ class PlayerCharacter(p.Person):
         if self.level == PlayerCharacter.LEVEL_MAX:
             return 0
         else:
-            return PlayerCharacter.expRequiredForLevel[self.level + 1]
+            return PlayerCharacter.expRequiredForLevel[self.level]
         
     def addExperience(self, amount):
         """" Adds the given amount of experience to the character.
@@ -361,8 +361,8 @@ class PlayerCharacter(p.Person):
                 self.level += 1
             return self.level
         else:
-            expForNext = PlayerCharacter.expRequiredForLevel[self.level + 1]
-            expForSecondNext = PlayerCharacter.expRequiredForLevel[self.level + 2]
+            expForNext = PlayerCharacter.expRequiredForLevel[self.level]
+            expForSecondNext = PlayerCharacter.expRequiredForLevel[self.level + 1]
             self._experience += amount
             if self._experience >= expForSecondNext:
                 self._experience = expForSecondNext - 1

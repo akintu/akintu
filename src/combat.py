@@ -554,8 +554,10 @@ class Combat(object):
         elif hitValue == "Partially Resisted":
             dieRoll *= partial
 
-        dieRoll = source.applyBonusDamage(dieRoll, element)
-
+        if source:
+            dieRoll = source.applyBonusDamage(dieRoll, element)
+            # DoTs have no source.
+            
         if element == "Fire":
             dieRoll *= 1 - (min(80, float(target.totalFireResistance) / 100))
         elif element == "Cold":
@@ -586,11 +588,15 @@ class Combat(object):
         result = int(round(dieRoll))
         color = 'orange'
         receiver = source
-        if source.team == "Monsters":
+        if (source and source.team == "Monsters") or (not source and target.team == "Players"):
             color = 'red'
             receiver = target
-        Combat.sendCombatMessage(source.name + " --> " + target.name + ": " + str(result) + " " + 
-                                element + " damage", receiver, color)
+        if source:
+            Combat.sendCombatMessage(source.name + " --> " + target.name + ": " + str(result) + " " + 
+                                    element + " damage", receiver, color)
+        else:
+            Combat.sendCombatMessage("DoT --> " + target.name + ": " + str(result) + " " + element + 
+                                    " damage", receiver, color)
         return result
 
     @staticmethod
