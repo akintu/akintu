@@ -10,6 +10,9 @@ import weaponsparser
 import statuseffectsparser
 import playercharacter
 import location
+import consumable
+import wealth
+import magicalproperty
 from combat import Combat
 from random import randint, choice
 from dice import *
@@ -54,7 +57,7 @@ class TheoryCraft(object):
         for wep in TheoryCraft.weapons:
             if wep['name'] == name:
                 return equipment.Weapon(wep).cloneWithMagicalProperties(ip)
-        print "Weapon name: '" + name + "' not found in master list."
+        return
 
     @staticmethod
     def getArmorByName(name, ip=0):
@@ -63,8 +66,44 @@ class TheoryCraft(object):
         for arm in TheoryCraft.armors:
             if arm['name'] == name:
                 return equipment.Armor(arm).cloneWithMagicalProperties(ip)
-        print "Armor name: '" + name + "' not found in master list."
+        return
 
+    @staticmethod
+    def rehydrateTreasure(id):
+        print "DEBUG: " + id
+        if id in consumable.Consumable.allPotions or id in consumable.Consumable.allPoisons:
+            # TODO: Check for other consumable types!!
+            return consumable.Consumable(id)
+        if "Gold" in id:
+            # Lousy hack, make better TODO.
+            amount = int(id.partition(": ")[2])
+            return wealth.Wealth("Gold", amount)
+        return TheoryCraft.rehydrateEquipment(id)
+        
+    @staticmethod
+    def rehydrateEquipment(id):
+        nameAndProps = id.partition("$")
+        name = nameAndProps[0]
+        
+        # Create temporary husk of an item, with no ip.
+        weapon = TheoryCraft.getWeaponByName(name, -500)
+        armor = TheoryCraft.getArmorByName(name, -500)
+        item = weapon
+        if not weapon:
+            item = armor
+            
+        propertyList = []
+        if nameAndProps[2]:
+            propSplits = nameAndProps[2].split("$")
+            for piece in propSplits:
+                propName = piece.partition("#")[0]
+                propCount = piece.partition("#")[2]
+                propertyList.append(magicalproperty.MagicalProperty(
+                    magicalproperty.MagicalProperty.allProperties[propName], item, propName, int(propCount)))
+        
+        rValue = item.cloneWithMagicalProperties(0, propertyList)
+        return rValue
+        
     @staticmethod
     def convertFromDetails(tuple):
         '''Converts a 'detail tuple' representing the intermediate state of

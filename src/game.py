@@ -194,6 +194,15 @@ class Game(object):
             elif command.type == "ITEM" and command.action == "REMOVE":
                 self.pane.person[command.id].inventory.removeItem(itemName=command.itemName)
                 
+            ###### Get Item ######
+            elif command.type == "ITEM" and command.action == "CREATE":
+                item = TheoryCraft.rehydrateTreasure(command.itemIdentifier)
+                self.pane.person[command.id].inventory.addItem(item)
+                
+            elif command.type == "ITEM" and command.action == "EQUIP":
+                item = TheoryCraft.rehydrateTreasure(command.itemIdentifier)
+                self.pane.person[command.id].equip(item)
+                
             elif command.type == "ENTITY":
                 
                 if command.action == "REMOVE":

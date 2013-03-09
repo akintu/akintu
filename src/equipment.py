@@ -29,10 +29,32 @@ class Equipment(e.Entity):
         self.displayName = self.name
         self.goldValue = int(goldValue)
         self.weight = weight
-        self.identifier = "TODO"
+        self.identifier = "Uninitialized"
         self.bonusTendencyList = None
 
-    def cloneWithMagicalProperties(self, ip):
+    def __eq__(self, other):
+        if not isinstance(other, Equipment):
+            return False
+        if isinstance(self, Armor) and not isinstance(other, Armor):
+            return False
+        if isinstance(self, Weapon) and not isinstance(other, Weapon):
+            return False
+        if self.name != other.name:
+            return False
+        propNameList_1 = [(x.name, x.counts) for x in self.propertyList]
+        propNameList_2 = [(x.name, x.counts) for x in other.propertyList]
+        propNameSet_1 = set(propNameList_1)
+        propNameSet_2 = set(propNameList_2)
+        if propNameSet_1 != propNameSet_2:
+            return False
+        return True
+        
+    def __ne__(self, other):
+        if self == other:
+            return False
+        return True
+        
+    def cloneWithMagicalProperties(self, ip, propList=None):
         """Method applys random magical properties.  This method WILL adjust the gold value,
         possibly the damage Min and Max, and definitely the 'identifier'.
         Inputs:
@@ -40,17 +62,16 @@ class Equipment(e.Entity):
                      of this item.
         Outputs:
           Equipment of the same type as was input (as self)"""
-        propertyList = magicalproperty.MagicalProperty.generateProperties(self, ip)
+        propertyList = propList
+        if not propList:
+            propertyList = magicalproperty.MagicalProperty.generateProperties(self, ip)
 
-        newIdentifier = self.name
         goldModSum = 0
         for property in propertyList:
             goldModSum += property.goldMod * property.counts
-            newIdentifier += " ; mProp: " + property.name + " counts: " + str(property.counts)
 
         newCopy = copy.copy(self)
         newCopy.goldValue = round(self.goldValue * (1 + float(goldModSum / 100)))
-        newCopy.identifier = newIdentifier
         for property in propertyList:
             property.item = newCopy
             if property.name == "Damage":
@@ -60,8 +81,17 @@ class Equipment(e.Entity):
         newPropertyList = [x for x in propertyList if x.name != "Damage" and x.name != "DR"]
         newCopy.propertyList = newPropertyList
         newCopy.assignDisplayName()
+        newCopy.assignIdentifier()
         return newCopy
 
+    def assignIdentifier(self):
+        longName = []
+        longName.append(self.name)
+        for prop in self.propertyList:
+            longName.append("$")
+            longName.append(prop.name + "#" + `prop.counts`)
+        self.identifier = ''.join(longName)
+        
     def assignDisplayName(self):
         ''' Assigns a more colorful name to this item
         based on its magical properties.  If the item

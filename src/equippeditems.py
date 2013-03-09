@@ -186,15 +186,15 @@ class EquippedItems(object):
     def totalArmorGrade(self):
         ag = 0
         if self._allGear['Head']:
-            ag += self._allGear['Head'].armorGrade
+            ag += self._allGear['Head'].gradePoints
         if self._allGear['Chest']:
-            ag += self._allGear['Head'].armorGrade
+            ag += self._allGear['Head'].gradePoints
         if self._allGear['Legs']:
-            ag += self.allGear['Legs'].armorGrade
+            ag += self._allGear['Legs'].gradePoints
         if self._allGear['Hands']:
-            ag += self.allGear['Hands'].armorGrade
+            ag += self._allGear['Hands'].gradePoints
         if self._allGear['Feet']:
-            ag += self.allGear['Feet'].armorGrade
+            ag += self._allGear['Feet'].gradePoints
         return ag
 
     @property
@@ -217,15 +217,15 @@ class EquippedItems(object):
         if self._allGear['Chest']:
             totalWeight += self._allGear['Head'].weight
         if self._allGear['Legs']:
-            totalWeight += self.allGear['Legs'].weight
+            totalWeight += self._allGear['Legs'].weight
         if self._allGear['Hands']:
-            totalWeight += self.allGear['Hands'].weight
+            totalWeight += self._allGear['Hands'].weight
         if self._allGear['Feet']:
-            totalWeight += self.allGear['Feet'].weight
+            totalWeight += self._allGear['Feet'].weight
         if self._allGear['Main Hand']:
-            totalWeight += self.allGear['Main Hand'].weight
+            totalWeight += self._allGear['Main Hand'].weight
         if self._allGear['Off Hand']:
-            totalWeight += self.allGear['Off Hand'].weight
+            totalWeight += self._allGear['Off Hand'].weight
         return totalWeight
 
 
