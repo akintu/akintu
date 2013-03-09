@@ -24,7 +24,7 @@ from world import *
 clock = pygame.time.Clock()
 
 class Game(object):
-    def __init__(self, port, serverip=None, state=None, player=None):
+    def __init__(self, port, serverip=None, state=None, player=None, **kwargs):
         '''
         Parameters:
             port:       required for both host and client
