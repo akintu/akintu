@@ -120,8 +120,10 @@ class GameScreen(object):
 
         # Draw the entire background (if this becomes an issue we'll refactor)
         self.screen.blit(self.background, [0, 0])
-        self.personsgroup.draw(self.screen)
+        self.personsgroup.update()
+        rectlist = self.personsgroup.draw(self.screen)
         pygame.display.update()
+        self.personsgroup.clear(self.screen, self.background)
 
     def add_person(self, personid, statsdict):
         '''
