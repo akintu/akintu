@@ -130,6 +130,7 @@ class GameScreen(object):
         Required entries in statsdict:
             - 'image'
             - 'location'
+            - 'team'
 
         Supported entries in statsdict:
             - 'image'
@@ -146,7 +147,6 @@ class GameScreen(object):
             - 'totalMP'
             - 'totalAP'
             - 'restrictedAP'
-            - 'team'
             - 'level'
 
         To be supported in the future:
