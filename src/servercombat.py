@@ -71,18 +71,18 @@ class CombatServer():
                 if port:
                     command.id = self.server.player[port]
                     del self.server.player[port]
-                self.server.pane[activePlayer.cPane].person.remove(command.id)
+                self.server.pane[self.server.person[command.id].cPane].person.remove(command.id)
 
                 #Notify clients in the affected pane
                 for p, i in self.server.player.iteritems():
-                    if self.server.person[i].cPane == activePlayer.cPane:
+                    if self.server.person[i].cPane == self.server.person[command.id].cPane:
                         self.server.SDF.send(p, command)
-                del activePlayer
+                del self.server.person[command.id]
                 self.server.unload_panes()
         
         #### Attack Target ####
         elif command.type == "ABILITY" and command.action == "ATTACK":
-            source = activePlayer
+            source = self.server.person[command.id]
             target = self.server.person[command.targetId]
             abilToUse = None
             for abil in source.abilities:
@@ -107,15 +107,15 @@ class CombatServer():
                 abilToUse.use(target)
             else:
                 Combat.sendCombatMessage(useDuple[1], source)
-            self.check_turn_end(activePlayer.cPane)
+            self.check_turn_end(self.server.person[command.id].cPane)
         elif command.type == "ABILITY" and command.action == "END_TURN":
-            target = activePlayer
+            target = self.server.person[command.id]
             Combat.modifyResource(target, "AP", -target.AP)
             Combat.decrementMovementTiles(target, removeAll=True)
-            self.check_turn_end(activePlayer.cPane)
+            self.check_turn_end(self.server.person[command.id].cPane)
         #### Using Items ####
         elif command.type == "ITEM" and command.action == "USE":
-            user = activePlayer
+            user = self.server.person[command.id]
             item = None
             for x in user.inventory.allConsumables:
                 if x.name == command.itemName:
@@ -132,7 +132,7 @@ class CombatServer():
                                                     itemName=command.itemName))
             
         if command.id in self.server.person:
-            self.update_dead_people(activePlayer.cPane)
+            self.update_dead_people(self.server.person[command.id].cPane)
         
         
             
