@@ -372,6 +372,10 @@ class CombatServer():
             state.turnTimer.cancel()
         except:
             pass
+        char = livingPlayers[0]
+        port = self.server.getPlayerPort(char)
+        monsterLeader = self.server.get_monster_leader(char)
+        self.server.SDF.send(port, Command("PERSON", "REMOVE", id=monsterLeader.id))
         
         for player in livingPlayers:
             self.giveVictoryExperience(player, state.deadMonsterList)
