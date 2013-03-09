@@ -24,26 +24,27 @@ class CombatServer():
                 self.server.SDF.send(port, Command("PERSON", "REMOVE", id=command.id))
                 self.server.SDF.send(port, Command("UPDATE", "COMBAT", combat=False))
                 self.server.SDF.send(port, Command("PERSON", "CREATE", id=command.id, \
-                        location=self.server.person[command.id].location, \
-                        details=self.server.person[command.id].getDetailTuple()))
-                for i in self.server.pane[self.server.person[command.id].location.pane].person:
+                        location=activePlayer.location, \
+                        details=activePlayer.getDetailTuple()))
+                for i in self.server.pane[activePlayer.location.pane].person:
                     if i != command.id:
                         self.server.SDF.send(port, Command("PERSON", "CREATE", id=i, \
                                 location=self.server.person[i].location, \
                                 details=self.server.person[i].getDetailTuple()))
 
                 i = [i for i, p in self.server.person.iteritems() if p.location == \
-                        self.server.person[command.id].cPane][0]
+                        activePlayer.cPane][0]
                 self.server.person[i].ai.resume()
                 self.server.person[i].cPane = None
                 self.server.person[i].cLocation = None
 
-                newloc = self.server.person[command.id].location.move( \
-                        10 - self.server.person[command.id].location.direction, 1)
+                newloc = activePlayer.location.move(10 - activePlayer.location.direction, 1)
                 self.server.SDF.queue.put((None, Command("PERSON", "MOVE", id=command.id, \
                         location=newloc, details=True)))
+                self.server.pane[activePlayer.cPane].person.remove(command.id)
                 activePlayer.cPane = None
                 activePlayer.cLocation = None
+                
                 self.server.unload_panes()
 
             # If this is a legal move request
@@ -57,12 +58,12 @@ class CombatServer():
                     Combat.decrementMovementTiles(activePlayer)
 
                 # Update location and broadcast
-                self.server.person[command.id].cLocation = command.location
+                activePlayer.cLocation = command.location
                 for p, i in self.server.player.iteritems():
-                    if p != port and self.server.person[command.id].cPane == \
+                    if p != port and activePlayer.cPane == \
                             self.server.person[i].cPane:
                         self.server.SDF.send(p, command)
-                self.check_turn_end(self.server.person[command.id].cPane)
+                self.check_turn_end(activePlayer.cPane)
         
         ###### RemovePerson ######
         elif command.type == "PERSON" and command.action == "REMOVE":
@@ -70,18 +71,18 @@ class CombatServer():
                 if port:
                     command.id = self.server.player[port]
                     del self.server.player[port]
-                self.server.pane[self.server.person[command.id].cPane].person.remove(command.id)
+                self.server.pane[activePlayer.cPane].person.remove(command.id)
 
                 #Notify clients in the affected pane
                 for p, i in self.server.player.iteritems():
-                    if self.server.person[i].cPane == self.server.person[command.id].cPane:
+                    if self.server.person[i].cPane == activePlayer.cPane:
                         self.server.SDF.send(p, command)
-                del self.server.person[command.id]
+                del activePlayer
                 self.server.unload_panes()
         
         #### Attack Target ####
         elif command.type == "ABILITY" and command.action == "ATTACK":
-            source = self.server.person[command.id]
+            source = activePlayer
             target = self.server.person[command.targetId]
             abilToUse = None
             for abil in source.abilities:
@@ -106,15 +107,15 @@ class CombatServer():
                 abilToUse.use(target)
             else:
                 Combat.sendCombatMessage(useDuple[1], source)
-            self.check_turn_end(self.server.person[command.id].cPane)
+            self.check_turn_end(activePlayer.cPane)
         elif command.type == "ABILITY" and command.action == "END_TURN":
-            target = self.server.person[command.id]
+            target = activePlayer
             Combat.modifyResource(target, "AP", -target.AP)
             Combat.decrementMovementTiles(target, removeAll=True)
-            self.check_turn_end(self.server.person[command.id].cPane)
+            self.check_turn_end(activePlayer.cPane)
         #### Using Items ####
         elif command.type == "ITEM" and command.action == "USE":
-            user = self.server.person[command.id]
+            user = activePlayer
             item = None
             for x in user.inventory.allConsumables:
                 if x.name == command.itemName:
@@ -131,7 +132,7 @@ class CombatServer():
                                                     itemName=command.itemName))
             
         if command.id in self.server.person:
-            self.update_dead_people(self.server.person[command.id].cPane)
+            self.update_dead_people(activePlayer.cPane)
         
         
             
@@ -156,6 +157,9 @@ class CombatServer():
         If they do not, it will "remove them" from the combatPane and add them to a
         deadList associated with this CombatState.  If all monsters are dead and at least
         one player remains, enters the victory phase.'''
+        if not combatPane:
+            return
+            
         toUpdateList = []
         for char in [self.server.person[x] for x in self.server.pane[combatPane].person]:
             if char.HP <= 0 and char.team == "Monsters":
