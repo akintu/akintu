@@ -193,6 +193,18 @@ class Game(object):
             ###### Remove Item ######
             elif command.type == "ITEM" and command.action == "REMOVE":
                 self.pane.person[command.id].inventory.removeItem(itemName=command.itemName)
+                
+            elif command.type == "ENTITY":
+                
+                if command.action == "REMOVE":
+                    #Remove from pane
+                    self.pane.remove_entities(command.location.tile)
+                    self.screen.update_tile(self.pane.get_tile(command.location.tile), command.location)
+                    print "Removing entities at " + str(command.location.tile)
+                if command.action == "ANIMATE":
+                    #Animate obstacle
+                    self.animate_entity(command.location)
+                    print "Animating entities at " + str(command.location)
             
     def handle_events(self):
         pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
@@ -456,6 +468,18 @@ class Game(object):
             self.pane.person[id].anim_start = 0
         self.screen.update_person(id, statsdict)
 
+    def animate_entity(self, location):
+        tile = self.pane.get_tile(location.tile)
+        for item in tile.get_items():
+            images = item.getAnimationImages()
+            if images:
+                item.image = images[3]
+            duration = item.getAnimationSpeed()
+        self.screen.update_tile(tile, location)
+        
+    def do_animation_entity(self, tile_loc, image_index, duration):
+        pass
+        
     def switch_panes(self, location, combat=False):
         #TODO we can add transitions here.
         if combat:

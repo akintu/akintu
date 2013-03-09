@@ -15,3 +15,12 @@ class Entity(object):
         self.cPane = None
         self.cLocation = None
 
+    def getAnimationImages(self):
+        print "Called unimplemented method Entity.getAnimationImages()."
+        print "You must override this function in child implementation."
+        pass
+        
+    def getAnimationSpeed(self):
+        print "Called unimplemented method Entity.getAnimationSpeed()."
+        print "You must override this function in child implementation."
+        pass

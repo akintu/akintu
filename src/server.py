@@ -159,17 +159,20 @@ class GameServer():
                     #Notify clients in the affected pane
                     for p, i in self.player.iteritems():    #Replace this with list of players on current pane
                         if self.person[i].location.pane == self.person[command.id].location.pane:
-                            self.SDF.send(p, command)
+                            #Send animation request...
+                            action_animate = Command(type="ENTITY", action="ANIMATE", location=loc)
+                            self.SDF.send(p, action_animate)
+                            # action_remove = Command(type="ENTITY", action="REMOVE", location=loc)
+                            # self.SDF.send(p, action_remove)
+
                             thisPlayer = self.person[self.player[p]]
-                            if thisPlayer in inventories:
-                                itemList = inventories[thisPlayer]
-                                # print str(thisPlayer.name) + " got:"
-                                for item in itemList:
-                                    # print "  " + str(item.name)
-                                    #thisPlayer.inventory.addItem(item)
-                                    action = Command("UPDATE", "TEXT", 
-                                    text='Found item: ' + item.name, color='lightskyblue')
-                                    self.SDF.send(p, action)
+                            itemList = inventories[thisPlayer]
+                            for item in itemList:
+                                #thisPlayer.inventory.addItem(item)
+                                action = Command("UPDATE", "TEXT", 
+                                text='Found item: ' + item.name, color='lightskyblue')
+                                self.SDF.send(p, action)
+                                    
                             
             # Get items: TODO
             

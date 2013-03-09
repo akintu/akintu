@@ -113,6 +113,16 @@ class Pane(object):
                     s += " "
             s += "|\n"
         return s
+        
+    def get_tile(self, location):
+        if location in self.tiles:
+            return self.tiles[location]
+        else:
+            print "Could not find tile at " + str(location) + " on pane " + str(self.location) 
+            
+    def remove_entities(self, location):
+        if location in self.tiles:
+            self.tiles[location].remove_items()
 
     def load_monsters(self, monsters=None):
         '''
@@ -249,7 +259,7 @@ class Pane(object):
             if chest:
                 #print "Found chest in front of you on tile " + str(facing)
                 self.tiles[facing].remove_chest()
-                return (chest, facing)
+                return (chest, Location(self.location, facing))
         
         #If there was no chest, look on surrounding tiles
         for key, tile in tiles.iteritems():
@@ -257,7 +267,8 @@ class Pane(object):
                 chest = self.tiles[tile].get_chest()
                 if chest:
                     #print "Found chest on tile " + str(tile)
-                    return (chest, tile)
+                    self.tiles[tile].remove_chest()
+                    return (chest, Location(self.location, tile))
         return (None, None)
         
     def get_item(self, location):
@@ -480,8 +491,16 @@ class Tile(object):
         self.items.append(entity)
     
     def remove_item(self, item):
-        self.entities.remove(item)
-        self.items.remove(item)
+        if item == self.chest:
+            self.chest = None
+        if item in self.entities:
+            self.entities.remove(item)
+        if item in self.items:
+            self.items.remove(item)
+            
+    def remove_items(self):
+        for item in self.items:
+            self.remove_item(item)
     
     def get_items(self):
         return self.items
