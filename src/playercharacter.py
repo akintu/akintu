@@ -909,6 +909,9 @@ class PlayerCharacter(p.Person):
     # TODO: Change the amount Rings/Amulets affect you based on Sorcery.
     def equip(self, newPiece):
         """Equips a piece of gear, and places any replaced gear in the inventory."""
+        if newPiece not in self.inventory.allItems:
+            print "Attempted to equip item not in inventory!"
+            return
         oldPieces = self.equippedItems.equip(newPiece)
         oldPiece = oldPieces[0]
         oldPiece2 = None
@@ -948,6 +951,28 @@ class PlayerCharacter(p.Person):
             self.inventory.allItems.append(oldPiece2)
         # TODO: Check to see if weight capacity has changed?
 
+    def shouldAutoEquip(self, armor):
+        ''' Determines if a piece of equipment should be 
+        auto-equipped upon acquisition. '''
+        if not isinstance(armor, equipment.Armor):
+            return False
+        if armor.type == "Finger" and None in self.equippedItems.equippedFingers:
+            return True
+        if armor.type == "Neck" and not self.equippedItems.equippedNeck:
+            return True
+        if armor.grade == self.armorTolerance:
+            if armor.type == "Hands" and not self.equippedItems.equippedHandsArmor:
+                return True
+            elif armor.type == "Head" and not self.equippedItems.equippedHeadArmor:
+                return True
+            elif armor.type == "Legs" and not self.equippedItems.equippedLegsArmor:
+                return True
+            elif armor.type == "Chest" and not self.equippedItems.equippedChestArmor:
+                return True
+            elif armor.type == "Feet" and not self.equippedItems.equippedFeetArmor:
+                return True
+        return False
+        
     def printCharacterSheet(self):
         '''Method prints a mock-up of a character sheet to the console as
         a placeholder until a real UI character sheet exists.'''

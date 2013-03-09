@@ -165,9 +165,14 @@ class GameServer():
                             thisPlayer = self.person[self.player[p]]
                             itemList = inventories[thisPlayer]
                             for item in itemList:
-                                #thisPlayer.inventory.addItem(item)
-                                action = Command("UPDATE", "TEXT", 
-                                text='Found item: ' + item.name, color='lightskyblue')
+                                equipped = False
+                                if thisPlayer.shouldAutoEquip(item):
+                                    thisPlayer.equip(item)
+                                    equipped = True
+                                text='Found item: ' + item.displayName
+                                if equipped:
+                                    text ='Found and equipped item: ' + item.displayName
+                                action = Command("UPDATE", "TEXT", text=text, color='lightskyblue')
                                 self.SDF.send(p, action)
                                     
                             

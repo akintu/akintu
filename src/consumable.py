@@ -13,6 +13,7 @@ class Consumable(entity.Entity):
     def __init__(self, name, location=None):
         entity.Entity.__init__(self, location)
         self.name = name
+        self.displayName = name
         self.identifier = name
         self.weight = 1
         self.type = None # Used as cooldown name
