@@ -174,7 +174,6 @@ class GameServer():
     def tile_is_open(self, location):
         if location.pane not in self.pane:
             return False
-        print self.person.keys()
         return self.pane[location.pane].is_tile_passable(location) and \
                 location.tile not in [self.person[i].location.tile \
                 for i in self.pane[location.pane].person]
