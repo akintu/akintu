@@ -39,6 +39,8 @@ class WelcomeWindow(object):
         self.loadingworldvar = StringVar()
         self.worldseed = StringVar()
         self.worldsave = StringVar()
+        self.turnlengthstr = StringVar()
+        self.turnlength = -1
 
         self.mainmenu()
 
@@ -135,16 +137,20 @@ class WelcomeWindow(object):
         loadworldr = ttk.Radiobutton(frame, text='Load World', variable=self.loadingworldvar, value='Load World')
         newworldbox = Entry(frame, textvariable=self.worldseed)
         loadworldcombo = ttk.Combobox(frame, textvariable=self.worldsave, values=(), state='readonly')
+        turnlengthbox = Entry(frame, textvariable=self.turnlengthstr)
+        turnlengthl = ttk.Label(frame, text='Turn length (empty for infinite)')
         # Lay out the widgets
         ipl.grid(column=2, row=1, stick=W, padx=5, pady=5)
         portl.grid(column=2, row=2, stick=W, padx=5, pady=5)
         portbox.grid(column=2, row=3, stick=(W, E), padx=5, pady=5)
-        newworldr.grid(column=1, row=4, stick=W, padx=5, pady=5)
-        loadworldr.grid(column=1, row=5, stick=W, padx=5, pady=5)
-        newworldbox.grid(column=2, row=4, stick=(W, E), padx=5, pady=5)
-        loadworldcombo.grid(column=2, row=5, stick=(W, E), padx=5, pady=5)
-        backb.grid(column=1, row=6, stick=(N, S), padx=20, pady=20)
-        finishb.grid(column=3, row=6, stick=(N, S), padx=20, pady=20)
+        turnlengthl.grid(column=2, row=4, stick=W, padx=5, pady=5)
+        turnlengthbox.grid(column=2, row=5, stick=(W, E), padx=5, pady=5)
+        newworldr.grid(column=1, row=6, stick=W, padx=5, pady=5)
+        loadworldr.grid(column=1, row=7, stick=W, padx=5, pady=5)
+        newworldbox.grid(column=2, row=6, stick=(W, E), padx=5, pady=5)
+        loadworldcombo.grid(column=2, row=7, stick=(W, E), padx=5, pady=5)
+        backb.grid(column=1, row=8, stick=(N, S), padx=20, pady=20)
+        finishb.grid(column=3, row=8, stick=(N, S), padx=20, pady=20)
         return frame
 
     def mainmenu(self):
@@ -195,6 +201,12 @@ class WelcomeWindow(object):
     def finishhost(self):
         try:
             self.port = int(self.portstr.get())
+            if self.turnlengthstr.get() == '':
+                self.turnlength = -1
+            else:
+                self.turnlength = int(self.turnlengthstr.get())
+                if self.turnlength <= 0:
+                    self.turnlength = -1
         except ValueError:
             return
         if self.loadingworldvar.get() == '' or self.worldseed.get() == '':
@@ -237,6 +249,8 @@ def runwelcome():
         ret.append(window.joinip.get())
 
     ret.append(window.port)
+
+    ret.append(window.turnlength)
 
     # Return (player, state, ip, port)
     return tuple(ret)
