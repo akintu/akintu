@@ -972,7 +972,7 @@ class PlayerCharacter(p.Person):
         cs.append("| Awareness:         " + `self.totalAwareness` + " (" + `self.equipmentAwareness` + ")  Sneak: " + `self.totalSneak` + " (" + `self.equipmentSneak` + ")\n")
         cs.append("| Trap Evade:        " + `self.totalTrapEvade` + " (" + `self.equipmentTrapEvade` + ")  Movement Tiles: " + `self.totalMovementTiles` + " (" + `self.equipmentMovementTiles` + ")\n")
         cs.append("| ----------->>> Tertiary Statistics <<<----------------\n")
-        cs.append("| Shop Bonus:           " + `self.totalShopBonus` + " (" + `self.equipmentShopBonus` + ")  Carrying Capacity: " + `self.inventoryCapacity` + " (" + `self.equipmentCarryingCapacity` + ")\n")
+        cs.append("| Shop Bonus:           " + `self.totalShopBonus` + "% (" + `self.equipmentShopBonus` + "%)  Carrying Capacity: " + `self.inventoryCapacity` + " (" + `self.equipmentCarryingCapacity` + ")\n")
         cs.append("| Trap Rating Bonus:    " + `self.bonusTrapRating` + "      Trap Damage Bonus: " + `self.bonusTrapDamage` + "\n")
         cs.append("| Jewlery Effect:       " + `self.totalJewleryEffect` + "%     Potion Bonus Effect: " + `self.totalPotionEffect` + "%\n") 
         cs.append("| Identification:       " + `self.totalIdentification` + " (" + `self.equipmentIdentification` + ")\n")

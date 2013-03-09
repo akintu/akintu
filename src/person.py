@@ -803,8 +803,8 @@ class Person(en.Entity):
         "static" abililties that boost TrapEvade, and "dynamic"
         statuses that boost or reduce TrapEvade.
         """
-        return (self.totalCunning +
-                self.totalDexterity +
+        return (self.totalCunning / 2 +
+                self.totalDexterity / 2 +
                 self._equipmentTrapEvade +
                 self._statusTrapEvade +
                 self._baseTrapEvade)

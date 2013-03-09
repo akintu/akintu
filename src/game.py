@@ -276,10 +276,12 @@ class Game(object):
                 if not self.combat:
                     if event.key == K_g:
                         self.get_item()
-                    if event.key == K_b:
+                    elif event.key == K_b:
                         #self.break_in() -- Will bash/pick-lock chests.  Will attempt a picklock first if
                         # you are a thief primary class.  If that fails, all other attempts will be bashes.
                         pass
+                    elif event.key == K_c:
+                        self.display_character_sheet()
                     
     def get_item(self):
         self.CDF.send(Command("PERSON", "OPEN", id=self.id))
@@ -312,6 +314,10 @@ class Game(object):
                         1.0 / self.pane.person[self.id].movementSpeed)
                     self.pane.person[self.id].location = newloc
 
+    def display_character_sheet(self):
+        player = self.pane.person[self.id]
+        player.printCharacterSheet()
+                    
     def force_end_turn(self):
         ap = self.pane.person[self.id].AP
         movesLeft = self.pane.person[self.id].remainingMovementTiles
