@@ -21,8 +21,8 @@ class GameServer():
         while not self.SDF.queue.empty():
             port, command = self.SDF.queue.get()
             
-            if port and command.id in self.person:
-                print self.get_nearby_players(command.id)
+            # if port and command.id in self.person:
+                # print self.get_nearby_players(command.id)
             
             if 'id' in command.__dict__ and command.id in self.person and self.person[command.id].cPane:
                 self.CS.handle(port, command)
@@ -154,7 +154,7 @@ class GameServer():
                 currentPane = self.pane[activePlayer.location.pane]
                 chest, loc = currentPane.get_treasure_chest(activePlayer.location)
                 if chest:
-                    inventories = chest.open([activePlayer])    #Replace this with list of players on current pane
+                    inventories = chest.open(self.get_nearby_players(command.id))    #Replace this with list of players on current pane
                     
                     #Notify clients in the affected pane
                     for p, i in self.player.iteritems():    #Replace this with list of players on current pane
@@ -163,9 +163,9 @@ class GameServer():
                             thisPlayer = self.person[self.player[p]]
                             if thisPlayer in inventories:
                                 itemList = inventories[thisPlayer]
-                                print str(thisPlayer.name) + " got:"
+                                # print str(thisPlayer.name) + " got:"
                                 for item in itemList:
-                                    print "  " + str(item.name)
+                                    # print "  " + str(item.name)
                                     #thisPlayer.inventory.addItem(item)
                                     action = Command("UPDATE", "TEXT", 
                                     text='Found item: ' + item.name, color='lightskyblue')

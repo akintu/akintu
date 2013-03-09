@@ -247,7 +247,7 @@ class Pane(object):
         if facing in self.tiles:
             chest = self.tiles[facing].get_chest()
             if chest:
-                print "Found chest in front of you on tile " + str(facing)
+                #print "Found chest in front of you on tile " + str(facing)
                 self.tiles[facing].remove_chest()
                 return (chest, facing)
         
@@ -256,7 +256,7 @@ class Pane(object):
             if tile in self.tiles:
                 chest = self.tiles[tile].get_chest()
                 if chest:
-                    print "Found chest on tile " + str(tile)
+                    #print "Found chest on tile " + str(tile)
                     return (chest, tile)
         return (None, None)
         
