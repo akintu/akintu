@@ -1611,11 +1611,11 @@ class Person(en.Entity):
         "static" abililties that boost MeleeAccuracy, and "dynamic"
         statuses that boost or reduce MeleeAccuracy.
         """
-        return (self.totalDexterity * 0.5 +
+        return int(round(self.totalDexterity * 0.5 +
                 self.totalStrength * 0.5 +
                 self._equipmentMeleeAccuracy +
                 self._statusMeleeAccuracy +
-                self._baseMeleeAccuracy)
+                self._baseMeleeAccuracy))
 
     @property
     def equipmentMeleeAccuracy(self):

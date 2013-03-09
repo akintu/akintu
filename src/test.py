@@ -57,15 +57,15 @@ if __name__ == "__main__":
                 # print abil.name + " " + str(abil.APCost)
         #print "   " + char.equippedItems.equippedWeapon.name
     char = theorycraft.TheoryCraft.getNewPlayerCharacter("Elf", "Battle Mage")
-    
-    tc = treasurechest.TreasureChest("Small", 1, None, 12)
-    for i in range(15):
-        tc.generateTreasure(char)
-        for all in char.inventory.allItems:
-            if isinstance(all, equipment.Equipment):
-                for mag in all.propertyList:
-                    print mag.name + ":  " + str(mag.counts)
-                print " ----- " + all.displayName
+    char.printCharacterSheet()
+    #tc = treasurechest.TreasureChest("Small", 1, None, 12)
+    # for i in range(15):
+        # tc.generateTreasure(char)
+        # for all in char.inventory.allItems:
+            # if isinstance(all, equipment.Equipment):
+                # for mag in all.propertyList:
+                    # print mag.name + ":  " + str(mag.counts)
+                # print " ----- " + all.displayName
     # print char.equippedItems.equippedWeapon.displayName
 
     # initMonster = theorycraft.TheoryCraft.getMonster(level=4)

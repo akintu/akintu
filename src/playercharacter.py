@@ -948,7 +948,45 @@ class PlayerCharacter(p.Person):
             self.inventory.allItems.append(oldPiece2)
         # TODO: Check to see if weight capacity has changed?
 
-
+    def printCharacterSheet(self):
+        '''Method prints a mock-up of a character sheet to the console as
+        a placeholder until a real UI character sheet exists.'''
+        cs = []
+        cs.append("/-------------------------------------------------------\n")
+        cs.append("| Character Name: " + self.name + "\n")
+        cs.append("| Level: " + `self.level` + "  Experience: " + `self.experience` + "/" + `self.getExpForNextLevel()` + "\n")
+        cs.append("| Character Class: " + self.characterClass + "  Race: " + self.race + "\n")
+        cs.append("| HP: " + `self.HP` + "/" + `self.totalHP` + "  MP: " + `self.MP` + "/" + `self.totalMP` + "  AP: " + `self.AP` + "/" + `self.totalAP` + "\n" )
+        cs.append("| ----------->>> Primary Statistics <<<-----------------\n")
+        cs.append("| Strength: " + `self.totalStrength` + " (" + `self.equipmentStrength` + ")  Dexterity: " + `self.totalDexterity` + " (" + `self.equipmentDexterity` + ")\n")
+        cs.append("| Cunning: " + `self.totalCunning` + " (" + `self.equipmentCunning` + ")  Sorcery: " + `self.totalSorcery` + " (" + `self.equipmentSorcery` + ")\n")
+        cs.append("| Piety: " + `self.totalPiety` + " (" + `self.equipmentPiety` + ")  Constitution: " + `self.totalConstitution` + " (" + `self.equipmentConstitution` + ")\n")
+        cs.append("| ----------->>> Secondary Statistics <<<---------------\n")
+        cs.append("| Melee Accuracy: " + `self.totalMeleeAccuracy` + " (" + `self.equipmentMeleeAccuracy` + ")  Ranged Accuracy: " + `self.totalRangedAccuracy` + " (" + `self.equipmentRangedAccuracy` + ")\n")
+        cs.append("| Dodge: " + `self.totalDodge` + " (" + `self.equipmentDodge` + ")  Ranged Dodge: " + `self.totalRangedDodge` + " (" + `self.equipmentRangedDodge` + ")\n")
+        cs.append("| Spellpower: " + `self.totalSpellpower` + " (" + `self.equipmentSpellpower` + ")  Magic Resist: " + `self.totalMagicResist` + " (" + `self.equipmentMagicResist` + ")\n")
+        cs.append("| Critical Chance: " + `self.totalCriticalChance` + "% (" + `self.equipmentCriticalChance` + ")  Critical Magnitude: " + `self.totalCriticalMagnitude` + "% (" + `self.equipmentCriticalMagnitude` + ")\n")
+        cs.append("| Armor Penetration: " + `self.totalArmorPenetration` + "% (" + `self.equipmentArmorPenetration` + ")  Damage Resistance: " + `self.totalDR` + "% (" + `self.equipmentDR` + ")\n")
+        cs.append("| Poison Tolerance: " + `self.totalPoisonTolerance` + " (" + `self.equipmentPoisonTolerance` + ")  Poison Rating Bonus: " + `self.totalPoisonRatingBonus` + "\n")  
+        cs.append("| ----------->>> Elemental Resistances <<<--------------\n")
+        cs.append("| Arcane Resistance: " + `self.totalArcaneResistance` + "% (" + `self.equipmentArcaneResistance` + ")\n")
+        cs.append("| Cold Resistance: " + `self.totalColdResistance` + "% (" + `self.equipmentColdResistance` + ")\n")
+        cs.append("| Divine Resistance: " + `self.totalDivineResistance` + "% (" + `self.equipmentDivineResistance` + ")\n")
+        cs.append("| Electric Resistance: " + `self.totalElectricResistance` + "% (" + `self.equipmentElectricResistance` + ")\n")
+        cs.append("| Fire Resistance: " + `self.totalFireResistance` + "% (" + `self.equipmentFireResistance` + ")\n")
+        cs.append("| Poison Resistance: " + `self.totalPoisonResistance` + "% (" + `self.equipmentPoisonResistance` + ")\n")
+        cs.append("| Shadow Resistance: " + `self.totalShadowResistance` + "% (" + `self.equipmentShadowResistance` + ")\n")
+        cs.append("| ----------->>> Elemental Power <<<--------------------\n")
+        cs.append("| Arcane Damage Bonus: " + `self.totalArcaneBonusDamage` + "% (" + `self.equipmentArcaneBonusDamage` + ")\n")
+        cs.append("| Cold Damage Bonus: " + `self.totalColdBonusDamage` + "% (" + `self.equipmentColdBonusDamage` + ")\n")
+        cs.append("| Divine Damage Bonus: " + `self.totalDivineBonusDamage` + "% (" + `self.equipmentDivineBonusDamage` + ")\n")
+        cs.append("| Electric Damage Bonus: " + `self.totalElectricBonusDamage` + "% (" + `self.equipmentElectricBonusDamage` + ")\n")
+        cs.append("| Fire Damage Bonus: " + `self.totalFireBonusDamage` + "% (" + `self.equipmentFireBonusDamage` + ")\n")
+        cs.append("| Poison Damage Bonus: " + `self.totalPoisonBonusDamage` + "% (" + `self.equipmentPoisonBonusDamage` + ")\n")
+        cs.append("| Shadow Damage Bonus: " + `self.totalShadowBonusDamage` + "% (" + `self.equipmentShadowBonusDamage` + ")\n")
+        cs.append("\\-------------------------------------------------------\n")
+        cs = ''.join(cs)
+        print cs
 
 
 
