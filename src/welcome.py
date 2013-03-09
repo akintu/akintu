@@ -39,8 +39,10 @@ class WelcomeWindow(object):
         self.loadingworldvar = StringVar()
         self.worldseed = StringVar()
         self.worldsave = StringVar()
-        self.turnlengthstr = StringVar()
+        self.turnlengthstr = StringVar(value='')
         self.turnlength = -1
+        self.ironman = BooleanVar(value=False)
+        self.hardcore = BooleanVar(value=False)
 
         self.mainmenu()
 
@@ -67,6 +69,8 @@ class WelcomeWindow(object):
         racel = ttk.Label(frame, text='Race:')
         namel = ttk.Label(frame, text='Name:')
         namebox = ttk.Entry(frame, textvariable=self.charname)
+        ironmancheck = ttk.Checkbutton(frame, text='Iron Man Mode', variable=self.ironman, onvalue=True, offvalue=False)
+        hardcorecheck = ttk.Checkbutton(frame, text='Hardcore Mode', variable=self.hardcore, onvalue=True, offvalue=False)
         # Lay out the widgets
         namel.grid(column=2, row=1, stick=W, padx=5, pady=5)
         namebox.grid(column=2, row=2, stick=(W, E), padx=5, pady=5)
@@ -74,8 +78,10 @@ class WelcomeWindow(object):
         racecombo.grid(column=2, row=4, stick=(N, S), padx=5, pady=5)
         classl.grid(column=2, row=5, stick=W, padx=5, pady=5)
         classcombo.grid(column=2, row=6, stick=(N, S), padx=5, pady=5)
-        backb.grid(column=1, row=7, stick=(N, S), padx=20, pady=20)
-        nextb.grid(column=3, row=7, stick=(N, S), padx=20, pady=20)
+        ironmancheck.grid(column=2, row=7, stick=W, padx=5, pady=5)
+        hardcorecheck.grid(column=2, row=8, stick=W, padx=5, pady=5)
+        backb.grid(column=1, row=9, stick=(N, S), padx=20, pady=20)
+        nextb.grid(column=3, row=9, stick=(N, S), padx=20, pady=20)
         return frame
 
     def _getplaytype(self):
@@ -223,6 +229,12 @@ class WelcomeWindow(object):
 
 
 def runwelcome():
+    '''
+    Runs the welcome screens, returning a tuple of values
+
+    Returns:
+        (player, state, ip, port, turnlength, ironman, hardcore)
+    '''
     root = Tk()
     root.title('Akintu')
     window = WelcomeWindow(root)
@@ -236,7 +248,9 @@ def runwelcome():
     if window.loadingchar:
         ret.append('')  # TODO will be window.charsave.get() instead of ''
     else:
-        ret.append((window.charname.get(), window.charrace.get(), window.charclass.get()))
+        ret.append((window.charname.get(),
+                    window.charrace.get(),
+                    window.charclass.get()))
 
     if window.hosting:
         if window.loadingworld:
@@ -251,8 +265,10 @@ def runwelcome():
     ret.append(window.port)
 
     ret.append(window.turnlength)
+    ret.append(window.ironman.get())
+    ret.append(window.hardcore.get())
 
-    # Return (player, state, ip, port)
+    # Return (player, state, ip, port, turnlength, ironman, hardcore)
     return tuple(ret)
 
 if __name__ == '__main__':
