@@ -164,6 +164,9 @@ class GameServer():
 
                             thisPlayer = self.person[self.player[p]]
                             itemList = inventories[thisPlayer]
+                            if not itemList:
+                                action = Command("UPDATE", "TEXT", text='Chest was empty', color='lightskyblue')
+                                self.SDF.send(p, action)
                             for item in itemList:
                                 equipped = False
                                 action = Command("ITEM", "CREATE", itemIdentifier=item.identifier, id=thisPlayer.id)

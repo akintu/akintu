@@ -816,7 +816,7 @@ class MagicalProperty(object):
             'categories' : ['Thief', 'Critical'],
             'goldMod' : 15,
             'prefix' : 'Exact',
-            'suffix' : 'Eviscerating'
+            'suffix' : 'of Eviscerating'
             },
         'Critical Hit Magnitude':
             {

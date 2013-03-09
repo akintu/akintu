@@ -188,7 +188,7 @@ class EquippedItems(object):
         if self._allGear['Head']:
             ag += self._allGear['Head'].gradePoints
         if self._allGear['Chest']:
-            ag += self._allGear['Head'].gradePoints
+            ag += self._allGear['Chest'].gradePoints
         if self._allGear['Legs']:
             ag += self._allGear['Legs'].gradePoints
         if self._allGear['Hands']:
@@ -215,7 +215,7 @@ class EquippedItems(object):
         if self._allGear['Head']:
             totalWeight += self._allGear['Head'].weight
         if self._allGear['Chest']:
-            totalWeight += self._allGear['Head'].weight
+            totalWeight += self._allGear['Chest'].weight
         if self._allGear['Legs']:
             totalWeight += self._allGear['Legs'].weight
         if self._allGear['Hands']:
