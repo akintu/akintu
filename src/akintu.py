@@ -27,8 +27,11 @@ def main():
         else:
             ip = "localhost"
         turnlength = -1
+        ironman = True
+        hardcore = False
     else:
-        player, state, ip, port, turnlength = welcome.runwelcome()
+        player, state, ip, port, turnlength, ironman, hardcore = \
+            welcome.runwelcome()
 
     print str(port) + " " + str(ip) + " " + str(state) + " " + str(player)
     pygame.init()
@@ -36,7 +39,9 @@ def main():
                 serverip=ip,
                 state=state,
                 player=player,
-                turnlength=turnlength)
+                turnlength=turnlength,
+                ironman=ironman,
+                hardcore=hardcore)
 
 
 if __name__ == "__main__":
