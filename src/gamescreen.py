@@ -148,6 +148,7 @@ class GameScreen(object):
             - 'totalAP'
             - 'restrictedAP'
             - 'level'
+            - 'size'
 
         To be supported in the future:
             - 'statusList'
