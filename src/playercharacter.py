@@ -984,6 +984,21 @@ class PlayerCharacter(p.Person):
         cs.append("| Fire Damage Bonus: " + `self.totalFireBonusDamage` + "% (" + `self.equipmentFireBonusDamage` + ")\n")
         cs.append("| Poison Damage Bonus: " + `self.totalPoisonBonusDamage` + "% (" + `self.equipmentPoisonBonusDamage` + ")\n")
         cs.append("| Shadow Damage Bonus: " + `self.totalShadowBonusDamage` + "% (" + `self.equipmentShadowBonusDamage` + ")\n")
+        cs.append("| ----------->>> Active Abilities <<<--------------\n")
+        for abil in self.abilities:
+            cd = abil.cooldown
+            if cd is None:
+                cd = 0
+            cs.append("| Level: " + `abil.level` + " " + abil.name + " AP: " + `abil.APCost` + " Cooldown: " + `cd` + "\n")
+        cs.append("| ----------->>> Magic Spells <<<-----------------------\n")
+        for spell in self.spellList:
+            cd = spell.cooldown
+            if cd is None:
+                cd = 0
+            cs.append("| " + spell.name + " AP: " + `spell.APCost` + " Cooldown: " + `cd` + "\n")
+        cs.append("| ----------->>> Passive Abilities <<<-----------------------\n")
+        for passive in self.passiveAbilities:
+            cs.append("| Level: " + `passive.level` + " " + passive.name + "\n")
         cs.append("\\-------------------------------------------------------\n")
         cs = ''.join(cs)
         print cs
