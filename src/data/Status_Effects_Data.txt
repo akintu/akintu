@@ -1877,6 +1877,8 @@
   [ELEMENT: Poison]
   [INTERNAL: Poison_tolerance_penalty]
     [MAGNITUDE: 0]
+  [INTERNAL: Elemental_vulnerability]
+    [MAGNITUDE: 5]
   [CATEGORY: Debuff]
   
 [NAME: Toxic Spit]

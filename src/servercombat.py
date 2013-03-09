@@ -20,35 +20,35 @@ class CombatServer():
             activePlayer = self.server.person[command.id]
 
             # Exit combat
-            if command.location.pane != (0, 0):
-                self.server.SDF.send(port, Command("PERSON", "REMOVE", id=command.id))
-                self.server.SDF.send(port, Command("UPDATE", "COMBAT", combat=False))
-                self.server.SDF.send(port, Command("PERSON", "CREATE", id=command.id, \
-                        location=activePlayer.location, \
-                        details=activePlayer.getDetailTuple()))
-                for i in self.server.pane[activePlayer.location.pane].person:
-                    if i != command.id:
-                        self.server.SDF.send(port, Command("PERSON", "CREATE", id=i, \
-                                location=self.server.person[i].location, \
-                                details=self.server.person[i].getDetailTuple()))
+            # if command.location.pane != (0, 0):
+                # self.server.SDF.send(port, Command("PERSON", "REMOVE", id=command.id))
+                # self.server.SDF.send(port, Command("UPDATE", "COMBAT", combat=False))
+                # self.server.SDF.send(port, Command("PERSON", "CREATE", id=command.id, \
+                        # location=activePlayer.location, \
+                        # details=activePlayer.getDetailTuple()))
+                # for i in self.server.pane[activePlayer.location.pane].person:
+                    # if i != command.id:
+                        # self.server.SDF.send(port, Command("PERSON", "CREATE", id=i, \
+                                # location=self.server.person[i].location, \
+                                # details=self.server.person[i].getDetailTuple()))
 
-                i = [i for i, p in self.server.person.iteritems() if p.location == \
-                        activePlayer.cPane][0]
-                self.server.person[i].ai.resume()
-                self.server.person[i].cPane = None
-                self.server.person[i].cLocation = None
+                # i = [i for i, p in self.server.person.iteritems() if p.location == \
+                        # activePlayer.cPane][0]
+                # self.server.person[i].ai.resume()
+                # self.server.person[i].cPane = None
+                # self.server.person[i].cLocation = None
 
-                newloc = activePlayer.location.move(10 - activePlayer.location.direction, 1)
-                self.server.SDF.queue.put((None, Command("PERSON", "MOVE", id=command.id, \
-                        location=newloc, details=True)))
-                self.server.pane[activePlayer.cPane].person.remove(command.id)
-                activePlayer.cPane = None
-                activePlayer.cLocation = None
+                # newloc = activePlayer.location.move(10 - activePlayer.location.direction, 1)
+                # self.server.SDF.queue.put((None, Command("PERSON", "MOVE", id=command.id, \
+                        # location=newloc, details=True)))
+                # self.server.pane[activePlayer.cPane].person.remove(command.id)
+                # activePlayer.cPane = None
+                # activePlayer.cLocation = None
                 
-                self.server.unload_panes()
+                # self.server.unload_panes()
 
             # If this is a legal move request
-            elif self.tile_is_open(command.location, command.id) and \
+            if self.tile_is_open(command.location, command.id) and \
                  activePlayer.AP >= activePlayer.totalMovementAPCost or\
                  activePlayer.remainingMovementTiles > 0:
                 if activePlayer.remainingMovementTiles == 0:
@@ -134,9 +134,7 @@ class CombatServer():
         if command.id in self.server.person:
             self.update_dead_people(self.server.person[command.id].cPane)
         
-        
-            
-            
+    
     ### Utility Methods ###
 
     def tile_is_open(self, location, pid):
@@ -146,6 +144,8 @@ class CombatServer():
                 location.tile not in [self.server.person[i].cLocation.tile \
                 for i in self.server.pane[self.server.person[pid].cPane].person]
 
+    
+                
     def shout_turn_start(self, player, turn="Player"):
         '''Shouts to the Player that this particular turn is starting.
         Defaults to "Player"; "Monster" is the other valid value.'''
@@ -178,8 +178,11 @@ class CombatServer():
             if char.team == "Players":
                 livingPlayers.append(char)
                 
+        rValue = "CONTINUE_COMBAT"
         if not monstersAlive and livingPlayers:
-            self.victory_phase(livingPlayers, combatPane)    
+            rValue = "END_COMBAT"
+            self.victory_phase(livingPlayers, combatPane)
+        return rValue
 
     def monsterMove(self, monster, visiblePlayers):
         tilesLeft = monster.totalMovementTiles
@@ -313,22 +316,22 @@ class CombatServer():
 
     def end_turn(self, combatPane):
         ''' stuff '''
-        self.update_dead_people(combatPane)
-        for character in [self.server.person[x] for x in self.server.pane[combatPane].person]:
-            self.shout_turn_start(character, turn="Monster")
-        self.monster_phase(combatPane)
-        for character in [self.server.person[x] for x in self.server.pane[combatPane].person]:
-            self.upkeep(character)
-        # New Turn here
-        for character in [self.server.person[x] for x in self.server.pane[combatPane].person]:
-            character.AP = character.totalAP
-            for port in [p for p,i in self.server.player.iteritems() if i in
-                    self.server.pane[combatPane].person]:
-                self.server.SDF.send(port, Command("PERSON", "UPDATE", id=character.id, AP=character.AP))
-        for character in [self.server.person[x] for x in self.server.pane[combatPane].person]:
-            self.shout_turn_start(character, turn="Player")
-        self.combatStates[combatPane].turnTimer = reactor.callLater(seconds, self.check_turn_end,
-                combatPane, True)
+        if self.update_dead_people(combatPane) == "CONTINUE_COMBAT":
+            for character in [self.server.person[x] for x in self.server.pane[combatPane].person]:
+                self.shout_turn_start(character, turn="Monster")
+            self.monster_phase(combatPane)
+            for character in [self.server.person[x] for x in self.server.pane[combatPane].person]:
+                self.upkeep(character)
+            # New Turn here
+            for character in [self.server.person[x] for x in self.server.pane[combatPane].person]:
+                character.AP = character.totalAP
+                for port in [p for p,i in self.server.player.iteritems() if i in
+                        self.server.pane[combatPane].person]:
+                    self.server.SDF.send(port, Command("PERSON", "UPDATE", id=character.id, AP=character.AP))
+            for character in [self.server.person[x] for x in self.server.pane[combatPane].person]:
+                self.shout_turn_start(character, turn="Player")
+            self.combatStates[combatPane].turnTimer = reactor.callLater(seconds, self.check_turn_end,
+                    combatPane, True)
 
     def monster_phase(self, combatPane):
         chars = [self.server.person[x] for x in self.server.pane[combatPane].person]
@@ -375,10 +378,12 @@ class CombatServer():
             self.giveGold(player, state.deadMonsterList)
             self.removeTemporaryStatuses(player)
             self.refillResources(player)
+            self.exit_combat(player)
         # Cleanup, exit combat TODO
         
+    
 
-    #### Victory Methods ####
+    #### End of Combat Phase Methods ####
 
     def giveVictoryExperience(self, player, monsterList):
         '''Grants the appropriate amount of EXP to a player at the end of
@@ -412,17 +417,48 @@ class CombatServer():
         for removalStatus in removalList:
             Combat.removeStatus(player, removalStatus.name)
 
+    def exit_combat(self, player, defeat=False):
+        '''Removes the player from combat.'''
+        port = self.server.getPlayerPort(player)
+        self.server.SDF.send(port, Command("PERSON", "REMOVE", id=player.id))
+        self.server.SDF.send(port, Command("UPDATE", "COMBAT", combat=False))
+        self.server.SDF.send(port, Command("PERSON", "CREATE", id=player.id, \
+                location=player.location, \
+                details=player.getDetailTuple()))
+        for i in self.server.pane[player.location.pane].person:
+            if i != player.id:
+                self.server.SDF.send(port, Command("PERSON", "CREATE", id=i, \
+                        location=self.server.person[i].location, \
+                        details=self.server.person[i].getDetailTuple()))
 
-    #### Death Methods ####
+        i = [i for i, p in self.server.person.iteritems() if p.location == \
+                player.cPane][0]
+        self.server.person[i].ai.resume()
+        self.server.person[i].cPane = None
+        self.server.person[i].cLocation = None
 
+        newloc = player.location.move(10 - player.location.direction, 1)
+        self.server.SDF.queue.put((None, Command("PERSON", "MOVE", id=player.id, \
+                location=newloc, details=True)))
+        self.server.pane[player.cPane].person.remove(player.id)
+        player.cPane = None
+        player.cLocation = None
+        
+        self.server.unload_panes()
+            
     def softcoreDeath(self, player):
+        '''Kicks player out of combat, back to Pane 0,0 and subtracts 10% of gold.
+        Will restore HP/MP/AP to maximum, and remove all temporary status effects.'''
         goldLoss -= int(round(player.inventory.gold * 0.1))
         if goldLoss > player.inventory.gold:
             goldLoss = player.inventory.gold
-        # Display message of gold loss better: TODO
-        Combat.screen.show_text("You lose: " + str(goldLoss) + " gold for dying.",
-                                color='yellow', size=16)
+
+        Combat.screen.show_text("You lose: " + str(goldLoss) + " gold for dying!",
+                                color='magenta')
         player.inventory.gold -= goldLoss
+        # Exit combat
+        self.refillResources(player)
+        self.removeTemporaryStatuses(player)
         # Transport player to town TODO
 
 class CombatState(object):
