@@ -204,11 +204,11 @@ class GameScreen(object):
         self.persons[personid].update_dict(statsdict)
 
         for key in statsdict:
-            if key in ['name', 'HP', 'MP', 'AP', 'buffedHP', 'totalHP',
+            if key in ['name', 'HP', 'MP', 'AP', 'buffedHP', 'totalHP', 'size',
                        'totalMP', 'totalAP', 'restrictedAP', 'level']:
                 if statsdict['team'] == "Players":
                     self.playerframes[personid] = \
-                            self._generateplayerframe(personid)
+                        self._generateplayerframe(personid)
                     self._drawplayerframes()
                 elif statsdict['team'] == "Monsters":
                     self.monsterframes[personid] = \
@@ -490,6 +490,10 @@ class GameScreen(object):
             level = 'L0'
         else:
             level = 'L' + str(statsdict['level'])
+        if 'size' not in statsdict:
+            size = ''
+        else:
+            size = statsdict['size']
 
         hstring = str(HP)
 
@@ -529,6 +533,10 @@ class GameScreen(object):
         font = pygame.font.SysFont("Arial", 9, bold=True)
         levelfont = font.render(level, True, Color('black'))
         frame.blit(levelfont, (barlabelx, hbary + 12))
+
+        font = pygame.font.SysFont("Arial", 9, bold=True)
+        sizefont = font.render(size, True, Color('black'))
+        frame.blit(sizefont, (0, 0))
 
         return frame
 
