@@ -209,7 +209,7 @@ class Game(object):
                 if command.action == "ANIMATE":
                     #Animate obstacle
                     self.animate_entity(command.location)
-                    print "Animating entities at " + str(command.location)
+                    #print "Animating entities at " + str(command.location)
                 if command.action == "REMOVE":
                     #Remove from pane
                     self.remove_entities(command.location)
@@ -503,21 +503,36 @@ class Game(object):
     def animate_entity(self, location):
         tile = self.pane.get_tile(location.tile)
         tile.anim_start = time.time()
-        
-        for item in tile.get_items():
+
+        items = tile.get_items()
+        if items:
+            item = items[0]
             images = item.getAnimationImages()
+            steps = 0
             if images:
-                item.image = images[3]
-            duration = item.getAnimationDuration()
-            item.anim = LoopingCall(self.do_animation_entity, location.tile, 0, 0)
+                steps = len(images)
+            length = item.getAnimationDuration()
+            item.anim = LoopingCall(self.do_animation_entity, location, length, steps, images)
+            if steps > 0:
+                item.anim.start(float(length) / (steps*2))
+
+    def do_animation_entity(self, location, length, steps, images):
+        tile = self.pane.get_tile(location.tile)
+        elapsed = time.time() - tile.anim_start
+        time_step = length/steps
+        i = int(elapsed / time_step)
+        #print "Step " + str(i)
+        
+        if elapsed > length or i > steps - 1:
+            if hasattr(tile, 'anim'):#tile.anim:
+                tile.anim.stop()
+            return
+        tile.image = images[i]
         self.screen.update_tile(tile, location)
         
-    def do_animation_entity(self, tile_loc, image_index, duration):
-        # tile = self.pane.get_tile(tile_loc)
-        pass
-        
+
     def remove_entities(self, location):
-    #TODO: make this delayed. (maybe use DelayedCall?)
+        #TODO: make this delayed. (maybe use DelayedCall?)
         self.pane.remove_entities(location.tile)
         
     def switch_panes(self, location, combat=False):
