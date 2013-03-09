@@ -26,12 +26,17 @@ def main():
             ip = None
         else:
             ip = "localhost"
+        turnlength = -1
     else:
-        player, state, ip, port = welcome.runwelcome()
+        player, state, ip, port, turnlength = welcome.runwelcome()
 
     print str(port) + " " + str(ip) + " " + str(state) + " " + str(player)
     pygame.init()
-    game = Game(port=port, serverip=ip, state=state, player=player)
+    game = Game(port=port,
+                serverip=ip,
+                state=state,
+                player=player,
+                turnlength=turnlength)
 
 
 if __name__ == "__main__":
