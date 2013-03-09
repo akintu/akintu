@@ -26,10 +26,17 @@ class World(object):
     def __init__(self, world_state):
         self.seed = world_state[SEED_KEY]
         self.panes = dict()
+        self.pane_items = dict()
+        self.pane_chests = dict()
+        self.curr_pane = None
         #TODO: Unbox/Open world_state in whatever form it is given
         self.world_state = world_state
 
     def get_pane(self, location, is_server=False):
+        # if self.curr_pane:
+            # self.pane_items[self.curr_pane.location] = self.curr_pane.save_items()
+            # self.pane_chests[self.curr_pane.location] = self.curr_pane.save_chests()
+            
         surrounding_locations = Location(location, None).get_surrounding_panes()
         for key, loc in surrounding_locations.iteritems():
             if not loc in self.panes:
@@ -40,7 +47,8 @@ class World(object):
         if self.world_state:
             if location in self.world_state:
                 state = self.world_state[location]
-        self.panes[location] = Pane(self.seed, location, load_entities=True, pane_state=state)
+        #TODO: Change is_server=True to is_server=is_server.  Need to have items/chests tracked on server
+        self.panes[location] = Pane(self.seed, location, is_server=True, load_entities=True, pane_state=state)
         self._merge_tiles(surrounding_locations)
 
         self.panes[location].load_images()
@@ -73,12 +81,16 @@ class Pane(object):
     Represents a single screen of the world
 
     Member Variables
-        tiles: Dictionary of coordinate tuples (e.g. (0,1)) to tile objects
+        seed:
+        location:
+        load_entities:
+        pane_state:
     '''
+    
     PaneCorners = {1:TILE_BOTTOM_LEFT, 3:TILE_BOTTOM_RIGHT, 7:TILE_TOP_LEFT, 9:TILE_TOP_RIGHT}
     PaneEdges = {2:TILES_BOTTOM, 4:TILES_LEFT, 6:TILES_RIGHT, 8:TILES_TOP}
 
-    def __init__(self, seed, location, load_entities=True, pane_state=None):
+    def __init__(self, seed, location, is_server=False, load_entities=True, pane_state=None):
         self.seed = seed
         self.location = location
         self.pane_state = pane_state
@@ -96,12 +108,13 @@ class Pane(object):
                     self.add_obstacle((i, j), RAND_ENTITIES)
 
         if load_entities:
-            self.add_chest((random.randrange(PANE_X), random.randrange(PANE_Y)), TreasureChest.CHEST_TYPE[random.randrange(len(TreasureChest.CHEST_TYPE))])
             if self.pane_state:
                 self.load_state(self.pane_state)
-            else:
+            elif is_server:
+                self.load_chests()
                 self.load_monsters()
                 #self.load_items()
+                
 
     def __repr__(self):
         s = ""
@@ -176,7 +189,24 @@ class Pane(object):
             for item in items:
                 #TODO: Do something with this item
                 pass
-        pass
+        else:
+            print "LOAD ITEMS HERE (Pane.load_items()"
+            
+    def load_chests(self, chests=None):
+        '''
+        Parameters:
+            chests:  A list of chest tuples in the following format:
+                    [("Location Tuple", "Chest Type", "Level", ...), (...)]
+        '''
+        
+        if chests:
+            for chest in chests:
+                self.add_chest(chest[0], chest[1], chest[2])
+        else:
+            #Adds a random Chest
+            #TODO: remove none from level
+            self.add_chest((random.randrange(PANE_X), random.randrange(PANE_Y)), TreasureChest.CHEST_TYPE[random.randrange(len(TreasureChest.CHEST_TYPE))], None)
+    
 
     def load_images(self):
         self.images = Sprites.get_images_dict()
@@ -230,11 +260,14 @@ class Pane(object):
         if tile in self.objects:
             return self.objects[tile]
             
-    def add_chest(self, tile, chest_type):
-        lvl = max(abs(self.location[0]), abs(self.location[1]))
-        lvl = max(lvl, 1)
-        #print chest_type
-        self.tiles[tile].add_chest(TreasureChest(chest_type, lvl, tile))
+    def add_chest(self, tile, chest_type, level):
+        if not level:
+            level = max(abs(self.location[0]), abs(self.location[1]))
+            level = max(level, 1)
+        self.tiles[tile].add_chest(TreasureChest(chest_type, level, tile))
+        
+    def remove_chest(self, tile):
+        self.tiles[tile].remove_chest()
         
     def get_treasure_chest(self, location):
         '''
@@ -305,6 +338,18 @@ class Pane(object):
                 #Any server commands that need to be run
                 #These could be passed to the server...
                 pass
+                
+    def save_items(self):
+        '''
+        item_list = [(name, attributes, location, ...), (...)]
+        '''
+        
+        item_list = []
+        #SAVE ITEMS
+        for key, tile in self.tiles.iteritems():
+            for item in tile.get_items():
+                item_list.append((item.name, Location(self.location, key)))
+        return item_list
 
     def save_state(self, person_dict):
         '''
@@ -318,8 +363,7 @@ class Pane(object):
         
         save_dict = dict()
         monster_list = []
-        item_list = []
-        
+
         #Save Monsters.  
         #Using pane's person list which contains the keys to 
         #pull the people from supplied dictionary
@@ -331,12 +375,8 @@ class Pane(object):
             monster_list.append((monster.name, monster.level, \
                 monster.location, monster.region, monster.ai))
         save_dict[MONSTER_KEY] = monster_list
-        
-        #SAVE ITEMS
-        for key, tile in self.tiles.iteritems():
-            for item in tile.get_items():
-                item_list.append((item.name, Location(self.location, key)))
-        save_dict[ITEM_KEY] = item_list
+
+        save_dict[ITEM_KEY] = self.save_items()
         
         #Return this panes dictionary to caller to add to the master
         #save dictionary.

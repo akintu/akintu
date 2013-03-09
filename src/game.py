@@ -193,7 +193,7 @@ class Game(object):
             ###### Remove Item ######
             elif command.type == "ITEM" and command.action == "REMOVE":
                 self.pane.person[command.id].inventory.removeItem(itemName=command.itemName)
-                
+
             ###### Get Item ######
             elif command.type == "ITEM" and command.action == "CREATE":
                 item = TheoryCraft.rehydrateTreasure(command.itemIdentifier)
@@ -202,18 +202,26 @@ class Game(object):
             elif command.type == "ITEM" and command.action == "EQUIP":
                 item = TheoryCraft.rehydrateTreasure(command.itemIdentifier)
                 self.pane.person[command.id].equip(item)
-                
+
+            ###### Entity Operations ######
+
             elif command.type == "ENTITY":
-                
-                if command.action == "REMOVE":
-                    #Remove from pane
-                    self.pane.remove_entities(command.location.tile)
-                    self.screen.update_tile(self.pane.get_tile(command.location.tile), command.location)
-                    print "Removing entities at " + str(command.location.tile)
                 if command.action == "ANIMATE":
                     #Animate obstacle
                     self.animate_entity(command.location)
                     print "Animating entities at " + str(command.location)
+                if command.action == "REMOVE":
+                    #Remove from pane
+                    self.remove_entities(command.location)
+                    self.screen.update_tile(self.pane.get_tile(command.location.tile), command.location)
+                    print "Removing entities at " + str(command.location.tile)
+            
+            elif command.type == "CHEST":
+                if command.action == "ADD":
+                    self.pane.add_chest(command.location.tile, command.chestType, command.level)
+                if command.action == "REMOVE":
+                    self.remove_entities(command.location)
+                    #self.pane.remove_chest(command.location.tile)
             
             elif command.type == "CLIENT" and command.action == "RESET_TARGETING" and command.id == self.id:
                 self.selectionMode = "targeting"
@@ -494,15 +502,23 @@ class Game(object):
 
     def animate_entity(self, location):
         tile = self.pane.get_tile(location.tile)
+        tile.anim_start = time.time()
+        
         for item in tile.get_items():
             images = item.getAnimationImages()
             if images:
                 item.image = images[3]
-            duration = item.getAnimationSpeed()
+            duration = item.getAnimationDuration()
+            item.anim = LoopingCall(self.do_animation_entity, location.tile, 0, 0)
         self.screen.update_tile(tile, location)
         
     def do_animation_entity(self, tile_loc, image_index, duration):
+        # tile = self.pane.get_tile(tile_loc)
         pass
+        
+    def remove_entities(self, location):
+    #TODO: make this delayed. (maybe use DelayedCall?)
+        self.pane.remove_entities(location.tile)
         
     def switch_panes(self, location, combat=False):
         #TODO we can add transitions here.
