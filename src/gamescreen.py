@@ -531,12 +531,8 @@ class GameScreen(object):
         frame.blit(namefont, (barlabelx, 2))
 
         font = pygame.font.SysFont("Arial", 9, bold=True)
-        levelfont = font.render(level, True, Color('black'))
+        levelfont = font.render(size + ' ' + level, True, Color('black'))
         frame.blit(levelfont, (barlabelx, hbary + 12))
-
-        font = pygame.font.SysFont("Arial", 9, bold=True)
-        sizefont = font.render(size, True, Color('black'))
-        frame.blit(sizefont, (2, 0))
 
         return frame
 
