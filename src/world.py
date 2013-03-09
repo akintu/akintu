@@ -205,7 +205,8 @@ class Pane(object):
         else:
             #Adds a random Chest
             #TODO: remove none from level
-            self.add_chest((random.randrange(PANE_X), random.randrange(PANE_Y)), TreasureChest.CHEST_TYPE[random.randrange(len(TreasureChest.CHEST_TYPE))], None)
+            for i in range(10):
+                self.add_chest((random.randrange(PANE_X), random.randrange(PANE_Y)), TreasureChest.CHEST_TYPE[random.randrange(len(TreasureChest.CHEST_TYPE))], None)
     
 
     def load_images(self):
