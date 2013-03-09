@@ -138,7 +138,9 @@ class TreasureChest(entity.Entity):
     @staticmethod
     def _selectGold(givenIp):
         modifier = Dice.rollFloat(0.6, 1.4)
-        gold = round(givenIp * modifier * TreasureChest.GOLD_PER_IP)
+        gold = int(round(givenIp * modifier * TreasureChest.GOLD_PER_IP))
+        if gold < 5:
+            gold = 5
         return wealth.Wealth("Gold", gold)
 
     def _generateLargeTreasure(self):
@@ -148,9 +150,12 @@ class TreasureChest(entity.Entity):
             return [TreasureChest._selectGear(self.ip / 2), TreasureChest._selectGear(self.ip / 2)]
         elif selection <= 90:
             # Two pieces of gear and gold, ip=40/40/20
+            gValue = self.ip * 2 / 10
+            if gValue <= 0:
+                gValue = 1
             return [TreasureChest._selectGear(round(self.ip * 0.4)),
                     TreasureChest._selectGear(round(self.ip * 0.4)),
-                    TreasureChest._selectGold((self.ip * 2) / 10)]
+                    TreasureChest._selectGold(gValue)]
         else:
             # One piece of gear ip=100
             return [TreasureChest._selectGear(self.ip)]

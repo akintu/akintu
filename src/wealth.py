@@ -39,7 +39,8 @@ class Wealth(entity.Entity):
                 self.goldValue = Wealth.types[name]['value']
                 self.weight = Wealth.types[name]['value']
                 self.image = Wealth.types[name]['image']
-        self.identifier = self.name + ": " + str(self.goldValue)
+        self.identifier = self.name + ": " + str(int(self.goldValue))
+        self.displayName = self.identifier
 
 
 
