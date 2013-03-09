@@ -158,14 +158,15 @@ class GameServer():
                         if self.person[i].location.pane == self.person[command.id].location.pane:
                             self.SDF.send(p, command)
                             thisPlayer = self.person[self.player[p]]
-                            itemList = inventories[thisPlayer]
-                            print str(thisPlayer.name) + " got:"
-                            for item in itemList:
-                                print "  " + str(item.name)
-                                #thisPlayer.inventory.addItem(item)
-                                action = Command("UPDATE", "TEXT", 
-                                text='Found item: ' + item.name, color='lightskyblue')
-                                self.SDF.send(p, action)
+                            if thisPlayer in inventories:
+                                itemList = inventories[thisPlayer]
+                                print str(thisPlayer.name) + " got:"
+                                for item in itemList:
+                                    print "  " + str(item.name)
+                                    #thisPlayer.inventory.addItem(item)
+                                    action = Command("UPDATE", "TEXT", 
+                                    text='Found item: ' + item.name, color='lightskyblue')
+                                    self.SDF.send(p, action)
                             
             # Get items: TODO
             

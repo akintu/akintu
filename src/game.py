@@ -117,8 +117,6 @@ class Game(object):
             if command.type == "PERSON" and command.action == "CREATE":
                 if self.id == -1:  # Need to setup the pane
                     self.id = command.id
-                    #TODO: This call to switch_panes doesn't currently handle combat well
-                    #It passes the location of the player instead of the focus location
                     if self.combat:
                         self.switch_panes(command.cPane, self.combat)
                     else:
