@@ -16,11 +16,12 @@ class Entity(object):
         self.cLocation = None
 
     def getAnimationImages(self):
-        print "Called unimplemented method Entity.getAnimationImages()."
-        print "You must override this function in child implementation."
-        pass
+        # print "Called unimplemented method Entity.getAnimationImages()."
+        # print "You must override this function in child implementation."
+        return None
         
-    def getAnimationSpeed(self):
-        print "Called unimplemented method Entity.getAnimationSpeed()."
-        print "You must override this function in child implementation."
-        pass
+    def getAnimationDuration(self):
+        # print "Called unimplemented method Entity.getAnimationSpeed()."
+        # print "You must override this function in child implementation."
+        return None
+        

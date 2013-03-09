@@ -15,6 +15,7 @@ class TreasureChest(entity.Entity):
     CHANCE_OF_LOCK = 20
 
     CHEST_TYPE = ["Small", "Large"]
+    ANIM_DUR = .25
     
     def __init__(self, type, treasureLevel, location, ip=None, locked=None):
         sheet = Sprites.get_sheet(CHEST_KEY)
@@ -215,6 +216,8 @@ class TreasureChest(entity.Entity):
         ''' 
         return self.animationImages
 
+    def getAnimationDuration(self):
+        return TreasureChest.ANIM_DUR
 
 
 

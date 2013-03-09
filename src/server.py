@@ -159,8 +159,8 @@ class GameServer():
                             #Send animation request...
                             action_animate = Command(type="ENTITY", action="ANIMATE", location=loc)
                             self.SDF.send(p, action_animate)
-                            # action_remove = Command(type="ENTITY", action="REMOVE", location=loc)
-                            # self.SDF.send(p, action_remove)
+                            action_remove = Command(type="CHEST", action="REMOVE", location=loc)
+                            self.SDF.send(p, action_remove)
 
                             thisPlayer = self.person[self.player[p]]
                             itemList = inventories[thisPlayer]
