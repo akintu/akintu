@@ -536,7 +536,7 @@ class GameScreen(object):
 
         font = pygame.font.SysFont("Arial", 9, bold=True)
         sizefont = font.render(size, True, Color('black'))
-        frame.blit(sizefont, (0, 0))
+        frame.blit(sizefont, (2, 0))
 
         return frame
 
