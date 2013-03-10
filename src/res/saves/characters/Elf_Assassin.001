@@ -1,0 +1,1 @@
+TEST DEHYDRATER: REPLACE WITH player.dehydrate() in Game.save_and_quit()

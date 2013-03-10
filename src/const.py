@@ -31,7 +31,13 @@ TILES_BOTTOM = (TILE_BOTTOM_LEFT, TILE_BOTTOM_RIGHT)
 
 DESIRED_FPS = 120
 
-#========================IMAGES===========================
+#=======================PATHS=============================
+#     =====================SAVES (AND RELATED)============
+SAVES_PATH = os.path.join("res", "saves")
+CHAR_SAVE_PATH = os.path.join(SAVES_PATH, "characters")
+WORLD_SAVE_PATH = os.path.join(SAVES_PATH, "worlds")
+
+#     =====================IMAGES=========================
 #Coverage Percentage (.1 = 10%)
 RAND_ENTITIES = .06
 

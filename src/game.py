@@ -64,6 +64,7 @@ class Game(object):
         self.abilityList = []
         self.currentItem = None
         self.itemList = []
+        self.playerSaveFile = None
 
         # Setup server if host
         self.port = port
@@ -82,7 +83,10 @@ class Game(object):
                     details=("Player", player[0], player[1], player[2]))
         else: 
             #TODO: Might need to unpickle a player/rehydrate it
-            person = player
+            self.playerSaveFile = player
+            dehydrated_string = self.load_player(self.playerSaveFile)
+            person = Command("PERSON", "LOAD", dehydrated=dehydrated_string)
+            
         self.setup = LoopingCall(self.setup_game, person)
         self.setup.start(0)
 
@@ -239,19 +243,62 @@ class Game(object):
                 self.abilityList = []
                 self.currentItem = None
                 self.itemList = []
-            
+    
+    def save_player(self, path_to_player, player_string):
+        print "APPENDING PLAYER " + str(player_string)
+        print "To " + str(path_to_player)
+        file = open(path_to_player, "a")
+        file.write(player_string)
+        file.close()
+        
+    def load_player(self, path_to_player):
+        file = open(path_to_player, "r")
+        for line in file:
+            pass
+        last = line
+        file.close()
+        print "Loading player " + str(last)
+        print "From " + str(path_to_player)
+        return last
+    
+    def save_and_quit(self):
+        '''
+        If this is a new character, we create a filename starting with ###_
+        where ### is incremental.  We save that filename to Game.playerSaveFile
+        and pass it to save_player.
+        Otherwise, we use the filename located in Game.playerSaveFile
+        '''
+        
+        player = self.pane.person[self.id]
+        player_string = "TEST DEHYDRATER: REPLACE WITH player.dehydrate() in Game.save_and_quit()"#player.dehydrate()
+        if not self.playerSaveFile:
+            saved_list = os.listdir(CHAR_SAVE_PATH)
+            max_save = 0
+            if saved_list:
+                increment_list = []
+                for filename in saved_list:
+                    split_list = filename.split(".")
+                    increment_list.append(int(split_list[-1]))   #Get last element from list
+                max_save = max(increment_list)
+            max_save += 1
+            new_filename = str(player.race) + "_" + str(player.characterClass) + "." + str("%03d" % max_save)
+            self.playerSaveFile = os.path.join(CHAR_SAVE_PATH, new_filename)
+        self.save_player(self.playerSaveFile, player_string)
+        reactor.stop()
+    
     def handle_events(self):
         pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
         for event in pygame.event.get():
             #### General commands ####
             if event.type == QUIT:
-                reactor.stop()
+                self.save_and_quit()
             if event.type == KEYUP:
                 if event.key in MODIFIER_KEYS:
                     self.keystate.remove(event.key)
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
-                    reactor.stop()
+                    #TODO: Open Menu Here
+                    self.save_and_quit()
                 elif event.key in MODIFIER_KEYS:
                     self.keystate.append(event.key)
                 elif event.key in MOVE_KEYS:
