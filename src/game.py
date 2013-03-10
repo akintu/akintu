@@ -250,21 +250,22 @@ class Game(object):
                 self.currentItem = None
                 self.itemList = []
     
-    def save_player(self, path_to_player, player_string):
-        # print "APPENDING PLAYER " + str(player_string)
-        print "Saving Character To " + str(path_to_player)
-        file = open(path_to_player, "a")
-        file.write(player_string)
+    def save_player(self, file_name, player_string):
+        path_to_file = os.path.join(CHAR_SAVE_PATH, file_name)
+        print "Saving Character To " + str(path_to_file)
+        file = open(path_to_file, "ab")
+        file.write("\n" + player_string)
         file.close()
         
-    def load_player(self, path_to_player):
-        file = open(path_to_player, "r")
+    def load_player(self, file_name):
+        path_to_file = os.path.join(CHAR_SAVE_PATH, file_name)
+        file = open(path_to_file, "r")
         for line in file:
             pass
         last = line
         file.close()
         print "Loading player " + str(last)
-        print "From " + str(path_to_player)
+        print "From " + str(path_to_file)
         return last
     
     def save_and_quit(self):
@@ -290,7 +291,7 @@ class Game(object):
                 max_save = max(increment_list)
             max_save += 1
             new_filename = str(player.name) + "_" + str(player.race) + "_" + str(player.characterClass) + "." + str("%03d" % max_save)
-            self.playerSaveFile = os.path.join(CHAR_SAVE_PATH, new_filename)
+            self.playerSaveFile = new_filename
             
             
         self.save_player(self.playerSaveFile, player_string)
