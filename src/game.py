@@ -83,7 +83,6 @@ class Game(object):
                     location=Location((0, 0), (PANE_X/2, PANE_Y/2)), \
                     details=("Player", player[0], player[1], player[2]))
         else: 
-            #TODO: Might need to unpickle a player/rehydrate it
             self.playerSaveFile = player
             dehydrated_string = self.load_player(self.playerSaveFile)
             person = Command("PERSON", "LOAD", id=None, \
@@ -128,7 +127,9 @@ class Game(object):
                         self.switch_panes(command.cPane, self.combat)
                     else:
                         self.switch_panes(command.location)
-                
+                    ##SAVE PERSON##
+                    save = Command("PERSON", "SAVE", id=self.id)
+                    self.CDF.send(save)
                 
                 if command.action == "LOAD":
                     self.pane.person[command.id] = TheoryCraft.rehydratePlayer(command.details)
@@ -186,6 +187,10 @@ class Game(object):
             if command.type == "PERSON" and command.action == "STOP":
                 if command.id == self.id:
                     self.running = False
+                    
+            ###### SAVE PERSON ######
+            if command.type == "PERSON" and command.action == "SAVE":
+                self.save_player()
 
             ###### Update Person Stats ######
             if command.type == "PERSON" and command.action == "UPDATE":
@@ -252,7 +257,29 @@ class Game(object):
                 self.currentItem = None
                 self.itemList = []
     
-    def save_player(self, file_name, player_string):
+    def save_player(self):
+        '''
+        Dehydrates our current player and saves it.
+        '''
+    
+        if not self.id in self.pane.person:
+            return
+
+        player = self.pane.person[self.id]
+        player_string = player.dehydrate()
+        file_name = self.playerSaveFile
+        if not file_name:
+            saved_list = os.listdir(CHAR_SAVE_PATH)
+            max_save = 0
+            if saved_list:
+                increment_list = []
+                for filename in saved_list:
+                    split_list = filename.split(".")
+                    increment_list.append(int(split_list[-1]))   #Get last element from list (the incremental save number)
+                max_save = max(increment_list)
+            max_save += 1
+            file_name = str(player.name) + "_" + str(player.race) + "_" + str(player.characterClass) + "." + str("%03d" % max_save)
+            self.playerSaveFile = file_name
         path_to_file = os.path.join(CHAR_SAVE_PATH, file_name)
         print "Saving Character To " + str(path_to_file)
         file = open(path_to_file, "ab")
@@ -272,31 +299,15 @@ class Game(object):
     
     def save_and_quit(self):
         '''
-        If this is a new character, we create a filename starting with ###_
-        where ### is incremental.  We save that filename to Game.playerSaveFile
-        and pass it to save_player.
-        Otherwise, we use the filename located in Game.playerSaveFile
+        Calls self.save_player() and then quits
         '''
         
         # now = datetime.datetime.now()
         # savetime = "." + now.strftime("%Y-%m-%d %H:%M")
-        player = self.pane.person[self.id]
-        player_string =player.dehydrate()#"TEST DEHYDRATER: REPLACE WITH player.dehydrate() in Game.save_and_quit()"#player.dehydrate()
-        if not self.playerSaveFile:
-            saved_list = os.listdir(CHAR_SAVE_PATH)
-            max_save = 0
-            if saved_list:
-                increment_list = []
-                for filename in saved_list:
-                    split_list = filename.split(".")
-                    increment_list.append(int(split_list[-1]))   #Get last element from list (the incremental save number)
-                max_save = max(increment_list)
-            max_save += 1
-            new_filename = str(player.name) + "_" + str(player.race) + "_" + str(player.characterClass) + "." + str("%03d" % max_save)
-            self.playerSaveFile = new_filename
-            
-            
-        self.save_player(self.playerSaveFile, player_string)
+        #player = self.pane.person[self.id]
+        #player_string =player.dehydrate()
+
+        self.save_player()#player_string)
         reactor.stop()
     
     def handle_events(self):
@@ -307,10 +318,14 @@ class Game(object):
                 self.save_and_quit()
             if event.type == KEYUP:
                 if event.key in MODIFIER_KEYS:
-                    self.keystate.remove(event.key)
+                    if event.key in self.keystate:
+                        self.keystate.remove(event.key)
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     #TODO: Open Menu Here
+                    ##SAVE PERSON##
+                    save = Command("PERSON", "SAVE", id=self.id)
+                    self.CDF.send(save)
                     self.save_and_quit()
                 elif event.key in MODIFIER_KEYS:
                     self.keystate.append(event.key)
@@ -602,4 +617,5 @@ class Game(object):
             self.pane = self.pane.get_combat_pane(location)
         else:
             self.pane = self.world.get_pane(location.pane)
+
         self.screen.set_pane(self.pane)
