@@ -513,13 +513,13 @@ class Game(object):
             if images:
                 steps = len(images)
             length = item.getAnimationDuration()
-            item.anim = LoopingCall(self.do_animation_entity, location, length, steps, images)
+            item.anim = LoopingCall(self.do_animation_entity, location, time.time(), length, steps, images)
             if steps > 0:
                 item.anim.start(float(length) / (steps*2))
 
-    def do_animation_entity(self, location, length, steps, images):
+    def do_animation_entity(self, location, start_time, length, steps, images):
         tile = self.pane.get_tile(location.tile)
-        elapsed = time.time() - tile.anim_start
+        elapsed = time.time() - start_time
         time_step = length/steps
         i = int(elapsed / time_step)
         #print "Step " + str(i)
