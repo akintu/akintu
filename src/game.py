@@ -270,7 +270,7 @@ class Game(object):
         '''
         
         player = self.pane.person[self.id]
-        player_string = "TEST DEHYDRATER: REPLACE WITH player.dehydrate() in Game.save_and_quit()"#player.dehydrate()
+        player_string =player.dehydrate()#"TEST DEHYDRATER: REPLACE WITH player.dehydrate() in Game.save_and_quit()"#player.dehydrate()
         if not self.playerSaveFile:
             saved_list = os.listdir(CHAR_SAVE_PATH)
             max_save = 0
@@ -281,7 +281,7 @@ class Game(object):
                     increment_list.append(int(split_list[-1]))   #Get last element from list
                 max_save = max(increment_list)
             max_save += 1
-            new_filename = str(player.race) + "_" + str(player.characterClass) + "." + str("%03d" % max_save)
+            new_filename = str(player.race) + "_" + str(player.name) + "_" + str(player.characterClass) + "." + str("%03d" % max_save)
             self.playerSaveFile = os.path.join(CHAR_SAVE_PATH, new_filename)
         self.save_player(self.playerSaveFile, player_string)
         reactor.stop()
