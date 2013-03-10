@@ -15,7 +15,7 @@ class PlayerCharacter(p.Person):
     demoExpRequiredForLevel = {1 : 10, 2 : 25, 3 : 50, 4 : 90, 5 : 170}
     LEVEL_MAX = 5
 
-    def __init__(self, argDict, name="Guy Threepwood"):
+    def __init__(self, argDict, name="Guy Threepwood", new=True):
         p.Person.__init__(self, argDict)
 
         self.team = "Players"
@@ -149,13 +149,13 @@ class PlayerCharacter(p.Person):
         self.healingBonus = 0
 
         # Levelup stats
-        self.levelupStrength = p.Person.setFrom(argDict, 'levelupStrength', p.Person.ERROR)
-        self.levelupCunning = p.Person.setFrom(argDict, 'levelupCunning', p.Person.ERROR)
-        self.levelupSorcery = p.Person.setFrom(argDict, 'levelupSorcery', p.Person.ERROR)
-        self.levelupPiety = p.Person.setFrom(argDict, 'levelupPiety', p.Person.ERROR)
-        self.levelupConstitution = p.Person.setFrom(argDict, 'levelupConstitution', p.Person.ERROR)
-        self.levelupHP = p.Person.setFrom(argDict, 'levelupHP', p.Person.ERROR)
-        self.levelupMP = p.Person.setFrom(argDict, 'levelupMP', p.Person.ERROR)
+        self.levelupStrength = float(p.Person.setFrom(argDict, 'levelupStrength', p.Person.ERROR))
+        self.levelupCunning = float(p.Person.setFrom(argDict, 'levelupCunning', p.Person.ERROR))
+        self.levelupSorcery = float(p.Person.setFrom(argDict, 'levelupSorcery', p.Person.ERROR))
+        self.levelupPiety = float(p.Person.setFrom(argDict, 'levelupPiety', p.Person.ERROR))
+        self.levelupConstitution = float(p.Person.setFrom(argDict, 'levelupConstitution', p.Person.ERROR))
+        self.levelupHP = float(p.Person.setFrom(argDict, 'levelupHP', p.Person.ERROR))
+        self.levelupMP = float(p.Person.setFrom(argDict, 'levelupMP', p.Person.ERROR))
 
         self.skillLevels = None
         self.spellLevels = None
@@ -184,37 +184,40 @@ class PlayerCharacter(p.Person):
 
         self.spellList = []
 
-        spellOneName = p.Person.setFrom(argDict, 'spellOne', None)
-        if spellOneName:
-            spellOne = spell.Spell(spellOneName, self)
-            self.spellList.append(spellOne)
+        if new:
+            spellOneName = p.Person.setFrom(argDict, 'spellOne', None)
+            if spellOneName:
+                spellOne = spell.Spell(spellOneName, self)
+                self.spellList.append(spellOne)
 
-        spellTwoName = p.Person.setFrom(argDict, 'spellTwo', None)
-        if spellTwoName:
-            spellTwo = spell.Spell(spellTwoName, self)
-            self.spellList.append(spellTwo)
+            spellTwoName = p.Person.setFrom(argDict, 'spellTwo', None)
+            if spellTwoName:
+                spellTwo = spell.Spell(spellTwoName, self)
+                self.spellList.append(spellTwo)
 
-        spellThreeName = p.Person.setFrom(argDict, 'spellThree', None)
-        if spellThreeName:
-            spellThree = spell.Spell(spellThreeName, self)
-            self.spellList.append(spellThree)
+            spellThreeName = p.Person.setFrom(argDict, 'spellThree', None)
+            if spellThreeName:
+                spellThree = spell.Spell(spellThreeName, self)
+                self.spellList.append(spellThree)
 
         self.abilities = []
         self.registerBasicAttacks()
-        for abil in ability.Ability.allAbilities:
-            current = ability.Ability.allAbilities[abil]
-            if current['class'] == self.baseClass or current['class'] == self.secondaryClass or current['class'] == self.characterClass:
-                if current['level'] == 1:
-                    newAbil = ability.Ability(abil, self)
-                    self.abilities.append(newAbil)
+        if new:
+            for abil in ability.Ability.allAbilities:
+                current = ability.Ability.allAbilities[abil]
+                if current['class'] == self.baseClass or current['class'] == self.secondaryClass or current['class'] == self.characterClass:
+                    if current['level'] == 1:
+                        newAbil = ability.Ability(abil, self)
+                        self.abilities.append(newAbil)
 
         self.passiveAbilities = []
-        for pAbil in passiveability.PassiveAbility.allContentByName:
-            current = passiveability.PassiveAbility.allContentByName[pAbil]
-            if current['class'] == self.baseClass or current['class'] == self.secondaryClass or current['class'] == self.characterClass:
-                if current['level'] == 1:
-                    newPAbil = passiveability.PassiveAbility(pAbil, self)
-                    self.passiveAbilities.append(newPAbil)
+        if new:
+            for pAbil in passiveability.PassiveAbility.allContentByName:
+                current = passiveability.PassiveAbility.allContentByName[pAbil]
+                if current['class'] == self.baseClass or current['class'] == self.secondaryClass or current['class'] == self.characterClass:
+                    if current['level'] == 1:
+                        newPAbil = passiveability.PassiveAbility(pAbil, self)
+                        self.passiveAbilities.append(newPAbil)
 
         self.traits = []
 
@@ -222,17 +225,20 @@ class PlayerCharacter(p.Person):
         self.equippedItems = equippeditems.EquippedItems(None)
         self._baseInventoryCapacity = p.Person.setFrom(argDict, 'startingInventoryCapacity', 0)
         self._equipmentCarryingCapacity = 0
-        self.inventory = inventory.Inventory(ccName=self.characterClass)
-        # Actually equip starting weapon/shield.  Won't work for two one-handed weapons.
-        for item in self.inventory.allItems:
-            if isinstance(item, equipment.Weapon):
-                self.equip(item)
-                break
-        for item in self.inventory.allItems:
-            if isinstance(item, equipment.Armor) and item.type == "Shield":
-                self.equip(item)
-                break
-
+        if new:
+            self.inventory = inventory.Inventory(ccName=self.characterClass)
+            # Actually equip starting weapon/shield.  Won't work for two one-handed weapons.
+            for item in self.inventory.allItems:
+                if isinstance(item, equipment.Weapon):
+                    self.equip(item)
+                    break
+            for item in self.inventory.allItems:
+                if isinstance(item, equipment.Armor) and item.type == "Shield":
+                    self.equip(item)
+                    break
+        else:
+            self.inventory = inventory.Inventory()
+        
         self.movesPerformed = [0,0]
         self.attacksPerformed = [0,0]
         # TODO: Need to update attacksPerformed each turn.  The previous turn's number of attacks is in position 0, this turn's
@@ -269,6 +275,34 @@ class PlayerCharacter(p.Person):
         First argument should represent which type of object this is.'''
         return ("Player", self.name, self.race, self.characterClass)
 
+    def dehydrate(self):
+        '''Will return a dehydration string for the abilities of this
+        player character.'''
+        longText = []
+        longText.append(self.name)
+        longText.append("&" + self.race)
+        longText.append("&" + self.characterClass)
+        longText.append("&" + `self.level`)
+        longText.append("&" + `self.inventory.gold`)
+        longText.append("@")
+        for abil in self.abilities:
+            longText.append("&" + abil.name)
+        longText.append("@")
+        for sp in self.spellList:
+            longText.append("&" + sp.name)
+        longText.append("@")
+        for pas in self.passiveAbilities:
+            longText.append("&" + pas.name)
+        longText.append("@")
+        for itm in self.inventory.allItems:
+            longText.append("&" + itm.identifier)
+        longText.append("@")
+        for eq in self.equippedItems._allGear.values():
+            if eq:
+                longText.append("&" + eq.identifier)
+        return ''.join(longText)
+        
+        
     def applyBonusDamage(self, dieRoll, element):
         if element == "Fire":
             dieRoll *= 1 + (float(self.totalFireBonusDamage) / 100)
@@ -286,7 +320,7 @@ class PlayerCharacter(p.Person):
             dieRoll *= 1 + (float(self.totalArcaneBonusDamage) / 100)
         return int(round(dieRoll))
 
-    def gainLevelUp(self):
+    def gainLevelUp(self, statsOnly=False):
         """Start the levelup process for acquiring a new level.  May need to
         be integrated with another UI class to make decisions later TODO.
         Inputs:
@@ -301,7 +335,12 @@ class PlayerCharacter(p.Person):
         self._baseConstitution += self.levelupConstitution
         self._baseHP += self.levelupHP
         self._baseMP += self.levelupMP
-
+        
+        self.HP = self.totalHP
+        self.MP = self.totalMP
+        if statsOnly:
+            return
+        
         # Select/Gain Trait: TODO
 
         self.abilities = []
@@ -981,11 +1020,11 @@ class PlayerCharacter(p.Person):
         cs.append("| Character Name: " + self.name + "\n")
         cs.append("| Level: " + `self.level` + "  Experience: " + `self.experience` + "/" + `self.getExpForNextLevel()` + "\n")
         cs.append("| Character Class: " + self.characterClass + "  Race: " + self.race + "\n")
-        cs.append("| HP: " + `self.HP` + "/" + `self.totalHP` + "  MP: " + `self.MP` + "/" + `self.totalMP` + "  AP: " + `self.AP` + "/" + `self.totalAP` + "\n" )
+        cs.append("| HP: " + `int(self.HP)` + "/" + `int(self.totalHP)` + "  MP: " + `int(self.MP)` + "/" + `int(self.totalMP)` + "  AP: " + `self.AP` + "/" + `self.totalAP` + "\n" )
         cs.append("| ----------->>> Primary Statistics <<<-----------------\n")
-        cs.append("| Strength: " + `self.totalStrength` + " (" + `self.equipmentStrength` + ")  Dexterity: " + `self.totalDexterity` + " (" + `self.equipmentDexterity` + ")\n")
-        cs.append("| Cunning:  " + `self.totalCunning` + " (" + `self.equipmentCunning` + ")  Sorcery: " + `self.totalSorcery` + " (" + `self.equipmentSorcery` + ")\n")
-        cs.append("| Piety:    " + `self.totalPiety` + " (" + `self.equipmentPiety` + ")  Constitution: " + `self.totalConstitution` + " (" + `self.equipmentConstitution` + ")\n")
+        cs.append("| Strength: " + `int(self.totalStrength)` + " (" + `self.equipmentStrength` + ")  Dexterity: " + `int(self.totalDexterity)` + " (" + `self.equipmentDexterity` + ")\n")
+        cs.append("| Cunning:  " + `int(self.totalCunning)` + " (" + `self.equipmentCunning` + ")  Sorcery: " + `int(self.totalSorcery)` + " (" + `self.equipmentSorcery` + ")\n")
+        cs.append("| Piety:    " + `int(self.totalPiety)` + " (" + `self.equipmentPiety` + ")  Constitution: " + `int(self.totalConstitution)` + " (" + `self.equipmentConstitution` + ")\n")
         cs.append("| ----------->>> Secondary Statistics <<<---------------\n")
         cs.append("| Melee Accuracy:    " + `self.totalMeleeAccuracy` + " (" + `self.equipmentMeleeAccuracy` + ")  Ranged Accuracy: " + `self.totalRangedAccuracy` + " (" + `self.equipmentRangedAccuracy` + ")\n")
         cs.append("| Dodge:             " + `self.totalDodge` + " (" + `self.equipmentDodge` + ")  Ranged Dodge: " + `self.totalRangedDodge` + " (" + `self.equipmentRangedDodge` + ")\n")

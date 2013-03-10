@@ -13,6 +13,10 @@ import location
 import consumable
 import wealth
 import magicalproperty
+import ability
+import passiveability
+import spell
+import trait
 from combat import Combat
 from random import randint, choice
 from dice import *
@@ -105,6 +109,55 @@ class TheoryCraft(object):
         return rValue
         
     @staticmethod
+    def rehydratePlayer(longString):
+        '''Returns a rehydrated character from the comnpressed 
+        string provided.'''
+        bigSplit = longString.split("@")
+        basicDetails = bigSplit[0].split("&")
+        name = basicDetails[0]
+        race = basicDetails[1]
+        cls = basicDetails[2]
+        level = int(basicDetails[3])
+        gold = int(basicDetails[4])
+        abilityNames = bigSplit[1].split("&")
+        spellNames = bigSplit[2].split("&")
+        passiveNames = bigSplit[3].split("&")
+        inventoryNames = bigSplit[4].split("&")
+        toEquip = bigSplit[5].split("&")
+        
+        newChar = TheoryCraft.getNewPlayerCharacter(race, cls, name="Milton Filbert", new=False)
+
+        if level > 1:
+            for i in range(level - 1):
+                newChar.gainLevelUp(statsOnly=True)
+            newChar.level = level
+        
+        for abilName in abilityNames:
+            if abilName == '':
+                continue
+            newChar.abilities.append(ability.Ability(abilName, newChar))
+        for spellName in spellNames:
+            if spellName == '':
+                continue
+            newChar.spellList.append(spell.Spell(spellName, newChar))
+        for itemName in inventoryNames:
+            if itemName == '':
+                continue
+            newChar.inventory.addItem(TheoryCraft.rehydrateTreasure(itemName))
+        for itemName in toEquip:
+            if itemName == '':
+                continue
+            item = TheoryCraft.rehydrateEquipment(itemName)
+            newChar.inventory.addItem(item)
+            newChar.equip(item)
+        for passiveName in passiveNames:
+            if passiveName == '':
+                continue
+            newChar.passiveAbilities.append(passiveability.PassiveAbility(passiveName, newChar))
+            
+        return newChar
+        
+    @staticmethod
     def convertFromDetails(tuple):
         '''Converts a 'detail tuple' representing the intermediate state of
         a Person to an actual instance of a Person.'''
@@ -158,13 +211,13 @@ class TheoryCraft(object):
 
     @staticmethod
     def getNewPlayerCharacter(race, characterClass, loc=location.Location((0, 0), (PANE_X/2, PANE_Y/2)),
-                              name="Milton Filbert"):
+                              name="Milton Filbert", new=True):
         race = race.lower()
         characterClass = characterClass.lower()
         selection = race + " " + characterClass
         for char_dict in TheoryCraft.classes:
             if char_dict['name'].lower() == race + " " + characterClass:
-                pc = playercharacter.PlayerCharacter(char_dict, name=name)
+                pc = playercharacter.PlayerCharacter(char_dict, name=name, new=new)
                 pc.location = loc
                 return pc
         print "Bad character name/race, returning nothing; you're so stupid."
