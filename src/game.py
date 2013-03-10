@@ -33,7 +33,7 @@ class Game(object):
             state:      state={SEED_KEY: "seed"} if new game, or
                         state="SaveFile.###" if loading game
             player:     player=("Name", "Race", "Class") if new player
-                        player="PlayerRepresentation.whatever" if loading
+                        player="SaveFile.###" if loading
         '''
 
         TheoryCraft.loadAll()   #Static method call, Devin's stuff.
@@ -86,8 +86,10 @@ class Game(object):
             #TODO: Might need to unpickle a player/rehydrate it
             self.playerSaveFile = player
             dehydrated_string = self.load_player(self.playerSaveFile)
-            person = Command("PERSON", "LOAD", dehydrated=dehydrated_string)
-            
+            person = Command("PERSON", "LOAD", id=None, \
+                    location=Location((0, 0), (PANE_X/2, PANE_Y/2)), \
+                    details=dehydrated_string)
+
         self.setup = LoopingCall(self.setup_game, person)
         self.setup.start(0)
 
@@ -119,15 +121,18 @@ class Game(object):
             command = self.CDF.queue.get()
 
             ###### CreatePerson ######
-            if command.type == "PERSON" and command.action == "CREATE":
+            if command.type == "PERSON" and (command.action == "CREATE" or command.action == "LOAD"):
                 if self.id == -1:  # Need to setup the pane
                     self.id = command.id
                     if self.combat:
                         self.switch_panes(command.cPane, self.combat)
                     else:
                         self.switch_panes(command.location)
-
+                
                 self.pane.person[command.id] = TheoryCraft.convertFromDetails(command.details)
+                if command.action == "LOAD":
+                    self.pane.person[command.id] = TheoryCraft.rehydratePlayer(command.details)
+                    
                 p = self.pane.person[command.id]
                 p.location = command.location
 

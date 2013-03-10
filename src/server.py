@@ -26,10 +26,12 @@ class GameServer():
                 continue
 
             ###### CreatePerson ######
-            if command.type == "PERSON" and command.action == "CREATE":
+            if command.type == "PERSON" and (command.action == "CREATE" or command.action == "LOAD"):
                 self.load_pane(command.location.pane)
-
-                person = TheoryCraft.convertFromDetails(command.details)
+                if command.action == "LOAD":
+                    person = TheoryCraft.rehydratePlayer(command.details)
+                elif command.action == "CREATE":
+                    person = TheoryCraft.convertFromDetails(command.details)
                 person.id = id(person)
                 command.id = person.id
                 person.ai.startup(self)

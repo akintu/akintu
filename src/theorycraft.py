@@ -125,7 +125,7 @@ class TheoryCraft(object):
         inventoryNames = bigSplit[4].split("&")
         toEquip = bigSplit[5].split("&")
         
-        newChar = TheoryCraft.getNewPlayerCharacter(race, cls, name="Milton Filbert", new=False)
+        newChar = TheoryCraft.getNewPlayerCharacter(race, cls, name=name, new=False)
 
         if level > 1:
             for i in range(level - 1):

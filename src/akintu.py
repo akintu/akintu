@@ -21,6 +21,9 @@ def main():
         num_players = sys.argv[1]
         name = sys.argv[2]
         player = (name, "Elf", "Assassin")
+        if len(sys.argv) > 3:  
+            player = sys.argv[3]
+
         state = {SEED_KEY: "fdsa"}
         if num_players == "1":
             ip = None
