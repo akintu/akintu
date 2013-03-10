@@ -128,18 +128,18 @@ class Game(object):
                     else:
                         self.switch_panes(command.location)
                     ##SAVE PERSON##
-                    save = Command("PERSON", "SAVE", id=self.id)
+                    save = Command("PERSON", "SAVE", id= -1)
                     self.CDF.send(save)
                 
                 if command.action == "LOAD":
                     self.pane.person[command.id] = TheoryCraft.rehydratePlayer(command.details)
-                else:
+                elif command.action == "CREATE":
                     self.pane.person[command.id] = TheoryCraft.convertFromDetails(command.details)
                     
                 p = self.pane.person[command.id]
                 p.location = command.location
 
-                imagepath = os.path.join('res', 'images', 'sprites', p.image)
+                imagepath = os.path.join(SPRITES_IMAGES_PATH, p.image)
                 sizeAbbr = "M"
                 if self.pane.person[command.id].team == "Monsters":
                     if self.pane.person[command.id].size == "Small":
@@ -282,6 +282,7 @@ class Game(object):
             self.playerSaveFile = file_name
         path_to_file = os.path.join(CHAR_SAVE_PATH, file_name)
         print "Saving Character To " + str(path_to_file)
+        
         file = open(path_to_file, "ab")
         file.write("\n" + player_string)
         file.close()
@@ -293,8 +294,7 @@ class Game(object):
             pass
         last = line
         file.close()
-        print "Loading player " + str(last)
-        print "From " + str(path_to_file)
+        print "Loading player from " + str(path_to_file)
         return last
     
     def save_and_quit(self):
@@ -324,9 +324,10 @@ class Game(object):
                 if event.key == K_ESCAPE:
                     #TODO: Open Menu Here
                     ##SAVE PERSON##
+                    self.save_player()
                     save = Command("PERSON", "SAVE", id=self.id)
                     self.CDF.send(save)
-                    self.save_and_quit()
+                    
                 elif event.key in MODIFIER_KEYS:
                     self.keystate.append(event.key)
                 elif event.key in MOVE_KEYS:

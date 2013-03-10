@@ -45,6 +45,7 @@ IMAGES_PATH = os.path.join("res", "images")
 OBSTACLES_IMAGES_PATH = os.path.join(IMAGES_PATH, "obstacles")
 BACKGROUND_IMAGES_PATH = os.path.join(IMAGES_PATH, "background")
 MONSTERS_IMAGES_PATH = os.path.join(IMAGES_PATH, "monsters")
+SPRITES_IMAGES_PATH = os.path.join(IMAGES_PATH, "sprites")
 ITEMS_IMAGES_PATH = os.path.join(IMAGES_PATH, "items")
 
 #IMAGE KEYS

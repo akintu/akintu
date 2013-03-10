@@ -147,7 +147,7 @@ class GameServer():
             if command.type == "PERSON" and command.action == "STOP":
                 self.person[command.id].ai.remove("RUN")
             
-            ###### Save all ######
+            ###### Save All Players ######
             if command.type == "PERSON" and command.action == "SAVE":
                 for p, i in self.player.iteritems():
                     if i != command.id:  #We don't want to send it back to the player who sent this.
