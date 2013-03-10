@@ -129,9 +129,11 @@ class Game(object):
                     else:
                         self.switch_panes(command.location)
                 
-                self.pane.person[command.id] = TheoryCraft.convertFromDetails(command.details)
+                
                 if command.action == "LOAD":
                     self.pane.person[command.id] = TheoryCraft.rehydratePlayer(command.details)
+                else:
+                    self.pane.person[command.id] = TheoryCraft.convertFromDetails(command.details)
                     
                 p = self.pane.person[command.id]
                 p.location = command.location
