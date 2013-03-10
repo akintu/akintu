@@ -8,6 +8,7 @@ from pygame.locals import *
 import os
 import sys
 import time
+import datetime
 import pickle
 
 from combat import *
@@ -245,8 +246,8 @@ class Game(object):
                 self.itemList = []
     
     def save_player(self, path_to_player, player_string):
-        print "APPENDING PLAYER " + str(player_string)
-        print "To " + str(path_to_player)
+        # print "APPENDING PLAYER " + str(player_string)
+        print "Saving Character To " + str(path_to_player)
         file = open(path_to_player, "a")
         file.write(player_string)
         file.close()
@@ -269,6 +270,8 @@ class Game(object):
         Otherwise, we use the filename located in Game.playerSaveFile
         '''
         
+        # now = datetime.datetime.now()
+        # savetime = "." + now.strftime("%Y-%m-%d %H:%M")
         player = self.pane.person[self.id]
         player_string =player.dehydrate()#"TEST DEHYDRATER: REPLACE WITH player.dehydrate() in Game.save_and_quit()"#player.dehydrate()
         if not self.playerSaveFile:
@@ -278,11 +281,13 @@ class Game(object):
                 increment_list = []
                 for filename in saved_list:
                     split_list = filename.split(".")
-                    increment_list.append(int(split_list[-1]))   #Get last element from list
+                    increment_list.append(int(split_list[-1]))   #Get last element from list (the incremental save number)
                 max_save = max(increment_list)
             max_save += 1
-            new_filename = str(player.race) + "_" + str(player.name) + "_" + str(player.characterClass) + "." + str("%03d" % max_save)
+            new_filename = str(player.name) + "_" + str(player.race) + "_" + str(player.characterClass) + "." + str("%03d" % max_save)
             self.playerSaveFile = os.path.join(CHAR_SAVE_PATH, new_filename)
+            
+            
         self.save_player(self.playerSaveFile, player_string)
         reactor.stop()
     
