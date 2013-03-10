@@ -201,8 +201,8 @@ class PlayerCharacter(p.Person):
                 self.spellList.append(spellThree)
 
         self.abilities = []
-        self.registerBasicAttacks()
         if new:
+            self.registerBasicAttacks()
             for abil in ability.Ability.allAbilities:
                 current = ability.Ability.allAbilities[abil]
                 if current['class'] == self.baseClass or current['class'] == self.secondaryClass or current['class'] == self.characterClass:
@@ -284,6 +284,7 @@ class PlayerCharacter(p.Person):
         longText.append("&" + self.characterClass)
         longText.append("&" + `self.level`)
         longText.append("&" + `self.inventory.gold`)
+        longText.append("&" + `self.experience`)
         longText.append("@")
         for abil in self.abilities:
             longText.append("&" + abil.name)

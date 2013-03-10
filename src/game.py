@@ -81,7 +81,8 @@ class Game(object):
         if isinstance(player, tuple):
             person = Command("PERSON", "CREATE", id=None, \
                     location=Location((0, 0), (PANE_X/2, PANE_Y/2)), \
-                    details=("Player", player[0], player[1], player[2]))
+                    details=TheoryCraft.getNewPlayerCharacter(
+                            name=player[0], race=player[1], characterClass=player[2]).dehydrate())
         else: 
             self.playerSaveFile = player
             dehydrated_string = self.load_player(self.playerSaveFile)
@@ -201,6 +202,10 @@ class Game(object):
                             self.screen.update_person(command.id, {k: v, \
                                     'team': self.pane.person[command.id].team})
                         
+            ###### Character Progression ######
+            if command.type == "PERSON" and command.action == "ADD_EXPERIENCE":
+                self.pane.person[command.id].addExperience(command.experience)
+                        
             ###### Update Text #####
             elif command.type == "UPDATE" and command.action == "TEXT":
                 self.screen.show_text(command.text, color=command.color)
@@ -227,7 +232,7 @@ class Game(object):
             elif command.type == "ITEM" and command.action == "EQUIP":
                 item = TheoryCraft.rehydrateTreasure(command.itemIdentifier)
                 self.pane.person[command.id].equip(item)
-
+                
             ###### Entity Operations ######
 
             elif command.type == "ENTITY":

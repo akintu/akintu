@@ -171,9 +171,12 @@ class Monster(person.Person):
             self.baseHP = round(self.baseHP * 2.5)
 
     def getDetailTuple(self):
-        '''First argument should represent which type of object this is.'''
+        '''DEPRECATED'''
         return ("Monster", self.name, self.level)
 
+    def dehydrate(self):
+        return "@" + self.name + "@" + `self.level`
+        
     def getSufficientAbilities(self):
         sufficient = []
         for abil in self.abilityList:

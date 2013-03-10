@@ -52,7 +52,7 @@ class GameServer():
                         if i != command.id:
                             self.SDF.send(port, Command("PERSON", "CREATE", id=i, \
                                     location=self.person[i].location, \
-                                    details=self.person[i].getDetailTuple()))
+                                    details=self.person[i].dehydrate()))
 
             ###### MovePerson ######
             if command.type == "PERSON" and command.action == "MOVE":
@@ -85,7 +85,7 @@ class GameServer():
                         # Add player to new pane lists and send to clients in the affected pane
                         self.pane[command.location.pane].person.append(command.id)
                         command.action = "CREATE"
-                        command.details = self.person[command.id].getDetailTuple()
+                        command.details = self.person[command.id].dehydrate()
                         for p, i in self.player.iteritems():
                             if self.person[i].location.pane == command.location.pane and \
                                     not self.person[i].cPane:
@@ -98,7 +98,7 @@ class GameServer():
                                 if i != command.id:
                                     self.SDF.send(p, Command("PERSON", "CREATE", id=i, \
                                             location=self.person[i].location, \
-                                            details=self.person[i].getDetailTuple()))
+                                            details=self.person[i].dehydrate()))
 
                         self.unload_panes()
 
@@ -178,14 +178,22 @@ class GameServer():
                                 self.SDF.send(p, action)
                             for item in itemList:
                                 equipped = False
-                                action = Command("ITEM", "CREATE", itemIdentifier=item.identifier, id=thisPlayer.id)
+                                action = None
+                                if isinstance(item, int):
+                                    action = Command("ITEM", "CREATE", itemIdentifier=item, id=thisPlayer.id)
+                                else:
+                                    action = Command("ITEM", "CREATE", itemIdentifier=item.identifier, id=thisPlayer.id)
                                 self.SDF.send(p, action)
                                 if thisPlayer.shouldAutoEquip(item):
                                     thisPlayer.equip(item)
                                     action = Command("ITEM", "EQUIP", itemIdentifier=item.identifier, id=thisPlayer.id)
                                     self.SDF.send(p, action)
                                     equipped = True
-                                text='Found item: ' + item.displayName
+                                text = ''
+                                if isinstance(item, int):
+                                    text = 'Found ' + `item` + ' pieces of gold.'
+                                else:
+                                    text = 'Found item: ' + item.displayName
                                 if equipped:
                                     text ='Found and equipped item: ' + item.displayName
                                 action = Command("UPDATE", "TEXT", text=text, color='lightskyblue')

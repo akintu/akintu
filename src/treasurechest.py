@@ -141,7 +141,7 @@ class TreasureChest(entity.Entity):
         gold = int(round(givenIp * modifier * TreasureChest.GOLD_PER_IP))
         if gold < 5:
             gold = 5
-        return wealth.Wealth("Gold", gold)
+        return gold
 
     def _generateLargeTreasure(self):
         selection = Dice.roll(1, 100)

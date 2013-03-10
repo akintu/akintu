@@ -19,34 +19,6 @@ class CombatServer():
         if command.type == "PERSON" and command.action == "MOVE":
             activePlayer = self.server.person[command.id]
 
-            # Exit combat
-            # if command.location.pane != (0, 0):
-                # self.server.SDF.send(port, Command("PERSON", "REMOVE", id=command.id))
-                # self.server.SDF.send(port, Command("UPDATE", "COMBAT", combat=False))
-                # self.server.SDF.send(port, Command("PERSON", "CREATE", id=command.id, \
-                        # location=activePlayer.location, \
-                        # details=activePlayer.getDetailTuple()))
-                # for i in self.server.pane[activePlayer.location.pane].person:
-                    # if i != command.id:
-                        # self.server.SDF.send(port, Command("PERSON", "CREATE", id=i, \
-                                # location=self.server.person[i].location, \
-                                # details=self.server.person[i].getDetailTuple()))
-
-                # i = [i for i, p in self.server.person.iteritems() if p.location == \
-                        # activePlayer.cPane][0]
-                # self.server.person[i].ai.resume()
-                # self.server.person[i].cPane = None
-                # self.server.person[i].cLocation = None
-
-                # newloc = activePlayer.location.move(10 - activePlayer.location.direction, 1)
-                # self.server.SDF.queue.put((None, Command("PERSON", "MOVE", id=command.id, \
-                        # location=newloc, details=True)))
-                # self.server.pane[activePlayer.cPane].person.remove(command.id)
-                # activePlayer.cPane = None
-                # activePlayer.cLocation = None
-                
-                # self.server.unload_panes()
-
             # If this is a legal move request
             if self.tile_is_open(command.location, command.id) and \
                  activePlayer.AP >= activePlayer.totalMovementAPCost or\
@@ -285,14 +257,14 @@ class CombatServer():
         for p in self.server.getAllCombatPorts(playerId):
             self.server.SDF.send(p, Command("PERSON", "CREATE", id=playerId,
                     location=currentPlayer.cLocation, cPane=currentPlayer.cPane,
-                    details=currentPlayer.getDetailTuple()))
+                    details=currentPlayer.dehydrate()))
                                  
         # Populate the combat pane with all of the monsters.
         for id in self.server.pane[combatPane].person:
             if playerId != id:
                 self.server.SDF.send(port, Command("PERSON", "CREATE", id=id,
                         location=self.server.person[id].cLocation, 
-                        details=self.server.person[id].getDetailTuple()))
+                        details=self.server.person[id].dehydrate()))
             
         self.shout_turn_start(self.server.person[playerId], turn="Player")
 
@@ -400,6 +372,8 @@ class CombatServer():
         Combat.sendCombatMessage("Gained " + str(exp) + " Experience. (" + str(player.experience) +
                                  "/" + str(player.getExpForNextLevel()) + ")", 
                                  player, color='magenta', toAll=False)
+        self.server.SDF.send(self.server.getPlayerPort(player), Command("PERSON", "ADD_EXPERIENCE", id=player.id, experience=exp))
+        # Levelup is not performed here.
         
         
     def giveGold(self, player, monsterList):
@@ -409,11 +383,13 @@ class CombatServer():
         player.inventory.addItem(gold)
         Combat.sendCombatMessage("Gained " + str(gold) + " gold. (total: " + str(player.inventory.gold) +
                                  ")", player, color='magenta', toAll=False)
+        self.server.SDF.send(self.server.getPlayerPort(player), Command("ITEM", "CREATE", id=player.id, itemIdentifier=gold))
         
     def refillResources(self, player):
         Combat.modifyResource(player, "MP", player.totalMP)
         Combat.modifyResource(player, "HP", player.totalHP)
         Combat.modifyResource(player, "AP", player.totalAP)
+        player.cooldownList = []
 
     def removeTemporaryStatuses(self, player):
         '''Used to remove statuses that don't persist outside of combat'''
@@ -428,12 +404,12 @@ class CombatServer():
         self.server.SDF.send(port, Command("UPDATE", "COMBAT", combat=False))
         self.server.SDF.send(port, Command("PERSON", "CREATE", id=player.id, \
                 location=player.location, \
-                details=player.getDetailTuple()))
+                details=player.dehydrate()))
         for i in self.server.pane[player.location.pane].person:
             if i != player.id:
                 self.server.SDF.send(port, Command("PERSON", "CREATE", id=i, \
                         location=self.server.person[i].location, \
-                        details=self.server.person[i].getDetailTuple()))
+                        details=self.server.person[i].dehydrate()))
 
         i = [i for i, p in self.server.person.iteritems() if p.location == \
                 player.cPane][0]

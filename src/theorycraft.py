@@ -74,14 +74,12 @@ class TheoryCraft(object):
 
     @staticmethod
     def rehydrateTreasure(id):
-        print "DEBUG: " + id
+        if isinstance(id, int):
+            # Gold is now an int.
+            return id
         if id in consumable.Consumable.allPotions or id in consumable.Consumable.allPoisons:
             # TODO: Check for other consumable types!!
             return consumable.Consumable(id)
-        if "Gold" in id:
-            # Lousy hack, make better TODO.
-            amount = int(id.partition(": ")[2])
-            return wealth.Wealth("Gold", amount)
         return TheoryCraft.rehydrateEquipment(id)
         
     @staticmethod
@@ -119,6 +117,7 @@ class TheoryCraft(object):
         cls = basicDetails[2]
         level = int(basicDetails[3])
         gold = int(basicDetails[4])
+        experience = int(basicDetails[5])
         abilityNames = bigSplit[1].split("&")
         spellNames = bigSplit[2].split("&")
         passiveNames = bigSplit[3].split("&")
@@ -127,6 +126,7 @@ class TheoryCraft(object):
         
         newChar = TheoryCraft.getNewPlayerCharacter(race, cls, name=name, new=False)
 
+        newChar._experience = experience
         if level > 1:
             for i in range(level - 1):
                 newChar.gainLevelUp(statsOnly=True)
@@ -161,13 +161,22 @@ class TheoryCraft(object):
     def convertFromDetails(tuple):
         '''Converts a 'detail tuple' representing the intermediate state of
         a Person to an actual instance of a Person.'''
-        if tuple[0] == "Monster":
-            return TheoryCraft.getMonster(name=tuple[1], level=tuple[2])
-        elif tuple[0] == "Player":
-            return TheoryCraft.getNewPlayerCharacter(name=tuple[1], race=tuple[2], characterClass=tuple[3])
-        else:
-            print "Warning: Attempted to convert from invalid tuple: " + str(tuple[0]) + " ."
+        return TheoryCraft.rehydratePerson(tuple)
 
+    @staticmethod
+    def rehydrateMonster(details):
+        splits = details.split("@")
+        name = splits[1]
+        level = int(splits[2])
+        return TheoryCraft.getMonster(name=name, level=level)
+            
+    @staticmethod
+    def rehydratePerson(details):
+        if details[0] == "@":
+            return TheoryCraft.rehydrateMonster(details)
+        else:
+            return TheoryCraft.rehydratePlayer(details)
+            
     @staticmethod
     def getMonster(index=None, loc=location.Location((0, 0), (PANE_X/2, PANE_Y/2)), level=None, name=None, tolerance=1, ignoreMaxLevel=False):
         ''' Generates a monster for the overworld.
