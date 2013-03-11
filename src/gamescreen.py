@@ -4,13 +4,11 @@ Main visual engine
 
 import pygame
 from pygame.locals import *
-from pygame import Rect, Color
+from pygame import Color
 
-import os
-import sys
 from collections import OrderedDict
-from PIL import Image
 
+import screenutils
 from const import *
 from world import *
 
@@ -38,11 +36,62 @@ class GameScreen(object):
         self.scrollcount = 0
         self.textsize = 12
         self.sidetext = []
+        self.dialog = None
         pygame.display.flip()
 
         # Draw the sidebar text area and make sure it has at least one item
         # in it (even though it's a blank item)
         self.show_text('')
+
+    def show_dialog(self, text, items, selection=0):
+        '''
+        Show a tiling dialog with the given text, items, and selection
+        '''
+        self.dialog = screenutils.TilingDialog(text, items, selection)
+        self.screen.blit(self.dialog.surface, (0, 0))
+        self.display.update()
+        return selection
+
+    def hide_dialog(self):
+        '''
+        Hide the dialog, returns the last-selected item
+        '''
+        if not self.dialog:
+            return None
+        selection = self.dialog.get_selection()
+        self.dialog = None
+
+        self.draw_world()
+        self._drawmonsterframes()
+        self._drawplayerframes()
+        self._drawtext()
+        self.personsgroup.update()
+        self.personsgroup.draw(self.screen)
+        pygame.display.update()
+        self.personsgroup.clear(self.screen, self.background)
+
+        return selection
+
+    def get_dialog_selection(self):
+        '''
+        Get the current selection in the dialog (if it exists)
+        '''
+        if not self.dialog:
+            return None
+        return self.dialog.get_selection()
+
+    def move_dialog(self, direction):
+        '''
+        Move the dialog selection based on the 4 movement directions (2 4 6 8)
+
+        Returns the new selection
+        '''
+        if not self.dialog:
+            return None
+        self.dialog.move_selection(direction)
+        self.screen.blit(self.dialog.surface, (0, 0))
+        self.display.update()
+        return self.dialog.get_selection()
 
     def set_pane(self, pane):
         '''
@@ -66,10 +115,12 @@ class GameScreen(object):
                 self.images[key] = \
                     pygame.image.fromstring(data, size, mode).convert()
         self.pane = pane
-        self.draw_world()
 
-        # Redraw the text area
-        self._draw_text()
+        # Make sure we're not in a dialog
+        if not self.dialog:
+            self.draw_world()
+            # Redraw the text area
+            self._draw_text()
 
     def draw_world(self):
         '''
@@ -118,12 +169,13 @@ class GameScreen(object):
             entimage = self.images[ent.image]
             self.background.blit(entimage, (i*TILE_SIZE, j*TILE_SIZE))
 
-        # Draw the entire background (if this becomes an issue we'll refactor)
-        self.screen.blit(self.background, [0, 0])
-        self.personsgroup.update()
-        self.personsgroup.draw(self.screen)
-        pygame.display.update()
-        self.personsgroup.clear(self.screen, self.background)
+        if not self.dialog:
+            # Blit the entire background (if this becomes an issue we'll refactor)
+            self.screen.blit(self.background, [0, 0])
+            self.personsgroup.update()
+            self.personsgroup.draw(self.screen)
+            pygame.display.update()
+            self.personsgroup.clear(self.screen, self.background)
 
     def add_person(self, personid, statsdict):
         '''
@@ -174,12 +226,13 @@ class GameScreen(object):
         if statsdict['team'] == "Players":
             self.playerframes[personid] = \
                 self._generateplayerframe(personid)
-            self._drawplayerframes()
+            if not self.dialog:
+                self._drawplayerframes()
         elif statsdict['team'] == "Monsters":
             self.monsterframes[personid] = \
                 self._generatemonsterframe(personid)
-            self._drawmonsterframes()
-            pass
+            if not self.dialog:
+                self._drawmonsterframes()
 
     def remove_person(self, personid):
         '''
@@ -189,10 +242,12 @@ class GameScreen(object):
         self.persons.pop(personid)
         if personid in self.playerframes:
             self.playerframes.pop(personid)
-            self._drawplayerframes()
+            if not self.dialog:
+                self._drawplayerframes()
         elif personid in self.monsterframes:
             self.monsterframes.pop(personid)
-            self._drawmonsterframes()
+            if not self.dialog:
+                self._drawmonsterframes()
 
     def update_person(self, personid, statsdict):
         '''
@@ -211,12 +266,13 @@ class GameScreen(object):
                 if statsdict['team'] == "Players":
                     self.playerframes[personid] = \
                         self._generateplayerframe(personid)
-                    self._drawplayerframes()
+                    if not self.dialog:
+                        self._drawplayerframes()
                 elif statsdict['team'] == "Monsters":
                     self.monsterframes[personid] = \
                         self._generatemonsterframe(personid)
-                    self._drawmonsterframes()
-                    pass
+                    if not self.dialog:
+                        self._drawmonsterframes()
 
     def update(self):
         '''
@@ -224,10 +280,11 @@ class GameScreen(object):
 
         Should be called once per game loop cycle
         '''
-        self.personsgroup.update()
-        rectlist = self.personsgroup.draw(self.screen)
-        pygame.display.update(rectlist)
-        self.personsgroup.clear(self.screen, self.background)
+        if not self.dialog:
+            self.personsgroup.update()
+            rectlist = self.personsgroup.draw(self.screen)
+            pygame.display.update(rectlist)
+            self.personsgroup.clear(self.screen, self.background)
 
     def set_fps(self, fps):
         '''
@@ -243,7 +300,8 @@ class GameScreen(object):
         self.scrollcount += scrollamount
         if self.scrollcount >= len(self.sidetext):
             self.scrollcount = len(self.sidetext) - 1
-        self._draw_text()
+        if not self.dialog:
+            self._draw_text()
 
     def scroll_up(self, scrollamount=1):
         '''
@@ -252,7 +310,8 @@ class GameScreen(object):
         self.scrollcount -= scrollamount
         if self.scrollcount < 0:
             self.scrollcount = 0
-        self._draw_text()
+        if not self.dialog:
+            self._draw_text()
 
     def show_text(self, text, color='white', size=None):
         '''
@@ -269,7 +328,8 @@ class GameScreen(object):
             self.sidetext = self.sidetext[:100]
         if self.scrollcount >= len(self.sidetext):
             self.scrollcount = len(self.sidetext) - 1
-        self._draw_text()
+        if not self.dialog:
+            self._draw_text()
 
     def _draw_text(self):
         '''
