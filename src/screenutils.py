@@ -161,3 +161,78 @@ class TilingDialog(object):
             surface.blit(curfont, (0, y))
             y += curfont.get_rect().height
         return surface
+
+if __name__ == '__main__':
+    import time
+    pygame.init()
+
+    class TestItem(object):
+        def __init__(self, name, image, text):
+            self.name = name
+            self.image = image
+            self.text = text
+
+    screen = pygame.display.set_mode((1280, 640))
+    items = []
+    for i in range(44):
+        items.append(TestItem('Something of protection',
+                              'res/images/icons/cubeforce.png',
+                              'this is text\nplus some more text\n' +
+                              'seriously awesome text'))
+    dialog = TilingDialog('some text\nplus some more', items)
+    screen.blit(dialog.surface, (0, 0))
+    while True:
+        time.sleep(1)
+        dialog.move_selection(2)
+        print dialog.get_selection()
+        screen.blit(dialog.surface, (0, 0))
+        pygame.event.clear()
+        pygame.display.flip()
+        time.sleep(1)
+        dialog.move_selection(6)
+        print dialog.get_selection()
+        screen.blit(dialog.surface, (0, 0))
+        pygame.event.clear()
+        pygame.display.flip()
+        time.sleep(1)
+        dialog.move_selection(6)
+        print dialog.get_selection()
+        screen.blit(dialog.surface, (0, 0))
+        pygame.event.clear()
+        pygame.display.flip()
+        time.sleep(1)
+        dialog.move_selection(2)
+        print dialog.get_selection()
+        screen.blit(dialog.surface, (0, 0))
+        pygame.event.clear()
+        pygame.display.flip()
+        time.sleep(1)
+        dialog.move_selection(2)
+        print dialog.get_selection()
+        screen.blit(dialog.surface, (0, 0))
+        pygame.event.clear()
+        pygame.display.flip()
+        time.sleep(1)
+        dialog.move_selection(4)
+        print dialog.get_selection()
+        screen.blit(dialog.surface, (0, 0))
+        pygame.event.clear()
+        pygame.display.flip()
+        time.sleep(1)
+        dialog.move_selection(8)
+        print dialog.get_selection()
+        screen.blit(dialog.surface, (0, 0))
+        pygame.event.clear()
+        pygame.display.flip()
+        time.sleep(1)
+        dialog.move_selection(8)
+        print dialog.get_selection()
+        screen.blit(dialog.surface, (0, 0))
+        pygame.event.clear()
+        pygame.display.flip()
+        time.sleep(1)
+        dialog.move_selection(8)
+        print dialog.get_selection()
+        screen.blit(dialog.surface, (0, 0))
+        pygame.event.clear()
+        pygame.display.flip()
