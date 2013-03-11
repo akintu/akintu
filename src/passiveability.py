@@ -4,6 +4,15 @@ import sys
 import listener
 from combat import *
 
+ROOT_FOLDER = "./res/images/icons/"
+
+ARCANE_ARCHER = ROOT_FOLDER + "arcane_archer_skills/"
+ASSASSIN = ROOT_FOLDER + "assassin_skills/"
+BATTLEMAGE = ROOT_FOLDER + "battlemage_skills/"
+BARBARIAN = ROOT_FOLDER + "barbarian_skills/"
+SPELLSWORD = ROOT_FOLDER + "spellsword_skills/"
+
+
 class PassiveAbility(object):
 
     def __init__(self, name, owner):
@@ -16,6 +25,14 @@ class PassiveAbility(object):
         self.action = content['action']
         self.onStringList = None
         self.offStringList = None
+        if 'image' in content:
+            self.image = content['image']
+        else:
+            self.image = './res/images/icons/cubeforce.png'
+        if 'text' in content:
+            self.text = content['text'] 
+        else:
+            self.text = 'No description yet.'
         if self.type == 'dynamic':
             self.onStringList = content['onStringList']
             self.offStringList = content['offStringList']
@@ -460,14 +477,18 @@ class PassiveAbility(object):
         'class' : 'Barbarian',
         'level' : 1,
         'type' : 'static',
-        'action' : applyColdEndurance
+        'action' : applyColdEndurance,
+        'image' : BARBARIAN + "cold-endurance.png",
+        'text' : '+10% Cold Resistance'
         },
         'Magical Vulnerability':
         {
         'class' : 'Barbarian',
         'level' : 1,
         'type' : 'static',
-        'action' : applyMagicalVulnerability
+        'action' : applyMagicalVulnerability,
+        'image' : BARBARIAN + "magical-vulnerability.png",
+        'text' : '-3 Magic Resist'
         },
         'Mighty Weapon':
         {
@@ -476,7 +497,9 @@ class PassiveAbility(object):
         'type' : 'dynamic',
         'action' : applyMightyWeapon,
         'onStringList' : ['Outgoing Melee Attack'],
-        'offStringList' : ['Outgoing Melee Attack Complete']
+        'offStringList' : ['Outgoing Melee Attack Complete'],
+        'image' : BARBARIAN + "mighty-weapon.png",
+        'text' : '+6 Might on attacks with two-handed weapons'
         },
         'Two Weapon Targeting':
         {
@@ -485,7 +508,9 @@ class PassiveAbility(object):
         'type' : 'dynamic',
         'action' : applyTwoWeaponTargeting,
         'onStringList' : ['Outgoing Melee Attack'],
-        'offStringList' : ['Outgoing Melee Attack Complete']
+        'offStringList' : ['Outgoing Melee Attack Complete'],
+        'image' : BARBARIAN + "two-weapon-targeting.png",
+        'text' : "+2 Accuracy on attacks with two weapons"
         },
         'Blood on the Edge':
         {
@@ -494,14 +519,19 @@ class PassiveAbility(object):
         'type' : 'dynamic',
         'action' : applyBloodOnTheEdge,
         'onStringList' : ['Incoming Damage'],
-        'offStringList' : []
+        'offStringList' : [],
+        'image' : BARBARIAN + "blood-on-the-edge.png",
+        'text' : "Any incoming damage dealing less than 5% of maximum HP\n" + \
+                "is ignored while the Barbarian has less than 30% HP."
         },
         'Magical Ignorance':
         {
         'class' : 'Barbarian',
         'level' : 3,
         'type' : 'static',
-        'action' : applyMagicalIgnorance
+        'action' : applyMagicalIgnorance,
+        'image' : BARBARIAN + "magical-ignorance.png",
+        'text' : '-3 Magic Resist'
         },
         'Stunning Recovery':
         {
@@ -510,7 +540,10 @@ class PassiveAbility(object):
         'type' : 'dynamic',
         'action' : applyStunningRecovery,
         'onStringList' : ['Incoming Status Applied'],
-        'offStringList' : []
+        'offStringList' : [],
+        'image' : BARBARIAN + "stunning-recovery.png",
+        'text' : 'Whenever the Barbarian is stunned, he recovers 5% of his\n' + \
+                'Maximum HP.  May occur once per monster turn.'
         },
 
         'Polearm Specialization':
@@ -549,14 +582,18 @@ class PassiveAbility(object):
         'type' : 'dynamic',
         'action' : applySeekerOfEnchantments,
         'onStringList' : ['Outgoing Spell Cast'],
-        'offStringList' : ['Outgoing Spell Cast Complete']
+        'offStringList' : ['Outgoing Spell Cast Complete'],
+        'image' : SPELLSWORD + 'seeker-of-enchantments.png',
+        'text' : '+6 Spellpower when casting enchantment spells'
         },
         'Duality':
         {
         'class' : 'Spellsword',
         'level' : 1,
         'type' : 'static',
-        'action' : applyDuality
+        'action' : applyDuality,
+        'image' : SPELLSWORD + 'duality.png',
+        'text' : '+2% DR and +1 magic resist'
         },
         'Lasting Enchantment':
         {
@@ -565,7 +602,9 @@ class PassiveAbility(object):
         'type' : 'dynamic',
         'action' : applyLastingEnchantment,
         'onStringList' : ['Outgoing Spell Cast Complete'],
-        'offStringList' : []
+        'offStringList' : [],
+        'image' : SPELLSWORD + 'lasting-enchantment.png',
+        'text' : '+1 Turn to all enchantments cast on yourself'
         },
         'Focal Point':
         {
@@ -574,7 +613,10 @@ class PassiveAbility(object):
         'type' : 'dynamic',
         'action' : applyFocalPoint,
         'onStringList' : ['Outgoing Melee Attack Critical Hit'],
-        'offStringList' : []
+        'offStringList' : [],
+        'image' : SPELLSWORD + 'focal-point.png',
+        'text' : '+15 divine damage on critical hits if using an enchanted,\n' + \
+                'two-handed weapon'
         },
         'Blades of Reduction':
         {
@@ -583,7 +625,10 @@ class PassiveAbility(object):
         'type' : 'dynamic',
         'action' : applyBladesOfReduction,
         'onStringList' : ['Outgoing Melee Attack Hit', 'Outgoing Melee Attack Critical Hit'],
-        'offStringList' : []
+        'offStringList' : [],
+        'image' : SPELLSWORD + 'blades-of-reduction.png',
+        'text' : 'If wielding a weapon that deals slashing damage, successful hits reduce\n' + \
+                'a target\'s magic resist by 3 with a reliable chance.'
         },
 
         'Excellent Vision':
@@ -802,9 +847,10 @@ class PassiveAbility(object):
         'type' : 'dynamic',
         'action' : applyCloseRangedMagic,
         'onStringList' : ['Outgoing Spell Cast'],
-        'offStringList' : ['Outgoing Spell Cast Complete']
+        'offStringList' : ['Outgoing Spell Cast Complete'],
+        'image' : BATTLEMAGE + 'close-ranged-magic.png',
+        'text' : '+6 Spellpower with all spells having a range of 3 or less.'
         },
-
         'Mana Attack':
         {
         'class' : 'Battle Mage',
@@ -812,7 +858,9 @@ class PassiveAbility(object):
         'type' : 'dynamic',
         'action' : applyManaAttack,
         'onStringList' : ['Outgoing Melee Attack Hit'],
-        'offStringList' : []
+        'offStringList' : [],
+        'image' : BATTLEMAGE + 'mana-attack.png',
+        'text' : '+8 mana for every sucessful melee attack'
         },
         'Dire Mana':
         {
@@ -821,14 +869,18 @@ class PassiveAbility(object):
         'type' : 'dynamic',
         'action' : applyDireMana,
         'onStringList' : ['Incoming Damage'],
-        'offStringList' : []
+        'offStringList' : [],
+        'image' : BATTLEMAGE + 'dire-mana.png',
+        'text' : 'Recover 10% of MP when receiving damage of at least 15% of max HP.'
         },
         'Mystical Accuracy':
         {
         'class' : 'Battle Mage',
         'level' : 1,
         'type' : 'static',
-        'action' : applyMysticalAccuracy
+        'action' : applyMysticalAccuracy,
+        'image' : BATTLEMAGE + 'mystical-accuracy',
+        'text' : '+2 Melee Accuracy'
         },
         'Mystical Shield Use':
         {
@@ -837,7 +889,9 @@ class PassiveAbility(object):
         'type' : 'dynamic',
         'action' : applyMysticalShieldUse,
         'onStringList' : ['Incoming Melee Attack', 'Incoming Ranged Attack'],
-        'offStringList' : ['Incoming Melee Attack Complete', 'Incoming Ranged Attack Complete']
+        'offStringList' : ['Incoming Melee Attack Complete', 'Incoming Ranged Attack Complete'],
+        'image' : BATTLEMAGE + 'mystical-shield-use.png',
+        'text' : '+3% DR when using any shield'
         },
         'Rapid Retreat':
         {
@@ -846,7 +900,9 @@ class PassiveAbility(object):
         'type' : 'dynamic',
         'action' : applyRapidRetreat,
         'onStringList' : ['Player Turn Start'],
-        'offStringList' : ['Monster Turn Start']
+        'offStringList' : ['Monster Turn Start'],
+        'image' : BATTLEMAGE + 'rapid-retreat.png',
+        'text' : 'If HP is below 20% at the start of your turn, movement only costs 2 AP.'
         },
         'Military Defensive Training':
         {
@@ -855,7 +911,10 @@ class PassiveAbility(object):
         'type' : 'dynamic',
         'action' : applyMilitaryDefensiveTraining,
         'onStringList' : ['Incoming Spell Cast'],
-        'offStringList' : ['Incoming Spell Cast Complete']
+        'offStringList' : ['Incoming Spell Cast Complete'],
+        'image' : BATTLEMAGE + 'military-training.png',
+        'text' : 'If wielding a club weapon, +5 Might; otherwise, +2 Accuracy.\n' + \
+                'If wielding a shield, +3 magic resist; otherwise, +2 spellpower.'
         },
         'Military Spell Training':
         {
@@ -864,7 +923,10 @@ class PassiveAbility(object):
         'type' : 'dynamic',
         'action' : applyMilitarySpellTraining,
         'onStringList' : ['Outgoing Spell Cast'],
-        'offStringList' : ['Outgoing Spell Cast Complete']
+        'offStringList' : ['Outgoing Spell Cast Complete'],
+        'image' : BATTLEMAGE + 'military-training.png',
+        'text' : 'If wielding a club weapon, +5 Might; otherwise, +2 Accuracy.\n' + \
+                'If wielding a shield, +3 magic resist; otherwise, +2 spellpower.'
         },
         'Military Offensive Training':
         {
@@ -873,7 +935,10 @@ class PassiveAbility(object):
         'type' : 'dynamic',
         'action' : applyMilitaryOffensiveTraining,
         'onStringList' : ['Outgoing Melee Attack'],
-        'offStringList' : ['Outgoing Melee Attack Complete']
+        'offStringList' : ['Outgoing Melee Attack Complete'],
+        'image' : BATTLEMAGE + 'military-training.png',
+        'text' : 'If wielding a club weapon, +5 Might; otherwise, +2 Accuracy.\n' + \
+                'If wielding a shield, +3 magic resist; otherwise, +2 spellpower.'
         },
 
         # Arcane Archer
@@ -884,14 +949,19 @@ class PassiveAbility(object):
         'type' : 'dynamic',
         'action' : applyManaArrows,
         'onStringList' : ['Outgoing Ranged Attack Complete'],
-        'offStringList' : []
+        'offStringList' : [],
+        'image' : ARCANE_ARCHER + 'mana-arrows.png',
+        'text' : 'All ranged attacks with either a bow or crossbow regenerate 6 MP.\n' + \
+                'This occurs even if the attack misses.'
         },
         'Conduit':
         {
         'class' : 'Arcane Archer',
         'level' : 1,
         'type' : 'static',
-        'action' : applyConduit
+        'action' : applyConduit,
+        'image' : ARCANE_ARCHER + 'conduit.png',
+        'text' : '+15% Arcane Damage, +5% Critical Magnitude'
         },
         'Mystical Research':
         {

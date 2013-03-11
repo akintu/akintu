@@ -389,7 +389,7 @@ class Game(object):
                         pass
                     elif event.key == K_i:
                         self.selectionMode = "items"
-                        self.screen.show_text("Selection mode: items", color="yellow")
+                        self.screen.show_text("Selection mode: items", color="crimson")
                         pass
                     elif event.key == K_PERIOD:
                         self.display_target_details()
@@ -421,7 +421,7 @@ class Game(object):
             
     def choose_ability(self):
         text = "Select an Ability"
-        bgcolor = "yellow"
+        bgcolor = "cadetblue"
         itemslist = self.pane.person[self.id].abilities
         self.screen.show_dialog(text, itemslist, bgcolor=bgcolor)
             
