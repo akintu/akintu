@@ -3,6 +3,7 @@ import broadcast
 from combat import *
 from location import *
 from dice import *
+import math
 import region
 import monster
 
@@ -422,7 +423,7 @@ class CombatServer():
                         details=self.server.person[i].dehydrate()))
 
         self.server.unload_panes()
-        self.server.SDF.queue.put((None, Command("CLIENT", "RESET_TARGETS", id=player.id)))
+        self.server.SDF.send(port, Command("CLIENT", "RESET_TARGETS", id=player.id))
 
     def monster_victory(self):
         i = [i for i, p in self.server.person.iteritems() if p.location == player.cPane][0]
@@ -433,17 +434,32 @@ class CombatServer():
     def softcoreDeath(self, player):
         '''Kicks player out of combat, back to Pane 0,0 and subtracts 10% of gold.
         Will restore HP/MP/AP to maximum, and remove all temporary status effects.'''
-        goldLoss -= int(round(player.inventory.gold * 0.1))
-        if goldLoss > player.inventory.gold:
-            goldLoss = player.inventory.gold
-
         Combat.screen.show_text("You lose: " + str(goldLoss) + " gold for dying!",
                                 color='magenta')
-        player.inventory.gold -= goldLoss
+        player.inventory.gold -= player.inventory.gold / 10
+        
+        respawn_location = Location((0, 0), (PANE_X / 2, PANE_Y / 2))
+        player.cPane = None
+        player.cLocation = None
+        self.server.pane[player.location.pane].person.remove(player.id)
+        self.server.pane[respawn_location.pane].person.append(player.id)
+        player.location = respawn_location
+        
         # Exit combat
         self.refillResources(player)
         self.removeTemporaryStatuses(player)
-        # Transport player to town TODO
+        port = self.server.getPlayerPort(player)
+        self.server.SDF.send(port, Command("CLIENT", "RESET_TARGETS", id=player.id))
+        self.server.SDF.send(port, Command("PERSON", "REMOVE", id=player.id))
+        self.server.SDF.send(port, Command("UPDATE", "COMBAT", combat=False))
+        self.server.SDF.send(port, Command("PERSON", "CREATE", id=player.id, \
+                location=player.location, details=player.dehydrate()))
+        for i in self.server.pane[player.location.pane].person:
+            if i != player.id:
+                self.server.SDF.send(port, Command("PERSON", "CREATE", id=i, \
+                        location=self.server.person[i].location, \
+                        details=self.server.person[i].dehydrate()))
+        
 
 class CombatState(object):
     def __init__(self):
