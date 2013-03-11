@@ -13,6 +13,14 @@ class Spell(object):
             info = Spell.allSpells[name]
         elif name in Spell.monsterSpells:
             info = Spell.monsterSpells[name]
+        if 'text' in info:
+            self.text = info['text']
+        else:
+            self.text = 'No description yet.'
+        if 'image' in info:
+            self.image = info['image']
+        else:
+            self.image = './res/images/icons/cubeforce.png'
         self.tier = info['tier']
         self.school = info['school']
         self.MPCost = info['MPCost']

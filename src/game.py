@@ -335,7 +335,8 @@ class Game(object):
                     
                 elif event.key in MODIFIER_KEYS:
                     self.keystate.append(event.key)
-                elif event.key in MOVE_KEYS:
+                elif event.key in MOVE_KEYS and not \
+                     (self.combat and (self.selectionMode == "abilities" or self.selectionMode == "spells")):
                     self.move_person(MOVE_KEYS[event.key], 1)
                 elif event.key == K_EQUALS or event.key == K_PAGEUP:
                     self.screen.scroll_up(1 if not any(mod in [K_LSHIFT, K_RSHIFT] \
@@ -345,26 +346,35 @@ class Game(object):
                             for mod in self.keystate) else 1000)
 
                 ### Combat Only Commands ###
-                if self.combat:
-                    if event.key == K_f:
-                        if self.selectionMode == "targeting" or self.selectionMode == "items":
-                            self.selectionMode = "abilities"
-                            self.screen.show_text("Selection mode: ability selection", color='yellow')
-                        elif self.selectionMode == "abilities":
+                elif self.combat:
+                
+                    #### Ability/Spell Selection ####
+                    if self.selectionMode == "abilities" or self.selectionMode == "spells":
+                        if event.key == K_RIGHT or event.key == K_KP6:
+                            self.screen.move_dialog(6)
+                        elif event.key == K_LEFT or event.key == K_KP4:
+                            self.screen.move_dialog(4)
+                        elif event.key == K_UP or event.key == K_KP8:
+                            self.screen.move_dialog(8)
+                        elif event.key == K_DOWN or event.key == K_KP2:
+                            self.screen.move_dialog(2)
+                        elif event.key == K_SPACE or event.key == K_a:
+                            if self.selectionMode == "spells":
+                                self.currentAbility = self.pane.person[self.id].spellList[self.screen.hide_dialog()]
+                            else:
+                                self.currentAbility = self.pane.person[self.id].abilities[self.screen.hide_dialog()]
                             self.selectionMode = "targeting"
-                            self.screen.show_text("Selection mode: targeting", color="yellow")
+                            if self.currentAbility.range == 0:
+                                self.select_self()
+                                    
                     elif event.key == K_e:
                         if self.selectionMode == "targeting":
                             self.cycle_targets()
-                        elif self.selectionMode == "abilities":
-                            self.cycle_abilities()
                         elif self.selectionMode == "items":
                             self.cycle_items()
                     elif event.key == K_w: 
                         if self.selectionMode == "targeting":
                             self.cycle_targets(reverse=True)
-                        elif self.selectionMode == "abilities":
-                            self.cycle_abilities(reverse=True)
                         elif self.selectionMode == "items":
                             self.cycle_items(reverse=True)
                     elif event.key == K_a:
@@ -384,6 +394,12 @@ class Game(object):
                     elif event.key == K_PERIOD:
                         self.display_target_details()
                         pass
+                    elif event.key == K_SPACE:
+                        self.selectionMode = "abilities"
+                        self.choose_ability()
+                    elif event.key == K_b:
+                        self.selectionMode = "spells"
+                        self.choose_spell()
                 ### Strictly non-combat commands ###
                 if not self.combat:
                     if event.key == K_g:
@@ -402,6 +418,21 @@ class Game(object):
         # If the chest is locked, send a message to the screen.
         # If the chest is unlocked, distribute treasure to this player
         #    and all others on this pane.
+            
+    def choose_ability(self):
+        text = "Select an Ability"
+        bgcolor = "yellow"
+        itemslist = self.pane.person[self.id].abilities
+        self.screen.show_dialog(text, itemslist, bgcolor=bgcolor)
+            
+    def choose_spell(self):
+        text = "Select a Spell"
+        bgcolor = "lightblue"
+        itemslist = self.pane.person[self.id].spellList
+        if not itemslist:
+            self.selectionMode = "targeting"
+            return
+        self.screen.show_dialog(text, itemslist, bgcolor=bgcolor)
             
     def move_person(self, direction, distance):
         if self.running:

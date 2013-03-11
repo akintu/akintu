@@ -5,32 +5,52 @@ from dice import *
 import listener
 from combat import *
 
+ROOT_FOLDER = "./res/images/icons/"
+FIGHTER_SKILLS = ROOT_FOLDER + "fighter_skills/"
+THIEF_SKILLS = ROOT_FOLDER + "thief_skills/"
 
 class Ability(object):
 
     def __init__(self, name, owner):
         self.owner = owner
-        self.name = name
+        self.name = name  
         info = Ability.allAbilities[name]
         self.level = info['level']
         self.HPCost = info['HPCost']
         self.APCost = info['APCost']
         self.range = info['range']
+        rangeText = str(self.range)
+        if self.range == -1:
+           rangeText = "Weapon Range"
         self.targetType = info['target']
         self.action = info['action']
         self.cooldown = info['cooldown']
+        cooldownText = "0"
+        if self.cooldown:
+            cooldownText = `self.cooldown`
         self.checkFunction = info['checkFunction']
         self.breakStealth = info['breakStealth']
+        if 'text' in info:
+            self.text = 'AP: ' + `self.APCost` + ' Cooldown: ' + cooldownText + ' Range: ' + rangeText + \
+                        "\n" + info['text'] 
+        else:
+            self.text = 'No description yet.'
+        if 'image' in info:
+            self.image = info['image']
+        else:
+            self.image = './res/images/icons/cubeforce.png'
         if name == "Melee Attack":
             if owner.totalMeleeAttackAPCost <= 0:
                 self.APCost = 99
             else:
                 self.APCost = owner.totalMeleeAttackAPCost
+            self.text = 'AP: ' + `self.APCost` + "\n" + "Basic Melee Attack"
         elif name == "Ranged Attack":
             if owner.totalRangedAttackAPCost <= 0:
                 self.APCost = 99
             else:
                 self.APCost = owner.totalRangedAttackAPCost
+            self.text = 'AP: ' + `self.APCost` + "\n" + "Basic Ranged Attack"
 
     @staticmethod
     def convertAbilityName(aName):
@@ -1044,7 +1064,9 @@ class Ability(object):
         'action' : _basicAttack,
         'cooldown' : None,
         'checkFunction' : _basicMeleeAttackCheck,
-        'breakStealth' : 100
+        'breakStealth' : 100,
+        'image' : ROOT_FOLDER + "melee-attack.png",
+        'text' : 'overriden'
         },
         'Ranged Attack':
         {
@@ -1057,7 +1079,9 @@ class Ability(object):
         'action' : _basicAttack,
         'cooldown' : None,
         'checkFunction' : _basicRangedAttackCheck,
-        'breakStealth' : 100
+        'breakStealth' : 100,
+        'image' : ROOT_FOLDER + "ranged-attack.png",
+        'text' : 'overriden'
         },
 
         # Fighter
@@ -1072,7 +1096,10 @@ class Ability(object):
         'action' : _mightyBlow,
         'cooldown' : None,
         'checkFunction' : _mightyBlowCheck,
-        'breakStealth' : 100
+        'breakStealth' : 100,
+        'image' : FIGHTER_SKILLS + "mighty-blow.png",
+        'text' : 'Melee attack that deals bonus damage but with a penalty to accuracy.\n' + \
+                'It is more powerful with larger weapons.'
         },
         'Brace':
         {
@@ -1085,7 +1112,9 @@ class Ability(object):
         'action' : _brace,
         'cooldown' : None,
         'checkFunction' : None,
-        'breakStealth' : 100
+        'breakStealth' : 100,
+        'image' : FIGHTER_SKILLS + "brace.png",
+        'text' : "Defensive move that ends turn but grants +5% DR."
         },
         'Dash':
         {
@@ -1098,7 +1127,9 @@ class Ability(object):
         'action' : _dash,
         'cooldown' : 1,
         'checkFunction' : None,
-        'breakStealth' : 100
+        'breakStealth' : 100,
+        'image' : FIGHTER_SKILLS + "dash.png",
+        'text' : "Allows for movement at a reduced AP cost."
         },
         'Quick Strike':
         {
@@ -1111,7 +1142,10 @@ class Ability(object):
         'action' : _quickStrike,
         'cooldown' : None,
         'checkFunction' : _quickStrikeCheck,
-        'breakStealth' : 100
+        'breakStealth' : 100,
+        'image' : FIGHTER_SKILLS + "quick-strike.png",
+        'text' : "Low AP cost attack with low accuracy and less force.\n" + \
+                "Smaller weapons are affected less by the damage penalty."
         },
         'Precise Blow':
         {
@@ -1139,7 +1173,10 @@ class Ability(object):
         'action' : _backstab,
         'cooldown' : 2,
         'checkFunction' : _backstabCheck,
-        'breakStealth' : 100
+        'breakStealth' : 100,
+        'image' : THIEF_SKILLS + "backstab.png",
+        'text' : 'Melee attack from stealth with a high critical hit chance.\n' +
+                'Must be behind the target and wielding only sword or knife type weapons.'
         },
         'Chain Grasp':
         {
@@ -1152,7 +1189,11 @@ class Ability(object):
         'action' : _chainGrasp,
         'cooldown' : 7,
         'checkFunction' : _chainGraspCheck,
-        'breakStealth' : 100
+        'breakStealth' : 100,
+        'image' : THIEF_SKILLS + "chain-grasp.png",
+        'text' : 'Throw a chain to tangle a target, lowering its dodge, movement speed,\n' +
+                    'and spell casting success.  Dependent on Cunning and cannot be used on\n' +
+                    'huge foes.'
         },
         'Agile Position':
         {
@@ -1165,7 +1206,9 @@ class Ability(object):
         'action' : _agilePosition,
         'cooldown' : 5,
         'checkFunction' : _agilePositionCheck,
-        'breakStealth' : 0
+        'breakStealth' : 0,
+        'image' : THIEF_SKILLS + "agile-position.png",
+        'text' : 'Defensive move that ends turn but grants a large bonus to dodge.'
         },
         'Feint':
         {

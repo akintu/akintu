@@ -372,7 +372,7 @@ class CombatServer():
         Combat.sendCombatMessage("Gained " + str(exp) + " Experience. (" + str(player.experience) +
                                  "/" + str(player.getExpForNextLevel()) + ")", 
                                  player, color='magenta', toAll=False)
-        self.server.SDF.send(self.server.getPlayerPort(player), Command("PERSON", "ADD_EXPERIENCE", id=player.id, experience=exp))
+        #self.server.SDF.send(self.server.getPlayerPort(player), Command("PERSON", "ADD_EXPERIENCE", id=player.id, experience=exp))
         # Levelup is not performed here.
         
         
@@ -383,7 +383,7 @@ class CombatServer():
         player.inventory.addItem(gold)
         Combat.sendCombatMessage("Gained " + str(gold) + " gold. (total: " + str(player.inventory.gold) +
                                  ")", player, color='magenta', toAll=False)
-        self.server.SDF.send(self.server.getPlayerPort(player), Command("ITEM", "CREATE", id=player.id, itemIdentifier=gold))
+        #self.server.SDF.send(self.server.getPlayerPort(player), Command("ITEM", "CREATE", id=player.id, itemIdentifier=gold))
         
     def refillResources(self, player):
         Combat.modifyResource(player, "MP", player.totalMP)
