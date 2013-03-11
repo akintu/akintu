@@ -15,7 +15,7 @@ class PlayerCharacter(p.Person):
     demoExpRequiredForLevel = {1 : 10, 2 : 25, 3 : 50, 4 : 90, 5 : 170}
     LEVEL_MAX = 5
 
-    def __init__(self, argDict, name="Guy Threepwood", new=True):
+    def __init__(self, argDict, name="Guy Threepwood", new=True, ironman=False, hardcore=False):
         p.Person.__init__(self, argDict)
 
         self.team = "Players"
@@ -29,7 +29,9 @@ class PlayerCharacter(p.Person):
             
         self.level = 1
         self._experience = 0
-
+        self.ironman=ironman
+        self.hardcore=hardcore
+        
         self.goldFind = p.Person.setFrom(argDict, 'startingGoldFind', 0)
 
         self._baseOverallDamageBonus = p.Person.setFrom(argDict, 'startingOverallDamageBonus', 0)
@@ -285,6 +287,8 @@ class PlayerCharacter(p.Person):
         longText.append("&" + `self.level`)
         longText.append("&" + `self.inventory.gold`)
         longText.append("&" + `self.experience`)
+        longText.append("&" + `self.hardcore`)
+        longText.append("&" + `self.ironman`)
         longText.append("@")
         for abil in self.abilities:
             longText.append("&" + abil.name)

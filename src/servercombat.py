@@ -134,8 +134,15 @@ class CombatServer():
             
         toUpdateList = []
         for char in [self.server.person[x] for x in self.server.pane[combatPane].person]:
-            if char.HP <= 0 and char.team == "Monsters":
-                toUpdateList.append(char)
+            if char.HP <= 0:
+                if char.team == "Monsters":
+                    toUpdateList.append(char)
+                elif char.team == "Players" and not char.hardcore:
+                    Combat.sendCombatMessage(char.name + " has Fallen!", color='crimson', character=char)
+                    self.softcoreDeath(char)
+                elif char.team == "Players" and char.hardcore:
+                    Combat.sendCombatMessage(char.name + " has Perished!", color='crimson', character=char)
+                    # TODO: Delete saves, end game?
                 
         for char in toUpdateList:
             self.combatStates[combatPane].deadMonsterList.append(char)
@@ -345,9 +352,9 @@ class CombatServer():
         except:
             pass
         char = livingPlayers[0]
-        port = self.server.getPlayerPort(char)
-        monsterLeader = self.server.get_monster_leader(char)
-        self.server.SDF.send(port, Command("PERSON", "REMOVE", id=monsterLeader.id))
+        monsterLeader = self.server.get_monster_leader(char)        
+        for port in self.server.getAllCombatPorts(char.id):
+            self.server.SDF.send(port, Command("PERSON", "REMOVE", id=monsterLeader.id))
         
         for player in livingPlayers:
             self.giveVictoryExperience(player, state.deadMonsterList)

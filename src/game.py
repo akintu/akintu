@@ -78,11 +78,18 @@ class Game(object):
         self.CDF = ClientDataFactory()
         reactor.connectTCP(self.serverip, self.port, self.CDF)
         
+        hardcore = False
+        if kwargs.get('hardcore'):
+            hardcore = True
+        if kwargs.get('ironman'):
+            ironman = True
+        
         if isinstance(player, tuple):
             person = Command("PERSON", "CREATE", id=None, \
                     location=Location((0, 0), (PANE_X/2, PANE_Y/2)), \
                     details=TheoryCraft.getNewPlayerCharacter(
-                            name=player[0], race=player[1], characterClass=player[2]).dehydrate())
+                            name=player[0], race=player[1], characterClass=player[2], 
+                            ironman=ironman, hardcore=hardcore).dehydrate())
         else: 
             self.playerSaveFile = player
             dehydrated_string = self.load_player(self.playerSaveFile)

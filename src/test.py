@@ -56,20 +56,23 @@ if __name__ == "__main__":
             # for abil in char.abilities:
                 # print abil.name + " " + str(abil.APCost)
         #print "   " + char.equippedItems.equippedWeapon.name
-    char = theorycraft.TheoryCraft.getNewPlayerCharacter("Elf", "Battle Mage")
+    # char = theorycraft.TheoryCraft.getNewPlayerCharacter("Elf", "Battle Mage")
     #char.printCharacterSheet()
     
-    saved = char.dehydrate()
-    with open('./data/testSaveFile.txt', 'wb') as f:
-        f.write(saved)
+    print `False`
+    print `True`
     
-    print saved
+    # saved = char.dehydrate()
+    # with open('./data/testSaveFile.txt', 'wb') as f:
+        # f.write(saved)
     
-    loaded = ''
-    with open("./data/testSaveFile.txt", 'r') as f:
-        loaded = f.read()
-    char = theorycraft.TheoryCraft.rehydratePlayer(loaded)
-    char.printCharacterSheet()
+    # print saved
+    
+    # loaded = ''
+    # with open("./data/testSaveFile.txt", 'r') as f:
+        # loaded = f.read()
+    # char = theorycraft.TheoryCraft.rehydratePlayer(loaded)
+    # char.printCharacterSheet()
     
     #tc = treasurechest.TreasureChest("Small", 1, None, 12)
     # for i in range(15):

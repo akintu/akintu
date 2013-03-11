@@ -118,13 +118,19 @@ class TheoryCraft(object):
         level = int(basicDetails[3])
         gold = int(basicDetails[4])
         experience = int(basicDetails[5])
+        hardcore = False
+        if str(basicDetails[6]) == "True":
+            hardcore = True
+        ironman = False
+        if str(basicDetails[7]) == "True":
+            ironman = True
         abilityNames = bigSplit[1].split("&")
         spellNames = bigSplit[2].split("&")
         passiveNames = bigSplit[3].split("&")
         inventoryNames = bigSplit[4].split("&")
         toEquip = bigSplit[5].split("&")
         
-        newChar = TheoryCraft.getNewPlayerCharacter(race, cls, name=name, new=False)
+        newChar = TheoryCraft.getNewPlayerCharacter(race, cls, name=name, new=False, hardcore=hardcore, ironman=ironman)
 
         newChar._experience = experience
         if level > 1:
@@ -220,13 +226,13 @@ class TheoryCraft(object):
 
     @staticmethod
     def getNewPlayerCharacter(race, characterClass, loc=location.Location((0, 0), (PANE_X/2, PANE_Y/2)),
-                              name="Milton Filbert", new=True):
+                              name="Milton Filbert", new=True, hardcore=False, ironman=False):
         race = race.lower()
         characterClass = characterClass.lower()
         selection = race + " " + characterClass
         for char_dict in TheoryCraft.classes:
             if char_dict['name'].lower() == race + " " + characterClass:
-                pc = playercharacter.PlayerCharacter(char_dict, name=name, new=new)
+                pc = playercharacter.PlayerCharacter(char_dict, name=name, new=new, hardcore=hardcore, ironman=ironman)
                 pc.location = loc
                 return pc
         print "Bad character name/race, returning nothing; you're so stupid."
