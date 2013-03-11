@@ -81,6 +81,7 @@ class Game(object):
         hardcore = False
         if kwargs.get('hardcore'):
             hardcore = True
+        ironman = False
         if kwargs.get('ironman'):
             ironman = True
         

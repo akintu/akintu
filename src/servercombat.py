@@ -139,10 +139,10 @@ class CombatServer():
                 if char.team == "Monsters":
                     toUpdateList.append(char)
                 elif char.team == "Players" and not char.hardcore:
-                    Combat.sendCombatMessage(char.name + " has Fallen!", color='crimson', character=char)
+                    Combat.sendCombatMessage(char.name + " has Fallen!", color='darkred', character=char)
                     self.softcoreDeath(char)
                 elif char.team == "Players" and char.hardcore:
-                    Combat.sendCombatMessage(char.name + " has Perished!", color='crimson', character=char)
+                    Combat.sendCombatMessage(char.name + " has Perished!", color='darkred', character=char)
                     # TODO: Delete saves, end game?
                 
         for char in toUpdateList:
