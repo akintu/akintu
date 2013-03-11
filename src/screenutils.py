@@ -18,7 +18,7 @@ class TilingDialog(object):
         '''
         Initialize the class
         '''
-        self.bgcolor = 'gray'
+        self.bgcolor = bgcolor
         self.selection = selection
         self.toptext = toptext
         self.items = itemlist
@@ -180,7 +180,7 @@ if __name__ == '__main__':
                               'res/images/icons/cubeforce.png',
                               'this is text\nplus some more text\n' +
                               'seriously awesome text'))
-    dialog = TilingDialog('some text\nplus some more', items)
+    dialog = TilingDialog('some text\nplus some more', items, 0, 'lightblue')
     screen.blit(dialog.surface, (0, 0))
     while True:
         time.sleep(1)
