@@ -1851,7 +1851,9 @@ class Ability(object):
         'action' : _bufferStrike,
         'cooldown' : 3,
         'checkFunction' : _bufferStrikeCheck,
-        'breakStealth' : 100
+        'breakStealth' : 100,
+        'image' : BATTLEMAGE_SKILLS + 'buffer-strike.png',
+        'text' : 'Melee attack with +3 Accuracy.  If successful, grants a 10 + 0.6% HP buffer for 4 turns.'
         },
         'Inner Might':
         {
@@ -1864,7 +1866,9 @@ class Ability(object):
         'action' : _innerMight,
         'cooldown' : 4,
         'checkFunction' : _innerMightCheck,
-        'breakStealth' : 0
+        'breakStealth' : 0,
+        'image' : BATTLEMAGE_SKILLS + 'inner-might.png',
+        'text' : 'Grants +3 Might + 6% as long as the Battle Mage retains at least 75% of his mana.'
         },
 
         # Arcane Archer
