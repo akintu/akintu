@@ -14,15 +14,16 @@ class TilingDialog(object):
     Reusable class which provides tiling-selection functionality
     '''
 
-    def __init__(self, toptext, itemlist, selection=0):
+    def __init__(self, toptext, itemlist, selection=0, bgcolor='gray'):
         '''
         Initialize the class
         '''
+        self.bgcolor = 'gray'
         self.selection = selection
         self.toptext = toptext
         self.items = itemlist
         self.surface = pygame.Surface((1280, 640))
-        self.surface.fill(Color('gray'))
+        self.surface.fill(Color(self.bgcolor))
         self.images = {}
         self.prev_selection = selection
         self.cur_selection = selection
@@ -88,7 +89,7 @@ class TilingDialog(object):
         y += (self.prev_selection // 16) * 133
         x += (self.prev_selection % 16) * 80
         pygame.draw.rect(self.surface,
-                         Color('gray'),
+                         Color(self.bgcolor),
                          DEF_RECT.move(x, y),
                          3)
         x = 0
@@ -125,7 +126,7 @@ class TilingDialog(object):
         surfaces = []
         for item in self.items:
             surface = pygame.Surface((80, 133))
-            surface.fill(Color('gray'))
+            surface.fill(Color(self.bgcolor))
             image = self.images[item.image]
             surface.blit(image, (16, 5))
             names = item.name.split(' ')
@@ -152,7 +153,7 @@ class TilingDialog(object):
         Splits on newlines, does not wrap otherwise
         '''
         surface = pygame.Surface((width, height))
-        surface.fill(Color('gray'))
+        surface.fill(Color(self.bgcolor))
         lines = text.split('\n')
         y = 0
         font = pygame.font.SysFont('Arial', 12)

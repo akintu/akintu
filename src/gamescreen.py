@@ -43,11 +43,11 @@ class GameScreen(object):
         # in it (even though it's a blank item)
         self.show_text('')
 
-    def show_dialog(self, text, items, selection=0):
+    def show_dialog(self, text, items, selection=0, bgcolor='gray'):
         '''
         Show a tiling dialog with the given text, items, and selection
         '''
-        self.dialog = screenutils.TilingDialog(text, items, selection)
+        self.dialog = screenutils.TilingDialog(text, items, selection, bgcolor)
         self.screen.blit(self.dialog.surface, (0, 0))
         self.display.update()
         return selection
