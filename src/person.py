@@ -2798,8 +2798,6 @@ class Person(en.Entity):
             oldBuffer[2] += turnsToLive
         else:
             self.HPBufferList.append([bufferName, HPMagnitude, turnsToLive])
-        print "Got this far"
-        print str(self.getHPBufferSum())
         Combat.sendToAll(self, "HP_BUFFER")
 
     def unapplyHPBuffer(self, bufferName, turnsToLive):

@@ -108,7 +108,7 @@ class PassiveAbility(object):
                 target.statusSpellpower -= 6
 
     def applyDuality(self, target):
-        target.baseDR += 1
+        target.baseDR += 2
         target.baseMagicResist += 1
 
     def applyLastingEnchantment(self, target, reverse=False, spell=None):

@@ -6,8 +6,17 @@ import listener
 from combat import *
 
 ROOT_FOLDER = "./res/images/icons/"
+
 FIGHTER_SKILLS = ROOT_FOLDER + "fighter_skills/"
 THIEF_SKILLS = ROOT_FOLDER + "thief_skills/"
+RANGER_SKILLS = ROOT_FOLDER + "ranger_skills/"
+WIZARD_SKILLS = ROOT_FOLDER + "wizard_skills/"
+
+ARCANE_ARCHER_SKILLS = ROOT_FOLDER + "arcane_archer_skills/"
+ASSASSIN_SKILLS = ROOT_FOLDER + "assassin_skills/"
+BATTLEMAGE_SKILLS = ROOT_FOLDER + "battlemage_skills/"
+BARBARIAN_SKILLS = ROOT_FOLDER + "barbarian_skills/"
+SPELLSWORD_SKILLS = ROOT_FOLDER + "spellsword_skills/"
 
 class Ability(object):
 
@@ -31,7 +40,7 @@ class Ability(object):
         self.checkFunction = info['checkFunction']
         self.breakStealth = info['breakStealth']
         if 'text' in info:
-            self.text = 'AP: ' + `self.APCost` + ' Cooldown: ' + cooldownText + ' Range: ' + rangeText + \
+            self.text = 'AP: ' + `self.APCost` + '  Cooldown: ' + cooldownText + '  Range: ' + rangeText + \
                         "\n" + info['text'] 
         else:
             self.text = 'No description yet.'
@@ -1401,7 +1410,10 @@ class Ability(object):
         'action' : _berserkerRage,
         'cooldown' : 5,
         'checkFunction': _berserkerRageCheck,
-        'breakStealth' : 100
+        'breakStealth' : 100,
+        'image' : BARBARIAN_SKILLS + 'berserker-rage.png',
+        'text' : 'Adds 10 Might and 50% critical magnitude for 5 turns.\n' + \
+                'Health must be below 75% of maximum.'
         },
         'Sacrificial Strike':
         {
@@ -1414,7 +1426,10 @@ class Ability(object):
         'action' : _sacrificialStrike,
         'cooldown' : None,
         'checkFunction' : _sacrificialStrikeCheck,
-        'breakStealth' : 100
+        'breakStealth' : 100,
+        'image' : BARBARIAN_SKILLS + 'sacrificial-strike.png',
+        'text' : 'Attack harms you and your foe.\n' + \
+                'Deals more damage with larger weapons.'
         },
         'Desperate Strike':
         {
@@ -1455,7 +1470,10 @@ class Ability(object):
         'action' : _martialMode,
         'cooldown' : None,
         'checkFunction' : _martialModeCheck,
-        'breakStealth' : 0
+        'breakStealth' : 0,
+        'image' : SPELLSWORD_SKILLS + 'marital-mode.png',
+        'text' : 'When at less than 15% MP, your fighting style returns to that of a warrior. \n' +\
+                '+5 Might and +3% DR. Lasts entire battle or until MP rises above 15%.'
         },
 
         #Marksman
@@ -1861,7 +1879,10 @@ class Ability(object):
         'action' : _arcaneThreading,
         'cooldown' : 1,
         'checkFunction' : _arcaneThreadingCheck,
-        'breakStealth' : 0
+        'breakStealth' : 0,
+        'image' : ARCANE_ARCHER_SKILLS + 'arcane-threading.png',
+        'text' : '+4 Arcane damage to all bow and crossbow attacks.\n' + \
+                'Lasts until replaced by another threading.'
         },
         'Triple-Charged Arrow':
         {
@@ -1874,7 +1895,9 @@ class Ability(object):
         'action' : _tripleChargedArrow,
         'cooldown' : 3,
         'checkFunction' : _tripleChargedArrowCheck,
-        'breakStealth' : 100
+        'breakStealth' : 100,
+        'image' : ARCANE_ARCHER_SKILLS + 'triple-charged-arrow.png',
+        'text' : 'Ranged attack that recovers an additional 12 points of mana.'
         },
         'Improved Arcane Threading':
         {

@@ -4,6 +4,9 @@ import sys
 from combat import *
 import dice
 
+ROOT_FOLDER = "./res/images/icons/"
+TIER1 = ROOT_FOLDER + "tier1_spells/"
+
 class Spell(object):
 
     def __init__(self, name, owner):
@@ -13,14 +16,7 @@ class Spell(object):
             info = Spell.allSpells[name]
         elif name in Spell.monsterSpells:
             info = Spell.monsterSpells[name]
-        if 'text' in info:
-            self.text = info['text']
-        else:
-            self.text = 'No description yet.'
-        if 'image' in info:
-            self.image = info['image']
-        else:
-            self.image = './res/images/icons/cubeforce.png'
+        
         self.tier = info['tier']
         self.school = info['school']
         self.MPCost = info['MPCost']
@@ -29,6 +25,19 @@ class Spell(object):
         self.targetType = info['target']
         self.action = info['action']
         self.cooldown = info['cooldown']
+        if 'image' in info:
+            self.image = info['image']
+        else:
+            self.image = './res/images/icons/cubeforce.png'
+        rangeText = str(self.range)
+        cooldownText = '0'
+        if self.cooldown:
+            cooldownText = str(self.cooldown)
+        if 'text' in info:
+            self.text = 'AP: ' + `self.APCost` + '  MP: ' + `self.MPCost` + '  Cooldown: ' + cooldownText + '  Range: ' + rangeText + \
+                        "\n" + info['text'] 
+        else:
+            self.text = 'No description yet.'
         self.owner = owner
 
     def canUse(self, target):
@@ -208,8 +217,8 @@ class Spell(object):
     def _cloudVision(self, target):
         source = self.owner
         hitType = Combat.calcHit(source, target, "Magical")
-        duration = Dice.scale(source.totalSpellpower, 5, 0.02)
-        magnitude = Dice.scale(source.totalSpellpower, 5, 0.012)
+        duration = Dice.scale(source.totalSpellpower, 4, 0.025)
+        magnitude = Dice.scale(source.totalSpellpower, 10, 0.012)
         if hitType == "Partially Resisted":
             magnitude /= 2
         Combat.addStatus(target, self.name, duration, magnitude, hitValue=hitType)
@@ -299,7 +308,10 @@ class Spell(object):
         'range' : 11,
         'target' : 'hostile',
         'action' : _arcaneDart,
-        'cooldown' : None
+        'cooldown' : None,
+        'image' : TIER1 + "arcane-dart.png",
+        'text' : 'Deals 2-4 + 3% arcane damage.\n' + \
+                'On Critical: +20% damage'
         },
 
         'Arcane Ward':
@@ -311,7 +323,10 @@ class Spell(object):
         'range' : 0,
         'target' : 'self',
         'action' : _arcaneWard,
-        'cooldown' : None
+        'cooldown' : None,
+        'image' : TIER1 + "arcane-ward.png",
+        'text' : 'Grants a defensive warding that raises dodge chance, DR and magic resist\n' + \
+                'for 3 turns + 1 per 10 spellpower up to a maximum of 6 turns.'
         },
 
         'Mystic Shield':
@@ -323,7 +338,9 @@ class Spell(object):
         'range' : 0,
         'target' : 'self',
         'action' : _mysticShield,
-        'cooldown' : 4
+        'cooldown' : 4,
+        'image' : TIER1 + 'mystic-shield.png',
+        'text' : 'Grants an HP buffer absorbing 8 + 6% HP for up to 5 turns.'
         },
 
         'Flicker of Life':
@@ -335,7 +352,9 @@ class Spell(object):
         'range' : 7,
         'target' : 'friendly',
         'action' : _flickerOfLife,
-        'cooldown' : None
+        'cooldown' : None,
+        'image' : TIER1 + "flicker-of-life.png",
+        'text' : 'Restore 10-20 + 2% HP to yourself or an ally.'
         },
 
         'Stone Guard':
@@ -347,7 +366,10 @@ class Spell(object):
         'range' : 4,
         'target' : 'friendly',
         'action' : _stoneGuard,
-        'cooldown' : None
+        'cooldown' : None,
+        'image' : TIER1 + 'stone-guard.png',
+        'text' : 'Grant a protective stone barrier increasing DR and poison tolerance.' + \
+                '\nLasts between 4 and 6 turns.'
         },
 
         'Singe':
@@ -359,7 +381,10 @@ class Spell(object):
         'range' : 7,
         'target' : 'hostile',
         'action' : _singe,
-        'cooldown' : None
+        'cooldown' : None,
+        'image' : TIER1 + 'singe.png',
+        'text' : 'Deals 2-9 + 5% fire damage.\n' + \
+                'On Critical +20% damage'
         },
 
         'Chill':
@@ -371,7 +396,10 @@ class Spell(object):
         'range' : 6,
         'target' : 'hostile',
         'action' : _chill,
-        'cooldown' : None
+        'cooldown' : None,
+        'image' : TIER1 + 'chill.png',
+        'text' : 'Deals 1-12 + 1% cold damage and has a frequent chance to lower\n' + \
+                'the dodge of the target for 2 turns.'
         },
 
         'Shock':
@@ -383,7 +411,10 @@ class Spell(object):
         'range' : 3,
         'target' : 'hostile',
         'action' : _shock,
-        'cooldown' : 1
+        'cooldown' : 1,
+        'image' : TIER1 + 'shock.png',
+        'text' : 'Deals 15-22 + 1.4% Electric damage.\n' + \
+                'On partial resist: -50% damage'
         },
 
         'Suggest Laziness':
@@ -395,7 +426,9 @@ class Spell(object):
         'range' : 12,
         'target' : 'hostile',
         'action' : _suggestLaziness,
-        'cooldown' : None
+        'cooldown' : None,
+        'image' : TIER1 + 'suggest-laziness.png',
+        'text' : 'This ability needs to be modified, please don\'t use it. TODO'
         },
 
         'Stutter':
@@ -407,7 +440,9 @@ class Spell(object):
         'range' : 7,
         'target' : 'hostile',
         'action' : _stutter,
-        'cooldown' : None
+        'cooldown' : None,
+        'image' : TIER1 + 'stutter.png',
+        'text' : 'Inflicts a 10% chance to fail to cast spells and reduces spellpower.'
         },
 
         'Cloud Vision':
@@ -419,7 +454,11 @@ class Spell(object):
         'range' : 7,
         'target' : 'hostile',
         'action' : _cloudVision,
-        'cooldown' : None
+        'cooldown' : None,
+        'image' : TIER1 + 'cloud-vision.png',
+        'text' : 'Greatly lowers enemy accuracy.\n' + \
+                'Lasts 4 turns + 1 per 10 spellpower.\n' + \
+                'On Partial Resist: -50% accuracy penalty'
         },
 
         'Haunt':
@@ -431,7 +470,12 @@ class Spell(object):
         'range' : 5,
         'target' : 'hostile',
         'action' : _haunt,
-        'cooldown' : 3
+        'cooldown' : 3,
+        'image' : TIER1 + 'haunt.png',
+        'text' : 'Deals 13-20 + 1% shadow damage immediately and inflicts an\n' + \
+                'evil spirit upon the target, dealing 2-8 + 0.5% shadow damage each turn.\n' + \
+                'Lasts 3 turns (4 if spellpower is 50 or higher.)\n' + \
+                'On Partial Resist: DoT is ignored'
         },
 
         'Zone of Silence':
@@ -443,7 +487,11 @@ class Spell(object):
         'range' : 4,
         'target' : 'terrain',
         'action' : _zoneOfSilence,
-        'cooldown' : None
+        'cooldown' : None,
+        'image' : TIER1 + 'zone-of-silence.png',
+        'text' : 'Creates a 3x3 area within which Stealth requires\n' + \
+                'less AP to activate and sneak is increaesd by 10.\n' + \
+                'Lasts between 3 and 6 turns'
         },
 
         'Blurry':
@@ -455,7 +503,11 @@ class Spell(object):
         'range' : 0,
         'target' : 'self',
         'action' : _blurry,
-        'cooldown' : None
+        'cooldown' : None,
+        'image' : TIER1 + 'blurry.png',
+        'text' : 'Cause your own image, sound and smells to become slightly\n' + \
+                'distorted, leading foes to find you harder to target and detect.\n' + \
+                'Lasts one turn.'
         },
 
         'Weapon Enhance':
@@ -467,7 +519,11 @@ class Spell(object):
         'range' : 4,
         'target' : 'friendly',
         'action' : _weaponEnhance,
-        'cooldown' : None
+        'cooldown' : None,
+        'image' : TIER1 + 'weapon-enhance.png',
+        'text' : 'Enhance a weapon to become more accurate, penetrate armor better,\n' + \
+                'critically hit more often and deal more damage when it does.\n' + \
+                'lasts between 3 and 7 turns.'
         },
 
         'Flaming Weapon':
@@ -479,7 +535,10 @@ class Spell(object):
         'range' : 4,
         'target' : 'friendly',
         'action' : _flamingWeapon,
-        'cooldown' : None
+        'cooldown' : None,
+        'image' : TIER1 + 'flaming-weapon.png',
+        'text' : 'Enchant a weapon to deal an additional 1-8 + 1% fire damage.\n' + \
+                'Lasts between 3 and 7 turns.'
         },
 
         # Tier 2
