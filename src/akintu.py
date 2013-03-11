@@ -6,6 +6,7 @@ import pygame
 from pygame.locals import *
 
 import sys
+import os
 
 from game import Game
 from const import *
@@ -13,6 +14,14 @@ import welcome
 
 
 def main():
+    # Create the saves directories if they don't exist
+    d = os.path.join('res', 'saves', 'characters')
+    if not os.path.exists(d):
+        os.makedirs(d)
+    d = os.path.join('res', 'saves', 'worlds')
+    if not os.path.exists(d):
+        os.makedirs(d)
+
     #JAB: Added this debugging backdoor to bypass the menu
     #argv[1] = "1" if server, anything else if client
     #argv[2] = character name
