@@ -434,9 +434,12 @@ class CombatServer():
     def softcoreDeath(self, player):
         '''Kicks player out of combat, back to Pane 0,0 and subtracts 10% of gold.
         Will restore HP/MP/AP to maximum, and remove all temporary status effects.'''
-        Combat.screen.show_text("You lose: " + str(goldLoss) + " gold for dying!",
-                                color='magenta')
-        player.inventory.gold -= player.inventory.gold / 10
+        goldLoss = player.inventory.gold / 10
+        if player.inventory.gold < 10:
+            goldLoss = player.inventory.gold
+        Combat.sendCombatMessage("You lose: " + str(goldLoss) + " gold for dying!",
+                                player, color='darkred', toAll=False)
+        player.inventory.gold -= goldLoss
         
         respawn_location = Location((0, 0), (PANE_X / 2, PANE_Y / 2))
         player.cPane = None
