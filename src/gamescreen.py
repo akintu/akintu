@@ -49,7 +49,7 @@ class GameScreen(object):
         '''
         self.dialog = screenutils.TilingDialog(text, items, selection, bgcolor)
         self.screen.blit(self.dialog.surface, (0, 0))
-        self.display.update()
+        pygame.display.update()
         return selection
 
     def hide_dialog(self):
@@ -64,7 +64,7 @@ class GameScreen(object):
         self.draw_world()
         self._drawmonsterframes()
         self._drawplayerframes()
-        self._drawtext()
+        self._draw_text()
         self.personsgroup.update()
         self.personsgroup.draw(self.screen)
         pygame.display.update()
@@ -90,7 +90,7 @@ class GameScreen(object):
             return None
         self.dialog.move_selection(direction)
         self.screen.blit(self.dialog.surface, (0, 0))
-        self.display.update()
+        pygame.display.update()
         return self.dialog.get_selection()
 
     def set_pane(self, pane):
