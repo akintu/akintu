@@ -241,7 +241,7 @@ class CombatServer():
         if not monsterLeader.cPane:
             # Put monster into combat
             monsterLeader.ai.pause()
-            monsterLeader.cPane = combatPane
+            #monsterLeader.cPane = combatPane
             self.server.load_pane(combatPane, monsterId)
             # Timer set
             self.combatStates[combatPane].turnTimer = reactor.callLater(seconds, self.check_turn_end,
@@ -352,9 +352,9 @@ class CombatServer():
         except:
             pass
         char = livingPlayers[0]
-        monsterLeader = self.server.get_monster_leader(char)        
-        for port in self.server.getAllCombatPorts(char.id):
-            self.server.SDF.send(port, Command("PERSON", "REMOVE", id=monsterLeader.id))
+
+        monsterLeader = self.server.get_monster_leader(char)
+        self.server.SDF.queue.put((None, Command("PERSON", "REMOVE", id=monsterLeader.id)))
         
         for player in livingPlayers:
             self.giveVictoryExperience(player, state.deadMonsterList)
@@ -406,34 +406,29 @@ class CombatServer():
 
     def exit_combat(self, player, defeat=False):
         '''Removes the player from combat.'''
+        self.server.pane[player.cPane].person.remove(player.id)
+        player.cPane = None
+        player.cLocation = None
+
         port = self.server.getPlayerPort(player)
         self.server.SDF.send(port, Command("PERSON", "REMOVE", id=player.id))
         self.server.SDF.send(port, Command("UPDATE", "COMBAT", combat=False))
         self.server.SDF.send(port, Command("PERSON", "CREATE", id=player.id, \
-                location=player.location, \
-                details=player.dehydrate()))
+                location=player.location, details=player.dehydrate()))
         for i in self.server.pane[player.location.pane].person:
             if i != player.id:
                 self.server.SDF.send(port, Command("PERSON", "CREATE", id=i, \
                         location=self.server.person[i].location, \
                         details=self.server.person[i].dehydrate()))
 
-        i = [i for i, p in self.server.person.iteritems() if p.location == \
-                player.cPane][0]
+        self.server.unload_panes()
+        self.server.SDF.queue.put((None, Command("CLIENT", "RESET_TARGETS", id=player.id)))
+
+    def monster_victory(self):
+        i = [i for i, p in self.server.person.iteritems() if p.location == player.cPane][0]
         self.server.person[i].ai.resume()
         self.server.person[i].cPane = None
         self.server.person[i].cLocation = None
-
-        newloc = player.location.move(10 - player.location.direction, 1)
-        self.server.SDF.queue.put((None, Command("PERSON", "MOVE", id=player.id, \
-                location=newloc, details=True)))
-        self.server.pane[player.cPane].person.remove(player.id)
-        player.cPane = None
-        player.cLocation = None
-        
-        self.server.unload_panes()
-        self.server.SDF.queue.put((None, Command("CLIENT", "RESET_TARGETS", id=player.id)))
-        
         
     def softcoreDeath(self, player):
         '''Kicks player out of combat, back to Pane 0,0 and subtracts 10% of gold.
