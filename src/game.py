@@ -295,25 +295,54 @@ class Game(object):
             if saved_list:
                 increment_list = []
                 for filename in saved_list:
-                    split_list = filename.split(".")
-                    increment_list.append(int(split_list[-1]))   #Get last element from list (the incremental save number)
+                    split_list = filename.split("_")
+                    tmp = split_list[0] #Get first element from list (the incremental save number)
+                    try:
+                        tmp = int(tmp)
+                    except:
+                        tmp = 0
+                    increment_list.append(tmp)   
                 max_save = max(increment_list)
             max_save += 1
-            file_name = str(player.name) + "_" + str(player.race) + "_" + str(player.characterClass) + "." + str("%03d" % max_save)
+            file_name = str("%03d" % max_save) + "_" + str(player.name) + "_" + str(player.race) + "_" + str(player.characterClass) + CHAR_SAVE_EXT
             self.playerSaveFile = file_name
         path_to_file = os.path.join(CHAR_SAVE_PATH, file_name)
         print "Saving Character To " + str(path_to_file)
         
-        file = open(path_to_file, "ab")
+        file = open(path_to_file, "ab") #append, byte format (to keep line endings consistent)
         file.write("\n" + player_string)
         file.close()
         
     def load_player(self, file_name):
+        '''
+        file_name is the name of the save file we want to open OR
+        file_name can be the 3 digit number at the beginning of the file
+        
+        '''
         path_to_file = os.path.join(CHAR_SAVE_PATH, file_name)
+        if not os.path.exists(file_name):
+            try:
+                tmp = int(file_name)    #Force try/catch
+                saved_list = os.listdir(CHAR_SAVE_PATH)
+                if saved_list:
+                    for filename in saved_list:
+                        if filename.split("_")[0] != file_name:  
+                            continue
+                        else:
+                            path_to_file = os.path.join(CHAR_SAVE_PATH, filename)
+                            self.playerSaveFile = filename
+                            print "Substituting " + file_name + " with " + filename
+                            break
+            except:
+                print "Could not find " + str(path_to_file)
+                #self.quit()
+        
+        
         file = open(path_to_file, "r")
         for line in file:
             pass
         last = line
+        print last
         file.close()
         print "Loading player from " + str(path_to_file)
         return last
@@ -329,6 +358,9 @@ class Game(object):
         #player_string =player.dehydrate()
 
         self.save_player()#player_string)
+        self.quit()
+        
+    def quit(self):
         reactor.stop()
     
     def handle_events(self):
@@ -345,9 +377,10 @@ class Game(object):
                 if event.key == K_ESCAPE:
                     #TODO: Open Menu Here
                     ##SAVE PERSON##
-                    self.save_player()
+                    
                     save = Command("PERSON", "SAVE", id=self.id)
                     self.CDF.send(save)
+                    self.save_and_quit()
                     
                 elif event.key in MODIFIER_KEYS:
                     self.keystate.append(event.key)
