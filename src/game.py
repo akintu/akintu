@@ -291,7 +291,7 @@ class Game(object):
                     tmp = split_list[0] #Get first element from list (the incremental save number)
                     try:
                         tmp = int(tmp)
-                    except Exception:
+                    except:
                         tmp = 0
                     increment_list.append(tmp)   
                 max_save = max(increment_list)
@@ -301,16 +301,35 @@ class Game(object):
         path_to_file = os.path.join(CHAR_SAVE_PATH, file_name)
         print "Saving Character To " + str(path_to_file)
         
-        file = open(path_to_file, "ab")
+        file = open(path_to_file, "ab") #append, byte format (to keep line endings consistent)
         file.write("\n" + player_string)
         file.close()
         
     def load_player(self, file_name):
         '''
-        file_name is the three digit save extention in the saves folder
+        file_name is the name of the save file we want to open OR
+        file_name can be the 3 digit number at the beginning of the file
         
         '''
         path_to_file = os.path.join(CHAR_SAVE_PATH, file_name)
+        if not os.path.exists(file_name):
+            try:
+                tmp = int(file_name)    #Force try/catch
+                saved_list = os.listdir(CHAR_SAVE_PATH)
+                if saved_list:
+                    for filename in saved_list:
+                        if filename.split("_")[0] != file_name:  
+                            continue
+                        else:
+                            path_to_file = os.path.join(CHAR_SAVE_PATH, filename)
+                            self.playerSaveFile = filename
+                            print "Substituting " + file_name + " with " + filename
+                            break
+            except:
+                print "Could not find " + str(path_to_file)
+                #self.quit()
+        
+        
         file = open(path_to_file, "r")
         for line in file:
             pass
@@ -331,6 +350,9 @@ class Game(object):
         #player_string =player.dehydrate()
 
         self.save_player()#player_string)
+        self.quit()
+        
+    def quit(self):
         reactor.stop()
     
     def handle_events(self):
