@@ -3,24 +3,41 @@ Location Class
 '''
 from const import *
 import math
+import re
 
 class Location(object):
-    def __init__(self, pane, tile, direction=2):
-        if isinstance(pane, tuple) or pane is None:
-            self.pane = pane
+    def __init__(self, pane, tile=None, direction=2):
+        if isinstance(pane, basestring):
+            r = re.match(r'\((?P<p>\(.*\)|None), (?P<t>\(.*\)), (?P<d>.*)\)', pane)
+            if r.group('p') == "None":
+                self.pane = None
+            else:
+                xy = r.group('p')[1:-1].split(', ')
+                self.pane = (int(xy[0]), int(xy[1]))
+                
+            xy = r.group('t')[1:-1].split(', ')
+            self.tile = (int(xy[0]), int(xy[1]))
+            
+            self.direction = int(r.group('d'))
         else:
-            self.pane = (pane // PANE_X, tile // PANE_Y)
+            if isinstance(pane, tuple) or pane is None:
+                self.pane = pane
+            else:
+                self.pane = (pane // PANE_X, tile // PANE_Y)
 
-        if isinstance(tile, tuple) or tile is None:
-            self.tile = tile
-        else:
-            self.tile = (pane % PANE_X, tile % PANE_Y)
+            if isinstance(tile, tuple) or tile is None:
+                self.tile = tile
+            else:
+                self.tile = (pane % PANE_X, tile % PANE_Y)
 
-        self.direction = direction
+            self.direction = direction
 
     # So it turns out __repr__ is like toString()
     def __repr__(self):
         return "(%s, %s, %d)" % (self.pane, self.tile, self.direction)
+        
+    def __str__(self):
+        return self.__repr__()
 
     def __eq__(self, other):
         if isinstance(other, self.__class__):
@@ -264,3 +281,6 @@ if __name__ == "__main__":
         for x in range(0, 2 * radius + 1):
             strrep += str(Location(radius, radius).direction_to(Location(x, y))) + " "
         print strrep
+            
+    n = Location(b.__str__())
+    assert n == b

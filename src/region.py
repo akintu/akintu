@@ -1,12 +1,16 @@
 from location import Location
 from const import *
+import zlib
 import os
 
 class Region:
-    def __init__(self):
+    def __init__(self, history=None):
         self.locations = set()
+        self.history = [] if not history else zlib.decompress(history).split("\r\n")
         self.shape = {"SQUARE": self.square, "DIAMOND": self.diamond, "CIRCLE": self.circle,
                       "LINE": self.line, "CURVE": self.curve}
+        if history:
+            self.rehydrate()
 
     def __iter__(self):
         for x in self.locations:
@@ -34,9 +38,13 @@ class Region:
         strrep = ""
         for y in Location(left.abs_x, top.abs_y).line_to(Location(left.abs_x, bottom.abs_y)):
             for x in Location(left.abs_x, top.abs_y).line_to(Location(right.abs_x, top.abs_y)):
-                strrep += "@ " if Location((x.pane[0], y.pane[1]), (x.tile[0], y.tile[1])) in R else "  "
+                strrep += "@ " if Location((x.pane[0], y.pane[1]), (x.tile[0], y.tile[1])) in \
+                        self.locations else "  "
             strrep += os.linesep
         return strrep
+        
+    def __repr__(self):
+        return zlib.compress("\r\n".join(self.history), 9)
 
     def __call__(self, method, shape, *details):
         if shape.upper() in self.shape:
@@ -44,6 +52,39 @@ class Region:
                 self.locations |= self.shape[shape.upper()](*details)
             else:
                 self.locations -= self.shape[shape.upper()](*details)
+            self.history.append(method + "|" + shape + "|" + "|".join([str(x) for x in details]))
+            
+    def __eq__(self, other):
+        for L in self:
+            if L not in other:
+                return False
+                
+        for L in other:
+            if L not in self:
+                return False
+        
+        return True
+            
+    def dehydrate(self):
+        return self.__repr__()
+            
+    def rehydrate(self):
+        for line in self.history:
+            parts = line.split("|")
+            method = parts[0]
+            shape = parts[1]
+            details = parts[2:]
+            for i, d in enumerate(details):
+                try:
+                    details[i] = int(d)
+                except ValueError:
+                    details[i] = Location(d)
+            
+            if shape.upper() in self.shape:
+                if method.upper() == "ADD":
+                    self.locations |= self.shape[shape.upper()](*details)
+                else:
+                    self.locations -= self.shape[shape.upper()](*details)
                 
     def square(self, loc1, loc2):
         locations = set()
@@ -101,19 +142,22 @@ if __name__ == "__main__":
     #R("SUB", "CIRCLE", Location((0, 0), (0, 0)), 5)
 
     #Build region from shapes
-    R("ADD", "SQUARE", Location((0, 0), (0, 0)), Location((0, 0), (31, 19)))
-    R("SUB", "SQUARE", Location((0, 0), (1, 1)), Location((0, 0), (30, 18)))
-    R("ADD", "CIRCLE", Location((0, 0), (16, 10)), 7)
-    R("SUB", "DIAMOND", Location((0, 0), (22, 10)), 6)
-    R("SUB", "SQUARE", Location((0, 0), (14, 6)), Location((0, 0), (15, 7)))
+    R("ADD", "SQUARE", Location(0, 0), Location(31, 19))
+    R("SUB", "SQUARE", Location(1, 1), Location(30, 18))
+    R("ADD", "CIRCLE", Location(16, 10), 7)
+    R("SUB", "DIAMOND", Location(22, 10), 6)
+    R("SUB", "SQUARE", Location(14, 6), Location(15, 7))
     R("ADD", "LINE", Location(20, 10), Location(22, 10), 3)
     #R("ADD", "CURVE", Location(20, 18), 5, 3)
 
     #Display the region
     print R
 
-    l1 = Location((0, 0), (15, 10))
+    l1 = Location(15, 10)
     assert l1 in R
     assert l1.move(6, 2) not in R
     for l2 in R:
         assert l2 in R
+        
+    S = Region(R.dehydrate())
+    assert S == R
