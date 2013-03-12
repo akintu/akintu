@@ -752,7 +752,7 @@ class Levelup(object):
         if self.phase == "TRAIT":
             text = "Select a new trait or upgrade an existing one."
             self.traitOptions = self.player.getLevelupTraitOptions()
-            self.screen.show_dialog(text, self.traitOptions, bgcolor="cadetblue")
+            self.screen.show_dialog(text, self.traitOptions, bgcolor="dodgerblue")
         elif self.phase == "SKILL":
             text = "Select a new skill."
             self.skillOptions = self.player.getLevelupSkillOptions()
@@ -768,7 +768,7 @@ class Levelup(object):
         elif self.phase == "COMBO":
             text = "Additionally you have earned these unique skills."
             combos = self.player.getLevelupCombos()
-            self.screen.show_dialog(text, combos, bgcolor="darkred")
+            self.screen.show_dialog(text, combos, bgcolor="deepskyblue")
         elif self.phase == "SUMMARY":
             text = "This is a summary of the statistics and abilities you have gained."
             self.summary.append(self.trait)
@@ -779,7 +779,7 @@ class Levelup(object):
             if self.spellB:
                 self.summary.append(self.spellB)
             self.summary.append(self.player.getLevelupStats())
-            self.screen.show_dialog(text, self.summary, bgcolor="red")
+            self.screen.show_dialog(text, self.summary, bgcolor="darkturquoise")
         
     def input(self, keystroke):
         '''Returns True if this levelup is complete.'''
@@ -824,8 +824,7 @@ class Levelup(object):
                 return self.player.dehydrate()
                 
     def _modifyHero(self):
-        if self.skill:
-            self.player.abilities.append(ability.Ability(self.skill.name, self.player))
+        # skills are added via summary object.
         if self.spellA:
             self.player.spellList.append(spell.Spell(self.spellA.name, self.player))
         if self.spellB:

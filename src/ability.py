@@ -16,6 +16,7 @@ ARCANE_ARCHER_SKILLS = ROOT_FOLDER + "arcane_archer_skills/"
 ASSASSIN_SKILLS = ROOT_FOLDER + "assassin_skills/"
 BATTLEMAGE_SKILLS = ROOT_FOLDER + "battlemage_skills/"
 BARBARIAN_SKILLS = ROOT_FOLDER + "barbarian_skills/"
+NIGHTBLADE_SKILLS = ROOT_FOLDER + "nightblade_skills/"
 SPELLSWORD_SKILLS = ROOT_FOLDER + "spellsword_skills/"
 
 class AbilityStub(object):
@@ -24,8 +25,15 @@ class AbilityStub(object):
         info = Ability.allAbilities[name]
         self.text = 'TODO'
         self.image = './res/images/icons/cubeforce.png'
+        rangeText = str(info['cooldown'])
+        if info['cooldown'] == -1:
+           rangeText = "Weapon Range"
+        cooldownText = "0"
+        if info['cooldown']
+            cooldownText = `info['cooldown']`
         if 'text' in info:
-            self.text = info['text']
+            self.text = 'AP: ' + `info['APCost']` + '  Cooldown: ' + cooldownText + '  Range: ' + rangeText + \
+                        "\n" + info['text'] 
         if 'image' in info:
             self.image = info['image']
             
@@ -348,8 +356,8 @@ class Ability(object):
 
     def _sacrificialStrike(self, target):
         source = self.owner
-        hit = Combat.calcHit(source, target, "Physical", critMod=1)
-        Combat.basicAttack(source, target, hit, forceMod=1.5)
+        hit = Combat.calcHit(source, target, "Physical", critMod=2)
+        Combat.basicAttack(source, target, hit, forceMod=1.75)
 
     def _sacrificialStrikeCheck(self, target):
         source = self.owner
@@ -1365,7 +1373,10 @@ class Ability(object):
         'action' : _magicGuard,
         'cooldown' : None,
         'checkFunction' : None,
-        'breakStealth' : 0
+        'breakStealth' : 0,
+        'image' : WIZARD_SKILLS + 'magic-guard.png',
+        'text' : 'Defensive ability that ends your turn but grants +3 Magic resist\n' + \
+            'and +10% Arcane resistance.'
         },
         'Gather':
         {
@@ -1378,7 +1389,10 @@ class Ability(object):
         'action' : _gather,
         'cooldown' : None,
         'checkFunction' : None,
-        'breakStealth' : 100
+        'breakStealth' : 100,
+        'image' : WIZARD_SKILLS + 'gather.png',
+        'text' : 'Gather in energy from your surroundings to gain +5 spellpower\n' + \
+            'for the remainder of your turn.'
         },
         'Reverse Hex':
         {
@@ -1391,7 +1405,10 @@ class Ability(object):
         'action' : _reverseHex,
         'cooldown' : 5,
         'checkFunction' : None,
-        'breakStealth' : 100
+        'breakStealth' : 100,
+        'image' : WIZARD_SKILLS + 'gather.png',
+        'text' : 'Remove one random negative status effect from an ally\n' + \
+            'or from yourself.'
         },
         'Spell Sight':
         {
@@ -1404,7 +1421,10 @@ class Ability(object):
         'action' : _spellSight,
         'cooldown' : 2,
         'checkFunction' : None,
-        'breakStealth' : 0
+        'breakStealth' : 0,
+        'image' : WIZARD_SKILLS + 'spell-sight.png',
+        'text' : 'Gain +3 Spellpower and +5 Ranged Accuracy until your\n' + \
+            'next ranged attck or spell finishes.'
         },
 
 
@@ -1441,7 +1461,7 @@ class Ability(object):
         'breakStealth' : 100,
         'image' : BARBARIAN_SKILLS + 'sacrificial-strike.png',
         'text' : 'Attack harms you and your foe.\n' + \
-                'Deals more damage with larger weapons.'
+                'Has 1.75x Force and +2% Critical Chance.'
         },
         'Desperate Strike':
         {
@@ -1454,7 +1474,12 @@ class Ability(object):
         'action' : _desperateStrike,
         'cooldown' : None,
         'checkFunction' : _desperateStrikeCheck,
-        'breakStealth' : 100
+        'breakStealth' : 100,
+        'image' : BARBARIAN_SKILLS + 'desperate-strike.png',
+        'text' : 'Melee attack usable when below 25% HP.\n' + \
+            'Has +10 Accuracy, +20% Critical Chance, 2.5x Force and\n' + \
+            '+10 Armor Penetration.  Also has an occasional chance to stun\n' + \
+            'the enemy for 1 turn.'
         },
         'Blood of the Ancients':
         {
@@ -1467,7 +1492,9 @@ class Ability(object):
         'action' : _bloodOfTheAncients,
         'cooldown' : 4,
         'checkFunction' : _bloodOfTheAncientsCheck,
-        'breakStealth' : 0
+        'breakStealth' : 0,
+        'image' : BARBARIAN_SKILLS + 'blood-of-the-ancients.png',
+        'text' : 'Recover 15% of your HP but reduce your DR by 5% for 1 turn.'
         },
 
         #Spellsword
@@ -1835,7 +1862,12 @@ class Ability(object):
         'action' : _shroud,
         'cooldown' : 5,
         'checkFunction' : _shroudCheck,
-        'breakStealth' : 100
+        'breakStealth' : 100,
+        'image' : NIGHTBLADE_SKILLS + 'shroud.png',
+        'text' : 'Deal 4-12 +3% Shadow damage to all foes in melee range.\n' + \
+                'Also activates a protective shroud for the next turn that gives\n' + \
+                'a 10% Avoidance chance.  The Nightblade must have at least 50%\n' + \
+                'of its mana remaining to use this ability. (No MP is consumed.)'
         },
         'Shadowstep':
         {
@@ -1848,7 +1880,9 @@ class Ability(object):
         'action' : _shadowstep,
         'cooldown' : 2,
         'checkFunction' : _shadowstepCheck,
-        'breakStealth' : 0
+        'breakStealth' : 0,
+        'image' : NIGHTBLADE_SKILLS + 'shadowstep.png',
+        'text' : 'Move up to 4 tiles while in stealth.'
         },
 
         # Battle Mage
@@ -1926,7 +1960,10 @@ class Ability(object):
         'action' : _improvedArcaneThreading,
         'cooldown' : 1,
         'checkFunction' : _improvedArcaneThreadingCheck,
-        'breakStealth' : 0
+        'breakStealth' : 0,
+        'image' : ARCANE_ARCHER_SKILLS + 'arcane-threading.png',
+        'text' : '+7 Arcane damage to all bow and crossbow attacks.\n' + \
+                'Lasts until replaced by another threading.'
         },
         'Electric Threading':
         {
@@ -1939,7 +1976,10 @@ class Ability(object):
         'action' : _electricThreading,
         'cooldown' : 1,
         'checkFunction' : _electricThreadingCheck,
-        'breakStealth' : 0
+        'breakStealth' : 0,
+        'image' : ARCANE_ARCHER_SKILLS + 'electric-threading.png',
+        'text' : '+8 Electric damage to all bow and crossbow attacks.\n' + \
+            'Lasts until replaced by another threading.'
         },
 
         # Trickster

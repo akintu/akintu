@@ -13,10 +13,16 @@ class SpellStub(object):
         info = None
         self.text = 'Fill me in!'
         self.image = './res/images/icons/cubeforce.png'
+        cooldownText = '0'
+        rangeText = str(info['range'])
+        self.school = info['school']
+        if info['cooldown']:
+            cooldownText = str(info['cooldown'])
         if name in Spell.allSpells:
             info = Spell.allSpells[name]
             if 'text' in info:
-                self.text = info['text']
+                self.text = 'AP: ' + `info['APCost']` + '  MP: ' + `info['MPCost']` + '  Cooldown: ' + cooldownText + '  Range: ' + rangeText + \
+                        '  School: ' + self.school + "\n" + info['text'] 
             if 'image' in info:
                 self.image = info['image']
                 
@@ -49,7 +55,7 @@ class Spell(object):
             cooldownText = str(self.cooldown)
         if 'text' in info:
             self.text = 'AP: ' + `self.APCost` + '  MP: ' + `self.MPCost` + '  Cooldown: ' + cooldownText + '  Range: ' + rangeText + \
-                        "\n" + info['text'] 
+                        '  School: ' + self.school + "\n" + info['text'] 
         else:
             self.text = 'No description yet.'
         self.owner = owner

@@ -6,6 +6,14 @@ import location
 from combat import *
 
 
+ROOT_FOLDER = "./res/images/icons/"
+
+FIGHTER = ROOT_FOLDER + "traits/fighter_traits/"
+RANGER = ROOT_FOLDER + "traits/ranger_traits/"
+THIEF = ROOT_FOLDER + "traits/thief_traits/"
+WIZARD = ROOT_FOLDER + "traits/wizard_traits/"
+
+
 class TraitStub(object):
     def __init__(self, name):
         self.name = name
@@ -749,29 +757,25 @@ class Trait(object):
         tRank = Trait.getTraitRank(target, "Illusion Spell Focus")
         if not reverse:
             if tRank == 1:
-                spell.MPCost -= 1
+                Combat.modifyResource(target, "MP", 1)
                 target.statusSpellpower += 1
             elif tRank == 2:
-                spell.MPCost -= 1
+                Combat.modifyResource(target, "MP", 1)
                 target.statusSpellpower += 2
             elif tRank == 3:
-                spell.MPCost -= 2
+                Combat.modifyResource(target, "MP", 2)
                 target.statusSpellpower += 3
             elif tRank == 4:
-                spell.MPCost -= 2
+                Combat.modifyResource(target, "MP", 2)
                 target.statusSpellpower += 5
         else:
             if tRank == 1:
-                spell.MPCost += 1
                 target.statusSpellpower -= 1
             elif tRank == 2:
-                spell.MPCost += 1
                 target.statusSpellpower -= 2
             elif tRank == 3:
-                spell.MPCost += 2
                 target.statusSpellpower -= 3
             elif tRank == 4:
-                spell.MPCost += 2
                 target.statusSpellpower -= 5
 
     
@@ -889,9 +893,6 @@ class Trait(object):
             target.baseShadowBonusDamage += 7
         elif tRank == 3:
             target.baseShadowBonusDamage += 7
-            for spell in target.spellList:
-                if spell.school == "Bane" and spell.APCost > 5:
-                    spell.APCost -= 1
         elif tRank == 4:
             target.baseShadowBonusDamage += 7
 
@@ -927,12 +928,16 @@ class Trait(object):
         if not reverse:
             if tRank == 1:
                 target.statusSpellpower += 1
+                Combat.modifyResource(target, "MP", 1)
             elif tRank == 2:
                 target.statusSpellpower += 2
+                Combat.modifyResource(target, "MP", 2)
             elif tRank == 3:
                 target.statusSpellpower += 4
+                Combat.modifyResource(target, "MP", 2)
             elif tRank == 4:
                 target.statusSpellpower += 5
+                Combat.modifyResource(target, "MP", 3)
         else:
             if tRank == 1:
                 target.statusSpellpower -= 1
@@ -943,21 +948,6 @@ class Trait(object):
             elif tRank == 4:
                 target.statusSpellpower -= 5
 
-    
-    def applyEnchantmentSpellFocusStatic(self, target):
-        tRank = Trait.getTraitRank(target, "Enchantment Spell Focus")
-        for spell in target.spellList:
-            if spell.type == "Enchantment":
-                if tRank == 1:
-                    spell.MPCost = min(5, spell.MPCost - 1)
-                elif tRank == 2:
-                    spell.MPCost = min(5, spell.MPCost - 1)
-                elif tRank == 3:
-                    break
-                elif tRank == 4:
-                    spellMPCost = min(5, spell.MPCost - 1)
-
-    
     def applyMentalSpellFocusStatic(self, target):
         tRank = Trait.getTraitRank(target, "Mental Spell Focus")
         if tRank == 1:
@@ -1196,13 +1186,25 @@ class Trait(object):
             {
             'class' : 'Wizard',
             'type' : 'static',
-            'action' : applyReservoir
+            'action' : applyReservoir,
+            'image' : WIZARD + 'reservoir.png',
+            'text' : 'Gain a permanent bonus to your maximum mana.\n' + \
+                    'Rank I:   +10 Max MP\n' + \
+                    'Rank II:  +15 Max MP\n' + \
+                    'Rank III: +20 Max MP\n' + \
+                    'Rank IV:  +25 Max MP\n'
             },
         'Survivor':
             {
             'class' : 'Wizard',
             'type' : 'static',
-            'action' : applySurvivor
+            'action' : applySurvivor,
+            'image' : WIZARD + 'survivor.png',
+            'text' : 'Gain a permanent bonus to your maximum health.\n' + \
+                    'Rank I:   +4 Max HP\n' + \
+                    'Rank II:  +8 Max HP\n' + \
+                    'Rank III: +12 Max HP\n' + \
+                    'Rank IV:  +16 Max HP\n' 
             },
         'Illusion Spell Focus':
             {
@@ -1211,7 +1213,13 @@ class Trait(object):
             'action' : applyIllusionSpellFocus,
             'onStringList' : ['Outgoing Spell Cast'],
             'offStringList' : ['Outgoing Spell Cast Complete'],
-            'staticAction' : applyIllusionSpellFocusStatic
+            'staticAction' : applyIllusionSpellFocusStatic,
+            'image' : WIZARD + 'illusion-spell-focus.png',
+            'text' : 'Gain various benefits to casting Illusion spells.\n' + \
+                    'Rank I:   Illusion spells refund 1 MP, +1 Spellpower\n' + \
+                    'Rank II:  Illusion spells refund 1 MP, +2 Spellpower; +1 Magic resist vs. Illusion\n' + \
+                    'Rank III: Illusion spells refund 2 MP, +3 Spellpower; +2 Magic resist vs. Illusion\n' + \
+                    'Rank IV:  Illusion spells refund 2 MP, +5 Spellpower; +4 Magic resist vs. Illusion'
             },
         'Primal Spell Focus':
             {
@@ -1220,7 +1228,13 @@ class Trait(object):
             'action' : applyPrimalSpellFocus,
             'onStringList' : ['Outgoing Spell Cast'],
             'offStringList' : ['Outgoing Spell Cast Complete'],
-            'staticAction' : applyPrimalSpellFocusStatic
+            'staticAction' : applyPrimalSpellFocusStatic,
+            'image' : WIZARD + 'primal-spell-focus.png',
+            'text' : 'Gain various benefits to casting Primal spells.\n' + \
+                    'Rank I:   +2 Spellpower; +1 Max MP\n' + \
+                    'Rank II:  +4 Spellpower; +2 Max MP, +1 Magic resist vs. Primal\n' + \
+                    'Rank III: +6 Spellpower; +3 Max MP, +2 Magic resist vs. Primal\n' + \
+                    'Rank IV:  +8 Spellpower; +5 Max MP, +4 Magic resist vs. Primal'
             },
         'Natural Spell Focus':
             {
@@ -1228,7 +1242,13 @@ class Trait(object):
             'type' : 'dynamic',
             'action' : applyNaturalSpellFocus,
             'onStringList' : ['Outgoing Spell Cast'],
-            'offStringList' : ['Outgoing Spell Cast Complete']
+            'offStringList' : ['Outgoing Spell Cast Complete'],
+            'image' : WIZARD + 'natural-spell-focus.png',
+            'text' : 'Gain various benefits to casting Natural spells.\n' + 
+                    'Rank I:   +1 Spellpower, +5% healing\n' + \
+                    'Rank II:  +2 Spellpower, +10% healing\n' + \
+                    'Rank III: +3 Spellpower, +15% healing\n' + \
+                    'Rank IV:  +4 Spellpower, +20% healing'
             },
         'Mystic Spell Focus':
             {
@@ -1237,7 +1257,13 @@ class Trait(object):
             'action' : applyMysticSpellFocus,
             'onStringList' : ['Outgoing Spell Cast'],
             'offStringList' : ['Outgoing Spell Cast Complete'],
-            'staticAction' : applyMysticSpellFocusStatic
+            'staticAction' : applyMysticSpellFocusStatic,
+            'image' : WIZARD + 'mystic-spell-focus.png',
+            'text' : 'Gain various benefits to casting Mystic spells.\n' + \
+                    'Rank I:   +2 Spellpower; +1 Magic resist vs. Mystic\n' + \
+                    'Rank II:  +4 Spellpower; +2 Magic resist vs. Mystic\n' + \
+                    'Rank III: +6 Spellpower; +3 Magic resist vs. Mystic\n' + \
+                    'Rank IV:  +8 Spellpower; +4 Magic resist vs. Mystic'
             },
         'Bane Spell Focus':
             {
@@ -1246,16 +1272,27 @@ class Trait(object):
             'action' : applyBaneSpellFocus,
             'onStringList' : ['Outgoing Spell Cast'],
             'offStringList' : ['Outgoing Spell Cast Complete'],
-            'staticAction' : applyBaneSpellFocusStatic
+            'staticAction' : applyBaneSpellFocusStatic,
+            'image' : WIZARD + 'bane-spell-focus.png',
+            'text' : 'Gain various benefits to casting Bane spells.\n' + \
+                    'Rank I:   +1 Spellpower; +7% Shadow Damage\n' + \
+                    'Rank II:  +2 Spellpower; +14% Shadow Damage\n' + \
+                    'Rank III: +3 Spellpower; +21% Shadow Damage\n' + \
+                    'Rank IV:  +4 Spellpower; +28% Shadow Damage'
             },
         'Enchantment Spell Focus':
             {
             'class' : 'Wizard',
-            'type' : 'dynamic and static',
+            'type' : 'dynamic',
             'action' : applyEnchantmentSpellFocus,
             'onStringList' : ['Outgoing Spell Cast'],
             'offStringList' : ['Outgoing Spell Cast Complete'],
-            'staticAction' : applyEnchantmentSpellFocusStatic
+            'image' : WIZARD + 'enchantment-spell-focus.png',
+            'text' : 'Gain various benefits to casting enchantment spells\n' + \
+                    'Rank I:   +1 Spellpower, Enchantment spells refund 1 MP\n' + \
+                    'Rank II:  +2 Spellpower, Enchantment spells refund 2 MP\n' + \
+                    'Rank III: +4 Spellpower, Enchantment spells refund 2 MP\n' + \
+                    'Rank IV:  +5 Spellpower, Enchantment spells refund 3 MP'
             },
         'Mental Spell Focus':
             {
@@ -1264,7 +1301,13 @@ class Trait(object):
             'action' : applyMentalSpellFocus,
             'onStringList' : ['Outgoing Spell Cast'],
             'offStringList' : ['Outgoing Spell Cast Complete'],
-            'staticAction' : applyMentalSpellFocusStatic
+            'staticAction' : applyMentalSpellFocusStatic,
+            'image' : WIZARD + 'mental-spell-focus.png',
+            'text' : 'Gain spellpower when casting mental spells and bonus HP.\n' + \
+                    'Rank I:   +2 Spellpower, +2 HP\n' + \
+                    'Rank II:  +4 Spellpower, +4 HP\n' + \
+                    'Rank III: +6 Spellpower, +6 HP\n' + \
+                    'Rank IV:  +8 Spellpower, +8 HP'     
             }
     }
 
