@@ -153,13 +153,12 @@ class GameServer():
             ###### StopPerson ######
             if command.type == "PERSON" and command.action == "STOP":
                 self.person[command.id].ai.remove("RUN")
-            
-            ###### Save All Players ######
-            if command.type == "PERSON" and command.action == "SAVE":
-                for p, i in self.player.iteritems():
-                    if i != command.id:  #We don't want to send it back to the player who sent this.
-                        command.id = i
-                        self.SDF.send(p, command)
+                        
+            ###### Levelup Player ######
+            if command.type == "PERSON" and command.action == "REPLACE":
+                newPerson = TheoryCraft.rehydratePlayer(command.player)
+                newPerson.location = self.person[command.id].location
+                self.person[command.id] = newPerson
             
             ###### Get Item / Open Chest ######
             if command.type == "PERSON" and command.action == "OPEN":
@@ -252,10 +251,14 @@ class GameServer():
                 # Save pane state to disk and then...
                 print("Unloading pane " + str(pane))
 
+                people = {}
                 # Stop all AI behaviors
                 for i in self.pane[pane].person:
                     self.person[i].ai.shutdown()
+                    if i not in self.player.values():
+                        people[i] = self.person[i]
                     del self.person[i]
+                self.pane[pane].person = people
 
                 del self.pane[pane]
                 
