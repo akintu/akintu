@@ -401,6 +401,7 @@ class Game(object):
                         # Upgraded Hero is "False" until the levelup is finished. Then it is a dehydrated hero.
                         newHero = TheoryCraft.rehydratePlayer(upgradedHero)
                         newHero.location = self.pane.person[self.id].location
+                        newHero.id = self.id
                         self.pane.person[self.id] = newHero
                         self.performingLevelup = False
                         self.CDF.send(Command("PERSON", "REPLACE", id=self.id, player=upgradedHero))
