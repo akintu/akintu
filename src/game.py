@@ -287,11 +287,16 @@ class Game(object):
             if saved_list:
                 increment_list = []
                 for filename in saved_list:
-                    split_list = filename.split(".")
-                    increment_list.append(int(split_list[-1]))   #Get last element from list (the incremental save number)
+                    split_list = filename.split("_")
+                    tmp = split_list[0] #Get first element from list (the incremental save number)
+                    try:
+                        tmp = int(tmp)
+                    except Exception:
+                        tmp = 0
+                    increment_list.append(tmp)   
                 max_save = max(increment_list)
             max_save += 1
-            file_name = str(player.name) + "_" + str(player.race) + "_" + str(player.characterClass) + "." + str("%03d" % max_save)
+            file_name = str("%03d" % max_save) + "_" + str(player.name) + "_" + str(player.race) + "_" + str(player.characterClass) + CHAR_SAVE_EXT
             self.playerSaveFile = file_name
         path_to_file = os.path.join(CHAR_SAVE_PATH, file_name)
         print "Saving Character To " + str(path_to_file)
@@ -301,11 +306,16 @@ class Game(object):
         file.close()
         
     def load_player(self, file_name):
+        '''
+        file_name is the three digit save extention in the saves folder
+        
+        '''
         path_to_file = os.path.join(CHAR_SAVE_PATH, file_name)
         file = open(path_to_file, "r")
         for line in file:
             pass
         last = line
+        print last
         file.close()
         print "Loading player from " + str(path_to_file)
         return last
@@ -337,9 +347,10 @@ class Game(object):
                 if event.key == K_ESCAPE:
                     #TODO: Open Menu Here
                     ##SAVE PERSON##
-                    self.save_player()
+                    
                     save = Command("PERSON", "SAVE", id=self.id)
                     self.CDF.send(save)
+                    self.save_and_quit()
                     
                 elif event.key in MODIFIER_KEYS:
                     self.keystate.append(event.key)

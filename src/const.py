@@ -36,6 +36,8 @@ DESIRED_FPS = 120
 SAVES_PATH = os.path.join("res", "saves")
 CHAR_SAVE_PATH = os.path.join(SAVES_PATH, "characters")
 WORLD_SAVE_PATH = os.path.join(SAVES_PATH, "worlds")
+CHAR_SAVE_EXT = ".akinc"
+WORLD_SAVE_EXT = ".akinw"
 
 #     =====================IMAGES=========================
 #Coverage Percentage (.1 = 10%)
