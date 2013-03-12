@@ -94,10 +94,9 @@ class Pane(object):
         self.seed = seed
         self.location = location
         self.pane_state = pane_state
-        self.curr_state = dict()
         self.tiles = dict()
         self.objects = dict()
-        self.items = dict()
+        # self.items = dict()
         self.person = {}
         self.background_key = Sprites.get_background(self.seed + str(self.location))
 
@@ -175,22 +174,22 @@ class Pane(object):
                 person.ai.add("WANDER", person.ai.wander, person.movementSpeed, pid=id(person), region=r, move_chance=1.0 / (person.movementSpeed))
                 self.person[id(person)] = person
 
-    def load_items(self, items=None):
-        '''
-        Parameters:
-            items:  A list of item tuples in the following format:
-                    ("Name", "Location", ...)
+    # def load_items(self, items=None):
+        # '''
+        # Parameters:
+            # items:  A list of item tuples in the following format:
+                    # ("Name", "Location", ...)
                     
-                    TODO: STILL UNIMPLEMENTED, need info on creating items from name...
-        '''
+                    # TODO: STILL UNIMPLEMENTED, need info on creating items from name...
+        # '''
 
-        print "load_items() currently does nothing :)"
-        if items:
-            for item in items:
-                #TODO: Do something with this item
-                pass
-        else:
-            print "LOAD ITEMS HERE (Pane.load_items()"
+        # print "load_items() currently does nothing :)"
+        # if items:
+            # for item in items:
+                # # TODO: Do something with this item
+                # pass
+        # else:
+            # print "LOAD ITEMS HERE (Pane.load_items()"
             
     def load_chests(self, chests=None):
         '''
@@ -254,10 +253,10 @@ class Pane(object):
             if random.randrange(100) <= percentage*100:
                 index = random.randrange(len(ENTITY_KEYS))
                 self.objects[tile] = ENTITY_KEYS[index]
-                self.tiles[tile].passable = False
+                #self.tiles[tile].passable = False
         else:
             self.objects[tile] = entity_type
-            self.tiles[tile].passable = False
+            #self.tiles[tile].passable = False
         if tile in self.objects:
             return self.objects[tile]
             
@@ -399,7 +398,8 @@ class CombatPane(Pane):
                             from here.
 
         '''
-        super(CombatPane, self).__init__(pane.seed, (0, 0), False)
+        super(CombatPane, self).__init__(pane.seed, (0,0), False)
+        self.objects = dict()           #Fixed combat/overworld passability bug
 
         loc_x = pane_focus.tile[0]
         loc_y = pane_focus.tile[1]
@@ -434,7 +434,8 @@ class CombatPane(Pane):
         if monster:
             monsters = TheoryCraft.generateMonsterGroup(monster)
             self.place_monsters(monsters, self.focus_location)
-
+        
+        print self
 
     def place_monsters(self, monsters, start_location):
         loc = temp = start_location
@@ -492,7 +493,7 @@ class CombatPane(Pane):
                 if not tile in self.tiles:
                     self.tiles[tile] = Tile(None, True)
                 self.objects[tile] = entity_key
-                self.tiles[tile].passable = False
+                #self.tiles[tile].passable = False
                 obstacle = Sprites.get_zoomed_image(entity_key, (di,dj))
                 self.tiles[tile].entities.append(Entity(tile, image=obstacle))
 
