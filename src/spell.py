@@ -6,6 +6,7 @@ import dice
 
 ROOT_FOLDER = "./res/images/icons/"
 TIER1 = ROOT_FOLDER + "tier1_spells/"
+TIER2 = ROOT_FOLDER + "tier2_spells/"
 
 class SpellStub(object):
     def __init__(self, name):
@@ -302,6 +303,24 @@ class Spell(object):
         if Combat.calcPoisonHit(source, target, rating):
             Combat.addStatus(target, "Infection", duration, dieRoll)
 
+    def _torrent(self, target):
+        source = self.owner
+        lower = 10
+        upper = 35
+        knockbackDistance = 5 # TODO -- Knockback
+        hit = Combat.calcHit(source, target, "Magical") # TODO: Allow to miss
+        dam = Combat.calcDamage(source, target, lower, upper, "Cold", hitValue="Normal Hit", scalesWith="Spellpower", scaleFactor=0.014)
+        # Get line AOE and hit the first target. TODO
+        
+    def _lightningBolt(self, target):
+        source = self.owner
+        lower = 5
+        upper = 33
+        hit = Combat.calcHit(source, target, "Magical") # TODO: Allow to miss
+        dam = Combat.calcDamage(source, target, lower, upper, "Electric", hitValue="Normal Hit", critical=1.3, partial=0.5,
+                                scalesWith="Spellpower", scaleFactor=0.005)
+        # Get line AOE and hit all targets with damage
+            
     monsterSpells = {
         'Shadow Field':
         {
@@ -595,6 +614,36 @@ class Spell(object):
         'target' : 'hostile',
         'action' : _infection,
         'cooldown' : None
+        },
+        'Torrent':
+        {
+        'tier' : 2,
+        'school' : 'Primal',
+        'MPCost' : 25,
+        'APCost' : 14,
+        'range' : 16,
+        'target' : 'hostile',
+        'action' : _torrent,
+        'cooldown' : 2,
+        'image' : TIER2 + 'torrent.png',
+        'text' : 'Blasts a target with supercooled liquid for 10-35 + 1.4% Cold damage and knocks back\n' + \
+                'any non-huge target 5 tiles that does not resist (paritally or fully).  Will hit the first\n' + \
+                'hostile target it encounters between itself and the intended target.'
+        },
+        'Lightning Bolt':
+        {
+        'tier' : 2,
+        'school' : 'Primal',
+        'MPCost' : 32,
+        'APCost' : 8,
+        'range' : 8,
+        'target' : 'hostile',
+        'action' : _lightningBolt,
+        'cooldown' : 1,
+        'image' : TIER2 + 'lightning-bolt.png',
+        'text' : 'Zap a series of targets between you and your specified target for 5-33 + 0.5% Electric damage.\n' + \
+                'On partial resist: -50% damage\n' + \
+                'On critical: +30% damage'
         }
     }
 

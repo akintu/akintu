@@ -13,11 +13,15 @@ RANGER_SKILLS = ROOT_FOLDER + "ranger_skills/"
 WIZARD_SKILLS = ROOT_FOLDER + "wizard_skills/"
 
 ARCANE_ARCHER_SKILLS = ROOT_FOLDER + "arcane_archer_skills/"
+ANARCHIST_SKILLS = ROOT_FOLDER + "anarchist_skills/"
 ASSASSIN_SKILLS = ROOT_FOLDER + "assassin_skills/"
 BATTLEMAGE_SKILLS = ROOT_FOLDER + "battlemage_skills/"
 BARBARIAN_SKILLS = ROOT_FOLDER + "barbarian_skills/"
+DRAGOON_SKILLS = ROOT_FOLDER + "dragoon_skills/"
 NIGHTBLADE_SKILLS = ROOT_FOLDER + "nightblade_skills/"
 SPELLSWORD_SKILLS = ROOT_FOLDER + "spellsword_skills/"
+TRICKSTER_SKILLS = ROOT_FOLDER + "trickster_skills/"
+WEAPONMASTER_SKILLS = ROOT_FOLDER + "weaponmaster_skills/"
 
 class AbilityStub(object):
     def __init__(self, name):
@@ -395,6 +399,18 @@ class Ability(object):
             return (True, "")
         return (False, "HP already at maximum; cannot use: " + self.name + " .")
 
+    # Dragoon
+    def _diagonalThrusts(self, target):
+        source = self.owner
+        # TODO
+        # Attack both diagonal targets with 1.2x Force and +5% critical mag.
+        
+    def _diagonalThrustsCheck(self, target):
+        source = self.owner
+        if source.usingWeapon("Polearm"):
+            return (True, "")
+        return (False, "Must be using a polearm to use: " + self.name)
+        
     # Spellsword
     def _martialMode(self, target):
         source = self.owner
@@ -739,7 +755,7 @@ class Ability(object):
         monsters = Combat.getAOETargets(source.cPane, source.cLocation, radius=radius, selectMonsters=True)
         # Get all melee targets and deal shadow damage.
         for monster in monsters:
-            shadowDamage = Combat.calcDamage(source, monster, 4, 12, element="Shadow", hitValue="Normal Hit", scalesWith="Spellpower")
+            shadowDamage = Combat.calcDamage(source, monster, 4, 12, element="Shadow", hitValue="Normal Hit", scalesWith="Spellpower", scaleFactor=0.03)
             Combat.lowerHP(monster, shadowDamage)
         duration = 1
         Combat.addStatus(target, "Shroud", duration)
@@ -1505,6 +1521,26 @@ class Ability(object):
         'text' : 'Recover 15% of your HP but reduce your DR by 5% for 1 turn.'
         },
 
+        # Dragoon
+        # Bunch of other abilities go here TODO
+        # Change this level back to 3
+        'Diagonal Thrusts':
+        {
+        'level' : 1,
+        'class' : 'Dragoon',
+        'HPCost' : 0,
+        'APCost' : 11,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _diagonalThrusts,
+        'cooldown' : None,
+        'checkFunction' : _diagonalThrustsCheck,
+        'breakStealth' : 0,
+        'image' : DRAGOON_SKILLS + 'diagonal-thrusts.png',
+        'text' : 'Strike foes in both forward diagonal directions.  Attack with Force x 1.20 and +5% critical magnitude\n' + \
+                'on each strike.  Must have a polearm equipped.'
+        },
+        
         #Spellsword
         'Martial Mode':
         {
