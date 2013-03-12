@@ -158,6 +158,7 @@ class GameServer():
             if command.type == "PERSON" and command.action == "REPLACE":
                 newPerson = TheoryCraft.rehydratePlayer(command.player)
                 newPerson.location = self.person[command.id].location
+                newPerson.id = command.id
                 self.person[command.id] = newPerson
             
             ###### Get Item / Open Chest ######
