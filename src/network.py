@@ -72,8 +72,7 @@ class ClientData(LineReceiver):
             print('ClientData lost connection.')
         else:
             print('ClientData lost connection.  Reason: ' + reason.getErrorMessage())
-        if reactor.running:
-            reactor.stop()
+            self.factory.queue.put(Command("CLIENT", "QUIT"))
 
     def lineReceived(self, data):
         data = cPickle.loads(data)
