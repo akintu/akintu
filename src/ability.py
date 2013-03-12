@@ -18,6 +18,18 @@ BATTLEMAGE_SKILLS = ROOT_FOLDER + "battlemage_skills/"
 BARBARIAN_SKILLS = ROOT_FOLDER + "barbarian_skills/"
 SPELLSWORD_SKILLS = ROOT_FOLDER + "spellsword_skills/"
 
+class AbilityStub(object):
+    def __init__(self, name):
+        self.name = name
+        info = Ability.allAbilities[name]
+        self.text = 'TODO'
+        self.image = './res/images/icons/cubeforce.png'
+        if 'text' in info:
+            self.text = info['text']
+        if 'image' in info:
+            self.image = info['image']
+            
+
 class Ability(object):
 
     def __init__(self, name, owner):

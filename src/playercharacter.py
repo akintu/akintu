@@ -8,6 +8,8 @@ import spell
 import passiveability
 import ability
 import inventory
+import trait
+import math
 
 class PlayerCharacter(p.Person):
 
@@ -152,6 +154,7 @@ class PlayerCharacter(p.Person):
 
         # Levelup stats
         self.levelupStrength = float(p.Person.setFrom(argDict, 'levelupStrength', p.Person.ERROR))
+        self.levelupDexterity = float(p.Person.setFrom(argDict, 'levelupDexterity', p.Person.ERROR))
         self.levelupCunning = float(p.Person.setFrom(argDict, 'levelupCunning', p.Person.ERROR))
         self.levelupSorcery = float(p.Person.setFrom(argDict, 'levelupSorcery', p.Person.ERROR))
         self.levelupPiety = float(p.Person.setFrom(argDict, 'levelupPiety', p.Person.ERROR))
@@ -305,6 +308,9 @@ class PlayerCharacter(p.Person):
         for eq in self.equippedItems._allGear.values():
             if eq:
                 longText.append("&" + eq.identifier)
+        longText.append("@")
+        for tr in self.traits:
+            longText.append("&" + tr.name) 
         return ''.join(longText)
         
         
@@ -325,54 +331,229 @@ class PlayerCharacter(p.Person):
             dieRoll *= 1 + (float(self.totalArcaneBonusDamage) / 100)
         return int(round(dieRoll))
 
-    def gainLevelUp(self, statsOnly=False):
-        """Start the levelup process for acquiring a new level.  May need to
-        be integrated with another UI class to make decisions later TODO.
+
+    def getLevelupStats(self):
+        '''Used to perform a levelup on a characters stats and return the 
+        summary TileObject to be used in a tile display.'''
+        roundUpStrength = sumRollsOver(self._baseStrength, self.levelupStrength)
+        self._baseStrength += self.levelupStrength
+        displayStrengthGain = int(math.floor(self.levelupStrength))
+        if roundUpStrength:
+            displayStrengthGain += 1
+        
+        roundUpDexterity = sumRollsOver(self._baseDexterity, self.levelupDexterity)
+        self._baseDexterity += self.levelupDexterity
+        displayDexterityGain = int(math.floor(self.levelupDexterity))
+        if roundUpDexterity:
+            displayDexterityGain += 1
+        
+        roundUpCunning = sumRollsOver(self._baseCunning, self.levelupCunning)
+        self._baseCunning += self.levelupCunning
+        displayCunningGain = int(math.floor(self.levelupCunning))
+        if roundUpCunning:
+            displayCunningGain += 1
+        
+        roundUpSorcery = sumRollsOver(self._baseSorcery, self.levelupSorcery)
+        self._baseSorcery += self.levelupSorcery
+        displaySorceryGain = int(math.floor(self.levelupSorcery))
+        if roundUpSorcery:
+            displaySorceryGain += 1
+        
+        roundUpPiety = sumRollsOver(self._basePiety, self.levelupPiety)
+        self._basePiety += self.levelupPiety
+        displayPietyGain = int(math.floor(self.levelupPiety))
+        if roundUpPiety:
+            displayPietyGain += 1
+        
+        roundUpConstitution = sumRollsOver(self._baseConstitution, self.levelupConstitution)
+        self._baseConstitution += self.levelupConstitution
+        displayConstitutionGain = int(math.floor(self.levelupConstitution))
+        if roundUpConstitution:
+            displayConstitutionGain += 1
+        
+        self._baseHP += self.levelupHP
+        self._baseMP += self.levelupMP
+        
+        statsName = "Gained Statistics"
+        statsImage = "./res/images/icons/cubeforce.png"
+        statsText = "Gained the following statistics:\n" + \
+                    "Strength + " + `displayStrengthGain` + "\n" + \
+                    "Dexterity + " + `displayDexterityGain` + "\n" + \
+                    "Cunning + " + `displayCunningGain` + "\n" + \
+                    "Sorcery + " + `displaySorceryGain` + "\n" + \
+                    "Piety + " + `displayPietyGain` + "\n" + \
+                    "Constitution + " + `displayConstitutionGain` + "\n" + \
+                    "HP + " + `self.levelupHP` + "\n" + \
+                    "MP + " + `self.levelupMP` + "\n"
+        statsTile = TileObject(statsName, statsImage, statsText)
+        
+        self.HP = self.totalHP
+        self.MP = self.totalMP
+        return statsTile
+        
+        
+    def gainLevelUp(self, statsOnly=True):
+        """Start the levelup process for acquiring a new level.  Only used 
+        for automatic levelups.
         Inputs:
             None
         Outputs:
             None"""
         # Gain stats
+        roundUpStrength = sumRollsOver(self._baseStrength, self.levelupStrength)
         self._baseStrength += self.levelupStrength
+        displayStrengthGain = int(math.floor(self.levelupStrength))
+        if roundUpStrength:
+            displayStrengthGain += 1
+        
+        roundUpDexterity = sumRollsOver(self._baseDexterity, self.levelupDexterity)
+        self._baseDexterity += self.levelupDexterity
+        displayDexterityGain = int(math.floor(self.levelupDexterity))
+        if roundUpDexterity:
+            displayDexterityGain += 1
+        
+        roundUpCunning = sumRollsOver(self._baseCunning, self.levelupCunning)
         self._baseCunning += self.levelupCunning
+        displayCunningGain = int(math.floor(self.levelupCunning))
+        if roundUpCunning:
+            displayCunningGain += 1
+        
+        roundUpSorcery = sumRollsOver(self._baseSorcery, self.levelupSorcery)
         self._baseSorcery += self.levelupSorcery
+        displaySorceryGain = int(math.floor(self.levelupSorcery))
+        if roundUpSorcery:
+            displaySorceryGain += 1
+        
+        roundUpPiety = sumRollsOver(self._basePiety, self.levelupPiety)
         self._basePiety += self.levelupPiety
+        displayPietyGain = int(math.floor(self.levelupPiety))
+        if roundUpPiety:
+            displayPietyGain += 1
+        
+        roundUpConstitution = sumRollsOver(self._baseConstitution, self.levelupConstitution)
         self._baseConstitution += self.levelupConstitution
+        displayConstitutionGain = int(math.floor(self.levelupConstitution))
+        if roundUpConstitution:
+            displayConstitutionGain += 1
+        
         self._baseHP += self.levelupHP
         self._baseMP += self.levelupMP
         
         self.HP = self.totalHP
         self.MP = self.totalMP
-        if statsOnly:
-            return
         
-        # Select/Gain Trait: TODO
+    def getLevelupSkillOptions(self):
+        '''Returns a list of all of the skills this character
+        may choose from upon earning its current level. Will return
+        an empty list if no such abilities are available to be chosen.'''
+        if self.level not in self.skillLevels:
+            return []
 
-        self.abilities = []
-        for abil in ability.Ability.allAbilities:
-            current = ability.Ability.allAbilities[abil]
-            if current['class'] == self.characterClass or current['class']:
-                if current['level'] == self.level:
-                    newAbil = ability.Ability(abil, self)
-                    self.abilities.append(newAbil)
-            elif current['class'] == 'Ranger*':
-                # Traps for rangers, but Anarchists get a different version with more range.
-                if self.baseClass == 'Ranger' and self.characterClass != "Anarchist":
-                    if current['level'] == self.level:
-                        newAbil = ability.Ability(abil, self)
-                        self.abilities.append(newAbil)
-            elif current['class'] == 'Thief*':
-                # Only thieves get backstabs and lockpicking etc.
-                if self.baseClass == 'Thief':
-                    if current['level'] == self.level:
-                        newAbil = ability.Ability(abil, self)
-                        self.abilities.append(newAbil)
-        # Select/Gain Skill: TODO
-        # Select/Gain Spell(s): TODO
-        # TODO: Check to see if we need to alter the MP/AP cost of learned spells based on traits!
+        activeNames = [x for x in ability.Ability.allAbilities.keys()]
+        actives = [x for x in activeNames if (ability.Ability.allAbilities[x]['class'] == self.baseClass or
+                    ability.Ability.allAbilities[x]['class'] == self.secondaryClass or
+                    (ability.Ability.allAbilities[x]['class'] == 'Ranger*' and self.baseClass == 'Ranger' and self.characterClass != 'Anarchist') or
+                    (ability.Ability.allAbilities[x]['class'] == 'Thief*' and self.baseClass == 'Thief')) and
+                    ability.Ability.allAbilities[x]['level'] <= self.level and 
+                    ability.Ability.allAbilities[x]['level'] != 1 and
+                    x not in [y.name for y in self.abilities]]
+                    
+        activeStubs = []
+        for active in actives:
+            activeStubs.append(ability.AbilityStub(active))          
+                        
+        return activeStubs
+        
+    def getLevelupTraitOptions(self):
+        '''Returns a list of all the traits this character may
+        either upgrade or select for the first time.'''
+        if self.level == 1:
+            return []
+        # Get list of traits he/she doesn't already have.
+        newTraitNames = [x for x in trait.Trait.allContentByName.keys()
+                        if x not in [y.name for y in self.traits] and
+                        (trait.Trait.allContentByName[x]['class'] == self.baseClass or 
+                        trait.Trait.allContentByName[x]['class'] == self.secondaryClass)]
+        rankAllowed = 0
+        if self.level < 3:
+            pass
+        elif self.level < 5:
+            rankAllowed = 1
+        elif self.level < 7:
+            rankAllowed = 2
+        elif self.level >= 7:
+            rankAllowed = 3
+        upgradeTraitNames = [x.name for x in self.traits if x.rank <= rankAllowed]
+        
+        allTraitNames = upgradeTraitNames
+        if len(self.traits) < 5:
+            allTraitNames.extend(newTraitNames)
+        
+        traitStubs = []
+        for tName in allTraitNames:
+            traitStubs.append(trait.TraitStub(tName))    
+        return traitStubs
 
+                
+    def getLevelupCombos(self):
+        '''Returns a list of all the passive Abilities and combination abilities
+        that this character gets upon this levelup.'''
         
+        passiveNames = [x for x in passiveability.PassiveAbility.allContentByName.keys()]
+        passives = [x for x in passiveNames 
+                    if passiveability.PassiveAbility.allContentByName[x]['class'] == self.characterClass and
+                    passiveability.PassiveAbility.allContentByName[x]['level'] == self.level]
+                    
+        passiveStubs = []
+        for passive in passives:
+            passiveStubs.append(passiveability.PassiveAbilityStub(passive))
+                    
+        activeNames = [x for x in ability.Ability.allAbilities.keys()]
+        actives = [x for x in activeNames if ability.Ability.allAbilities[x]['class'] == self.characterClass and
+                    ability.Ability.allAbilities[x]['level'] == self.level]
+                    
+        activeStubs = []
+        for active in actives:
+            activeStubs.append(ability.AbilityStub(active))
+                    
+        passiveStubs.extend(activeStubs)
+        return passiveStubs
         
+    def getLevelupSpellOptions(self):
+        '''Returns a list of available spells to learn during this levelup.  Returns
+        an empty list if this character does not learn spells.'''
+        if self.level not in self.spellLevels:
+            return []
+        allowedSchools = ['Primal', 'Illusion', 'Mystic', 'Natural']
+        if self.characterClass == 'Nightblade':
+            allowedSchools.append('Bane')
+        elif self.characterClass == 'Tactician':
+            allowedSchools.append('Mental')
+        elif self.characterClass == 'Spellsword':
+            allowedSchools.append('Enchantment')
+            
+        allowedTier = 1
+        if 5 <= self.level and self.level <= 8:
+            allowedTier = 2
+        elif 9 <= self.level and self.level <= 12:
+            allowedTier = 3
+        elif 13 <= self.level and self.level <= 16:
+            allowedTier = 4
+        elif 17 <= self.level and self.level <= 20:
+            allowedTier = 5
+            
+        spellNames = [x for x in spell.Spell.allSpells.keys()]
+        spellNames[:] = [x for x in spellNames
+                if spell.Spell.allSpells[x]['tier'] == allowedTier and 
+                spell.Spell.allSpells[x]['school'] in allowedSchools and
+                x not in [y.name for y in self.spellList]]
+                
+        spellsToSelect = []
+        for spellName in spellNames:
+            spellsToSelect.append(spell.SpellStub(spellName))
+        
+        return spellsToSelect
+                
     @property
     def experience(self):
         return self._experience
@@ -1076,10 +1257,32 @@ class PlayerCharacter(p.Person):
         cs.append("| ----------->>> Passive Abilities <<<------------------\n")
         for passive in self.passiveAbilities:
             cs.append("| Level " + `passive.level` + ": " + passive.name + "\n")
+        cs.append("| ----------->>> Traits <<<-----------------------------\n")
+        for t in self.traits:
+            cs.append("| Rank " + `t.rank` + " " + t.name + "\n")
         cs.append("\\-------------------------------------------------------\n")
         cs = ''.join(cs)
         print cs
 
+    
+def sumRollsOver(a, b):
+    '''Determines if the sum of two numbers' remainders cause 
+    overflow into a whole number.  Works for two floats, a and b.
+    Not particularly accurate; do not use when accuracy is needed.
+    
+    Returns True if the two numbers' remainders sum to at least 1.
+    '''
+    a_int = int(a)
+    b_int = int(b)
+    a_remainder = a - a_int
+    b_remainder = b - b_int
+    if a_remainder + b_remainder >= 1:
+        return True
+    return False
 
-
+class TileObject(object):
+    def __init__(self, name, image, text):
+        self.name = name
+        self.image = image
+        self.text = text
 

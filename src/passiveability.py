@@ -12,6 +12,18 @@ BATTLEMAGE = ROOT_FOLDER + "battlemage_skills/"
 BARBARIAN = ROOT_FOLDER + "barbarian_skills/"
 SPELLSWORD = ROOT_FOLDER + "spellsword_skills/"
 
+class PassiveAbilityStub(object):
+    def __init__(self, name):
+        self.name = name
+        info = None
+        if name in PassiveAbility.allContentByName:
+            info = PassiveAbility.allContentByName[name]
+        self.image = './res/images/icons/cubeforce.png'
+        self.text = 'No description yet.'
+        if 'image' in info:
+            self.image = info['image']
+        if 'text' in info:
+            self.info = info['text']
 
 class PassiveAbility(object):
 

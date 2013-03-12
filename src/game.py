@@ -21,6 +21,10 @@ from gamescreen import GameScreen
 from theorycraft import TheoryCraft
 from world import *
 
+import ability
+import passiveability
+import trait
+import spell
 
 clock = pygame.time.Clock()
 
@@ -56,7 +60,11 @@ class Game(object):
         self.keystate = []
         self.running = False
         self.combat = False
-
+        self.performingLevelup = False
+        
+        # Levelup state
+        self.levelup = None
+        
         # Selection state
         self.selectionMode = "targeting"
         self.currentTargetId = None
@@ -66,7 +74,7 @@ class Game(object):
         self.currentItem = None
         self.itemList = []
         self.playerSaveFile = None
-
+        
         # Setup server if host
         self.port = port
         if serverip:
@@ -343,7 +351,7 @@ class Game(object):
                     
                 elif event.key in MODIFIER_KEYS:
                     self.keystate.append(event.key)
-                elif event.key in MOVE_KEYS and not \
+                elif event.key in MOVE_KEYS and not self.performingLevelup or \
                      (self.combat and (self.selectionMode == "abilities" or self.selectionMode == "spells")):
                     self.move_person(MOVE_KEYS[event.key], 1)
                 elif event.key == K_EQUALS or event.key == K_PAGEUP:
@@ -353,6 +361,15 @@ class Game(object):
                     self.screen.scroll_down(1 if not any(mod in [K_LSHIFT, K_RSHIFT] \
                             for mod in self.keystate) else 1000)
 
+                ### Levelup Commands ###
+                if self.performingLevelup:
+                    upgradedHero = self.levelup.input(event.key)
+                    if upgradedHero:
+                        # Upgraded Hero is "False" until the levelup is finished. Then it is a dehydrated hero.
+                        self.pane.person[self.id] = TheoryCraft.rehydratePlayer(upgradedHero)
+                        self.performingLevelup = False
+                        #self.CDF.send(Command("PERSON", "REPLACE", id=self.id, location=self.pane.person[self.id])TODO HALP!
+                        
                 ### Combat Only Commands ###
                 elif self.combat:
                 
@@ -397,7 +414,7 @@ class Game(object):
                         pass
                     elif event.key == K_i:
                         self.selectionMode = "items"
-                        self.screen.show_text("Selection mode: items", color="crimson")
+                        self.screen.show_text("Selection mode: items", color="darkred")
                         pass
                     elif event.key == K_PERIOD:
                         self.display_target_details()
@@ -418,6 +435,9 @@ class Game(object):
                         pass
                     elif event.key == K_c:
                         self.display_character_sheet()
+                    elif event.key == K_y:
+                        self.performingLevelup = True
+                        self.request_levelup()
                     
     def get_item(self):
         self.CDF.send(Command("PERSON", "OPEN", id=self.id))
@@ -426,6 +446,15 @@ class Game(object):
         # If the chest is locked, send a message to the screen.
         # If the chest is unlocked, distribute treasure to this player
         #    and all others on this pane.
+            
+    def request_levelup(self):
+        # Ask server if this character may levelup. TODO
+        # Remove EXP code left for testing, TODO
+        player = self.pane.person[self.id]
+        player._experience = 175
+        player.level = 2
+        self.levelup = Levelup(player, self.screen)
+        self.levelup.next()
             
     def choose_ability(self):
         text = "Select an Ability"
@@ -651,6 +680,7 @@ class Game(object):
         tile.image = images[i]
         self.screen.update_tile(tile, location)
         
+        
 
     def remove_entities(self, location):
         #TODO: make this delayed. (maybe use DelayedCall?)
@@ -664,3 +694,149 @@ class Game(object):
             self.pane = self.world.get_pane(location.pane)
 
         self.screen.set_pane(self.pane)
+
+        
+class Levelup(object):
+    def __init__(self, player, screen):
+        self.player = player
+        self.screen = screen
+        self.phase = None
+        self.phaseList = []
+        self.skill = None
+        self.spellA = None
+        self.spellB = None
+        self.trait = None
+        self.summary = []
+        
+        self.traitOptions = []
+        self.skillOptions = []
+        self.spellOptions = []
+        
+    def next(self):
+        if not self.phase:
+            self._determinePhaseList()
+            self.phase = self.phaseList[0]
+        if self.phase == "TRAIT":
+            text = "Select a new trait or upgrade an existing one."
+            self.traitOptions = self.player.getLevelupTraitOptions()
+            self.screen.show_dialog(text, self.traitOptions, bgcolor="cadetblue")
+        elif self.phase == "SKILL":
+            text = "Select a new skill."
+            self.skillOptions = self.player.getLevelupSkillOptions()
+            self.screen.show_dialog(text, self.skillOptions, bgcolor="cadetblue")
+        elif self.phase == "SPELL_1":
+            text = "Select a new spell."
+            self.spellOptions = self.player.getLevelupSpellOptions()
+            self.screen.show_dialog(text, self.spellOptions, bgcolor="blue")
+        elif self.phase == "SPELL_2":
+            text = "Select another new spell."
+            self.spellOptions = self.player.getLevelupSpellOptions()
+            self.screen.show_dialog(text, self.spellOptions, bgcolor="blue")
+        elif self.phase == "COMBO":
+            text = "Additionally you have earned these unique skills."
+            combos = self.player.getLevelupCombos()
+            self.screen.show_dialog(text, combos, bgcolor="darkred")
+        elif self.phase == "SUMMARY":
+            text = "This is a summary of the statistics and abilities you have gained."
+            self.summary.append(self.trait)
+            if self.skill:
+                self.summary.append(self.skill)
+            if self.spellA:
+                self.summary.append(self.spellA)
+            if self.spellB:
+                self.summary.append(self.spellB)
+            self.summary.append(self.player.getLevelupStats())
+            self.screen.show_dialog(text, self.summary, bgcolor="red")
+        
+    def input(self, keystroke):
+        '''Returns True if this levelup is complete.'''
+        if keystroke == K_RIGHT or keystroke == K_KP6:
+            self.screen.move_dialog(6)
+            return False
+        elif keystroke == K_LEFT or keystroke == K_KP4:
+            self.screen.move_dialog(4)
+            return False
+        elif keystroke == K_UP or keystroke == K_KP8:
+            self.screen.move_dialog(8)
+            return False
+        elif keystroke == K_DOWN or keystroke == K_KP2:
+            self.screen.move_dialog(2)
+            return False
+        elif keystroke == K_SPACE or keystroke == K_a:
+            if self.phase == "TRAIT":
+                self.trait = self.traitOptions[self.screen.hide_dialog()]
+                self._advancePhase()
+                return False
+            elif self.phase == "SKILL":
+                self.skill = self.skillOptions[self.screen.hide_dialog()]
+                self._advancePhase()
+                return False
+            elif self.phase == "SPELL_1":
+                self.spellA = self.spellOptions[self.screen.hide_dialog()]
+                self.spellOptions.remove(self.spellA)
+                self._advancePhase()
+                return False
+            elif self.phase == "SPELL_2":
+                self.spellB = self.spellOptions[self.screen.hide_dialog()]
+                self._advancePhase()
+                return False
+            elif self.phase == "COMBO":
+                self.summary.extend(self.player.getLevelupCombos())
+                self._advancePhase()
+                return False
+            elif self.phase == "SUMMARY":
+                self._modifyHero()
+                self.screen.hide_dialog()
+                self.reset()
+                return self.player.dehydrate()
+                
+    def _modifyHero(self):
+        if self.skill:
+            self.player.abilities.append(ability.Ability(self.skill.name, self.player))
+        if self.spellA:
+            self.player.spellList.append(spell.Spell(self.spellA.name, self.player))
+        if self.spellB:
+            self.player.spellList.append(spell.Spell(self.spellB.name, self.player))
+        if self.trait.name in [x.name for x in self.player.traits]:
+            for t in self.player.traits:
+                if t.name == self.trait.name:
+                    t.advanceTier()
+        else:
+            self.player.traits.append(trait.Trait(self.trait.name, self.player))
+        for item in self.summary:
+            if isinstance(item, ability.AbilityStub):
+                self.player.abilities.append(ability.Ability(item.name, self.player))
+            elif isinstance(item, passiveability.PassiveAbilityStub):
+                self.player.passiveAbilities.append(passiveability.PassiveAbility(item.name, self.player))
+        # Stats have already been added.
+                
+    def _advancePhase(self):
+        currentPhaseIndex = self.phaseList.index(self.phase)
+        self.phase = self.phaseList[currentPhaseIndex + 1]
+        self.next()
+        
+    def _determinePhaseList(self):
+        self.phaseList = ["TRAIT"]
+        if self.player.level in self.player.skillLevels:
+            self.phaseList.append("SKILL")
+        if self.player.level in self.player.spellLevels:
+            if self.player.spellLevels[self.player.level] == 1:
+                self.phaseList.append("SPELL_1")
+            elif self.player.spellLevels[self.player.level] == 2:
+                self.phaseList.append("SPELL_1")
+                self.phaseList.append("SPELL_2")
+        self.phaseList.append("COMBO")
+        self.phaseList.append("SUMMARY")
+        
+    def reset(self):
+        self.phase = None
+        self.phaseList = []
+        self.skill = None
+        self.spellA = None
+        self.spellB = None
+        self.trait = None
+        self.summary = []
+        
+        self.traitOptions = []
+        self.skillOptions = []
+        self.spellOptions = []

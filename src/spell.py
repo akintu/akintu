@@ -7,6 +7,20 @@ import dice
 ROOT_FOLDER = "./res/images/icons/"
 TIER1 = ROOT_FOLDER + "tier1_spells/"
 
+class SpellStub(object):
+    def __init__(self, name):
+        self.name = name
+        info = None
+        self.text = 'Fill me in!'
+        self.image = './res/images/icons/cubeforce.png'
+        if name in Spell.allSpells:
+            info = Spell.allSpells[name]
+            if 'text' in info:
+                self.text = info['text']
+            if 'image' in info:
+                self.image = info['image']
+                
+        
 class Spell(object):
 
     def __init__(self, name, owner):

@@ -129,6 +129,7 @@ class TheoryCraft(object):
         passiveNames = bigSplit[3].split("&")
         inventoryNames = bigSplit[4].split("&")
         toEquip = bigSplit[5].split("&")
+        traitNames = bigSplit[6].split("&")
         
         newChar = TheoryCraft.getNewPlayerCharacter(race, cls, name=name, new=False, hardcore=hardcore, ironman=ironman)
 
@@ -156,10 +157,15 @@ class TheoryCraft(object):
             item = TheoryCraft.rehydrateEquipment(itemName)
             newChar.inventory.addItem(item)
             newChar.equip(item)
+            newChar.inventory.removeItem(item)
         for passiveName in passiveNames:
             if passiveName == '':
                 continue
             newChar.passiveAbilities.append(passiveability.PassiveAbility(passiveName, newChar))
+        for tName in traitNames:
+            if tName == '':
+                continue
+            newChar.traits.append(trait.Trait(tName, newChar))
             
         return newChar
         
