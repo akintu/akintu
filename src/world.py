@@ -14,6 +14,7 @@ from theorycraft import TheoryCraft
 from region import *
 from ai import AI
 from treasurechest import *
+from state import State
 
 class World(object):
     '''
@@ -33,20 +34,22 @@ class World(object):
         self.world_state = world_state
 
     def get_pane(self, location, is_server=False):
-        # if self.curr_pane:
-            # self.pane_items[self.curr_pane.location] = self.curr_pane.save_items()
-            # self.pane_chests[self.curr_pane.location] = self.curr_pane.save_chests()
-            
         surrounding_locations = Location(location, None).get_surrounding_panes()
         for key, loc in surrounding_locations.iteritems():
             if not loc in self.panes:
                 self.panes[loc] = Pane(self.seed, loc)
 
-        #This is the pane we will return, current pane
-        state = None
-        if self.world_state:
-            if location in self.world_state:
-                state = self.world_state[location]
+        #Check Disk For Pane
+        path = os.path.join(TMP_WORLD_SAVE_PATH, "Pane_" + str(location[0]) + "_" + str(location[1]))
+        data = State.load(path)
+        if data:
+            state = data
+        else:
+            #Check State For Pane
+            state = None
+            if self.world_state:
+                if location in self.world_state:
+                    state = self.world_state[location]
         #TODO: Change is_server=True to is_server=is_server.  Need to have items/chests tracked on server
         self.panes[location] = Pane(self.seed, location, is_server=True, load_entities=True, pane_state=state)
         self._merge_tiles(surrounding_locations)
@@ -93,11 +96,10 @@ class Pane(object):
     def __init__(self, seed, location, is_server=False, load_entities=True, pane_state=None):
         self.seed = seed
         self.location = location
+        self.is_server = is_server
         self.pane_state = pane_state
-        self.curr_state = dict()
         self.tiles = dict()
         self.objects = dict()
-        self.items = dict()
         self.person = {}
         self.background_key = Sprites.get_background(self.seed + str(self.location))
 
@@ -110,14 +112,14 @@ class Pane(object):
         if load_entities:
             if self.pane_state:
                 self.load_state(self.pane_state)
-            elif is_server:
+            elif self.is_server:
                 self.load_chests()
                 self.load_monsters()
                 #self.load_items()
                 
 
     def __repr__(self):
-        s = ""
+        s = "\nPane " + str(self.location) + "\n"
         for j in range(PANE_Y):
             for i in range(PANE_X):
                 if (i, j) in self.objects:
@@ -127,6 +129,13 @@ class Pane(object):
             s += "|\n"
         return s
         
+    def __del__(self):
+        if not self.is_server:
+            pass#print "Calling __del__ on client's Pane object at " + str(self.location)
+        else:   #We are the server, save the pane's state to disk
+            # "Calling __del__ on server's Pane object at " + str(self.location)
+            self.save_state()
+
     def get_tile(self, location):
         if location in self.tiles:
             return self.tiles[location]
@@ -174,12 +183,23 @@ class Pane(object):
                 #r.build("SUB", "CIRCLE", Location(self.location, CENTER), int(PANE_Y/6))
                 person.ai.add("WANDER", person.ai.wander, person.movementSpeed, pid=id(person), region=r, move_chance=1.0 / (person.movementSpeed))
                 self.person[id(person)] = person
-
+    
+    def save_items(self):
+        '''
+        item_list = [(name, attributes, location, ...), (...)]
+        '''
+        
+        item_list = []
+        for tile_loc, tile in self.tiles.iteritems():
+            for item in tile.get_items():
+                item_list.append((item.name, item.attributes, tile_loc))
+        return item_list
+    
     def load_items(self, items=None):
         '''
         Parameters:
             items:  A list of item tuples in the following format:
-                    ("Name", "Location", ...)
+                    ("Name", "Attributes", "tile_location", ...)
                     
                     TODO: STILL UNIMPLEMENTED, need info on creating items from name...
         '''
@@ -187,16 +207,30 @@ class Pane(object):
         print "load_items() currently does nothing :)"
         if items:
             for item in items:
-                #TODO: Do something with this item
-                pass
+                self.add_item(item[0], item[1], item[2])
         else:
-            print "LOAD ITEMS HERE (Pane.load_items()"
+            print "LOAD ITEMS HERE (Pane.load_items())"
             
+    def add_item(self, name, attributes, location):
+        self.tiles[location].add_item(Item(name, attributes))
+           
+    def save_chests(self):
+        '''
+        Returns a list of chests in the following format:
+            [(type, level, location, ...), (...)]
+        '''
+        chest_list = []
+        for tile_loc, tile in self.tiles.iteritems():
+            chest = tile.get_chest()
+            if chest:
+                chest_list.append((chest.type, chest.treasureLevel, tile_loc))
+        return chest_list
+        
     def load_chests(self, chests=None):
         '''
         Parameters:
             chests:  A list of chest tuples in the following format:
-                    [("Location Tuple", "Chest Type", "Level", ...), (...)]
+                    [(type, level, location, ...), (...)]
         '''
         
         if chests:
@@ -206,8 +240,13 @@ class Pane(object):
             #Adds a random Chest
             #TODO: remove none from level
             for i in range(10):
-                self.add_chest((random.randrange(1, PANE_X-1), random.randrange(1, PANE_Y-1)), TreasureChest.CHEST_TYPE[random.randrange(len(TreasureChest.CHEST_TYPE))], None)
-    
+                self.add_chest(TreasureChest.CHEST_TYPE[random.randrange(len(TreasureChest.CHEST_TYPE))], None, (random.randrange(1, PANE_X-1), random.randrange(1, PANE_Y-1)))
+        
+    def add_chest(self, chest_type, level, tile):
+        if not level:
+            level = max(abs(self.location[0]), abs(self.location[1]))
+            level = max(level, 1)
+        self.tiles[tile].add_chest(TreasureChest(chest_type, level, tile))
 
     def load_images(self):
         self.images = Sprites.get_images_dict()
@@ -254,18 +293,12 @@ class Pane(object):
             if random.randrange(100) <= percentage*100:
                 index = random.randrange(len(ENTITY_KEYS))
                 self.objects[tile] = ENTITY_KEYS[index]
-                self.tiles[tile].passable = False
+                #self.tiles[tile].passable = False
         else:
             self.objects[tile] = entity_type
-            self.tiles[tile].passable = False
+            #self.tiles[tile].passable = False
         if tile in self.objects:
             return self.objects[tile]
-            
-    def add_chest(self, tile, chest_type, level):
-        if not level:
-            level = max(abs(self.location[0]), abs(self.location[1]))
-            level = max(level, 1)
-        self.tiles[tile].add_chest(TreasureChest(chest_type, level, tile))
         
     def remove_chest(self, tile):
         self.tiles[tile].remove_chest()
@@ -325,39 +358,16 @@ class Pane(object):
 
     def get_combat_pane(self, focus_tile, monster = None):
         return CombatPane(self, focus_tile, monster)
-
-    def load_state(self, state):
-        if state:
-            #Get Monsters
-            if MONSTER_KEY in state:
-                self.load_monsters(monsters=state[MONSTER_KEY])
-            #Get Items
-            if ITEM_KEY in state:
-                self.load_items(items=state[ITEM_KEY])
-            #Anything Else
-            if CMDS_KEY in state:
-                #Any server commands that need to be run
-                #These could be passed to the server...
-                pass
                 
-    def save_items(self):
-        '''
-        item_list = [(name, attributes, location, ...), (...)]
-        '''
-        
-        item_list = []
-        #SAVE ITEMS
-        for key, tile in self.tiles.iteritems():
-            for item in tile.get_items():
-                item_list.append((item.name, Location(self.location, key)))
-        return item_list
 
-    def save_state(self, person_dict):
+    def save_state(self):
         '''
         Saves the current panes monsters and items to a dictionary.
+        Calls State.save to the worlds dir using this pane's location.
         Returns a dictionary with the following attributes:
             {MONSTER_KEY: [(name, level, location, region, ai), (...)],
-                ITEM_KEY: [(name, attributes, location, ...), (...)]}
+                ITEM_KEY: [(name, attributes, location, ...), (...)]
+                CHEST_KEY: [(type, level, location, ...)}
         The server can then add this dictionary to its master dictionary using
         this pane's (x, y) coordinate as the key.
         '''
@@ -366,22 +376,32 @@ class Pane(object):
         monster_list = []
 
         #Save Monsters.  
-        #Using pane's person list which contains the keys to 
-        #pull the people from supplied dictionary
-        for id in self.person:
-            if not id in person_dict:
-                print "ID (" + str(id) + ") not found in person_dict."
-                assert False
-            monster = person_dict[id]
+        for key, monster in self.person.iteritems():
             monster_list.append((monster.name, monster.level, \
                 monster.location, monster.region, monster.ai))
         save_dict[MONSTER_KEY] = monster_list
 
-        save_dict[ITEM_KEY] = self.save_items()
+        #Save Items.
+        #save_dict[ITEM_KEY] = self.save_items()
         
-        #Return this panes dictionary to caller to add to the master
-        #save dictionary.
+        #Save Chests.
+        save_dict[CHEST_KEY] = self.save_chests()
+
+        path = os.path.join(TMP_WORLD_SAVE_PATH, "Pane_" + str(self.location[0]) + "_" + str(self.location[1]))
+        State.save(path, save_dict, True)
         return save_dict
+        
+    def load_state(self, state):
+        if state:
+            #Get Monsters
+            if MONSTER_KEY in state:
+                self.load_monsters(monsters=state[MONSTER_KEY])
+            #Get Items
+            if ITEM_KEY in state:
+                self.load_items(items=state[ITEM_KEY])
+            #Get Chests
+            if CHEST_KEY in state:
+                self.load_chests(chests=state[CHEST_KEY])
 
 
 class CombatPane(Pane):
@@ -399,7 +419,8 @@ class CombatPane(Pane):
                             from here.
 
         '''
-        super(CombatPane, self).__init__(pane.seed, (0, 0), False)
+        super(CombatPane, self).__init__(pane.seed, (0,0), False)
+        self.objects = dict()           #Fixed combat/overworld passability bug
 
         loc_x = pane_focus.tile[0]
         loc_y = pane_focus.tile[1]
@@ -434,7 +455,8 @@ class CombatPane(Pane):
         if monster:
             monsters = TheoryCraft.generateMonsterGroup(monster)
             self.place_monsters(monsters, self.focus_location)
-
+        
+        print self
 
     def place_monsters(self, monsters, start_location):
         loc = temp = start_location
@@ -492,7 +514,7 @@ class CombatPane(Pane):
                 if not tile in self.tiles:
                     self.tiles[tile] = Tile(None, True)
                 self.objects[tile] = entity_key
-                self.tiles[tile].passable = False
+                #self.tiles[tile].passable = False
                 obstacle = Sprites.get_zoomed_image(entity_key, (di,dj))
                 self.tiles[tile].entities.append(Entity(tile, image=obstacle))
 

@@ -277,6 +277,9 @@ class Game(object):
                 self.abilityList = []
                 self.currentItem = None
                 self.itemList = []
+                
+            elif command.type == "CLIENT" and command.action == "QUIT":
+                self.save_and_quit()
     
     def save_player(self):
         '''
@@ -399,9 +402,11 @@ class Game(object):
                     upgradedHero = self.levelup.input(event.key)
                     if upgradedHero:
                         # Upgraded Hero is "False" until the levelup is finished. Then it is a dehydrated hero.
-                        self.pane.person[self.id] = TheoryCraft.rehydratePlayer(upgradedHero)
+                        newHero = TheoryCraft.rehydratePlayer(upgradedHero)
+                        newHero.location = self.pane.person[self.id].location
+                        self.pane.person[self.id] = newHero
                         self.performingLevelup = False
-                        #self.CDF.send(Command("PERSON", "REPLACE", id=self.id, location=self.pane.person[self.id])TODO HALP!
+                        self.CDF.send(Command("PERSON", "REPLACE", id=self.id, player=upgradedHero))
                         
                 ### Combat Only Commands ###
                 elif self.combat:
@@ -725,7 +730,7 @@ class Game(object):
             self.pane = self.pane.get_combat_pane(location)
         else:
             self.pane = self.world.get_pane(location.pane)
-
+        self.pane.save_state()
         self.screen.set_pane(self.pane)
 
         
