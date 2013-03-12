@@ -99,7 +99,14 @@ class GameServer():
                                     self.SDF.send(p, Command("PERSON", "CREATE", id=i, \
                                             location=self.person[i].location, \
                                             details=self.person[i].dehydrate()))
-
+                        
+                        # TODO: JAB HANDLE SENDING SPECIFIC PANE THINGS HERE
+                        
+                        # TREASURE CHESTS
+                        
+                        # ITEMS
+                        
+                        
                         self.unload_panes()
 
                     # Check for combat range and initiate combat states

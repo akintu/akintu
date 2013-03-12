@@ -36,6 +36,7 @@ DESIRED_FPS = 120
 SAVES_PATH = os.path.join("res", "saves")
 CHAR_SAVE_PATH = os.path.join(SAVES_PATH, "characters")
 WORLD_SAVE_PATH = os.path.join(SAVES_PATH, "worlds")
+TMP_WORLD_SAVE_PATH = os.path.join(SAVES_PATH, "tmp")
 CHAR_SAVE_EXT = ".akinc"
 WORLD_SAVE_EXT = ".akinw"
 
@@ -57,7 +58,7 @@ CHEST_KEY = "chests"
 SEED_KEY = "seed"
 MONSTER_KEY = "monsters"
 ITEM_KEY = "items"
-CMDS_KEY = "commands"   #perhaps this won't be used.
+CHEST_KEY = "chests"
 
 #=====================CMD TYPES/ACTIONS========================
 
