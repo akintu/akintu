@@ -134,8 +134,7 @@ class Pane(object):
             pass#print "Calling __del__ on client's Pane object at " + str(self.location)
         else:   #We are the server, save the pane's state to disk
             # "Calling __del__ on server's Pane object at " + str(self.location)
-            #self.save_state()
-            pass
+            self.save_state()
 
     def get_tile(self, location):
         if location in self.tiles:
@@ -224,7 +223,7 @@ class Pane(object):
         for tile_loc, tile in self.tiles.iteritems():
             chest = tile.get_chest()
             if chest:
-                chest_list.append((chest.type, chest.level, tile_loc))
+                chest_list.append((chest.type, chest.treasureLevel, tile_loc))
         return chest_list
         
     def load_chests(self, chests=None):
@@ -377,7 +376,7 @@ class Pane(object):
         monster_list = []
 
         #Save Monsters.  
-        for monster in self.person:
+        for key, monster in self.person.iteritems():
             monster_list.append((monster.name, monster.level, \
                 monster.location, monster.region, monster.ai))
         save_dict[MONSTER_KEY] = monster_list
@@ -389,7 +388,6 @@ class Pane(object):
         save_dict[CHEST_KEY] = self.save_chests()
 
         path = os.path.join(TMP_WORLD_SAVE_PATH, "Pane_" + str(self.location[0]) + "_" + str(self.location[1]))
-        print "Calling State.save()"
         State.save(path, save_dict, True)
         return save_dict
         

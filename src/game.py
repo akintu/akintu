@@ -730,7 +730,7 @@ class Game(object):
             self.pane = self.pane.get_combat_pane(location)
         else:
             self.pane = self.world.get_pane(location.pane)
-
+        self.pane.save_state()
         self.screen.set_pane(self.pane)
 
         
