@@ -384,7 +384,7 @@ class Game(object):
                     
                 elif event.key in MODIFIER_KEYS:
                     self.keystate.append(event.key)
-                elif event.key in MOVE_KEYS and not self.performingLevelup or \
+                elif event.key in MOVE_KEYS and not self.performingLevelup and not \
                      (self.combat and (self.selectionMode == "abilities" or self.selectionMode == "spells")):
                     self.move_person(MOVE_KEYS[event.key], 1)
                 elif event.key == K_EQUALS or event.key == K_PAGEUP:

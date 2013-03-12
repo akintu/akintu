@@ -735,14 +735,20 @@ class Ability(object):
     
     def _shroud(self, target):
         source = self.owner
+        radius = 1
+        monsters = Combat.getAOETargets(source.cPane, source.cLocation, radius=radius, selectMonsters=True)
         # Get all melee targets and deal shadow damage.
+        for monster in monsters:
+            shadowDamage = Combat.calcDamage(source, monster, 4, 12, element="Shadow", hitValue="Normal Hit", scalesWith="Spellpower")
+            Combat.lowerHP(monster, shadowDamage)
         duration = 1
         Combat.addStatus(target, "Shroud", duration)
         
     def _shroudCheck(self, targt):
-        # MP > 50%
-        # TODO
-        return (False, "")
+        source = self.owner
+        if source.MP > source.totalMP * 0.5:
+            return (True, "")
+        return (False, "Must have at least 50% MP to use " + self.name)
     
     def _shadowstep(self, target):
         source = self.owner
