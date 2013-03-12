@@ -66,7 +66,6 @@ class Spell(object):
         '''
         source = self.owner
 
-        # Check for modifications to spells costs here from listeners TODO
         mod = 0 # dummy code
         if source.MP < self.MPCost - mod:
             return (False, "Insufficient Mana")

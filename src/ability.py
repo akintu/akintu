@@ -92,7 +92,6 @@ class Ability(object):
         '''
         target: Person (later, Location?)
         '''
-        # Check for modifications to ability costs here from listeners TODO
         mod = 0 # dummy code
         source = self.owner
         if source.AP < self.APCost - mod:
