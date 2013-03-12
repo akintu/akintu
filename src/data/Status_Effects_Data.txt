@@ -1149,6 +1149,14 @@
 	
 # Display Effects -- Nightblade
 	
+[NAME: Shroud]
+  [TYPE: Display]
+  [IMAGE: shroud.png]
+  [ELEMENT: Shadow]
+  [INTERNAL: Avoidance]
+    [MAGNITUDE: 10]
+  [CATEGORY: Buff]
+	
 [NAME: Dark Intent]
   [TYPE: Display]
   [IMAGE: wave-strike.png]

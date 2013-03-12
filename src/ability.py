@@ -5,7 +5,7 @@ from dice import *
 import listener
 from combat import *
 
-ROOT_FOLDER = "./res/images/icons/"
+ROOT_FOLDER = "./res/images/icons/skills/"
 
 FIGHTER_SKILLS = ROOT_FOLDER + "fighter_skills/"
 THIEF_SKILLS = ROOT_FOLDER + "thief_skills/"
@@ -736,8 +736,9 @@ class Ability(object):
     
     def _shroud(self, target):
         source = self.owner
-        # Get all melee targets
-        # Apply Shroud buff
+        # Get all melee targets and deal shadow damage.
+        duration = 1
+        Combat.addStatus(target, "Shroud", duration)
         
     def _shroudCheck(self, targt):
         # MP > 50%
