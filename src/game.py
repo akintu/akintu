@@ -141,9 +141,6 @@ class Game(object):
                         self.switch_panes(command.cPane, self.combat)
                     else:
                         self.switch_panes(command.location)
-                    ##SAVE PERSON##
-                    save = Command("PERSON", "SAVE", id= -1)
-                    self.CDF.send(save)
                 
                 if command.action == "LOAD":
                     self.pane.person[command.id] = TheoryCraft.rehydratePlayer(command.details)

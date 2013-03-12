@@ -12,6 +12,7 @@ import socket
 import Queue
 import cPickle
 import sys
+import zlib
 from command import *
 from const import *
 
@@ -36,7 +37,7 @@ class ServerData(LineReceiver):
             self.factory.queue.put((self.port, Command("PERSON", "REMOVE", id=None)))
 
     def lineReceived(self, data):
-        data = cPickle.loads(data)
+        data = cPickle.loads(zlib.decompress(data))
         if socket.gethostname() in ["Jzar", "Jgor"]: print("S " + str(self.port) + "> " + str(data))
         self.factory.queue.put((self.port, data))
 
@@ -52,7 +53,7 @@ class ServerDataFactory(Factory):
         self.queue = Queue.Queue()
 
     def send(self, port, data):
-        data = cPickle.dumps(data)
+        data = zlib.compress(cPickle.dumps(data), 9)
         if port in self.clients:
             self.clients[port].sendLine(data)
         elif port == 0:
@@ -75,7 +76,7 @@ class ClientData(LineReceiver):
             self.factory.queue.put(Command("CLIENT", "QUIT"))
 
     def lineReceived(self, data):
-        data = cPickle.loads(data)
+        data = cPickle.loads(zlib.decompress(data))
         if self.factory.port is None:
             self.factory.port = data
         else:
@@ -95,7 +96,7 @@ class ClientDataFactory(Factory):
         print('Connecting to server...')
 
     def send(self, data):
-        data = cPickle.dumps(data)
+        data = zlib.compress(cPickle.dumps(data), 9)
         self.server.sendLine(data)
 
     def clientConnectionLost(self, connector, reason):
