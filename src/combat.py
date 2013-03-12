@@ -1047,7 +1047,7 @@ class Combat(object):
 
     @staticmethod
     def getAOETargets(cPane, center, radius, selectMonsters):
-        """Gets all people in combat affected by an AOE spell.
+        """Gets all people in combat affected by an AOE field.
         Input:
             cPane: The overworld location of the monsterLeader that generated the combatPane
             center: A Location that is the center of the area effect
@@ -1058,6 +1058,76 @@ class Combat(object):
             
         R = Region()
         R("ADD", "CIRCLE", center, radius)
+        people = []
+        for i in Combat.gameServer.pane[cPane].person:
+            if Combat.gameServer.person[i].cLocation in R and Combat.gameServer.person[i].team == \
+                    "Monsters" if selectMonsters else "Players":
+                people.append(Combat.gameServer.person[i])
+        return people
+
+    def getLineTargets(cPane, start, end, selectMonsters, width=1, selectFirstOnly=False):
+        """Gets either the closest, or all people in combat affected by a projectile
+        Input:
+            cPane: The overworld location of the monsterLeader that generated the combatPane
+            start: A Location from which to start drawing the line
+            end: A Location at the other end of the line
+            selectMonsters: Boolean for whether targets are Monsters or Players
+            width: Width of the line
+            selectFirstOnly: Boolean indicating return only closest target to start, or all
+        Output:
+            people: A list of Person objects inside the area.  A list is returned even if
+                    selectFirstOnly is True"""
+                    
+        R = Region()
+        R("ADD", "LINE", start, end, width)
+        people = []
+        for i in Combat.gameServer.pane[cPane].person:
+            if Combat.gameServer.person[i].cLocation in R and Combat.gameServer.person[i].team == \
+                    "Monsters" if selectMonsters else "Players":
+                people.append(Combat.gameServer.person[i])
+        
+        if selectFirstOnly and len(people) > 0:
+            minDist = start.distance(people[0].cLocation)
+            index = 0
+            for i, p in enumerate(people):
+                dist = start.distance(p.cLocation)
+                if dist < minDist:
+                    minDist = dist
+                    index = i
+            people = [people[index]]
+                    
+        return people
+        
+    def getConeTargets(cPane, center, distance, degrees, selectMonsters):
+        """Gets all people in combat affected by a cone-shaped AOE field
+        Input:
+            cPane: The overworld locatino of the monsterLeader that generated the combatPane
+            center: A Location that is the center or origin of the cone
+                Note: Ensure that center.direction is the facing direction.  This is used
+                to determine where the front, sides, and back are.
+            distance: An Integer for how long the range of it 
+            degrees: Determines the shape of the cone
+                90 -- Front and front-diagonals
+                180 -- Front, front-diagonals, sides
+                270 -- Front, front-diagonals, sides, back-diagonals
+                For <90 degrees, use getLineTargets, for >270 degrees use getAOETargets
+            selectMonsters: Boolean for whether targets are Monsters or Players
+        Output:
+            people: A list of Person objects inside the cone."""
+            
+        R = Region()
+        if degrees == 90:
+            R("ADD", "DIAMOND", center.move(center.direction, distance), distance)
+            R("INT", "CIRCLE", center, distance)
+        if degrees == 180:
+            corners = {2: (4, 3), 4: (7, 2), 6: (8, 3), 8: (7, 6)}
+            R("ADD", "SQUARE", center.move(corners[center.direction][0], distance), \
+                    center.move(corners[center.direction][1], distance))
+            R("INT", "CIRCLE", center, distance)
+        if degrees == 270:
+            R("ADD", "CIRCLE", center, distance)
+            R("SUB", "DIAMOND", center.move(10 - center.direction, distance + 1), distance)
+            
         people = []
         for i in Combat.gameServer.pane[cPane].person:
             if Combat.gameServer.person[i].cLocation in R and Combat.gameServer.person[i].team == \
