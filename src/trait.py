@@ -48,7 +48,6 @@ class Trait(object):
             self.extraStaticAction = content['staticAction']
             self.extraStaticAction(self, self.owner)
 
-
     def advanceTier(self):
         if self.rank == 4:
             return
@@ -62,13 +61,6 @@ class Trait(object):
         if self.type == "static":
             self.action(self, self.owner)
 
-    @staticmethod
-    def getTraitRank(player, traitName):
-        for t in player.traits:
-            if t.name == traitName:
-                return t.rank
-        return 0
-
     def registerListener(self):
         newListener = listener.Listener(self.owner, self.onStringList, self.action, self.offStringList)
         self.owner.listeners.append(newListener)
@@ -76,55 +68,55 @@ class Trait(object):
     
     def applyParry(self, target, reverse=False, attacker=None):
         #if target.facingAttacker() TODO
-        tRank = Trait.getTraitRank(target, "Parry")
+        #self.rank = Trait.getTraiself.rank(target, "Parry")
         if not reverse:
-            if tRank == 1:
+            if self.rank == 1:
                 target.statusDodge += 2
-            elif tRank == 2:
+            elif self.rank == 2:
                 target.statusDodge += 4
-            elif tRank == 3:
+            elif self.rank == 3:
                 target.statusDodge += 6
-            elif tRank == 4:
+            elif self.rank == 4:
                 target.statusDodge += 11
         else:
-            if tRank == 1:
+            if self.rank == 1:
                 target.statusDodge -= 2
-            elif tRank == 2:
+            elif self.rank == 2:
                 target.statusDodge -= 4
-            elif tRank == 3:
+            elif self.rank == 3:
                 target.statusDodge -= 6
-            elif tRank == 4:
+            elif self.rank == 4:
                 target.statusDodge -= 11
 
     
     def applyPreparation(self, target, reverse=False, other=None):
         if target.attacksPerformed[0] > 0:
             return
-        tRank = Trait.getTraitRank(target, "Preparation")
+        #self.rank = Trait.getTraiself.rank(target, "Preparation")
         if not reverse:
-            if tRank == 1:
+            if self.rank == 1:
                 target.statusMeleeAccuracy += 8
                 target.statusRangedAccuracy += 8
-            elif tRank == 2:
+            elif self.rank == 2:
                 target.statusMeleeAccuracy += 11
                 target.statusRangedAccuracy += 11
-            elif tRank == 3:
+            elif self.rank == 3:
                 target.statusMeleeAccuracy += 14
                 target.statusRangedAccuracy += 14
-            elif tRank == 4:
+            elif self.rank == 4:
                 target.statusMeleeAccuracy += 18
                 target.statusRangedAccuracy += 18
         else:
-            if tRank == 1:
+            if self.rank == 1:
                 target.statusMeleeAccuracy -= 8
                 target.statusRangedAccuracy -= 8
-            elif tRank == 2:
+            elif self.rank == 2:
                 target.statusMeleeAccuracy -= 11
                 target.statusRangedAccuracy -= 11
-            elif tRank == 3:
+            elif self.rank == 3:
                 target.statusMeleeAccuracy -= 14
                 target.statusRangedAccuracy -= 14
-            elif tRank == 4:
+            elif self.rank == 4:
                 target.statusMeleeAccuracy -= 18
                 target.statusRangedAccuracy -= 18
 
@@ -132,79 +124,79 @@ class Trait(object):
     def applyTank(self, target, reverse=False, other=None):
         if not target.usingArmor("Heavy"):
             return
-        tRank = Trait.getTraitRank(target, "Tank")
+        #self.rank = Trait.getTraiself.rank(target, "Tank")
         if not reverse:
-            if tRank == 1:
+            if self.rank == 1:
                 target.statusDR += 1
-            elif tRank == 2:
+            elif self.rank == 2:
                 target.statusDR += 2
-            elif tRank == 3:
+            elif self.rank == 3:
                 target.statusDR += 4
-            elif tRank == 4:
+            elif self.rank == 4:
                 target.statusDR += 7
         else:
-            if tRank == 1:
+            if self.rank == 1:
                 target.statusDR -= 1
-            elif tRank == 2:
+            elif self.rank == 2:
                 target.statusDR -= 2
-            elif tRank == 3:
+            elif self.rank == 3:
                 target.statusDR -= 4
-            elif tRank == 4:
+            elif self.rank == 4:
                 target.statusDR -= 7
 
     
     def applyFencer(self, target, reverse=False, other=None):
         if not target.usingArmor("Medium"):
             return
-        tRank = Trait.getTraitRank(target, "Fencer")
+        #self.rank = Trait.getTraiself.rank(target, "Fencer")
         if not reverse:
-            if tRank == 1:
+            if self.rank == 1:
                 target.statusMeleeAccuracy += 2
-            elif tRank == 2:
+            elif self.rank == 2:
                 target.statusMeleeAccuracy += 4
-            elif tRank == 3:
+            elif self.rank == 3:
                 target.statusMeleeAccuracy += 6
-            elif tRank == 4:
+            elif self.rank == 4:
                 target.statusMeleeAccuracy += 9
         else:
-            if tRank == 1:
+            if self.rank == 1:
                 target.statusMeleeAccuracy -= 2
-            elif tRank == 2:
+            elif self.rank == 2:
                 target.statusMeleeAccuracy -= 4
-            elif tRank == 3:
+            elif self.rank == 3:
                 target.statusMeleeAccuracy -= 6
-            elif tRank == 4:
+            elif self.rank == 4:
                 target.statusMeleeAccuracy -= 9
 
     
     def applyShieldResilience(self, target, reverse=False, other=None):
         if not target.usingShield("Any"):
             return
-        tRank = Trait.getTraitRank(target, "Shield Resilience")
+        #self.rank = Trait.getTraiself.rank(target, "Shield Resilience")
         if not reverse:
-            if tRank == 1:
+            if self.rank == 1:
                 target.knockbackResistance += 30
                 target.statusRangedDodge += 1
-            elif tRank == 2:
+            elif self.rank == 2:
                 target.knockbackResistance += 60
                 target.statusRangedDodge += 2
-            elif tRank == 3:
+            elif self.rank == 3:
                 target.knockbackResistance += 90
                 target.statusRangedDodge += 3
-            elif tRank == 4:
+            elif self.rank == 4:
                 target.knockbackResistance += 100
                 target.statusRangedDodge += 4
         else:
-            if tRank == 1:
+            if self.rank == 1:
                 target.knockbackResistance -= 30
                 target.statusRangedDodge -= 1
-            elif tRank == 2:
+            elif self.rank == 2:
                 target.knockbackResistance -= 60
                 target.statusRangedDodge -= 2
-            elif tRank == 3:
+            elif self.rank == 3:
                 target.knockbackResistance -= 90
                 target.statusRangedDodge -= 3
-            elif tRank == 4:
+            elif self.rank == 4:
                 target.knockbackResistance -= 100
                 target.statusRangedDodge -= 4
 
@@ -212,45 +204,45 @@ class Trait(object):
     def applyBully(self, target, reverse=False, victim=None):
         if not target.usingWeaponStyle("Two-Handed") or victim.size == "Large" or victim.size == "Huge":
             return
-        tRank = Trait.getTraitRank(target, "Bully")
+        #self.rank = Trait.getTraiself.rank(target, "Bully")
         if not reverse:
-            if tRank == 1:
+            if self.rank == 1:
                 target.statusForce += 5
                 target.statusMeleeAccuracy += 2
                 target.statusRangedAccuracy += 2
                 target.statusCriticalChance += 0.5
-            elif tRank == 2:
+            elif self.rank == 2:
                 target.statusForce += 10
                 target.statusMeleeAccuracy += 3
                 target.statusRangedAccuracy += 3
                 target.statusCriticalChance += 1
-            elif tRank == 3:
+            elif self.rank == 3:
                 target.statusForce += 15
                 target.statusMeleeAccuracy += 4
                 target.statusRangedAccuracy += 4
                 target.statusCriticalChance += 1.5
-            elif tRank == 4:
+            elif self.rank == 4:
                 target.statusForce += 25
                 target.statusMeleeAccuracy += 5
                 target.statusRangedAccuracy += 5
                 target.statusCriticalChance += 2
         else:
-            if tRank == 1:
+            if self.rank == 1:
                 target.statusForce -= 5
                 target.statusMeleeAccuracy -= 2
                 target.statusRangedAccuracy -= 2
                 target.statusCriticalChance -= 0.5
-            elif tRank == 2:
+            elif self.rank == 2:
                 target.statusForce -= 10
                 target.statusMeleeAccuracy -= 3
                 target.statusRangedAccuracy -= 3
                 target.statusCriticalChance -= 1
-            elif tRank == 3:
+            elif self.rank == 3:
                 target.statusForce -= 15
                 target.statusMeleeAccuracy -= 4
                 target.statusRangedAccuracy -= 4
                 target.statusCriticalChance -= 1.5
-            elif tRank == 4:
+            elif self.rank == 4:
                 target.statusForce -= 25
                 target.statusMeleeAccuracy -= 5
                 target.statusRangedAccuracy -= 5
@@ -260,106 +252,106 @@ class Trait(object):
     def applyBoldness(self, target, reverse=False, victim=None):
         if victim.size == "Small" or victim.size == "Medium":
             return
-        tRank = Trait.getTraitRank(target, "Boldness")
+        #self.rank = Trait.getTraiself.rank(target, "Boldness")
         if not reverse:
             if victim.size == "Large":
-                if tRank == 1:
+                if self.rank == 1:
                     target.statusForce += 5
-                if tRank == 2:
+                if self.rank == 2:
                     target.statusForce += 10
-                if tRank == 3:
+                if self.rank == 3:
                     target.statusForce += 15
-                if tRank == 4:
+                if self.rank == 4:
                     target.statusForce += 20
             elif victim.size == "Huge":
-                if tRank == 1:
+                if self.rank == 1:
                     target.statusForce += 15
-                if tRank == 2:
+                if self.rank == 2:
                     target.statusForce += 30
-                if tRank == 3:
+                if self.rank == 3:
                     target.statusForce += 45
-                if tRank == 4:
+                if self.rank == 4:
                     target.statusForce += 60
         else:
             if victim.size == "Large":
-                if tRank == 1:
+                if self.rank == 1:
                     target.statusForce -= 5
-                if tRank == 2:
+                if self.rank == 2:
                     target.statusForce -= 10
-                if tRank == 3:
+                if self.rank == 3:
                     target.statusForce -= 15
-                if tRank == 4:
+                if self.rank == 4:
                     target.statusForce -= 20
             elif victim.size == "Huge":
-                if tRank == 1:
+                if self.rank == 1:
                     target.statusForce -= 15
-                if tRank == 2:
+                if self.rank == 2:
                     target.statusForce -= 30
-                if tRank == 3:
+                if self.rank == 3:
                     target.statusForce -= 45
-                if tRank == 4:
+                if self.rank == 4:
                     target.statusForce -= 60
 
     
     def applyWellTraveled(self, target):
-        tRank = Trait.getTraitRank(target, "Well-Traveled")
-        if tRank == 1:
-            target._baseInventoryCapacity += 15
+        #self.rank = Trait.getTraiself.rank(target, "Well-Traveled")
+        if self.rank == 1:
+            target.__baseInventoryCapacity += 15
             target.baseFireResistance += 1
             target.baseColdResistance += 1
-        if tRank == 2:
-            target._baseInventoryCapacity += 15
+        if self.rank == 2:
+            target.__baseInventoryCapacity += 15
             target.baseFireResistance += 1
             target.baseColdResistance += 1
-        if tRank == 3:
-            target._baseInventoryCapacity += 15
+        if self.rank == 3:
+            target.__baseInventoryCapacity += 15
             target.baseFireResistance += 1
             target.baseColdResistance += 1
-        if tRank == 4:
-            target._baseInventoryCapacity += 25
+        if self.rank == 4:
+            target.__baseInventoryCapacity += 25
             target.baseFireResistance += 2
             target.baseColdResistance += 2
 
     
     def applyHammerAndAnvil(self, target, reverse=False, victim=None):
         # TODO: if target has back against wall...
-        tRank = Trait.getTraitRank(target, "Hammer and Anvil")
+        #self.rank = Trait.getTraiself.rank(target, "Hammer and Anvil")
         if not reverse:
-            if tRank == 1:
+            if self.rank == 1:
                 target.baseOverallDamageBonus += 5
-            elif tRank == 2:
+            elif self.rank == 2:
                 target.baseOverallDamageBonus += 10
-            elif tRank == 3:
+            elif self.rank == 3:
                 target.baseOverallDamageBonus += 15
-            elif tRank == 4:
+            elif self.rank == 4:
                 target.baseOverallDamageBonus += 20
         else:
-            if tRank == 1:
+            if self.rank == 1:
                 target.baseOverallDamageBonus -= 5
-            elif tRank == 2:
+            elif self.rank == 2:
                 target.baseOverallDamageBonus -= 10
-            elif tRank == 3:
+            elif self.rank == 3:
                 target.baseOverallDamageBonus -= 15
-            elif tRank == 4:
+            elif self.rank == 4:
                 target.baseOverallDamageBonus -= 20
 
     # Ranger
     
     def applyWoundingProjectiles(self, target, reverse=False, victim=None):
-        tRank = Trait.getTraitRank(target, "Wounding Projectiles")
+        #self.rank = Trait.getTraiself.rank(target, "Wounding Projectiles")
         chance = None
         magnitude = None
         duration = 2
-        if tRank == 1:
+        if self.rank == 1:
             chance = 10
             magnitude = 5
-        elif tRank == 2:
+        elif self.rank == 2:
             chance = 12
             magnitude = 6
-        elif tRank == 3:
+        elif self.rank == 3:
             chance = 15
             magnitude = 7
-        elif tRank == 4:
+        elif self.rank == 4:
             chance = 18
             magnitude = 8
         if Dice.rollBeneath(chance):
@@ -367,87 +359,87 @@ class Trait(object):
 
     
     def applyMeleeArcheryStatic(self, target):
-        tRank = Trait.getTraitRank(target, "Melee Archery")
-        if tRank == 1:
+        #self.rank = Trait.getTraiself.rank(target, "Melee Archery")
+        if self.rank == 1:
             target.meleeRangedAttackPenaltyReduction = 50
-        elif tRank == 2 or tRank == 3 or tRank == 4:
+        elif self.rank == 2 or self.rank == 3 or self.rank == 4:
             target.meleeRangedAttackPenaltyReduction = 100
 
     
     def applyMeleeArchery(self, target, reverse=False, victim=None):
         if not location.in_melee_range(target.location, victim.location):
             return
-        tRank = Trait.getTraitRank(target, "Melee Archery")
+        #self.rank = Trait.getTraiself.rank(target, "Melee Archery")
         if not reverse:
-            if tRank == 1:
+            if self.rank == 1:
                 pass
-            elif tRank == 2:
+            elif self.rank == 2:
                 pass
-            elif tRank == 3:
+            elif self.rank == 3:
                 target.statusRangedAccuracy += 4
-            elif tRank == 4:
+            elif self.rank == 4:
                 target.statusRangedAccuracy += 4
                 target.statusOverallDamageBonus += 10
         else:
-            if tRank == 1:
+            if self.rank == 1:
                 pass
-            elif tRank == 2:
+            elif self.rank == 2:
                 pass
-            elif tRank == 3:
+            elif self.rank == 3:
                 target.statusRangedAccuracy -= 4
-            elif tRank == 4:
+            elif self.rank == 4:
                 target.statusRangedAccuracy -= 4
                 target.statusOverallDamageBonus -= 10
 
     
     def applyNatureTraining(self, target):
-        tRank = Trait.getTraitRank(target, "Nature Training")
-        if tRank == 1:
+        #self.rank = Trait.getTraiself.rank(target, "Nature Training")
+        if self.rank == 1:
             target.basePoisonTolerance += 2
             target.basePoisonResistance += 2
-        elif tRank == 2:
+        elif self.rank == 2:
             target.basePoisonTolerance += 1
             target.basePoisonResistance += 2
-        elif tRank == 3:
+        elif self.rank == 3:
             target.basePoisonTolerance += 1
             target.basePoisonResistance += 2
-        elif tRank == 4:
+        elif self.rank == 4:
             target.basePoisonTolerance += 2
             target.basePoisonResistance += 3
 
     
     def applyExplorer(self, target):
-        tRank = Trait.getTraitRank(target, "Explorer")
-        if tRank == 1:
+        #self.rank = Trait.getTraiself.rank(target, "Explorer")
+        if self.rank == 1:
             target.baseTrapEvade += 2
             target.baseAwareness += 2
             target.goldFind += 1
-        elif tRank == 2:
+        elif self.rank == 2:
             target.baseTrapEvade += 1
             target.baseAwareness += 1
             target.goldFind += 1
-        elif tRank == 3:
+        elif self.rank == 3:
             target.baseTrapEvade += 1
             target.baseAwareness += 1
             target.goldFind += 1
-        elif tRank == 4:
+        elif self.rank == 4:
             target.baseTrapEvade += 1
             target.baseAwareness += 1
             target.goldFind += 1
 
     
     def applyTrapsmith(self, target):
-        tRank = Trait.getTraitRank(target, "Trapsmith")
-        if tRank == 1:
+        #self.rank = Trait.getTraiself.rank(target, "Trapsmith")
+        if self.rank == 1:
             target.bonusTrapDamage += 5
             target.bonusTrapRating -= 1
-        elif tRank == 2:
+        elif self.rank == 2:
             target.bonusTrapDamage += 5
             target.bonusTrapRating -= 1
-        elif tRank == 3:
+        elif self.rank == 3:
             target.bonusTrapDamage += 5
             target.bonusTrapRating -= 1
-        elif tRank == 4:
+        elif self.rank == 4:
             target.bonusTrapDamage += 5
             # No penalty at this rank
 
@@ -462,17 +454,17 @@ class Trait(object):
         duration = 2
         magnitudeAccuracy = None
         magnitudeForce = None
-        tRank = Trait.getTraitRank(target, "Follow-up Expert")
-        if tRank == 1:
+        #self.rank = Trait.getTraiself.rank(target, "Follow-up Expert")
+        if self.rank == 1:
             magnitudeAccuracy = 2
             magnitudeForce = 15
-        elif tRank == 2:
+        elif self.rank == 2:
             magnitudeAccuracy = 4
             magnitudeForce = 25
-        elif tRank == 3:
+        elif self.rank == 3:
             magnitudeAccuracy = 6
             magnitudeForce = 35
-        elif tRank == 4:
+        elif self.rank == 4:
             magnitudeAccuracy = 8
             magnitudeForce = 50
         Combat.addStatus(target, "Follow-up Expert Accuracy", duration, magnitudeAccuracy)
@@ -482,80 +474,80 @@ class Trait(object):
     def applyTrapSadism(self, target, reverse=False, trap=None):
         duration = 2
         magnitude = None
-        tRank = Trait.getTraitRank(target, "Trap Sadism")
-        if tRank == 1:
+        #self.rank = Trait.getTraiself.rank(target, "Trap Sadism")
+        if self.rank == 1:
             magnitude = 15
-        elif tRank == 2:
+        elif self.rank == 2:
             magnitude = 30
-        elif tRank == 3:
+        elif self.rank == 3:
             magnitude = 45
-        elif tRank == 4:
+        elif self.rank == 4:
             magnitude = 65
         Combat.addStatus(target, "Trap Sadism", duration, magnitude)
 
     # Thief
     
     def applyUncannyEvasion(self, target):
-        tRank = Trait.getTraitRank(target, "Uncanny Evasion")
-        if tRank == 1:
+        #self.rank = Trait.getTraiself.rank(target, "Uncanny Evasion")
+        if self.rank == 1:
             target.statusRangedDodge += 3
-        elif tRank == 2:
+        elif self.rank == 2:
             target.statusRangedDodge += 3
-        elif tRank == 3:
+        elif self.rank == 3:
             target.statusRangedDodge += 3
-        elif tRank == 4:
+        elif self.rank == 4:
             target.statusRangedDodge += 3
 
     
     def applyStealthyDaggers(self, target, reverse=False, victim=None):
         if not target.usingWeapon("Knife"):
             return
-        tRank = Trait.getTraitRank(target, "Stealthy Daggers")
+        #self.rank = Trait.getTraiself.rank(target, "Stealthy Daggers")
         if not reverse:
-            if tRank == 1:
+            if self.rank == 1:
                 if target.inStealth():
                     target.statusMeleeAccuracy += 3
                 else:
                     target.statusMeleeAccuracy += 1
                 target.statusOverallDamageBonus += 2
-            elif tRank == 2:
+            elif self.rank == 2:
                 if target.inStealth():
                     target.statusMeleeAccuracy += 6
                 else:
                     target.statusMeleeAccuracy += 2
                 target.statusOverallDamageBonus += 3
-            elif tRank == 3:
+            elif self.rank == 3:
                 if target.inStealth():
                     target.statusMeleeAccuracy += 9
                 else:
                     target.statusMeleeAccuracy += 3
                 target.statusOverallDamageBonus += 4
-            elif tRank == 4:
+            elif self.rank == 4:
                 if target.inStealth():
                     target.statusMeleeAccuracy += 12
                 else:
                     target.statusMeleeAccuracy += 4
                 target.statusOverallDamageBonus += 5
         else:
-            if tRank == 1:
+            if self.rank == 1:
                 if target.inStealth():
                     target.statusMeleeAccuracy -= 3
                 else:
                     target.statusMeleeAccuracy -= 1
                 target.statusOverallDamageBonus -= 2
-            elif tRank == 2:
+            elif self.rank == 2:
                 if target.inStealth():
                     target.statusMeleeAccuracy -= 6
                 else:
                     target.statusMeleeAccuracy -= 2
                 target.statusOverallDamageBonus -= 3
-            elif tRank == 3:
+            elif self.rank == 3:
                 if target.inStealth():
                     target.statusMeleeAccuracy -= 9
                 else:
                     target.statusMeleeAccuracy -= 3
                 target.statusOverallDamageBonus -= 4
-            elif tRank == 4:
+            elif self.rank == 4:
                 if target.inStealth():
                     target.statusMeleeAccuracy -= 12
                 else:
@@ -566,45 +558,45 @@ class Trait(object):
     def applyDueling(self, target, reverse=False, other=None):
         if not target.usingWeaponStyle("Single"):
             return
-        tRank = Trait.getTraitRank(target, "Dueling")
+        #self.rank = Trait.getTraiself.rank(target, "Dueling")
         if not reverse:
-            if tRank == 1:
+            if self.rank == 1:
                 target.statusDodge += 1
                 target.statusMeleeAccuracy += 1
                 target.statusRangedAccuracy += 1
                 target.statusCriticalChance += 2
-            elif tRank == 2:
+            elif self.rank == 2:
                 target.statusDodge += 2
                 target.statusMeleeAccuracy += 2
                 target.statusRangedAccuracy += 2
                 target.statusCriticalChance += 4
-            elif tRank == 3:
+            elif self.rank == 3:
                 target.statusDodge += 3
                 target.statusMeleeAccuracy += 3
                 target.statusRangedAccuracy += 3
                 target.statusCriticalChance += 6
-            elif tRank == 4:
+            elif self.rank == 4:
                 target.statusDodge += 5
                 target.statusMeleeAccuracy += 5
                 target.statusRangedAccuracy += 5
                 target.statusCriticalChance += 8
         else:
-            if tRank == 1:
+            if self.rank == 1:
                 target.statusDodge -= 1
                 target.statusMeleeAccuracy -= 1
                 target.statusRangedAccuracy -= 1
                 target.statusCriticalChance -= 2
-            elif tRank == 2:
+            elif self.rank == 2:
                 target.statusDodge -= 2
                 target.statusMeleeAccuracy -= 2
                 target.statusRangedAccuracy -= 2
                 target.statusCriticalChance -= 4
-            elif tRank == 3:
+            elif self.rank == 3:
                 target.statusDodge -= 3
                 target.statusMeleeAccuracy -= 3
                 target.statusRangedAccuracy -= 3
                 target.statusCriticalChance -= 6
-            elif tRank == 4:
+            elif self.rank == 4:
                 target.statusDodge -= 5
                 target.statusMeleeAccuracy -= 5
                 target.statusRangedAccuracy -= 5
@@ -614,181 +606,181 @@ class Trait(object):
     def applyTwoWeaponFighting(self, target, reverse=False, other=None):
         if not target.usingWeaponStyle("Dual"):
             return
-        tRank = Trait.getTraitRank(target, "Two-Weapon Fighting")
+        #self.rank = Trait.getTraiself.rank(target, "Two-Weapon Fighting")
         if not reverse:
-            if tRank == 1:
+            if self.rank == 1:
                 target.statusCriticalMagnitude += 5
-            elif tRank == 2:
+            elif self.rank == 2:
                 target.statusCriticalMagnitude += 8
-            elif tRank == 3:
+            elif self.rank == 3:
                 target.statusCriticalMagnitude += 10
-            elif tRank == 4:
+            elif self.rank == 4:
                 target.statusCriticalMagnitude += 13
         else:
-            if tRank == 1:
+            if self.rank == 1:
                 target.statusCriticalMagnitude -= 5
-            elif tRank == 2:
+            elif self.rank == 2:
                 target.statusCriticalMagnitude -= 8
-            elif tRank == 3:
+            elif self.rank == 3:
                 target.statusCriticalMagnitude -= 10
-            elif tRank == 4:
+            elif self.rank == 4:
                 target.statusCriticalMagnitude -= 13
 
     
     def applyClever(self, target):
-        tRank = Trait.getTraitRank(target, "Clever")
-        if tRank == 1:
+        #self.rank = Trait.getTraiself.rank(target, "Clever")
+        if self.rank == 1:
             target.baseMagicResist += 2
-        elif tRank == 2:
+        elif self.rank == 2:
             target.baseMagicResist += 2
-        elif tRank == 3:
+        elif self.rank == 3:
             target.baseMagicResist += 2
-        elif tRank == 4:
+        elif self.rank == 4:
             target.baseMagicResist += 2
 
     
     def applyLucky(self, target):
-        tRank = Trait.getTraitRank(target, "Lucky")
-        if tRank == 1:
+        #self.rank = Trait.getTraiself.rank(target, "Lucky")
+        if self.rank == 1:
             target.baseTrapEvade += 5
             target.baseCriticalChance += 0.5
-        elif tRank == 2:
+        elif self.rank == 2:
             target.baseTrapEvace += 2
             target.baseCriticalChance += 0.5
-        elif tRank == 3:
+        elif self.rank == 3:
             target.baseTrapEvace += 2
             target.baseCriticalChance += 0.5
-        elif tRank == 4:
+        elif self.rank == 4:
             target.baseTrapEvace += 2
             target.baseCriticalChance += 0.5
 
     
     def applyDiscerningEyes(self, target):
-        tRank = Trait.getTraitRank(target, "Discerning Eyes")
-        if tRank == 1:
+        #self.rank = Trait.getTraiself.rank(target, "Discerning Eyes")
+        if self.rank == 1:
             target.baseAwareness += 5
             target.trapDisarmBonus += 1
-        elif tRank == 2:
+        elif self.rank == 2:
             target.baseAwareness += 2
             target.trapDisarmBonus += 1
-        elif tRank == 3:
+        elif self.rank == 3:
             target.baseAwareness += 2
             target.trapDisarmBonus += 1
-        elif tRank == 4:
+        elif self.rank == 4:
             target.baseAwareness += 2
             target.trapDisarmBonus += 1
 
     
     def applyTreasureHunter(self, target):
-        tRank = Trait.getTraitRank(target, "Treasure Hunter")
-        if tRank == 1:
+        #self.rank = Trait.getTraiself.rank(target, "Treasure Hunter")
+        if self.rank == 1:
             target.goldFind += 2
-        elif tRank == 2:
+        elif self.rank == 2:
             target.goldFind += 1
-        elif tRank == 3:
+        elif self.rank == 3:
             target.goldFind += 2
-        elif tRank == 4:
+        elif self.rank == 4:
             target.goldFind += 3
 
     
     def applyDilatant(self, target):
-        tRank = Trait.getTraitRank(target, "Dilatant")
-        if tRank == 1:
+        #self.rank = Trait.getTraiself.rank(target, "Dilatant")
+        if self.rank == 1:
             target.baseHP += 3
-            target.baseCarryingCapacity += 5
+            target._baseInventoryCapacity += 5
             target.baseAwareness += 1
             target.baseShadowResistance += 1
-        elif tRank == 2:
+        elif self.rank == 2:
             target.baseHP += 3
-            target.baseCarryingCapacity += 5
+            target._baseInventoryCapacity += 5
             target.baseAwareness += 2
             target.baseShadowResistance += 1
-        elif tRank == 3:
+        elif self.rank == 3:
             target.baseHP += 3
-            target.baseCarryingCapacity += 5
+            target._baseInventoryCapacity += 5
             target.baseShadowResistance += 1
-        elif tRank == 4:
+        elif self.rank == 4:
             target.baseHP += 5
-            target.baseCarryingCapacity += 10
+            target._baseInventoryCapacity += 10
             target.baseAwareness += 2
             target.baseShadowResistance += 2
 
     # Wizard
     
     def applyReservoir(self, target):
-        tRank = Trait.getTraitRank(target, "Reservoir")
-        if tRank == 1:
+        #self.rank = Trait.getTraiself.rank(target, "Reservoir")
+        if self.rank == 1:
             target.baseMP += 10
-        elif tRank == 2:
+        elif self.rank == 2:
             target.baseMP += 5
-        elif tRank == 3:
+        elif self.rank == 3:
             target.baseMP += 5
-        elif tRank == 4:
+        elif self.rank == 4:
             target.baseMP += 5
 
     
     def applySurvivor(self, target):
-        tRank = Trait.getTraitRank(target, "Survivor")
-        if tRank == 1:
+        #self.rank = Trait.getTraiself.rank(target, "Survivor")
+        if self.rank == 1:
             target.baseHP += 4
-        elif tRank == 2:
+        elif self.rank == 2:
             target.baseHP += 4
-        elif tRank == 3:
+        elif self.rank == 3:
             target.baseHP += 4
-        elif tRank == 4:
+        elif self.rank == 4:
             target.baseHP += 4
 
     
     def applyIllusionSpellFocusStatic(self, target):
-        tRank = Trait.getTraitRank(target, "Illusion Spell Focus")
-        if tRank == 1:
+        #self.rank = Trait.getTraiself.rank(target, "Illusion Spell Focus")
+        if self.rank == 1:
             pass
-        elif tRank == 2:
+        elif self.rank == 2:
             target.illusionResist += 1
-        elif tRank == 3:
+        elif self.rank == 3:
             target.illusionResist += 1
-        elif tRank == 4:
+        elif self.rank == 4:
             target.illusionResist += 2
 
     
     def applyIllusionSpellFocus(self, target, reverse=False, spell=None):
         if spell.school != "Illusion":
             return
-        tRank = Trait.getTraitRank(target, "Illusion Spell Focus")
+        #self.rank = Trait.getTraiself.rank(target, "Illusion Spell Focus")
         if not reverse:
-            if tRank == 1:
+            if self.rank == 1:
                 Combat.modifyResource(target, "MP", 1)
                 target.statusSpellpower += 1
-            elif tRank == 2:
+            elif self.rank == 2:
                 Combat.modifyResource(target, "MP", 1)
                 target.statusSpellpower += 2
-            elif tRank == 3:
+            elif self.rank == 3:
                 Combat.modifyResource(target, "MP", 2)
                 target.statusSpellpower += 3
-            elif tRank == 4:
+            elif self.rank == 4:
                 Combat.modifyResource(target, "MP", 2)
                 target.statusSpellpower += 5
         else:
-            if tRank == 1:
+            if self.rank == 1:
                 target.statusSpellpower -= 1
-            elif tRank == 2:
+            elif self.rank == 2:
                 target.statusSpellpower -= 2
-            elif tRank == 3:
+            elif self.rank == 3:
                 target.statusSpellpower -= 3
-            elif tRank == 4:
+            elif self.rank == 4:
                 target.statusSpellpower -= 5
 
     
     def applyPrimalSpellFocusStatic(self, target):
-        tRank = Trait.getTraitRank(target, "Primal Spell Focus")
-        if tRank == 1:
+        #self.rank = Trait.getTraiself.rank(target, "Primal Spell Focus")
+        if self.rank == 1:
             target.baseMP += 1
-        elif tRank == 2:
+        elif self.rank == 2:
             target.baseMP += 1
             target.primalResist += 1
-        elif tRank == 3:
+        elif self.rank == 3:
             target.baseMP += 1
-        elif tRank == 4:
+        elif self.rank == 4:
             target.baseMP += 2
             target.primalResist += 2
 
@@ -796,191 +788,191 @@ class Trait(object):
     def applyPrimalSpellFocus(self, target, reverse=False, spell=None):
         if spell.school != "Primal":
             return
-        tRank = Trait.getTraitRank(target, "Primal Spell Focus")
+        #self.rank = Trait.getTraiself.rank(target, "Primal Spell Focus")
         if not reverse:
-            if tRank == 1:
+            if self.rank == 1:
                 target.statusSpellpower += 2
-            if tRank == 2:
+            if self.rank == 2:
                 target.statusSpellpower += 4
-            if tRank == 3:
+            if self.rank == 3:
                 target.statusSpellpower += 6
-            if tRank == 4:
+            if self.rank == 4:
                 target.statusSpellpower += 8
         else:
-            if tRank == 1:
+            if self.rank == 1:
                 target.statusSpellpower -= 2
-            if tRank == 2:
+            if self.rank == 2:
                 target.statusSpellpower -= 4
-            if tRank == 3:
+            if self.rank == 3:
                 target.statusSpellpower -= 6
-            if tRank == 4:
+            if self.rank == 4:
                 target.statusSpellpower -= 8
 
     
     def applyNaturalSpellFocus(self, target, reverse=False, spell=None):
         if spell.school != "Natural":
             return
-        tRank = Trait.getTraitRank(target, "Natural Spell Focus")
+        #self.rank = Trait.getTraiself.rank(target, "Natural Spell Focus")
         if not reverse:
-            if tRank == 1:
+            if self.rank == 1:
                 target.statusSpellpower += 1
                 target.healingBonus += 5
-            elif tRank == 2:
+            elif self.rank == 2:
                 target.statusSpellpower += 2
                 target.healingBonus += 10
-            elif tRank == 3:
+            elif self.rank == 3:
                 target.statusSpellpower += 3
                 target.healingBonus += 15
-            elif tRank == 4:
+            elif self.rank == 4:
                 target.statusSpellpower += 4
                 target.healingBonus += 20
         else:
-            if tRank == 1:
+            if self.rank == 1:
                 target.statusSpellpower -= 1
                 target.healingBonus -= 5
-            elif tRank == 2:
+            elif self.rank == 2:
                 target.statusSpellpower -= 2
                 target.healingBonus -= 10
-            elif tRank == 3:
+            elif self.rank == 3:
                 target.statusSpellpower -= 3
                 target.healingBonus -= 15
-            elif tRank == 4:
+            elif self.rank == 4:
                 target.statusSpellpower -= 4
                 target.healingBonus -= 20
 
     
     def applyMysticSpellFocusStatic(self, target):
-        tRank = Trait.getTraitRank(target, "Mystic Spell Focus")
-        if tRank == 1:
+        #self.rank = Trait.getTraiself.rank(target, "Mystic Spell Focus")
+        if self.rank == 1:
             target.mysticResist += 1
-        elif tRank == 2:
+        elif self.rank == 2:
             target.mysticResist += 1
-        elif tRank == 3:
+        elif self.rank == 3:
             target.mysticResist += 1
-        elif tRank == 4:
+        elif self.rank == 4:
             target.mysticResist += 1
 
     
     def applyMysticSpellFocus(self, target, reverse=False, spell=None):
         if spell.school != "Mystic":
             return
-        tRank = Trait.getTraitRank(target, "Mystic Spell Focus")
+        #self.rank = Trait.getTraiself.rank(target, "Mystic Spell Focus")
         if not reverse:
-            if tRank == 1:
+            if self.rank == 1:
                 target.statusSpellpower += 2
-            elif tRank == 2:
+            elif self.rank == 2:
                 target.statusSpellpower += 4
-            elif tRank == 3:
+            elif self.rank == 3:
                 target.statusSpellpower += 6
-            elif tRank == 4:
+            elif self.rank == 4:
                 target.statusSpellpower += 8
         else:
-            if tRank == 1:
+            if self.rank == 1:
                 target.statusSpellpower -= 2
-            elif tRank == 2:
+            elif self.rank == 2:
                 target.statusSpellpower -= 4
-            elif tRank == 3:
+            elif self.rank == 3:
                 target.statusSpellpower -= 6
-            elif tRank == 4:
+            elif self.rank == 4:
                 target.statusSpellpower -= 8
 
     
     def applyBaneSpellFocusStatic(self, target):
-        tRank = Trait.getTraitRank(target, "Bane Spell Focus")
-        if tRank == 1:
+        #self.rank = Trait.getTraiself.rank(target, "Bane Spell Focus")
+        if self.rank == 1:
             target.baseShadowBonusDamage += 7
-        elif tRank == 2:
+        elif self.rank == 2:
             target.baseShadowBonusDamage += 7
-        elif tRank == 3:
+        elif self.rank == 3:
             target.baseShadowBonusDamage += 7
-        elif tRank == 4:
+        elif self.rank == 4:
             target.baseShadowBonusDamage += 7
 
     
     def applyBaneSpellFocus(self, target, reverse=False, spell=None):
         if spell.school != "Bane":
             return
-        tRank = Trait.getTraitRank(target, "Bane Spell Focus")
+        #self.rank = Trait.getTraiself.rank(target, "Bane Spell Focus")
         if not reverse:
-            if tRank == 1:
+            if self.rank == 1:
                 target.statusSpellpower += 1
-            elif tRank == 2:
+            elif self.rank == 2:
                 target.statusSpellpower += 2
-            elif tRank == 3:
+            elif self.rank == 3:
                 target.statusSpellpower += 3
-            elif tRank == 4:
+            elif self.rank == 4:
                 target.statusSpellpower += 4
         else:
-            if tRank == 1:
+            if self.rank == 1:
                 target.statusSpellpower -= 1
-            elif tRank == 2:
+            elif self.rank == 2:
                 target.statusSpellpower -= 2
-            elif tRank == 3:
+            elif self.rank == 3:
                 target.statusSpellpower -= 3
-            elif tRank == 4:
+            elif self.rank == 4:
                 target.statusSpellpower -= 4
 
     
     def applyEnchantmentSpellFocus(self, target, reverse=False, spell=None):
         if spell.school != "Enchantment":
             return
-        tRank = Trait.getTraitRank(target, "Enchantment Spell Focus")
+        #self.rank = Trait.getTraiself.rank(target, "Enchantment Spell Focus")
         if not reverse:
-            if tRank == 1:
+            if self.rank == 1:
                 target.statusSpellpower += 1
                 Combat.modifyResource(target, "MP", 1)
-            elif tRank == 2:
+            elif self.rank == 2:
                 target.statusSpellpower += 2
                 Combat.modifyResource(target, "MP", 2)
-            elif tRank == 3:
+            elif self.rank == 3:
                 target.statusSpellpower += 4
                 Combat.modifyResource(target, "MP", 2)
-            elif tRank == 4:
+            elif self.rank == 4:
                 target.statusSpellpower += 5
                 Combat.modifyResource(target, "MP", 3)
         else:
-            if tRank == 1:
+            if self.rank == 1:
                 target.statusSpellpower -= 1
-            elif tRank == 2:
+            elif self.rank == 2:
                 target.statusSpellpower -= 2
-            elif tRank == 3:
+            elif self.rank == 3:
                 target.statusSpellpower -= 4
-            elif tRank == 4:
+            elif self.rank == 4:
                 target.statusSpellpower -= 5
 
     def applyMentalSpellFocusStatic(self, target):
-        tRank = Trait.getTraitRank(target, "Mental Spell Focus")
-        if tRank == 1:
+        #self.rank = Trait.getTraiself.rank(target, "Mental Spell Focus")
+        if self.rank == 1:
             target.baseHP += 2
-        elif tRank == 2:
+        elif self.rank == 2:
             target.baseHP += 2
-        elif tRank == 3:
+        elif self.rank == 3:
             target.baseHP += 2
-        elif tRank == 4:
+        elif self.rank == 4:
             target.baseHP += 2
 
     
     def applyMentalSpellFocus(self, target, reverse=False, spell=None):
         if spell.school != "Mental":
             return
-        tRank = Trait.getTraitRank(target, "Mental Spell Focus")
+        #self.rank = Trait.getTraiself.rank(target, "Mental Spell Focus")
         if not reverse:
-            if tRank == 1:
+            if self.rank == 1:
                 target.statusSpellpower += 2
-            elif tRank == 2:
+            elif self.rank == 2:
                 target.statusSpellpower += 4
-            elif tRank == 3:
+            elif self.rank == 3:
                 target.statusSpellpower += 6
-            elif tRank == 4:
+            elif self.rank == 4:
                 target.statusSpellpower += 8
         else:
-            if tRank == 1:
+            if self.rank == 1:
                 target.statusSpellpower -= 2
-            elif tRank == 2:
+            elif self.rank == 2:
                 target.statusSpellpower -= 4
-            elif tRank == 3:
+            elif self.rank == 3:
                 target.statusSpellpower -= 6
-            elif tRank == 4:
+            elif self.rank == 4:
                 target.statusSpellpower -= 8
 
 
@@ -1178,7 +1170,13 @@ class Trait(object):
             {
             'class' : 'Thief',
             'type' : 'static',
-            'action' : applyUncannyEvasion
+            'action' : applyUncannyEvasion,
+            'image' : THIEF + 'uncanny-evasion.png',
+            'text' : 'Increases dodge rating vs. ranged attacks.\n' + \
+                    'Rank I:   +3 Dodge\n' + \
+                    'Rank II:  +6 Dodge\n' + \
+                    'Rank III: +9 Dodge\n' + \
+                    'Rank IV:  +12 Dodge'
             },
         'Stealthy Daggers':
             {
@@ -1186,7 +1184,13 @@ class Trait(object):
             'type' : 'dynamic',
             'action' : applyStealthyDaggers,
             'onStringList' : ['Outgoing Melee Attack'],
-            'offStringList' : ['Outgoing Melee Attack Complete']
+            'offStringList' : ['Outgoing Melee Attack Complete'],
+            'image' : THIEF + 'stealthy-daggers.png',
+            'text' : 'Grants bonus accuracy and damage with knife weapons and an additional accuracy bonus from stealth.\n' + \
+                    'Rank I:   +1 Knife Accuracy, +2 if in stealth; +2% Knife Damage\n' + \
+                    'Rank II:  +2 Knife Accuracy, +4 if in stealth; +3% Knife Damage\n' + \
+                    'Rank III: +3 Knife Accuracy, +6 if in stealth; +4% Knife Damage\n' + \
+                    'Rank IV:  +4 Knife Accuracy, +8 if in stealth; +5% Knife Damage'
             },
         'Dueling':
             {
@@ -1194,7 +1198,13 @@ class Trait(object):
             'type' : 'dynamic',
             'action' : applyDueling,
             'onStringList' : ['Outgoing Ranged Attack', 'Outgoing Melee Attack', 'Incoming Ranged Attack', 'Incoming Melee Attack'],
-            'offStringList' : ['Outgoing Ranged Attack Complete', 'Outgoing Melee Attack Complete', 'Incoming Ranged Attack Complete', 'Incoming Melee Attack Complete']
+            'offStringList' : ['Outgoing Ranged Attack Complete', 'Outgoing Melee Attack Complete', 'Incoming Ranged Attack Complete', 'Incoming Melee Attack Complete'],
+            'image' : THIEF + 'dueling.png',
+            'text' : 'Grants a bonus to dodge, accuracy, and critical chance if wielding one weapon and no shield.\n' + \
+                    'Rank I:   +1 Dodge, +1 Accuracy, +2% Critical Chance\n' + \
+                    'Rank II:  +2 Dodge, +2 Accuracy, +4% Critical Chance\n' + \
+                    'Rank III: +3 Dodge, +3 Accuracy, +6% Critical Chance\n' + \
+                    'Rank IV:  +5 Dodge, +5 Accuracy, +8% Critical Chance'
             },
         'Two-Weapon Fighting':
             {
@@ -1202,37 +1212,73 @@ class Trait(object):
             'type' : 'dynamic',
             'action' : applyTwoWeaponFighting,
             'onStringList' : ['Outgoing Melee Attack'],
-            'offStringList' : ['Outgoing Melee Attack Complete']
+            'offStringList' : ['Outgoing Melee Attack Complete'],
+            'image' : THIEF + 'two-weapon-fighting.png',
+            'text' : 'Grants a bonus to critical magnitude if wielding two weapons at once.\n' + \
+                    'Rank I:   +5% Critical Magnitude\n' + \
+                    'Rank II:  +8% Critical Magnitude\n' + \
+                    'Rank III: +10% Critical Magnitude\n' + \
+                    'Rank IV:  +13% Critical Magnitude'
             },
         'Clever':
             {
             'class' : 'Thief',
             'type' : 'static',
-            'action' : applyClever
+            'action' : applyClever,
+            'image' : THIEF + 'clever.png',
+            'text' : 'Grants bonus magic resist.\n' + \
+                    'Rank I:   +2 Magic Resist\n' + \
+                    'Rank II:  +4 Magic Resist\n' + \
+                    'Rank III: +6 Magic Resist\n' + \
+                    'Rank IV:  +8 Magic Resist'
             },
         'Lucky':
             {
             'class' : 'Thief',
             'type' : 'static',
-            'action' : applyLucky
+            'action' : applyLucky,
+            'image' : THIEF + 'lucky.png',
+            'text' : 'Increases trap avoidance and critical hit chance.\n' + \
+                    'Rank I:   +5 Trap Avoidance, +0.5% Critical hit chance\n' + \
+                    'Rank II:  +7 Trap Avoidance, +1.0% Critical hit chance\n' + \
+                    'Rank III: +9 Trap Avoidance, +1.5% Critical hit chance\n' + \
+                    'Rank IV:  +11 Trap Avoidance, +2.0% Critical hit chance'
             },
         'Discerning Eyes':
             {
             'class' : 'Thief',
             'type' : 'static',
-            'action' : applyDiscerningEyes
+            'action' : applyDiscerningEyes,
+            'image' : THIEF + 'discerning-eyes.png',
+            'text' : 'Increases awareness and Cunning vs. disarming traps.\n' + \
+                    'Rank I:   +5 Awareness, +1 Effective Cunning\n' + \
+                    'Rank II:  +7 Awareness, +2 Effective Cunning\n' + \
+                    'Rank III: +9 Awareness, +3 Effective Cunning\n' + \
+                    'Rank IV:  +11 Awareness, +4 Effective Cunning'
             },
         'Treasure Hunter':
             {
             'class' : 'Thief',
             'type' : 'static',
-            'action' : applyTreasureHunter
+            'action' : applyTreasureHunter,
+            'image' : THIEF + 'treasure-hunter.png',
+            'text' : 'Increases the amount of gold you will find.\n' + \
+                    'Rank I:   +2% Gold Find\n' + \
+                    'Rank II:  +3% Gold Find\n' + \
+                    'Rank III: +5% Gold Find\n' + \
+                    'Rank IV:  +8% Gold Find'
             },
         'Dilatant':
             {
             'class' : 'Thief',
             'type' : 'static',
-            'action' : applyDilatant
+            'action' : applyDilatant,
+            'image' : THIEF + 'dilatant.png',
+            'text' : 'Increases HP, Carrying Capacity, Awareness, and Shadow elemental resistance.\n' + \
+                    'Rank I:   +3 HP, +5 lbs, +1 Awareness, +1% Shadow resistance\n' + \
+                    'Rank II:  +6 HP, +10 lbs, +2 Awareness, +2% Shadow resistance\n' + \
+                    'Rank III: +9 HP, +15 lbs, +3 Awareness, +3% Shadow resistance\n' + \
+                    'Rank IV:  +14 HP, +25 lbs, +5 Awareness, +5% Shadow resistance'
             },
 
         # Wizard Traits

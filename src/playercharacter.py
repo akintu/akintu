@@ -1225,7 +1225,7 @@ class PlayerCharacter(p.Person):
         cs.append("| Shop Bonus:           " + `self.totalShopBonus` + "% (" + `self.equipmentShopBonus` + "%)  Carrying Capacity: " + `self.inventoryCapacity` + " (" + `self.equipmentCarryingCapacity` + ")\n")
         cs.append("| Trap Rating Bonus:    " + `self.bonusTrapRating` + "      Trap Damage Bonus: " + `self.bonusTrapDamage` + "\n")
         cs.append("| Jewlery Effect:       " + `self.totalJewleryEffect` + "%     Potion Bonus Effect: " + `self.totalPotionEffect` + "%\n") 
-        cs.append("| Identification:       " + `self.totalIdentification` + " (" + `self.equipmentIdentification` + ")\n")
+        cs.append("| Identification:       " + `self.totalIdentification` + " (" + `self.equipmentIdentification` + ")  Gold Find: +" + `self.goldFind` + "%\n")
         cs.append("| ----------->>> Elemental Resistances <<<--------------\n")
         cs.append("| Arcane Resistance:   " + `self.totalArcaneResistance` + "% (" + `self.equipmentArcaneResistance` + ")\n")
         cs.append("| Cold Resistance:     " + `self.totalColdResistance` + "% (" + `self.equipmentColdResistance` + ")\n")

@@ -760,11 +760,11 @@ class Levelup(object):
         elif self.phase == "SPELL_1":
             text = "Select a new spell."
             self.spellOptions = self.player.getLevelupSpellOptions()
-            self.screen.show_dialog(text, self.spellOptions, bgcolor="blue")
+            self.screen.show_dialog(text, self.spellOptions, bgcolor="lightblue")
         elif self.phase == "SPELL_2":
             text = "Select another new spell."
             self.spellOptions = self.player.getLevelupSpellOptions()
-            self.screen.show_dialog(text, self.spellOptions, bgcolor="blue")
+            self.screen.show_dialog(text, self.spellOptions, bgcolor="lightblue")
         elif self.phase == "COMBO":
             text = "Additionally you have earned these unique skills."
             combos = self.player.getLevelupCombos()

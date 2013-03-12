@@ -628,7 +628,7 @@ class Person(en.Entity):
         return self._baseShadowResistance
 
     @baseShadowResistance.setter
-    def baseShadowReistance(self, value):
+    def baseShadowResistance(self, value):
         self._baseShadowResistance = value
 
     @property
