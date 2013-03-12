@@ -5,6 +5,7 @@ from dice import *
 import broadcast
 import location
 import command
+from region import Region
 
 class IncompleteMethodCall(Exception):
     def __init__(self, value):
@@ -1044,4 +1045,22 @@ class Combat(object):
         bc = broadcast.ResourceLevelBroadcast({'resource' : resourceType, 'percent' : resourcePercent})
         bc.shout(target)
 
-
+    @staticmethod
+    def getAOETargets(cPane, center, radius, selectMonsters):
+        """Gets all people in combat affected by an AOE spell.
+        Input:
+            cPane: The overworld location of the monsterLeader that generated the combatPane
+            center: A Location that is the center of the area effect
+            radius: Integer value of the radius of the area
+            selectMonsters: Boolean for whether targets are Monsters or Players
+        Output:
+            people: A list of Person objects who are inside the area"""
+            
+        R = Region()
+        R("ADD", "CIRCLE", center, radius)
+        people = []
+        for i in Combat.gameServer.pane[cPane].person:
+            if Combat.gameServer.person[i].cLocation in R and Combat.gameServer.person[i].team == \
+                    "Monsters" if selectMonsters else "Players":
+                people.append(Combat.gameServer.person[i])
+        return people
