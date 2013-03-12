@@ -29,7 +29,7 @@ class AbilityStub(object):
         if info['cooldown'] == -1:
            rangeText = "Weapon Range"
         cooldownText = "0"
-        if info['cooldown']
+        if info['cooldown']:
             cooldownText = `info['cooldown']`
         if 'text' in info:
             self.text = 'AP: ' + `info['APCost']` + '  Cooldown: ' + cooldownText + '  Range: ' + rangeText + \
@@ -1187,7 +1187,9 @@ class Ability(object):
         'action' : _preciseBlow,
         'cooldown' : None,
         'checkFunction' : _preciseBlowCheck,
-        'breakStealth' : 100
+        'breakStealth' : 100,
+        'image' : FIGHTER_SKILLS + "precise-blow.png",
+        'text' : "Melee attack with +4 additional Accuracy"
         },
 
         # Thief

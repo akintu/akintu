@@ -23,7 +23,7 @@ class PassiveAbilityStub(object):
         if 'image' in info:
             self.image = info['image']
         if 'text' in info:
-            self.info = info['text']
+            self.text = info['text']
 
 class PassiveAbility(object):
 

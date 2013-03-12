@@ -993,7 +993,13 @@ class Trait(object):
             'type' : 'dynamic',
             'action' : applyParry,
             'onStringList' : ['Incoming Melee Attack'],
-            'offStringList' : ['Incoming Melee Attack Complete']
+            'offStringList' : ['Incoming Melee Attack Complete'],
+            'image' : FIGHTER + 'parry.png',
+            'text' : 'If facing a melee attacker, gain bonus Dodge vs that attacker.\n' + \
+                    'Rank I:   +2 Dodge\n' + \
+                    'Rank II:  +4 Dodge\n' + \
+                    'Rank III: +6 Dodge\n' + \
+                    'Rank IV:  +11 Dodge'
             },
         'Preparation':
             {
@@ -1001,7 +1007,13 @@ class Trait(object):
             'type' : 'dynamic',
             'action' : applyPreparation,
             'onStringList' : ['Starting Player Turn'],
-            'offStringList' : ['Outgoing Melee Attack Complete', 'Outgoing Ranged Attack Complete']
+            'offStringList' : ['Outgoing Melee Attack Complete', 'Outgoing Ranged Attack Complete'],
+            'image' : FIGHTER + 'preparation.png',
+            'text' : 'If no attacks were attempted the previous turn, Gain bonus accuracy on your next attack.\n' + \
+                    'Rank I:   +8 Accuracy\n' + \
+                    'Rank II:  +11 Accuracy\n' + \
+                    'Rank III: +14 Accuracy\n' + \
+                    'Rank IV:  +18 Accuracy'
             },
         'Tank':
             {
@@ -1009,7 +1021,13 @@ class Trait(object):
             'type' : 'dynamic',
             'action' : applyTank,
             'onStringList' : ['Incoming Melee Attack', 'Incoming Ranged Attack'],
-            'offStringList' : ['Incoming Melee Attack Complete', 'Incoming Ranged Attack Complete']
+            'offStringList' : ['Incoming Melee Attack Complete', 'Incoming Ranged Attack Complete'],
+            'image' : FIGHTER + 'tank.png',
+            'text' : 'If wearing heavy armor, gain bonus damage resistance.\n' + \
+                    'Rank I:   +1% DR\n' + \
+                    'Rank II:  +2% DR\n' + \
+                    'Rank III: +4% DR\n' + \
+                    'Rank IV:  +7% DR'
             },
         'Fencer':
             {
@@ -1017,7 +1035,13 @@ class Trait(object):
             'type' : 'dynamic',
             'action' : applyFencer,
             'onStringList' : ['Outgoing Melee Attack'],
-            'offStringList' : ['Outgoing Melee Attack Complete']
+            'offStringList' : ['Outgoing Melee Attack Complete'],
+            'image' : FIGHTER + 'fencer.png',
+            'text' : 'If NOT wearing heavy armor, gain bonus melee attack accuracy.\n' + \
+                    'Rank I:   +2 Melee Accuracy\n' + \
+                    'Rank II:  +4 Melee Accuracy\n' + \
+                    'Rank III: +6 Melee Accuracy\n' + \
+                    'Rank IV:  +9 Melee Accuracy'
             },
         'Shield Resilience':
             {
@@ -1025,7 +1049,13 @@ class Trait(object):
             'type' : 'dynamic',
             'action' : applyShieldResilience,
             'onStringList' : ['Incoming Melee Attack', 'Incoming Ranged Attack'],
-            'offStringList' : ['Incoming Melee Attack Complete', 'Incoming Ranged Attack Complete']
+            'offStringList' : ['Incoming Melee Attack Complete', 'Incoming Ranged Attack Complete'],
+            'image' : FIGHTER + 'shield-resilience.png', 
+            'text' : 'While equipped with a shield, you gain resistance to knockback and bonus dodge vs. ranged attacks.\n' + \
+                    'Rank I:   +30% Knockback Resistance, +1 Dodge vs. Ranged Attacks\n' + \
+                    'Rank II:  +60% Knockback Resistance, +2 Dodge vs. Ranged Attacks\n' + \
+                    'Rank III: +90% Knockback Resistance, +3 Dodge vs. Ranged Attacks\n' + \
+                    'Rank IV:  Knockback Immunity, +4 Dodge vs. Ranged Attacks'
             },
         'Bully':
             {
@@ -1033,7 +1063,13 @@ class Trait(object):
             'type' : 'dynamic',
             'action' : applyBully,
             'onStringList' : ['Outgoing Melee Attack', 'Outgoing Ranged Attack'],
-            'offStringList' : ['Outgoing Melee Attack Complete', 'Outgoing Ranged Attack Complete']
+            'offStringList' : ['Outgoing Melee Attack Complete', 'Outgoing Ranged Attack Complete'],
+            'image' : FIGHTER + 'bully.png',
+            'text' : 'While equipped with a two-handed weapon, all attacks against enemies of medium or small size gain bonuses.\n' + \
+                    'Rank I:   +2 Accuracy, +0.5% Critical Chance, Force x 1.05\n' + \
+                    'Rank II:  +3 Accuracy, +1.0% Critical Chance, Force x 1.10\n' + \
+                    'Rank III: +4 Accuracy, +1.5% Critical Chance, Force x 1.15\n' + \
+                    'Rank IV:  +5 Accuracy, +2.0% Critical Chance, Force x 1.25'
             },
         'Boldness':
             {
@@ -1041,13 +1077,25 @@ class Trait(object):
             'type' : 'dynamic',
             'action' : applyBoldness,
             'onStringList' : ['Outgoing Melee Attack', 'Outgoing Ranged Attack'],
-            'offStringList' : ['Outoing Melee Attack Complete', 'Outgoing Ranged Attack Complete']
+            'offStringList' : ['Outoing Melee Attack Complete', 'Outgoing Ranged Attack Complete'],
+            'image' : FIGHTER + 'boldness.png',
+            'text' : 'If attacking a large or huge enemy, your melee attacks strike with additional force.\n' + \
+                    'Rank I:   Force x 1.15 vs. Huge foes, Force x 1.05 vs. Large foes\n' + \
+                    'Rank II:  Force x 1.30 vs. Huge foes, Force x 1.10 vs. Large foes\n' + \
+                    'Rank III: Force x 1.45 vs. Huge foes, Force x 1.15 vs. Large foes\n' + \
+                    'Rank IV:  Force x 1.60 vs. Huge foes, Force x 1.20 vs. Large foes'
             },
         'Well-Traveled':
             {
             'class' : 'Fighter',
             'type' : 'static',
             'action' : applyWellTraveled,
+            'image' : FIGHTER + 'well-travelled.png',
+            'text' : 'Gain a bonus to fire and cold elemental resistances as well as carrying capacity.\n' + \
+                    'Rank I:   +1% Fire Resistance, +1% Cold Resistance, +15 lbs\n' + \
+                    'Rank II:  +2% Fire Resistance, +2% Cold Resistance, +30 lbs\n' + \
+                    'Rank III: +3% Fire Resistance, +3% Cold Resistance, +45 lbs\n' + \
+                    'Rank IV:  +5% Fire Resistance, +5% Cold Resistance, +70 lbs'
             },
         'Hammer and Anvil':
             {
@@ -1055,7 +1103,13 @@ class Trait(object):
             'type' : 'dynamic',
             'action' : applyHammerAndAnvil,
             'onStringList' : ['Outgoing Melee Attack'],
-            'offStringList' : ['Outgoing Melee Attack Complete']
+            'offStringList' : ['Outgoing Melee Attack Complete'],
+            'image' : FIGHTER + 'hammer-and-anvil.png',
+            'text' : 'Deal additional overall damge with melee attacks against an emey with its back against a wall.\n' + \
+                    'Rank I:   +5% Damage\n' + \
+                    'Rank II:  +10% Damage\n' + \
+                    'Rank III: +15% Damage\n' + \
+                    'Rank IV:  +20% Damage'
             },
 
         # Ranger Traits

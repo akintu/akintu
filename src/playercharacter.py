@@ -375,7 +375,7 @@ class PlayerCharacter(p.Person):
         self._baseMP += self.levelupMP
         
         statsName = "Gained Statistics"
-        statsImage = "./res/images/icons/cubeforce.png"
+        statsImage = "./res/images/icons/stats.png"
         statsText = "Gained the following statistics:\n" + \
                     "Strength + " + `displayStrengthGain` + "\n" + \
                     "Dexterity + " + `displayDexterityGain` + "\n" + \
