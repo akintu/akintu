@@ -443,7 +443,19 @@ class Trait(object):
             target.bonusTrapDamage += 5
             # No penalty at this rank
 
-    
+    def applyDangerousTraps(self, target):
+        if self.rank == 1:
+            target.bonusTrapDamage += 5
+            target.bonusTrapRating -= 1
+        elif self.rank == 2:
+            target.bonusTrapDamage += 5
+            target.bonusTrapRating -= 1        
+        elif self.rank == 3:
+            target.bonusTrapDamage += 5
+            target.bonusTrapRating -= 1                    
+        elif self.rank == 4:
+            target.bonusTrapDamage += 5
+        
     def applyMastermind(self, target, reverse=False, trap=None):
         pass
         # TODO: We need to be able to track the total number of player
@@ -1111,7 +1123,13 @@ class Trait(object):
             'type' : 'dynamic',
             'action' : applyWoundingProjectiles,
             'onStringList' : ['Outgoing Ranged Attack Normal Hit', 'Outgoing Ranged Attack Critical Hit'],
-            'offStringList' : []
+            'offStringList' : [],
+            'image' : RANGER + 'wounding-projectiles.png',
+            'text' : 'All successful ranged attacks have a chance to lower enemy dodge for 2 turns.  Stacks up to 3 times.\n' + \
+                    'Rank I:   10% chance to apply, -5 Dodge\n' + \
+                    'Rank II:  12% chance to apply, -6 Dodge\n' + \
+                    'Rank III: 15% chance to apply, -7 Dodge\n' + \
+                    'Rank IV:  18% chance to apply, -8 Dodge'
             },
         'Melee Archery':
             {
@@ -1120,25 +1138,61 @@ class Trait(object):
             'action' : applyMeleeArchery,
             'onStringList' : ['Outgoing Ranged Attack'],
             'offStringList' : ['Outgoing Ranged Attack Complete'],
-            'staticAction' : applyMeleeArcheryStatic
+            'staticAction' : applyMeleeArcheryStatic,
+            'image' : RANGER + 'melee-archery.png',
+            'text' : 'Reduces the miss rate from using a ranged weapon in melee range.\n' + \
+                    'Rank I:   -50% Penalty\n' + \
+                    'Rank II:  -100% Penalty\n' + \
+                    'Rank III: +4 Accuracy when using a ranged weapon in melee\n' + \
+                    'Rank IV:  +4 Accuracy and +10% Damage when using a ranged weapon in melee'
             },
         'Nature Training':
             {
             'class' : 'Ranger',
             'type' : 'static',
             'action' : applyNatureTraining,
+            'image' : RANGER + 'nature-training.png',
+            'text' : 'Increases poison tolerance and poison elemental resistance.\n' + \
+                    'Rank I:   +2 Poison Tolerance, +2% Poison Elemental Resistance\n' + \
+                    'Rank II:  +3 Poison Tolerance, +4% Poison Elemental Resistance\n' + \
+                    'Rank III: +4 Poison Tolerance, +6% Poison Elemental Resistance\n' + \
+                    'Rank IV:  +6 Poison Tolerance, +9% Poison Elemental Resistance'
             },
         'Explorer':
             {
             'class' : 'Ranger',
             'type' : 'static',
-            'action' : applyExplorer
+            'action' : applyExplorer,
+            'image' : RANGER + 'explorer.png',
+            'text' : 'Increases Trap Evade, Awareness, and Gold Find\n' + \
+                    'Rank I:   +2 Trap Evade, +2 Awareness, +1% Gold Find\n' + \
+                    'Rank II:  +3 Trap Evade, +3 Awareness, +2% Gold Find\n' + \
+                    'Rank III: +4 Trap Evade, +4 Awareness, +3% Gold Find\n' + \
+                    'Rank IV:  +5 Trap Evade, +5 Awareness, +4% Gold Find'
             },
         'Trapsmith':
             {
             'class' : 'Ranger',
             'type' : 'static',
-            'action' : applyTrapsmith
+            'action' : applyTrapsmith,
+            'image' : RANGER + 'trapsmith.png',
+            'text' : 'Increases the Trap Rating of your traps.\n' + \
+                    'Rank I:   +3 Trap Rating\n' + \
+                    'Rank II:  +6 Trap Rating\n' + \
+                    'Rank III: +9 Trap Rating\n' + \
+                    'Rank IV:  +12 Trap Rating'
+            },
+        'Dangerous Traps':
+            {
+            'class' : 'Ranger',
+            'type' : 'static',
+            'action' : applyDangerousTraps,
+            'image' : RANGER + 'dangerous-traps.png',
+            'text' : 'Increase the overall damage of your damage dealing traps, but lower the trap ratings of all of your traps.\n' + \
+                    'Rank I:   +5% Damage, -1 Trap Rating\n' + \
+                    'Rank II:  +10% Damage, -2 Trap Rating\n' + \
+                    'Rank III: +15% Damage, -3 Trap Rating\n' + \
+                    'Rank IV:  +20% Damage, -3 Trap Rating'
             },
         'Mastermind':
             {
@@ -1146,7 +1200,13 @@ class Trait(object):
             'type' : 'dynamic',
             'action' : applyMastermind,
             'onStringList' : ['Monster Triggered Trap Complete'],
-            'offStringList' : ['Player Trap Removed']
+            'offStringList' : ['Player Trap Removed'],
+            'image' : RANGER + 'mastermind.png',
+            'text' : 'You gain confidence while you have at least four traps on the map and gain magic resist, knockback resistance, and bonus critical hit chance.\n' + \
+                    'Rank I:   +2 Magic Resist, 10% Knockback Resist, +1% Critical Hit Chance\n' + \
+                    'Rank II:  +4 Magic Resist, 20% Knockback Resist, +2% Critical Hit Chance\n' + \
+                    'Rank III: +6 Magic Resist, 30% Knockback Resist, +3% Critical Hit Chance\n' + \
+                    'Rank IV:  +8 Magic Resist, 40% Knockback Resist, +4% Critical Hit Chance'
             },
         'Follow-up Expert':
             {
@@ -1154,7 +1214,13 @@ class Trait(object):
             'type' : 'dynamic',
             'action' : applyFollowupExpert,
             'onStringList' : ['Outgoing Melee Attack Hit', 'Outgoing Melee Attack Critical Hit'],
-            'offStringList' : []
+            'offStringList' : [],
+            'image' : RANGER + 'followup-expert.png',
+            'text' : 'After successfully landing a melee attack, your ranged accuracy and ranged force increase for two turns.\n' + \
+                    'Rank I:   +2 Accuracy, Force x 1.15\n' + \
+                    'Rank II:  +4 Accuracy, Force x 1.25\n' + \
+                    'Rank III: +6 Accuracy, Force x 1.35\n' + \
+                    'Rank IV:  +8 Accuracy, Force x 1.50'
             },
         'Trap Sadism':
             {
@@ -1162,7 +1228,13 @@ class Trait(object):
             'type' : 'dynamic',
             'action' : applyTrapSadism,
             'onStringList' : ['Monster Hit By Trap Complete'],
-            'offStringList' : []
+            'offStringList' : [],
+            'image' : RANGER + 'trap-sadism.png',
+            'text' : 'If a monster triggers and is affected by one of your traps, you gain a bonus to critical magnitude for the next turn.\n' + \
+                    'Rank I:   +15% Critical Magnitude\n' + \
+                    'Rank II:  +30% Critical Magnitude\n' + \
+                    'Rank III: +45% Critical Magnitude\n' + \
+                    'Rank IV:  +65% Critical Magnitude'
             },
 
         # Thief Traits
