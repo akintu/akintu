@@ -314,6 +314,17 @@ class PassiveAbility(object):
                 source.statusMeleeAccuracy -= 3
                 source.statusCriticalChance -= 5
 
+    def applyMagicalDarkness(self, target, reverse=False, other=None):
+        source = self.owner
+        if not reverse:
+            if source.inStealth():
+                source.statusShadowBonusDamage += 5
+                source.statusSpellpower += 4
+        else:
+            if source.inStealth():
+                source.statusShadowBonusDamage -= 5
+                source.statusSpellpower -= 4
+                
     def applyUpCloseAndPersonal(self, target, reverse=False, spell=None):
         source = self.owner
         if not reverse:
@@ -892,7 +903,9 @@ class PassiveAbility(object):
         'class' : 'Nightblade',
         'level' : 1,
         'type' : 'static',
-        'action' : applyForbiddenStudies
+        'action' : applyForbiddenStudies,
+        'image' : NIGHTBLADE + 'forbidden-studies.png',
+        'text' : '+5% Shadow Damage'
         },
         'Single Blade':
         {
@@ -901,7 +914,21 @@ class PassiveAbility(object):
         'type' : 'dynamic',
         'action' : applySingleBlade,
         'onStringList' : ['Outgoing Melee Attack'],
-        'offStringList' : ['Outgoing Melee Attack Complete']
+        'offStringList' : ['Outgoing Melee Attack Complete'],
+        'image' : NIGHTBLADE + 'single-blade.png',
+        'text' : '+3 Melee Accuracy and +5% Critical Chance when using only\n' + \
+                'one one-handed weapon and no shield.'
+        },
+        'Magical Darkness':
+        {
+        'class' : 'Nightblade',
+        'level' : 3,
+        'type' : 'dynamic',
+        'action' : applyMagicalDarkness,
+        'onStringList' : ['Outgoing Melee Attack', 'Outgoing Ranged Attack', 'Outgoing Spell Cast'],
+        'offStringList' : ['Outgoing Melee Attack Complete', 'Outgoing Ranged Attack Complete', 'Outgoing Spell Cast Complete'],
+        'image' : NIGHTBLADE + 'magical-darkness.png',
+        'text' : 'While in stealth, +5% Shadow Damage and +4 Spellpower'
         },
         'Up close and Personal':
         {
@@ -910,7 +937,9 @@ class PassiveAbility(object):
         'type' : 'dynamic',
         'action' : applyUpCloseAndPersonal,
         'onStringList' : ['Outgoing Spell Cast'],
-        'offStringList' : ['Outgoing Spell Cast Complete']
+        'offStringList' : ['Outgoing Spell Cast Complete'],
+        'image' : NIGHTBLADE + 'up-close-and-personal.png',
+        'text' : 'Bane spells cast in melee range have +4 Spellpower.'
         },
 
 
