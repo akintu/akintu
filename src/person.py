@@ -1550,9 +1550,7 @@ class Person(en.Entity):
         the exact float/int to multiply the damage by upon a critical hit with no
         further division.
         """
-        return (self._equipmentCriticalMagnitude/100 *
-                self._baseCriticalMagnitude/100 *
-                (100 + self._statusCriticalMagnitude/100))
+        return int(self._equipmentCriticalMagnitude + self._baseCriticalMagnitude + self._statusCriticalMagnitude)
 
     @property
     def equipmentCriticalMagnitude(self):

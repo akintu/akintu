@@ -228,6 +228,7 @@ class Ability(object):
             return (False, "Must be in backstab position to perform " + self.name + " .")
         if not source.usingWeapon("Sword") and not source.usingWeapon("Knife"):
             return (False, "Must be using either swords or knives to preform " + self.name + " .")
+        return (True, "")
 
 
     def _chainGrasp(self, target):
@@ -1895,6 +1896,22 @@ class Ability(object):
         },
 
         # Nightblade
+        'Nightblade Stealth':
+        {
+        'level' : 1,
+        'class' : 'Nightblade',
+        'HPCost' : 0,
+        'APCost' : 7,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _stealth,
+        'cooldown' : 3,
+        'checkFunction' : _stealthCheck,
+        'breakStealth' : 0,
+        'image' : THIEF_SKILLS + 'stealth.png',
+        'text' : 'Enter stealth, making enemies lose track of you until you take an action\n' + \
+                'that removes stealth.  Movement cost is raised to 6 AP for the duration.'  
+        },
         'Shroud':
         {
         'level' : 1,
