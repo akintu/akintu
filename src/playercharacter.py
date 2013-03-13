@@ -586,7 +586,7 @@ class PlayerCharacter(p.Person):
             self._experience += amount
             if self._experience >= expForNext:
                 self._experience = expForNext
-                self.level += 1
+                #self.level += 1
             return self.level
         else:
             expForNext = PlayerCharacter.expRequiredForLevel[self.level]
@@ -595,7 +595,8 @@ class PlayerCharacter(p.Person):
             if self._experience >= expForSecondNext:
                 self._experience = expForSecondNext - 1
             if self._experience >= expForNext:
-                self.level += 1
+                pass
+                #self.level += 1
             return self.level
         #TODO: Demo mode
         
