@@ -208,8 +208,8 @@ class Ability(object):
         critMag = 0
         accuracy = 0
         if source.usingWeapon("Sword"):
-            critChance = 25
-            critMag = 1.5
+            critChance = 30
+            critMag = 1.6
             if source.usingWeaponStyle("Single"):
                 accuracy = 9
         elif source.usingWeapon("Knife"):
@@ -758,15 +758,9 @@ class Ability(object):
         for monster in monsters:
             shadowDamage = Combat.calcDamage(source, monster, 4, 12, element="Shadow", hitValue="Normal Hit", scalesWith="Spellpower", scaleFactor=0.03)
             Combat.lowerHP(monster, shadowDamage)
-        duration = 1
+        duration = 2
         Combat.addStatus(target, "Shroud", duration)
-        
-    def _shroudCheck(self, targt):
-        source = self.owner
-        if source.MP > source.totalMP * 0.5:
-            return (True, "")
-        return (False, "Must have at least 50% MP to use " + self.name)
-    
+
     def _shadowstep(self, target):
         source = self.owner
         Combat.movePerson(source, target.location, instant=True)
@@ -1922,13 +1916,12 @@ class Ability(object):
         'target' : 'self',
         'action' : _shroud,
         'cooldown' : 5,
-        'checkFunction' : _shroudCheck,
+        'checkFunction' : None,
         'breakStealth' : 100,
         'image' : NIGHTBLADE_SKILLS + 'shroud.png',
         'text' : 'Deal 4-12 +3% Shadow damage to all foes in melee range.\n' + \
-                'Also activates a protective shroud for the next turn that gives\n' + \
-                'a 10% Avoidance chance.  The Nightblade must have at least 50%\n' + \
-                'of its mana remaining to use this ability. (No MP is consumed.)'
+                'Also activates a protective shroud for the next 2 turns that\n' + \
+                'gives +20% Avoidance chance.'
         },
         'Shadowstep':
         {

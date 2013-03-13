@@ -1154,7 +1154,7 @@
   [IMAGE: shroud.png]
   [ELEMENT: Shadow]
   [INTERNAL: Avoidance]
-    [MAGNITUDE: 10]
+    [MAGNITUDE: 20]
   [CATEGORY: Buff]
 	
 [NAME: Dark Intent]

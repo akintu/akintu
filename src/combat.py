@@ -125,22 +125,22 @@ class Combat(object):
         accCritMod = 0
         chanceToHit = None
         delta = offense - defense
-        if(15 < delta):
+        if(20 < delta):
             chanceToHit = 100
-            accCritMod = (delta - 10) * 0.25
-        elif(0 <= delta <= 15):
-            chanceToHit = 85 + delta
+            accCritMod = (delta - 20) * 0.25
+        elif(0 <= delta <= 20):
+            chanceToHit = 80 + delta
         elif(-5 <= delta < 0):
-            chanceToHit = 85 - delta * 3
-        elif(-27 <= delta < -5):
-            chanceToHit = 70 - (delta + 5) * 2
-        elif(-47 <= delta < -27):
-            chanceToHit = 30 - (delta + 27) * 1
-        elif(-57 <= delta < -47):
-            chanceToHit = 10 - (delta + 47) * 0.5
+            chanceToHit = 80 - delta * 4
+        elif(-15 <= delta < -5):
+            chanceToHit = 60 - (delta + 5) * 3
+        elif(-25 <= delta < -15):
+            chanceToHit = 30 - (delta + 15) * 2
+        elif(-35 <= delta < -25):
+            chanceToHit = 10 - (delta + 25) * 0.5
         else:
             chanceToHit = 5
-            accCritMod = (delta + 57) * (-2)
+            accCritMod = (delta + 35) * (-2)
         return [chanceToHit, accCritMod]
 
     @staticmethod
@@ -597,7 +597,7 @@ class Combat(object):
                                     element + " damage", receiver, color)
         else:
             Combat.sendCombatMessage("DoT --> " + target.name + ": " + str(result) + " " + element + 
-                                    " damage", receiver, color)
+                                    " damage", target, color)
         return result
 
     @staticmethod

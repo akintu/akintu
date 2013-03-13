@@ -55,7 +55,7 @@ class Inventory(object):
             self.addItem(theorycraft.TheoryCraft.getWeaponByName("Stiletto"))
             self.addItem(theorycraft.TheoryCraft.getWeaponByName("Dagger"))
         elif ccName == "Nightblade":
-            self.addItem(theorycraft.TheoryCraft.getWeaponByName("Short Sword"))
+            self.addItem(theorycraft.TheoryCraft.getWeaponByName("Long Sword"))
         elif ccName == "Battle Mage":
             self.addItem(theorycraft.TheoryCraft.getWeaponByName("Morning Star"))
             self.addItem(theorycraft.TheoryCraft.getArmorByName("Medium Shield"))

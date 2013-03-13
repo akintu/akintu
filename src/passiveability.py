@@ -10,6 +10,7 @@ ARCANE_ARCHER = ROOT_FOLDER + "arcane_archer_skills/"
 ASSASSIN = ROOT_FOLDER + "assassin_skills/"
 BATTLEMAGE = ROOT_FOLDER + "battlemage_skills/"
 BARBARIAN = ROOT_FOLDER + "barbarian_skills/"
+NIGHTBLADE = ROOT_FOLDER + "nightblade_skills/"
 SPELLSWORD = ROOT_FOLDER + "spellsword_skills/"
 
 class PassiveAbilityStub(object):
@@ -291,6 +292,11 @@ class PassiveAbility(object):
             target.abilities.remove(toRemove)
 
     # Nightblade
+    def applyNightArmor(self, target):
+        target.baseDR += 3
+        target.baseShadowResistance += 3
+        target.avoidanceChance += 3
+    
     def applyForbiddenStudies(self, target):
         target.baseShadowBonusDamage += 5
 
@@ -824,6 +830,15 @@ class PassiveAbility(object):
 
 
         # Nightblade
+        'Night Armor':
+        {
+        'class' : 'Nightblade',
+        'level' : 1,
+        'type' : 'static',
+        'action' : applyNightArmor,
+        'image' : NIGHTBLADE + 'night-armor.png',
+        'text' : 'Grants +3% DR, +3% Avoidance, +3% Shadow Resistance'
+        },
         'Forbidden Studies':
         {
         'class' : 'Nightblade',

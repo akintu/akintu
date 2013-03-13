@@ -604,8 +604,13 @@ class Game(object):
         # Cycles through the current persons in the current combat pane.
         if not self.combat:
             return
+        resetNeeded = False
+        for x in self.panePersonIdList:
+            if x not in self.pane.person:
+                resetNeeded = True
         if not self.panePersonIdList or not self.currentTargetId \
-           or self.currentTargetId not in self.pane.person:
+           or self.currentTargetId not in self.pane.person or \
+           resetNeeded:
             self.panePersonIdList = [x for x in self.pane.person]
             self.currentTargetId = self.panePersonIdList[0]
         elif not reverse:
