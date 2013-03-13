@@ -59,15 +59,7 @@ class Region:
             self.history.append(method + "|" + shape + "|" + "|".join([str(x) for x in details]))
             
     def __eq__(self, other):
-        for L in self:
-            if L not in other:
-                return False
-                
-        for L in other:
-            if L not in self:
-                return False
-        
-        return True
+        return all(x in other for x in self) and all (x in self for x in other)
             
     def dehydrate(self):
         return self.__repr__()
@@ -141,13 +133,6 @@ class Region:
 
 if __name__ == "__main__":
     R = Region()
-    #This was my first test case.  I like the second one WAY better though!
-    #R("ADD", "SQUARE", Location((0, 0), (5, 8)), Location((0, 0), (15, 18)))
-    #R("SUB", "SQUARE", Location((0, 0), (7, 10)), Location((0, 0), (13, 16)))
-    #R("ADD", "DIAMOND", Location((0, 0), (22, 10)), 5)
-    #R("SUB", "DIAMOND", Location((0, 0), (22, 15)), 3)
-    #R("ADD", "CIRCLE", Location((0, 0), (0, 0)), 8)
-    #R("SUB", "CIRCLE", Location((0, 0), (0, 0)), 5)
 
     #Build region from shapes
     R("ADD", "SQUARE", Location(0, 0), Location(31, 19))
@@ -158,7 +143,6 @@ if __name__ == "__main__":
     R("ADD", "LINE", Location(20, 10), Location(22, 10), 3)
     #R("ADD", "CURVE", Location(20, 18), 5, 3)
 
-    #Display the region
     print R
 
     l1 = Location(15, 10)
@@ -169,3 +153,5 @@ if __name__ == "__main__":
         
     S = Region(R.dehydrate())
     assert S == R
+    S("ADD", "CIRCLE", Location(4, 4), 3)
+    assert S != R
