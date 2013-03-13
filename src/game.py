@@ -9,7 +9,6 @@ import os
 import sys
 import time
 import datetime
-import pickle
 
 from combat import *
 from command import *
@@ -45,8 +44,7 @@ class Game(object):
         if isinstance(state, dict):     #This means we're creating a new game
             self.state = state
         else:                           #This means we're loading the state from a save file
-            unpickled_state = pickle.load( open( state, "rb" ) )
-            self.state = unpickled_state
+            self.state = State.load(WORLD_SAVE_PATH, state)
 
         Sprites.load(self.state[SEED_KEY])  #Static method call to load sprites
         self.world = World(world_state=self.state)
@@ -254,14 +252,18 @@ class Game(object):
                     #Remove from pane
                     self.remove_entities(command.location)
                     self.screen.update_tile(self.pane.get_tile(command.location.tile), command.location)
-                    print "Removing entities at " + str(command.location.tile)
+                    #print "Removing entities at " + str(command.location.tile)
             
             elif command.type == "CHEST":
                 if command.action == "ADD":
-                    self.pane.add_chest(command.location.tile, command.chestType, command.level)
+                    print "Adding chest to " + str(command.location)
+                    self.pane.add_chest(command.chestType, command.level, command.location.tile)
+                    
                 if command.action == "REMOVE":
+                    print "Removing chest from " + str(command.location)
                     self.remove_entities(command.location)
                     #self.pane.remove_chest(command.location.tile)
+                self.screen.update_tile(self.pane.get_tile(command.location.tile), command.location)
             
             elif command.type == "CLIENT" and command.action == "RESET_TARGETING" and command.id == self.id:
                 self.selectionMode = "targeting"
@@ -303,12 +305,8 @@ class Game(object):
             max_save += 1
             file_name = str("%03d" % max_save) + "_" + str(player.name) + "_" + str(player.race) + "_" + str(player.characterClass) + CHAR_SAVE_EXT
             self.playerSaveFile = file_name
-        path_to_file = os.path.join(CHAR_SAVE_PATH, file_name)
-        print "Saving Character To " + str(path_to_file)
         
-        file = open(path_to_file, "ab") #append, byte format (to keep line endings consistent)
-        file.write("\n" + player_string)
-        file.close()
+        State.save(CHAR_SAVE_PATH, file_name, player_string)
         
     def load_player(self, file_name):
         '''
@@ -316,7 +314,7 @@ class Game(object):
         file_name can be the 3 digit number at the beginning of the file
         
         '''
-        path_to_file = os.path.join(CHAR_SAVE_PATH, file_name)
+        #path_to_file = os.path.join(CHAR_SAVE_PATH, file_name)
         if not os.path.exists(file_name):
             try:
                 tmp = int(file_name)    #Force try/catch
@@ -326,23 +324,16 @@ class Game(object):
                         if filename.split("_")[0] != file_name:  
                             continue
                         else:
-                            path_to_file = os.path.join(CHAR_SAVE_PATH, filename)
-                            self.playerSaveFile = filename
+                            #path_to_file = os.path.join(CHAR_SAVE_PATH, filename)
                             print "Substituting " + file_name + " with " + filename
+                            file_name = filename
+                            self.playerSaveFile = filename
                             break
             except:
-                print "Could not find " + str(path_to_file)
+                print "Could not find " + str(file_name)
                 #self.quit()
-        
-        
-        file = open(path_to_file, "r")
-        for line in file:
-            pass
-        last = line
-        print last
-        file.close()
-        print "Loading player from " + str(path_to_file)
-        return last
+        player_string = State.load(CHAR_SAVE_PATH, filename)
+        return player_string
     
     def save_and_quit(self):
         '''
@@ -725,6 +716,5 @@ class Game(object):
             self.pane = self.pane.get_combat_pane(location)
         else:
             self.pane = self.world.get_pane(location.pane)
-        self.pane.save_state()
         self.screen.set_pane(self.pane)
 

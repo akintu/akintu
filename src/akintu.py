@@ -14,12 +14,6 @@ import welcome
 
 
 def main():
-    # Create the saves directories if they don't exist
-    if not os.path.exists(CHAR_SAVE_PATH):
-        os.makedirs(CHAR_SAVE_PATH)
-    if not os.path.exists(WORLD_SAVE_PATH):
-        os.makedirs(WORLD_SAVE_PATH)
-
     #JAB: Added this debugging backdoor to bypass the menu
     #argv[1] = "1" if server, anything else if client
     #argv[2] = character name

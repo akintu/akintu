@@ -45,6 +45,7 @@ class GameServer():
                 for p, i in self.player.iteritems():
                     if command.location.pane == self.person[i].location.pane and not self.person[i].cPane:
                         self.SDF.send(p, command)
+                        self.send_world_items(p, command.location)
 
                 # Send list of players to the issuing client
                 if port:
@@ -99,13 +100,9 @@ class GameServer():
                                     self.SDF.send(p, Command("PERSON", "CREATE", id=i, \
                                             location=self.person[i].location, \
                                             details=self.person[i].dehydrate()))
-                        
                         # TODO: JAB HANDLE SENDING SPECIFIC PANE THINGS HERE
-                        
-                        # TREASURE CHESTS
-                        
-                        # ITEMS
-                        
+                            
+                        self.send_world_items(p, command.location)
                         
                         self.unload_panes()
 
@@ -211,6 +208,18 @@ class GameServer():
             # Get items: TODO
             
     ###### Utility Methods ######
+    
+    def send_world_items(self, player, location):
+        # print (location.pane)
+        # print self.pane[location.pane]
+        chests = self.pane[location.pane].get_chest_list()
+        print chests
+        if chests:
+            for chest in chests:
+                cmd = Command("CHEST", "ADD", chestType=chest[0], level=chest[1], location=Location(location.pane, chest[2]))
+                self.SDF.send(player, cmd)
+                # print cmd
+        # ITEMS
     
     def tile_is_open(self, location):
         if location.pane not in self.pane:
