@@ -20,9 +20,13 @@ from gamescreen import GameScreen
 from theorycraft import TheoryCraft
 from world import *
 
+
 import levelup as lvl
 
 clock = pygame.time.Clock()
+
+# Move to const:
+LEVEL_MAX = 5
 
 class Game(object):
     def __init__(self, port, serverip=None, state=None, player=None, **kwargs):
@@ -460,7 +464,6 @@ class Game(object):
                     elif event.key == K_c:
                         self.display_character_sheet()
                     elif event.key == K_y:
-                        self.performingLevelup = True
                         self.request_levelup()
                     
     def get_item(self):
@@ -475,10 +478,11 @@ class Game(object):
         # Ask server if this character may levelup. TODO
         # Remove EXP code left for testing, TODO
         player = self.pane.person[self.id]
-        player._experience = 175
-        player.level = 2
-        self.levelup = lvl.Levelup(player, self.screen)
-        self.levelup.next()
+        if player.experience > player.getExpForNextLevel() and player.level < LEVEL_MAX:
+            player.level += 1
+            self.performingLevelup = True
+            self.levelup = lvl.Levelup(player, self.screen)
+            self.levelup.next()
             
     def choose_ability(self):
         text = "Select an Ability"
@@ -532,6 +536,9 @@ class Game(object):
     def attempt_attack(self):
         if not self.currentTargetId:
             print "No target selected."
+            return
+        if not self.currentAbillity:
+            print "No ability selected."
             return
         self.CDF.send(Command("ABILITY", "ATTACK", id=self.id, targetId=self.currentTargetId,
                 abilityName=self.currentAbility.name))

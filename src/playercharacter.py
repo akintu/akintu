@@ -210,7 +210,8 @@ class PlayerCharacter(p.Person):
             self.registerBasicAttacks()
             for abil in ability.Ability.allAbilities:
                 current = ability.Ability.allAbilities[abil]
-                if current['class'] == self.baseClass or current['class'] == self.secondaryClass or current['class'] == self.characterClass:
+                if current['class'] == self.baseClass or current['class'] == self.secondaryClass or current['class'] == self.characterClass or \
+                (current['class'] == "Thief*" and self.baseClass == "Thief"):
                     if current['level'] == 1:
                         newAbil = ability.Ability(abil, self)
                         self.abilities.append(newAbil)
@@ -219,7 +220,8 @@ class PlayerCharacter(p.Person):
         if new:
             for pAbil in passiveability.PassiveAbility.allContentByName:
                 current = passiveability.PassiveAbility.allContentByName[pAbil]
-                if current['class'] == self.baseClass or current['class'] == self.secondaryClass or current['class'] == self.characterClass:
+                if current['class'] == self.baseClass or current['class'] == self.secondaryClass or current['class'] == self.characterClass or \
+                (current['class'] == "Thief*" and self.baseClass == "Thief"):
                     if current['level'] == 1:
                         newPAbil = passiveability.PassiveAbility(pAbil, self)
                         self.passiveAbilities.append(newPAbil)

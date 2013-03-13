@@ -702,7 +702,8 @@ class Combat(object):
         outgoingDamage *= overallDamageMod
 
         if hitType == "Critical Hit":
-            outgoingDamage += int(round(outgoingDamage * criticalDamageMod * float(weapon.criticalMultiplier) / 100))
+            outgoingDamage += int(round(outgoingDamage * criticalDamageMod * 
+                            float(weapon.criticalMultiplier + source.totalCriticalMagnitude) / 100))
 
         elementalEffects = Combat.applyOnHitEffects(source, target)
 
