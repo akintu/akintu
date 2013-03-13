@@ -10,6 +10,8 @@ ARCANE_ARCHER = ROOT_FOLDER + "arcane_archer_skills/"
 ASSASSIN = ROOT_FOLDER + "assassin_skills/"
 BATTLEMAGE = ROOT_FOLDER + "battlemage_skills/"
 BARBARIAN = ROOT_FOLDER + "barbarian_skills/"
+DRAGOON = ROOT_FOLDER + "dragoon_skills/"
+MARKSMAN = ROOT_FOLDER + "marksman_skills/"
 NIGHTBLADE = ROOT_FOLDER + "nightblade_skills/"
 SPELLSWORD = ROOT_FOLDER + "spellsword_skills/"
 
@@ -571,7 +573,9 @@ class PassiveAbility(object):
         'type' : 'dynamic',
         'action' : applyPolearmSpecialization,
         'onStringList' : ['Outgoing Melee Attack'],
-        'offStringList' : ['Outgoing Melee Attack Complete']
+        'offStringList' : ['Outgoing Melee Attack Complete'],
+        'image' : DRAGOON + "polearm-specialization.png",
+        'text' : 'Grants Force x 1.30 and Critical hit chance + 5% when using polearms.'
         },
         'Dragon Foe':
         {
@@ -582,7 +586,9 @@ class PassiveAbility(object):
         'onStringList' : ['Outgoing Melee Attack', 'Outgoing Ranged Attack',
                           'Incoming Melee Attack', 'Incoming Ranged Attack'],
         'offStringList' : ['Outgoing Melee Attack Complete', 'Outgoing Ranged Attack Complete',
-                           'Incmoing Melee Attack Complete', 'Incoming Ranged Attack Complete']
+                           'Incmoing Melee Attack Complete', 'Incoming Ranged Attack Complete'],
+        'image' : DRAGOON + 'dragon-foe.png',
+        'text' : '+2 Melee and Ranged Accuracy vs. dragonkin and +2 Dodge vs. their attacks.'
         },
         'Fire-Touched':
         {
@@ -590,6 +596,8 @@ class PassiveAbility(object):
         'level' : 2,
         'type' : 'static',
         'action' : applyFireTouched,
+        'image' : DRAGOON + 'fire-touched.png',
+        'text' : '+10% Fire Resistance'
         },
 
 
@@ -654,7 +662,9 @@ class PassiveAbility(object):
         'class' : 'Marksman',
         'level' : 1,
         'type' : 'static',
-        'action' : applyExcellentVision
+        'action' : applyExcellentVision,
+        'image' : MARKSMAN + 'excellent-vision.png',
+        'text' : '+2 Range with all ranged weapons and +2 Awareness'
         },
         'Laying in Wait':
         {
@@ -663,7 +673,9 @@ class PassiveAbility(object):
         'type' : 'dynamic',
         'action' : applyLayingInWait,
         'onStringList' : ['Player Turn Start'],
-        'offStringList' : ['Outgoing Melee Attack', 'Outgoing Ranged Attack']
+        'offStringList' : ['Outgoing Melee Attack', 'Outgoing Ranged Attack'],
+        'image' : MARKSMAN + 'laying-in-wait.png',
+        'text' : 'If the marksman did not move last turn, gain +2 Accuracy (stacking.)'
         },
         'Fire Handler':
         {
@@ -671,13 +683,19 @@ class PassiveAbility(object):
         'level' : 2,
         'type' : 'static',
         'action' : applyFireHandler,
+        'image' : MARKSMAN + 'fire-handler.png',
+        'text' : '+5% Fire Resistance, +5% Fire damage'
         },
         'Camouflage':
         {
         'class' : 'Marksman',
         'level' : 2,
         'type' : 'static',
-        'action' : applyCamouflage
+        'action' : applyCamouflage,
+        'image' : MARKSMAN + 'camouflage.png',
+        'text' : 'If invisible via magical spells or potions, +8 Sneak.\n' + \
+                'Also grants +2 Dodge and +2 Ranged Accuracy always.'
+                
         },
         'Shortbow Niche':
         {
@@ -686,7 +704,9 @@ class PassiveAbility(object):
         'type' : 'dynamic',
         'action' : applyShortbowNiche,
         'onStringList' : ['Outgoing Ranged Attack'],
-        'offStringList' : ['Outgoing Ranged Attack Complete']
+        'offStringList' : ['Outgoing Ranged Attack Complete'],
+        'image' : MARKSMAN + 'shortbow-niche.png',
+        'text' : '+10% Critical Magnitude and +1 Accuracy when using a shortbow.'
         },
         'Incredible Focus':
         {
@@ -695,7 +715,10 @@ class PassiveAbility(object):
         'type' : 'dynamic',
         'action' : applyIncredibleFocus,
         'onStringList' : ['Status Applied'],
-        'offStringList' : []
+        'offStringList' : [],
+        'image' : MARKSMAN + 'incredible-focus.png',
+        'text' : 'Any successful stun attack against the Marksman has a 75% chance\n' + \
+                'of failing to affect her.'
         },
         'Superior Training':
         {
@@ -704,7 +727,10 @@ class PassiveAbility(object):
         'type' : 'dynamic',
         'action' : applySuperiorTraining,
         'onStringList' : ['Incoming Ranged Attack Hit'],
-        'offStringList' : []
+        'offStringList' : [],
+        'image' : MARKSMAN + 'superior-training.png',
+        'text' : 'If the Marksman is hit with a non-magical ranged attack, her accuracy\n' + \
+                'increases by 3 for the next turn.'
         },
 
         'Knowledge of Poison':
@@ -753,21 +779,28 @@ class PassiveAbility(object):
         'class' : 'Assassin',
         'level' : 1,
         'type' : 'static',
-        'action' : applyAnatomy
+        'action' : applyAnatomy,
+        'image' : ASSASSIN + 'anatomy.png',
+        'text' : '+10% Critical chance for all melee and ranged attacks\n' + \
+                'other than ranged backstabs.'
         },
         'Slightly Sneakier':
         {
         'class' : 'Assassin',
         'level' : 3,
         'type' : 'static',
-        'action' : applySlightlySneakier
+        'action' : applySlightlySneakier,
+        'image' : ASSASSIN + 'slightly-sneakier.png',
+        'text' : '+3 Sneak'
         },
         'Dabbles with Poison':
         {
         'class' : 'Assassin',
         'level' : 4,
         'type' : 'static',
-        'action' : applyDabblesWithPoison
+        'action' : applyDabblesWithPoison,
+        'image' : ASSASSIN + 'dabbles-with-poison.png',
+        'text' : '+2 Poison Rating to all applied poisons'
         },
 
 
