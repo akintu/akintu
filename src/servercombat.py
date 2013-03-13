@@ -144,6 +144,8 @@ class CombatServer():
                 elif char.team == "Players" and char.hardcore:
                     Combat.sendCombatMessage(char.name + " has Perished!", color='darkred', character=char)
                     # TODO: Delete saves, end game?
+            
+        
                 
         for char in toUpdateList:
             self.combatStates[combatPane].deadMonsterList.append(char)
@@ -157,6 +159,10 @@ class CombatServer():
                 monstersAlive = True
             if char.team == "Players":
                 livingPlayers.append(char)
+                
+        if not livingPlayers:
+            self.monster_victory()
+            return "END_COMBAT"
                 
         rValue = "CONTINUE_COMBAT"
         if not monstersAlive and livingPlayers:
@@ -427,6 +433,10 @@ class CombatServer():
 
     def monster_victory(self):
         i = [i for i, p in self.server.person.iteritems() if p.location == player.cPane][0]
+        try:
+            self.combatStates[self.server.person[i].cPane].turnTimer.cancel()
+        except:
+            pass
         self.server.person[i].ai.resume()
         self.server.person[i].cPane = None
         self.server.person[i].cLocation = None
@@ -435,8 +445,6 @@ class CombatServer():
         '''Kicks player out of combat, back to Pane 0,0 and subtracts 10% of gold.
         Will restore HP/MP/AP to maximum, and remove all temporary status effects.'''
         goldLoss = player.inventory.gold / 10
-        if player.inventory.gold < 10:
-            goldLoss = player.inventory.gold
         Combat.sendCombatMessage("You lose: " + str(goldLoss) + " gold for dying!",
                                 player, color='darkred', toAll=False)
         player.inventory.gold -= goldLoss
