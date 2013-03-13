@@ -537,7 +537,7 @@ class Game(object):
         if not self.currentTargetId:
             print "No target selected."
             return
-        if not self.currentAbillity:
+        if not self.currentAbility:
             print "No ability selected."
             return
         self.CDF.send(Command("ABILITY", "ATTACK", id=self.id, targetId=self.currentTargetId,
