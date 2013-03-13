@@ -161,7 +161,7 @@ class CombatServer():
                 livingPlayers.append(char)
                 
         if not livingPlayers:
-            self.monster_victory()
+            self.monster_victory(combatPane)
             return "END_COMBAT"
                 
         rValue = "CONTINUE_COMBAT"
@@ -431,15 +431,15 @@ class CombatServer():
         self.server.unload_panes()
         self.server.SDF.send(port, Command("CLIENT", "RESET_TARGETS", id=player.id))
 
-    def monster_victory(self):
-        i = [i for i, p in self.server.person.iteritems() if p.location == player.cPane][0]
-        try:
-            self.combatStates[self.server.person[i].cPane].turnTimer.cancel()
-        except:
-            pass
-        self.server.person[i].ai.resume()
-        self.server.person[i].cPane = None
-        self.server.person[i].cLocation = None
+    def monster_victory(self, combatPane):
+        p = [p for i, p in self.server.person.iteritems() if p.location == combatPane][0]
+        if self.combatStates[combatPane].turnTimer:
+            self.combatStates[combatPane].turnTimer.cancel()
+        
+        print "MONSTERLEADER:", p.id, p.location
+        p.ai.resume()
+        p.cPane = None
+        p.cLocation = None
         
     def softcoreDeath(self, player):
         '''Kicks player out of combat, back to Pane 0,0 and subtracts 10% of gold.
