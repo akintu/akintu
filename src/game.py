@@ -59,6 +59,7 @@ class Game(object):
         self.keystate = []
         self.running = False
         self.combat = False
+        self.musicQueue = None
         self.performingLevelup = False
         
         # Levelup state
@@ -129,7 +130,25 @@ class Game(object):
 
         self.check_queue()
         self.handle_events()
+        self.play_music()
         self.screen.update()
+        
+    def play_music(self, state="overworld", stop=False):
+        musicDir = os.path.join('res', 'music', state)
+        if stop:
+            pygame.mixer.music.fadeout(500)
+            self.musicQueue = os.path.join(musicDir, random.choice(os.listdir(musicDir)))
+
+        if not pygame.mixer.music.get_busy():
+            music = None
+            if self.musicQueue:
+                music = self.musicQueue
+                self.musicQueue = None
+            else:
+                music = os.path.join(musicDir, random.choice(os.listdir(musicDir)))
+        
+            pygame.mixer.music.load(music)
+            pygame.mixer.music.play()
 
     def check_queue(self):
         while not self.CDF.queue.empty():
@@ -225,6 +244,10 @@ class Game(object):
             ###### Initiate Combat ######
             elif command.type == "UPDATE" and command.action == "COMBAT":
                 self.combat = command.combat
+                if self.combat:
+                    self.play_music("battle", True)
+                else:
+                    self.play_music("overworld", True)
             
             ###### Update HP Buffers ######
             elif command.type == "UPDATE" and command.action == "HP_BUFFER":
