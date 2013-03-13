@@ -15,6 +15,7 @@ MARKSMAN = ROOT_FOLDER + "marksman_skills/"
 NIGHTBLADE = ROOT_FOLDER + "nightblade_skills/"
 SHADOW = ROOT_FOLDER + "shadow_skills/"
 SPELLSWORD = ROOT_FOLDER + "spellsword_skills/"
+TRICKSTER = ROOT_FOLDER + "trickster_skills/"
 
 class PassiveAbilityStub(object):
     def __init__(self, name):
@@ -466,6 +467,9 @@ class PassiveAbility(object):
         magnitude = 3
         Combat.addStatus(source, "Slightly Smugger", duration, magnitude)
 
+    def applyJustPlainLucky(self, target):
+        target.baseDodge += 3
+        
     # Monsters
 
     def applyDeflectMissiles(self, target, reverse=False, hero=None):
@@ -1074,9 +1078,11 @@ class PassiveAbility(object):
         'type' : 'dynamic',
         'action' : applyMysticalResearch,
         'onStringList' : ['Outgoing Spell Cast'],
-        'offStringList' : ['Outgoing Spell Cast Complete']
+        'offStringList' : ['Outgoing Spell Cast Complete'],
+        'image' : ARCANE_ARCHER + 'mystical-research.png',
+        'text' : '+4 Spellpower with all Mystic spells.'
         },
-        'Arcane Threading Upgrade':
+        '--IGNORE-- Arcane Threading Upgrade':
         {
         'class' : 'Arcane Archer',
         'level' : 4,
@@ -1090,7 +1096,9 @@ class PassiveAbility(object):
         'class' : 'Trickster',
         'level' : 1,
         'type' : 'static',
-        'action' : applyWildSurvival
+        'action' : applyWildSurvival,
+        'image' : TRICKSTER + 'wild-survival.png',
+        'text' : '+12 Dodge'
         },
         'Glee':
         {
@@ -1099,7 +1107,9 @@ class PassiveAbility(object):
         'type' : 'dynamic',
         'action' : applyGlee,
         'onStringList' : ['Attack Dodged'],
-        'offStringList' : []
+        'offStringList' : [],
+        'image' : TRICKSTER + 'glee.png',
+        'text' : 'Regain 18 + 2 * Level MP every time you dodge an attack.'
         },
         'Infuriating Blows':
         {
@@ -1108,7 +1118,9 @@ class PassiveAbility(object):
         'type' : 'dynamic',
         'action' : applyInfuriatingBlows,
         'onStringList' : ['Outgoing Melee Attack Hit', 'Outgoing Ranged Attack Hit'],
-        'offStringList' : []
+        'offStringList' : [],
+        'image' : TRICKSTER + 'infuriating-blows.png',
+        'text' : 'Regain 2 MP for every successful melee or ranged attack.'
         },
         'Double Dodge':
         {
@@ -1117,7 +1129,10 @@ class PassiveAbility(object):
         'type' : 'dynamic',
         'action' : applyDoubleDodge,
         'onStringList' : ['Attack Dodged'],
-        'offStringList' : [] # Removed on status removal.
+        'offStringList' : [], # Removed on status removal.
+        'image' : TRICKSTER + 'double-dodge.png',
+        'text' : 'If you dodge an attack, +5 Dodge for the rest of the turn.\n' + \
+                'Stacks twice up to a total of +15 Dodge.'
         },
         'Risky Fighting':
         {
@@ -1126,7 +1141,9 @@ class PassiveAbility(object):
         'type' : 'dynamic',
         'action' : applyRiskyFighting,
         'onStringList' : ['Outgoing Melee Attack'],
-        'offStringList' : ['Outgoing Melee Attack Complete']
+        'offStringList' : ['Outgoing Melee Attack Complete'],
+        'image' : TRICKSTER + 'risky-fighting.png',
+        'text' : '+4 Accuracy and +5% Critical chance with melee weapons if dual wielding.'
         },
         'Slightly Smugger':
         {
@@ -1135,7 +1152,18 @@ class PassiveAbility(object):
         'type' : 'dynamic',
         'action' : applySlightlySmugger,
         'onStringList' : ['Attack Dodged'],
-        'offStringList' : [] # Removed on status removal
+        'offStringList' : [], # Removed on status removal
+        'image' : TRICKSTER + 'slightly-smugger.png',
+        'text' : 'If you dodge an attack, gain +3 Spellpower for your next turn.'
+        },
+        'Just Plain Lucky':
+        {
+        'class' : 'Trickster',
+        'level' : 5,
+        'type' : 'static',
+        'action' : applyJustPlainLucky,
+        'image' : TRICKSTER + 'just-plain-lucky.png',
+        'text' : '+3 Dodge'
         },
 
         # Monsters
