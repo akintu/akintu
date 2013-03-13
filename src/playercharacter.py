@@ -504,7 +504,8 @@ class PlayerCharacter(p.Person):
         passiveNames = [x for x in passiveability.PassiveAbility.allContentByName.keys()]
         passives = [x for x in passiveNames 
                     if passiveability.PassiveAbility.allContentByName[x]['class'] == self.characterClass and
-                    passiveability.PassiveAbility.allContentByName[x]['level'] == self.level]
+                    passiveability.PassiveAbility.allContentByName[x]['level'] == self.level and
+                    '--IGNORE--' not in x]
                     
         passiveStubs = []
         for passive in passives:
