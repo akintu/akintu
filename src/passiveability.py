@@ -4,7 +4,7 @@ import sys
 import listener
 from combat import *
 
-ROOT_FOLDER = "./res/images/icons/"
+ROOT_FOLDER = "./res/images/icons/skills/"
 
 ARCANE_ARCHER = ROOT_FOLDER + "arcane_archer_skills/"
 ASSASSIN = ROOT_FOLDER + "assassin_skills/"
@@ -13,6 +13,7 @@ BARBARIAN = ROOT_FOLDER + "barbarian_skills/"
 DRAGOON = ROOT_FOLDER + "dragoon_skills/"
 MARKSMAN = ROOT_FOLDER + "marksman_skills/"
 NIGHTBLADE = ROOT_FOLDER + "nightblade_skills/"
+SHADOW = ROOT_FOLDER + "shadow_skills/"
 SPELLSWORD = ROOT_FOLDER + "spellsword_skills/"
 
 class PassiveAbilityStub(object):
@@ -810,7 +811,9 @@ class PassiveAbility(object):
         'class' : 'Shadow',
         'level' : 1,
         'type' : 'static',
-        'action' : applyADabblerOfSorts
+        'action' : applyADabblerOfSorts,
+        'image' : SHADOW + 'a-dabbler-of-sorts.png',
+        'text' : '+3 Poison rating to any applied poisons and +5% poison damage overall.'
         },
         'Backflip':
         {
@@ -819,23 +822,30 @@ class PassiveAbility(object):
         'type' : 'dynamic',
         'action' : applyBackflip,
         'onStringList' : ['Incoming Melee Attack', 'Incoming Ranged Attack'],
-        'offStringList' : ['Incoming Melee Attack Complete', 'Incoming Ranged Attack Complete']
+        'offStringList' : ['Incoming Melee Attack Complete', 'Incoming Ranged Attack Complete'],
+        'image' : SHADOW + 'backflip.png',
+        'text' : 'If there is at least one unoccupied passable tile behind you when you are\n' + \
+                'attacked by a ranged or melee attack, you gain +3 Dodge against it.'
         },
         'Treasure Bag':
         {
         'class' : 'Shadow',
         'level' : 2,
         'type' : 'static',
-        'action' : applyTreasureBag
+        'action' : applyTreasureBag,
+        'image' : SHADOW + 'treasure-bag.png',
+        'text' : '+15 lbs. carrying capacity'
         },
         'An Eye for Value':
         {
         'class' : 'Shadow',
         'level' : 2,
         'type' : 'static',
-        'action' : applyAnEyeForValue
+        'action' : applyAnEyeForValue,
+        'image' : SHADOW + 'an-eye-for-value.png',
+        'text' : '+2% Gold Find'
         },
-        'Backstab Upgrade':
+        '--IGNORE-- Backstab Upgrade':
         {
         'class' : 'Shadow',
         'level' : 2,
@@ -849,7 +859,9 @@ class PassiveAbility(object):
         'type' : 'dynamic',
         'action' : applySlingSkills,
         'onStringList' : ['Outgoing Ranged Attack'],
-        'offStringList' : ['Outgoing Ranged Attack Complete']
+        'offStringList' : ['Outgoing Ranged Attack Complete'],
+        'image' : SHADOW + 'sling-skills.png',
+        'text' : '+5 Accuracy with slings'
         },
         'Hide in Peril':
         {
@@ -858,7 +870,10 @@ class PassiveAbility(object):
         'type' : 'dynamic',
         'action' : applyHideInPeril,
         'onStringList' : ['Incmoing Damage'],
-        'offStringList' : []
+        'offStringList' : [],
+        'image' : SHADOW + 'hide-in-peril.png',
+        'text' : 'When harmed by anything dealing at least 40% of your maximum HP,\n' + \
+                'you will immediately enter stealth if you aren\'t in stealth already.'
         },
 
 
