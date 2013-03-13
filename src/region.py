@@ -50,8 +50,12 @@ class Region:
         if shape.upper() in self.shape:
             if method.upper() == "ADD":
                 self.locations |= self.shape[shape.upper()](*details)
-            else:
+            elif method.upper() == "SUB":
                 self.locations -= self.shape[shape.upper()](*details)
+            elif method.upper() == "INT":
+                self.locations &= self.shape[shape.upper()](*details)
+            elif method.upper() == "XOR":
+                self.locations ^= self.shape[shape.upper()](*details)
             self.history.append(method + "|" + shape + "|" + "|".join([str(x) for x in details]))
             
     def __eq__(self, other):
@@ -83,8 +87,12 @@ class Region:
             if shape.upper() in self.shape:
                 if method.upper() == "ADD":
                     self.locations |= self.shape[shape.upper()](*details)
-                else:
+                elif method.upper() == "SUB":
                     self.locations -= self.shape[shape.upper()](*details)
+                elif method.upper() == "INT":
+                    self.locations &= self.shape[shape.upper()](*details)
+                elif method.upper() == "XOR":
+                    self.locations ^= self.shape[shape.upper()](*details)
                 
     def square(self, loc1, loc2):
         locations = set()
