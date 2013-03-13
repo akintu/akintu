@@ -51,14 +51,11 @@ MONSTERS_IMAGES_PATH = os.path.join(IMAGES_PATH, "monsters")
 SPRITES_IMAGES_PATH = os.path.join(IMAGES_PATH, "sprites")
 ITEMS_IMAGES_PATH = os.path.join(IMAGES_PATH, "items")
 
-#IMAGE KEYS
-CHEST_KEY = "chests"
-
 #======================SAVE/LOAD KEYS==========================
 SEED_KEY = "seed"
 MONSTER_KEY = "monsters"
 ITEM_KEY = "items"
-CHEST_KEY = "chests"
+CHEST_KEY = "chests"    #Also used with images
 
 #=====================CMD TYPES/ACTIONS========================
 

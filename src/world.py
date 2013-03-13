@@ -40,18 +40,19 @@ class World(object):
                 self.panes[loc] = Pane(self.seed, loc)
 
         #Check Disk For Pane
-        path = os.path.join(TMP_WORLD_SAVE_PATH, "Pane_" + str(location[0]) + "_" + str(location[1]))
-        data = State.load(path)
-        if data:
-            state = data
-        else:
-            #Check State For Pane
-            state = None
-            if self.world_state:
-                if location in self.world_state:
-                    state = self.world_state[location]
+        state = None
+        # if is_server:
+            # filename = "Pane_" + str(location[0]) + "_" + str(location[1])
+            # data = State.load(TMP_WORLD_SAVE_PATH, filename)
+            # if data:
+                # state = data
+            # else:
+        #Check State For Pane
+        if self.world_state:
+            if location in self.world_state:
+                state = self.world_state[location]
         #TODO: Change is_server=True to is_server=is_server.  Need to have items/chests tracked on server
-        self.panes[location] = Pane(self.seed, location, is_server=True, load_entities=True, pane_state=state)
+        self.panes[location] = Pane(self.seed, location, is_server=is_server, load_entities=True, pane_state=state)
         self._merge_tiles(surrounding_locations)
 
         self.panes[location].load_images()
@@ -97,6 +98,7 @@ class Pane(object):
         self.seed = seed
         self.location = location
         self.is_server = is_server
+        self.tmpFileName = "Pane_" + str(self.location[0]) + "_" + str(self.location[1])
         self.pane_state = pane_state
         self.tiles = dict()
         self.objects = dict()
@@ -214,7 +216,7 @@ class Pane(object):
     def add_item(self, name, attributes, location):
         self.tiles[location].add_item(Item(name, attributes))
            
-    def save_chests(self):
+    def get_chest_list(self):
         '''
         Returns a list of chests in the following format:
             [(type, level, location, ...), (...)]
@@ -247,6 +249,7 @@ class Pane(object):
             level = max(abs(self.location[0]), abs(self.location[1]))
             level = max(level, 1)
         self.tiles[tile].add_chest(TreasureChest(chest_type, level, tile))
+        self.load_images()
 
     def load_images(self):
         self.images = Sprites.get_images_dict()
@@ -371,11 +374,16 @@ class Pane(object):
         The server can then add this dictionary to its master dictionary using
         this pane's (x, y) coordinate as the key.
         '''
+        save_dict = self.get_state()
+        State.save(TMP_WORLD_SAVE_PATH, self.tmpFileName, save_dict, True)
+        return save_dict
         
+    def get_state(self):
         save_dict = dict()
         monster_list = []
 
         #Save Monsters.  
+        print self.person
         for key, monster in self.person.iteritems():
             monster_list.append((monster.name, monster.level, \
                 monster.location, monster.region, monster.ai))
@@ -385,10 +393,7 @@ class Pane(object):
         #save_dict[ITEM_KEY] = self.save_items()
         
         #Save Chests.
-        save_dict[CHEST_KEY] = self.save_chests()
-
-        path = os.path.join(TMP_WORLD_SAVE_PATH, "Pane_" + str(self.location[0]) + "_" + str(self.location[1]))
-        State.save(path, save_dict, True)
+        save_dict[CHEST_KEY] = self.get_chest_list()
         return save_dict
         
     def load_state(self, state):
@@ -402,7 +407,6 @@ class Pane(object):
             #Get Chests
             if CHEST_KEY in state:
                 self.load_chests(chests=state[CHEST_KEY])
-
 
 class CombatPane(Pane):
 
@@ -456,7 +460,7 @@ class CombatPane(Pane):
             monsters = TheoryCraft.generateMonsterGroup(monster)
             self.place_monsters(monsters, self.focus_location)
         
-        print self
+        # print self
 
     def place_monsters(self, monsters, start_location):
         loc = temp = start_location
@@ -580,6 +584,8 @@ class Tile(object):
         return self.obstacles
         
     def add_chest(self, chest):
+        if self.chest:
+            self.remove_item(self.chest)
         self.add_item(chest)
         self.chest = chest
         
