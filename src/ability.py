@@ -1808,7 +1808,10 @@ class Ability(object):
         'action' : _stealth,
         'cooldown' : 3,
         'checkFunction' : _stealthCheck,
-        'breakStealth' : 0
+        'breakStealth' : 0,
+        'image' : THIEF_SKILLS + 'stealth.png',
+        'text' : 'Enter stealth, making enemies lose track of you until you take an action\n' + \
+                'that removes stealth.  Movement cost is raised to 8 AP for the duration.'  
         },
         'Ranged Backstab':
         {
@@ -1821,7 +1824,12 @@ class Ability(object):
         'action' : _rangedBackstab,
         'cooldown' : 2,
         'checkFunction' : _rangedBackstabCheck,
-        'breakStealth' : 100
+        'breakStealth' : 100,
+        'image' : ASSASSIN_SKILLS + 'ranged-backstab.png',
+        'text' : 'Perform a backstab with a ranged weapon other than the longbow.\n' + \
+                'The mechanics are identical to a melee backstab performed\n' + \
+                'with a single knife, however you do not need to be immediately\n' + \
+                'behind the target, but you do need to be aiming at its back.'
         },
         'Hidden Shot':
         {
@@ -1834,7 +1842,10 @@ class Ability(object):
         'action' : _hiddenShot,
         'cooldown' : 2,
         'checkFunction' : _hiddenShotCheck,
-        'breakStealth' : 5
+        'breakStealth' : 5,
+        'image' : ASSASSIN_SKILLS + 'hidden-shot.png',
+        'text' : 'Attack from within stealth with only a 5% chance to break stealth.\n' + \
+                'Has a +10% bonus to critical magnitude.'
         },
         'Visible Attack':
         {
@@ -1847,7 +1858,9 @@ class Ability(object):
         'action' : _visibleAttack,
         'cooldown' : 2,
         'checkFunction' : _visibleAttackCheck,
-        'breakStealth' : 100
+        'breakStealth' : 100,
+        'image' : ASSASSIN_SKILLS + 'visible-attack.png',
+        'text' : 'Attack while NOT in stealth with +3 Acuracy.'
         },
         'Sneaky Sneaky':
         {
@@ -1860,7 +1873,11 @@ class Ability(object):
         'action' : _sneakySneaky,
         'cooldown' : 3,
         'checkFunction' : _sneakySneakyCheck,
-        'breakStealth' : 0
+        'breakStealth' : 0,
+        'image' : ASSASSIN_SKILLS + 'sneaky-sneaky.png',
+        'text' : 'Use while in stealth to temporarily add 8 to your sneak, +5% to your\n' + \
+                'critical hit chance and +10% to your critical magnitude.  Ends upon exiting\n' + \
+                'stealth.'
         },
         'Cautious Shot' :
         {
@@ -1873,7 +1890,10 @@ class Ability(object):
         'action' : _cautiousShot,
         'cooldown' : 1,
         'checkFunction' : _cautiousShotCheck,
-        'breakStealth' : 2
+        'breakStealth' : 2,
+        'image' : ASSASSIN_SKILLS + 'cautious-shot.png',
+        'text' : 'A ranged attack from stealth that has only a 2% chance to break stealth but\n' + \
+                'deals only 50% damage.'
         },
         'Massive Shot':
         {
@@ -1886,7 +1906,10 @@ class Ability(object):
         'action' : _massiveShot,
         'cooldown' : 4,
         'checkFunction' : _massiveShotCheck,
-        'breakStealth' : 100
+        'breakStealth' : 100,
+        'image' : ASSASSIN_SKILLS + 'massive-shot.png',
+        'text' : 'Ranged attack that requires stealth.  Attack with +2 Accuracy, Force x 1.30,\n' + \
+                '+30% Damage, and +350% critical magnitude.  Lowers your sneak by 5 for the next 8 turns.'
         },
 
         # Nightblade
