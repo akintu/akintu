@@ -1085,13 +1085,9 @@ class Combat(object):
             
         R = Region()
         R("ADD", "CIRCLE", center, radius)
-        people = []
-        for i in Combat.gameServer.pane[cPane].person:
-            if Combat.gameServer.person[i].cLocation in R and Combat.gameServer.person[i].team == \
-                    "Monsters" if selectMonsters else "Players":
-                people.append(Combat.gameServer.person[i])
-        return people
+        return Combat.getTargetsInRegion(cPane, R)
 
+    @staticmethod
     def getLineTargets(cPane, start, end, selectMonsters, width=1, selectFirstOnly=False):
         """Gets either the closest, or all people in combat affected by a projectile
         Input:
@@ -1107,11 +1103,7 @@ class Combat(object):
                     
         R = Region()
         R("ADD", "LINE", start, end, width)
-        people = []
-        for i in Combat.gameServer.pane[cPane].person:
-            if Combat.gameServer.person[i].cLocation in R and Combat.gameServer.person[i].team == \
-                    "Monsters" if selectMonsters else "Players":
-                people.append(Combat.gameServer.person[i])
+        people = Combat.getTargetsInRegion(cPane, R)
         
         if selectFirstOnly and len(people) > 0:
             minDist = start.distance(people[0].cLocation)
@@ -1125,6 +1117,7 @@ class Combat(object):
                     
         return people
         
+    @staticmethod
     def getConeTargets(cPane, center, distance, degrees, selectMonsters):
         """Gets all people in combat affected by a cone-shaped AOE field
         Input:
@@ -1155,6 +1148,31 @@ class Combat(object):
             R("ADD", "CIRCLE", center, distance)
             R("SUB", "DIAMOND", center.move(10 - center.direction, distance + 1), distance)
             
+        return Combat.getTargetsInRegion(cPane, R)
+
+    @staticmethod
+    def againstWall(cPane, location, direction):
+        return not Combat.gameServer.pane[cPane].is_tile_passable(location.move(direction, 1))
+        
+    @staticmethod
+    def getDiagonalTargets(cPane, location):
+        R = Region()
+        R("ADD", "CIRCLE", location, 1)
+        R("SUB", "DIAMOND", location, 1)
+        return Combat.getTargetsInRegion(cPane, R)
+        
+    @staticmethod
+    def checkParryPosition(cPane, location, targetLoc):
+        R = Region()
+        R("ADD", "CIRCLE", location, 1)
+        if targetLoc in R:
+            facings = {2: [1, 2, 3], 4: [1, 4, 7], 6: [3, 6, 9], 8: [7, 8, 9]}
+            if location.direction_to(targetLoc) in facings[location.direction]:
+                return True
+        return False
+        
+    @staticmethod
+    def getTargetsInRegion(cPane, R):
         people = []
         for i in Combat.gameServer.pane[cPane].person:
             if Combat.gameServer.person[i].cLocation in R and Combat.gameServer.person[i].team == \
