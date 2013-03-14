@@ -153,10 +153,14 @@ class GameServer():
                         
             ###### Levelup Player ######
             if command.type == "PERSON" and command.action == "REPLACE":
+            
                 newPerson = TheoryCraft.rehydratePlayer(command.player)
                 newPerson.location = self.person[command.id].location
                 newPerson.id = command.id
+                newPerson.ai.startup(self)
+                self.person[command.id].ai.shutdown()
                 self.person[command.id] = newPerson
+                
             
             ###### Get Item / Open Chest ######
             if command.type == "PERSON" and command.action == "OPEN":
