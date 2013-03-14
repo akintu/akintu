@@ -210,6 +210,8 @@ class Game(object):
                             person.anim.stop()
                     self.pane.person = {}
                 else:
+                    if self.pane.person[command.id].anim:
+                        self.pane.person[command.id].anim.stop()
                     self.screen.remove_person(command.id)
                     if command.id == self.currentTargetId:
                         self.currentTargetId = None
