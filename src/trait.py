@@ -60,9 +60,9 @@ class Trait(object):
         self.rank += 1
         if self.type == "static":
             self.action(self, self.owner)
-
+            
     def registerListener(self):
-        newListener = listener.Listener(self.owner, self.onStringList, self.action, self.offStringList)
+        newListener = listener.Listener(self, self.owner, self.onStringList, self.action, self.offStringList)
         self.owner.listeners.append(newListener)
 
     
@@ -201,7 +201,7 @@ class Trait(object):
                 target.statusRangedDodge -= 4
 
     
-    def applyBully(self, target, reverse=False, victim=None):
+    def applyBully(self, target, reverse=False, other=None):
         if not target.usingWeaponStyle("Two-Handed") or victim.size == "Large" or victim.size == "Huge":
             return
         #self.rank = Trait.getTraiself.rank(target, "Bully")
@@ -296,19 +296,19 @@ class Trait(object):
     def applyWellTraveled(self, target):
         #self.rank = Trait.getTraiself.rank(target, "Well-Traveled")
         if self.rank == 1:
-            target.__baseInventoryCapacity += 15
+            target._baseInventoryCapacity += 15
             target.baseFireResistance += 1
             target.baseColdResistance += 1
         if self.rank == 2:
-            target.__baseInventoryCapacity += 15
+            target._baseInventoryCapacity += 15
             target.baseFireResistance += 1
             target.baseColdResistance += 1
         if self.rank == 3:
-            target.__baseInventoryCapacity += 15
+            target._baseInventoryCapacity += 15
             target.baseFireResistance += 1
             target.baseColdResistance += 1
         if self.rank == 4:
-            target.__baseInventoryCapacity += 25
+            target._baseInventoryCapacity += 25
             target.baseFireResistance += 2
             target.baseColdResistance += 2
 
@@ -1041,7 +1041,7 @@ class Trait(object):
             'onStringList' : ['Outgoing Melee Attack'],
             'offStringList' : ['Outgoing Melee Attack Complete'],
             'image' : FIGHTER + 'fencer.png',
-            'text' : 'If NOT wearing heavy armor, gain bonus melee attack accuracy.\n' + \
+            'text' : 'If wearing medium armor, gain bonus melee attack accuracy.\n' + \
                     'Rank I:   +2 Melee Accuracy\n' + \
                     'Rank II:  +4 Melee Accuracy\n' + \
                     'Rank III: +6 Melee Accuracy\n' + \

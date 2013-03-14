@@ -958,9 +958,9 @@ class Combat(object):
             if player.level <= mon.level:
                 expGain += mon.experienceGiven
             elif player.level <= mon.level - 2:
-                expGain += round(mon.experienceGiven * 0.75)
+                expGain += int(round(mon.experienceGiven * 0.75))
             else:
-                expGain += round(mon.experienceGiven * 0.15)
+                expGain += int(round(mon.experienceGiven * 0.15))
         return expGain
 
     @staticmethod

@@ -805,11 +805,12 @@ class Ability(object):
     # Battle Mage
     def _bufferStrike(self, target):
         source = self.owner
-        hit = Combat.calcHit(source, target, "Phsyical", modifier=3)
+        hit = Combat.calcHit(source, target, "Physical", modifier=3)
         Combat.basicAttack(source, target, hit)
         duration = 4
-        magnitude = round(10 + source.totalSpellpower / 15)
-        Combat.addStatus(source, self.name, magnitude, hitValue=hit)
+        magnitude = int(round(10 + source.totalSpellpower / 15))
+        if hit != "Miss":
+            Combat.addStatus(source, self.name, duration, magnitude)
 
     def _bufferStrikeCheck(self, target):
         source = self.owner
@@ -820,8 +821,8 @@ class Ability(object):
 
     def _innerMight(self, target):
         source = self.owner
-        duration = 2
-        magnitude = 3 + source.totalSpellpower // 5
+        duration = 3
+        magnitude = 3 + source.totalSpellpower / 5
         Combat.addStatus(source, "Inner Might", duration, magnitude)
         newListener = listener.Listener(self, self.owner, [], self._innerMightDisable, ['Player MP level changed'])
         source.listeners.append(newListener)
@@ -2067,7 +2068,8 @@ class Ability(object):
         'checkFunction' : _innerMightCheck,
         'breakStealth' : 0,
         'image' : BATTLEMAGE_SKILLS + 'inner-might.png',
-        'text' : 'Grants +3 Might + 6% as long as the Battle Mage retains at least 75% of his mana.'
+        'text' : 'Grants +3 Might + 6% as long as the Battle Mage retains at least 75% of his mana.\n' + \
+                'Lasts 3 Turns as long as MP doesn\'t drop below 75%.'
         },
 
         # Arcane Archer

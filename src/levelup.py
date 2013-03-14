@@ -42,7 +42,8 @@ class Levelup(object):
             self.screen.show_dialog(text, self.spellOptions, bgcolor="lightblue")
         elif self.phase == "SPELL_2":
             text = "Select another new spell."
-            self.spellOptions = self.player.getLevelupSpellOptions()
+            self.spellOptions = [x for x in self.player.getLevelupSpellOptions() if
+                                x.name != self.spellA.name]                   
             self.screen.show_dialog(text, self.spellOptions, bgcolor="lightblue")
         elif self.phase == "COMBO":
             text = "Additionally you have earned these unique skills."

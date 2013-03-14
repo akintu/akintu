@@ -545,11 +545,10 @@ class PlayerCharacter(p.Person):
         elif 17 <= self.level and self.level <= 20:
             allowedTier = 5
             
-        spellNames = [x for x in spell.Spell.allSpells.keys()]
-        spellNames[:] = [x for x in spellNames
-                if spell.Spell.allSpells[x]['tier'] == allowedTier and 
-                spell.Spell.allSpells[x]['school'] in allowedSchools and
-                x not in [y.name for y in self.spellList]]
+        spellNames = [x for x in spell.Spell.allSpells.keys()
+                    if spell.Spell.allSpells[x]['tier'] == allowedTier and 
+                    spell.Spell.allSpells[x]['school'] in allowedSchools and
+                    x not in [y.name for y in self.spellList]]
                 
         spellsToSelect = []
         for spellName in spellNames:
@@ -1260,7 +1259,8 @@ class PlayerCharacter(p.Person):
             cs.append("| " + spell.name + " MP: " + `spell.MPCost` + " AP: " + `spell.APCost` + " Cooldown: " + `cd` + "\n")
         cs.append("| ----------->>> Passive Abilities <<<------------------\n")
         for passive in self.passiveAbilities:
-            cs.append("| Level " + `passive.level` + ": " + passive.name + "\n")
+            if "--IGNORE--" not in passive.name:
+                cs.append("| Level " + `passive.level` + ": " + passive.name + "\n")
         cs.append("| ----------->>> Traits <<<-----------------------------\n")
         for t in self.traits:
             cs.append("| Rank " + `t.rank` + " " + t.name + "\n")

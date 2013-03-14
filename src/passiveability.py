@@ -1012,7 +1012,19 @@ class PassiveAbility(object):
         'image' : BATTLEMAGE + 'rapid-retreat.png',
         'text' : 'If HP is below 20% at the start of your turn, movement only costs 2 AP.'
         },
-        'Military Defensive Training':
+        'Military Training':
+        {
+        'class' : 'Battle Mage',
+        'level' : 3,
+        'type' : 'dynamic',
+        'action' : None,
+        'onStringList' : [],
+        'offStringList' : [],
+        'image' : BATTLEMAGE + 'military-training.png',
+        'text' : 'If wielding a club weapon, +5 Might; otherwise, +2 Accuracy.\n' + \
+                'If wielding a shield, +3 magic resist; otherwise, +2 spellpower.'
+        },
+        '--IGNORE-- Military Defensive Training':
         {
         'class' : 'Battle Mage',
         'level' : 3,
@@ -1024,7 +1036,7 @@ class PassiveAbility(object):
         'text' : 'If wielding a club weapon, +5 Might; otherwise, +2 Accuracy.\n' + \
                 'If wielding a shield, +3 magic resist; otherwise, +2 spellpower.'
         },
-        'Military Spell Training':
+        '--IGNORE-- Military Spell Training':
         {
         'class' : 'Battle Mage',
         'level' : 3,
@@ -1036,7 +1048,7 @@ class PassiveAbility(object):
         'text' : 'If wielding a club weapon, +5 Might; otherwise, +2 Accuracy.\n' + \
                 'If wielding a shield, +3 magic resist; otherwise, +2 spellpower.'
         },
-        'Military Offensive Training':
+        '--IGNORE-- Military Offensive Training':
         {
         'class' : 'Battle Mage',
         'level' : 3,

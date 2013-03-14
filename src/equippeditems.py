@@ -199,7 +199,7 @@ class EquippedItems(object):
 
     @property
     def armorLevel(self):
-        grade = self.totalArmorGrade()
+        grade = self.totalArmorGrade
         if grade == 0:
             return "Robes"
         if 0 < grade and grade <= 8:

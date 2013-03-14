@@ -233,7 +233,8 @@ class Spell(object):
         hitType = Combat.calcHit(source, target, "Magical")
         duration = 5
         magnitude = Dice.scale(source.totalSpellpower, 5, 0.02)
-        Combat.addStatus(target, self.name, duration, magnitude, hitValue=hitType)
+        if hitType != "Miss" and hitType != "Fully Resisted":
+            Combat.addStatus(target, self.name, duration, magnitude)
 
     def _cloudVision(self, target):
         source = self.owner
@@ -242,7 +243,8 @@ class Spell(object):
         magnitude = Dice.scale(source.totalSpellpower, 10, 0.012)
         if hitType == "Partially Resisted":
             magnitude /= 2
-        Combat.addStatus(target, self.name, duration, magnitude, hitValue=hitType)
+        if hitType != "Miss" and hitType != "Fully Resisted":
+            Combat.addStatus(target, self.name, duration, magnitude)
 
     def _haunt(self, target):
         source = self.owner

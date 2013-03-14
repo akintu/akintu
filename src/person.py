@@ -551,7 +551,7 @@ class Person(en.Entity):
         return self._baseFireResistance
 
     @baseFireResistance.setter
-    def baseFireReistance(self, value):
+    def baseFireResistance(self, value):
         self._baseFireResistance = value
 
     @property
@@ -2461,7 +2461,7 @@ class Person(en.Entity):
           True or False"""
         return (self.equippedItems.armorLevel == armorLevel)
 
-    def usingShield(self, shieldType):
+    def usingShield(self, shieldType="Any"):
         """Returns True if the passed shieldType matches the kind of
         shield the Person has currently equipped.
         Inputs:
