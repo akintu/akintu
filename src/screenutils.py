@@ -108,20 +108,20 @@ class TilingDialog(object):
         Draw the top text area
         '''
         textsurface = self._generatetext(self.toptext, 42)
-        self.surface.blit(textsurface, (5, 10))
+        self.surface.blit(textsurface, (20, 10))
 
     def _drawbottomtext(self, text):
         '''
         Draw the bottom text area with the given text
         '''
         textsurface = self._generatetext(text, 174)
-        self.surface.blit(textsurface, (5, 466))
+        self.surface.blit(textsurface, (20, 466))
 
     def _drawitems(self):
         '''
         Draw the possible selections in a 16x3 grid
         '''
-        font = pygame.font.SysFont("Arial", 12)
+        font = pygame.font.SysFont('Arial', 12)
         # Generate surfaces for each item
         surfaces = []
         for item in self.items:
@@ -156,7 +156,7 @@ class TilingDialog(object):
         surface.fill(Color(self.bgcolor))
         lines = text.split('\n')
         y = 0
-        font = pygame.font.SysFont('Arial', 12)
+        font = pygame.font.SysFont('Arial', 18)
         for line in lines:
             curfont = font.render(line, True, Color(color))
             surface.blit(curfont, (0, y))
