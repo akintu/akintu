@@ -203,7 +203,7 @@ class GameScreen(object):
             - 'restrictedAP'
             - 'level'
             - 'size'
-            - 'stealth' (0 or 1)
+            - 'stealth'
 
         To be supported in the future:
             - 'statusList'
