@@ -202,7 +202,7 @@ class Trait(object):
 
     
     def applyBully(self, target, reverse=False, other=None):
-        if not target.usingWeaponStyle("Two-Handed") or victim.size == "Large" or victim.size == "Huge":
+        if not target.usingWeaponStyle("Two-Handed") or other.size == "Large" or other.size == "Huge":
             return
         #self.rank = Trait.getTraiself.rank(target, "Bully")
         if not reverse:
@@ -249,12 +249,12 @@ class Trait(object):
                 target.statusCriticalChance -= 2
 
     
-    def applyBoldness(self, target, reverse=False, victim=None):
-        if victim.size == "Small" or victim.size == "Medium":
+    def applyBoldness(self, target, reverse=False, other=None):
+        if other.size == "Small" or other.size == "Medium":
             return
         #self.rank = Trait.getTraiself.rank(target, "Boldness")
         if not reverse:
-            if victim.size == "Large":
+            if other.size == "Large":
                 if self.rank == 1:
                     target.statusForce += 5
                 if self.rank == 2:
@@ -263,7 +263,7 @@ class Trait(object):
                     target.statusForce += 15
                 if self.rank == 4:
                     target.statusForce += 20
-            elif victim.size == "Huge":
+            elif other.size == "Huge":
                 if self.rank == 1:
                     target.statusForce += 15
                 if self.rank == 2:
@@ -273,7 +273,7 @@ class Trait(object):
                 if self.rank == 4:
                     target.statusForce += 60
         else:
-            if victim.size == "Large":
+            if other.size == "Large":
                 if self.rank == 1:
                     target.statusForce -= 5
                 if self.rank == 2:
@@ -282,7 +282,7 @@ class Trait(object):
                     target.statusForce -= 15
                 if self.rank == 4:
                     target.statusForce -= 20
-            elif victim.size == "Huge":
+            elif other.size == "Huge":
                 if self.rank == 1:
                     target.statusForce -= 15
                 if self.rank == 2:
@@ -313,7 +313,7 @@ class Trait(object):
             target.baseColdResistance += 2
 
     
-    def applyHammerAndAnvil(self, target, reverse=False, victim=None):
+    def applyHammerAndAnvil(self, target, reverse=False, other=None):
         # TODO: if target has back against wall...
         #self.rank = Trait.getTraiself.rank(target, "Hammer and Anvil")
         if not reverse:
@@ -337,7 +337,7 @@ class Trait(object):
 
     # Ranger
     
-    def applyWoundingProjectiles(self, target, reverse=False, victim=None):
+    def applyWoundingProjectiles(self, target, reverse=False, other=None):
         #self.rank = Trait.getTraiself.rank(target, "Wounding Projectiles")
         chance = None
         magnitude = None
@@ -355,7 +355,7 @@ class Trait(object):
             chance = 18
             magnitude = 8
         if Dice.rollBeneath(chance):
-            Combat.addStatus(victim, "Wounding Projectiles", duration, magnitude)
+            Combat.addStatus(other, "Wounding Projectiles", duration, magnitude)
 
     
     def applyMeleeArcheryStatic(self, target):
@@ -366,8 +366,8 @@ class Trait(object):
             target.meleeRangedAttackPenaltyReduction = 100
 
     
-    def applyMeleeArchery(self, target, reverse=False, victim=None):
-        if not location.in_melee_range(target.location, victim.location):
+    def applyMeleeArchery(self, target, reverse=False, other=None):
+        if not location.in_melee_range(target.location, other.location):
             return
         #self.rank = Trait.getTraiself.rank(target, "Melee Archery")
         if not reverse:
@@ -462,7 +462,7 @@ class Trait(object):
         # traps on the combat arena in order to implement this trait.
 
     
-    def applyFollowupExpert(self, target, reverse=False, victim=None):
+    def applyFollowupExpert(self, target, reverse=False, other=None):
         duration = 2
         magnitudeAccuracy = None
         magnitudeForce = None
@@ -511,7 +511,7 @@ class Trait(object):
             target.statusRangedDodge += 3
 
     
-    def applyStealthyDaggers(self, target, reverse=False, victim=None):
+    def applyStealthyDaggers(self, target, reverse=False, other=None):
         if not target.usingWeapon("Knife"):
             return
         #self.rank = Trait.getTraiself.rank(target, "Stealthy Daggers")

@@ -391,7 +391,7 @@ class Person(en.Entity):
         Elemental Resistances above 80% should not have an effect beyond 80% but
         that logic is not encoded here.  Thus values greater than 80 may be
         returned."""
-        return (self._baseArcaneResistance + self._equipmentArcaneResistance +
+        return int(self._baseArcaneResistance + self._equipmentArcaneResistance +
                self._statusArcaneResistance)
 
     @property
@@ -747,7 +747,7 @@ class Person(en.Entity):
         statuses that boost or reduce Dodge.  Does not include
         rangedDodge or meleeDodge (even when relevant.)
         """
-        return (self.totalDexterity +
+        return int(self.totalDexterity +
                 self._equipmentDodge +
                 self._statusDodge +
                 self._baseDodge)
@@ -758,7 +758,7 @@ class Person(en.Entity):
         The Dodge granted from any magical equipment currently on.
         Will not automatically update.
         """
-        return self._equipmentDodge
+        return int(self._equipmentDodge)
 
     @equipmentDodge.setter
     def equipmentDodge(self, value):
@@ -802,7 +802,7 @@ class Person(en.Entity):
         "static" abililties that boost TrapEvade, and "dynamic"
         statuses that boost or reduce TrapEvade.
         """
-        return (self.totalCunning / 2 +
+        return int(self.totalCunning / 2 +
                 self.totalDexterity / 2 +
                 self._equipmentTrapEvade +
                 self._statusTrapEvade +
@@ -858,7 +858,7 @@ class Person(en.Entity):
         "static" abililties that boost Awareness, and "dynamic"
         statuses that boost or reduce Awareness.
         """
-        return (self.totalCunning +
+        return int(self.totalCunning +
                 self._equipmentAwareness +
                 self._statusAwareness +
                 self._baseAwareness)
@@ -921,9 +921,9 @@ class Person(en.Entity):
         viewer's repsonsibility to adjust downward after
         considering any armor penetration.
         """
-        return max(0, self._equipmentDR +
+        return int(max(0, self._equipmentDR +
                       self._statusDR +
-                      self._baseDR)
+                      self._baseDR))
 
     @property
     def equipmentDR(self):
@@ -931,7 +931,7 @@ class Person(en.Entity):
         The DR granted from any magical equipment currently on.
         Will not automatically update.
         """
-        return self._equipmentDR
+        return int(self._equipmentDR)
 
     @equipmentDR.setter
     def equipmentDR(self, value):
@@ -1011,6 +1011,8 @@ class Person(en.Entity):
         ArmorPenetration is determined by CUN, equipment that boosts ArmorPenetration,
         "static" abililties that boost ArmorPenetration, and "dynamic"
         statuses that boost or reduce ArmorPenetration.
+        
+        Intended to be a float rounded to the nearest 0.25
         """
         return (max(0, (self.totalCunning - 10) * 0.25) +
                 self._equipmentArmorPenetration +
@@ -1064,7 +1066,7 @@ class Person(en.Entity):
     def totalRangedDodge(self):
         """ Is only the bonus dodge given against ranged attacks.
         Needs to be manually added to the dodge total."""
-        return (self._baseRangedDodge + self._equipmentRangedDodge +
+        return int(self._baseRangedDodge + self._equipmentRangedDodge +
                self._statusRangedDodge)
 
     @property
@@ -1148,7 +1150,7 @@ class Person(en.Entity):
         cunningBonus = max(0, self.totalCunning - 10)
         if self.team == "Players" and self.characterClass == "Shadow":
             cunningBonus *= 2
-        return (cunningBonus +
+        return int(cunningBonus +
                 self._equipmentSneak +
                 self._statusSneak +
                 self._baseSneak)
@@ -1204,7 +1206,7 @@ class Person(en.Entity):
         "static" abililties that boost MagicResist, and "dynamic"
         statuses that boost or reduce MagicResist.
         """
-        return (self.totalPiety +
+        return int(self.totalPiety +
                 self._equipmentMagicResist +
                 self._statusMagicResist +
                 self._baseMagicResist)
@@ -1259,7 +1261,7 @@ class Person(en.Entity):
         "static" abililties that boost PoisonTolerance, and "dynamic"
         statuses that boost or reduce PoisonTolerance.
         """
-        return (max(0, self.totalConstitution - 10) +
+        return int(max(0, self.totalConstitution - 10) +
                 self._equipmentPoisonTolerance +
                 self._statusPoisonTolerance +
                 self._basePoisonTolerance)
@@ -1315,7 +1317,7 @@ class Person(en.Entity):
         "static" abililties that boost RangedAccuracy, and "dynamic"
         statuses that boost or reduce RangedAccuracy.
         """
-        return (self.totalDexterity +
+        return int(self.totalDexterity +
                 self._equipmentRangedAccuracy +
                 self._statusRangedAccuracy +
                 self._baseRangedAccuracy)
@@ -1371,7 +1373,7 @@ class Person(en.Entity):
 
         This stat itself is 100 + each component bonus to RCM.
         """
-        return (100 +
+        return int(100 +
                 self._equipmentRangedCriticalMagnitude +
                 self._statusRangedCriticalMagnitude +
                 self._baseRangedCriticalMagnitude)
@@ -1429,7 +1431,7 @@ class Person(en.Entity):
         "static" abililties that boost Spellpower, and "dynamic"
         statuses that boost or reduce Spellpower.
         """
-        return (self.totalSorcery +
+        return int(self.totalSorcery +
                 self._equipmentSpellpower +
                 self._statusSpellpower +
                 self._baseSpellpower)
@@ -1485,7 +1487,7 @@ class Person(en.Entity):
         statuses that boost or reduce CriticalChance.  This does not factor in
         extra critical chance from accuracy beyond 100%
         """
-        return (max(0, (self.totalCunning - 10) * 0.5) +
+        return int(max(0, (self.totalCunning - 10) * 0.5) +
                 self._equipmentCriticalChance +
                 self._statusCriticalChance +
                 self._baseCriticalChance)
@@ -1661,7 +1663,7 @@ class Person(en.Entity):
         the normal totalDodge, so it will need to be added manually on the event
         of a melee incoming attack.
         """
-        return (self._equipmentMeleeDodge +
+        return int(self._equipmentMeleeDodge +
                 self._statusMeleeDodge +
                 self._baseMeleeDodge)
 
@@ -1715,7 +1717,7 @@ class Person(en.Entity):
         possible "static" abililties that boost Might, and "dynamic"
         statuses that boost or reduce Might.
         """
-        return (max(0, self.totalStrength - 10) +
+        return int(max(0, self.totalStrength - 10) +
                 self._equipmentMight +
                 self._statusMight +
                 self._baseMight)
@@ -1809,7 +1811,7 @@ class Person(en.Entity):
     def totalDexterity(self):
         """Should always equal base + equipment + status Dexterity, except
         when that equation would reduce it to a non-positive value."""
-        return self._baseDexterity + self._equipmentDexterity + self._statusDexterity
+        return int(self._baseDexterity + self._equipmentDexterity + self._statusDexterity)
 
     @property
     def equipmentDexterity(self):
@@ -1859,7 +1861,7 @@ class Person(en.Entity):
     def totalStrength(self):
         """Should always equal base + equipment + status Strength, except
         when that equation would reduce it to a non-positive value."""
-        return (self._baseStrength +
+        return int(self._baseStrength +
                 self._equipmentStrength +
                 self._statusStrength)
 
@@ -1904,14 +1906,13 @@ class Person(en.Entity):
 
         Will not allow non-positive values.
         """
-        if value > 0:
-            self._baseStrength = value
+        self._baseStrength = value
 
     @property
     def totalCunning(self):
         """Should always equal base + equipment + status Cunning, except
         when that equation would reduce it to a non-positive value."""
-        return (self._baseCunning +
+        return int(self._baseCunning +
                 self._equipmentCunning +
                 self._statusCunning)
 
@@ -1956,8 +1957,7 @@ class Person(en.Entity):
 
         Will not allow non-positive values.
         """
-        if value > 0:
-            self._baseCunning = value
+        self._baseCunning = value
 
     @property
     def totalSorcery(self):
@@ -1966,7 +1966,7 @@ class Person(en.Entity):
         if self._baseSorcery == 0:
             return 0
         else:
-            return (self._baseSorcery +
+            return int(self._baseSorcery +
                     self._equipmentSorcery +
                     self._statusSorcery)
 
@@ -2011,14 +2011,13 @@ class Person(en.Entity):
 
         Will not allow non-positive values.
         """
-        if value > 0:
-            self_.baseSorcery = value
+        self_.baseSorcery = value
 
     @property
     def totalPiety(self):
         """Should always equal base + equipment + status Piety, except
         when that equation would reduce it to a non-positive value."""
-        return (self._basePiety +
+        return int(self._basePiety +
                 self._equipmentPiety +
                 self._statusPiety)
 
@@ -2063,14 +2062,13 @@ class Person(en.Entity):
 
         Will not allow non-positive values.
         """
-        if value > 0:
-            self_.basePiety = value
+        self_.basePiety = value
 
     @property
     def totalConstitution(self):
         """Should always equal base + equipment + status Constitution, except
         when that equation would reduce it to a non-positive value."""
-        return (self._baseConstitution +
+        return int(self._baseConstitution +
                 self._equipmentConstitution +
                 self._statusConstitution)
 
@@ -2115,8 +2113,7 @@ class Person(en.Entity):
 
         Will not allow non-positive values.
         """
-        if value > 0:
-            self_.baseConstitution = value
+        self_.baseConstitution = value
 
     # Derived Attributes
 
@@ -2172,7 +2169,7 @@ class Person(en.Entity):
     def HP(self):
         """The current hit points of the player.  When it
         reaches 0, the player dies."""
-        return self._HP
+        return int(self._HP)
 
     @HP.setter
     def HP(self, value):
@@ -2210,7 +2207,7 @@ class Person(en.Entity):
     @property
     def MP(self):
         """The current Mana Points of a PlayerCharacter"""
-        return self._MP
+        return int(self._MP)
 
     @MP.setter
     def MP(self, value):

@@ -375,7 +375,7 @@ class Ability(object):
     def _sacrificialStrike(self, target):
         source = self.owner
         hit = Combat.calcHit(source, target, "Physical", critMod=2)
-        Combat.basicAttack(source, target, hit, forceMod=1.75)
+        Combat.basicAttack(source, target, hit, forceMod=1.75, mightMod=8)
 
     def _sacrificialStrikeCheck(self, target):
         source = self.owner
@@ -1470,7 +1470,7 @@ class Ability(object):
         'checkFunction' : None,
         'breakStealth' : 100,
         'image' : WIZARD_SKILLS + 'gather.png',
-        'text' : 'Gather in energy from your surroundings to gain +5 spellpower\n' + \
+        'text' : 'Gather in energy from your surroundings to gain +5 spellpower, +10% Arcane and Divine damage\n' + \
             'for the remainder of your turn.'
         },
         'Reverse Hex':
@@ -1540,7 +1540,7 @@ class Ability(object):
         'breakStealth' : 100,
         'image' : BARBARIAN_SKILLS + 'sacrificial-strike.png',
         'text' : 'Attack harms you and your foe.\n' + \
-                'Has 1.75x Force and +2% Critical Chance.'
+                'Has 1.75x Force, +8 Might and +2% Critical Chance.'
         },
         'Desperate Strike':
         {

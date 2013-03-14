@@ -123,6 +123,12 @@ class InternalStatus(object):
     def DR_penalty_method(self, target, magnitude):
         target.statusDR -= magnitude
 
+    def Elemental_offense_arcane_method(self, target, magnitude):
+        target.statusArcaneBonusDamage += magnitude
+        
+    def Elemental_offense_divine_method(self, target, magnitude):
+        target.statusDivineBonusDamage += magnitude
+        
     def Elemental_resistance_arcane_method(self, target, magnitude):
         target.statusArcaneResistance += magnitude
 
@@ -368,6 +374,12 @@ class InternalStatus(object):
     def DR_penalty_method_reverse(self, target, magnitude):
         target.statusDR -= magnitude
 
+    def Elemental_offense_arcane_method_reverse(self, target, magnitude):
+        target.statusArcaneBonusDamage -= magnitude
+        
+    def Elemental_offense_divine_method_reverse(self, target, magnitude):
+        target.statusDivineBonusDamage -= magnitude
+        
     def Elemental_resistance_arcane_method_reverse(self, target, magnitude):
         target.statusArcaneResistance -= magnitude
 
@@ -578,6 +590,8 @@ class InternalStatus(object):
         'Dragon_style' : None,
         'DR_bonus' : DR_bonus_method,
         'DR_penalty' : DR_penalty_method,
+        'Elemental_offense_arcane' : Elemental_offense_arcane_method,
+        'Elemental_offense_divine' : Elemental_offense_divine_method,
         'Elemental_resistance_arcane' : Elemental_resistance_arcane_method,
         'Elemental_resistance_cold' : Elemental_resistance_cold_method,
         'Elemental_resistance_divine' : Elemental_resistance_divine_method,
@@ -666,6 +680,8 @@ class InternalStatus(object):
         'Dragon_style' : None,
         'DR_bonus' : DR_bonus_method_reverse,
         'DR_penalty' : DR_penalty_method_reverse,
+        'Elemental_offense_arcane' : Elemental_offense_arcane_method_reverse,
+        'Elemental_offense_divine' : Elemental_offense_divine_method_reverse,
         'Elemental_resistance_arcane' : Elemental_resistance_arcane_method_reverse,
         'Elemental_resistance_cold' : Elemental_resistance_cold_method_reverse,
         'Elemental_resistance_electric' : Elemental_resistance_electric_method_reverse,
