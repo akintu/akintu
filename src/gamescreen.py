@@ -683,7 +683,8 @@ class PersonSprite(pygame.sprite.DirtySprite):
         foot = self.statsdict['foot']
         xoff = self.statsdict['xoffset']
         yoff = self.statsdict['yoffset']
-        self.image = self.images[foot][loc.direction]
+        stealth = self.statsdict['stealth']
+        self.image = self.images[foot + (2 * stealth)][loc.direction]
         self.rect = self.image.get_rect()
         self.current_coord = loc
         self.rect.topleft = (loc.tile[0] * TILE_SIZE + xoff,
@@ -698,10 +699,11 @@ class PersonSprite(pygame.sprite.DirtySprite):
         foot = self.statsdict['foot']
         xoff = self.statsdict['xoffset']
         yoff = self.statsdict['yoffset']
+        stealth = self.statsdict['stealth']
         loc = self.current_coord
         self.rect.topleft = (loc.tile[0] * TILE_SIZE + xoff,
                              loc.tile[1] * TILE_SIZE + yoff)
-        self.image = self.images[foot][loc.direction]
+        self.image = self.images[foot + (2 * stealth)][loc.direction]
         self.dirty = 1
 
     def update_dict(self, statsdict):
