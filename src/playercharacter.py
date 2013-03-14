@@ -604,13 +604,13 @@ class PlayerCharacter(p.Person):
         """ Should be 0 for 0% by default.
             Would be 14 for 14% (not 1.14)
         """
-        return (self._baseOverallDamageBonus + self._equipmentOverallDamageBonus +
+        return int(self._baseOverallDamageBonus + self._equipmentOverallDamageBonus +
                self._statusOverallDamageBonus)
 
     @property
     def baseOverallDamageBonus(self):
         """ Should almost always be 0 for 0%."""
-        return self._baseOverallDamageBonus
+        return int(self._baseOverallDamageBonus)
 
     @baseOverallDamageBonus.setter
     def baseOverallDamageBonus(self, value):
@@ -619,7 +619,7 @@ class PlayerCharacter(p.Person):
 
     @property
     def equipmentOverallDamageBonus(self):
-        return self._equipmentOverallDamageBonus
+        return int(self._equipmentOverallDamageBonus)
 
     @equipmentOverallDamageBonus.setter
     def equipmentOverallDamageBonus(self, value):
@@ -627,7 +627,7 @@ class PlayerCharacter(p.Person):
 
     @property
     def statusOverallDamageBonus(self):
-        return self._statusOverallDamageBonus
+        return int(self._statusOverallDamageBonus)
 
     @statusOverallDamageBonus.setter
     def statusOverallDamageBonus(self, value):
@@ -639,13 +639,13 @@ class PlayerCharacter(p.Person):
         that has a poison effect that uses the poison rating roll
         (which is almost all of them other than weapon elemental damage.)
         """
-        return (self._basePoisonRatingBonus + self.equipmentPoisonRatingBonus +
+        return int(self._basePoisonRatingBonus + self.equipmentPoisonRatingBonus +
                self._statusPoisonRatingBonus)
 
     @property
     def basePoisonRatingBonus(self):
         """ int """
-        return self._basePoisonRatingBonus
+        return int(self._basePoisonRatingBonus)
 
     @basePoisonRatingBonus.setter
     def basePoisonRatingBonus(self, value):
@@ -653,7 +653,7 @@ class PlayerCharacter(p.Person):
 
     @property
     def equipmentPoisonRatingBonus(self):
-        return self._equipmentPoisonRatingBonus
+        return int(self._equipmentPoisonRatingBonus)
 
     @equipmentPoisonRatingBonus.setter
     def equipmentPoisonRatingBonus(self, value):
@@ -661,7 +661,7 @@ class PlayerCharacter(p.Person):
 
     @property
     def statusPoisonRatingBonus(self):
-        return self._statusPoisonRatingBonus
+        return int(self._statusPoisonRatingBonus)
 
     @statusPoisonRatingBonus.setter
     def statusPoisonRatingBonus(self, value):
@@ -673,7 +673,7 @@ class PlayerCharacter(p.Person):
         An int representing how much healing and mana potions are
         augmented.  Starts at 100 but is increased by many possible
         factors, especially Sorcery."""
-        return (max(0, (self.totalSorcery - 10) * 4) +
+        return int(max(0, (self.totalSorcery - 10) * 4) +
                 self._basePotionEffect +
                 self._equipmentPotionEffect +
                 self._statusPotionEffect)
@@ -681,7 +681,7 @@ class PlayerCharacter(p.Person):
     @property
     def basePotionEffect(self):
         """An int starting at 100 that indicates 100%"""
-        return self._basePotionEffect
+        return int(self._basePotionEffect)
 
     @basePotionEffect.setter
     def basePotionEffect(self, value):
@@ -692,7 +692,7 @@ class PlayerCharacter(p.Person):
 
     @property
     def equipmentPotionEffect(self):
-        return self._equipmentPotionEffect
+        return int(self._equipmentPotionEffect)
 
     @equipmentPotionEffect.setter
     def equipmentPotionEffect(self, value):
@@ -700,7 +700,7 @@ class PlayerCharacter(p.Person):
 
     @property
     def statusPotionEffect(self):
-        return self._statusPotionEffect
+        return int(self._statusPotionEffect)
 
     @statusPotionEffect.setter
     def statusPotionEffect(self, value):
@@ -708,13 +708,13 @@ class PlayerCharacter(p.Person):
 
     @property
     def totalJewleryEffect(self):
-        return (100 +
+        return int(100 +
                 max(0, (self.totalSorcery - 10) * 4) +
                 self._baseJewleryEffect)
 
     @property
     def baseJewleryEffect(self):
-        return self._baseJewleryEffect
+        return int(self._baseJewleryEffect)
 
     @baseJewleryEffect.setter
     def baseJewleryEffect(self, value):
@@ -732,13 +732,13 @@ class PlayerCharacter(p.Person):
     @property
     def totalArcaneBonusDamage(self):
         """int, a value of 45 would indicate +45% damage dealt via Arcane attacks."""
-        return (self._baseArcaneBonusDamage +
+        return int(self._baseArcaneBonusDamage +
                self._equipmentArcaneBonusDamage +
                self._statusArcaneBonusDamage)
 
     @property
     def baseArcaneBonusDamage(self):
-        return self._baseArcaneBonusDamage
+        return int(self._baseArcaneBonusDamage)
 
     @baseArcaneBonusDamage.setter
     def baseArcaneBonusDamage(self, value):
@@ -746,7 +746,7 @@ class PlayerCharacter(p.Person):
 
     @property
     def equipmentArcaneBonusDamage(self):
-        return self._equipmentArcaneBonusDamage
+        return int(self._equipmentArcaneBonusDamage)
 
     @equipmentArcaneBonusDamage.setter
     def equipmentArcaneBonusDamage(self, value):
@@ -754,7 +754,7 @@ class PlayerCharacter(p.Person):
 
     @property
     def statusArcaneBonusDamage(self):
-        return self._statusArcaneBonusDamage
+        return int(self._statusArcaneBonusDamage)
 
     @statusArcaneBonusDamage.setter
     def statusArcaneBonusDamage(self, value):
@@ -763,13 +763,13 @@ class PlayerCharacter(p.Person):
     @property
     def totalColdBonusDamage(self):
         """int, a value of 45 would indicate +45% damage dealt via Cold attacks."""
-        return (self._baseColdBonusDamage +
+        return int(self._baseColdBonusDamage +
                self._equipmentColdBonusDamage +
                self._statusColdBonusDamage)
 
     @property
     def baseColdBonusDamage(self):
-        return self._baseColdBonusDamage
+        return int(self._baseColdBonusDamage)
 
     @baseColdBonusDamage.setter
     def baseColdBonusDamage(self, value):
@@ -777,7 +777,7 @@ class PlayerCharacter(p.Person):
 
     @property
     def equipmentColdBonusDamage(self):
-        return self._equipmentColdBonusDamage
+        return int(self._equipmentColdBonusDamage)
 
     @equipmentColdBonusDamage.setter
     def equipmentColdBonusDamage(self, value):
@@ -785,7 +785,7 @@ class PlayerCharacter(p.Person):
 
     @property
     def statusColdBonusDamage(self):
-        return self._statusColdBonusDamage
+        return int(self._statusColdBonusDamage)
 
     @statusColdBonusDamage.setter
     def statusColdBonusDamage(self, value):
@@ -794,13 +794,13 @@ class PlayerCharacter(p.Person):
     @property
     def totalDivineBonusDamage(self):
         """int, a value of 45 would indicate +45% damage dealt via Divine attacks."""
-        return (self._baseDivineBonusDamage +
+        return int(self._baseDivineBonusDamage +
                self._equipmentDivineBonusDamage +
                self._statusDivineBonusDamage)
 
     @property
     def baseDivineBonusDamage(self):
-        return self._baseDivineBonusDamage
+        return int(self._baseDivineBonusDamage)
 
     @baseDivineBonusDamage.setter
     def baseDivineBonusDamage(self, value):
@@ -808,7 +808,7 @@ class PlayerCharacter(p.Person):
 
     @property
     def equipmentDivineBonusDamage(self):
-        return self._equipmentDivineBonusDamage
+        return int(self._equipmentDivineBonusDamage)
 
     @equipmentDivineBonusDamage.setter
     def equipmentDivineBonusDamage(self, value):
@@ -816,7 +816,7 @@ class PlayerCharacter(p.Person):
 
     @property
     def statusDivineBonusDamage(self):
-        return self._statusDivineBonusDamage
+        return int(self._statusDivineBonusDamage)
 
     @statusDivineBonusDamage.setter
     def statusDivineBonusDamage(self, value):
@@ -825,13 +825,13 @@ class PlayerCharacter(p.Person):
     @property
     def totalElectricBonusDamage(self):
         """int, a value of 45 would indicate +45% damage dealt via Electric attacks."""
-        return (self._baseElectricBonusDamage +
+        return int(self._baseElectricBonusDamage +
                self._equipmentElectricBonusDamage +
                self._statusElectricBonusDamage)
 
     @property
     def baseElectricBonusDamage(self):
-        return self._baseElectricBonusDamage
+        return int(self._baseElectricBonusDamage)
 
     @baseElectricBonusDamage.setter
     def baseElectricBonusDamage(self, value):
@@ -839,7 +839,7 @@ class PlayerCharacter(p.Person):
 
     @property
     def equipmentElectricBonusDamage(self):
-        return self._equipmentElectricBonusDamage
+        return int(self._equipmentElectricBonusDamage)
 
     @equipmentElectricBonusDamage.setter
     def equipmentElectricBonusDamage(self, value):
@@ -847,7 +847,7 @@ class PlayerCharacter(p.Person):
 
     @property
     def statusElectricBonusDamage(self):
-        return self._statusElectricBonusDamage
+        return int(self._statusElectricBonusDamage)
 
     @statusElectricBonusDamage.setter
     def statusElectricBonusDamage(self, value):
@@ -856,13 +856,13 @@ class PlayerCharacter(p.Person):
     @property
     def totalFireBonusDamage(self):
         """int, a value of 45 would indicate +45% damage dealt via Fire attacks."""
-        return (self._baseFireBonusDamage +
+        return int(self._baseFireBonusDamage +
                self._equipmentFireBonusDamage +
                self._statusFireBonusDamage)
 
     @property
     def baseFireBonusDamage(self):
-        return self._baseFireBonusDamage
+        return int(self._baseFireBonusDamage)
 
     @baseFireBonusDamage.setter
     def baseFireBonusDamage(self, value):
@@ -870,7 +870,7 @@ class PlayerCharacter(p.Person):
 
     @property
     def equipmentFireBonusDamage(self):
-        return self._equipmentFireBonusDamage
+        return int(self._equipmentFireBonusDamage)
 
     @equipmentFireBonusDamage.setter
     def equipmentFireBonusDamage(self, value):
@@ -878,7 +878,7 @@ class PlayerCharacter(p.Person):
 
     @property
     def statusFireBonusDamage(self):
-        return self._statusFireBonusDamage
+        return int(self._statusFireBonusDamage)
 
     @statusFireBonusDamage.setter
     def statusFireBonusDamage(self, value):
@@ -887,13 +887,13 @@ class PlayerCharacter(p.Person):
     @property
     def totalPoisonBonusDamage(self):
         """int, a value of 45 would indicate +45% damage dealt via Poison attacks."""
-        return (self._basePoisonBonusDamage +
+        return int(self._basePoisonBonusDamage +
                self._equipmentPoisonBonusDamage +
                self._statusPoisonBonusDamage)
 
     @property
     def basePoisonBonusDamage(self):
-        return self._basePoisonBonusDamage
+        return int(self._basePoisonBonusDamage)
 
     @basePoisonBonusDamage.setter
     def basePoisonBonusDamage(self, value):
@@ -901,7 +901,7 @@ class PlayerCharacter(p.Person):
 
     @property
     def equipmentPoisonBonusDamage(self):
-        return self._equipmentPoisonBonusDamage
+        return int(self._equipmentPoisonBonusDamage)
 
     @equipmentPoisonBonusDamage.setter
     def equipmentPoisonBonusDamage(self, value):
@@ -909,7 +909,7 @@ class PlayerCharacter(p.Person):
 
     @property
     def statusPoisonBonusDamage(self):
-        return self._statusPoisonBonusDamage
+        return int(self._statusPoisonBonusDamage)
 
     @statusPoisonBonusDamage.setter
     def statusPoisonBonusDamage(self, value):
@@ -918,13 +918,13 @@ class PlayerCharacter(p.Person):
     @property
     def totalShadowBonusDamage(self):
         """int, a value of 45 would indicate +45% damage dealt via Shadow attacks."""
-        return (self._baseShadowBonusDamage +
+        return int(self._baseShadowBonusDamage +
                self._equipmentShadowBonusDamage +
                self._statusShadowBonusDamage)
 
     @property
     def baseShadowBonusDamage(self):
-        return self._baseShadowBonusDamage
+        return int(self._baseShadowBonusDamage)
 
     @baseShadowBonusDamage.setter
     def baseShadowBonusDamage(self, value):
@@ -932,7 +932,7 @@ class PlayerCharacter(p.Person):
 
     @property
     def equipmentShadowBonusDamage(self):
-        return self._equipmentShadowBonusDamage
+        return int(self._equipmentShadowBonusDamage)
 
     @equipmentShadowBonusDamage.setter
     def equipmentShadowBonusDamage(self, value):
@@ -940,7 +940,7 @@ class PlayerCharacter(p.Person):
 
     @property
     def statusShadowBonusDamage(self):
-        return self._statusShadowBonusDamage
+        return int(self._statusShadowBonusDamage)
 
     @statusShadowBonusDamage.setter
     def statusShadowBonusDamage(self, value):
@@ -950,7 +950,7 @@ class PlayerCharacter(p.Person):
 
     @property
     def arcaneArcherManaRegen(self):
-        return self._arcaneArcherManaRegenBase
+        return int(self._arcaneArcherManaRegenBase)
 
     @arcaneArcherManaRegen.setter
     def arcaneArcherManaRegen(self, value):
@@ -958,11 +958,11 @@ class PlayerCharacter(p.Person):
 
     @property
     def totalIdentification(self):
-        return self.totalSorcery + self.equipmentIdentification + self.statusIdentification
+        return int(self.totalSorcery + self.equipmentIdentification + self.statusIdentification)
 
     @property
     def equipmentIdentification(self):
-        return self._equipmentIdentification
+        return int(self._equipmentIdentification)
 
     @equipmentIdentification.setter
     def equipmentIdentification(self, value):
@@ -970,7 +970,7 @@ class PlayerCharacter(p.Person):
 
     @property
     def statusIdentification(self):
-        return self._statusIdentification
+        return int(self._statusIdentification)
 
     @statusIdentification.setter
     def statusIdentification(self, value):
@@ -979,7 +979,7 @@ class PlayerCharacter(p.Person):
     @property
     def lockpicking(self):
         if self.baseClass == "Thief":
-            return self.totalCunning
+            return int(self.totalCunning)
         else:
             return 0
 
@@ -999,7 +999,7 @@ class PlayerCharacter(p.Person):
 
     @property
     def bonusRange(self):
-        return self._bonusRange
+        return int(self._bonusRange)
 
     @bonusRange.setter
     def bonusRange(self, value):
@@ -1007,7 +1007,7 @@ class PlayerCharacter(p.Person):
 
     @property
     def bonusTrapDamage(self):
-        return self._bonusTrapDamage
+        return int(self._bonusTrapDamage)
 
     @bonusTrapDamage.setter
     def bonusTrapDamage(self, value):
@@ -1015,7 +1015,7 @@ class PlayerCharacter(p.Person):
 
     @property
     def bonusTrapRating(self):
-        return self._bonusTrapRating
+        return int(self._bonusTrapRating)
 
     @bonusTrapRating.setter
     def bonusTrapRating(self, value):
@@ -1041,7 +1041,7 @@ class PlayerCharacter(p.Person):
     def ninjaStyle(self):
         """The Style this Ninja is currently using.  If this playercharacter
         is not a Ninja, it should always be None."""
-        return self._ninjaStyle
+        return int(self._ninjaStyle)
 
     @ninjaStyle.setter
     def ninjaStyle(self, value):
@@ -1057,16 +1057,16 @@ class PlayerCharacter(p.Person):
         """How much all of the inventory items weigh, in pounds."""
         totalWeight = self.inventory.totalWeight
         totalWeight += self.equippedItems.equippedWeight
-        return totalWeight
+        return int(totalWeight)
 
     @property
     def inventoryCapacity(self):
         """How much the player can fit in his inventory."""
         # TODO: Worry about how +Strength and +Capacity gear could allow you to carry more than your capacity.
         if self.totalStrength <= 15:
-            return 8 * self.totalStrength + self._baseInventoryCapacity + self._equipmentCarryingCapacity
+            return int(8 * self.totalStrength + self._baseInventoryCapacity + self._equipmentCarryingCapacity)
         else:
-            return 120 + (self.totalStrength - 15) * 12 + self._baseInventoryCapacity + self._equipmentCarryingCapacity
+            return int(120 + (self.totalStrength - 15) * 12 + self._baseInventoryCapacity + self._equipmentCarryingCapacity)
 
     @property
     def equipmentCarryingCapacity(self):
@@ -1078,11 +1078,11 @@ class PlayerCharacter(p.Person):
 
     @property
     def totalShopBonus(self):
-        return min(40, max(0, (self.totalCunning - 10) * 0.5 + self.equipmentShopBonus))
+        return int(min(40, max(0, (self.totalCunning - 10) * 0.5 + self.equipmentShopBonus)))
 
     @property
     def equipmentShopBonus(self):
-        return self._equipmentShopBonus
+        return int(self._equipmentShopBonus)
 
     @equipmentShopBonus.setter
     def equipmentShopBonus(self, value):

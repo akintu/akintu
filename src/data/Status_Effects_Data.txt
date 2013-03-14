@@ -131,6 +131,14 @@
   [RECURRING: False]
   [IMMUNE: None]
   
+[NAME: Elemental_offense_arcane]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
+[NAME: Elemental_offense_divine]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
 [NAME: Elemental_resistance_arcane]
   [TYPE: Internal]
   [RECURRING: False]
@@ -732,6 +740,10 @@
   [ELEMENT: Arcane]
   [INTERNAL: Spellpower_bonus]
     [MAGNITUDE: 5]
+  [INTERNAL: Elemental_offense_arcane]
+	[MAGNITUDE: 10]
+  [INTERNAL: Elemental_offense_divine]
+	[MAGNITUDE: 10]
   [CATEGORY: Buff]
 	
 [NAME: Spell Sight]
