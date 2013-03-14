@@ -744,11 +744,10 @@ def set_alpha(image, alpha):
     Given a surface, return a surface with the given alpha applied to every
     pixel
     '''
-    newimage = pygame.Surface((image.get_width(), image.get_height()))
     for y in range(image.get_height()):
         for x in range(image.get_width()):
             c = image.get_at((x, y))
             if c[3] != 0:
                 c = (c[0], c[1], c[2], alpha)
-                newimage.set_at((x, y), c)
-    return newimage
+                image.set_at((x, y), c)
+    return image
