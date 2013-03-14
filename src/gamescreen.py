@@ -647,6 +647,7 @@ class PersonSprite(pygame.sprite.DirtySprite):
         imagepre = self.statsdict['image']
         # Try to retrieve the different facing images
         try:
+            # Normal images
             self.images = []
             endings = [(2, '_fr1.png'), (4, '_lf1.png'),
                        (6, '_rt1.png'), (8, '_bk1.png')]
@@ -658,8 +659,23 @@ class PersonSprite(pygame.sprite.DirtySprite):
             self.images.append(
                 {key: pygame.image.load(imagepre+end).convert_alpha()
                  for key, end in endings})
-        # Assume imagepre is the actual image location, add facing overlays
+            endings = [(2, '_fr1.png'), (4, '_lf1.png'),
+                       (6, '_rt1.png'), (8, '_bk1.png')]
+            self.images.append(
+                {key:
+                    set_alpha(pygame.image.load(imagepre+end).convert_alpha(),
+                              100)
+                 for key, end in endings})
+            endings = [(2, '_fr2.png'), (4, '_lf2.png'),
+                       (6, '_rt2.png'), (8, '_bk2.png')]
+            self.images.append(
+                {key:
+                    set_alpha(pygame.image.load(imagepre+end).convert_alpha(),
+                              100)
+                 for key, end in endings})
+            # Stealthed images
         except pygame.error:
+            # Assume imagepre is the actual image location, add facing overlays
             self.images = facing_overlays(imagepre)
 
         # Location and rect info
