@@ -11,7 +11,7 @@ TIER2 = ROOT_FOLDER + "tier2_spells/"
 class SpellStub(object):
     def __init__(self, name):
         self.name = name
-        info = None
+        info = Spell.allSpells[name]
         self.text = 'Fill me in!'
         self.image = './res/images/icons/cubeforce.png'
         cooldownText = '0'
@@ -213,6 +213,7 @@ class Spell(object):
         chance = Dice.rollPresetChance(source, target, "Frequent")
         magnitude = Dice.scale(source.totalSpellpower, 5, 0.012)
         Combat.addStatus(target, self.name, duration, magnitude, hitValue=hitType, chance=chance)
+        Combat.lowerHP(target, damage)
 
     def _shock(self, target):
         source = self.owner
