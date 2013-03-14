@@ -179,8 +179,6 @@ class GameScreen(object):
             entimage = self.images[ent.image]
             self.background.blit(entimage, (i*TILE_SIZE, j*TILE_SIZE))
 
-        overlay = 'red'
-
         if overlay:
             self.background.blit(self.overlays[overlay],
                                  (i*TILE_SIZE, j*TILE_SIZE))
