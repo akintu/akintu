@@ -45,8 +45,6 @@ class GameServer():
                 for p, i in self.player.iteritems():
                     if command.location.pane == self.person[i].location.pane and not self.person[i].cPane:
                         self.SDF.send(p, command)
-                        #JAB: SENDING WORLD ITEMS
-                        self.send_world_items(p, command.location)
 
                 # Send list of players to the issuing client
                 if port:
@@ -55,6 +53,8 @@ class GameServer():
                             self.SDF.send(port, Command("PERSON", "CREATE", id=i, \
                                     location=self.person[i].location, \
                                     details=self.person[i].dehydrate()))
+                                    
+                    self.send_world_items(port, command.location)
 
             ###### MovePerson ######
             if command.type == "PERSON" and command.action == "MOVE":
@@ -101,9 +101,9 @@ class GameServer():
                                     self.SDF.send(p, Command("PERSON", "CREATE", id=i, \
                                             location=self.person[i].location, \
                                             details=self.person[i].dehydrate()))
-                        # TODO: JAB HANDLE SENDING SPECIFIC PANE THINGS HERE
                             
-                        self.send_world_items(p, command.location)
+                            # TODO: JAB HANDLE SENDING SPECIFIC PANE THINGS HERE
+                            self.send_world_items(p, command.location)
                         
                         self.unload_panes()
 
@@ -154,15 +154,14 @@ class GameServer():
                         
             ###### Levelup Player ######
             if command.type == "PERSON" and command.action == "REPLACE":
-            
+
                 newPerson = TheoryCraft.rehydratePlayer(command.player)
                 newPerson.location = self.person[command.id].location
                 newPerson.id = command.id
                 newPerson.ai.startup(self)
                 self.person[command.id].ai.shutdown()
                 self.person[command.id] = newPerson
-                
-            
+
             ###### Get Item / Open Chest ######
             if command.type == "PERSON" and command.action == "OPEN":
                 activePlayer = self.person[command.id]
