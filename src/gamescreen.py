@@ -37,6 +37,13 @@ class GameScreen(object):
         self.textsize = 12
         self.sidetext = []
         self.dialog = None
+        self.overlays = {}
+        self.overlays['blue'] = generate_overlay(TILE_SIZE, TILE_SIZE,
+                                                 (0, 0, 200, 50))
+        self.overlays['green'] = generate_overlay(TILE_SIZE, TILE_SIZE,
+                                                  (0, 200, 0, 50))
+        self.overlays['red'] = generate_overlay(TILE_SIZE, TILE_SIZE,
+                                                (200, 0, 0, 50))
         pygame.display.flip()
 
         # Draw the sidebar text area and make sure it has at least one item
@@ -147,9 +154,12 @@ class GameScreen(object):
         self.screen.blit(self.background, [0, 0])
         pygame.display.update()
 
-    def update_tile(self, tile, location):
+    def update_tile(self, tile, location, overlay=None):
         '''
         Update a specific tile in the current pane
+
+        Adds a transparent overlay of 'red' 'green' or 'blue' if the overlay
+        argument is specified
         '''
         self.pane.tiles[location.tile] = tile
         i, j = location.tile
@@ -168,6 +178,12 @@ class GameScreen(object):
                     pygame.image.load(ent.image).convert_alpha()
             entimage = self.images[ent.image]
             self.background.blit(entimage, (i*TILE_SIZE, j*TILE_SIZE))
+
+        overlay = 'red'
+
+        if overlay:
+            self.background.blit(self.overlays[overlay],
+                                 (i*TILE_SIZE, j*TILE_SIZE))
 
         if not self.dialog:
             # Blit the entire background (if this becomes an issue we'll refactor)
@@ -751,3 +767,15 @@ def set_alpha(image, alpha):
                 c = (c[0], c[1], c[2], alpha)
                 image.set_at((x, y), c)
     return image
+
+
+def generate_overlay(width, height, rgba):
+    '''
+    Given a width and height and an RGBA tuple, generate a transparent surface
+    with that RGBA and return it
+    '''
+    surface = pygame.Surface((width, height)).convert_alpha()
+    for x in range(width):
+        for y in range(height):
+            surface.set_at((x, y), rgba)
+    return surface
