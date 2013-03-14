@@ -241,10 +241,12 @@ class Pane(object):
         else:
             #Adds a random Chest
             #TODO: remove none from level
+            loc_list = []
             for i in range(10):
-                loc = (random.randrange(1, PANE_X-1), random.randrange(1, PANE_Y-1))
-                # print loc
-                self.add_chest(TreasureChest.CHEST_TYPE[random.randrange(len(TreasureChest.CHEST_TYPE))], None, loc)
+                loc_list.append((TreasureChest.CHEST_TYPE[random.randrange(len(TreasureChest.CHEST_TYPE))], \
+                                (random.randrange(1, PANE_X-1), random.randrange(1, PANE_Y-1))))
+            for type, loc in loc_list:
+                self.add_chest(type, None, loc)
         
     def add_chest(self, chest_type, level, tile):
         if not level:
