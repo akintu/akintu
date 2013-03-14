@@ -6,7 +6,7 @@ import os
 import random
 
 from const import *
-from PIL import Image
+from PIL import Image, ImageEnhance
 
 #OBSTACLES
 #(Path, Name, Tilesize, Cropsize, Size)
@@ -143,8 +143,8 @@ class Crop(object):
                     self.tile_id[str((i,j))] = id
                 else:
                     self.tile_id[(i, j)] = id
-                self.images[id] = self.backimage.crop(
-                    (currx, curry, currx + cropsize, curry + cropsize))
+                self.images[id] = Sprites.make_transparent(self.backimage.crop(
+                    (currx, curry, currx + cropsize, curry + cropsize)))
                 if not cropsize == tilesize:
                     self.images[id].resize((tilesize, tilesize))
                 curry += cropsize
