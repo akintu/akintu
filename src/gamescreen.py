@@ -712,3 +712,12 @@ def facing_overlays(imageloc):
         imagedict[key] = pygame.image.load(imageloc).convert_alpha()
         imagedict[key].fill(Color('blue'), rect)
     return [imagedict, imagedict]
+
+def set_alpha(image, alpha):
+    for y in range(image.get_height()):
+        for x in range(image.get_width()):
+            c = image.get_at((x, y))
+            if c[3] != 0:
+                c = (c[0], c[1], c[2], alpha)
+                image.set_at((x, y), c)
+    return image
