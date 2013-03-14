@@ -506,6 +506,8 @@ class Game(object):
             self.performingLevelup = True
             self.levelup = lvl.Levelup(player, self.screen)
             self.levelup.next()
+        else:
+            player.addExperience(100)
             
     def choose_ability(self):
         text = "Select an Ability"
