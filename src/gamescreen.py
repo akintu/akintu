@@ -663,15 +663,13 @@ class PersonSprite(pygame.sprite.DirtySprite):
                        (6, '_rt1.png'), (8, '_bk1.png')]
             self.images.append(
                 {key:
-                    set_alpha(pygame.image.load(imagepre+end).convert_alpha(),
-                              100)
+                    set_alpha(pygame.image.load(imagepre+end).convert_alpha())
                  for key, end in endings})
             endings = [(2, '_fr2.png'), (4, '_lf2.png'),
                        (6, '_rt2.png'), (8, '_bk2.png')]
             self.images.append(
                 {key:
-                    set_alpha(pygame.image.load(imagepre+end).convert_alpha(),
-                              100)
+                    set_alpha(pygame.image.load(imagepre+end).convert_alpha())
                  for key, end in endings})
             # Stealthed images
         except pygame.error:
@@ -734,12 +732,12 @@ def facing_overlays(imageloc):
     # Stealthed images
     simagedict = dict()
     for key, rect in zip(keys, rects):
-        simagedict[key] = set_alph(pygame.image.load(imageloc).convert_alpha())
+        simagedict[key] = set_alpha(pygame.image.load(imageloc).convert_alpha())
         simagedict[key].fill(Color('blue'), rect)
     return [imagedict, imagedict, simagedict, simagedict]
 
 
-def set_alpha(image, alpha):
+def set_alpha(image, alpha=100):
     '''
     Given a surface, return a surface with the given alpha applied to every
     pixel
