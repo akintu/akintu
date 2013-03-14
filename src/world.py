@@ -296,10 +296,10 @@ class Pane(object):
             if random.randrange(100) <= percentage*100:
                 index = random.randrange(len(ENTITY_KEYS))
                 self.objects[tile] = ENTITY_KEYS[index]
-                #self.tiles[tile].passable = False
+                self.tiles[tile].add_entity_key(self.objects[tile])
         else:
             self.objects[tile] = entity_type
-            #self.tiles[tile].passable = False
+            self.tiles[tile].add_entity_key(entity_type)
         if tile in self.objects:
             return self.objects[tile]
         
@@ -383,7 +383,7 @@ class Pane(object):
         monster_list = []
 
         #Save Monsters.  
-        print self.person
+        # print self.person
         for key, monster in self.person.iteritems():
             monster_list.append((monster.name, monster.level, \
                 monster.location, monster.region, monster.ai))
@@ -538,6 +538,7 @@ class Tile(object):
         self.chest = None
         self.image = image
         self.passable = passable
+        self.entity_keys = []
 
     def __repr__(self):
         return "(%s, %s, %s)" % (self.passable, self.image, self.entities)
@@ -548,10 +549,16 @@ class Tile(object):
     def is_passable(self):
         if self.passable == False:
             return False
+        for key in self.entity_keys:
+            if key in OBSTACLE_KEYS:
+                return False
         for ent in self.entities:
             if ent.passable == False:
                 return False
         return True
+        
+    def add_entity_key(self, key):
+        self.entity_keys.append(key)
     
     def add_item(self, entity):
         self.entities.append(entity)

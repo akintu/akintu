@@ -45,6 +45,7 @@ class GameServer():
                 for p, i in self.player.iteritems():
                     if command.location.pane == self.person[i].location.pane and not self.person[i].cPane:
                         self.SDF.send(p, command)
+                        #JAB: SENDING WORLD ITEMS
                         self.send_world_items(p, command.location)
 
                 # Send list of players to the issuing client
