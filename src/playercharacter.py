@@ -385,8 +385,7 @@ class PlayerCharacter(p.Person):
                     "Sorcery + " + `displaySorceryGain` + "\n" + \
                     "Piety + " + `displayPietyGain` + "\n" + \
                     "Constitution + " + `displayConstitutionGain` + "\n" + \
-                    "HP + " + `self.levelupHP` + "\n" + \
-                    "MP + " + `self.levelupMP` + "\n"
+                    "HP + " + `int(self.levelupHP)` + "    MP + " + `int(self.levelupMP)`
         statsTile = TileObject(statsName, statsImage, statsText)
         
         self.HP = self.totalHP
