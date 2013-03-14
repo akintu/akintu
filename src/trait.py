@@ -66,9 +66,11 @@ class Trait(object):
         self.owner.listeners.append(newListener)
 
     
-    def applyParry(self, target, reverse=False, attacker=None):
-        #if target.facingAttacker() TODO
-        #self.rank = Trait.getTraiself.rank(target, "Parry")
+    def applyParry(self, target, reverse=False, other=None):
+        if not Combat.checkParryPosition(target.cPane, target.cLocation, targetLoc=other.cLocation):
+            print "Not in parry position"
+            return
+        print "In Parry position"
         if not reverse:
             if self.rank == 1:
                 target.statusDodge += 2
