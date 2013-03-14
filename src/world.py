@@ -38,27 +38,46 @@ class World(object):
         for key, loc in surrounding_locations.iteritems():
             if not loc in self.panes:
                 self.panes[loc] = Pane(self.seed, loc)
+        
+        if not location in self._listTowns(location):
 
-        #Check Disk For Pane
-        state = None
-        # if is_server:
-            # filename = "Pane_" + str(location[0]) + "_" + str(location[1])
-            # data = State.load(TMP_WORLD_SAVE_PATH, filename)
-            # if data:
-                # state = data
-            # else:
-        #Check State For Pane
-        if self.world_state:
-            if location in self.world_state:
-                state = self.world_state[location]
-        #TODO: Change is_server=True to is_server=is_server.  Need to have items/chests tracked on server
-        self.panes[location] = Pane(self.seed, location, is_server=is_server, load_entities=True, pane_state=state)
+            #Check Disk For Pane
+            state = None
+            # if is_server:
+                # filename = "Pane_" + str(location[0]) + "_" + str(location[1])
+                # data = State.load(TMP_WORLD_SAVE_PATH, filename)
+                # if data:
+                    # state = data
+                # else:
+            #Check State For Pane
+            if self.world_state:
+                if location in self.world_state:
+                    state = self.world_state[location]
+            #TODO: Change is_server=True to is_server=is_server.  Need to have items/chests tracked on server
+            self.panes[location] = Pane(self.seed, location, is_server=is_server, load_entities=True, pane_state=state)
+        else:
+            self.panes[location] = self._getTown(location, is_server)
+            
         self._merge_tiles(surrounding_locations)
-
         self.panes[location].load_images()
         if not is_server:
             self.panes[location].person = {}
         return self.panes[location]
+            
+    def _getTown(self, location, is_server):
+        town = Town(self.seed, location, is_server, False, None)
+        
+        # for tile in town.tiles:
+            # town.remove_chest(tile):
+        return town
+    
+    def _listTowns(self, location):
+        '''
+        location is a tuple e.g (0, 0)
+        '''
+        
+        return [(0, 0), (0, -2)]
+        
 
     def _generate_world(self):
         pass
@@ -606,6 +625,10 @@ class Tile(object):
         
     def get_chest(self):
         return self.chest
+        
+class Town(Pane):
+    def __init__(self, seed, location, is_server=False, load_entities=False, pane_state=None):
+        super(Town, self).__init__(seed, location, is_server, load_entities, pane_state)
 
 if __name__ == "__main__":
     '''
