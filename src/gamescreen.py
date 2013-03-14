@@ -203,6 +203,7 @@ class GameScreen(object):
             - 'restrictedAP'
             - 'level'
             - 'size'
+            - 'stealth'
 
         To be supported in the future:
             - 'statusList'
@@ -216,7 +217,7 @@ class GameScreen(object):
            'location' not in statsdict or \
            'team' not in statsdict:
             raise Exception('Image, location, or team not defined')
-        for attr in ['xoffset', 'yoffset', 'foot']:
+        for attr in ['xoffset', 'yoffset', 'foot', 'stealth']:
             if attr not in statsdict:
                 statsdict[attr] = 0
 
@@ -646,6 +647,7 @@ class PersonSprite(pygame.sprite.DirtySprite):
         imagepre = self.statsdict['image']
         # Try to retrieve the different facing images
         try:
+            # Normal images
             self.images = []
             endings = [(2, '_fr1.png'), (4, '_lf1.png'),
                        (6, '_rt1.png'), (8, '_bk1.png')]
@@ -657,8 +659,21 @@ class PersonSprite(pygame.sprite.DirtySprite):
             self.images.append(
                 {key: pygame.image.load(imagepre+end).convert_alpha()
                  for key, end in endings})
-        # Assume imagepre is the actual image location, add facing overlays
+            endings = [(2, '_fr1.png'), (4, '_lf1.png'),
+                       (6, '_rt1.png'), (8, '_bk1.png')]
+            self.images.append(
+                {key:
+                    set_alpha(pygame.image.load(imagepre+end).convert_alpha())
+                 for key, end in endings})
+            endings = [(2, '_fr2.png'), (4, '_lf2.png'),
+                       (6, '_rt2.png'), (8, '_bk2.png')]
+            self.images.append(
+                {key:
+                    set_alpha(pygame.image.load(imagepre+end).convert_alpha())
+                 for key, end in endings})
+            # Stealthed images
         except pygame.error:
+            # Assume imagepre is the actual image location, add facing overlays
             self.images = facing_overlays(imagepre)
 
         # Location and rect info
@@ -666,7 +681,8 @@ class PersonSprite(pygame.sprite.DirtySprite):
         foot = self.statsdict['foot']
         xoff = self.statsdict['xoffset']
         yoff = self.statsdict['yoffset']
-        self.image = self.images[foot][loc.direction]
+        stealth = self.statsdict['stealth']
+        self.image = self.images[foot + (2 * stealth)][loc.direction]
         self.rect = self.image.get_rect()
         self.current_coord = loc
         self.rect.topleft = (loc.tile[0] * TILE_SIZE + xoff,
@@ -681,10 +697,11 @@ class PersonSprite(pygame.sprite.DirtySprite):
         foot = self.statsdict['foot']
         xoff = self.statsdict['xoffset']
         yoff = self.statsdict['yoffset']
+        stealth = self.statsdict['stealth']
         loc = self.current_coord
         self.rect.topleft = (loc.tile[0] * TILE_SIZE + xoff,
                              loc.tile[1] * TILE_SIZE + yoff)
-        self.image = self.images[foot][loc.direction]
+        self.image = self.images[foot + (2 * stealth)][loc.direction]
         self.dirty = 1
 
     def update_dict(self, statsdict):
@@ -707,13 +724,24 @@ def facing_overlays(imageloc):
              (0, 0, 3, 32),
              (29, 0, 3, 32),
              (0, 0, 32, 3)]
+    # Normal images
     imagedict = dict()
     for key, rect in zip(keys, rects):
         imagedict[key] = pygame.image.load(imageloc).convert_alpha()
         imagedict[key].fill(Color('blue'), rect)
-    return [imagedict, imagedict]
+    # Stealthed images
+    simagedict = dict()
+    for key, rect in zip(keys, rects):
+        simagedict[key] = set_alpha(pygame.image.load(imageloc).convert_alpha())
+        simagedict[key].fill(Color('blue'), rect)
+    return [imagedict, imagedict, simagedict, simagedict]
 
-def set_alpha(image, alpha):
+
+def set_alpha(image, alpha=100):
+    '''
+    Given a surface, return a surface with the given alpha applied to every
+    pixel
+    '''
     for y in range(image.get_height()):
         for x in range(image.get_width()):
             c = image.get_at((x, y))
