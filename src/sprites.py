@@ -94,19 +94,19 @@ class Sprites(object):
         
     @staticmethod
     def make_transparent(image, opacity=.5):
-    if opacity < 0:
-        opacity = 0
-    if opacity > 1:
-        opacity = 1
-        
-    if image.mode != 'RGBA':
-        image = image.convert('RGBA')
-    else:
-        image = image.copy()
-    alpha = image.split()[3]
-    alpha = ImageEnhance.Brightness(alpha).enhance(opacity)
-    image.putalpha(alpha)
-    return image
+        if opacity < 0:
+            opacity = 0
+        if opacity > 1:
+            opacity = 1
+            
+        if image.mode != 'RGBA':
+            image = image.convert('RGBA')
+        else:
+            image = image.copy()
+        alpha = image.split()[3]
+        alpha = ImageEnhance.Brightness(alpha).enhance(opacity)
+        image.putalpha(alpha)
+        return image
 
 
 def crop_helper(const):
