@@ -503,7 +503,7 @@ class Game(object):
         # Ask server if this character may levelup. TODO
         # Remove EXP code left for testing, TODO
         player = self.pane.person[self.id]
-        if player.experience > player.getExpForNextLevel() and player.level < LEVEL_MAX:
+        if player.experience >= player.getExpForNextLevel() and player.level < LEVEL_MAX:
             player.level += 1
             self.performingLevelup = True
             self.levelup = lvl.Levelup(player, self.screen)

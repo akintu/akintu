@@ -312,7 +312,7 @@ class PlayerCharacter(p.Person):
                 longText.append("&" + eq.identifier)
         longText.append("@")
         for tr in self.traits:
-            longText.append("&" + tr.name) 
+            longText.append("&" + tr.name + `tr.rank`) 
         return ''.join(longText)
         
         

@@ -141,7 +141,10 @@ class Ability(object):
             if self.owner.inStealth():
                 if Dice.rollBeneath(self.breakStealth):
                     Combat.removeStealth(self.owner)
-                    Combat.sendCombatMessage(self.owner.name + " exited stealth.", self.owner, color='white')
+                    if self.breakStealth < 100:
+                        Combat.sendCombatMessage(self.owner.name + " broke stealth early!", self.owner, color='white')
+                    else:
+                        Combat.sendCombatMessage(self.owner.name + " exited stealth.", self.owner, color='white')
         else:
             print "WARNING: Ability failed late!"
 
@@ -649,6 +652,22 @@ class Ability(object):
             return (False, "Must be using a Ranged weapon to perform " + self.name + " .")
         return (True, "")
 
+    def _riskyShot(self, target):
+        source = self.owner
+        hit = Combat.calcHit(source, target, "Physical", critMod=15)
+        if hit == "Critial Hit":
+            duration = 5
+            Combat.addStatus(target, "Riksy Shot", duration)
+        Combat.basicAttack(source, target, hit)
+        
+    def _riskyShotCheck(self, target):
+        source = self.owner
+        if not source.inStealth():
+            return (False, "Must be in stealth to perform " + self.name + " .")
+        if not source.usingWeapon("Ranged"):
+            return (False, "Must be using a Ranged weapon to perform " + self.name + " .")
+        return (True, "")
+        
         
     # Shadow
 
@@ -1910,6 +1929,23 @@ class Ability(object):
         'image' : ASSASSIN_SKILLS + 'massive-shot.png',
         'text' : 'Ranged attack that requires stealth.  Attack with +2 Accuracy, Force x 1.30,\n' + \
                 '+30% Damage, and +350% critical magnitude.  Lowers your sneak by 5 for the next 8 turns.'
+        },
+        'Risky Shot':
+        {
+        'level' : 5,
+        'class' : 'Assassin',
+        'HPCost' : 0,
+        'APCost' : 6
+        'range' : -1,
+        'target' : 'hostile',
+        'action' : _riskyShot,
+        'cooldown' : 2,
+        'checkFunction' : _riskyShotCheck,
+        'breakStealth' : 20,
+        'image' : ASSASSIN_SKILLS + 'risky-shot.png',
+        'text' : 'Ranged attack from within stealth that has a 20% chance to break stealth but has\n' + \
+                '+15% critical chance.  It it critically hits, it causes bleeding for 5% of current\n' + \
+                'HP per turn and reduces enemy attack power by 5% for 5 turns.'
         },
 
         # Nightblade

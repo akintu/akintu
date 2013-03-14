@@ -376,8 +376,7 @@ class Person(en.Entity):
     @avoidanceChance.setter
     def avoidanceChance(self, value):
         """Should be a non-negative int."""
-        if value >= 0:
-            self._avoidanceChance = value
+        self._avoidanceChance = value
 
     # Elemental Resistances
 
@@ -1306,8 +1305,7 @@ class Person(en.Entity):
         """
         int value: should be CON above 10 + static Ability Bonus
         """
-        if value >= 0:
-            self._basePoisonTolerance = value
+        self._basePoisonTolerance = value
 
 
     @property
@@ -1363,8 +1361,7 @@ class Person(en.Entity):
         """
         int value: should be Dex + static Ability Bonus
         """
-        if value >= 0:
-            self._baseRangedAccuracy = value
+        self._baseRangedAccuracy = value
 
     @property
     def totalRangedCriticalMagnitude(self):
@@ -1478,8 +1475,7 @@ class Person(en.Entity):
         """
         int value: should be Sorc + static Ability Bonus
         """
-        if value >= 0:
-            self._baseSpellpower = value
+        self._baseSpellpower = value
 
     @property
     def totalCriticalChance(self):
@@ -1535,8 +1531,7 @@ class Person(en.Entity):
         """
         float value: should be (0.5*(CUN over 10)) + static Ability Bonus
         """
-        if value >= 0:
-            self._baseCriticalChance = value
+        self._baseCriticalChance = value
 
     @property
     def totalCriticalMagnitude(self):
@@ -1599,8 +1594,7 @@ class Person(en.Entity):
         float value: should be 100 + any static Ability Bonus
                      must be non-negative
         """
-        if value >= 0:
-            self._baseCriticalMagnitude = value
+        self._baseCriticalMagnitude = value
 
     @property
     def totalMeleeAccuracy(self):
@@ -1656,8 +1650,7 @@ class Person(en.Entity):
         """
         int value: should be Dex/2 + Str/2 + static Ability Bonus
         """
-        if value >= 0:
-            self._baseMeleeAccuracy = value
+        self._baseMeleeAccuracy = value
 
     @property
     def totalMeleeDodge(self):
@@ -1768,8 +1761,7 @@ class Person(en.Entity):
         """
         int value: should be max(0, (Strength - 10)) + static ability might
         """
-        if value >= 0:
-            self._baseMight = value
+        self._baseMight = value
 
     @property
     def totalMovementTiles(self):

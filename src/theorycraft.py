@@ -134,11 +134,10 @@ class TheoryCraft(object):
         newChar = TheoryCraft.getNewPlayerCharacter(race, cls, name=name, new=False, hardcore=hardcore, ironman=ironman)
 
         newChar._experience = experience
-        if level > 1:
-            for i in range(level - 1):
-                newChar.gainLevelUp(statsOnly=True)
-            newChar.level = level
-        
+        for i in range(level - 1):
+            newChar.level += 1
+            newChar.gainLevelUp(statsOnly=True)
+            
         for abilName in abilityNames:
             if abilName == '':
                 continue
@@ -162,10 +161,16 @@ class TheoryCraft(object):
             if passiveName == '':
                 continue
             newChar.passiveAbilities.append(passiveability.PassiveAbility(passiveName, newChar))
-        for tName in traitNames:
-            if tName == '':
+        for tCombo in traitNames:
+            if tCombo == '':
                 continue
-            newChar.traits.append(trait.Trait(tName, newChar))
+            tName = tCombo[:-1]
+            tRank = int(tCombo[-1])
+            newTrait = trait.Trait(tName, newChar)
+            newChar.traits.append(newTrait)
+            rankUps = tRank - 1
+            for i in range(rankUps):
+                newTrait.advanceTier()
             
         return newChar
         

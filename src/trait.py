@@ -49,14 +49,14 @@ class Trait(object):
             self.extraStaticAction(self, self.owner)
 
     def advanceTier(self):
-        if self.rank == 4:
-            return
-        if self.rank == 3 and player.level < 7:
-            return
-        if self.rank == 2 and player.level < 5:
-            return
-        if self.rank == 1 and player.level < 3:
-            return
+        # if self.rank == 4:
+            # return
+        # if self.rank == 3 and self.owner.level < 7:
+            # return
+        # if self.rank == 2 and self.owner.level < 5:
+            # return
+        # if self.rank == 1 and self.owner.level < 3:
+            # return
         self.rank += 1
         if self.type == "static":
             self.action(self, self.owner)
