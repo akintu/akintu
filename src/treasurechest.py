@@ -59,22 +59,20 @@ class TreasureChest(entity.Entity):
         if not player:
             print "TreasureChest.generateTreasure - Warning: No player specified for this treasure!"
             return
+        valuables = []
         if self.type == "Small":
-            #for p in playerList:
             valuables = self._generateSmallTreasure()
-            for v in valuables:
-                player.inventory.addItem(v)
-            return valuables
         elif self.type == "Large":
-            #for p in playerList:
             valuables = self._generateLargeTreasure()
-            for v in valuables:
-                player.inventory.addItem(v)
-            return valuables
         else:
             pass # TODO
             #valuables = self._generateGildedTreasure(playerList)
-
+        for v in valuables:
+            if isinstance(v, int):
+                v = int(round(v + v * player.goldFind * 0.01))
+            player.inventory.addItem(v)
+        return valuables
+            
     def _generateSmallTreasure(self):
         selection = Dice.roll(1, 100)
         if selection <= 20:
