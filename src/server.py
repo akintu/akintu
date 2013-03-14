@@ -206,12 +206,13 @@ class GameServer():
                                     text ='Found and equipped item: ' + item.displayName
                                 action = Command("UPDATE", "TEXT", text=text, color='lightskyblue')
                                 self.SDF.send(p, action)
-                                
-                                    
                             
             # Get items: TODO
             
     ###### Utility Methods ######
+    
+    def broadcast(self, command, port=None, id=None, pane=None):
+        pass
     
     def send_world_items(self, player, location):
         # print (location.pane)
@@ -225,13 +226,20 @@ class GameServer():
                 # print cmd
         # ITEMS
     
-    def tile_is_open(self, location):
+    def tile_is_open(self, location, pid=None, cPane=None):
         if location.pane not in self.pane:
             return False
-        return self.pane[location.pane].is_tile_passable(location) and \
-                location.tile not in [self.person[i].location.tile \
-                for i in self.pane[location.pane].person]
-
+        if pid or cPane:
+            if not cPane:
+                cPane = self.person[pid].cPane
+            return self.pane[cPane].is_tile_passable(location) and \
+                    location.tile not in [self.person[i].cLocation.tile \
+                    for i in self.pane[cPane].person]
+        else:
+            return self.pane[location.pane].is_tile_passable(location) and \
+                    location.tile not in [self.person[i].location.tile \
+                    for i in self.pane[location.pane].person]
+            
     def load_pane(self, pane, pid=None):
         if pane not in self.pane:
             print("Loading pane " + str(pane))

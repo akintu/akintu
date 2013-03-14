@@ -21,7 +21,7 @@ class CombatServer():
             activePlayer = self.server.person[command.id]
 
             # If this is a legal move request
-            if self.tile_is_open(command.location, command.id) and \
+            if self.server.tile_is_open(command.location, command.id) and \
                  activePlayer.AP >= activePlayer.totalMovementAPCost or\
                  activePlayer.remainingMovementTiles > 0:
                 if activePlayer.remainingMovementTiles == 0:
@@ -109,15 +109,6 @@ class CombatServer():
         
     
     ### Utility Methods ###
-
-    def tile_is_open(self, location, pid):
-        if location.pane not in self.server.pane:
-            return False
-        return self.server.pane[self.server.person[pid].cPane].is_tile_passable(location) and \
-                location.tile not in [self.server.person[i].cLocation.tile \
-                for i in self.server.pane[self.server.person[pid].cPane].person]
-
-    
                 
     def shout_turn_start(self, player, turn="Player"):
         '''Shouts to the Player that this particular turn is starting.
@@ -187,7 +178,7 @@ class CombatServer():
             elif direction == 3:
                 direction = Dice.choose([2,6])
             desiredLocation = monster.cLocation.move(direction, 1)
-            if self.tile_is_open(desiredLocation, monster.id):
+            if self.server.tile_is_open(desiredLocation, monster.id):
                 action = Command("PERSON", "MOVE", id=monster.id, location=desiredLocation)
                 #self.server.SDF.queue.put((None, action))
                 for port in self.server.player.keys():

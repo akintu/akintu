@@ -1179,3 +1179,9 @@ class Combat(object):
                     "Monsters" if selectMonsters else "Players":
                 people.append(Combat.gameServer.person[i])
         return people
+        
+    @staticmethod
+    def getRandomAdjacentLocation(cPane, location):
+        R = Region()
+        R("ADD", "CIRCLE", location, 1)
+        return random.choice([x for x in R if Combat.gameServer.tile_is_open(x, cPane=cPane)])
