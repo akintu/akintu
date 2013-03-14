@@ -262,7 +262,7 @@ class Ability(object):
 
     def _feint(self, target):
         source = self.owner
-        success = Dice.rollBeneath(min(72, (source.totalCunning - target.totalCunning) * 8))
+        success = Dice.rollBeneath(min(80, (source.totalCunning - target.totalCunning) * 8))
         if success:
             duration = 2
             Combat.addStatus(target, "Feint", duration)
@@ -275,6 +275,17 @@ class Ability(object):
     def _farSightedFocusCheck(self, target):
         return (True, "")
 
+    def _expertNotch(self, target):
+        source = self.owner
+        hit = Combat.calcHit(source, target, "Physical", modifier=6)
+        Combat.basicAttack(source, target, hit)
+    
+    def _expertNotchCheck(self, target):
+        source = self.owner
+        if not source.usingWeapon("Bow"):
+            return (False, "Must be using a bow to use " + self.name)
+        return (True, "")
+        
     def _tunnelVision(self, target):
         source = self.owner
         duration = 4
@@ -1288,7 +1299,10 @@ class Ability(object):
         'action' : _feint,
         'cooldown' : None,
         'checkFunction' : None,
-        'breakStealth' : 100
+        'breakStealth' : 100,
+        'image' : THIEF_SKILLS + 'feint.png',
+        'text' : 'Melee-range debuff that lowers enemy dodge rating by 10 with a success dependent on Cunning.\n' + \
+                'Maximum success chance is 80%. Lasts 2 turns.'
         },
         'Far-Sighted Focus':
         {
@@ -1301,12 +1315,30 @@ class Ability(object):
         'action' : _farSightedFocus,
         'cooldown' : 1,
         'checkFunction' : _farSightedFocusCheck,
-        'breakStealth' : 0
+        'breakStealth' : 0,
+        'image' : THIEF_SKILLS + 'far-sighted-focus.png',
+        'text' : 'Focus yourself to gain +5 Ranged accuracy and +7 Dodge vs ranged attacks but lower\n' + \
+                'overall dodge by 2 points. Lasts 3 Turns. Does not break stealth.'
         },
 
         # Ranger
         # "Ranger*" abilities are given to Druid,
         # Marksman, and Tactician classes.
+        'Expert Notch':
+        {
+        'level' : 1,
+        'class' : 'Ranger',
+        'HPCost' : 0,
+        'APCost' : 7,
+        'range' : -1,
+        'target' : 'hostile',
+        'action' : _expertNotch,
+        'cooldown' : None,
+        'checkFunction' : _expertNotchCheck,
+        'breakStealth' : 100,
+        'image' : RANGER_SKILLS + 'expert-notch.png.',
+        'text' : 'Ranged attack with +6 Accuracy.  Must have a shortbow or longbow equipped.'
+        },
         'Shrapnel Trap':
         {
         'level' : 1,
@@ -1344,7 +1376,9 @@ class Ability(object):
         'action' : _tunnelVision,
         'cooldown' : 5,
         'checkFunction' : _tunnelVisionCheck,
-        'breakStealth' : 0
+        'breakStealth' : 0,
+        'image' : RANGER_SKILLS + 'tunnel-vision.png',
+        'text' : 'Increases Ranged accuracy by 10 and Might by 3 but movement tiles drop by 1.'
         },
         'Balm':
         {
@@ -1357,7 +1391,9 @@ class Ability(object):
         'action' : _balm,
         'cooldown' : 2,
         'checkFunction' : None,
-        'breakStealth' : 100
+        'breakStealth' : 100,
+        'image' : RANGER_SKILLS + 'balm.png',
+        'text' : 'Heal 5% of your own HP.'
         },
         'Rapid Reload':
         {
@@ -1370,7 +1406,9 @@ class Ability(object):
         'action' : _rapidReload,
         'cooldown' : None,
         'checkFunction' : _rapidReloadCheck,
-        'breakStealth' : 100
+        'breakStealth' : 100,
+        'image' : RANGER_SKILLS + 'rapid-reload.png',
+        'text' : 'Ranged attack with a crossbow that has -8 Accuracy but a low AP cost.'
         },
         "Ranger's Aim":
         {
@@ -1383,7 +1421,9 @@ class Ability(object):
         'action' : _rangersAim,
         'cooldown' : 1,
         'checkFunction' : _rangersAimCheck,
-        'breakStealth' : 0
+        'breakStealth' : 0,
+        'image' : RANGER_SKILLS + 'rangers-aim.png',
+        'text' : 'Improve your Accuracy by 5 and Critical hit chance by 1% for the remainder of this turn.'
         },
         'Boulder Pit Trap':
         {
@@ -1935,7 +1975,7 @@ class Ability(object):
         'level' : 5,
         'class' : 'Assassin',
         'HPCost' : 0,
-        'APCost' : 6
+        'APCost' : 6,
         'range' : -1,
         'target' : 'hostile',
         'action' : _riskyShot,

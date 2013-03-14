@@ -657,13 +657,13 @@ class Trait(object):
             target.baseTrapEvade += 5
             target.baseCriticalChance += 0.5
         elif self.rank == 2:
-            target.baseTrapEvace += 2
+            target.baseTrapEvade += 2
             target.baseCriticalChance += 0.5
         elif self.rank == 3:
-            target.baseTrapEvace += 2
+            target.baseTrapEvade += 2
             target.baseCriticalChance += 0.5
         elif self.rank == 4:
-            target.baseTrapEvace += 2
+            target.baseTrapEvade += 2
             target.baseCriticalChance += 0.5
 
     
