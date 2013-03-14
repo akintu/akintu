@@ -186,7 +186,8 @@ class GameScreen(object):
                                  (i*TILE_SIZE, j*TILE_SIZE))
 
         if not self.dialog:
-            # Blit the entire background (if this becomes an issue we'll refactor)
+            # Blit the entire background (if this becomes an issue we'll
+            # refactor)
             self.screen.blit(self.background, [0, 0])
             self.personsgroup.update()
             self.personsgroup.draw(self.screen)
