@@ -449,6 +449,14 @@ class CombatServer():
                                 player, color='darkred', toAll=False)
         player.inventory.gold -= goldLoss
         
+        combatPane = player.cPane
+        chars = [self.server.person[x] for x in self.server.pane[combatPane].person]
+        players = [x for x in chars if x.team == "Players"]
+        doMonsterVictory = False
+        if players == [player]:
+            # This player was the only one left.
+            doMonsterVictory = True
+        
         respawn_location = Location((0, 0), (PANE_X / 2, PANE_Y / 2))
         player.cPane = None
         player.cLocation = None
@@ -470,7 +478,8 @@ class CombatServer():
                 self.server.SDF.send(port, Command("PERSON", "CREATE", id=i, \
                         location=self.server.person[i].location, \
                         details=self.server.person[i].dehydrate()))
-        
+        if doMonsterVictory:
+            self.monster_victory(combatPane)
 
 class CombatState(object):
     def __init__(self):
