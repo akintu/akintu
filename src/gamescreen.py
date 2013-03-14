@@ -203,6 +203,7 @@ class GameScreen(object):
             - 'restrictedAP'
             - 'level'
             - 'size'
+            - 'stealth' (0 or 1)
 
         To be supported in the future:
             - 'statusList'
@@ -216,7 +217,7 @@ class GameScreen(object):
            'location' not in statsdict or \
            'team' not in statsdict:
             raise Exception('Image, location, or team not defined')
-        for attr in ['xoffset', 'yoffset', 'foot']:
+        for attr in ['xoffset', 'yoffset', 'foot', 'stealth']:
             if attr not in statsdict:
                 statsdict[attr] = 0
 
