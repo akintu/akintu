@@ -101,7 +101,7 @@ class Game(object):
                             ironman=ironman, hardcore=hardcore).dehydrate())
         else:
             self.playerSaveFile = player
-            dehydrated_string = self.load_player(self.playerSaveFile)
+            dehydrated_string = State.load_player(player)
             person = Command("PERSON", "LOAD", id=None, \
                     location=Location((0, 0), (PANE_X/2, PANE_Y/2)), \
                     details=dehydrated_string)
@@ -322,62 +322,14 @@ class Game(object):
 
     def save_player(self):
         '''
-        Dehydrates our current player and saves it.
+        Calls State.save_player with our client side player object
         '''
 
         if not self.id in self.pane.person:
             return
-
         player = self.pane.person[self.id]
-        player_string = player.dehydrate()
-        file_name = self.playerSaveFile
-        if not file_name:
-            saved_list = os.listdir(CHAR_SAVE_PATH)
-            max_save = 0
-            if saved_list:
-                increment_list = []
-                for filename in saved_list:
-                    split_list = filename.split("_")
-                    tmp = split_list[0] #Get first element from list (the incremental save number)
-                    try:
-                        tmp = int(tmp)
-                    except:
-                        tmp = 0
-                    increment_list.append(tmp)
-                max_save = max(increment_list)
-            max_save += 1
-            file_name = str("%03d" % max_save) + "_" + str(player.name) + "_" + str(player.race) + "_" + str(player.characterClass) + CHAR_SAVE_EXT
-            self.playerSaveFile = file_name
-
-        State.save(CHAR_SAVE_PATH, file_name, player_string)
-
-    def load_player(self, file_name):
-        '''
-        file_name is the name of the save file we want to open OR
-        file_name can be the 3 digit number at the beginning of the file
-
-        '''
-        #path_to_file = os.path.join(CHAR_SAVE_PATH, file_name)
-        if not os.path.exists(file_name):
-            try:
-                tmp = int(file_name)    #Force try/catch
-                saved_list = os.listdir(CHAR_SAVE_PATH)
-                if saved_list:
-                    for filename in saved_list:
-                        if filename.split("_")[0] != file_name:
-                            continue
-                        else:
-                            #path_to_file = os.path.join(CHAR_SAVE_PATH, filename)
-                            print "Substituting " + file_name + " with " + filename
-                            file_name = filename
-                            self.playerSaveFile = filename
-                            break
-            except:
-                print "Could not find " + str(file_name)
-                #self.quit()
-        player_string = State.load(CHAR_SAVE_PATH, filename)
-        return player_string
-
+        State.save_player(player)
+    
     def save_and_quit(self):
         '''
         Calls self.save_player() and then quits
@@ -387,7 +339,7 @@ class Game(object):
         # savetime = "." + now.strftime("%Y-%m-%d %H:%M")
         #player = self.pane.person[self.id]
         #player_string =player.dehydrate()
-
+        
         self.save_player()#player_string)
         self.quit()
 

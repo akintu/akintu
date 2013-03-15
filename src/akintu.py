@@ -21,7 +21,7 @@ def main():
     if len(sys.argv) > 1:
         num_players = sys.argv[1]
         name = sys.argv[2]
-        player = (name, "Elf", "Assassin")
+        player = (name, "Elf", "Dragoon")
         if len(sys.argv) > 3:  
             player = sys.argv[3]
 
