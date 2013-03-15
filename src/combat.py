@@ -44,20 +44,13 @@ class Combat(object):
         elif type == "HP_BUFFER":
             messageObj = command.Command("UPDATE", "HP_BUFFER", id=character.id, \
                     bufferSum=character.getHPBufferSum())
-        for port in Combat.gameServer.getAllCombatPorts(character):
-            Combat.gameServer.SDF.send(port, messageObj)
+        Combat.gameServer.broadcast(messageObj, -character.id)
 
     @staticmethod
     def sendCombatMessage(message, character, color="white", toAll=True):
         '''Send a message to all players in combat with the provided character.'''
-        portList = []
-        if not toAll:
-            portList.append(Combat.gameServer.getPlayerPort(character))
-        else:
-            portList = Combat.gameServer.getAllCombatPorts(character)
         messageObj = command.Command("UPDATE", "TEXT", text=message, color=color)
-        for port in portList:
-            Combat.gameServer.SDF.send(port, messageObj)
+        Combat.gameServer.broadcast(messageObj, -character.id if toAll else character.id)
             
     @staticmethod
     def encodeStatuses(character):
@@ -386,15 +379,10 @@ class Combat(object):
                         Combat.removeStatus(target, display.name, notifyClients=False)
                         target.statusList.append(dStatus)
                         dStatus.activate(target)
-        # SEND SERVER STATUS ACTIVATED HERE KYLE
-        # Server.sendStatusAdd(character=target, status=dStatus)
-        
-        # But that would send the entire status, you just need the name and image.
-        # For now the images are messed up, but I'll fix that later.
-        # So let's just hardcode the "default" image cubeforce.png
-        
-        # Server.sendStatusAdd(character=target, statusName=dStatus.name, image="./res/images/icons/cubeforce.png")
-        
+                        
+        command = Command("PERSON", "ADDSTATUS", id=target.id, status=dStatus.name, \
+                turns=dStatus.turnsLeft, image='cubeforce.png')
+        Combat.gameServer.broadcast(command, -command.id)
         
     @staticmethod
     def removeStatus(target, statusName, notifyClients=True):
@@ -417,21 +405,10 @@ class Combat(object):
         if matchingStatus:
             matchingStatus.deactivate(target)
             target.statusList.remove(matchingStatus)
-            # Lookie here KYLE
-            # If the status was found, we need to let the server tell everyone that it is now gone.
-            #  Of course, we'll only send this information if it is needed, so we'll add an
-            # if-statement
+
             if notifyClients:
-                pass
-                #Server.sendStatusRemove(character=target, statusName=statusName)
-                # We obviously don't care what the image is at this point.
-                
-                # One last note: You can check to see if a player is in stealth easily by calling
-                # player.inStealth() .. it will return True if they are using any form of stealth
-                # other than a Ninja's conceal (That form doesn't hide them from monsters so it is 
-                # not considered a true Stealth.)  
-                # Not sure if that last tidbit will help you or not.
-            
+                command = Command("PERSON", "REMOVESTATUS", id=target.id, status=statusName)
+                Combat.gameServer.broadcast(command, -command.id)
             
     @staticmethod
     def setStatusDuration(target, statusName, newDuration):
@@ -498,8 +475,7 @@ class Combat(object):
     def instantMove(target, desiredCombatLocation):
         '''Moves a Person from one location to another instantly without animation.'''
         action = command.Command("PERSON", "MOVE", id=target.id, location=desiredCombatLocation, details=True)
-        for port in Combat.gameServer.player.keys():
-            Combat.gameServer.SDF.send(port, action)
+        Combat.gameServer.broadcast(action, -action.id)
         target.cLocation = desiredCombatLocation
 
     @staticmethod
