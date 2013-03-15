@@ -417,8 +417,10 @@ class Ability(object):
     # Dragoon
     def _diagonalThrusts(self, target):
         source = self.owner
-        # TODO
-        # Attack both diagonal targets with 1.2x Force and +5% critical mag.
+        targetList = Combat.getDiagonalTargets(source.cPane, source.cLocation)
+        for t in targetList:
+            hit = Combat.calcHit(source, t, "Physical")
+            Combat.basicAttack(source, t, hitType=hit, forceMod=1.20, criticalDamageMod=1.05)
         
     def _diagonalThrustsCheck(self, target):
         source = self.owner
@@ -1578,10 +1580,9 @@ class Ability(object):
 
         # Dragoon
         # Bunch of other abilities go here TODO
-        # Change this level back to 3
         'Diagonal Thrusts':
         {
-        'level' : 1,
+        'level' : 3,
         'class' : 'Dragoon',
         'HPCost' : 0,
         'APCost' : 11,
@@ -1592,7 +1593,7 @@ class Ability(object):
         'checkFunction' : _diagonalThrustsCheck,
         'breakStealth' : 0,
         'image' : DRAGOON_SKILLS + 'diagonal-thrusts.png',
-        'text' : 'Strike foes in both forward diagonal directions.  Attack with Force x 1.20 and +5% critical magnitude\n' + \
+        'text' : 'Strike foes in all diagonal directions.  Attack with Force x 1.20 and +5% critical magnitude\n' + \
                 'on each strike.  Must have a polearm equipped.'
         },
         

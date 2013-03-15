@@ -118,6 +118,8 @@ class PassiveAbility(object):
 
     def applyDragonFoe(self, target, reverse=False, other=None):
         source = self.owner
+        if other.team != "Monsters":
+            return
         if not reverse:
             if other.type == "Dragonkin":
                 source.statusMeleeAccuracy += 2

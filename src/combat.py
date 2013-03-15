@@ -1172,7 +1172,7 @@ class Combat(object):
         return False
         
     @staticmethod
-    def getTargetsInRegion(cPane, R):
+    def getTargetsInRegion(cPane, R, selectMonsters=True):
         people = []
         for i in Combat.gameServer.pane[cPane].person:
             if Combat.gameServer.person[i].cLocation in R and Combat.gameServer.person[i].team == \
