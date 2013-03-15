@@ -42,7 +42,7 @@ class Person(en.Entity):
 
         self._cooldownList = []
         self._statusList = []
-        self._clientStatusView = collections.OrderedDict({})
+        self._clientStatusView = {}
         self._minionList = []
         self._owner = None # Move to parent class?
 
@@ -261,7 +261,7 @@ class Person(en.Entity):
         return self._clientStatusView
         
     def addClientStatus(self, statusName, image, turnsLeft):
-        self._clientStatusView['statusName'] = {'image' : image, 'turnsLeft' : turnsLeft}
+        self._clientStatusView[statusName] = {'image' : image, 'turnsLeft' : turnsLeft}
         
     def removeClientStatus(self, statusName):
         del self._clientStatusView[statusName]
@@ -2567,7 +2567,7 @@ class Person(en.Entity):
         stealthList = ["Stealth", "Shadow Walk", "Conceal"]
         if clientView:
             for x in stealthList:
-                if x in self.clientStatusView:
+                if x in self.clientStatusView.keys():
                     return True
             return False
         
