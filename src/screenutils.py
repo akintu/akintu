@@ -312,8 +312,8 @@ class ItemDialog(object):
         '''
         Draw the side text area with the given text
         '''
-        textsurface = self._generatetext(text, width=300, height=580, size=16)
-        self.surface.blit(textsurface, (490, 60))
+        textsurface = self._generatetext(text, width=290, height=580, size=16)
+        self.surface.blit(textsurface, (495, 60))
 
     def _drawborders(self):
         '''
