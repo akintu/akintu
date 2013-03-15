@@ -1085,7 +1085,7 @@ class Combat(object):
             
         R = Region()
         R("ADD", "CIRCLE", center, radius)
-        return Combat.getTargetsInRegion(cPane, R)
+        return Combat.getTargetsInRegion(cPane, R, selectMonsters)
 
     @staticmethod
     def getLineTargets(cPane, start, end, selectMonsters, width=1, selectFirstOnly=False):
@@ -1103,7 +1103,7 @@ class Combat(object):
                     
         R = Region()
         R("ADD", "LINE", start, end, width)
-        people = Combat.getTargetsInRegion(cPane, R)
+        people = Combat.getTargetsInRegion(cPane, R, selectMonsters)
         
         if selectFirstOnly and len(people) > 0:
             minDist = start.distance(people[0].cLocation)
@@ -1148,7 +1148,7 @@ class Combat(object):
             R("ADD", "CIRCLE", center, distance)
             R("SUB", "DIAMOND", center.move(10 - center.direction, distance + 1), distance)
             
-        return Combat.getTargetsInRegion(cPane, R)
+        return Combat.getTargetsInRegion(cPane, R, selectMonsters)
 
     @staticmethod
     def againstWall(cPane, location, direction):
