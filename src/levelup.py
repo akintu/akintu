@@ -48,7 +48,8 @@ class Levelup(object):
         elif self.phase == "COMBO":
             text = "Additionally you have earned these unique skills."
             combos = self.player.getLevelupCombos()
-            self.screen.show_dialog(text, combos, bgcolor="deepskyblue")
+            combosDisplay = [x for x in combos if '--IGNORE--' not in x.name]
+            self.screen.show_dialog(text, combosDisplay, bgcolor="deepskyblue")
         elif self.phase == "SUMMARY":
             text = "This is a summary of the statistics and abilities you have gained."
             self.summary.append(self.trait)
@@ -59,7 +60,8 @@ class Levelup(object):
             if self.spellB:
                 self.summary.append(self.spellB)
             self.summary.append(self.player.getLevelupStats())
-            self.screen.show_dialog(text, self.summary, bgcolor="darkturquoise")
+            summaryDisplay = [x for x in self.summary if '--IGNORE--' not in x.name]
+            self.screen.show_dialog(text, summaryDisplay, bgcolor="darkturquoise")
         
     def input(self, keystroke):
         '''Returns True if this levelup is complete.'''

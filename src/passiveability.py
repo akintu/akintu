@@ -118,6 +118,8 @@ class PassiveAbility(object):
 
     def applyDragonFoe(self, target, reverse=False, other=None):
         source = self.owner
+        if other.team != "Monsters":
+            return
         if not reverse:
             if other.type == "Dragonkin":
                 source.statusMeleeAccuracy += 2
@@ -132,6 +134,15 @@ class PassiveAbility(object):
     def applyFireTouched(self, target):
         target.baseFireResistance += 10
 
+    def applyJumpAttackUpgrade(self, target):
+        toRemove = None
+        for abil in target.abilities:
+            if abil.name == "Jump Attack":
+                toRemove = abil
+                break
+        if toRemove:
+            target.abilities.remove(toRemove)
+        
     # Spellsword
     def applySeekerOfEnchantments(self, target, reverse=False, spell=None):
         if not reverse:
@@ -259,12 +270,12 @@ class PassiveAbility(object):
 
     def applyBackflip(self, target, reverse=False, other=None):
         source = self.owner
-        if not reverse:
-            #if back not against wall, TODO
-            source.statusDodge += 3
-        else:
-            # if back not against wall
-            source.statusDodge -= 3
+        direction = other.cLocation.direction_to(source.cLocation)
+        if not Combat.againstWall(source.cPane, source.cLocation, direction):
+            if not reverse:
+                source.statusDodge += 3
+            else:
+                source.statusDodge -= 3
 
     def applyTreasureBag(self, target):
         target.baseInventoryCapacity += 15
@@ -315,7 +326,7 @@ class PassiveAbility(object):
                 source.statusMeleeAccuracy -= 3
                 source.statusCriticalChance -= 5
 
-    def applyMagicalDarkness(self, target, reverse=False, other=None):
+    def applyMagicalDarkness(self, target, reverse=False, **kwArgs):
         source = self.owner
         if not reverse:
             if source.inStealth():
@@ -329,10 +340,10 @@ class PassiveAbility(object):
     def applyUpCloseAndPersonal(self, target, reverse=False, spell=None):
         source = self.owner
         if not reverse:
-            if spell.school == "Bane" and location.in_melee_range(source.location, target.location):
+            if spell.school == "Bane" and source.cLocation.in_melee_range(target.cLocation):
                 source.statusSpellpower += 4
         else:
-            if spell.school == "Bane" and location.in_melee_range(source.location, target.location):
+            if spell.school == "Bane" and source.cLocation.in_melee_range(target.cLocation):
                 source.statusSpellpower -= 4
 
     # Battle Mage
@@ -371,11 +382,11 @@ class PassiveAbility(object):
     def applyRapidRetreat(self, target, reverse=False, other=None):
         if not reverse:
             if target.HP < target.totalHP * 0.20:
-                target.overrideMovementAPCost = 2
+                Combat.setMovementCost(target, 3)
         else:
-            target.overrideMovementAPCost = -1
+            Combat.setMovementCost(target, -1)
 
-    def applyMilitaryDefensiveTraining(self, target, reverse=False, other=None):
+    def applyMilitaryDefensiveTraining(self, target, reverse=False, spell=None):
         if not target.usingShield():
             return
         if not reverse:
@@ -614,6 +625,13 @@ class PassiveAbility(object):
         'action' : applyFireTouched,
         'image' : DRAGOON + 'fire-touched.png',
         'text' : '+10% Fire Resistance'
+        },
+        '--IGNORE-- Jump Attack Upgrade':
+        {
+        'class' : 'Dragoon',
+        'level' : 3,
+        'type' : 'static',
+        'action' : applyJumpAttackUpgrade
         },
 
 
@@ -1010,7 +1028,7 @@ class PassiveAbility(object):
         'onStringList' : ['Player Turn Start'],
         'offStringList' : ['Monster Turn Start'],
         'image' : BATTLEMAGE + 'rapid-retreat.png',
-        'text' : 'If HP is below 20% at the start of your turn, movement only costs 2 AP.'
+        'text' : 'If HP is below 20% at the start of your turn, movement only costs 3 AP.'
         },
         'Military Training':
         {

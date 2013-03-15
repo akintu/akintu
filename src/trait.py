@@ -66,9 +66,9 @@ class Trait(object):
         self.owner.listeners.append(newListener)
 
     
-    def applyParry(self, target, reverse=False, attacker=None):
-        #if target.facingAttacker() TODO
-        #self.rank = Trait.getTraiself.rank(target, "Parry")
+    def applyParry(self, target, reverse=False, other=None):
+        if not Combat.checkParryPosition(target.cPane, target.cLocation, targetLoc=other.cLocation):
+            return
         if not reverse:
             if self.rank == 1:
                 target.statusDodge += 2
@@ -367,9 +367,8 @@ class Trait(object):
 
     
     def applyMeleeArchery(self, target, reverse=False, other=None):
-        if not location.in_melee_range(target.location, other.location):
+        if not target.cLocation.in_melee_range(other.cLocation):
             return
-        #self.rank = Trait.getTraiself.rank(target, "Melee Archery")
         if not reverse:
             if self.rank == 1:
                 pass

@@ -19,6 +19,8 @@ BATTLEMAGE_SKILLS = ROOT_FOLDER + "battlemage_skills/"
 BARBARIAN_SKILLS = ROOT_FOLDER + "barbarian_skills/"
 DRAGOON_SKILLS = ROOT_FOLDER + "dragoon_skills/"
 NIGHTBLADE_SKILLS = ROOT_FOLDER + "nightblade_skills/"
+NINJA_SKILLS = ROOT_FOLDER + "ninja_skills/"
+SHADOW_SKILLS = ROOT_FOLDER + "shadow_skills/"
 SPELLSWORD_SKILLS = ROOT_FOLDER + "spellsword_skills/"
 TRICKSTER_SKILLS = ROOT_FOLDER + "trickster_skills/"
 WEAPONMASTER_SKILLS = ROOT_FOLDER + "weaponmaster_skills/"
@@ -266,6 +268,9 @@ class Ability(object):
         if success:
             duration = 2
             Combat.addStatus(target, "Feint", duration)
+            Combat.sendCombatMessage("Success! (" + str(chance) + ")", source, color="darkorange")
+        else:
+            Combat.sendCombatMessage("Failed. (" + str(chance) + ")", source, color="darkorange") 
 
     def _farSightedFocus(self, target):
         source = self.owner
@@ -415,10 +420,28 @@ class Ability(object):
         return (False, "HP already at maximum; cannot use: " + self.name + " .")
 
     # Dragoon
+    def _jumpAttack(self, target):
+        source = self.owner
+        landingZone = Combat.getRandomAdjacentLocation(target.cPane, target.cLocation)
+        Combat.instantMove(source, landingZone)
+        hit = Combat.calcHit(source, target, "Physical")
+        Combat.basicAttack(source, target, hit, overallDamageMod=2, noCounter=True)
+        if hit:
+            for t in Combat.getAOETargets(source.cPane, source.cLocation, radius=1, selectMonsters=True):
+                Combat.basicAttack(source, t, "Normal Hit", overallDamageMod=0.25, ignoreOnHitEffects=True,
+                                elementOverride="Bludgeoning", noCounter=True)
+        
+    def _jumpAttackCheck(self, target):
+        if Combat.getRandomAdjacentLocation(target.cPane, target.cLocation):
+            return (True, "")
+        return (False, "No valid landing zones exist near target; cannot use " + self.name)
+    
     def _diagonalThrusts(self, target):
         source = self.owner
-        # TODO
-        # Attack both diagonal targets with 1.2x Force and +5% critical mag.
+        targetList = Combat.getDiagonalTargets(source.cPane, source.cLocation)
+        for t in targetList:
+            hit = Combat.calcHit(source, t, "Physical")
+            Combat.basicAttack(source, t, hitType=hit, forceMod=1.20, criticalDamageMod=1.05)
         
     def _diagonalThrustsCheck(self, target):
         source = self.owner
@@ -684,7 +707,7 @@ class Ability(object):
 
     def _shadowWalk(self, target):
         source = self.owner
-        duration = -2
+        duration = -1
         Combat.addStatus(source, "Shadow Walk", duration)
 
     def _shadowWalkCheck(self, target):
@@ -723,7 +746,8 @@ class Ability(object):
             return (False, "Must be in backstab position to perform " + self.name + " .")
         if not source.usingWeapon("Sword") and not source.usingWeapon("Knife"):
             return (False, "Must be using either swords or knives to preform " + self.name + " .")
-
+        return(True, "")
+        
     def _rearAssault(self, target):
         source = self.owner
         critChance = 0
@@ -755,7 +779,8 @@ class Ability(object):
             return (False, "Must be in backstab position to perform " + self.name + " .")
         if not source.usingWeapon("Sword") and not source.usingWeapon("Knife"):
             return (False, "Must be using either swords or knives to preform " + self.name + " .")
-
+        return(True, "")
+            
     def _quickWithACrossbow(self, target):
         source = self.owner
         hit = Combat.calcHit(source, target, "Physical", modifier=1, critMod=1)
@@ -769,7 +794,7 @@ class Ability(object):
 
     def _stealthRecovery(self, target):
         source = self.owner
-        healing = round(source.totalHP * 0.03)
+        healing = int(round(source.totalHP * 0.04))
         Combat.healTarget(source, source, healing)
 
     def _stealthRecoveryCheck(self, target):
@@ -793,14 +818,13 @@ class Ability(object):
 
     def _shadowstep(self, target):
         source = self.owner
-        Combat.movePerson(source, target.location, instant=True)
-        # TODO: Consider replacing the ability to set AP costs?
+        Combat.addMovementTiles(target, 4)
 
     def _shadowstepCheck(self, target):
         source = self.owner
         if not source.inStealth():
             return (False, "Must be in stealth to use " + self.name)
-        # TODO: Check to see if the destination tile is passable.
+        return (True, "")
 
     # Battle Mage
     def _bufferStrike(self, target):
@@ -824,7 +848,7 @@ class Ability(object):
         duration = 3
         magnitude = 3 + source.totalSpellpower / 5
         Combat.addStatus(source, "Inner Might", duration, magnitude)
-        newListener = listener.Listener(self, self.owner, [], self._innerMightDisable, ['Player MP level changed'])
+        newListener = listener.Listener(self, self.owner, [], Ability._innerMightDisable, ['Player MP level changed'])
         source.listeners.append(newListener)
 
     def _innerMightCheck(self, target):
@@ -834,12 +858,13 @@ class Ability(object):
         else:
             return (False, "MP level must be above 75% to use: " + self.name + " .")
 
-    def _innerMightDisable(self, target, reverse=False, percent=None):
+    @staticmethod
+    def _innerMightDisable(dirtyHack, target, reverse=False, percent=None):
         if percent < 0.75:
             Combat.removeStatus(target, "Inner Might")
         toRemove = None
         for x in target.listeners:
-            if x.action == self._innerMightDisable:
+            if x.action == Ability._innerMightDisable:
                 toRemove = x
         if toRemove:
             target.listeners.remove(toRemove)
@@ -862,7 +887,7 @@ class Ability(object):
         source = self.owner
         hitType = Combat.calcHit(source, target, "Physical")
         Combat.basicAttack(source, target, hitType)
-        source.MP += 12
+        Combat.modifyResource(source, "MP", 12)
 
     def _tripleChargedArrowCheck(self, target):
         source = self.owner
@@ -1485,7 +1510,7 @@ class Ability(object):
         'cooldown' : 5,
         'checkFunction' : None,
         'breakStealth' : 100,
-        'image' : WIZARD_SKILLS + 'gather.png',
+        'image' : WIZARD_SKILLS + 'reverse-hex.png',
         'text' : 'Remove one random negative status effect from an ally\n' + \
             'or from yourself.'
         },
@@ -1578,10 +1603,45 @@ class Ability(object):
 
         # Dragoon
         # Bunch of other abilities go here TODO
-        # Change this level back to 3
-        'Diagonal Thrusts':
+        'Jump Attack':
         {
         'level' : 1,
+        'class' : 'Dragoon',
+        'HPCost' : 0,
+        'APCost' : 15,
+        'range' : 8,
+        'target' : 'hostile',
+        'action' : _jumpAttack,
+        'cooldown' : 2,
+        'checkFunction' : _jumpAttackCheck,
+        'breakStealth' : 100,
+        'image' : DRAGOON_SKILLS + 'jump-attack.png',
+        'text' : 'Jump from your current location to immediately next to a selected enemy.\n' + \
+                'You will land on a random adjacent tile to the target dealing 200% damage if you hit.\n ' + \
+                'Additionally, you will deal 25% of weapon damage to all targets adjacent to\n' + \
+                'your landing location (including the primary target) as bludgeoning damage.'
+        },
+        'Faster Jump Attack':
+        {
+        'level' : 3,
+        'class' : 'Dragoon',
+        'HPCost' : 0,
+        'APCost' : 14,
+        'range' : 8,
+        'target' : 'hostile',
+        'action' : _jumpAttack,
+        'cooldown' : 2,
+        'checkFunction' : _jumpAttackCheck,
+        'breakStealth' : 100,
+        'image' : DRAGOON_SKILLS + 'jump-attack.png',
+        'text' : 'Jump from your current location to immediately next to a selected enemy.\n' + \
+                'You will land on a random adjacent tile to the target dealing 200% damage if you hit.\n ' + \
+                'Additionally, you will deal 25% of weapon damage to all targets adjacent to\n' + \
+                'your landing location (including the primary target) as bludgeoning damage.'
+        },
+        'Diagonal Thrusts':
+        {
+        'level' : 3,
         'class' : 'Dragoon',
         'HPCost' : 0,
         'APCost' : 11,
@@ -1590,9 +1650,9 @@ class Ability(object):
         'action' : _diagonalThrusts,
         'cooldown' : None,
         'checkFunction' : _diagonalThrustsCheck,
-        'breakStealth' : 0,
+        'breakStealth' : 100,
         'image' : DRAGOON_SKILLS + 'diagonal-thrusts.png',
-        'text' : 'Strike foes in both forward diagonal directions.  Attack with Force x 1.20 and +5% critical magnitude\n' + \
+        'text' : 'Strike foes in all diagonal directions.  Attack with Force x 1.20 and +5% critical magnitude\n' + \
                 'on each strike.  Must have a polearm equipped.'
         },
         
@@ -1799,9 +1859,13 @@ class Ability(object):
         'range' : 0,
         'target' : 'self',
         'action' : _shadowWalk,
-        'cooldown' : 2,
+        'cooldown' : 1,
         'checkFunction' : _shadowWalkCheck,
-        'breakStealth' : 0
+        'breakStealth' : 0,
+        'image' : SHADOW_SKILLS + 'shadow-walk.png',
+        'text' : 'Enter stealth, making enemies lose track of you until you take an action\n' + \
+                'that removes stealth.  Movement cost is raised to 6 AP for the duration.\n' + \
+                'Shadow Walk benefits doubly from Cunning, making the Shadow very hard to detect.'
         },
         'Bleeding Backstab':
         {
@@ -1814,7 +1878,12 @@ class Ability(object):
         'action' : _bleedingBackstab,
         'cooldown' : 2,
         'checkFunction' : _bleedingBackstabCheck,
-        'breakStealth' : 100
+        'breakStealth' : 100,
+        'image' : THIEF_SKILLS + 'backstab.png',
+        'text' : 'Melee attack from stealth with a high critical hit chance.\n' + \
+                'Must be behind the target and wielding only sword or knife type weapons.\n' + \
+                'Additionally, Bleeding Backstab causes the target to bleed for 5% of thier\n' + \
+                'current HP per turn for the next two turns.'
         },
         'Rear Assault':
         {
@@ -1827,7 +1896,11 @@ class Ability(object):
         'action' : _rearAssault,
         'cooldown' : 1,
         'checkFunction' : _rearAssaultCheck,
-        'breakStealth' : 100
+        'breakStealth' : 100,
+        'image' : SHADOW_SKILLS + 'rear-assault.png',
+        'text' : 'A backstab attack performed while NOT in stealth will all benefits of a standard\n' + \
+                'backstab plus bleeding.  However, it is performed at -14 Accuracy and is thus\n' + \
+                'unlikely to hit.'
         },
         'Quick with a Crossbow':
         {
@@ -1840,7 +1913,10 @@ class Ability(object):
         'action' : _quickWithACrossbow,
         'cooldown' : 1,
         'checkFunction' : _quickWithACrossbowCheck,
-        'breakStealth' : 100
+        'breakStealth' : 100,
+        'image' : SHADOW_SKILLS + 'quick-with-a-crossbow.png',
+        'text' : 'Ranged attack that requires a crossbow but has a low AP cost and\n' + \
+                'benefits from +1 Accuracy and +1% critical chance.'
         },
         'Stealth Recovery':
         {
@@ -1851,10 +1927,13 @@ class Ability(object):
         'range' : 0,
         'target' : 'self',
         'action' : _stealthRecovery,
-        'cooldown' : 2,
+        'cooldown' : 1,
         'checkFunction' : _stealthRecoveryCheck,
-        'breakStealth' : 0
+        'breakStealth' : 0,
+        'image' : SHADOW_SKILLS + 'stealth-recovery.png',
+        'text' : 'Recover 4% of max HP while in stealth.  Will not break stealth.'
         },
+
 
         # Assassin
         'Assassin Stealth':
@@ -2029,8 +2108,8 @@ class Ability(object):
         'class' : 'Nightblade',
         'HPCost' : 0,
         'APCost' : 6,
-        'range' : 4,
-        'target' : 'location',
+        'range' : 0,
+        'target' : 'self',
         'action' : _shadowstep,
         'cooldown' : 2,
         'checkFunction' : _shadowstepCheck,

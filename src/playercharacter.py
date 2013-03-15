@@ -385,8 +385,7 @@ class PlayerCharacter(p.Person):
                     "Sorcery + " + `displaySorceryGain` + "\n" + \
                     "Piety + " + `displayPietyGain` + "\n" + \
                     "Constitution + " + `displayConstitutionGain` + "\n" + \
-                    "HP + " + `self.levelupHP` + "\n" + \
-                    "MP + " + `self.levelupMP` + "\n"
+                    "HP + " + `int(self.levelupHP)` + "    MP + " + `int(self.levelupMP)`
         statsTile = TileObject(statsName, statsImage, statsText)
         
         self.HP = self.totalHP
@@ -504,8 +503,7 @@ class PlayerCharacter(p.Person):
         passiveNames = [x for x in passiveability.PassiveAbility.allContentByName.keys()]
         passives = [x for x in passiveNames 
                     if passiveability.PassiveAbility.allContentByName[x]['class'] == self.characterClass and
-                    passiveability.PassiveAbility.allContentByName[x]['level'] == self.level and
-                    '--IGNORE--' not in x]
+                    passiveability.PassiveAbility.allContentByName[x]['level'] == self.level]
                     
         passiveStubs = []
         for passive in passives:
@@ -1068,6 +1066,14 @@ class PlayerCharacter(p.Person):
         else:
             return int(120 + (self.totalStrength - 15) * 12 + self._baseInventoryCapacity + self._equipmentCarryingCapacity)
 
+    @property
+    def baseInventoryCapacity(self):
+        return int(self._baseInventoryCapacity)
+        
+    @baseInventoryCapacity.setter
+    def baseInventoryCapacity(self, value):
+        self._baseInventoryCapacity = value
+            
     @property
     def equipmentCarryingCapacity(self):
         return self._equipmentCarryingCapacity

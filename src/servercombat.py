@@ -21,7 +21,7 @@ class CombatServer():
             activePlayer = self.server.person[command.id]
 
             # If this is a legal move request
-            if self.tile_is_open(command.location, command.id) and \
+            if self.server.tile_is_open(command.location, command.id) and \
                  activePlayer.AP >= activePlayer.totalMovementAPCost or\
                  activePlayer.remainingMovementTiles > 0:
                 if activePlayer.remainingMovementTiles == 0:
@@ -32,10 +32,7 @@ class CombatServer():
 
                 # Update location and broadcast
                 activePlayer.cLocation = command.location
-                for p, i in self.server.player.iteritems():
-                    if p != port and activePlayer.cPane == \
-                            self.server.person[i].cPane:
-                        self.server.SDF.send(p, command)
+                self.server.broadcast(command, -command.id, exclude=True)
                 self.check_turn_end(activePlayer.cPane)
         
         ###### RemovePerson ######
@@ -47,9 +44,7 @@ class CombatServer():
                 self.server.pane[self.server.person[command.id].cPane].person.remove(command.id)
 
                 #Notify clients in the affected pane
-                for p, i in self.server.player.iteritems():
-                    if self.server.person[i].cPane == self.server.person[command.id].cPane:
-                        self.server.SDF.send(p, command)
+                self.server.broadcast(command, -command.id)
                 del self.server.person[command.id]
                 self.server.unload_panes()
         
@@ -86,6 +81,7 @@ class CombatServer():
             Combat.modifyResource(target, "AP", -target.AP)
             Combat.decrementMovementTiles(target, removeAll=True)
             self.check_turn_end(self.server.person[command.id].cPane)
+        
         #### Using Items ####
         elif command.type == "ITEM" and command.action == "USE":
             user = self.server.person[command.id]
@@ -101,23 +97,14 @@ class CombatServer():
             itemMessage = item.use(user)
             Combat.sendCombatMessage(itemMessage, user, color='purple', toAll=False)
             if usable:
-                self.server.SDF.send(port, Command("ITEM", "REMOVE", id=command.id, 
-                                                    itemName=command.itemName))
+                self.server.broadcast(Command("ITEM", "REMOVE", id=command.id, 
+                        itemName=command.itemName), port=port)
             
         if command.id in self.server.person:
             self.update_dead_people(self.server.person[command.id].cPane)
         
     
     ### Utility Methods ###
-
-    def tile_is_open(self, location, pid):
-        if location.pane not in self.server.pane:
-            return False
-        return self.server.pane[self.server.person[pid].cPane].is_tile_passable(location) and \
-                location.tile not in [self.server.person[i].cLocation.tile \
-                for i in self.server.pane[self.server.person[pid].cPane].person]
-
-    
                 
     def shout_turn_start(self, player, turn="Player"):
         '''Shouts to the Player that this particular turn is starting.
@@ -187,11 +174,9 @@ class CombatServer():
             elif direction == 3:
                 direction = Dice.choose([2,6])
             desiredLocation = monster.cLocation.move(direction, 1)
-            if self.tile_is_open(desiredLocation, monster.id):
+            if self.server.tile_is_open(desiredLocation, monster.id):
                 action = Command("PERSON", "MOVE", id=monster.id, location=desiredLocation)
-                #self.server.SDF.queue.put((None, action))
-                for port in self.server.player.keys():
-                    self.server.SDF.send(port, action)
+                self.server.broadcast(action, -monster.id)
                 monster.cLocation = desiredLocation
 
                 tilesLeft -= 1
@@ -259,26 +244,23 @@ class CombatServer():
         currentPlayer.cPane = combatPane
         self.server.pane[combatPane].person.append(playerId)
 
-        #TODO: Calculate starting location for reals
         spawn = monsterLeader.location.direction_to(currentPlayer.location)
         spawn = Location(((spawn - 1) % 3) * (PANE_X - 1) / 2, ((9 - spawn) // 3) * (PANE_Y - 1) / 2)
         currentPlayer.cLocation = spawn
 
-        port = [p for p, i in self.server.player.iteritems() if i == playerId][0]
-        self.server.SDF.send(port, Command("PERSON", "REMOVE", id=playerId))
-        self.server.SDF.send(port, Command("UPDATE", "COMBAT", combat=True))
+        self.server.broadcast(Command("PERSON", "REMOVE", id=playerId), playerId)
+        self.server.broadcast(Command("UPDATE", "COMBAT", combat=True), playerId)
         
-        for p in self.server.getAllCombatPorts(playerId):
-            self.server.SDF.send(p, Command("PERSON", "CREATE", id=playerId,
+        self.server.broadcast(Command("PERSON", "CREATE", id=playerId,
                     location=currentPlayer.cLocation, cPane=currentPlayer.cPane,
-                    details=currentPlayer.dehydrate()))
+                    details=currentPlayer.dehydrate()), -playerId)
                                  
         # Populate the combat pane with all of the monsters.
         for id in self.server.pane[combatPane].person:
             if playerId != id:
-                self.server.SDF.send(port, Command("PERSON", "CREATE", id=id,
+                self.server.broadcast(Command("PERSON", "CREATE", id=id,
                         location=self.server.person[id].cLocation, 
-                        details=self.server.person[id].dehydrate()))
+                        details=self.server.person[id].dehydrate()), playerId)
             
         self.shout_turn_start(self.server.person[playerId], turn="Player")
 
@@ -311,9 +293,8 @@ class CombatServer():
             # New Turn here
             for character in [self.server.person[x] for x in self.server.pane[combatPane].person]:
                 character.AP = character.totalAP
-                for port in [p for p,i in self.server.player.iteritems() if i in
-                        self.server.pane[combatPane].person]:
-                    self.server.SDF.send(port, Command("PERSON", "UPDATE", id=character.id, AP=character.AP))
+                self.server.broadcast(Command("PERSON", "UPDATE", id=character.id, AP=character.AP),
+                        pane=combatPane)
             for character in [self.server.person[x] for x in self.server.pane[combatPane].person]:
                 self.shout_turn_start(character, turn="Player")
             self.combatStates[combatPane].turnTimer = reactor.callLater(seconds, self.check_turn_end,
@@ -354,10 +335,8 @@ class CombatServer():
         '''Cleans up arena, gives experience/gold to players, 
         restores their health to full, and kicks them out of combat.'''
         state = self.combatStates[combatPane]
-        try:
+        if state.turnTimer.active():
             state.turnTimer.cancel()
-        except:
-            pass
         char = livingPlayers[0]
 
         monsterLeader = self.server.get_monster_leader(char)
@@ -386,7 +365,6 @@ class CombatServer():
         Combat.sendCombatMessage("Gained " + str(exp) + " Experience. (" + str(player.experience) +
                                  "/" + str(player.getExpForNextLevel()) + ")", 
                                  player, color='magenta', toAll=False)
-        #self.server.SDF.send(self.server.getPlayerPort(player), Command("PERSON", "ADD_EXPERIENCE", id=player.id, experience=exp))
         # Levelup is not performed here.
         
         
@@ -397,7 +375,6 @@ class CombatServer():
         player.inventory.addItem(gold)
         Combat.sendCombatMessage("Gained " + str(gold) + " gold. (total: " + str(player.inventory.gold) +
                                  ")", player, color='magenta', toAll=False)
-        #self.server.SDF.send(self.server.getPlayerPort(player), Command("ITEM", "CREATE", id=player.id, itemIdentifier=gold))
         
     def refillResources(self, player):
         Combat.modifyResource(player, "MP", player.totalMP)
@@ -417,26 +394,25 @@ class CombatServer():
         player.cPane = None
         player.cLocation = None
 
-        port = self.server.getPlayerPort(player)
-        self.server.SDF.send(port, Command("PERSON", "REMOVE", id=player.id))
-        self.server.SDF.send(port, Command("UPDATE", "COMBAT", combat=False))
-        self.server.SDF.send(port, Command("PERSON", "CREATE", id=player.id, \
-                location=player.location, details=player.dehydrate()))
+        self.server.broadcast(Command("PERSON", "REMOVE", id=player.id), player.id)
+        self.server.broadcast(Command("UPDATE", "COMBAT", combat=False), player.id)
+        self.server.broadcast(Command("PERSON", "CREATE", id=player.id, \
+                location=player.location, details=player.dehydrate()), player.id)
+        self.server.send_world_items(player.id, player.location)
         for i in self.server.pane[player.location.pane].person:
             if i != player.id:
-                self.server.SDF.send(port, Command("PERSON", "CREATE", id=i, \
+                self.server.broadcast(Command("PERSON", "CREATE", id=i, \
                         location=self.server.person[i].location, \
-                        details=self.server.person[i].dehydrate()))
+                        details=self.server.person[i].dehydrate()), player.id)
 
         self.server.unload_panes()
-        self.server.SDF.send(port, Command("CLIENT", "RESET_TARGETS", id=player.id))
+        self.server.broadcast(Command("CLIENT", "RESET_TARGETS", id=player.id), player.id)
 
     def monster_victory(self, combatPane):
         p = [p for i, p in self.server.person.iteritems() if p.location == combatPane][0]
-        if self.combatStates[combatPane].turnTimer:
+        if self.combatStates[combatPane].turnTimer.active():
             self.combatStates[combatPane].turnTimer.cancel()
         
-        print "MONSTERLEADER:", p.id, p.location
         p.ai.resume()
         p.cPane = None
         p.cLocation = None
@@ -458,26 +434,25 @@ class CombatServer():
             doMonsterVictory = True
         
         respawn_location = Location((0, 0), (PANE_X / 2, PANE_Y / 2))
+        self.server.pane[player.cPane].person.remove(player.id)
+        self.server.pane[respawn_location.pane].person.append(player.id)
         player.cPane = None
         player.cLocation = None
-        self.server.pane[player.location.pane].person.remove(player.id)
-        self.server.pane[respawn_location.pane].person.append(player.id)
         player.location = respawn_location
         
         # Exit combat
         self.refillResources(player)
         self.removeTemporaryStatuses(player)
-        port = self.server.getPlayerPort(player)
-        self.server.SDF.send(port, Command("CLIENT", "RESET_TARGETS", id=player.id))
-        self.server.SDF.send(port, Command("PERSON", "REMOVE", id=player.id))
-        self.server.SDF.send(port, Command("UPDATE", "COMBAT", combat=False))
-        self.server.SDF.send(port, Command("PERSON", "CREATE", id=player.id, \
-                location=player.location, details=player.dehydrate()))
+        self.server.broadcast(Command("CLIENT", "RESET_TARGETS", id=player.id), player.id)
+        self.server.broadcast(Command("PERSON", "REMOVE", id=player.id), player.id)
+        self.server.broadcast(Command("UPDATE", "COMBAT", combat=False), player.id)
+        self.server.broadcast(Command("PERSON", "CREATE", id=player.id, \
+                location=player.location, details=player.dehydrate()), player.id)
         for i in self.server.pane[player.location.pane].person:
             if i != player.id:
-                self.server.SDF.send(port, Command("PERSON", "CREATE", id=i, \
+                self.server.broadcast(Command("PERSON", "CREATE", id=i, \
                         location=self.server.person[i].location, \
-                        details=self.server.person[i].dehydrate()))
+                        details=self.server.person[i].dehydrate()), player.id)
         if doMonsterVictory:
             self.monster_victory(combatPane)
 

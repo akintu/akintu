@@ -44,20 +44,13 @@ class Combat(object):
         elif type == "HP_BUFFER":
             messageObj = command.Command("UPDATE", "HP_BUFFER", id=character.id, \
                     bufferSum=character.getHPBufferSum())
-        for port in Combat.gameServer.getAllCombatPorts(character):
-            Combat.gameServer.SDF.send(port, messageObj)
+        Combat.gameServer.broadcast(messageObj, -character.id)
 
     @staticmethod
     def sendCombatMessage(message, character, color="white", toAll=True):
         '''Send a message to all players in combat with the provided character.'''
-        portList = []
-        if not toAll:
-            portList.append(Combat.gameServer.getPlayerPort(character))
-        else:
-            portList = Combat.gameServer.getAllCombatPorts(character)
         messageObj = command.Command("UPDATE", "TEXT", text=message, color=color)
-        for port in portList:
-            Combat.gameServer.SDF.send(port, messageObj)
+        Combat.gameServer.broadcast(messageObj, -character.id if toAll else character.id)
             
     @staticmethod
     def encodeStatuses(character):
@@ -386,15 +379,10 @@ class Combat(object):
                         Combat.removeStatus(target, display.name, notifyClients=False)
                         target.statusList.append(dStatus)
                         dStatus.activate(target)
-        # SEND SERVER STATUS ACTIVATED HERE KYLE
-        # Server.sendStatusAdd(character=target, status=dStatus)
-        
-        # But that would send the entire status, you just need the name and image.
-        # For now the images are messed up, but I'll fix that later.
-        # So let's just hardcode the "default" image cubeforce.png
-        
-        # Server.sendStatusAdd(character=target, statusName=dStatus.name, image="./res/images/icons/cubeforce.png")
-        
+                        
+        comm = command.Command("PERSON", "ADDSTATUS", id=target.id, status=dStatus.name, \
+                turns=dStatus.turnsLeft, image='cubeforce.png')
+        Combat.gameServer.broadcast(comm, -comm.id)
         
     @staticmethod
     def removeStatus(target, statusName, notifyClients=True):
@@ -417,21 +405,10 @@ class Combat(object):
         if matchingStatus:
             matchingStatus.deactivate(target)
             target.statusList.remove(matchingStatus)
-            # Lookie here KYLE
-            # If the status was found, we need to let the server tell everyone that it is now gone.
-            #  Of course, we'll only send this information if it is needed, so we'll add an
-            # if-statement
+
             if notifyClients:
-                pass
-                #Server.sendStatusRemove(character=target, statusName=statusName)
-                # We obviously don't care what the image is at this point.
-                
-                # One last note: You can check to see if a player is in stealth easily by calling
-                # player.inStealth() .. it will return True if they are using any form of stealth
-                # other than a Ninja's conceal (That form doesn't hide them from monsters so it is 
-                # not considered a true Stealth.)  
-                # Not sure if that last tidbit will help you or not.
-            
+                comm = command.Command("PERSON", "REMOVESTATUS", id=target.id, status=statusName)
+                Combat.gameServer.broadcast(comm, -comm.id)
             
     @staticmethod
     def setStatusDuration(target, statusName, newDuration):
@@ -483,7 +460,7 @@ class Combat(object):
         removalCandidates = []
         for dStatus in target.statusList:
             if category in dStatus.categoryList or category == dStatus.element:
-                removalCandidates.add(dStatus)
+                removalCandidates.append(dStatus)
 
         if removalCandidates:
             if removeAll:
@@ -493,6 +470,13 @@ class Combat(object):
                 choice = Dice.roll(0, len(removalCandidates) - 1)
                 Combat.removeStatus(target, removalCandidates[choice].name)
 
+     
+    @staticmethod
+    def instantMove(target, desiredCombatLocation):
+        '''Moves a Person from one location to another instantly without animation.'''
+        action = command.Command("PERSON", "MOVE", id=target.id, location=desiredCombatLocation, details=True)
+        Combat.gameServer.broadcast(action, -action.id)
+        target.cLocation = desiredCombatLocation
 
     @staticmethod
     def knockback(target, sourceOfImpact, distance, ignoreResistance=False, didHit=True):
@@ -533,6 +517,11 @@ class Combat(object):
             target.remainingMovementTiles = target.totalMovementTiles - 1
         Combat.sendToAll(target, "MOVE_TILES")
         
+    @staticmethod
+    def addMovementTiles(target, tileAmount):
+        ''' Add movement tiles to the current move. '''
+        target.remainingMovementTiles += tileAmount
+        Combat.sendToAll(target, "MOVE_TILES")
         
     @staticmethod
     def calcDamage(source, target, minimum, maximum, element, hitValue, partial=1, critical=1, scalesWith=None, scaleFactor=0):
@@ -730,9 +719,11 @@ class Combat(object):
         if hitType == "Critical Hit":
             outgoingDamage += int(round(outgoingDamage * criticalDamageMod * 
                             float(weapon.criticalMultiplier + source.totalCriticalMagnitude) / 100))
-
-        elementalEffects = Combat.applyOnHitEffects(source, target)
-
+        
+        elementalEffects = []
+        if not ignoreOnHitEffects:
+            elementalEffects = Combat.applyOnHitEffects(source, target)
+        
         if elementOverride:
             # Treat all damage thus far as elemental.
             elementalEffects.append([elementOverride, outgoingDamage])
@@ -803,6 +794,18 @@ class Combat(object):
                 currentDamage = round(duple[1] * (1 + float(source.totalShadowBonusDamage) / 100))
                 currentDamage = round(currentDamage * (1 - float(target.totalShadowResistance) / 100))
                 damSum += currentDamage
+            elif duple[0] == "Piercing":
+                currentDamage = duple[1]
+                currentDamage = round(currentDamage * (1 - float(target.totalPiercingResistance) / 100))
+                damSum += currentDamage
+            elif duple[0] == "Bludgeoning":
+                currentDamage = duple[1]
+                currentDamage = round(currentDamage * (1 - float(target.totalBludgeoningResistance) / 100))
+                damSum += currentDamage
+            elif duple[0] == "Slashing":
+                currentDamage = duple[1]
+                currentDamage = round(currentDamage * (1 - float(target.totalSlashingResistance) / 100))
+                damSum += currentDamage                
         return damSum
 
     @staticmethod
@@ -1073,7 +1076,7 @@ class Combat(object):
         bc.shout(target)
 
     @staticmethod
-    def getAOETargets(cPane, center, radius, selectMonsters):
+    def getAOETargets(cPane, center, radius, selectMonsters=True):
         """Gets all people in combat affected by an AOE field.
         Input:
             cPane: The overworld location of the monsterLeader that generated the combatPane
@@ -1085,14 +1088,10 @@ class Combat(object):
             
         R = Region()
         R("ADD", "CIRCLE", center, radius)
-        people = []
-        for i in Combat.gameServer.pane[cPane].person:
-            if Combat.gameServer.person[i].cLocation in R and Combat.gameServer.person[i].team == \
-                    "Monsters" if selectMonsters else "Players":
-                people.append(Combat.gameServer.person[i])
-        return people
+        return Combat.getTargetsInRegion(cPane, R, selectMonsters)
 
-    def getLineTargets(cPane, start, end, selectMonsters, width=1, selectFirstOnly=False):
+    @staticmethod
+    def getLineTargets(cPane, start, end, selectMonsters=True, width=1, selectFirstOnly=False):
         """Gets either the closest, or all people in combat affected by a projectile
         Input:
             cPane: The overworld location of the monsterLeader that generated the combatPane
@@ -1107,11 +1106,7 @@ class Combat(object):
                     
         R = Region()
         R("ADD", "LINE", start, end, width)
-        people = []
-        for i in Combat.gameServer.pane[cPane].person:
-            if Combat.gameServer.person[i].cLocation in R and Combat.gameServer.person[i].team == \
-                    "Monsters" if selectMonsters else "Players":
-                people.append(Combat.gameServer.person[i])
+        people = Combat.getTargetsInRegion(cPane, R, selectMonsters)
         
         if selectFirstOnly and len(people) > 0:
             minDist = start.distance(people[0].cLocation)
@@ -1125,7 +1120,8 @@ class Combat(object):
                     
         return people
         
-    def getConeTargets(cPane, center, distance, degrees, selectMonsters):
+    @staticmethod
+    def getConeTargets(cPane, center, distance, degrees, selectMonsters=True):
         """Gets all people in combat affected by a cone-shaped AOE field
         Input:
             cPane: The overworld locatino of the monsterLeader that generated the combatPane
@@ -1155,9 +1151,40 @@ class Combat(object):
             R("ADD", "CIRCLE", center, distance)
             R("SUB", "DIAMOND", center.move(10 - center.direction, distance + 1), distance)
             
+        return Combat.getTargetsInRegion(cPane, R, selectMonsters)
+
+    @staticmethod
+    def againstWall(cPane, location, direction):
+        return not Combat.gameServer.pane[cPane].is_tile_passable(location.move(direction, 1))
+        
+    @staticmethod
+    def getDiagonalTargets(cPane, location):
+        R = Region()
+        R("ADD", "CIRCLE", location, 1)
+        R("SUB", "DIAMOND", location, 1)
+        return Combat.getTargetsInRegion(cPane, R)
+        
+    @staticmethod
+    def checkParryPosition(cPane, location, targetLoc):
+        R = Region()
+        R("ADD", "CIRCLE", location, 1)
+        if targetLoc in R:
+            facings = {2: [1, 2, 3], 4: [1, 4, 7], 6: [3, 6, 9], 8: [7, 8, 9]}
+            if location.direction_to(targetLoc) in facings[location.direction]:
+                return True
+        return False
+        
+    @staticmethod
+    def getTargetsInRegion(cPane, R, selectMonsters=True):
         people = []
         for i in Combat.gameServer.pane[cPane].person:
             if Combat.gameServer.person[i].cLocation in R and Combat.gameServer.person[i].team == \
                     "Monsters" if selectMonsters else "Players":
                 people.append(Combat.gameServer.person[i])
         return people
+        
+    @staticmethod
+    def getRandomAdjacentLocation(cPane, location):
+        R = Region()
+        R("ADD", "CIRCLE", location, 1)
+        return random.choice([x for x in R if Combat.gameServer.tile_is_open(x, cPane=cPane)])

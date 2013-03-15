@@ -169,7 +169,7 @@ class Spell(object):
         source = self.owner
         hitType = Combat.calcHit(source, target, "Magical")
         damage = (Combat.calcDamage(source, target, minimum=2, maximum=4, element="Arcane",
-                                    hitValue=hitType, critical=1.2, scalesWith="Spellpower", scaleFactor=0.03))
+                                    hitValue=hitType, critical=1.25, scalesWith="Spellpower", scaleFactor=0.03))
         Combat.lowerHP(target, damage)
 
     def _arcaneWard(self, target):
@@ -181,7 +181,7 @@ class Spell(object):
     def _mysticShield(self, target):
         source = self.owner
         duration = 5
-        magnitude = Dice.scale(source.totalSpellpower, 8, 0.06)
+        magnitude = Dice.scale(source.totalSpellpower, 7, 0.06)
         Combat.addStatus(target, self.name, duration, magnitude)
 
     def _flickerOfLife(self, target):
@@ -346,13 +346,13 @@ class Spell(object):
         'school' : 'Mystic',
         'MPCost' : 2,
         'APCost' : 5,
-        'range' : 11,
+        'range' : 14,
         'target' : 'hostile',
         'action' : _arcaneDart,
         'cooldown' : None,
         'image' : TIER1 + "arcane-dart.png",
-        'text' : 'Deals 2-4 + 3% arcane damage.\n' + \
-                'On Critical: +20% damage'
+        'text' : 'Deals 2-4 + 3% arcane damage over a long distance.\n' + \
+                'On Critical: +25% damage'
         },
 
         'Arcane Ward':
@@ -381,7 +381,7 @@ class Spell(object):
         'action' : _mysticShield,
         'cooldown' : 4,
         'image' : TIER1 + 'mystic-shield.png',
-        'text' : 'Grants an HP buffer absorbing 8 + 6% HP for up to 5 turns.'
+        'text' : 'Grants an HP buffer absorbing 7 + 6% HP for up to 5 turns.'
         },
 
         'Flicker of Life':
