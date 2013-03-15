@@ -6,6 +6,7 @@ from network import *
 from ai import AI
 from dice import *
 from combat import *
+import collections
 
 class IncompleteDataInitialization(Exception):
     def __init__(self, value):
@@ -41,6 +42,7 @@ class Person(en.Entity):
 
         self._cooldownList = []
         self._statusList = []
+        self._clientStatusView = {}
         self._minionList = []
         self._owner = None # Move to parent class?
 
@@ -253,6 +255,18 @@ class Person(en.Entity):
         """Should never be modified after character creation."""
         self._baseRangedAttackAPCost = value
 
+    @property
+    def clientStatusView(self):
+        '''A dict of status components to be displayed to the UI.'''
+        return self._clientStatusView
+        
+    def addClientStatus(self, statusName, image, turnsLeft):
+        self._clientStatusView[statusName] = {'image' : image, 'turnsLeft' : turnsLeft}
+        
+    def removeClientStatus(self, statusName):
+        del self._clientStatusView[statusName]
+        
+        
     @property
     def HPBufferList(self):
         """The list of any HP buffers that should absorb damage before
@@ -2543,7 +2557,7 @@ class Person(en.Entity):
           True or False"""
         pass #TODO: Requires path-finding
 
-    def inStealth(self):
+    def inStealth(self, clientView=False):
         """Returns True if this Person has any form of stealth other than
         invisibility.
         Inputs:
@@ -2551,6 +2565,12 @@ class Person(en.Entity):
         Outputs:
           True or False"""
         stealthList = ["Stealth", "Shadow Walk", "Conceal"]
+        if clientView:
+            for x in stealthList:
+                if x in self.clientStatusView.keys():
+                    return True
+            return False
+        
         for item in self.statusList:
             if (item.name in stealthList):
                 return True
