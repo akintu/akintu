@@ -398,6 +398,7 @@ class CombatServer():
         self.server.broadcast(Command("UPDATE", "COMBAT", combat=False), player.id)
         self.server.broadcast(Command("PERSON", "CREATE", id=player.id, \
                 location=player.location, details=player.dehydrate()), player.id)
+        self.server.send_world_items(player.id, player.location)
         for i in self.server.pane[player.location.pane].person:
             if i != player.id:
                 self.server.broadcast(Command("PERSON", "CREATE", id=i, \
