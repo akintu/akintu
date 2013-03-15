@@ -134,6 +134,15 @@ class PassiveAbility(object):
     def applyFireTouched(self, target):
         target.baseFireResistance += 10
 
+    def applyJumpAttackUpgrade(self, target):
+        toRemove = None
+        for abil in target.abilities:
+            if abil.name == "Jump Attack":
+                toRemove = abil
+                break
+        if toRemove:
+            target.abilities.remove(toRemove)
+        
     # Spellsword
     def applySeekerOfEnchantments(self, target, reverse=False, spell=None):
         if not reverse:
@@ -616,6 +625,13 @@ class PassiveAbility(object):
         'action' : applyFireTouched,
         'image' : DRAGOON + 'fire-touched.png',
         'text' : '+10% Fire Resistance'
+        },
+        '--IGNORE-- Jump Attack Upgrade':
+        {
+        'class' : 'Dragoon',
+        'level' : 3,
+        'type' : 'static',
+        'action' : applyJumpAttackUpgrade
         },
 
 

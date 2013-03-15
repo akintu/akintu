@@ -415,6 +415,22 @@ class Ability(object):
         return (False, "HP already at maximum; cannot use: " + self.name + " .")
 
     # Dragoon
+    def _jumpAttack(self, target):
+        source = self.owner
+        landingZone = Combat.getRandomAdjacentLocation(target.cPane, target.cLocation)
+        Combat.instantMove(source, landingZone)
+        hit = Combat.calcHit(source, target, "Physical")
+        Combat.basicAttack(source, target, hit, overallDamageMod=2, noCounter=True)
+        if hit:
+            for t in Combat.getAOETargets(source.cPane, source.cLocation, radius=1, selectMonsters=True):
+                Combat.basicAttack(source, t, "Normal Hit", overallDamageMod=0.25, ignoreOnHitEffects=True,
+                                elementOverride="Bludgeoning", noCounter=True)
+        
+    def _jumpAttackCheck(self, target):
+        if Combat.getRandomAdjacentLocation(target.cPane, target.cLocation):
+            return (True, "")
+        return (False, "No valid landing zones exist near target; cannot use " + self.name)
+    
     def _diagonalThrusts(self, target):
         source = self.owner
         targetList = Combat.getDiagonalTargets(source.cPane, source.cLocation)
@@ -1487,7 +1503,7 @@ class Ability(object):
         'cooldown' : 5,
         'checkFunction' : None,
         'breakStealth' : 100,
-        'image' : WIZARD_SKILLS + 'gather.png',
+        'image' : WIZARD_SKILLS + 'reverse-hex.png',
         'text' : 'Remove one random negative status effect from an ally\n' + \
             'or from yourself.'
         },
@@ -1580,6 +1596,42 @@ class Ability(object):
 
         # Dragoon
         # Bunch of other abilities go here TODO
+        'Jump Attack':
+        {
+        'level' : 1,
+        'class' : 'Dragoon',
+        'HPCost' : 0,
+        'APCost' : 15,
+        'range' : 8,
+        'target' : 'hostile',
+        'action' : _jumpAttack,
+        'cooldown' : 2,
+        'checkFunction' : _jumpAttackCheck,
+        'breakStealth' : 100,
+        'image' : DRAGOON_SKILLS + 'jump-attack.png',
+        'text' : 'Jump from your current location to immediately next to a selected enemy.\n' + \
+                'You will land on a random adjacent tile to the target dealing 200% damage if you hit.\n ' + \
+                'Additionally, you will deal 25% of weapon damage to all targets adjacent to\n' + \
+                'your landing location (including the primary target) as bludgeoning damage.'
+        },
+        'Faster Jump Attack':
+        {
+        'level' : 3,
+        'class' : 'Dragoon',
+        'HPCost' : 0,
+        'APCost' : 14,
+        'range' : 8,
+        'target' : 'hostile',
+        'action' : _jumpAttack,
+        'cooldown' : 2,
+        'checkFunction' : _jumpAttackCheck,
+        'breakStealth' : 100,
+        'image' : DRAGOON_SKILLS + 'jump-attack.png',
+        'text' : 'Jump from your current location to immediately next to a selected enemy.\n' + \
+                'You will land on a random adjacent tile to the target dealing 200% damage if you hit.\n ' + \
+                'Additionally, you will deal 25% of weapon damage to all targets adjacent to\n' + \
+                'your landing location (including the primary target) as bludgeoning damage.'
+        },
         'Diagonal Thrusts':
         {
         'level' : 3,
@@ -1591,7 +1643,7 @@ class Ability(object):
         'action' : _diagonalThrusts,
         'cooldown' : None,
         'checkFunction' : _diagonalThrustsCheck,
-        'breakStealth' : 0,
+        'breakStealth' : 100,
         'image' : DRAGOON_SKILLS + 'diagonal-thrusts.png',
         'text' : 'Strike foes in all diagonal directions.  Attack with Force x 1.20 and +5% critical magnitude\n' + \
                 'on each strike.  Must have a polearm equipped.'

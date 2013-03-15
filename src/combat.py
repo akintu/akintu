@@ -493,6 +493,14 @@ class Combat(object):
                 choice = Dice.roll(0, len(removalCandidates) - 1)
                 Combat.removeStatus(target, removalCandidates[choice].name)
 
+     
+    @staticmethod
+    def instantMove(target, desiredCombatLocation):
+        '''Moves a Person from one location to another instantly without animation.'''
+        action = command.Command("PERSON", "MOVE", id=target.id, location=desiredCombatLocation, details=True)
+        for port in Combat.gameServer.player.keys():
+            Combat.gameServer.SDF.send(port, action)
+        target.cLocation = desiredCombatLocation
 
     @staticmethod
     def knockback(target, sourceOfImpact, distance, ignoreResistance=False, didHit=True):
@@ -730,9 +738,11 @@ class Combat(object):
         if hitType == "Critical Hit":
             outgoingDamage += int(round(outgoingDamage * criticalDamageMod * 
                             float(weapon.criticalMultiplier + source.totalCriticalMagnitude) / 100))
-
-        elementalEffects = Combat.applyOnHitEffects(source, target)
-
+        
+        elementalEffects = []
+        if not ignoreOnHitEffects:
+            elementalEffects = Combat.applyOnHitEffects(source, target)
+        
         if elementOverride:
             # Treat all damage thus far as elemental.
             elementalEffects.append([elementOverride, outgoingDamage])
@@ -803,6 +813,18 @@ class Combat(object):
                 currentDamage = round(duple[1] * (1 + float(source.totalShadowBonusDamage) / 100))
                 currentDamage = round(currentDamage * (1 - float(target.totalShadowResistance) / 100))
                 damSum += currentDamage
+            elif duple[0] == "Piercing":
+                currentDamage = duple[1]
+                currentDamage = round(currentDamage * (1 - float(target.totalPiercingResistance) / 100))
+                damSum += currentDamage
+            elif duple[0] == "Bludgeoning":
+                currentDamage = duple[1]
+                currentDamage = round(currentDamage * (1 - float(target.totalBludgeoningResistance) / 100))
+                damSum += currentDamage
+            elif duple[0] == "Slashing":
+                currentDamage = duple[1]
+                currentDamage = round(currentDamage * (1 - float(target.totalSlashingResistance) / 100))
+                damSum += currentDamage                
         return damSum
 
     @staticmethod
@@ -1073,7 +1095,7 @@ class Combat(object):
         bc.shout(target)
 
     @staticmethod
-    def getAOETargets(cPane, center, radius, selectMonsters):
+    def getAOETargets(cPane, center, radius, selectMonsters=True):
         """Gets all people in combat affected by an AOE field.
         Input:
             cPane: The overworld location of the monsterLeader that generated the combatPane
@@ -1085,10 +1107,10 @@ class Combat(object):
             
         R = Region()
         R("ADD", "CIRCLE", center, radius)
-        return Combat.getTargetsInRegion(cPane, R)
+        return Combat.getTargetsInRegion(cPane, R, selectMonsters)
 
     @staticmethod
-    def getLineTargets(cPane, start, end, selectMonsters, width=1, selectFirstOnly=False):
+    def getLineTargets(cPane, start, end, selectMonsters=True, width=1, selectFirstOnly=False):
         """Gets either the closest, or all people in combat affected by a projectile
         Input:
             cPane: The overworld location of the monsterLeader that generated the combatPane
@@ -1103,7 +1125,7 @@ class Combat(object):
                     
         R = Region()
         R("ADD", "LINE", start, end, width)
-        people = Combat.getTargetsInRegion(cPane, R)
+        people = Combat.getTargetsInRegion(cPane, R, selectMonsters)
         
         if selectFirstOnly and len(people) > 0:
             minDist = start.distance(people[0].cLocation)
@@ -1118,7 +1140,7 @@ class Combat(object):
         return people
         
     @staticmethod
-    def getConeTargets(cPane, center, distance, degrees, selectMonsters):
+    def getConeTargets(cPane, center, distance, degrees, selectMonsters=True):
         """Gets all people in combat affected by a cone-shaped AOE field
         Input:
             cPane: The overworld locatino of the monsterLeader that generated the combatPane
