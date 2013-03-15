@@ -61,10 +61,10 @@ class Game(object):
         self.combat = False
         self.musicQueue = None
         self.performingLevelup = False
-        
+
         # Levelup state
         self.levelup = None
-        
+
         # Selection state
         self.selectionMode = "targeting"
         self.currentTargetId = None
@@ -74,7 +74,7 @@ class Game(object):
         self.currentItem = None
         self.itemList = []
         self.playerSaveFile = None
-        
+
         # Setup server if host
         self.port = port
         if serverip:
@@ -85,21 +85,21 @@ class Game(object):
 
         self.CDF = ClientDataFactory()
         reactor.connectTCP(self.serverip, self.port, self.CDF)
-        
+
         hardcore = False
         if kwargs.get('hardcore'):
             hardcore = True
         ironman = False
         if kwargs.get('ironman'):
             ironman = True
-        
+
         if isinstance(player, tuple):
             person = Command("PERSON", "CREATE", id=None, \
                     location=Location((0, 0), (PANE_X/2, PANE_Y/2)), \
                     details=TheoryCraft.getNewPlayerCharacter(
-                            name=player[0], race=player[1], characterClass=player[2], 
+                            name=player[0], race=player[1], characterClass=player[2],
                             ironman=ironman, hardcore=hardcore).dehydrate())
-        else: 
+        else:
             self.playerSaveFile = player
             dehydrated_string = self.load_player(self.playerSaveFile)
             person = Command("PERSON", "LOAD", id=None, \
@@ -132,7 +132,7 @@ class Game(object):
         self.handle_events()
         self.play_music()
         self.screen.update()
-        
+
     def play_music(self, state="overworld", stop=False):
         musicDir = os.path.join('res', 'music', state)
         if stop:
@@ -146,7 +146,7 @@ class Game(object):
                 self.musicQueue = None
             else:
                 music = os.path.join(musicDir, random.choice(os.listdir(musicDir)))
-        
+
             pygame.mixer.music.load(music)
             pygame.mixer.music.play()
 
@@ -162,12 +162,12 @@ class Game(object):
                         self.switch_panes(command.cPane, self.combat)
                     else:
                         self.switch_panes(command.location)
-                
+
                 if command.action == "LOAD":
                     self.pane.person[command.id] = TheoryCraft.rehydratePlayer(command.details)
                 elif command.action == "CREATE":
                     self.pane.person[command.id] = TheoryCraft.convertFromDetails(command.details)
-                    
+
                 p = self.pane.person[command.id]
                 p.location = command.location
 
@@ -221,7 +221,7 @@ class Game(object):
             if command.type == "PERSON" and command.action == "STOP":
                 if command.id == self.id:
                     self.running = False
-                    
+
             ###### SAVE PERSON ######
             if command.type == "PERSON" and command.action == "SAVE":
                 self.save_player()
@@ -234,11 +234,11 @@ class Game(object):
                         if k in ['HP', 'MP', 'AP']:
                             self.screen.update_person(command.id, {k: v, \
                                     'team': self.pane.person[command.id].team})
-                        
+
             ###### Character Progression ######
             if command.type == "PERSON" and command.action == "ADD_EXPERIENCE":
                 self.pane.person[command.id].addExperience(command.experience)
-                
+
             ###### Add Person Status ######
             if command.type == "PERSON" and command.action == "ADDSTATUS":
                 #id, status, turns, image
@@ -246,17 +246,17 @@ class Game(object):
                         command.turns)
                 statsdict = {'stealth': self.pane.person[command.id].inStealth(True)}
                 self.screen.update_person(command.id, statsdict)
-                
+
             ###### Remove Person Status ######
             if command.type == "PERSON" and command.action == "REMOVESTATUS":
                 self.pane.person[command.id].removeClientStatus(command.status)
                 statsdict = {'stealth': self.pane.person[command.id].inStealth(True)}
                 self.screen.update_person(command.id, statsdict)
-                        
+
             ###### Update Text #####
             elif command.type == "UPDATE" and command.action == "TEXT":
                 self.screen.show_text(command.text, color=command.color)
-            
+
             ###### Initiate Combat ######
             elif command.type == "UPDATE" and command.action == "COMBAT":
                 self.combat = command.combat
@@ -264,13 +264,13 @@ class Game(object):
                     self.play_music("battle", True)
                 else:
                     self.play_music("overworld", True)
-            
+
             ###### Update HP Buffers ######
             elif command.type == "UPDATE" and command.action == "HP_BUFFER":
                 self.screen.update_person(command.id, {'buffedHP' : command.bufferSum, \
                         'totalHP' : self.pane.person[command.id].totalHP, \
                         'team' : self.pane.person[command.id].team})
-            
+
             ###### Remove Item ######
             elif command.type == "ITEM" and command.action == "REMOVE":
                 self.pane.person[command.id].inventory.removeItem(itemName=command.itemName)
@@ -279,11 +279,11 @@ class Game(object):
             elif command.type == "ITEM" and command.action == "CREATE":
                 item = TheoryCraft.rehydrateTreasure(command.itemIdentifier)
                 self.pane.person[command.id].inventory.addItem(item)
-                
+
             elif command.type == "ITEM" and command.action == "EQUIP":
                 item = TheoryCraft.rehydrateTreasure(command.itemIdentifier)
                 self.pane.person[command.id].equip(item)
-                
+
             ###### Entity Operations ######
 
             elif command.type == "ENTITY":
@@ -296,18 +296,18 @@ class Game(object):
                     self.remove_entities(command.location)
                     self.screen.update_tile(self.pane.get_tile(command.location.tile), command.location)
                     #print "Removing entities at " + str(command.location.tile)
-            
+
             elif command.type == "CHEST":
                 if command.action == "ADD":
                     #print "Adding chest to " + str(command.location)
                     self.pane.add_chest(command.chestType, command.level, command.location.tile)
-                    
+
                 if command.action == "REMOVE":
                     # print "Removing chest from " + str(command.location)
                     self.remove_entities(command.location)
                     #self.pane.remove_chest(command.location.tile)
                 self.screen.update_tile(self.pane.get_tile(command.location.tile), command.location)
-            
+
             elif command.type == "CLIENT" and command.action == "RESET_TARGETING" and command.id == self.id:
                 self.selectionMode = "targeting"
                 self.currentTargetId = None
@@ -316,15 +316,15 @@ class Game(object):
                 self.abilityList = []
                 self.currentItem = None
                 self.itemList = []
-                
+
             elif command.type == "CLIENT" and command.action == "QUIT":
                 self.save_and_quit()
-    
+
     def save_player(self):
         '''
         Dehydrates our current player and saves it.
         '''
-    
+
         if not self.id in self.pane.person:
             return
 
@@ -343,19 +343,19 @@ class Game(object):
                         tmp = int(tmp)
                     except:
                         tmp = 0
-                    increment_list.append(tmp)   
+                    increment_list.append(tmp)
                 max_save = max(increment_list)
             max_save += 1
             file_name = str("%03d" % max_save) + "_" + str(player.name) + "_" + str(player.race) + "_" + str(player.characterClass) + CHAR_SAVE_EXT
             self.playerSaveFile = file_name
-        
+
         State.save(CHAR_SAVE_PATH, file_name, player_string)
-        
+
     def load_player(self, file_name):
         '''
         file_name is the name of the save file we want to open OR
         file_name can be the 3 digit number at the beginning of the file
-        
+
         '''
         #path_to_file = os.path.join(CHAR_SAVE_PATH, file_name)
         if not os.path.exists(file_name):
@@ -364,7 +364,7 @@ class Game(object):
                 saved_list = os.listdir(CHAR_SAVE_PATH)
                 if saved_list:
                     for filename in saved_list:
-                        if filename.split("_")[0] != file_name:  
+                        if filename.split("_")[0] != file_name:
                             continue
                         else:
                             #path_to_file = os.path.join(CHAR_SAVE_PATH, filename)
@@ -377,12 +377,12 @@ class Game(object):
                 #self.quit()
         player_string = State.load(CHAR_SAVE_PATH, filename)
         return player_string
-    
+
     def save_and_quit(self):
         '''
         Calls self.save_player() and then quits
         '''
-        
+
         # now = datetime.datetime.now()
         # savetime = "." + now.strftime("%Y-%m-%d %H:%M")
         #player = self.pane.person[self.id]
@@ -390,10 +390,10 @@ class Game(object):
 
         self.save_player()#player_string)
         self.quit()
-        
+
     def quit(self):
         reactor.stop()
-    
+
     def handle_events(self):
         pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
         for event in pygame.event.get():
@@ -408,11 +408,11 @@ class Game(object):
                 if event.key == K_ESCAPE:
                     #TODO: Open Menu Here
                     ##SAVE PERSON##
-                    
+
                     save = Command("PERSON", "SAVE", id=self.id)
                     self.CDF.send(save)
                     self.save_and_quit()
-                    
+
                 elif event.key in MODIFIER_KEYS:
                     self.keystate.append(event.key)
                 elif event.key in MOVE_KEYS and not self.performingLevelup and not \
@@ -436,10 +436,10 @@ class Game(object):
                         self.pane.person[self.id] = newHero
                         self.performingLevelup = False
                         self.CDF.send(Command("PERSON", "REPLACE", id=self.id, player=upgradedHero))
-                        
+
                 ### Combat Only Commands ###
                 elif self.combat:
-                
+
                     #### Ability/Spell Selection ####
                     if self.selectionMode == "abilities" or self.selectionMode == "spells":
                         if event.key == K_RIGHT or event.key == K_KP6:
@@ -458,13 +458,13 @@ class Game(object):
                             self.selectionMode = "targeting"
                             if self.currentAbility.range == 0:
                                 self.select_self()
-                                    
+
                     elif event.key == K_e:
                         if self.selectionMode == "targeting":
                             self.cycle_targets()
                         elif self.selectionMode == "items":
                             self.cycle_items()
-                    elif event.key == K_w: 
+                    elif event.key == K_w:
                         if self.selectionMode == "targeting":
                             self.cycle_targets(reverse=True)
                         elif self.selectionMode == "items":
@@ -504,7 +504,7 @@ class Game(object):
                         self.display_character_sheet()
                     elif event.key == K_y:
                         self.request_levelup()
-                    
+
     def get_item(self):
         self.CDF.send(Command("PERSON", "OPEN", id=self.id))
         # If player is on an item, pick it up (the top item).
@@ -512,7 +512,7 @@ class Game(object):
         # If the chest is locked, send a message to the screen.
         # If the chest is unlocked, distribute treasure to this player
         #    and all others on this pane.
-            
+
     def request_levelup(self):
         # Ask server if this character may levelup. TODO
         # Remove EXP code left for testing, TODO
@@ -524,13 +524,13 @@ class Game(object):
             self.levelup.next()
         else:
             player.addExperience(100)
-            
+
     def choose_ability(self):
         text = "Select an Ability"
         bgcolor = "cadetblue"
         itemslist = self.pane.person[self.id].abilities
-        self.screen.show_dialog(text, itemslist, bgcolor=bgcolor)
-            
+        self.screen.show_tiling_dialog(text, itemslist, bgcolor=bgcolor)
+
     def choose_spell(self):
         text = "Select a Spell"
         bgcolor = "lightblue"
@@ -538,8 +538,8 @@ class Game(object):
         if not itemslist:
             self.selectionMode = "targeting"
             return
-        self.screen.show_dialog(text, itemslist, bgcolor=bgcolor)
-            
+        self.screen.show_tiling_dialog(text, itemslist, bgcolor=bgcolor)
+
     def move_person(self, direction, distance):
         if self.running:
             self.CDF.send(Command("PERSON", "STOP", id=self.id))
@@ -554,7 +554,7 @@ class Game(object):
             if any(mod in [K_LSHIFT, K_RSHIFT] for mod in self.keystate) and not self.combat:
                 self.CDF.send(Command("PERSON", "RUN", id=self.id, direction=direction))
                 self.running = True
-            
+
             elif self.pane.person[self.id].remainingMovementTiles > 0 or \
                  self.pane.person[self.id].AP >= self.pane.person[self.id].totalMovementAPCost:
                 self.CDF.send(Command("PERSON", "MOVE", id=self.id, location=newloc))
@@ -566,7 +566,7 @@ class Game(object):
     def display_character_sheet(self):
         player = self.pane.person[self.id]
         player.printCharacterSheet()
-                    
+
     def force_end_turn(self):
         ap = self.pane.person[self.id].AP
         movesLeft = self.pane.person[self.id].remainingMovementTiles
@@ -583,7 +583,7 @@ class Game(object):
             return
         self.CDF.send(Command("ABILITY", "ATTACK", id=self.id, targetId=self.currentTargetId,
                 abilityName=self.currentAbility.name))
-       
+
     def use_item(self):
         if not self.currentItem or \
           self.currentItem not in self.pane.person[self.id].inventory.allConsumables:
@@ -592,10 +592,10 @@ class Game(object):
         self.CDF.send(Command("ITEM", "USE", id=self.id, itemName=self.currentItem.name))
         self.selectionMode = "abilities"
         self.itemList = []
-                    
+
     def begin_select_consumable(self):
         pass
-                      
+
     def cycle_items(self, reverse=False):
         if not self.combat:
             return
@@ -617,7 +617,7 @@ class Game(object):
                 itemIndex = self.itemList.index(self.currentItem)
                 self.currentItem = self.itemList[itemIndex - 1]
         self.screen.show_text("Selected item: " + self.currentItem.name, color='lightblue')
-                      
+
     def cycle_abilities(self, reverse=False):
         if not self.combat:
             return
@@ -637,10 +637,10 @@ class Game(object):
             else:
                 abilityIndex = self.abilityList.index(self.currentAbility)
                 self.currentAbility = self.abilityList[abilityIndex - 1]
-        self.screen.show_text("Selected: " + self.currentAbility.name + " AP COST: " + 
+        self.screen.show_text("Selected: " + self.currentAbility.name + " AP COST: " +
                                 str(self.currentAbility.APCost),
                                 color='lightblue')
-        
+
     def cycle_targets(self, reverse=False):
         # Cycles through the current persons in the current combat pane.
         if not self.combat:
@@ -669,7 +669,7 @@ class Game(object):
         if self.id == self.currentTargetId:
             self.screen.show_text("Targeting: yourself", color='lightblue')
         else:
-            self.screen.show_text("Targeting: " + self.pane.person[self.currentTargetId].name, 
+            self.screen.show_text("Targeting: " + self.pane.person[self.currentTargetId].name,
                                 color='lightblue')
 
     def select_self(self):
@@ -680,7 +680,7 @@ class Game(object):
         selfIndex = self.panePersonIdList.index(self.id)
         self.currentTargetId = self.panePersonIdList[selfIndex]
         self.screen.show_text("Targeting: yourself", color='lightblue')
-                                
+
     def display_target_details(self):
         if not self.currentTargetId or self.currentTargetId not in self.pane.person:
             return
@@ -692,7 +692,7 @@ class Game(object):
             detail = target.getCombatDetails(element)
             if detail:
                 self.screen.show_text(detail, color='greenyellow')
-                                
+
     def animate(self, id, source, dest, length):
         xdist = (dest.tile[0] - source.tile[0]) * TILE_SIZE
         ydist = (dest.tile[1] - source.tile[1]) * TILE_SIZE
@@ -749,20 +749,20 @@ class Game(object):
         time_step = length/steps
         i = int(elapsed / time_step)
         #print "Step " + str(i)
-        
+
         if elapsed > length or i > steps - 1:
             if hasattr(tile, 'anim'):#tile.anim:
                 tile.anim.stop()
             return
         tile.image = images[i]
         self.screen.update_tile(tile, location)
-        
-        
+
+
 
     def remove_entities(self, location):
         #TODO: make this delayed. (maybe use DelayedCall?)
         self.pane.remove_entities(location.tile)
-        
+
     def switch_panes(self, location, combat=False):
         #TODO we can add transitions here.
         if combat:
