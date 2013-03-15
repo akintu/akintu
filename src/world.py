@@ -284,8 +284,8 @@ class Pane(object):
             obstacle = Sprites.get_obstacle(entity_key, self.seed, self.location, tile)
             self.tiles[tile].entities.append(Entity(tile, image=obstacle))
 
-    def is_tile_passable(self, location):
-        return self.tiles[location.tile].is_passable()
+    def is_tile_passable(self, location, check_entity_keys=False):
+        return self.tiles[location.tile].is_passable(check_entity_keys)
 
     def get_edge_tiles(self, edge):
         passable_list = dict()
@@ -293,7 +293,7 @@ class Pane(object):
         if edge in Pane.PaneCorners:
             tile_loc = Pane.PaneCorners[edge]
             opposite = Location(None, tile_loc).get_opposite_tile(edge).tile
-            if not self.is_tile_passable(Location(self.location, tile_loc)):
+            if not self.is_tile_passable(Location(self.location, tile_loc), True):
                 passable_list[opposite] = self.objects[tile_loc]
         #Get the edge
         if edge in Pane.PaneEdges:
@@ -301,7 +301,7 @@ class Pane(object):
             for x in range(edge_range[0][0], edge_range[1][0]+1):
                 for y in range(edge_range[0][1], edge_range[1][1]+1):
                     opposite = Location(None, (x, y)).get_opposite_tile(edge).tile
-                    if not self.is_tile_passable(Location(self.location, (x, y))):
+                    if not self.is_tile_passable(Location(self.location, (x, y)), True):
                         if (x, y) in self.objects:
                             passable_list[opposite] = self.objects[(x, y)]
         return passable_list
@@ -483,7 +483,8 @@ class CombatPane(Pane):
             monsters = TheoryCraft.generateMonsterGroup(monster)
             self.place_monsters(monsters, self.focus_location)
         
-        # print self
+        print pane
+        print self
 
     def place_monsters(self, monsters, start_location):
         loc = temp = start_location
@@ -569,15 +570,16 @@ class Tile(object):
     def set_image(self, image):
         self.image = image
 
-    def is_passable(self):
+    def is_passable(self, check_entity_keys=False):
         if self.passable == False:
             return False
-        for key in self.entity_keys:
-            if key in OBSTACLE_KEYS:
-                return False
         for ent in self.entities:
             if ent.passable == False:
                 return False
+        if check_entity_keys:
+            for key in self.entity_keys:
+                if key in OBSTACLE_KEYS:
+                    return False
         return True
         
     def add_entity_key(self, key):

@@ -1170,7 +1170,7 @@ class Combat(object):
             R("ADD", "CIRCLE", center, distance)
             R("SUB", "DIAMOND", center.move(10 - center.direction, distance + 1), distance)
             
-        return Combat.getTargetsInRegion(cPane, R)
+        return Combat.getTargetsInRegion(cPane, R, selectMonsters)
 
     @staticmethod
     def againstWall(cPane, location, direction):
