@@ -19,11 +19,11 @@ class Levelup(object):
         self.spellB = None
         self.trait = None
         self.summary = []
-        
+
         self.traitOptions = []
         self.skillOptions = []
         self.spellOptions = []
-        
+
     def next(self):
         if not self.phase:
             self._determinePhaseList()
@@ -31,25 +31,25 @@ class Levelup(object):
         if self.phase == "TRAIT":
             text = "Select a new trait or upgrade an existing one."
             self.traitOptions = self.player.getLevelupTraitOptions()
-            self.screen.show_dialog(text, self.traitOptions, bgcolor="dodgerblue")
+            self.screen.show_tiling_dialog(text, self.traitOptions, bgcolor="dodgerblue")
         elif self.phase == "SKILL":
             text = "Select a new skill."
             self.skillOptions = self.player.getLevelupSkillOptions()
-            self.screen.show_dialog(text, self.skillOptions, bgcolor="cadetblue")
+            self.screen.show_tiling_dialog(text, self.skillOptions, bgcolor="cadetblue")
         elif self.phase == "SPELL_1":
             text = "Select a new spell."
             self.spellOptions = self.player.getLevelupSpellOptions()
-            self.screen.show_dialog(text, self.spellOptions, bgcolor="lightblue")
+            self.screen.show_tiling_dialog(text, self.spellOptions, bgcolor="lightblue")
         elif self.phase == "SPELL_2":
             text = "Select another new spell."
             self.spellOptions = [x for x in self.player.getLevelupSpellOptions() if
-                                x.name != self.spellA.name]                   
-            self.screen.show_dialog(text, self.spellOptions, bgcolor="lightblue")
+                                x.name != self.spellA.name]
+            self.screen.show_tiling_dialog(text, self.spellOptions, bgcolor="lightblue")
         elif self.phase == "COMBO":
             text = "Additionally you have earned these unique skills."
             combos = self.player.getLevelupCombos()
             combosDisplay = [x for x in combos if '--IGNORE--' not in x.name]
-            self.screen.show_dialog(text, combosDisplay, bgcolor="deepskyblue")
+            self.screen.show_tiling_dialog(text, combosDisplay, bgcolor="deepskyblue")
         elif self.phase == "SUMMARY":
             text = "This is a summary of the statistics and abilities you have gained."
             self.summary.append(self.trait)
@@ -61,8 +61,8 @@ class Levelup(object):
                 self.summary.append(self.spellB)
             self.summary.append(self.player.getLevelupStats())
             summaryDisplay = [x for x in self.summary if '--IGNORE--' not in x.name]
-            self.screen.show_dialog(text, summaryDisplay, bgcolor="darkturquoise")
-        
+            self.screen.show_tiling_dialog(text, summaryDisplay, bgcolor="darkturquoise")
+
     def input(self, keystroke):
         '''Returns True if this levelup is complete.'''
         if keystroke == K_RIGHT or keystroke == K_KP6 or keystroke == K_l:
@@ -104,7 +104,7 @@ class Levelup(object):
                 self.screen.hide_dialog()
                 self.reset()
                 return self.player.dehydrate()
-                
+
     def _modifyHero(self):
         # skills are added via summary object.
         if self.spellA:
@@ -123,12 +123,12 @@ class Levelup(object):
             elif isinstance(item, passiveability.PassiveAbilityStub):
                 self.player.passiveAbilities.append(passiveability.PassiveAbility(item.name, self.player))
         # Stats have already been added.
-                
+
     def _advancePhase(self):
         currentPhaseIndex = self.phaseList.index(self.phase)
         self.phase = self.phaseList[currentPhaseIndex + 1]
         self.next()
-        
+
     def _determinePhaseList(self):
         self.phaseList = ["TRAIT"]
         if self.player.level in self.player.skillLevels:
@@ -141,7 +141,7 @@ class Levelup(object):
                 self.phaseList.append("SPELL_2")
         self.phaseList.append("COMBO")
         self.phaseList.append("SUMMARY")
-        
+
     def reset(self):
         self.phase = None
         self.phaseList = []
@@ -150,7 +150,7 @@ class Levelup(object):
         self.spellB = None
         self.trait = None
         self.summary = []
-        
+
         self.traitOptions = []
         self.skillOptions = []
         self.spellOptions = []
