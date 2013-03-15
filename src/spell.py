@@ -181,7 +181,7 @@ class Spell(object):
     def _mysticShield(self, target):
         source = self.owner
         duration = 5
-        magnitude = Dice.scale(source.totalSpellpower, 8, 0.06)
+        magnitude = Dice.scale(source.totalSpellpower, 7, 0.06)
         Combat.addStatus(target, self.name, duration, magnitude)
 
     def _flickerOfLife(self, target):
@@ -381,7 +381,7 @@ class Spell(object):
         'action' : _mysticShield,
         'cooldown' : 4,
         'image' : TIER1 + 'mystic-shield.png',
-        'text' : 'Grants an HP buffer absorbing 8 + 6% HP for up to 5 turns.'
+        'text' : 'Grants an HP buffer absorbing 7 + 6% HP for up to 5 turns.'
         },
 
         'Flicker of Life':

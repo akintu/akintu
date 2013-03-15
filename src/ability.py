@@ -849,7 +849,8 @@ class Ability(object):
         duration = 3
         magnitude = 3 + source.totalSpellpower / 5
         Combat.addStatus(source, "Inner Might", duration, magnitude)
-        newListener = listener.Listener(self, self.owner, [], self._innerMightDisable, ['Player MP level changed'])
+        newListener = listener.Listener(self, self.owner, [], Ability._innerMightDisable, ['Player MP level changed'])
+        print newListener.__dict__
         source.listeners.append(newListener)
 
     def _innerMightCheck(self, target):
@@ -859,12 +860,13 @@ class Ability(object):
         else:
             return (False, "MP level must be above 75% to use: " + self.name + " .")
 
-    def _innerMightDisable(self, target, reverse=False, percent=None):
+    @staticmethod
+    def _innerMightDisable(dirtyHack, target, reverse=False, percent=None):
         if percent < 0.75:
             Combat.removeStatus(target, "Inner Might")
         toRemove = None
         for x in target.listeners:
-            if x.action == self._innerMightDisable:
+            if x.action == Ability._innerMightDisable:
                 toRemove = x
         if toRemove:
             target.listeners.remove(toRemove)

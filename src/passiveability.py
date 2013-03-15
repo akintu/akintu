@@ -382,11 +382,11 @@ class PassiveAbility(object):
     def applyRapidRetreat(self, target, reverse=False, other=None):
         if not reverse:
             if target.HP < target.totalHP * 0.20:
-                target.overrideMovementAPCost = 2
+                Combat.setMovementCost(target, 3)
         else:
-            target.overrideMovementAPCost = -1
+            Combat.setMovementCost(target, -1)
 
-    def applyMilitaryDefensiveTraining(self, target, reverse=False, other=None):
+    def applyMilitaryDefensiveTraining(self, target, reverse=False, spell=None):
         if not target.usingShield():
             return
         if not reverse:
@@ -1028,7 +1028,7 @@ class PassiveAbility(object):
         'onStringList' : ['Player Turn Start'],
         'offStringList' : ['Monster Turn Start'],
         'image' : BATTLEMAGE + 'rapid-retreat.png',
-        'text' : 'If HP is below 20% at the start of your turn, movement only costs 2 AP.'
+        'text' : 'If HP is below 20% at the start of your turn, movement only costs 3 AP.'
         },
         'Military Training':
         {
