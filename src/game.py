@@ -238,6 +238,18 @@ class Game(object):
             ###### Character Progression ######
             if command.type == "PERSON" and command.action == "ADD_EXPERIENCE":
                 self.pane.person[command.id].addExperience(command.experience)
+                
+            ###### Add Person Status ######
+            if command.type == "PERSON" and command.action == "ADDSTATUS":
+                #id, status, turns, image
+                #DEVIN: FILL THIS OUT PLEASE
+                #self.pane.person[command.id].
+                pass
+                
+            ###### Remove Person Status ######
+            if command.type == "PERSON" and command.action == "REMOVESTATUS":
+                #self.pane.person[command.id].
+                pass
                         
             ###### Update Text #####
             elif command.type == "UPDATE" and command.action == "TEXT":
