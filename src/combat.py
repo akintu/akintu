@@ -380,9 +380,9 @@ class Combat(object):
                         target.statusList.append(dStatus)
                         dStatus.activate(target)
                         
-        command = Command("PERSON", "ADDSTATUS", id=target.id, status=dStatus.name, \
+        comm = command.Command("PERSON", "ADDSTATUS", id=target.id, status=dStatus.name, \
                 turns=dStatus.turnsLeft, image='cubeforce.png')
-        Combat.gameServer.broadcast(command, -command.id)
+        Combat.gameServer.broadcast(comm, -comm.id)
         
     @staticmethod
     def removeStatus(target, statusName, notifyClients=True):
@@ -407,8 +407,8 @@ class Combat(object):
             target.statusList.remove(matchingStatus)
 
             if notifyClients:
-                command = Command("PERSON", "REMOVESTATUS", id=target.id, status=statusName)
-                Combat.gameServer.broadcast(command, -command.id)
+                comm = command.Command("PERSON", "REMOVESTATUS", id=target.id, status=statusName)
+                Combat.gameServer.broadcast(comm, -comm.id)
             
     @staticmethod
     def setStatusDuration(target, statusName, newDuration):
