@@ -1067,6 +1067,14 @@ class PlayerCharacter(p.Person):
             return int(120 + (self.totalStrength - 15) * 12 + self._baseInventoryCapacity + self._equipmentCarryingCapacity)
 
     @property
+    def baseInventoryCapacity(self):
+        return int(self._baseInventoryCapacity)
+        
+    @baseInventoryCapacity.setter
+    def baseInventoryCapacity(self, value):
+        self._baseInventoryCapacity = value
+            
+    @property
     def equipmentCarryingCapacity(self):
         return self._equipmentCarryingCapacity
 

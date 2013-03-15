@@ -124,7 +124,7 @@ class TreasureChest(entity.Entity):
     @staticmethod
     def _selectGear(givenIp):
         selectedItem = None
-        giveWeapon = Dice.rollBeneath(40)
+        giveWeapon = Dice.rollBeneath(33)
         if giveWeapon:
             baseWeaponSelection = Dice.roll(0, len(TheoryCraft.weapons) - 1)
             selectedItem = equipment.Weapon(TheoryCraft.weapons[baseWeaponSelection])

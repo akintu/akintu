@@ -19,6 +19,8 @@ BATTLEMAGE_SKILLS = ROOT_FOLDER + "battlemage_skills/"
 BARBARIAN_SKILLS = ROOT_FOLDER + "barbarian_skills/"
 DRAGOON_SKILLS = ROOT_FOLDER + "dragoon_skills/"
 NIGHTBLADE_SKILLS = ROOT_FOLDER + "nightblade_skills/"
+NINJA_SKILLS = ROOT_FOLDER + "ninja_skills/"
+SHADOW_SKILLS = ROOT_FOLDER + "shadow_skills/"
 SPELLSWORD_SKILLS = ROOT_FOLDER + "spellsword_skills/"
 TRICKSTER_SKILLS = ROOT_FOLDER + "trickster_skills/"
 WEAPONMASTER_SKILLS = ROOT_FOLDER + "weaponmaster_skills/"
@@ -702,7 +704,7 @@ class Ability(object):
 
     def _shadowWalk(self, target):
         source = self.owner
-        duration = -2
+        duration = -1
         Combat.addStatus(source, "Shadow Walk", duration)
 
     def _shadowWalkCheck(self, target):
@@ -741,7 +743,8 @@ class Ability(object):
             return (False, "Must be in backstab position to perform " + self.name + " .")
         if not source.usingWeapon("Sword") and not source.usingWeapon("Knife"):
             return (False, "Must be using either swords or knives to preform " + self.name + " .")
-
+        return(True, "")
+        
     def _rearAssault(self, target):
         source = self.owner
         critChance = 0
@@ -773,7 +776,8 @@ class Ability(object):
             return (False, "Must be in backstab position to perform " + self.name + " .")
         if not source.usingWeapon("Sword") and not source.usingWeapon("Knife"):
             return (False, "Must be using either swords or knives to preform " + self.name + " .")
-
+        return(True, "")
+            
     def _quickWithACrossbow(self, target):
         source = self.owner
         hit = Combat.calcHit(source, target, "Physical", modifier=1, critMod=1)
@@ -787,7 +791,7 @@ class Ability(object):
 
     def _stealthRecovery(self, target):
         source = self.owner
-        healing = round(source.totalHP * 0.03)
+        healing = int(round(source.totalHP * 0.04))
         Combat.healTarget(source, source, healing)
 
     def _stealthRecoveryCheck(self, target):
@@ -1852,9 +1856,13 @@ class Ability(object):
         'range' : 0,
         'target' : 'self',
         'action' : _shadowWalk,
-        'cooldown' : 2,
+        'cooldown' : 1,
         'checkFunction' : _shadowWalkCheck,
-        'breakStealth' : 0
+        'breakStealth' : 0,
+        'image' : SHADOW_SKILLS + 'shadow-walk.png',
+        'text' : 'Enter stealth, making enemies lose track of you until you take an action\n' + \
+                'that removes stealth.  Movement cost is raised to 6 AP for the duration.\n' + \
+                'Shadow Walk benefits doubly from Cunning, making the Shadow very hard to detect.'
         },
         'Bleeding Backstab':
         {
@@ -1867,7 +1875,12 @@ class Ability(object):
         'action' : _bleedingBackstab,
         'cooldown' : 2,
         'checkFunction' : _bleedingBackstabCheck,
-        'breakStealth' : 100
+        'breakStealth' : 100,
+        'image' : THIEF_SKILLS + 'backstab.png',
+        'text' : 'Melee attack from stealth with a high critical hit chance.\n' + \
+                'Must be behind the target and wielding only sword or knife type weapons.\n' + \
+                'Additionally, Bleeding Backstab causes the target to bleed for 5% of thier\n' + \
+                'current HP per turn for the next two turns.'
         },
         'Rear Assault':
         {
@@ -1880,7 +1893,11 @@ class Ability(object):
         'action' : _rearAssault,
         'cooldown' : 1,
         'checkFunction' : _rearAssaultCheck,
-        'breakStealth' : 100
+        'breakStealth' : 100,
+        'image' : SHADOW_SKILLS + 'rear-assault.png',
+        'text' : 'A backstab attack performed while NOT in stealth will all benefits of a standard\n' + \
+                'backstab plus bleeding.  However, it is performed at -14 Accuracy and is thus\n' + \
+                'unlikely to hit.'
         },
         'Quick with a Crossbow':
         {
@@ -1893,7 +1910,10 @@ class Ability(object):
         'action' : _quickWithACrossbow,
         'cooldown' : 1,
         'checkFunction' : _quickWithACrossbowCheck,
-        'breakStealth' : 100
+        'breakStealth' : 100,
+        'image' : SHADOW_SKILLS + 'quick-with-a-crossbow.png',
+        'text' : 'Ranged attack that requires a crossbow but has a low AP cost and\n' + \
+                'benefits from +1 Accuracy and +1% critical chance.'
         },
         'Stealth Recovery':
         {
@@ -1904,9 +1924,11 @@ class Ability(object):
         'range' : 0,
         'target' : 'self',
         'action' : _stealthRecovery,
-        'cooldown' : 2,
+        'cooldown' : 1,
         'checkFunction' : _stealthRecoveryCheck,
-        'breakStealth' : 0
+        'breakStealth' : 0,
+        'image' : SHADOW_SKILLS + 'stealth-recovery.png',
+        'text' : 'Recover 4% of max HP while in stealth.  Will not break stealth.'
         },
 
         # Assassin

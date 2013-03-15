@@ -270,12 +270,12 @@ class PassiveAbility(object):
 
     def applyBackflip(self, target, reverse=False, other=None):
         source = self.owner
-        if not reverse:
-            #if back not against wall, TODO
-            source.statusDodge += 3
-        else:
-            # if back not against wall
-            source.statusDodge -= 3
+        direction = other.cLocation.direction_to(source.cLocation)
+        if not Combat.againstWall(source.cPane, source.cLocation, direction):
+            if not reverse:
+                source.statusDodge += 3
+            else:
+                source.statusDodge -= 3
 
     def applyTreasureBag(self, target):
         target.baseInventoryCapacity += 15
