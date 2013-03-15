@@ -42,17 +42,16 @@ class GameServer():
                 self.pane[command.location.pane].person.append(person.id)
 
                 # Send command to each player in the affected pane
-                for p, i in self.player.iteritems():
-                    if command.location.pane == self.person[i].location.pane and not self.person[i].cPane:
-                        self.SDF.send(p, command)
+                self.broadcast(command, -command.id)
 
                 # Send list of players to the issuing client
                 if port:
                     for i in self.pane[command.location.pane].person:
                         if i != command.id:
-                            self.SDF.send(port, Command("PERSON", "CREATE", id=i, \
+                            comm = Command("PERSON", "CREATE", id=i, \
                                     location=self.person[i].location, \
-                                    details=self.person[i].dehydrate()))
+                                    details=self.person[i].dehydrate())
+                            self.broadcast(comm, port=port)
                                     
                     self.send_world_items(port, command.location)
 
@@ -68,18 +67,11 @@ class GameServer():
 
                         # Update location and broadcast
                         self.person[command.id].location = command.location
-                        for p, i in self.player.iteritems():
-                            if p != port and command.location.pane == self.person[i].location.pane and \
-                                    not self.person[i].cPane:
-                                self.SDF.send(p, command)
-
+                        self.broadcast(command, -command.id, exclude=True if port else False)
                     else:
                         # Remove person from players' person tables, and pane's person list
                         self.pane[self.person[command.id].location.pane].person.remove(command.id)
-                        for p, i in self.player.iteritems():
-                            if self.person[i].location.pane == self.person[command.id].location.pane \
-                                    and not self.person[i].cPane:
-                                self.SDF.send(p, Command("PERSON", "REMOVE", id=command.id))
+                        self.broadcast(Command("PERSON", "REMOVE", id=command.id), -command.id)
 
                         # Update location in server memory
                         self.person[command.id].location = command.location
@@ -88,28 +80,24 @@ class GameServer():
                         self.pane[command.location.pane].person.append(command.id)
                         command.action = "CREATE"
                         command.details = self.person[command.id].dehydrate()
-                        for p, i in self.player.iteritems():
-                            if self.person[i].location.pane == command.location.pane and \
-                                    not self.person[i].cPane:
-                                self.SDF.send(p, command)
+                        self.broadcast(command, pane=command.location.pane)
 
                         # Send list of players to the issuing client
                         if command.id in self.player.values():
-                            p = [p for p, i in self.player.iteritems() if i == command.id][0]
                             for i in self.pane[command.location.pane].person:
                                 if i != command.id:
-                                    self.SDF.send(p, Command("PERSON", "CREATE", id=i, \
+                                    comm = Command("PERSON", "CREATE", id=i, \
                                             location=self.person[i].location, \
-                                            details=self.person[i].dehydrate()))
+                                            details=self.person[i].dehydrate())
+                                    self.broadcast(comm, command.id)
                             
                             # TODO: JAB HANDLE SENDING SPECIFIC PANE THINGS HERE
-                            self.send_world_items(p, command.location)
+                            self.send_world_items(command.id, command.location)
                         
                         self.unload_panes()
 
                     # Check for combat range and initiate combat states
                     if command.id in self.player.values():
-                        p = self.getPlayerPort(command.id)
                         for person in self.pane[self.person[command.id].location.pane].person:
                             if self.person[command.id].location.in_melee_range( \
                                     self.person[person].location) and \
@@ -120,12 +108,10 @@ class GameServer():
                     if port:
                         command.location = self.person[command.id].location
                         command.details = True
-                        self.SDF.send(port, command)
+                        self.broadcast(command, port=port)
                     else:
                         self.person[command.id].ai.remove("RUN")
-                        for p, i in self.player.iteritems():
-                            if i == command.id:
-                                self.SDF.send(p, Command("PERSON", "STOP", id=i))
+                        self.broadcast(Command("PERSON", "STOP", id=command.id), command.id)
 
             ###### RemovePerson ######
             if command.type == "PERSON" and command.action == "REMOVE":
@@ -133,12 +119,9 @@ class GameServer():
                     if port:
                         command.id = self.player[port]
                         del self.player[port]
+                    
                     self.pane[self.person[command.id].location.pane].person.remove(command.id)
-
-                    #Notify clients in the affected pane
-                    for p, i in self.player.iteritems():
-                        if self.person[i].location.pane == self.person[command.id].location.pane:
-                            self.SDF.send(p, command)
+                    self.broadcast(command, pid=-command.id)
                     del self.person[command.id]
                     self.unload_panes()
 
@@ -154,7 +137,6 @@ class GameServer():
                         
             ###### Levelup Player ######
             if command.type == "PERSON" and command.action == "REPLACE":
-
                 newPerson = TheoryCraft.rehydratePlayer(command.player)
                 newPerson.location = self.person[command.id].location
                 newPerson.id = command.id
@@ -168,22 +150,22 @@ class GameServer():
                 currentPane = self.pane[activePlayer.location.pane]
                 chest, loc = currentPane.get_treasure_chest(activePlayer.location)
                 if chest:
-                    inventories = chest.open(self.get_nearby_players(command.id))    #Replace this with list of players on current pane
+                    inventories = chest.open(self.get_nearby_players(command.id))
                     
                     #Notify clients in the affected pane
                     for p, i in self.player.iteritems():    #Replace this with list of players on current pane
                         if self.person[i].location.pane == self.person[command.id].location.pane:
                             #Send animation request...
                             action_animate = Command(type="ENTITY", action="ANIMATE", location=loc)
-                            self.SDF.send(p, action_animate)
+                            self.broadcast(action_animate, port=p)
                             action_remove = Command(type="CHEST", action="REMOVE", location=loc)
-                            self.SDF.send(p, action_remove)
+                            self.broadcast(action_remove, port=p)
 
                             thisPlayer = self.person[self.player[p]]
                             itemList = inventories[thisPlayer]
                             if not itemList:
                                 action = Command("UPDATE", "TEXT", text='Chest was empty', color='lightskyblue')
-                                self.SDF.send(p, action)
+                                self.broadcast(action, port=p)
                             for item in itemList:
                                 equipped = False
                                 action = None
@@ -191,11 +173,11 @@ class GameServer():
                                     action = Command("ITEM", "CREATE", itemIdentifier=item, id=thisPlayer.id)
                                 else:
                                     action = Command("ITEM", "CREATE", itemIdentifier=item.identifier, id=thisPlayer.id)
-                                self.SDF.send(p, action)
+                                self.broadcast(action, port=p)
                                 if thisPlayer.shouldAutoEquip(item):
                                     thisPlayer.equip(item)
                                     action = Command("ITEM", "EQUIP", itemIdentifier=item.identifier, id=thisPlayer.id)
-                                    self.SDF.send(p, action)
+                                    self.broadcast(action, port=p)
                                     equipped = True
                                 text = ''
                                 if isinstance(item, int):
@@ -205,24 +187,54 @@ class GameServer():
                                 if equipped:
                                     text ='Found and equipped item: ' + item.displayName
                                 action = Command("UPDATE", "TEXT", text=text, color='lightskyblue')
-                                self.SDF.send(p, action)
+                                self.broadcast(action, port=p)
                             
             # Get items: TODO
             
     ###### Utility Methods ######
     
-    def broadcast(self, command, port=None, id=None, pane=None):
-        pass
+    def broadcast(self, command, pid=None, port=None, pane=None, exclude=False):
+        """Broadcast a given command to a player or all players in a pane.
+        Accepts one of a port, a person id (pid), or a pane.  (Do not pass in more than one!)
+        If exclude is True, then command will be sent to all players in affected pane except
+                for the player indicated by pid or port.
+        Will only broadcast to human players, never to NPCs!
+        If a port or id is given and is a negative value, the command will be broadcast
+                to all players in the same pane as the player indicated.
+        If a port or id is given and is a positive value, the command will be broadcast
+                only to that player."""
+        sendToAll = True
+        if port:
+            sendToAll = True if port < 0 else False
+            port = abs(port)
+            person = self.person[self.player[port]]
+            pane = person.cPane if person.cPane else person.location.pane
+        elif pid:
+            sendToAll = True if pid < 0 else False
+            pid = abs(pid)
+            person = self.person[pid]
+            pane = person.cPane if person.cPane else person.location.pane
+
+        if sendToAll:
+            for p, i in self.player.iteritems():
+                if (self.person[i].cPane and self.person[i].cPane == pane) or \
+                        (not self.person[i].cPane and self.person[i].location.pane == pane):
+                    if not exclude or (i != pid and p != port):
+                        self.SDF.send(p, command)
+        else:
+            if not port:
+                port = [p for p, i in self.player.iteritems() if i == pid][0]
+            self.SDF.send(port, command)
     
     def send_world_items(self, player, location):
         # print (location.pane)
         # print self.pane[location.pane]
         chests = self.pane[location.pane].get_chest_list()
-        print chests
+        #print chests
         if chests:
             for chest in chests:
                 cmd = Command("CHEST", "ADD", chestType=chest[0], level=chest[1], location=Location(location.pane, chest[2]))
-                self.SDF.send(player, cmd)
+                self.broadcast(cmd, player)
                 # print cmd
         # ITEMS
     
