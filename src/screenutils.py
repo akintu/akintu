@@ -6,8 +6,6 @@ import pygame
 from pygame.locals import *
 from pygame import Rect, Color
 
-DEF_RECT = pygame.Rect(0, 0, 80, 133)
-
 
 class TilingDialog(object):
     '''
@@ -18,6 +16,7 @@ class TilingDialog(object):
         '''
         Initialize the class
         '''
+        self.DEF_RECT = pygame.Rect(0, 0, 80, 133)
         self.bgcolor = bgcolor
         self.selection = selection
         self.toptext = toptext
@@ -90,7 +89,7 @@ class TilingDialog(object):
         x += (self.prev_selection % 16) * 80
         pygame.draw.rect(self.surface,
                          Color(self.bgcolor),
-                         DEF_RECT.move(x, y),
+                         self.DEF_RECT.move(x, y),
                          3)
         x = 0
         y = 57
@@ -98,7 +97,7 @@ class TilingDialog(object):
         x += (self.cur_selection % 16) * 80
         pygame.draw.rect(self.surface,
                          Color('yellow'),
-                         DEF_RECT.move(x, y),
+                         self.DEF_RECT.move(x, y),
                          3)
         text = self.items[self.cur_selection].text
         self._drawbottomtext(text)
