@@ -460,7 +460,7 @@ class Combat(object):
         removalCandidates = []
         for dStatus in target.statusList:
             if category in dStatus.categoryList or category == dStatus.element:
-                removalCandidates.add(dStatus)
+                removalCandidates.append(dStatus)
 
         if removalCandidates:
             if removeAll:

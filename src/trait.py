@@ -367,9 +367,8 @@ class Trait(object):
 
     
     def applyMeleeArchery(self, target, reverse=False, other=None):
-        if not location.in_melee_range(target.location, other.location):
+        if not target.cLocation.in_melee_range(other.cLocation):
             return
-        #self.rank = Trait.getTraiself.rank(target, "Melee Archery")
         if not reverse:
             if self.rank == 1:
                 pass

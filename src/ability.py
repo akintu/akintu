@@ -268,6 +268,9 @@ class Ability(object):
         if success:
             duration = 2
             Combat.addStatus(target, "Feint", duration)
+            Combat.sendCombatMessage("Success! (" + str(chance) + ")", source, color="darkorange")
+        else:
+            Combat.sendCombatMessage("Failed. (" + str(chance) + ")", source, color="darkorange") 
 
     def _farSightedFocus(self, target):
         source = self.owner
@@ -884,7 +887,7 @@ class Ability(object):
         source = self.owner
         hitType = Combat.calcHit(source, target, "Physical")
         Combat.basicAttack(source, target, hitType)
-        source.MP += 12
+        Combat.modifyResource(source, "MP", 12)
 
     def _tripleChargedArrowCheck(self, target):
         source = self.owner
