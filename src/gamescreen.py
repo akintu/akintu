@@ -59,6 +59,24 @@ class GameScreen(object):
         pygame.display.update()
         return self.dialog.get_selection()
 
+    def show_item_dialog(self,
+                         text,
+                         leftitems,
+                         rightitems,
+                         equipment=False,
+                         bgcolor='gray'):
+        '''
+        Show an item dialog with the given parameters
+        '''
+        self.dialog = screenutils.ItemDialog(text,
+                                             leftitems,
+                                             rightitems,
+                                             equipment,
+                                             bgcolor)
+        self.screen.blit(self.gialog.surface, (0, 0))
+        pygame.display.update()
+        return self.dialog.get_selection()
+
     def hide_dialog(self):
         '''
         Hide the dialog, returns the last-selected item
