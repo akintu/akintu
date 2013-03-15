@@ -31,6 +31,9 @@ class Equipment(e.Entity):
         self.weight = weight
         self.identifier = "Uninitialized"
         self.bonusTendencyList = None
+        self.text = "Uninitialized"
+        self.prefix = ""
+        self.suffix = ""
 
     def __eq__(self, other):
         if not isinstance(other, Equipment):
@@ -82,6 +85,7 @@ class Equipment(e.Entity):
         newCopy.propertyList = newPropertyList
         newCopy.assignDisplayName()
         newCopy.assignIdentifier()
+        newCopy.assignText()
         return newCopy
 
     def assignIdentifier(self):
@@ -92,6 +96,41 @@ class Equipment(e.Entity):
             longName.append(prop.name + "#" + `prop.counts`)
         self.identifier = ''.join(longName)
         
+    def assignText(self):
+        longText = []
+        if self.prefix:
+            longText.append(self.prefix + "\n")
+        longText.append(self.name + "\n")
+        if self.suffix:
+            longText.append(self.suffix + "\n")
+        longText.append("\n")
+        if isinstance(self, Armor):
+            longText.append("Grade: " + self.grade + "\n")
+            longText.append("Type: " + self.type + "\n")
+            longText.append("Damage Reduction (DR): " + `self.DR` + "%\n")
+            longText.append("Dodge Modifier: " + `self.dodgeMod` + "\n")
+            longText.append("Stealth Modifier: " + `self.stealthMod` + "\n")
+            longText.append("Weight: " + `self.weight` + " lbs.\n")
+            longText.append("Value: " + `int(self.goldValue)` + " gold\n")
+            for mProp in self.propertyList:
+                longText.append(">> " + mProp.name + "  x " + `mProp.counts` + "\n")
+        elif isinstance(self, Weapon):
+            longText.append("Type: " + self.type + "\n")
+            longText.append("Hands: " + self.handsRequired + "\n")
+            longText.append("Base Damage: " + `(self.damageMin + self.damageMinBonus)` +
+                        "-" + `(self.damageMax + self.damageMaxBonus)` + "\n")
+            longText.append("Damage Type: " + self.damageType + "\n")
+            longText.append("Force: " + `int(self.force)` + "%\n")
+            longText.append("Critical Multiplier: " + `int(self.criticalMultiplier)` + "%\n")
+            longText.append("Range: " + (`self.range` if self.range != 1 else "Melee") + "\n")
+            longText.append("Weight: " + self.weight + " lbs.\n")
+            longText.append("Value: " + `int(self.goldValue)` + " gold\n")
+            for mProp in self.propertyList:
+                longText.append(">> " + mProp.name + "  x " + `mProp.counts` + "\n")
+        self.text = ''.join(longText)
+            
+            
+            
     def assignDisplayName(self):
         ''' Assigns a more colorful name to this item
         based on its magical properties.  If the item
@@ -109,8 +148,11 @@ class Equipment(e.Entity):
                 maxValue = value
         if firstProperty and secondProperty:
             self.displayName = secondProperty.prefix + " " + self.name + " " + firstProperty.suffix
+            self.prefix = secondProperty.prefix
+            self.suffix = firstProperty.suffix
         elif firstProperty:
             self.displayName = self.name + " " + firstProperty.suffix
+            self.suffix = firstProperty.suffix
         else:
             self.displayName = self.name
             
