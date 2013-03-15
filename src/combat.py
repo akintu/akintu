@@ -44,20 +44,13 @@ class Combat(object):
         elif type == "HP_BUFFER":
             messageObj = command.Command("UPDATE", "HP_BUFFER", id=character.id, \
                     bufferSum=character.getHPBufferSum())
-        for port in Combat.gameServer.getAllCombatPorts(character):
-            Combat.gameServer.SDF.send(port, messageObj)
+        Combat.gameServer.broadcast(messageObj, -character.id)
 
     @staticmethod
     def sendCombatMessage(message, character, color="white", toAll=True):
         '''Send a message to all players in combat with the provided character.'''
-        portList = []
-        if not toAll:
-            portList.append(Combat.gameServer.getPlayerPort(character))
-        else:
-            portList = Combat.gameServer.getAllCombatPorts(character)
         messageObj = command.Command("UPDATE", "TEXT", text=message, color=color)
-        for port in portList:
-            Combat.gameServer.SDF.send(port, messageObj)
+        Combat.gameServer.broadcast(messageObj, -character.id if toAll else character.id)
             
     @staticmethod
     def encodeStatuses(character):
@@ -498,8 +491,7 @@ class Combat(object):
     def instantMove(target, desiredCombatLocation):
         '''Moves a Person from one location to another instantly without animation.'''
         action = command.Command("PERSON", "MOVE", id=target.id, location=desiredCombatLocation, details=True)
-        for port in Combat.gameServer.player.keys():
-            Combat.gameServer.SDF.send(port, action)
+        Combat.gameServer.broadcast(action, -action.id)
         target.cLocation = desiredCombatLocation
 
     @staticmethod
