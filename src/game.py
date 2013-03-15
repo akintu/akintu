@@ -242,14 +242,11 @@ class Game(object):
             ###### Add Person Status ######
             if command.type == "PERSON" and command.action == "ADDSTATUS":
                 #id, status, turns, image
-                #DEVIN: FILL THIS OUT PLEASE
-                #self.pane.person[command.id].
-                pass
+                self.pane.person[command.id].addClientStatus(status, image, turns)
                 
             ###### Remove Person Status ######
             if command.type == "PERSON" and command.action == "REMOVESTATUS":
-                #self.pane.person[command.id].
-                pass
+                self.pane.person[command.id].removeClientStatus(status)
                         
             ###### Update Text #####
             elif command.type == "UPDATE" and command.action == "TEXT":

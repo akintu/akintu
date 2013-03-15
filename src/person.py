@@ -263,7 +263,7 @@ class Person(en.Entity):
     def addClientStatus(self, statusName, image, turnsLeft):
         self._clientStatusView['statusName'] = {'image' : image, 'turnsLeft' : turnsLeft}
         
-    def removeClientStatus(self, statusName, image, turnsLeft):
+    def removeClientStatus(self, statusName):
         del self._clientStatusView[statusName]
         
         
