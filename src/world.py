@@ -43,14 +43,13 @@ class World(object):
 
             #Check Disk For Pane
             state = None
-            # if is_server:
-                # filename = "Pane_" + str(location[0]) + "_" + str(location[1])
-                # data = State.load(TMP_WORLD_SAVE_PATH, filename)
-                # if data:
-                    # state = data
-                # else:
+            if is_server:
+                filename = "Pane_" + str(location[0]) + "_" + str(location[1])
+                data = State.load(TMP_WORLD_SAVE_PATH, filename)
+                if data:
+                    state = data
             #Check State For Pane
-            if self.world_state:
+            if not state and self.world_state:
                 if location in self.world_state:
                     state = self.world_state[location]
             #TODO: Change is_server=True to is_server=is_server.  Need to have items/chests tracked on server
@@ -170,25 +169,22 @@ class Pane(object):
     def load_monsters(self, monsters=None):
         '''
         Parameters:
-            monsters:   A list of monster tuples in the following format:
-                        ("Name", "Level", "Location", "Region", "AI")
-                        Where: 
-                            Name and Level are strings
-                            Location is the tile tuple (x, y)
-                            Region and AI will be some sort of hash that their
-                                respective classes can use to rehydrate them
+            monsters:   A list of monster dehydrated string and location tuples:
+                [("dehydrated_string", Location()), (..., ...), ...]
+                
         '''
     
         if monsters:
             for monster in monsters:
-                person = TheoryCraft.getMonster(name=monster[0], level=monster[1])
-                person.location = Location(self.location, monster[2])
-                r = Region()#region=monster[3])
+                person = TheoryCraft.rehydratePerson(monster[0])
+                person.location = monster[1]
+                # r = Region()#region=monster[3])
                 #TODO: Rehydrate r with monsters[3]
                 #TODO: Somehow rehydrate AI...
                 #person.ai(monster[4])
                 self.person[id(person)] = person
-                assert False
+                # assert False
+                print "WARNING! AI and Region may not work"
         else:   #TODO: Make this better. We're creating monsters from scratch here
             random.seed(self.seed + str(self.location) + "load_monsters")
             for i in range(3):
@@ -391,13 +387,16 @@ class Pane(object):
         Saves the current panes monsters and items to a dictionary.
         Calls State.save to the worlds dir using this pane's location.
         Returns a dictionary with the following attributes:
-            {MONSTER_KEY: [(name, level, location, region, ai), (...)],
+            {MONSTER_KEY: [(dehydrated_string, Location()), (...)],
                 ITEM_KEY: [(name, attributes, location, ...), (...)]
                 CHEST_KEY: [(type, level, location, ...)}
         The server can then add this dictionary to its master dictionary using
         this pane's (x, y) coordinate as the key.
         '''
         save_dict = self.get_state()
+        print "Attempting to save state on pane " + str(self.location)
+        print "as file: " + str(self.tmpFileName)
+        print "with data: " + str(save_dict)
         State.save(TMP_WORLD_SAVE_PATH, self.tmpFileName, save_dict, True)
         return save_dict
         
@@ -408,8 +407,8 @@ class Pane(object):
         #Save Monsters.  
         # print self.person
         for key, monster in self.person.iteritems():
-            monster_list.append((monster.name, monster.level, \
-                monster.location, monster.region, monster.ai))
+            print "Monster's location: " + str(monster.location)
+            monster_list.append((monster.dehydrate(), monster.location))
         save_dict[MONSTER_KEY] = monster_list
 
         #Save Items.
@@ -483,8 +482,8 @@ class CombatPane(Pane):
             monsters = TheoryCraft.generateMonsterGroup(monster)
             self.place_monsters(monsters, self.focus_location)
         
-        print pane
-        print self
+        # print pane
+        # print self
 
     def place_monsters(self, monsters, start_location):
         loc = temp = start_location

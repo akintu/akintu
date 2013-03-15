@@ -297,11 +297,11 @@ class Game(object):
             
             elif command.type == "CHEST":
                 if command.action == "ADD":
-                    print "Adding chest to " + str(command.location)
+                    #print "Adding chest to " + str(command.location)
                     self.pane.add_chest(command.chestType, command.level, command.location.tile)
                     
                 if command.action == "REMOVE":
-                    print "Removing chest from " + str(command.location)
+                    # print "Removing chest from " + str(command.location)
                     self.remove_entities(command.location)
                     #self.pane.remove_chest(command.location.tile)
                 self.screen.update_tile(self.pane.get_tile(command.location.tile), command.location)
