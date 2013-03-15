@@ -176,7 +176,7 @@ class ItemDialog(object):
         '''
         Initialize the class
         '''
-        self.DEF_RECT = pygame.Rect(0, 0, 470, 30)
+        self.DEF_RECT = pygame.Rect(1, 1, 468, 28)
         self.bgcolor = bgcolor
         self.toptext = toptext
         self.equipment = equipment
@@ -194,6 +194,10 @@ class ItemDialog(object):
         self._updateselection()
         self._drawborders()
 
+    def get_selection(self):
+        '''
+        Get the current selection
+        '''
         return self.selection
 
     def set_items(self, leftlist, rightlist, toptext=None):
@@ -227,7 +231,7 @@ class ItemDialog(object):
         elif direction == 4 or direction == 6:
             selection[0] = (selection[0] + 1) % 2
         elif direction == 8:
-            selection -= 1
+            selection[1] -= 1
         elif direction == -1:
             pass
         else:
@@ -241,7 +245,7 @@ class ItemDialog(object):
 
         return self.selection
 
-    def _updateselection():
+    def _updateselection(self):
         '''
         Draw a rectangle around current selection, removing from previous
 
@@ -252,9 +256,9 @@ class ItemDialog(object):
             return
 
         # Error-checking
-        if len(items[self.selection[0]]) == 0:
+        if len(self.items[self.selection[0]]) == 0:
             self.selection = ((self.selection[0] + 1) % 2, 0)
-        if len(items[self.selection[0]]) == 0:
+        if len(self.items[self.selection[0]]) == 0:
             self.selection = None
             return
 
@@ -271,7 +275,7 @@ class ItemDialog(object):
 
         drawindex = item - top
 
-        x = 10 + pane * 830
+        x = 10 + pane * 790
         y = 60 + 30 * drawindex
         pygame.draw.rect(self.surface,
                          Color('yellow'),
@@ -286,14 +290,14 @@ class ItemDialog(object):
         '''
         y = 60
         x = 10
-        for i in range(self.top[0],
-                       min(self.top[0] + 19, len(self.leftitems))):
+        for i in range(self.tops[0],
+                       min(self.tops[0] + 19, len(self.leftitems))):
             self.surface.blit(self.leftitems[i], (x, y))
             y += 30
         y = 60
-        x = 840
-        for i in range(self.top[0],
-                       min(self.top[0] + 19, len(self.rightitems))):
+        x = 800
+        for i in range(self.tops[1],
+                       min(self.tops[1] + 19, len(self.rightitems))):
             self.surface.blit(self.rightitems[i], (x, y))
             y += 30
 
@@ -301,14 +305,14 @@ class ItemDialog(object):
         '''
         Draw the top text area
         '''
-        textsurface = self._generatetext(self.toptext, height=30, widhth=1280)
+        textsurface = self._generatetext(self.toptext, height=30, width=1280)
         self.surface.blit(textsurface, (20, 10))
 
     def _drawsidetext(self, text):
         '''
         Draw the side text area with the given text
         '''
-        textsurface = self._generatetext(text, )
+        textsurface = self._generatetext(text, width=300, height=580, size=16)
         self.surface.blit(textsurface, (490, 60))
 
     def _drawborders(self):
@@ -318,7 +322,7 @@ class ItemDialog(object):
         surface = self.surface
         pygame.draw.line(surface, Color('black'), (0, 45), (1280, 45), 3)
         pygame.draw.line(surface, Color('black'), (485, 45), (485, 640), 3)
-        pygame.draw.line(surface, Color('black'), (835, 45), (835, 640), 3)
+        pygame.draw.line(surface, Color('black'), (795, 45), (795, 640), 3)
 
     def _generateitems(self, items, equipment=False):
         surfaces = []
@@ -343,7 +347,7 @@ class ItemDialog(object):
             for item in items:
                 if item.type == 'Finger':
                     fingercount -= 1
-            for i in range(0):
+            for i in range(fingercount):
                 surfaces.append(self._generateemptyitempane('Finger'))
             return surfaces
 
@@ -363,20 +367,22 @@ class ItemDialog(object):
         Generate a given item pane
         '''
         surface = pygame.Surface((470, 30))
+        surface.fill(Color(self.bgcolor))
         font = pygame.font.SysFont('Arial', 18)
+        sfont = pygame.font.SysFont('Arial', 14)
         bgcolor = Color(self.bgcolor)
 
         weightstr = str(weight) + 'lbs'
         valuestr = str(value) + 'g'
 
         namefont = font.render(name, True, Color('black'), bgcolor)
-        typefont = font.render(itemtype, True, Color('black'), bgcolor)
-        weightfont = font.render(weightstr, True, Color('black'), bgcolor)
-        valuefont = font.render(valuestr, True, Color('black'), bgcolor)
+        typefont = sfont.render(itemtype, True, Color('black'), bgcolor)
+        weightfont = sfont.render(weightstr, True, Color('black'), bgcolor)
+        valuefont = sfont.render(valuestr, True, Color('black'), bgcolor)
 
         surface.blit(namefont, (5, 4))
         surface.blit(typefont, (295, 4))
-        surface.blit(weightfont, (385, 4))
+        surface.blit(weightfont, (365, 4))
         surface.blit(valuefont, (425, 4))
 
         return surface
@@ -386,12 +392,18 @@ class ItemDialog(object):
         Generate en empty item, including the slot text if provided
         '''
         surface = pygame.Surface((470, 30))
+        surface.fill(Color(self.bgcolor))
         font = pygame.font.SysFont('Arial', 18)
         curfont = font.render('Empty ' + slot, True, Color('black'))
         surface.blit(curfont, (5, 4))
         return surface
 
-    def _generatetext(self, text, height=590, width=360, color='black'):
+    def _generatetext(self,
+                      text,
+                      height=590,
+                      width=360,
+                      color='black',
+                      size=18):
         '''
         Generate a text surface of given height and width with the given text
 
@@ -401,7 +413,7 @@ class ItemDialog(object):
         surface.fill(Color(self.bgcolor))
         lines = text.split('\n')
         y = 0
-        font = pygame.font.SysFont('Arial', 18)
+        font = pygame.font.SysFont('Arial', size)
         for line in lines:
             curfont = font.render(line, True, Color(color))
             surface.blit(curfont, (0, y))
