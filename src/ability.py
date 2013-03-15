@@ -262,6 +262,20 @@ class Ability(object):
     def _agilePositionCheck(self, target):
         return (True, "")
 
+    def _hitAndRun(self, target):
+        source = self.owner
+        hit = Combat.calcHit(source, target, "Physical")
+        Combat.basicAttack(source, target, hit, noCounter=True)
+        direction = target.cLocation.direction_to(source.cLocation)
+        choiceBase = source.cLocation
+        choiceA = choiceBase.move(direction, 2)
+        choiceB = choiceBase.move(direction, 1)
+        if Combat.gameServer.tile_is_open(choiceA, cPane=target.cPane):
+            Combat.instantMove(source, choiceA)
+        elif Combat.gameServer.tile_is_open(choiceB, cPane=target.cPane):
+            Combat.instantMove(source, choiceB)
+        
+        
     def _feint(self, target):
         source = self.owner
         success = Dice.rollBeneath(min(80, (source.totalCunning - target.totalCunning) * 8))
@@ -1313,6 +1327,22 @@ class Ability(object):
         'breakStealth' : 0,
         'image' : THIEF_SKILLS + "agile-position.png",
         'text' : 'Defensive move that ends turn but grants a large bonus to dodge.'
+        },
+        'Hit and Run':
+        {
+        'level' : 2,
+        'class' : 'Thief',
+        'HPCost' : 0,
+        'APCost' : 5,
+        'range' : 1,
+        'target' : 'hostile',
+        'action' : _hitAndRun,
+        'cooldown' : 2,
+        'checkFunction' : None,
+        'breakStealth' : 100,
+        'image' : THIEF_SKILLS + 'hit-and-run.png',
+        'text' : 'Basic melee attack followed by moving two spaces away from\n' + \
+                'your target, if possible.'
         },
         'Feint':
         {
