@@ -818,14 +818,13 @@ class Ability(object):
 
     def _shadowstep(self, target):
         source = self.owner
-        Combat.movePerson(source, target.location, instant=True)
-        # TODO: Consider replacing the ability to set AP costs?
+        Combat.addMovementTiles(target, 4)
 
     def _shadowstepCheck(self, target):
         source = self.owner
         if not source.inStealth():
             return (False, "Must be in stealth to use " + self.name)
-        # TODO: Check to see if the destination tile is passable.
+        return (True, "")
 
     # Battle Mage
     def _bufferStrike(self, target):
@@ -850,7 +849,6 @@ class Ability(object):
         magnitude = 3 + source.totalSpellpower / 5
         Combat.addStatus(source, "Inner Might", duration, magnitude)
         newListener = listener.Listener(self, self.owner, [], Ability._innerMightDisable, ['Player MP level changed'])
-        print newListener.__dict__
         source.listeners.append(newListener)
 
     def _innerMightCheck(self, target):
@@ -1936,6 +1934,7 @@ class Ability(object):
         'text' : 'Recover 4% of max HP while in stealth.  Will not break stealth.'
         },
 
+
         # Assassin
         'Assassin Stealth':
         {
@@ -2109,8 +2108,8 @@ class Ability(object):
         'class' : 'Nightblade',
         'HPCost' : 0,
         'APCost' : 6,
-        'range' : 4,
-        'target' : 'location',
+        'range' : 0,
+        'target' : 'self',
         'action' : _shadowstep,
         'cooldown' : 2,
         'checkFunction' : _shadowstepCheck,

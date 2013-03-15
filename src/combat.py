@@ -517,6 +517,11 @@ class Combat(object):
             target.remainingMovementTiles = target.totalMovementTiles - 1
         Combat.sendToAll(target, "MOVE_TILES")
         
+    @staticmethod
+    def addMovementTiles(target, tileAmount):
+        ''' Add movement tiles to the current move. '''
+        target.remainingMovementTiles += tileAmount
+        Combat.sendToAll(target, "MOVE_TILES")
         
     @staticmethod
     def calcDamage(source, target, minimum, maximum, element, hitValue, partial=1, critical=1, scalesWith=None, scaleFactor=0):

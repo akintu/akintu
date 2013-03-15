@@ -326,7 +326,7 @@ class PassiveAbility(object):
                 source.statusMeleeAccuracy -= 3
                 source.statusCriticalChance -= 5
 
-    def applyMagicalDarkness(self, target, reverse=False, other=None):
+    def applyMagicalDarkness(self, target, reverse=False, **kwArgs):
         source = self.owner
         if not reverse:
             if source.inStealth():
@@ -340,10 +340,10 @@ class PassiveAbility(object):
     def applyUpCloseAndPersonal(self, target, reverse=False, spell=None):
         source = self.owner
         if not reverse:
-            if spell.school == "Bane" and location.in_melee_range(source.location, target.location):
+            if spell.school == "Bane" and source.cLocation.in_melee_range(target.cLocation):
                 source.statusSpellpower += 4
         else:
-            if spell.school == "Bane" and location.in_melee_range(source.location, target.location):
+            if spell.school == "Bane" and source.cLocation.in_melee_range(target.cLocation):
                 source.statusSpellpower -= 4
 
     # Battle Mage
