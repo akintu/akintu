@@ -104,6 +104,10 @@ class Ability(object):
         '''
         mod = 0 # dummy code
         source = self.owner
+        
+        if not source.equippedItems.equippedWeapon:
+            return (False, "You cannot use any abilities without a weapon!!")
+        
         if source.AP < self.APCost - mod:
             return (False, "Insufficient AP")
 

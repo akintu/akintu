@@ -1211,9 +1211,9 @@ class PlayerCharacter(p.Person):
         return False
         
     def calcBurden(self):
-        if self.inventoryCapacity > self.inventoryWeight:
+        if self.inventoryCapacity >= self.inventoryWeight:
             return 0
-        if self.inventoryCapacity <= self.inventoryWeight and self.inventoryWeight <= self.inventoryCapacity * 1.2:
+        if self.inventoryCapacity < self.inventoryWeight and self.inventoryWeight <= self.inventoryCapacity * 1.2:
             return 2
         if self.inventoryCapacity * 1.2 <= self.inventoryWeight and self.inventoryWeight <= self.inventoryCapacity * 1.4:
             return 5
