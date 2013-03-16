@@ -495,10 +495,11 @@ class Game(object):
         text = "Looking in your bag... you have no tea."
         eq = player.equippedItems.allGear
         inv = player.inventory.allItems
+        capacity = `player.inventoryWeight` + "/" + `player.inventoryCapacity`
         if not eq and not inv: 
             self.viewingInventory = False
             return
-        self.screen.show_item_dialog(text, inv, eq, isEquipment, bgcolor='tan')
+        self.screen.show_item_dialog(text, inv, eq, isEquipment, bgcolor='tan', capacity=capacity)
             
     def choose_ability(self):
         text = "Select an Ability"

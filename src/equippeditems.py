@@ -217,19 +217,19 @@ class EquippedItems(object):
     def equippedWeight(self):
         totalWeight = 0
         if self._allGear['Head']:
-            totalWeight += self._allGear['Head'].weight
+            totalWeight += int(self._allGear['Head'].weight)
         if self._allGear['Chest']:
-            totalWeight += self._allGear['Chest'].weight
+            totalWeight += int(self._allGear['Chest'].weight)
         if self._allGear['Legs']:
-            totalWeight += self._allGear['Legs'].weight
+            totalWeight += int(self._allGear['Legs'].weight)
         if self._allGear['Hands']:
-            totalWeight += self._allGear['Hands'].weight
+            totalWeight += int(self._allGear['Hands'].weight)
         if self._allGear['Feet']:
-            totalWeight += self._allGear['Feet'].weight
+            totalWeight += int(self._allGear['Feet'].weight)
         if self._allGear['Main Hand']:
-            totalWeight += self._allGear['Main Hand'].weight
+            totalWeight += int(self._allGear['Main Hand'].weight)
         if self._allGear['Off Hand']:
-            totalWeight += self._allGear['Off Hand'].weight
+            totalWeight += int(self._allGear['Off Hand'].weight)
         return totalWeight
 
 
