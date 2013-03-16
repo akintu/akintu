@@ -93,8 +93,6 @@ class Inventory(object):
         else:
             self._allItems.append(item)
             item.location = None
-            if len(self._allItems) > Inventory.MAX_SLOTS:
-                print "Warning: Item added to inventory caused the inventory to exceed the MAX_SLOTS of " + str(Inventory.MAX_SLOTS) + " items."
             # Check for weight here?
 
     def removeItem(self, item=None, itemName=None):

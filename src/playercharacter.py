@@ -1238,12 +1238,25 @@ class PlayerCharacter(p.Person):
                     self.inventory.removeItem(item)
                     screen.hide_dialog()
                     # Reopen the window
-                    text = "Equipped: " + item.displayName
+                    text = "Equipped: " + item.displayName                                                            
                     inv = self.inventory.allItems
                     eq = self.equippedItems.allGear
                     isEquipment = True
                     screen.show_item_dialog(text, inv, eq, isEquipment, bgcolor='tan')
                     return None
+        elif key == K_d:
+            selectionTuple = screen.get_dialog_selection()
+            if selectionTuple[0] == 0:
+                # This is the inventory side.
+                item = self.inventory.allItems[selectionTuple[1]]
+                self.inventory.removeItem(item)
+                screen.hide_dialog()
+                text = "Destroyed: " + item.displayName
+                inv = self.inventory.allItems
+                eq = self.equippedItems.allGear
+                isEquipment = True
+                screen.show_item_dialog(text, inv, eq, isEquipment, bgcolor='tan')
+                return None
         return None
         
     def printCharacterSheet(self):
