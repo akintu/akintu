@@ -330,7 +330,7 @@ class ItemDialog(object):
         # Handle the equipment pane (if specified)
         if equipment:
             for item in items:
-                surfaces.append(self._generateitempane(item.name,
+                surfaces.append(self._generateitempane(item.displayName,
                                                        item.type,
                                                        item.weight,
                                                        item.value))
@@ -353,7 +353,7 @@ class ItemDialog(object):
 
         # Handle the normal pane
         for item in items:
-            surfaces.append(self._generateitempane(item.name,
+            surfaces.append(self._generateitempane(item.displayName,
                                                    item.type,
                                                    item.weight,
                                                    item.value))
@@ -427,7 +427,7 @@ if __name__ == '__main__':
 
     class TestItem(object):
         def __init__(self, name, itemtype, weight, value, details):
-            self.name = name
+            self.displayName = name
             self.type = itemtype
             self.weight = weight
             self.value = value
