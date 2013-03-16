@@ -83,13 +83,22 @@ class GameScreen(object):
         '''
         Update the top text (and optionally capacity) of an item dialog
         '''
+        if not self.dialog:
+            return None
         self.dialog.update_toptext(text, capacity)
+        self.screen.blit(self.dialog.surface, (0, 0))
+        pygame.display.update()
 
     def update_item_dialog_items(self, leftitems, rightitems):
         '''
         Update the item lists in the item dialog
         '''
-        return self.dialog.set_items(leftitems, rightitems)
+        if not self.dialog:
+            return None
+        ret = self.dialog.set_items(leftitems, rightitems)
+        self.screen.blit(self.dialog.surface, (0, 0))
+        pygame.display.update()
+        return ret
 
     def hide_dialog(self):
         '''
