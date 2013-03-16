@@ -10,28 +10,34 @@ from const import *
 class State(object):
     
     char_file = None
-    world_file = dict()
-    tmp = dict()
+    world_file = None
+    
+    world_data = None
+    tmp_world_data = dict()
+
     
     @staticmethod
-    def init_world(world_save_file):
-        '''
-        Member Variables:
-            world_save_file:    String with the filename of the world save file
-                                Looks in const.py''s WORLD_SAVE_PATH.  It is a 
-                                dictionary that will contain AT A MINIMUM SEED_KEY,
-                                but it can contain any of the following:
-                                {   
-                                    SEED_KEY    :   "seed",
-                                    MONSTER_KEY :   [(dehydrated_monster, Location_Object), (...)]
-                                    CHEST_KEY   :   [(type, level, tile_loc), (...)]
-                                    ITEM_KEY    :   [("items"), (...)] TODO: NOT YET IMPLEMENTED (3/15/2013)
-                                }
-        '''
-        
-        State.world = State.load(WORLD_SAVE_PATH, world_save_file)
-        assert State.world == None, "World should be a dictionary with SEED_KEY (min)"
-    
+    def load(path, filename):
+        path_to_file = os.path.join(path, filename)
+        try:
+            if os.path.exists(path_to_file):
+                print "Attempting to open " + path_to_file
+                data = pickle.load( open( path_to_file, "rb" ) )
+                # file = open(path_to_file, "rb")
+                # for line in file:
+                    # pass
+                # last = line
+                # file.close()
+                # print "Unpickled Data: "
+                # print data
+                return data
+            else:
+                return None#print "File doesn't exist " + path_to_file
+        except:
+            print "Could not open " + path_to_file
+            return None
+            
+            
     @staticmethod
     def save(path, filename, data, overwrite=True):
         # Create the saves directories if they don't exist
@@ -55,27 +61,6 @@ class State(object):
         # file = open(path_to_file, att) 
         # file.write("\n" + data)
         # file.close()
-        
-    @staticmethod
-    def load(path, filename):
-        path_to_file = os.path.join(path, filename)
-        try:
-            if os.path.exists(path_to_file):
-                print "Attempting to open " + path_to_file
-                data = pickle.load( open( path_to_file, "rb" ) )
-                # file = open(path_to_file, "rb")
-                # for line in file:
-                    # pass
-                # last = line
-                # file.close()
-                # print "Unpickled Data: "
-                # print data
-                return data
-            else:
-                return None#print "File doesn't exist " + path_to_file
-        except:
-            print "Could not open " + path_to_file
-            return None
             
     
     @staticmethod
@@ -114,6 +99,7 @@ class State(object):
         player_string = State.load(CHAR_SAVE_PATH, file_name)
         return player_string
         
+        
     @staticmethod
     def save_player(player):
         '''
@@ -139,5 +125,84 @@ class State(object):
         
         player_string = player.dehydrate()
         State.save(CHAR_SAVE_PATH, State.char_file, player_string)
+        
+    
+    @staticmethod
+    def load_world(state):
+        '''
+        Member Variables:
+            state:  Can be one of the following:
+                    1.  A dictionary with a single key and value:
+                        {SEED_KEY   :   "seed"}
+                        This means we are creating a new world
+                    2.  A String with the filename of the world save file
+                        Looks in const.py's WORLD_SAVE_PATH.  The file is a 
+                        dictionary that will contain a SEED_KEY with string
+                        and any pane data dictionaries with the pane_tuple as
+                        the key.  e.g.:
+                        {   
+                            SEED_KEY    :   "seed"
+                            pane_tuple  :   
+                                {
+                                    MONSTER_KEY :   [(dehydrated_monster, Location_Object), (...)]
+                                    CHEST_KEY   :   [(type, level, tile_loc), (...)]
+                                    ITEM_KEY    :   [("items"), (...)] TODO: NOT YET IMPLEMENTED (3/15/2013)
+                                }
+                        }
+        '''
+        
+        if isinstance(state, dict): #Option 1
+            State.world_file = None
+            State.world_data = state
+        else:                       #Option 2
+            State.world_file = state
+            State.world_data = State.load(WORLD_SAVE_PATH, State.world_file)
+        
+        assert State.world_data != None, "World should be a dictionary with at least a SEED_KEY"
+        return State.world_data
+    
+    @staticmethod
+    def save_world():
+        '''
+        Automatically overwrites the save file (located in State.world_file)
+        or creates a new one in WORLD_SAVE_PATH
+        '''
+        
+        if not State.world_file:
+            #Loop through the WORLD_SAVE_PATH and get incremental save
+            Sate.world_file = "NOTIMPLEMENTED" + WORLD_SAVE_EXT
+            
+        #Reconcile tmp_world_data with world_data
+        #tmp_world_data takes precidence.
+        data = dict(State.world_data.items() + State.tmp_world_data.items())
+        
+        State.save(WORLD_SAVE_PATH, State.world_file, data)
+        
+    @staticmethod
+    def load_pane(pane_loc):
+        '''
+        Returns a dictionary of data for a pane given a location tuple
+        for that pane (e.g. (0, 1)) or None if no saved data exists.
+        '''
+        
+        data = None
+        if pane_loc in State.tmp_world_data:
+            data = State.tmp_world_data[pane_loc]
+        elif pane_loc in State.world_data:
+            data = State.world_data[pane_loc]
+        
+        #print "Loading pane " + str(pane_loc) + " with data " + str(data)
+        return data
+        
+    @staticmethod
+    def save_pane(pane_loc, data):
+        '''
+        Saves the given pane data dictionary into our world state dictionary
+        '''
+        
+        assert isinstance(data, dict), "Pane data should be a dictionary"
+        assert isinstance(pane_loc, tuple), "Pane location should be a tuple"
+        #print "Saving pane " + str(pane_loc)+ " with data " + str(data)
+        State.tmp_world_data[pane_loc] = data
         
         

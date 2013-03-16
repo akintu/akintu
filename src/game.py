@@ -45,13 +45,11 @@ class Game(object):
             state = {SEED_KEY: 'fdsa'}
         assert player
 
-        if isinstance(state, dict):     #This means we're creating a new game
-            self.state = state
-        else:                           #This means we're loading the state from a save file
-            self.state = State.load(WORLD_SAVE_PATH, state)
-
-        Sprites.load(self.state[SEED_KEY])  #Static method call to load sprites
-        self.world = World(world_state=self.state)
+        self.state = State.load_world(state)
+        
+        seed = self.state[SEED_KEY]
+        Sprites.load(seed)  #Static method call to load sprites
+        self.world = World(seed)
         self.pane = None
 
         # Game state
@@ -327,18 +325,12 @@ class Game(object):
 
         if not self.id in self.pane.person:
             return
-        player = self.pane.person[self.id]
-        State.save_player(player)
+        State.save_player(self.pane.person[self.id])
     
     def save_and_quit(self):
         '''
         Calls self.save_player() and then quits
         '''
-
-        # now = datetime.datetime.now()
-        # savetime = "." + now.strftime("%Y-%m-%d %H:%M")
-        #player = self.pane.person[self.id]
-        #player_string =player.dehydrate()
         
         self.save_player()#player_string)
         self.quit()

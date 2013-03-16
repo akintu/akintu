@@ -24,14 +24,14 @@ class World(object):
         seed: the random seed for this world
     '''
 
-    def __init__(self, world_state):
-        self.seed = world_state[SEED_KEY]
+    def __init__(self, seed):
+        self.seed = seed#world_state[SEED_KEY]
         self.panes = dict()
         self.pane_items = dict()
         self.pane_chests = dict()
         self.curr_pane = None
         #TODO: Unbox/Open world_state in whatever form it is given
-        self.world_state = world_state
+        #self.world_state = world_state
 
     def get_pane(self, location, is_server=False):
         surrounding_locations = Location(location, None).get_surrounding_panes()
@@ -41,18 +41,13 @@ class World(object):
         
         if not location in self._listTowns(location):
 
-            #Check Disk For Pane
+            #Check State For Pane
             state = None
             if is_server:
-                filename = "Pane_" + str(location[0]) + "_" + str(location[1])
-                data = State.load(TMP_WORLD_SAVE_PATH, filename)
-                if data:
-                    state = data
-            #Check State For Pane
-            if not state and self.world_state:
-                if location in self.world_state:
-                    state = self.world_state[location]
-            #TODO: Change is_server=True to is_server=is_server.  Need to have items/chests tracked on server
+                # filename = "Pane_" + str(location[0]) + "_" + str(location[1])
+                #state = State.load(TMP_WORLD_SAVE_PATH, filename)
+                state = State.load_pane(location)
+
             self.panes[location] = Pane(self.seed, location, is_server=is_server, load_entities=True, pane_state=state)
         else:
             self.panes[location] = self._getTown(location, is_server)
@@ -222,7 +217,7 @@ class Pane(object):
         '''
 
         print "load_items() currently does nothing :)"
-        if items:
+        if items != None:
             for item in items:
                 self.add_item(item[0], item[1], item[2])
         else:
@@ -250,14 +245,14 @@ class Pane(object):
                     [(type, level, location, ...), (...)]
         '''
         
-        if chests:
+        if chests != None:
             for chest in chests:
                 self.add_chest(chest[0], chest[1], chest[2])
         else:
             #Adds a random Chest
             #TODO: remove none from level
             loc_list = []
-            for i in range(10):
+            for i in range(2):
                 loc_list.append((TreasureChest.CHEST_TYPE[random.randrange(len(TreasureChest.CHEST_TYPE))], \
                                 (random.randrange(1, PANE_X-1), random.randrange(1, PANE_Y-1))))
             for type, loc in loc_list:
@@ -394,11 +389,8 @@ class Pane(object):
         this pane's (x, y) coordinate as the key.
         '''
         save_dict = self.get_state()
-        print "Attempting to save state on pane " + str(self.location)
-        print "as file: " + str(self.tmpFileName)
-        print "with data: " + str(save_dict)
-        State.save(TMP_WORLD_SAVE_PATH, self.tmpFileName, save_dict, True)
-        return save_dict
+        State.save_pane(self.location, save_dict)
+
         
     def get_state(self):
         save_dict = dict()
@@ -407,7 +399,6 @@ class Pane(object):
         #Save Monsters.  
         # print self.person
         for key, monster in self.person.iteritems():
-            print "Monster's location: " + str(monster.location)
             monster_list.append((monster.dehydrate(), monster.location))
         save_dict[MONSTER_KEY] = monster_list
 
@@ -419,6 +410,7 @@ class Pane(object):
         return save_dict
         
     def load_state(self, state):
+        print "Pane.load_state(state) " + str(state)
         if state:
             #Get Monsters
             if MONSTER_KEY in state:
@@ -428,6 +420,8 @@ class Pane(object):
                 self.load_items(items=state[ITEM_KEY])
             #Get Chests
             if CHEST_KEY in state:
+                chests = state[CHEST_KEY]
+                #print "Loading chests from state: " + str(chests)
                 self.load_chests(chests=state[CHEST_KEY])
 
 class CombatPane(Pane):
