@@ -85,6 +85,12 @@ class GameScreen(object):
         '''
         self.dialog.update_toptext(text, capacity)
 
+    def update_item_dialog_items(self, leftitems, rightitems):
+        '''
+        Update the item lists in the item dialog
+        '''
+        return self.dialog.set_items(leftitems, rightitems)
+
     def hide_dialog(self):
         '''
         Hide the dialog, returns the last-selected item
