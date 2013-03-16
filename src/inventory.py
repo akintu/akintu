@@ -128,7 +128,7 @@ class Inventory(object):
     def totalWeight(self):
         tWeight = 0
         for item in self._allItems:
-            tWeight += item.weight
+            tWeight += int(item.weight)
         return tWeight
 
 
