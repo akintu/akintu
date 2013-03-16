@@ -1135,8 +1135,8 @@ class PlayerCharacter(p.Person):
         else:
             pass
             # TODO: Should check for encumberment.
-
-    def removeOnHitEffect(self, name, count):
+            
+    def removeOnHitEffect(self, name, count, element=None):
         for fx in self.onHitEffects:
             if fx.name.lower() == name.lower() and fx.count == count:
                 self.onHitEffects.remove(fx)

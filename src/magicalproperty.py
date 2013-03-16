@@ -344,17 +344,16 @@ class MagicalProperty(object):
             hitEffect = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyElementalDamage, "Fire")
             owner.onHitEffects.append(hitEffect)
         else:
-            owner.unregisterOnHitEffect(self.counts, onhiteffect.OnHitEffect.applyElementalDamage, "Fire")
+            owner.removeOnHitEffect("ElementalDamage Fire", self.counts)
 
     def _elementalDamageCold(self, owner, reverse=False):
         bonusMin = self.counts
         bonusMax = self.counts * 2
         if not reverse:
-            hitEffect = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyElementalDamage, "Cold")
+            hitEffect = onhiteffect.OnHitEffect("ElementalDamage Cold", self.counts)
             owner.onHitEffects.append(hitEffect)
         else:
-            owner.unregisterOnHitEffect(self.counts, onhiteffect.OnHitEffect.applyElementalDamage, "Cold")
-            # TODO Write unregisterOnHitEffect method in PlayerCharacter class.
+            owner.removeOnHitEffect(self.counts, onhiteffect.OnHitEffect.applyElementalDamage, "Cold")
 
     def _elementalDamageElectric(self, owner, reverse=False):
         bonusMin = self.counts
@@ -364,7 +363,7 @@ class MagicalProperty(object):
             hitEffect = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyElementalDamage, "Electric")
             owner.onHitEffects.append(hitEffect)
         else:
-            owner.unregisterOnHitEffect(self.counts, onhiteffect.OnHitEffect.applyElementalDamage, "Electric")
+            owner.removeOnHitEffect("ElementalDamage Electric",self.counts)
 
     def _elementalDamagePoison(self, owner, reverse=False):
         bonusMin = self.counts
@@ -374,7 +373,7 @@ class MagicalProperty(object):
             hitEffect = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyElementalDamage, "Poison")
             owner.onHitEffects.append(hitEffect)
         else:
-            owner.unregisterOnHitEffect(self.counts, onhiteffect.OnHitEffect.applyElementalDamage, "Poison")
+            owner.removeOnHitEffect("ElementalDamage Poison", self.counts)
 
     def _elementalDamageShadow(self, owner, reverse=False):
         bonusMin = self.counts
@@ -384,7 +383,7 @@ class MagicalProperty(object):
             hitEffect = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyElementalDamage, "Shadow")
             owner.onHitEffects.append(hitEffect)
         else:
-            owner.unregisterOnHitEffect(self.counts, onhiteffect.OnHitEffect.applyElementalDamage, "Shadow")
+            owner.removeOnHitEffect("ElementalDamage Shadow", self.counts)
 
     def _elementalDamageDivine(self, owner, reverse=False):
         bonusMin = self.counts
@@ -394,7 +393,7 @@ class MagicalProperty(object):
             hitEffect = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyElementalDamage, "Divine")
             owner.onHitEffects.append(hitEffect)
         else:
-            owner.unregisterOnHitEffect(self.counts, onhiteffect.OnHitEffect.applyElementalDamage, "Divine")
+            owner.removeOnHitEffect("ElementalDamage Divine", self.counts)
 
     def _elementalDamageArcane(self, owner, reverse=False):
         bonusMin = self.counts
@@ -404,7 +403,7 @@ class MagicalProperty(object):
             hitEffect = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyElementalDamage, "Arcane")
             owner.onHitEffects.append(hitEffect)
         else:
-            owner.unregisterOnHitEffect(self.counts, onhiteffect.OnHitEffect.applyElementalDamage, "Arcane")
+            owner.removeOnHitEffect("ElementalDamage Arcane", self.counts)
 
     def _elementalResistanceFire(self, owner, reverse=False):
         bonus = self.counts
