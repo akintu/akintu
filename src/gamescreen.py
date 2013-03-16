@@ -64,7 +64,8 @@ class GameScreen(object):
                          leftitems,
                          rightitems,
                          equipment=False,
-                         bgcolor='gray'):
+                         bgcolor='gray',
+                         capacity=''):
         '''
         Show an item dialog with the given parameters
         '''
@@ -72,7 +73,8 @@ class GameScreen(object):
                                              leftitems,
                                              rightitems,
                                              equipment,
-                                             bgcolor)
+                                             bgcolor,
+                                             capacity)
         self.screen.blit(self.dialog.surface, (0, 0))
         pygame.display.update()
         return self.dialog.get_selection()

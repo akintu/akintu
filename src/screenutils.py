@@ -172,7 +172,8 @@ class ItemDialog(object):
                  leftlist,
                  rightlist,
                  equipment=False,
-                 bgcolor='gray'):
+                 bgcolor='gray',
+                 capacity=''):
         '''
         Initialize the class
         '''
@@ -185,6 +186,7 @@ class ItemDialog(object):
         self.surface.fill(Color(self.bgcolor))
         self.selection = (0, 0)
         self.tops = [0, 0]
+        self.capacity = capacity
 
         self.leftitems = self._generateitems(self.items[0])
         self.rightitems = self._generateitems(self.items[1], self.equipment)
@@ -309,7 +311,11 @@ class ItemDialog(object):
         Draw the top text area
         '''
         textsurface = self._generatetext(self.toptext, height=30, width=1280)
+        righttextsurface = self._generatetext(self.capacity,
+                                              height=30,
+                                              width=100)
         self.surface.blit(textsurface, (20, 10))
+        self.surface.blit(righttextsurface, (1180, 10))
 
     def _drawsidetext(self, text):
         '''
@@ -455,7 +461,7 @@ if __name__ == '__main__':
                            10,
                            25,
                            'Some text\nSome more\n\nSomething else'))
-    dialog = ItemDialog('Inventory',
+    dialog = ItemDialog('Inventory\n32/35',
                         litems,
                         ritems,
                         equipment=True,
