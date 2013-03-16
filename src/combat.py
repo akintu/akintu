@@ -375,7 +375,6 @@ class Combat(object):
                         display.stacks += 1
                         display.activate(target)
                     else:
-                        display.deactivate(target)
                         Combat.removeStatus(target, display.name, notifyClients=False)
                         target.statusList.append(dStatus)
                         dStatus.activate(target)
