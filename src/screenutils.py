@@ -208,7 +208,7 @@ class ItemDialog(object):
         Update the top text
         '''
         self.toptext = toptext
-        if capcity:
+        if capacity:
             self.capacity = capacity
         self._drawtoptext()
 
