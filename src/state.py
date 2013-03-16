@@ -173,7 +173,7 @@ class State(object):
         
         if not State.world_file:
             #Loop through the WORLD_SAVE_PATH and get incremental save
-            Sate.world_file = "NOTIMPLEMENTED" + WORLD_SAVE_EXT
+            State.world_file = "NOTIMPLEMENTED" + WORLD_SAVE_EXT
             
         #Reconcile tmp_world_data with world_data
         #tmp_world_data takes precidence.

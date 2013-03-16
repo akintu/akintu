@@ -3,6 +3,7 @@ from location import *
 from theorycraft import TheoryCraft
 from playercharacter import *
 from servercombat import *
+from state import State
 
 class GameServer():
     def __init__(self, world, port):
@@ -269,7 +270,7 @@ class GameServer():
                 self.person[p].id = id(self.person[p])
                 self.person[p].ai.startup(self)
 
-    def unload_panes(self):
+    def unload_panes(self, unloadAll=False):
         current_panes = []
         for i in self.player.values():
             if self.person[i].cPane:
@@ -277,6 +278,8 @@ class GameServer():
             x, y = self.person[i].location.pane
             for (dx, dy) in [(_x, _y) for _x in range(-1, 2) for _y in range(-1, 2)]:
                 current_panes.append((x + dx, y + dy))
+        if unloadAll:
+            current_panes = []
         for pane in self.pane.keys():
             if pane not in current_panes:
                 # Save pane state to disk and then...
@@ -293,6 +296,10 @@ class GameServer():
                 
                 self.pane[pane].save_state()
                 del self.pane[pane]
+                
+    def save_all(self):
+        self.unload_panes(True)
+        State.save_world()
                 
     def getAllCombatPorts(self, character):
         '''Get all ports in the same combat instance as this playerCharacter.'''
