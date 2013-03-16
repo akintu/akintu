@@ -2240,7 +2240,7 @@ class Person(en.Entity):
             return self._baseMP
         else:
             pietyBonus = max(0, (self.totalPiety - 10) * 4)
-            return max(0, self._baseMP + pietyBonus + self.equipmentMP)
+            return int(max(0, self._baseMP + pietyBonus + self.equipmentMP))
 
     @property
     def baseMP(self):

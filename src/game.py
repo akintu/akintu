@@ -360,7 +360,7 @@ class Game(object):
 
                 elif event.key in MODIFIER_KEYS:
                     self.keystate.append(event.key)
-                elif event.key in MOVE_KEYS and not self.performingLevelup and not \
+                elif event.key in MOVE_KEYS and not self.performingLevelup and not self.viewingInventory and not \
                      (self.combat and (self.selectionMode == "abilities" or self.selectionMode == "spells")):
                     self.move_person(MOVE_KEYS[event.key], 1)
                 elif event.key == K_EQUALS or event.key == K_PAGEUP:
@@ -381,6 +381,13 @@ class Game(object):
                         self.pane.person[self.id] = newHero
                         self.performingLevelup = False
                         self.CDF.send(Command("PERSON", "REPLACE", id=self.id, player=upgradedHero))
+                        self.screen.update_person(self.id, {'team' : "Players",
+                                                            'level': self.pane.person[self.id].level, 
+                                                            'HP' : self.pane.person[self.id].HP,
+                                                            'totalHP' : self.pane.person[self.id].totalHP,
+                                                            'MP' : self.pane.person[self.id].MP,
+                                                            'totalMP' : self.pane.person[self.id].totalMP})
+
 
                 ### Inventory Management ###
                 elif self.viewingInventory:

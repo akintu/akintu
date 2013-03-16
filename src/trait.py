@@ -728,7 +728,7 @@ class Trait(object):
             target.baseMP += 5
         elif self.rank == 4:
             target.baseMP += 5
-
+        target.MP = target.totalMP
     
     def applySurvivor(self, target):
         #self.rank = Trait.getTraiself.rank(target, "Survivor")
@@ -740,7 +740,7 @@ class Trait(object):
             target.baseHP += 4
         elif self.rank == 4:
             target.baseHP += 4
-
+        target.HP = target.totalHP
     
     def applyIllusionSpellFocusStatic(self, target):
         #self.rank = Trait.getTraiself.rank(target, "Illusion Spell Focus")
@@ -961,7 +961,8 @@ class Trait(object):
             target.baseHP += 2
         elif self.rank == 4:
             target.baseHP += 2
-
+        target.HP = target.totalHP
+            
     
     def applyMentalSpellFocus(self, target, reverse=False, spell=None):
         if spell.school != "Mental":
