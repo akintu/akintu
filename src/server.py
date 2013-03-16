@@ -236,7 +236,7 @@ class GameServer():
         # ITEMS
     
     def tile_is_open(self, location, pid=None, cPane=None):
-        if location.pane not in self.pane:
+        if location.pane not in self.pane and not pid and not cPane:
             return False
         if pid or cPane:
             if not cPane:
