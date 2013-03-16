@@ -30,27 +30,24 @@ class World(object):
         self.pane_items = dict()
         self.pane_chests = dict()
         self.curr_pane = None
-        #TODO: Unbox/Open world_state in whatever form it is given
-        #self.world_state = world_state
 
     def get_pane(self, location, is_server=False):
         surrounding_locations = Location(location, None).get_surrounding_panes()
         for key, loc in surrounding_locations.iteritems():
             if not loc in self.panes:
-                self.panes[loc] = Pane(self.seed, loc)
-        
+                if loc in self._listTowns(loc):
+                    self.panes[loc] = self._getTown(loc, False, False, None)
+                else:
+                    self.panes[loc] = Pane(self.seed, loc)
+        #Check State For Pane
+        state = None
+        if is_server:
+            state = State.load_pane(location)
+            
         if not location in self._listTowns(location):
-
-            #Check State For Pane
-            state = None
-            if is_server:
-                # filename = "Pane_" + str(location[0]) + "_" + str(location[1])
-                #state = State.load(TMP_WORLD_SAVE_PATH, filename)
-                state = State.load_pane(location)
-
             self.panes[location] = Pane(self.seed, location, is_server=is_server, load_entities=True, pane_state=state)
         else:
-            self.panes[location] = self._getTown(location, is_server)
+            self.panes[location] = self._getTown(location, is_server, True, state)
             
         self._merge_tiles(surrounding_locations)
         self.panes[location].load_images()
@@ -58,8 +55,8 @@ class World(object):
             self.panes[location].person = {}
         return self.panes[location]
             
-    def _getTown(self, location, is_server):
-        town = Town(self.seed, location, is_server, False, None)
+    def _getTown(self, location, is_server, load_entities, pane_state):
+        town = Town(self.seed, location, is_server, load_entities, pane_state)
         
         # for tile in town.tiles:
             # town.remove_chest(tile):
@@ -271,7 +268,6 @@ class Pane(object):
             for j in range(PANE_Y):
                 self.tiles[(i, j)].set_image(Sprites.get_background_tile(self.background_key, (i, j)))
         for tile, entity_key in self.objects.iteritems():
-            #print entity_key
             obstacle = Sprites.get_obstacle(entity_key, self.seed, self.location, tile)
             self.tiles[tile].entities.append(Entity(tile, image=obstacle))
 
@@ -313,7 +309,7 @@ class Pane(object):
                 self.tiles[tile].add_entity_key(self.objects[tile])
         else:
             self.objects[tile] = entity_type
-            self.tiles[tile].add_entity_key(entity_type)
+            self.tiles[tile].add_entity_key(self.objects[tile])
         if tile in self.objects:
             return self.objects[tile]
         
@@ -373,12 +369,9 @@ class Pane(object):
         pass
         
 
-    def add_region(self, location, size, percentage, entity_type=None):
-        r = Region()
-        r("ADD", "CIRCLE", location, size)
-        entity_type = self.add_obstacle(location.tile, percentage, entity_type)
+    def load_region(self, region, entity_type=None):
         if entity_type:
-            for loc in r:
+            for loc in region:
                 if not loc in self.tiles:
                     self.tiles[loc] = Tile(None, True)
                     self.add_obstacle(loc.tile, 1, entity_type)
@@ -632,8 +625,56 @@ class Tile(object):
         return self.chest
         
 class Town(Pane):
+    buildings = dict()
     def __init__(self, seed, location, is_server=False, load_entities=False, pane_state=None):
-        super(Town, self).__init__(seed, location, is_server, load_entities, pane_state)
+        super(Town, self).__init__(seed, location, is_server, False, pane_state)
+        if load_entities:
+            self.add_buildings()
+        if is_server:
+            self.add_npcs()
+        
+    def add_buildings(self):
+        seed = self.seed + str(self.location) + "Building"
+        random.seed(seed)
+        #Generate a rectangle region within bounds
+        
+        boundary_type = "tree"
+        bounds = (4, 14, 4, 9)
+        for i in range(2):
+            building = Building(boundary_type, bounds, self.location)
+            super(Town, self).load_region(building.boundary, boundary_type)
+        
+    def add_npcs(self):
+        pass
+        
+class Building(object):
+    def __init__(self, boundary_type, bounds, pane_loc):
+        '''
+        bounds: (min_x, max_x, min_y, max_y)
+        '''
+        
+        # (x, y) size of outer border
+        size = (random.randrange(bounds[0], bounds[1]), random.randrange(bounds[2], bounds[3]))
+        loc = (random.randrange(0, PANE_X-size[0]), random.randrange(0, PANE_Y-size[1]))
+        bound = (loc[0]+size[0], loc[1]+size[1])
+        
+        innerloc = (loc[0]+1, loc[1]+1)
+        innerbound = (bound[0]-1, bound[1]-1)
+
+        boundary = Region()
+        boundary("ADD", "SQUARE", Location(pane_loc, loc), Location(pane_loc, bound) )
+        boundary("SUB", "SQUARE", Location(pane_loc, innerloc), Location(pane_loc, innerbound))
+        
+        path = Region()
+        center = (loc[0] + size[0]/2, loc[1] + size[1]/2)
+        opening = (center[0], loc[1]) #Top middle
+        boundary("SUB", "LINE", Location(pane_loc, center), Location(pane_loc, opening), 2)
+        path("ADD", "LINE", Location(pane_loc, center), Location(pane_loc, opening), 2)
+        self.path = path
+        self.boundary = boundary
+        self.bounds = (loc[0], loc[1], bound[0], bound[1])
+        self.center = center
+
 
 if __name__ == "__main__":
     '''

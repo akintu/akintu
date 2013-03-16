@@ -92,7 +92,7 @@ class GameServer():
                                             details=self.person[i].dehydrate())
                                     self.broadcast(comm, command.id)
                             
-                            # TODO: JAB HANDLE SENDING SPECIFIC PANE THINGS HERE
+                            # HANDLE SENDING SPECIFIC PANE THINGS HERE
                             self.send_world_items(command.id, command.location)
                         
                         self.unload_panes()
@@ -234,7 +234,7 @@ class GameServer():
             for chest in chests:
                 cmd = Command("CHEST", "ADD", chestType=chest[0], level=chest[1], location=Location(location.pane, chest[2]))
                 self.broadcast(cmd, p)
-        # ITEMS
+        # TODO: ITEMS
     
     def tile_is_open(self, location, pid=None, cPane=None):
         if location.pane not in self.pane and not pid and not cPane:
