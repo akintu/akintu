@@ -60,6 +60,7 @@ class Game(object):
         self.musicQueue = None
         self.performingLevelup = False
         self.viewingInventory = False
+        self.selectingConsumable = False
         
         # Levelup state
         self.levelup = None
@@ -407,18 +408,34 @@ class Game(object):
                         self.CDF.send(Command("PERSON", "REPLACE", id=self.id, player=newlyEquippedPlayer))
                         self.viewingInventory = False
                         
+                ## Consumable Use ###
+                elif self.selectingConsumable:
+                    if event.key == K_RIGHT or event.key == K_KP6 or event.key == K_l:
+                        self.screen.move_dialog(6)
+                    elif event.key == K_LEFT or event.key == K_KP4 or event.key == K_h:
+                        self.screen.move_dialog(4)
+                    elif event.key == K_UP or event.key == K_KP8 or event.key == K_k:
+                        self.screen.move_dialog(8)
+                    elif event.key == K_DOWN or event.key == K_KP2 or event.key == K_j:
+                        self.screen.move_dialog(2)
+                    elif event.key == K_SPACE or event.key == K_a:
+                        self.currentItem = self.pane.person[self.id].inventory.allConsumables[self.screen.hide_dialog()[1]]
+                        self.selectionMode = "items"
+                        self.select_self()
+                        self.selectingConsumable = False
+                        
                 ### Combat Only Commands ###
                 elif self.combat:
 
                     #### Ability/Spell Selection ####
                     if self.selectionMode == "abilities" or self.selectionMode == "spells":
-                        if event.key == K_RIGHT or event.key == K_KP6:
+                        if event.key == K_RIGHT or event.key == K_KP6 or event.key == K_l:
                             self.screen.move_dialog(6)
-                        elif event.key == K_LEFT or event.key == K_KP4:
+                        elif event.key == K_LEFT or event.key == K_KP4 or event.key == K_h:
                             self.screen.move_dialog(4)
-                        elif event.key == K_UP or event.key == K_KP8:
+                        elif event.key == K_UP or event.key == K_KP8 or event.key == K_k:
                             self.screen.move_dialog(8)
-                        elif event.key == K_DOWN or event.key == K_KP2:
+                        elif event.key == K_DOWN or event.key == K_KP2 or event.key == K_j:
                             self.screen.move_dialog(2)
                         elif event.key == K_SPACE or event.key == K_a:
                             if self.selectionMode == "spells":
@@ -430,15 +447,9 @@ class Game(object):
                                 self.select_self()
 
                     elif event.key == K_e:
-                        if self.selectionMode == "targeting":
-                            self.cycle_targets()
-                        elif self.selectionMode == "items":
-                            self.cycle_items()
+                        self.cycle_targets()
                     elif event.key == K_w:
-                        if self.selectionMode == "targeting":
-                            self.cycle_targets(reverse=True)
-                        elif self.selectionMode == "items":
-                            self.cycle_items(reverse=True)
+                        self.cycle_targets(reverse=True)
                     elif event.key == K_a:
                         if self.selectionMode == "items":
                             self.use_item()
@@ -448,14 +459,10 @@ class Game(object):
                         self.force_end_turn()
                     elif event.key == K_s:
                         self.select_self()
-                        pass
                     elif event.key == K_i:
-                        self.selectionMode = "items"
-                        self.screen.show_text("Selection mode: items", color="darkred")
-                        pass
+                        self.open_consumables()
                     elif event.key == K_PERIOD:
                         self.display_target_details()
-                        pass
                     elif event.key == K_SPACE:
                         self.selectionMode = "abilities"
                         self.choose_ability()
@@ -508,6 +515,17 @@ class Game(object):
             self.viewingInventory = False
             return
         self.screen.show_item_dialog(text, inv, eq, isEquipment, bgcolor='tan', capacity=capacity)
+            
+    def open_consumables(self):
+        self.selectingConsumable = True
+        player = self.pane.person[self.id]
+        cons = player.inventory.allConsumables
+        if cons:
+            isCons = True
+            text = "Select a consumable"
+            self.screen.show_item_dialog(text, cons, [], isCons, bgcolor='tan')
+        else:
+            self.selectingConsumable = False
             
     def choose_ability(self):
         text = "Select an Ability"
@@ -574,56 +592,56 @@ class Game(object):
             self.screen.show_text("No item selected", color='white')
             return
         self.CDF.send(Command("ITEM", "USE", id=self.id, itemName=self.currentItem.name))
-        self.selectionMode = "abilities"
-        self.itemList = []
+        self.selectionMode = "targeting"
+        #self.itemList = []
 
     def begin_select_consumable(self):
-        pass
+        pass     
+        
+    # def cycle_items(self, reverse=False):
+        # if not self.combat:
+            # return
+        # if not self.itemList or not self.currentItem or self.currentItem not in self.itemList:
+            # self.itemList = self.pane.person[self.id].inventory.allConsumables
+            # if not self.itemList:
+                # return
+            # self.currentItem = self.itemList[0]
+        # elif not reverse:
+            # if self.currentItem == self.itemList[-1]:
+                # self.currentItem = self.itemList[0]
+            # else:
+                # itemIndex = self.itemList.index(self.currentItem)
+                # self.currentItem = self.itemList[itemIndex + 1]
+        # else:
+            # if self.currentItem == self.itemList[0]:
+                # self.currentItem = self.itemList[-1]
+            # else:
+                # itemIndex = self.itemList.index(self.currentItem)
+                # self.currentItem = self.itemList[itemIndex - 1]
+        # self.screen.show_text("Selected item: " + self.currentItem.name, color='lightblue')
 
-    def cycle_items(self, reverse=False):
-        if not self.combat:
-            return
-        if not self.itemList or not self.currentItem or self.currentItem not in self.itemList:
-            self.itemList = self.pane.person[self.id].inventory.allConsumables
-            if not self.itemList:
-                return
-            self.currentItem = self.itemList[0]
-        elif not reverse:
-            if self.currentItem == self.itemList[-1]:
-                self.currentItem = self.itemList[0]
-            else:
-                itemIndex = self.itemList.index(self.currentItem)
-                self.currentItem = self.itemList[itemIndex + 1]
-        else:
-            if self.currentItem == self.itemList[0]:
-                self.currentItem = self.itemList[-1]
-            else:
-                itemIndex = self.itemList.index(self.currentItem)
-                self.currentItem = self.itemList[itemIndex - 1]
-        self.screen.show_text("Selected item: " + self.currentItem.name, color='lightblue')
-
-    def cycle_abilities(self, reverse=False):
-        if not self.combat:
-            return
-        if not self.abilityList or not self.currentAbility or self.currentAbility not in self.abilityList:
-            self.abilityList = self.pane.person[self.id].abilities
-            self.abilityList.extend(self.pane.person[self.id].spellList)
-            self.currentAbility = self.abilityList[0]
-        elif not reverse:
-            if self.currentAbility == self.abilityList[-1]:
-                self.currentAbility = self.abilityList[0]
-            else:
-                abilityIndex = self.abilityList.index(self.currentAbility)
-                self.currentAbility = self.abilityList[abilityIndex + 1]
-        else:
-            if self.currentAbility == self.abilityList[0]:
-                self.currentAbility = self.abilityList[-1]
-            else:
-                abilityIndex = self.abilityList.index(self.currentAbility)
-                self.currentAbility = self.abilityList[abilityIndex - 1]
-        self.screen.show_text("Selected: " + self.currentAbility.name + " AP COST: " +
-                                str(self.currentAbility.APCost),
-                                color='lightblue')
+    # def cycle_abilities(self, reverse=False):
+        # if not self.combat:
+            # return
+        # if not self.abilityList or not self.currentAbility or self.currentAbility not in self.abilityList:
+            # self.abilityList = self.pane.person[self.id].abilities
+            # self.abilityList.extend(self.pane.person[self.id].spellList)
+            # self.currentAbility = self.abilityList[0]
+        # elif not reverse:
+            # if self.currentAbility == self.abilityList[-1]:
+                # self.currentAbility = self.abilityList[0]
+            # else:
+                # abilityIndex = self.abilityList.index(self.currentAbility)
+                # self.currentAbility = self.abilityList[abilityIndex + 1]
+        # else:
+            # if self.currentAbility == self.abilityList[0]:
+                # self.currentAbility = self.abilityList[-1]
+            # else:
+                # abilityIndex = self.abilityList.index(self.currentAbility)
+                # self.currentAbility = self.abilityList[abilityIndex - 1]
+        # self.screen.show_text("Selected: " + self.currentAbility.name + " AP COST: " +
+                                # str(self.currentAbility.APCost),
+                                # color='lightblue')
 
     def cycle_targets(self, reverse=False):
         # Cycles through the current persons in the current combat pane.
