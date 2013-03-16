@@ -15,7 +15,7 @@ class ArmorParser(object):
 
     def __init__(self):
         """Prepares the parser."""
-        self.MAX_ARMORS = 24
+        self.MAX_ARMORS = 26
         self.armorList = []
 
 

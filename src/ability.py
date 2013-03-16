@@ -1403,7 +1403,7 @@ class Ability(object):
         'cooldown' : None,
         'checkFunction' : _expertNotchCheck,
         'breakStealth' : 100,
-        'image' : RANGER_SKILLS + 'expert-notch.png.',
+        'image' : RANGER_SKILLS + 'expert-notch.png',
         'text' : 'Ranged attack with +6 Accuracy.  Must have a shortbow or longbow equipped.'
         },
         'Shrapnel Trap':

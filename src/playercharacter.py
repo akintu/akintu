@@ -1188,6 +1188,17 @@ class PlayerCharacter(p.Person):
             self.inventory.allItems.append(oldPiece2)
         # TODO: Check to see if weight capacity has changed?
 
+    def unequip(self, slot):
+        oldPieces = self.equippedItems.unequip(slot)
+        for item in oldPieces:
+            if isinstance(item, equipment.Armor):
+                self.equipmentDR -= item.DR
+                self.equipmentSneak -= item.stealthMod
+                self.equipmentDodge -= item.dodgeMod
+            for prop in item.propertyList:
+                prop.effect(prop, self, reverse=True)
+            self.inventory.allItems.append(item)
+        
     def shouldAutoEquip(self, armor):
         ''' Determines if a piece of equipment should be 
         auto-equipped upon acquisition. '''
@@ -1266,6 +1277,19 @@ class PlayerCharacter(p.Person):
                 item = self.inventory.allItems[selectionTuple[1]]
                 self.inventory.removeItem(item)
                 text = "Destroyed: " + item.displayName
+                inv = self.inventory.allItems
+                eq = self.equippedItems.allGear
+                capacity = `self.inventoryWeight` + "/" + `self.inventoryCapacity`
+                screen.update_item_dialog_text(text, capacity)
+                screen.update_item_dialog_items(inv, eq)
+                return None
+        elif key == K_u:
+            selectionTuple = screen.get_dialog_selection()
+            if selectionTuple[0] == 1:
+                # This is the equipped items side.
+                type = selectionTuple[2]
+                self.unequip(type)
+                text = "Unequipped an item"
                 inv = self.inventory.allItems
                 eq = self.equippedItems.allGear
                 capacity = `self.inventoryWeight` + "/" + `self.inventoryCapacity`

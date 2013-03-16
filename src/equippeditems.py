@@ -111,7 +111,7 @@ class EquippedItems(object):
     def _equipShield(self, newPiece):
         oldPiece = None
         mainHand = self._allGear['Main Hand']
-        if mainHand.handsRequired == "Two-Handed":
+        if mainHand and mainHand.handsRequired == "Two-Handed":
             oldPiece = mainHand
             self._allGear['Main Hand'] = None
         else:
@@ -143,6 +143,61 @@ class EquippedItems(object):
         else:
             return self._equipArmor(newPiece)
 
+    def unequip(self, slot):
+        '''Unequips an item from the given slot.  If the slot is not an armor
+        slot (weapon/offhand/shield) or a ring slot it will unequip both hands 
+        of equipment.
+        Returns the equipment previously equipped in a list.
+        Inputs:
+            slot -- String; the slot of equipment to remove from.
+        Outputs:
+            A List of the equipment previously in that slot or None if nothing
+            was there.'''
+        if slot == "Head":
+            old = self._allGear['Head']
+            self._allGear['Head'] = None
+            return [old]
+        if slot == "Chest":
+            old = self._allGear['Chest']
+            self._allGear['Chest'] = None
+            return [old]
+        if slot == "Hands":
+            old = self._allGear['Hands']
+            self._allGear['Hands'] = None
+            return [old]
+        if slot == "Legs":
+            old = self._allGear['Legs']
+            self._allGear['Legs'] = None
+            return [old]
+        if slot == "Feet":
+            old = self._allGear['Feet']
+            self._allGear['Feet'] = None
+            return [old]
+        if slot == "Neck":
+            old = self._allGear['Neck']
+            self._allGear['Neck'] = None
+            return [old]
+        if slot == "Fingers":
+            old = []
+            if self._allGear['Left Finger']:
+                old.append(self._allGear['Left Finger'])
+                self._allGear['Left Finger'] = None
+            if self._allGear['Right Finger']:
+                old.append(self._allGear['RightFinger'])
+                self._allGear['Right Finger'] = None
+            return old
+        else:
+            # Weapon/Shield slot
+            old = []
+            if self._allGear['Off Hand']:
+                old.append(self._allGear['Off Hand'])
+                self._allGear['Off Hand'] = None
+            if self._allGear['Main Hand']:
+                old.append(self._allGear['Main Hand'])
+                self._allGear['Main Hand'] = None
+            return old
+            
+            
     @property
     def equippedOffHand(self):
         return self._allGear['Off Hand']
