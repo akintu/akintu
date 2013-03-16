@@ -328,7 +328,7 @@ class Ability(object):
 
     def _rapidReload(self, target):
         source = self.owner
-        hit = Combat.calcHit(source, target, modifier=-8)
+        hit = Combat.calcHit(source, target, "Physical", modifier=-8)
         Combat.basicAttack(source, target, hit)
 
     def _rapidReloadCheck(self, target):
@@ -2269,7 +2269,9 @@ class Ability(object):
         'action' : _sidestep,
         'cooldown' : None,
         'checkFunction' : None,
-        'breakStealth' : 0
+        'breakStealth' : 0,
+        'image' : TRICKSTER_SKILLS + 'sidestep.png',
+        'text' : 'Ends turn by preparing for attacks with +3 Dodge.'
         },
         'Risky Focus':
         {
