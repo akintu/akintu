@@ -6,16 +6,22 @@ from combat import *
 
 ROOT_FOLDER = "./res/images/icons/skills/"
 
+ANARCHIST = ROOT_FOLDER + "anarchist_skills/"
 ARCANE_ARCHER = ROOT_FOLDER + "arcane_archer_skills/"
 ASSASSIN = ROOT_FOLDER + "assassin_skills/"
 BATTLEMAGE = ROOT_FOLDER + "battlemage_skills/"
 BARBARIAN = ROOT_FOLDER + "barbarian_skills/"
 DRAGOON = ROOT_FOLDER + "dragoon_skills/"
+DRUID = ROOT_FOLDER + "druid_skills/"
 MARKSMAN = ROOT_FOLDER + "marksman_skills/"
 NIGHTBLADE = ROOT_FOLDER + "nightblade_skills/"
+NINJA = ROOT_FOLDER + "ninja_skills/"
 SHADOW = ROOT_FOLDER + "shadow_skills/"
+SORCERER = ROOT_FOLDER + "sorcerer_skills/"
 SPELLSWORD = ROOT_FOLDER + "spellsword_skills/"
+TACTICIAN = ROOT_FOLDER + "tactician_skills/"
 TRICKSTER = ROOT_FOLDER + "trickster_skills/"
+WEAPONMASTER = ROOT_FOLDER + "weaponmaster_skills/"
 
 class PassiveAbilityStub(object):
     def __init__(self, name):
