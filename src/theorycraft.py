@@ -155,7 +155,11 @@ class TheoryCraft(object):
                 continue
             item = TheoryCraft.rehydrateEquipment(itemName)
             newChar.inventory.addItem(item)
-            newChar.equip(item)
+            if isinstance(item, equipment.Weapon) and newChar.equippedItems._allGear['Main Hand']:
+                # Already has gear on the main hand.
+                newChar.equip(item, "Left")
+            else:
+                newChar.equip(item)
             newChar.inventory.removeItem(item)
         for passiveName in passiveNames:
             if passiveName == '':
