@@ -19,13 +19,19 @@ def main():
     #argv[2] = character name
     port = 1337
     if len(sys.argv) > 1:
+        
+        state = {SEED_KEY: "fdsa"}
+
         num_players = sys.argv[1]
         name = sys.argv[2]
+        
         player = (name, "Elf", "Dragoon")
+        
         if len(sys.argv) > 3:  
             player = sys.argv[3]
+        if len(sys.argv) > 4:
+            state = sys.argv[4]
 
-        state = {SEED_KEY: "fdsa"}
         if num_players == "1":
             ip = None
         else:

@@ -130,25 +130,28 @@ class State(object):
     @staticmethod
     def load_world(state):
         '''
+        Returns a dictionary with the state of this world.
         Member Variables:
             state:  Can be one of the following:
                     1.  A dictionary with a single key and value:
                         {SEED_KEY   :   "seed"}
-                        This means we are creating a new world
+                        This means we are creating a new world and we return
+                        state.
                     2.  A String with the filename of the world save file
-                        Looks in const.py's WORLD_SAVE_PATH.  The file is a 
-                        dictionary that will contain a SEED_KEY with string
-                        and any pane data dictionaries with the pane_tuple as
-                        the key.  e.g.:
-                        {   
-                            SEED_KEY    :   "seed"
-                            pane_tuple  :   
-                                {
-                                    MONSTER_KEY :   [(dehydrated_monster, Location_Object), (...)]
-                                    CHEST_KEY   :   [(type, level, tile_loc), (...)]
-                                    ITEM_KEY    :   [("items"), (...)] TODO: NOT YET IMPLEMENTED (3/15/2013)
-                                }
+                        Looks in const.py's WORLD_SAVE_PATH.  
+                        
+                The file is a dictionary that will contain a SEED_KEY with seed
+                and any pane data dictionaries with the pane_tuple as
+                the key.  e.g.:
+                {   
+                    SEED_KEY    :   "seed"
+                    pane_tuple  :   
+                        {
+                            MONSTER_KEY :   [(dehydrated_monster, Location_Object), (...)]
+                            CHEST_KEY   :   [(type, level, tile_loc), (...)]
+                            ITEM_KEY    :   [("items"), (...)] TODO: NOT YET IMPLEMENTED (3/15/2013)
                         }
+                }
         '''
         
         if isinstance(state, dict): #Option 1

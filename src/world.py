@@ -359,8 +359,18 @@ class Pane(object):
         '''
         
         '''
+        
+        if location.pane != self.location:
+            print "Tried to get item from pane " + str(location.pane) + ","
+            print "but requested it from " + str(self.location)
+            print "pane.get_item(self, location)"
+            return (None, None)
+
+        tiles = location.get_surrounding_tiles()
+        assert False, "pane.get_item(location) is not yet implemented"
+    
+    def get_item_list(self):
         pass
-        assert False
         
 
     def add_region(self, location, size, percentage, entity_type=None):

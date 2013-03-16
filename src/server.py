@@ -226,16 +226,13 @@ class GameServer():
                 port = [p for p, i in self.player.iteritems() if i == pid][0]
             self.SDF.send(port, command)
     
-    def send_world_items(self, player, location):
-        # print (location.pane)
-        # print self.pane[location.pane]
+    def send_world_items(self, p, location):
         chests = self.pane[location.pane].get_chest_list()
-        #print chests
+        # CHESTS
         if chests:
             for chest in chests:
                 cmd = Command("CHEST", "ADD", chestType=chest[0], level=chest[1], location=Location(location.pane, chest[2]))
-                self.broadcast(cmd, player)
-                # print cmd
+                self.broadcast(cmd, p)
         # ITEMS
     
     def tile_is_open(self, location, pid=None, cPane=None):
@@ -293,7 +290,8 @@ class GameServer():
                         people[i] = self.person[i]
                     del self.person[i]
                 self.pane[pane].person = people
-
+                
+                self.pane[pane].save_state()
                 del self.pane[pane]
                 
     def getAllCombatPorts(self, character):
