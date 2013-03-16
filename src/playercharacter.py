@@ -12,6 +12,7 @@ import ability
 import inventory
 import trait
 import math
+import consumable
 
 class PlayerCharacter(p.Person):
 
@@ -1170,7 +1171,7 @@ class PlayerCharacter(p.Person):
                 prop.effect(prop, self, reverse=True)
             if isinstance(oldPiece, equipment.Armor):
                 self.equipmentDR -= oldPiece.DR
-                self.equipmentStealth -= oldPiece.stealthMod
+                self.equipmentSneak -= oldPiece.stealthMod
                 self.equipmentDodge -= oldPiece.dodgeMod
             elif isinstance(oldPiece, equipment.Weapon):
                 pass
@@ -1212,19 +1213,38 @@ class PlayerCharacter(p.Person):
     def navigateInventory(self, screen, key):
         if key == K_RIGHT or key == K_KP6 or key == K_l:
             screen.move_dialog(6)
-            return (None, None)
+            return None
         elif key == K_LEFT or key == K_KP4 or key == K_h:
             screen.move_dialog(4)
-            return (None, None)
+            return None
         elif key == K_UP or key == K_KP8 or key == K_k:
             screen.move_dialog(8)
-            return (None, None)
+            return None
         elif key == K_DOWN or key == K_KP2 or key == K_j:
             screen.move_dialog(2)
-            return (None, None)
-        elif key == K_SPACE:
+            return None
+        elif key == K_SPACE or key == K_i:
             screen.hide_dialog()
-            return (None, None)
+            return True
+        elif key == K_e:
+            selectionTuple = screen.get_dialog_selection()
+            if selectionTuple[0] == 0:
+                # This is the inventory side.
+                item = self.inventory.allItems[selectionTuple[1]]
+                if isinstance(item, consumable.Consumable):
+                    return None
+                else:
+                    self.equip(item)
+                    self.inventory.removeItem(item)
+                    screen.hide_dialog()
+                    # Reopen the window
+                    text = "Equipped: " + item.displayName
+                    inv = self.inventory.allItems
+                    eq = self.equippedItems.allGear
+                    isEquipment = True
+                    screen.show_item_dialog(text, inv, eq, isEquipment, bgcolor='tan')
+                    return None
+        return None
         
     def printCharacterSheet(self):
         '''Method prints a mock-up of a character sheet to the console as

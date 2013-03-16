@@ -382,10 +382,11 @@ class Game(object):
                         self.performingLevelup = False
                         self.CDF.send(Command("PERSON", "REPLACE", id=self.id, player=upgradedHero))
 
+                ### Inventory Management ###
                 elif self.viewingInventory:
-                    selection, option = self.pane.person[self.id].navigateInventory(self.screen, event.key)
-                    if option:
-                        #self.CDF.send(Command("PERSON", "REPLACE", id=self.id, player=self.pane.person[self.id]))
+                    itemOrDone = self.pane.person[self.id].navigateInventory(self.screen, event.key)
+                    if itemOrDone:
+                        self.CDF.send(Command("PERSON", "REPLACE", id=self.id, player=self.pane.person[self.id].dehydrate()))
                         self.viewingInventory = False
                         
                 ### Combat Only Commands ###
@@ -482,7 +483,12 @@ class Game(object):
         player = self.pane.person[self.id]
         isEquipment = True
         text = "Looking in your bag... you have no tea."
-        self.screen.show_item_dialog(text, player.inventory.allItems, player.equippedItems.allGear, isEquipment, bgcolor='tan')
+        eq = player.equippedItems.allGear
+        inv = player.inventory.allItems
+        if not eq and not inv: 
+            self.viewingInventory = False
+            return
+        self.screen.show_item_dialog(text, inv, eq, isEquipment, bgcolor='tan')
             
     def choose_ability(self):
         text = "Select an Ability"

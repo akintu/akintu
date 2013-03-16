@@ -74,7 +74,7 @@ class Equipment(e.Entity):
             goldModSum += property.goldMod * property.counts
 
         newCopy = copy.copy(self)
-        newCopy.value = round(self.value * (1 + float(goldModSum / 100)))
+        newCopy.value = int(self.value * (1 + goldModSum * 0.01))
         for property in propertyList:
             property.item = newCopy
             if property.name == "Damage":

@@ -446,6 +446,9 @@ class Ability(object):
                                 elementOverride="Bludgeoning", noCounter=True)
         
     def _jumpAttackCheck(self, target):
+        source = self.owner
+        if not source.usingWeapon("Polearm"):
+            return (False, "Must have a polearm equipped to use: " + self.name)
         if Combat.getRandomAdjacentLocation(target.cPane, target.cLocation):
             return (True, "")
         return (False, "No valid landing zones exist near target; cannot use " + self.name)

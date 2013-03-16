@@ -208,10 +208,10 @@ class MagicalProperty(object):
         bonus = self.counts * 2
         if not reverse:
             owner.equipmentMeleeAccuracy += bonus
-            owner.rangedMeleeAccuracy += bonus
+            owner.equipmentRangedAccuracy += bonus
         else:
             owner.equipmentMeleeAccuracy -= bonus
-            owner.rangedMeleeAccuracy -= bonus
+            owner.equipmentRangedAccuracy -= bonus
 
     def _armorPenetration(self, owner, reverse=False):
         bonus = 0.5 * self.counts

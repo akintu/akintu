@@ -104,7 +104,7 @@ class Inventory(object):
         if not itemName and item:
             toReturn = None
             for x in self._allItems:
-                if item.name == x.identifier:
+                if item.identifier == x.identifier:
                     toReturn = x
                     break
             if toReturn:
