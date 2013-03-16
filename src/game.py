@@ -629,6 +629,12 @@ class Game(object):
         # Cycles through the current persons in the current combat pane.
         if not self.combat:
             return
+        
+        if self.currentTargetId:
+            loc = self.pane.person[self.currentTargetId].location
+            tile = self.pane.get_tile(loc.tile)
+            self.screen.update_tile(tile, loc)
+        
         resetNeeded = False
         for x in self.panePersonIdList:
             if x not in self.pane.person:
@@ -650,11 +656,10 @@ class Game(object):
             else:
                 currentTargetPlace = self.panePersonIdList.index(self.currentTargetId)
                 self.currentTargetId = self.panePersonIdList[currentTargetPlace - 1]
-        if self.id == self.currentTargetId:
-            self.screen.show_text("Targeting: yourself", color='lightblue')
-        else:
-            self.screen.show_text("Targeting: " + self.pane.person[self.currentTargetId].name,
-                                color='lightblue')
+        
+        loc = self.pane.person[self.currentTargetId].location
+        tile = self.pane.get_tile(loc.tile)
+        self.screen.update_tile(tile, loc, overlay='red')
 
     def select_self(self):
         if not self.combat or self.id not in self.pane.person:
