@@ -451,7 +451,7 @@ class PassiveAbility(object):
     # Trickster
 
     def applyWildSurvival(self, target):
-        target.baseDodge += 12
+        target.baseDodge += 14
 
     def applyGlee(self, target, reverse=False):
         source = self.owner
@@ -1134,7 +1134,7 @@ class PassiveAbility(object):
         'type' : 'static',
         'action' : applyWildSurvival,
         'image' : TRICKSTER + 'wild-survival.png',
-        'text' : '+12 Dodge'
+        'text' : '+14 Dodge'
         },
         'Glee':
         {
