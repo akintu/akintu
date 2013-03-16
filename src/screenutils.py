@@ -468,7 +468,7 @@ if __name__ == '__main__':
                            10,
                            25,
                            'Some text\nSome more\n\nSomething else'))
-    dialog = ItemDialog('Inventory\n32/35',
+    dialog = ItemDialog('Inventory',
                         litems,
                         ritems,
                         equipment=True,
