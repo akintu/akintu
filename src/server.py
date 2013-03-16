@@ -282,7 +282,7 @@ class GameServer():
         if unloadAll:
             current_panes = []
         for pane in self.pane.keys():
-            if pane not in current_panes:
+            if pane not in current_panes and not (unloadAll and isinstance(pane, Location)):
                 # Save pane state to disk and then...
                 print("Unloading pane " + str(pane))
 
