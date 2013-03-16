@@ -1236,13 +1236,12 @@ class PlayerCharacter(p.Person):
                 else:
                     self.equip(item)
                     self.inventory.removeItem(item)
-                    screen.hide_dialog()
-                    # Reopen the window
                     text = "Equipped: " + item.displayName                                                            
                     inv = self.inventory.allItems
                     eq = self.equippedItems.allGear
-                    isEquipment = True
-                    screen.show_item_dialog(text, inv, eq, isEquipment, bgcolor='tan')
+                    capacity = `self.inventoryWeight` + "/" + `self.inventoryCapacity`
+                    screen.update_item_dialog_text(text, capacity)
+                    screen.update_item_dialog_items(inv, eq)
                     return None
         elif key == K_d:
             selectionTuple = screen.get_dialog_selection()
@@ -1250,12 +1249,12 @@ class PlayerCharacter(p.Person):
                 # This is the inventory side.
                 item = self.inventory.allItems[selectionTuple[1]]
                 self.inventory.removeItem(item)
-                screen.hide_dialog()
                 text = "Destroyed: " + item.displayName
                 inv = self.inventory.allItems
                 eq = self.equippedItems.allGear
-                isEquipment = True
-                screen.show_item_dialog(text, inv, eq, isEquipment, bgcolor='tan')
+                capacity = `self.inventoryWeight` + "/" + `self.inventoryCapacity`
+                screen.update_item_dialog_text(text, capacity)
+                screen.update_item_dialog_items(inv, eq)
                 return None
         return None
         
