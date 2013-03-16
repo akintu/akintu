@@ -198,7 +198,8 @@ class ItemDialog(object):
         '''
         Get the current selection
         '''
-        return self.selection
+        pane, item = self.selection
+        return (pane, item, self.items[pane][item].type)
 
     def set_items(self, leftlist, rightlist, toptext=None):
         '''
@@ -219,7 +220,8 @@ class ItemDialog(object):
         self.move_selection(-1)
         self._updateselection()
 
-        return self.selection
+        pane, item = self.selection
+        return (pane, item, self.items[pane][item].type)
 
     def move_selection(self, direction):
         '''
@@ -243,7 +245,8 @@ class ItemDialog(object):
             self.selection = tuple(selection)
         self._updateselection()
 
-        return self.selection
+        pane, item = self.selection
+        return (pane, item, self.items[pane][item].type)
 
     def _updateselection(self):
         '''
