@@ -110,7 +110,7 @@ class GameServer():
                         command.location = self.person[command.id].location
                         command.details = True
                         self.broadcast(command, port=port)
-                    else:
+                    elif command.id in self.player.values():
                         self.person[command.id].ai.remove("RUN")
                         self.broadcast(Command("PERSON", "STOP", id=command.id), command.id)
 
