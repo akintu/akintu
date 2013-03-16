@@ -70,6 +70,15 @@ class TilingDialog(object):
         self.cur_selection = selection
         self._updateselection()
 
+    def update_toptext(self, toptext, capacity=None):
+        '''
+        Update the top text
+        '''
+        self.toptext = toptext
+        if capcity:
+            self.capacity = capacity
+        self._drawtoptext()
+
     def _processitems(self):
         '''
         Processes the item list, loading the necessary images
@@ -172,7 +181,8 @@ class ItemDialog(object):
                  leftlist,
                  rightlist,
                  equipment=False,
-                 bgcolor='gray'):
+                 bgcolor='gray',
+                 capacity=''):
         '''
         Initialize the class
         '''
@@ -185,6 +195,7 @@ class ItemDialog(object):
         self.surface.fill(Color(self.bgcolor))
         self.selection = (0, 0)
         self.tops = [0, 0]
+        self.capacity = capacity
 
         self.leftitems = self._generateitems(self.items[0])
         self.rightitems = self._generateitems(self.items[1], self.equipment)
@@ -198,7 +209,8 @@ class ItemDialog(object):
         '''
         Get the current selection
         '''
-        return self.selection
+        pane, item = self.selection
+        return (pane, item, self.items[pane][item].type)
 
     def set_items(self, leftlist, rightlist, toptext=None):
         '''
@@ -219,7 +231,8 @@ class ItemDialog(object):
         self.move_selection(-1)
         self._updateselection()
 
-        return self.selection
+        pane, item = self.selection
+        return (pane, item, self.items[pane][item].type)
 
     def move_selection(self, direction):
         '''
@@ -243,7 +256,8 @@ class ItemDialog(object):
             self.selection = tuple(selection)
         self._updateselection()
 
-        return self.selection
+        pane, item = self.selection
+        return (pane, item, self.items[pane][item].type)
 
     def _updateselection(self):
         '''
@@ -306,7 +320,11 @@ class ItemDialog(object):
         Draw the top text area
         '''
         textsurface = self._generatetext(self.toptext, height=30, width=1280)
+        righttextsurface = self._generatetext(self.capacity,
+                                              height=30,
+                                              width=100)
         self.surface.blit(textsurface, (20, 10))
+        self.surface.blit(righttextsurface, (1180, 10))
 
     def _drawsidetext(self, text):
         '''
@@ -330,7 +348,7 @@ class ItemDialog(object):
         # Handle the equipment pane (if specified)
         if equipment:
             for item in items:
-                surfaces.append(self._generateitempane(item.name,
+                surfaces.append(self._generateitempane(item.displayName,
                                                        item.type,
                                                        item.weight,
                                                        item.value))
@@ -353,7 +371,7 @@ class ItemDialog(object):
 
         # Handle the normal pane
         for item in items:
-            surfaces.append(self._generateitempane(item.name,
+            surfaces.append(self._generateitempane(item.displayName,
                                                    item.type,
                                                    item.weight,
                                                    item.value))
@@ -427,7 +445,7 @@ if __name__ == '__main__':
 
     class TestItem(object):
         def __init__(self, name, itemtype, weight, value, details):
-            self.name = name
+            self.displayName = name
             self.type = itemtype
             self.weight = weight
             self.value = value
@@ -452,7 +470,7 @@ if __name__ == '__main__':
                            10,
                            25,
                            'Some text\nSome more\n\nSomething else'))
-    dialog = ItemDialog('Inventory',
+    dialog = ItemDialog('Inventory\n32/35',
                         litems,
                         ritems,
                         equipment=True,

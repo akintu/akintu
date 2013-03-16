@@ -80,7 +80,8 @@ class Game(object):
             self.serverip = serverip
         else:
             self.serverip = "localhost"
-            Combat.gameServer = GameServer(self.world, self.port)
+            self.gs = GameServer(self.world, self.port)
+            Combat.gameServer = self.gs
 
         self.CDF = ClientDataFactory()
         reactor.connectTCP(self.serverip, self.port, self.CDF)
@@ -333,6 +334,8 @@ class Game(object):
         Calls self.save_player() and then quits
         '''
         
+        if hasattr(self, 'gs'):
+            self.gs.save_all()
         self.save_player()#player_string)
         self.quit()
 

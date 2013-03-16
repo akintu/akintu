@@ -82,6 +82,8 @@ class Sprites(object):
 
     @staticmethod
     def get_obstacle(key, seed, pane, tile):
+        # if not seed:
+            # print "Seed is None in Sprites.get_obstacle"
         return Sprites.objects[key].get_random_image(seed, pane, tile)
 
     @staticmethod
@@ -200,7 +202,7 @@ class SpriteSheet(object):
         return self.zoom.get_zoomed_image(tile_loc)
 
     def get_random_image(self, seed, pane, tile):#, percentage):
-        random.seed(seed + str(pane) + self.name + str(tile))
+        random.seed(str(seed) + str(pane) + self.name + str(tile))
         i = random.randrange(self.crop.x)# / percentage)
         j = random.randrange(self.crop.y)# / percentage)
         image = None
