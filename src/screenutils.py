@@ -218,7 +218,7 @@ class ItemDialog(object):
         '''
         self.items = [leftlist, rightlist]
         self.leftitems = self._generateitems(self.items[0])
-        self.rightitems = self._generateitems(self.items[1], self.shop)
+        self.rightitems = self._generateitems(self.items[1], self.equipment)
         if len(self.leftitems) < 19:
             self.tops[0] = 0
         if len(self.rightitems) < 19:
