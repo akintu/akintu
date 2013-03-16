@@ -1330,7 +1330,7 @@ class PlayerCharacter(p.Person):
         cs.append("| Dodge:             " + `self.totalDodge` + " (" + `self.equipmentDodge` + ")  Ranged Dodge: " + `self.totalRangedDodge` + " (" + `self.equipmentRangedDodge` + ")\n")
         cs.append("| Might:             " + `self.totalMight` + " (" + `self.equipmentMight` + ")  Melee Dodge: " + `self.totalMeleeDodge` + " (" + `self.equipmentMeleeDodge` + ")\n")
         cs.append("| Spellpower:        " + `self.totalSpellpower` + " (" + `self.equipmentSpellpower` + ")  Magic Resist: " + `self.totalMagicResist` + " (" + `self.equipmentMagicResist` + ")\n")
-        cs.append("| Critical Chance:   " + `self.totalCriticalChance` + "% (" + `self.equipmentCriticalChance` + ")  Critical Magnitude: " + `self.totalCriticalMagnitude` + "% (" + `self.equipmentCriticalMagnitude` + ")\n")
+        cs.append("| Critical Chance:   " + `self.totalCriticalChance` + "% (" + `int(self.equipmentCriticalChance)` + ")  Critical Magnitude: " + `self.totalCriticalMagnitude` + "% (" + `self.equipmentCriticalMagnitude` + ")\n")
         cs.append("| Armor Penetration: " + `self.totalArmorPenetration` + "% (" + `self.equipmentArmorPenetration` + ")  Damage Resistance: " + `self.totalDR` + "% (" + `self.equipmentDR` + ")\n")
         cs.append("| Poison Tolerance:  " + `self.totalPoisonTolerance` + " (" + `self.equipmentPoisonTolerance` + ")  Poison Rating Bonus: " + `self.totalPoisonRatingBonus` + " (" + `self.equipmentPoisonRatingBonus` + ")\n")  
         cs.append("| Awareness:         " + `self.totalAwareness` + " (" + `self.equipmentAwareness` + ")  Sneak: " + `self.totalSneak` + " (" + `self.equipmentSneak` + ")\n")

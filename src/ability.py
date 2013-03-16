@@ -35,8 +35,8 @@ class AbilityStub(object):
         info = Ability.allAbilities[name]
         self.text = 'TODO'
         self.image = './res/images/icons/cubeforce.png'
-        rangeText = str(info['cooldown'])
-        if info['cooldown'] == -1:
+        rangeText = str(info['range'])
+        if info['range'] == -1:
            rangeText = "Weapon Range"
         cooldownText = "0"
         if info['cooldown']:
@@ -198,8 +198,8 @@ class Ability(object):
 
     def _quickStrike(self, target):
         source = self.owner
-        hit = Combat.calcHit(source, target, "Physical", modifier=-10)
-        Combat.basicAttack(source, target, hit, forceMod=0.5)
+        hit = Combat.calcHit(source, target, "Physical", modifier=-12)
+        Combat.basicAttack(source, target, hit, forceMod=0.5, overallDamageMod=0.70)
 
     def _quickStrikeCheck(self, target):
         if self.owner.usingWeapon("Melee"):
@@ -208,7 +208,7 @@ class Ability(object):
 
     def _preciseBlow(self, target):
         source = self.owner
-        hit = Combat.calcHit(source, target, "Physical", modifier=4)
+        hit = Combat.calcHit(source, target, "Physical", modifier=5, critMod=6)
         Combat.basicAttack(source, target, hit)
 
     def _preciseBlowCheck(self, target):
@@ -448,7 +448,7 @@ class Ability(object):
         landingZone = Combat.getRandomAdjacentLocation(target.cPane, target.cLocation)
         Combat.instantMove(source, landingZone)
         hit = Combat.calcHit(source, target, "Physical")
-        Combat.basicAttack(source, target, hit, overallDamageMod=2, noCounter=True)
+        Combat.basicAttack(source, target, hit, overallDamageMod=1.75, noCounter=True)
         if hit:
             for t in Combat.getAOETargets(source.cPane, source.cLocation, radius=1, selectMonsters=True):
                 Combat.basicAttack(source, t, "Normal Hit", overallDamageMod=0.25, ignoreOnHitEffects=True,
@@ -998,9 +998,9 @@ class Ability(object):
         Combat.addStatus(source, "Draconic Guard", duration, magnitude)
 
     def _draconicGuardCheck(self, target):
-        ''' Only used when at <25% of max HP '''
+        ''' Only used when at <35% of max HP '''
         source = self.owner
-        if source.HP < source.totalHP * 0.25:
+        if source.HP < source.totalHP * 0.35:
             return (True, "")
         return (False, "")
 
@@ -1035,8 +1035,8 @@ class Ability(object):
         if hit != "Miss":
             dam = Combat.calcDamage(source, target, self.level * 4, self.level * 6, "Fire", "Normal Hit")
             Combat.lowerHP(target, dam)
-            duration = 3
-            magnitude = 3 * self.level
+            duration = 4
+            magnitude = 4 * self.level
             Combat.addStatus(target, "Flaming Rend", duration, magnitude)
 
     def _frigidSlash(self, target):
@@ -1048,7 +1048,7 @@ class Ability(object):
             damCold = Combat.calcDamage(source, target, self.level * 2, self.level * 3, "Cold", "Normal Hit")
             Combat.lowerHP(target, damSlash)
             Combat.lowerHP(target, damCold)
-            duration = 2
+            duration = 3
             Combat.addStatus(target, "Frigid Slash", duration)
 
     def _howl(self, target):
@@ -1272,8 +1272,7 @@ class Ability(object):
         'checkFunction' : _quickStrikeCheck,
         'breakStealth' : 100,
         'image' : FIGHTER_SKILLS + "quick-strike.png",
-        'text' : "Low AP cost attack with low accuracy and less force.\n" + \
-                "Smaller weapons are affected less by the damage penalty."
+        'text' : "Fase melee attack with -12 Accuracy, -50% force, and -30% overall damage."
         },
         'Precise Blow':
         {
@@ -1288,7 +1287,7 @@ class Ability(object):
         'checkFunction' : _preciseBlowCheck,
         'breakStealth' : 100,
         'image' : FIGHTER_SKILLS + "precise-blow.png",
-        'text' : "Melee attack with +4 additional Accuracy"
+        'text' : "Melee attack with +5 additional Accuracy and +6% Critical Hit chance"
         },
 
         # Thief
@@ -1401,7 +1400,7 @@ class Ability(object):
         'range' : -1,
         'target' : 'hostile',
         'action' : _expertNotch,
-        'cooldown' : None,
+        'cooldown' : 1,
         'checkFunction' : _expertNotchCheck,
         'breakStealth' : 100,
         'image' : RANGER_SKILLS + 'expert-notch.png',
@@ -1659,7 +1658,7 @@ class Ability(object):
         'breakStealth' : 100,
         'image' : DRAGOON_SKILLS + 'jump-attack.png',
         'text' : 'Jump from your current location to immediately next to a selected enemy.\n' + \
-                'You will land on a random adjacent tile to the target dealing 200% damage if you hit.\n ' + \
+                'You will land on a random adjacent tile to the target dealing 175% damage if you hit.\n ' + \
                 'Additionally, you will deal 25% of weapon damage to all targets adjacent to\n' + \
                 'your landing location (including the primary target) as bludgeoning damage.'
         },
@@ -1677,7 +1676,7 @@ class Ability(object):
         'breakStealth' : 100,
         'image' : DRAGOON_SKILLS + 'jump-attack.png',
         'text' : 'Jump from your current location to immediately next to a selected enemy.\n' + \
-                'You will land on a random adjacent tile to the target dealing 200% damage if you hit.\n ' + \
+                'You will land on a random adjacent tile to the target dealing 175% damage if you hit.\n ' + \
                 'Additionally, you will deal 25% of weapon damage to all targets adjacent to\n' + \
                 'your landing location (including the primary target) as bludgeoning damage.'
         },
