@@ -216,6 +216,8 @@ class ItemDialog(object):
         '''
         Set the items lists (and optionally the top text), redraw the dialog
         '''
+        self.surface.fill(Color(self.bgcolor), (10, 60, 470, 590))
+        self.surface.fill(Color(self.bgcolor), (800, 60, 470, 590))
         self.items = [leftlist, rightlist]
         self.leftitems = self._generateitems(self.items[0])
         self.rightitems = self._generateitems(self.items[1], self.equipment)
