@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+from pygame.locals import *
+
 import sys
 import equippeditems
 import equipment
@@ -1206,6 +1208,23 @@ class PlayerCharacter(p.Person):
             elif armor.type == "Feet" and not self.equippedItems.equippedFeetArmor:
                 return True
         return False
+        
+    def navigateInventory(self, screen, key):
+        if key == K_RIGHT or key == K_KP6 or key == K_l:
+            screen.move_dialog(6)
+            return (None, None)
+        elif key == K_LEFT or key == K_KP4 or key == K_h:
+            screen.move_dialog(4)
+            return (None, None)
+        elif key == K_UP or key == K_KP8 or key == K_k:
+            screen.move_dialog(8)
+            return (None, None)
+        elif key == K_DOWN or key == K_KP2 or key == K_j:
+            screen.move_dialog(2)
+            return (None, None)
+        elif key == K_SPACE:
+            screen.hide_dialog()
+            return (None, None)
         
     def printCharacterSheet(self):
         '''Method prints a mock-up of a character sheet to the console as

@@ -59,7 +59,8 @@ class Game(object):
         self.combat = False
         self.musicQueue = None
         self.performingLevelup = False
-
+        self.viewingInventory = False
+        
         # Levelup state
         self.levelup = None
 
@@ -381,6 +382,12 @@ class Game(object):
                         self.performingLevelup = False
                         self.CDF.send(Command("PERSON", "REPLACE", id=self.id, player=upgradedHero))
 
+                elif self.viewingInventory:
+                    selection, option = self.pane.person[self.id].navigateInventory(self.screen, event.key)
+                    if option:
+                        #self.CDF.send(Command("PERSON", "REPLACE", id=self.id, player=self.pane.person[self.id]))
+                        self.viewingInventory = False
+                        
                 ### Combat Only Commands ###
                 elif self.combat:
 
@@ -448,6 +455,8 @@ class Game(object):
                         self.display_character_sheet()
                     elif event.key == K_y:
                         self.request_levelup()
+                    elif event.key == K_i:
+                        self.open_inventory()
 
     def get_item(self):
         self.CDF.send(Command("PERSON", "OPEN", id=self.id))
@@ -458,7 +467,6 @@ class Game(object):
         #    and all others on this pane.
 
     def request_levelup(self):
-        # Ask server if this character may levelup. TODO
         # Remove EXP code left for testing, TODO
         player = self.pane.person[self.id]
         if player.experience >= player.getExpForNextLevel() and player.level < LEVEL_MAX:
@@ -469,6 +477,13 @@ class Game(object):
         else:
             player.addExperience(100)
 
+    def open_inventory(self):
+        self.viewingInventory = True
+        player = self.pane.person[self.id]
+        isEquipment = True
+        text = "Looking in your bag... you have no tea."
+        self.screen.show_item_dialog(text, player.inventory.allItems, player.equippedItems.allGear, isEquipment, bgcolor='tan')
+            
     def choose_ability(self):
         text = "Select an Ability"
         bgcolor = "cadetblue"

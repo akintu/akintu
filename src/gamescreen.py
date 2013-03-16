@@ -73,7 +73,7 @@ class GameScreen(object):
                                              rightitems,
                                              equipment,
                                              bgcolor)
-        self.screen.blit(self.gialog.surface, (0, 0))
+        self.screen.blit(self.dialog.surface, (0, 0))
         pygame.display.update()
         return self.dialog.get_selection()
 

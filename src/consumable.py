@@ -17,24 +17,24 @@ class Consumable(entity.Entity):
         self.identifier = name
         self.weight = 1
         self.type = None # Used as cooldown name
-        self.goldValue = 0
+        self.value = 0
         self.level = 0
         self.effect = None
         self.cooldownLength = Consumable.COOLDOWN
         if name in Consumable.allPotions:
             self.type = "Potion"
-            self.goldValue = Consumable.allPotions[name]['goldValue']
+            self.value = Consumable.allPotions[name]['value']
             self.level = Consumable.allPotions[name]['level']
             self.effect = Consumable.allPotions[name]['effect']
             self.ip = Consumable.allPotions[name]['ip']
-            self.text = Consumable.allPotions[name]['text']
+            self.details = Consumable.allPotions[name]['details']
         elif name in Consumable.allPoisons:
             self.type = "Applied Poison"
-            self.goldValue = Consumable.allPoisons[name]['goldValue']
+            self.value = Consumable.allPoisons[name]['value']
             self.level = Consumable.allPoisons[name]['level']
             self.effect = Consumable.allPoisons[name]['effect']
             self.ip = Consumable.allPoisons[name]['ip']
-            self.text = Consumable.allPoisons[name]['text']
+            self.details = Consumable.allPoisons[name]['details']
 
     def canUse(self, user):
         if self.type in [x[0] for x in user.cooldownList]:
@@ -157,156 +157,156 @@ class Consumable(entity.Entity):
     allPotions = {
         'Basic Healing Potion' :
             {
-            'goldValue' : 30,
+            'value' : 30,
             'level' : 1,
             'effect' : _basicHealingPotion,
             'ip' : 1,
-            'text' : 'Restores 3-10 points of HP'
+            'details' : 'Restores 3-10 points of HP'
             },
         'Lesser Healing Potion' :
             {
-            'goldValue' : 75,
+            'value' : 75,
             'level' : 3,
             'effect' : _lesserHealingPotion,
             'ip' : 3,
-            'text' : 'Restores 6-20 points of HP'
+            'details' : 'Restores 6-20 points of HP'
             },
         'Moderate Healing Potion' :
             {
-            'goldValue' : 160,
+            'value' : 160,
             'level' : 6,
             'effect' : _moderateHealingPotion,
             'ip' : 7,
-            'text' : 'Restores 9-30 points of HP'
+            'details' : 'Restores 9-30 points of HP'
             },
         # Other healing potions here
         'Basic Mana Potion' :
             {
-            'goldValue' : 60,
+            'value' : 60,
             'level' : 1,
             'effect' : _basicManaPotion,
             'ip' : 2,
-            'text' : 'Restores 5-8 points of MP'
+            'details' : 'Restores 5-8 points of MP'
             },
         'Lesser Mana Potion' :
             {
-            'goldValue' : 200,
+            'value' : 200,
             'level' : 3,
             'effect' : _lesserManaPotion,
             'ip' : 6,
-            'text' : 'Restores 10-17 points of MP'
+            'details' : 'Restores 10-17 points of MP'
             },
         'Moderate Mana Potion' :
             {
-            'goldValue' : 550,
+            'value' : 550,
             'level' : 6,
             'effect' : _moderateManaPotion,
             'ip' : 12,
-            'text' : 'Restores 18-30 points of MP'
+            'details' : 'Restores 18-30 points of MP'
             },
         # Other mana potions here
         'Antidote' :
             {
-            'goldValue' : 20,
+            'value' : 20,
             'level' : 1,
             'effect' : _antidote,
             'ip' : 1,
-            'text' : 'Removes one Poison-based ailment'
+            'details' : 'Removes one Poison-based ailment'
             },
         'Thawing Potion' :
             {
-            'goldValue' : 30,
+            'value' : 30,
             'level' : 1,
             'effect' : _thawingPotion,
             'ip' : 2,
-            'text' : 'Removes one Ice-based aliment'
+            'details' : 'Removes one Ice-based aliment'
             },
         'Quenching Potion' :
             {
-            'goldValue' : 30,
+            'value' : 30,
             'level' : 1,
             'effect' : _quenchingPotion,
             'ip' : 2,
-            'text' : 'Removes one Fire-based ailment'
+            'details' : 'Removes one Fire-based ailment'
             },
         'Neutralizing Potion' :
             {
-            'goldValue' : 25,
+            'value' : 25,
             'level' : 5,
             'effect' : _neutralizingPotion,
             'ip' : 5,
-            'text' : 'Removes one Lightning-based ailment'
+            'details' : 'Removes one Lightning-based ailment'
             },
         'Clotting Potion' :
             {
-            'goldValue' : 7000,
+            'value' : 7000,
             'level' : 5,
             'effect' : _clottingPotion,
             'ip' : 10,
-            'text' : 'Removes all bleeding effects'
+            'details' : 'Removes all bleeding effects'
             },
         'Rock Potion' :
             {
-            'goldValue' : 120,
+            'value' : 120,
             'level' : 5,
             'effect' : _rockPotion,
             'ip' : 5,
-            'text' : 'Grants +10% DR for 8 Turns (stone-based)'
+            'details' : 'Grants +10% DR for 8 Turns (stone-based)'
             },
         'Prismatic Potion' :
             {
-            'goldValue' : 150,
+            'value' : 150,
             'level' : 5,
             'effet' : _prismaticPotion,
             'ip' : 6,
-            'text' : 'Grants +10% Fire, Cold, and Electric Resistance'
+            'details' : 'Grants +10% Fire, Cold, and Electric Resistance'
             },
         'Vaccine' :
             {
-            'goldValue' : 100,
+            'value' : 100,
             'level' : 5,
             'effect' : _vaccine,
             'ip' : 4,
-            'text' : 'Grants +18 Poison tolerance, but deals 1-8 Poison damage to yourself'
+            'details' : 'Grants +18 Poison tolerance, but deals 1-8 Poison damage to yourself'
             },
         'Spirit Potion' :
             {
-            'goldValue' : 250,
+            'value' : 250,
             'level' : 8,
             'effect' : _spiritPotion,
             'ip' : 10,
-            'text' : 'Grants +20% Shadow Resistance and +5% Arcane Resistance'
+            'details' : 'Grants +20% Shadow Resistance and +5% Arcane Resistance'
             }
             # TODO: Other buffing potions go here.
         }
     allPoisons = {
         'Basic Poison' :
             {
-            'goldValue' : 10,
+            'value' : 10,
             'level' : 1,
             'effect' : _basicPoison,
             'ip' : 1,
-            'text' : 'Applies +20% Weapon damage as Poison\n' + \
+            'details' : 'Applies +20% Weapon damage as Poison\n' + \
                     '(Rating = User level * 3 + 7)'
                 
             },
         'Numbing Poison' :
             {
-            'goldValue' : 15,
+            'value' : 15,
             'level' : 1,
             'effect' : _numbingPoison,
             'ip' : 1,
-            'text' : 'Applies a chance to slow enemies\' movement speed.\n' + \
+            'details' : 'Applies a chance to slow enemies\' movement speed.\n' + \
                     '(Rating = 13)'
             },
             # Sickening Poison
         'Vile Poison' :
             {
-            'goldValue' : 40,
+            'value' : 40,
             'level' : 1,
             'effect' : _vilePoison,
             'ip' : 2,
-            'text' : 'Applies a chance to lower attack power by 10% \n' + \
+            'details' : 'Applies a chance to lower attack power by 10% \n' + \
                     'and inflict a 3% chance to fail to cast spells.\n' + \
                     '(Rating = 24)'
             }

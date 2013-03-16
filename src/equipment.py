@@ -23,15 +23,15 @@ class Equipment(e.Entity):
             except:
                 return argDict[variableName]
 
-    def __init__(self, name, goldValue, weight):
+    def __init__(self, name, value, weight):
         e.Entity.__init__(self)
         self.name = name
         self.displayName = self.name
-        self.goldValue = int(goldValue)
+        self.value = int(value)
         self.weight = weight
         self.identifier = "Uninitialized"
         self.bonusTendencyList = None
-        self.text = "Uninitialized"
+        self.details = "Uninitialized"
         self.prefix = ""
         self.suffix = ""
 
@@ -74,7 +74,7 @@ class Equipment(e.Entity):
             goldModSum += property.goldMod * property.counts
 
         newCopy = copy.copy(self)
-        newCopy.goldValue = round(self.goldValue * (1 + float(goldModSum / 100)))
+        newCopy.value = round(self.value * (1 + float(goldModSum / 100)))
         for property in propertyList:
             property.item = newCopy
             if property.name == "Damage":
@@ -111,7 +111,7 @@ class Equipment(e.Entity):
             longText.append("Dodge Modifier: " + `self.dodgeMod` + "\n")
             longText.append("Stealth Modifier: " + `self.stealthMod` + "\n")
             longText.append("Weight: " + `self.weight` + " lbs.\n")
-            longText.append("Value: " + `int(self.goldValue)` + " gold\n")
+            longText.append("Value: " + `int(self.value)` + " gold\n")
             for mProp in self.propertyList:
                 longText.append(">> " + mProp.name + "  x " + `mProp.counts` + "\n")
         elif isinstance(self, Weapon):
@@ -124,10 +124,10 @@ class Equipment(e.Entity):
             longText.append("Critical Multiplier: " + `int(self.criticalMultiplier)` + "%\n")
             longText.append("Range: " + (`self.range` if self.range != 1 else "Melee") + "\n")
             longText.append("Weight: " + self.weight + " lbs.\n")
-            longText.append("Value: " + `int(self.goldValue)` + " gold\n")
+            longText.append("Value: " + `int(self.value)` + " gold\n")
             for mProp in self.propertyList:
                 longText.append(">> " + mProp.name + "  x " + `mProp.counts` + "\n")
-        self.text = ''.join(longText)
+        self.details = ''.join(longText)
             
             
             

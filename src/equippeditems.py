@@ -18,6 +18,10 @@ class EquippedItems(object):
                         'Off Hand' : None}
         self._moreRecentFinger = 'Left'
 
+    @property
+    def allGear(self):
+        return [x for x in self._allGear.values() if x]
+        
     def _equipArmor(self, newPiece):
         oldPiece = []
         if newPiece.type == "Chest":
