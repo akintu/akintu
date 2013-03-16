@@ -79,6 +79,12 @@ class GameScreen(object):
         pygame.display.update()
         return self.dialog.get_selection()
 
+    def update_item_dialog_text(self, text, capacity=None):
+        '''
+        Update the top text (and optionally capacity) of an item dialog
+        '''
+        self.dialog.update_toptext(text, capacity)
+
     def hide_dialog(self):
         '''
         Hide the dialog, returns the last-selected item

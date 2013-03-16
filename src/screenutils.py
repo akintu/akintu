@@ -70,6 +70,15 @@ class TilingDialog(object):
         self.cur_selection = selection
         self._updateselection()
 
+    def update_toptext(self, toptext, capacity=None):
+        '''
+        Update the top text
+        '''
+        self.toptext = toptext
+        if capcity:
+            self.capacity = capacity
+        self._drawtoptext()
+
     def _processitems(self):
         '''
         Processes the item list, loading the necessary images
