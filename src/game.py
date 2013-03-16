@@ -677,10 +677,14 @@ class Game(object):
         self.screen.show_text("Details of " + target.name + ":", color='greenyellow')
         allElements = ['Arcane', 'Bludgeoning', 'Cold', 'Divine', 'Electric', 'Fire', 'Piercing',
                         'Poison', 'Shadow', 'Slashing', 'Physical']
+        atLeastOneDetail = False
         for element in allElements:
             detail = target.getCombatDetails(element)
             if detail:
+                atLeastOneDetail = True
                 self.screen.show_text(detail, color='greenyellow')
+        if not atLeastOneDetail:
+            self.screen.show_text("Nothing remarkable.", color='greenyellow')
 
     def animate(self, id, source, dest, length):
         xdist = (dest.tile[0] - source.tile[0]) * TILE_SIZE
