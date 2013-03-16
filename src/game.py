@@ -402,9 +402,9 @@ class Game(object):
 
                 ### Inventory Management ###
                 elif self.viewingInventory:
-                    itemOrDone = self.pane.person[self.id].navigateInventory(self.screen, event.key)
-                    if itemOrDone:
-                        self.CDF.send(Command("PERSON", "REPLACE", id=self.id, player=self.pane.person[self.id].dehydrate()))
+                    newlyEquippedPlayer = self.pane.person[self.id].navigateInventory(self.screen, event.key)
+                    if newlyEquippedPlayer:
+                        self.CDF.send(Command("PERSON", "REPLACE", id=self.id, player=newlyEquippedPlayer))
                         self.viewingInventory = False
                         
                 ### Combat Only Commands ###

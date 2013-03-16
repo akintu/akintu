@@ -100,7 +100,7 @@ class EquippedItems(object):
         elif handsUsed == "One-Handed" and hand == "Left":
             oldPieceOne = self._allGear['Off Hand']
             self._allGear['Off Hand'] = newPiece
-            if self._allGear['Main Hand'].type == "One-Handed Exclusive" or self._allGear['Main Hand'].type == "Two-Handed":
+            if self._allGear['Main Hand'].handsRequired == "One-Handed Exclusive" or self._allGear['Main Hand'].handsRequired == "Two-Handed":
                 oldPieceTwo = self._allGear['Main Hand']
                 self._allGear['Main Hand'] = None
         if oldPieceTwo:
@@ -183,7 +183,7 @@ class EquippedItems(object):
                 old.append(self._allGear['Left Finger'])
                 self._allGear['Left Finger'] = None
             if self._allGear['Right Finger']:
-                old.append(self._allGear['RightFinger'])
+                old.append(self._allGear['Right Finger'])
                 self._allGear['Right Finger'] = None
             return old
         else:

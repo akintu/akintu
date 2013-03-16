@@ -2515,13 +2515,16 @@ class Person(en.Entity):
         style.replace("-", " ")
         handOne = self.equippedItems.equippedWeapon
         handTwo = self.equippedItems.equippedOffHand
+        print handOne
+        print handTwo
+        print self.usingShield("Any")
 
         if (style == "Dual Same Type" and
            handOne is not None and
            handTwo is not None):
             return handOne.type == handTwo.type
         if (style == "Dual"):
-            return (handOne is not None and handTwo is not None and not self.usingShield("Any"))
+            return (handOne and handTwo and not self.usingShield("Any"))
         if (style == "Two Handed"):
             return (handOne is not None and handTwo == "Occupied")
         if (style == "Single"):

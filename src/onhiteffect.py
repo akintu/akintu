@@ -20,13 +20,13 @@ class OnHitEffect(object):
 
     def applyElementalDamage(self, magnitude, source, target):
         damage = 0
-        if self.elementalDamageType == "Poison":
+        if self.element == "Poison":
             damage = magnitude
-        elif self.elementalDamageType == "Divine":
+        elif self.element == "Divine":
             damage = Dice.roll(magnitude, magnitude * 3)
         else:
             damage = Dice.roll(magnitude, magnitude * 2)
-        return [self.elementalDamageType, damage]
+        return [self.element, damage]
 
     def applyAcidic(self, magnitude, source, target):
         # Magnitude determines chance.

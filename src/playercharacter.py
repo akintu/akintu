@@ -1144,12 +1144,12 @@ class PlayerCharacter(p.Person):
                 # Need to return immediately to remove exactly one fx.
 
     # TODO: Change the amount Rings/Amulets affect you based on Sorcery.
-    def equip(self, newPiece):
+    def equip(self, newPiece, hand="Right"):
         """Equips a piece of gear, and places any replaced gear in the inventory."""
         if newPiece not in self.inventory.allItems:
             print "Attempted to equip item not in inventory!"
             return
-        oldPieces = self.equippedItems.equip(newPiece)
+        oldPieces = self.equippedItems.equip(newPiece, hand)
         oldPiece = oldPieces[0]
         oldPiece2 = None
         if oldPiece and len(oldPieces) > 1:
@@ -1252,7 +1252,7 @@ class PlayerCharacter(p.Person):
             return None
         elif key == K_SPACE or key == K_i:
             screen.hide_dialog()
-            return True
+            return self.dehydrate()
         elif key == K_e:
             selectionTuple = screen.get_dialog_selection()
             if selectionTuple[0] == 0:
@@ -1296,6 +1296,20 @@ class PlayerCharacter(p.Person):
                 screen.update_item_dialog_text(text, capacity)
                 screen.update_item_dialog_items(inv, eq)
                 return None
+        elif key == K_o:
+            selectionTuple = screen.get_dialog_selection()
+            if selectionTuple[0] == 0:
+                # This is the inventory side.
+                item = self.inventory.allItems[selectionTuple[1]]
+                if isinstance(item, equipment.Weapon) and item.handsRequired == "One-Handed":
+                    self.equip(item, "Left")
+                    text = "Equipped: " + item.displayName + " in the off-hand"
+                    inv = self.inventory.allItems
+                    eq = self.equippedItems.allGear
+                    capacity = `self.inventoryWeight` + "/" + `self.inventoryCapacity`
+                    screen.update_item_dialog_text(text, capacity)
+                    screen.update_item_dialog_items(inv, eq)
+                    return None
         return None
         
     def printCharacterSheet(self):

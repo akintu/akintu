@@ -257,7 +257,7 @@ class Consumable(entity.Entity):
             {
             'value' : 150,
             'level' : 5,
-            'effet' : _prismaticPotion,
+            'effect' : _prismaticPotion,
             'ip' : 6,
             'details' : 'Grants +10% Fire, Cold, and Electric Resistance'
             },
