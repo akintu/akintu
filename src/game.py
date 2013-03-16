@@ -230,8 +230,14 @@ class Game(object):
             if command.type == "PERSON" and command.action == "UPDATE":
                 for k, v in command.__dict__.iteritems():
                     if k not in ['type', 'action', 'id']:
-                        setattr(self.pane.person[command.id], k, v)
-                        if k in ['HP', 'MP', 'AP']:
+                        if k == 'totalAP':
+                            self.pane.person[command.id].AP = self.pane.person[command.id].totalAP
+                            self.screen.update_person(command.id, {'AP' : self.pane.person[command.id].AP,
+                                                                   'totalAP' : self.pane.person[command.id].totalAP,
+                                                                   'team' : self.pane.person[command.id].team})
+                        else:
+                            setattr(self.pane.person[command.id], k, v)
+                        if k in ['HP', 'MP', 'AP', 'totalAP']:
                             self.screen.update_person(command.id, {k: v, \
                                     'team': self.pane.person[command.id].team})
 
@@ -389,7 +395,9 @@ class Game(object):
                                                             'HP' : self.pane.person[self.id].HP,
                                                             'totalHP' : self.pane.person[self.id].totalHP,
                                                             'MP' : self.pane.person[self.id].MP,
-                                                            'totalMP' : self.pane.person[self.id].totalMP})
+                                                            'totalMP' : self.pane.person[self.id].totalMP,
+                                                            'totalAP' : self.pane.person[self.id].totalAP,
+                                                            'AP' : self.pane.person[self.id].AP})
 
 
                 ### Inventory Management ###

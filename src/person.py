@@ -2149,8 +2149,14 @@ class Person(en.Entity):
         return 0
 
     @property
+    def burdenAP(self):
+        if self.team == "Players":
+            return self.calcBurden()
+        return 0
+        
+    @property
     def totalAP(self):
-        return self._baseAP + min(5, self._equipmentAP) - self.restrictionAP
+        return max(1, self._baseAP + min(5, self._equipmentAP) - self.restrictionAP - self.burdenAP)
 
     @property
     def equipmentAP(self):

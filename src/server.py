@@ -189,6 +189,7 @@ class GameServer():
                                     text ='Found and equipped item: ' + item.displayName
                                 action = Command("UPDATE", "TEXT", text=text, color='lightskyblue')
                                 self.broadcast(action, port=p)
+                            action = Command("PERSON", "UDPATE", id=thisPlayer.id, AP=thisPlayer.AP, totalAP=thisPlayer.totalAP)
                             
             # Get items: TODO
             

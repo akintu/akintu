@@ -1210,6 +1210,22 @@ class PlayerCharacter(p.Person):
                 return True
         return False
         
+    def calcBurden(self):
+        if self.inventoryCapacity > self.inventoryWeight:
+            return 0
+        if self.inventoryCapacity <= self.inventoryWeight and self.inventoryWeight <= self.inventoryCapacity * 1.2:
+            return 2
+        if self.inventoryCapacity * 1.2 <= self.inventoryWeight and self.inventoryWeight <= self.inventoryCapacity * 1.4:
+            return 5
+        if self.inventoryCapacity * 1.4 <= self.inventoryWeight and self.inventoryWeight <= self.inventoryCapacity * 1.6:
+            return 10
+        if self.inventoryCapacity * 1.6 <= self.inventoryWeight and self.inventoryWeight <= self.inventoryCapacity * 1.8:
+            return 15
+        if self.inventoryCapacity * 1.8 <= self.inventoryWeight and self.inventoryWeight <= self.inventoryCapacity * 2.0:
+            return 20
+        else:
+            return 25
+            
     def navigateInventory(self, screen, key):
         if key == K_RIGHT or key == K_KP6 or key == K_l:
             screen.move_dialog(6)
