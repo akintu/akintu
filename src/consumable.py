@@ -47,15 +47,15 @@ class Consumable(entity.Entity):
                         str(Consumable.AP_COST) + " needed)")
 
     def use(self, user):
-        usable = self.canUse(user)
-        if usable[0]:
-            self.effect(self, user)
-            user.inventory.removeItem(self)
-            Combat.applyCooldown(user, self.type, self.cooldownLength)
-            Combat.modifyResource(user, "AP", -Consumable.AP_COST)
-            return "Used item: " + self.name + "."
-        else:
-            return usable[1]
+        #usable = self.canUse(user)
+        #if usable[0]:
+        self.effect(self, user)
+        user.inventory.removeItem(self)
+        Combat.applyCooldown(user, self.type, self.cooldownLength)
+        Combat.modifyResource(user, "AP", -Consumable.AP_COST)
+        return "Used item: " + self.name + "."
+        #else:
+        #    return usable[1]
 
 
     def _basicHealingPotion(self, user):
@@ -109,12 +109,12 @@ class Consumable(entity.Entity):
 
     def _rockPotion(self, user):
         if user.hasStatus(statusCategory="Stone") and not user.hasStatus("Rock Potion"):
+            print "Cannot stack Stone effects."
+        else:
             duration = 8
             if user.hasExtraLengthBuffs:
                 duration += 1
             Combat.addStatus(user, "Rock Potion", duration)
-        else:
-            print "Cannot stack Stone effects."
 
     def _prismaticPotion(self, user):
         duration = 8
@@ -140,7 +140,7 @@ class Consumable(entity.Entity):
     def _basicPoison(self, user):
         bonus = 20 * (1 + float(user.totalPoisonBonusDamage) / 100)
         base = Consumable._calcWeaponAverageDamage(user.equippedItems.equippedWeapon)
-        total = round(float(bonus) / 100 * base)
+        total = int((float(bonus) / 100 * base))
         duration = 8
         if user.hasExtraLengthBuffs:
             duration += 1
@@ -262,7 +262,8 @@ class Consumable(entity.Entity):
             'level' : 5,
             'effect' : _rockPotion,
             'ip' : 5,
-            'details' : 'Grants +10% DR for 8 Turns (stone-based)'
+            'details' : 'Grants +10% DR for 8 \n' + \
+                        'Turns (stone-based)'
             },
         'Prismatic Potion' :
             {
@@ -270,7 +271,8 @@ class Consumable(entity.Entity):
             'level' : 5,
             'effect' : _prismaticPotion,
             'ip' : 6,
-            'details' : 'Grants +10% Fire, Cold, and Electric Resistance'
+            'details' : 'Grants +10% Fire, Cold,\n' + \
+                        'and Electric Resistance'
             },
         'Vaccine' :
             {
@@ -278,7 +280,9 @@ class Consumable(entity.Entity):
             'level' : 5,
             'effect' : _vaccine,
             'ip' : 4,
-            'details' : 'Grants +18 Poison tolerance, but deals 1-8 Poison damage to yourself'
+            'details' : 'Grants +18 Poison tolerance,\n' + \
+                        'but deals 1-8 Poison damage to\n' + \
+                        'yourself'
             },
         'Spirit Potion' :
             {
@@ -286,7 +290,8 @@ class Consumable(entity.Entity):
             'level' : 8,
             'effect' : _spiritPotion,
             'ip' : 10,
-            'details' : 'Grants +20% Shadow Resistance and +5% Arcane Resistance'
+            'details' : 'Grants +20% Shadow Resistance\n' + \
+                        'and +5% Arcane Resistance'
             }
             # TODO: Other buffing potions go here.
         }
@@ -297,8 +302,9 @@ class Consumable(entity.Entity):
             'level' : 1,
             'effect' : _basicPoison,
             'ip' : 1,
-            'details' : 'Applies +20% Weapon damage as Poison\n' + \
-                    '(Rating = User level * 3 + 7)'
+            'details' : 'Applies +20% Weapon damage \n' + \
+                        'as Poison (Rating = User level\n' + \
+                        ' * 3 + 7)'
                 
             },
         'Numbing Poison' :
@@ -307,8 +313,9 @@ class Consumable(entity.Entity):
             'level' : 1,
             'effect' : _numbingPoison,
             'ip' : 1,
-            'details' : 'Applies a chance to slow enemies\' movement speed.\n' + \
-                    '(Rating = 13)'
+            'details' : 'Applies a chance to slow\n ' + \
+                        'enemies\' movement speed.\n' + \
+                        '(Rating = 13)'
             },
             # Sickening Poison
         'Vile Poison' :
@@ -317,9 +324,11 @@ class Consumable(entity.Entity):
             'level' : 1,
             'effect' : _vilePoison,
             'ip' : 2,
-            'details' : 'Applies a chance to lower attack power by 10% \n' + \
-                    'and inflict a 3% chance to fail to cast spells.\n' + \
-                    '(Rating = 24)'
+            'details' : 'Applies a chance to lower \n' + \
+                        'attack power by 10% \n' + \
+                        'and inflict a 3% chance\n' + \
+                        'to fail to cast spells.\n' + \
+                        '(Rating = 24)'
             }
 
             # TODO: Fill in other poisons.

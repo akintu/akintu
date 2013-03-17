@@ -170,7 +170,7 @@ class Combat(object):
         offense = None
         defense = source.totalPoisonTolerance
         if source.team == "Players":
-            offense = source.totalPoisonRatingBous + rating
+            offense = source.totalPoisonRatingBonus + rating
         else:
             offense = rating
         offense *= Dice.rollFloat(0.5, 1.0)

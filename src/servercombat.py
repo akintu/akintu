@@ -93,12 +93,16 @@ class CombatServer():
             if not item:
                 print " Item not found: " + itemName
                 return
-            usable = item.canUse(user)[0]
-            itemMessage = item.use(user)
-            Combat.sendCombatMessage(itemMessage, user, color='purple', toAll=False)
-            if usable:
+            usable = item.canUse(user)
+            if usable[0]:
+                itemMessage = item.use(user)
+                Combat.sendCombatMessage(itemMessage, user, color='purple', toAll=False)
                 self.server.broadcast(Command("ITEM", "REMOVE", id=command.id, 
                         itemName=command.itemName), port=port)
+            else:
+                itemMessage = usable[1]
+                Combat.sendCombatMessage(itemMessage, user, color='white', toAll=False)
+            
             
         if command.id in self.server.person:
             self.update_dead_people(self.server.person[command.id].cPane)

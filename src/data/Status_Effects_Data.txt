@@ -1778,7 +1778,7 @@
   [TYPE: Display]
   [IMAGE: None]
   [ELEMENT: Poison]
-  [INTERNAL: Weapon_damage]
+  [INTERNAL: Weapon_damage_bonus]
     [MAGNITUDE: 0]
   [CATEGORY: Buff]
   [CATEGORY: Applied Poison]

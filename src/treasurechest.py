@@ -80,7 +80,7 @@ class TreasureChest(entity.Entity):
             return [TreasureChest._selectGear(self.ip, sorcery)]
         elif selection <= 40:
             # Only Gold
-            return [TreasureChest._selectGold(self.ip, sorcery)]
+            return [TreasureChest._selectGold(self.ip)]
         else:
             # 1-3 Consumables and gold
             currentIp = self.ip

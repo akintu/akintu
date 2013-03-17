@@ -34,6 +34,9 @@ class Inventory(object):
             self.addItem(consumable.Consumable("Vaccine"))
             self.addItem(consumable.Consumable("Prismatic Potion"))
             self.addItem(consumable.Consumable("Spirit Potion"))
+            self.addItem(consumable.Consumable("Basic Poison"))
+            self.addItem(consumable.Consumable("Numbing Poison"))
+            self.addItem(consumable.Consumable("Vile Poison"))
         elif ccName == "Weapon Master":
             self.addItem(theorycraft.TheoryCraft.getWeaponByName("Long Sword"))
             self.addItem(theorycraft.TheoryCraft.getArmorByName("Heavy Shield"))

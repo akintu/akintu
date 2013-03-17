@@ -325,12 +325,12 @@ class PassiveAbility(object):
         source = self.owner
         if not reverse:
             if source.usingWeaponStyle("Single"):
-                source.statusMeleeAccuracy += 3
-                source.statusCriticalChance += 5
+                source.statusMeleeAccuracy += 4
+                source.statusCriticalChance += 6
         else:
             if source.usingWeaponStyle("Single"):
-                source.statusMeleeAccuracy -= 3
-                source.statusCriticalChance -= 5
+                source.statusMeleeAccuracy -= 4
+                source.statusCriticalChance -= 6
 
     def applyMagicalDarkness(self, target, reverse=False, **kwArgs):
         source = self.owner
@@ -506,6 +506,7 @@ class PassiveAbility(object):
         source = self.owner
         source.statusStrength += 2
         source.attackPower += 1
+        Combat.sendCombatMessage(source.name + " Grows more bold.", hero, color='lightred')
 
     def applyMonsterAgility(self, target):
         ''' Monsters with 'Monster Agility' have +10-30 Dodge (based on level). '''
@@ -518,6 +519,7 @@ class PassiveAbility(object):
         source = self.owner
         if source.HP <= 0.5 * source.totalHP:
             source.statusDexterity += 2
+            Combat.sendCombatMessage(source.name + " Panics and gains +2 Dexterity.", hero, color='lightred')
 
     def applyRegeneration(self, target, reverse=False):
         ''' Monsters with regerenation recover 15% of their max HP each turn.'''
@@ -944,7 +946,7 @@ class PassiveAbility(object):
         'onStringList' : ['Outgoing Melee Attack'],
         'offStringList' : ['Outgoing Melee Attack Complete'],
         'image' : NIGHTBLADE + 'single-blade.png',
-        'text' : '+3 Melee Accuracy and +5% Critical Chance when using only\n' + \
+        'text' : '+4 Melee Accuracy and +6% Critical Chance when using only\n' + \
                 'one one-handed weapon and no shield.'
         },
         'Magical Darkness':
