@@ -232,7 +232,10 @@ class Ability(object):
             if source.usingWeaponStyle("Single"):
                 accuracy = 5
         hit = Combat.calcHit(source, target, "Physical", modifier=accuracy, critMod=critChance)
-        Combat.basicAttack(source, target, hit, criticalDamageMod=critMag)
+        if hit != "Critical Hit":
+            Combat.basicAttack(source, target, hit, overallDamageMod=1.5)
+        else:
+            Combat.basicAttack(source, target, hit, criticalDamageMod=critMag)
 
     def _backstabCheck(self, target):
         source = self.owner
@@ -636,7 +639,10 @@ class Ability(object):
         critMag = 2
         accuracy = 5
         hit = Combat.calcHit(source, target, "Physical", modifier=accuracy, critMod=critChance)
-        Combat.basicAttack(source, target, hit, criticalDamageMod=critMag)
+        if hit != "Critical Hit":
+            Combat.basicAttack(source, target, hit, overallDamageMod=1.5)
+        else:
+            Combat.basicAttack(source, target, hit, criticalDamageMod=critMag)
 
     def _rangedBackstabCheck(self, target):
         source = self.owner
@@ -758,7 +764,10 @@ class Ability(object):
             if source.usingWeaponStyle("Single"):
                 accuracy = 5
         hit = Combat.calcHit(source, target, "Physical", modifier=accuracy, critMod=critChance)
-        Combat.basicAttack(source, target, hit, criticalDamageMod=critMag)
+        if hit != "Critical Hit":
+            Combat.basicAttack(source, target, hit, overallDamageMod=1.5)
+        else:
+            Combat.basicAttack(source, target, hit, criticalDamageMod=critMag)
         if hit != "Miss":
             duration = 2
             magnitude = 3
