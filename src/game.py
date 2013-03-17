@@ -75,6 +75,8 @@ class Game(object):
         self.itemList = []
         self.playerSaveFile = None
 
+        self.turnTime = kwargs.get('turnlength')
+        
         # Setup server if host
         self.port = port
         if serverip:
@@ -83,10 +85,11 @@ class Game(object):
             self.serverip = "localhost"
             self.gs = GameServer(self.world, self.port)
             Combat.gameServer = self.gs
+            
 
         self.CDF = ClientDataFactory()
         reactor.connectTCP(self.serverip, self.port, self.CDF)
-
+        
         hardcore = False
         if kwargs.get('hardcore'):
             hardcore = True
@@ -121,7 +124,10 @@ class Game(object):
         Combat.screen = self.screen
 
         self.CDF.send(person)
-
+        if self.serverip == "localhost":
+            action = Command("SETTINGS", "SET_TIME", id=None, time=self.turnTime)
+            self.CDF.send(action)
+        
         self.setup.stop()
         LoopingCall(self.game_loop).start(1.0 / DESIRED_FPS)
 

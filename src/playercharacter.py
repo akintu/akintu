@@ -51,8 +51,6 @@ class PlayerCharacter(p.Person):
         self._equipmentPotionEffect = 0
         self._statusPotionEffect = 0
 
-        self._baseJewleryEffect = p.Person.setFrom(argDict, 'startingJewleryEffect', 0)
-
         # Elemental Bonus Damages
 
         self._baseArcaneBonusDamage = p.Person.setFrom(argDict, 'startingArcaneBonusDamage', 0)
@@ -708,18 +706,8 @@ class PlayerCharacter(p.Person):
         self._statusPotionEffect = value
 
     @property
-    def totalJewleryEffect(self):
-        return int(100 +
-                max(0, (self.totalSorcery - 10) * 4) +
-                self._baseJewleryEffect)
-
-    @property
-    def baseJewleryEffect(self):
-        return int(self._baseJewleryEffect)
-
-    @baseJewleryEffect.setter
-    def baseJewleryEffect(self, value):
-        self._baseJewleryEffect = value
+    def totalJewleryBonus(self):
+        return int(max(0, (self.totalSorcery - 10) / 5))
 
     # Intrinsic Properties
     @property
@@ -1338,7 +1326,7 @@ class PlayerCharacter(p.Person):
         cs.append("| ----------->>> Tertiary Statistics <<<----------------\n")
         cs.append("| Shop Bonus:           " + `self.totalShopBonus` + "% (" + `self.equipmentShopBonus` + "%)  Carrying Capacity: " + `self.inventoryCapacity` + " (" + `self.equipmentCarryingCapacity` + ")\n")
         cs.append("| Trap Rating Bonus:    " + `self.bonusTrapRating` + "      Trap Damage Bonus: " + `self.bonusTrapDamage` + "%\n")
-        cs.append("| Jewlery Effect:       " + `self.totalJewleryEffect` + "%     Potion Bonus Effect: " + `self.totalPotionEffect` + "%\n") 
+        cs.append("| Jewlery Bonus:       +" + `self.totalJewleryBonus` + "     Potion Bonus Effect: " + `self.totalPotionEffect` + "%\n") 
         cs.append("| Identification:       " + `self.totalIdentification` + " (" + `self.equipmentIdentification` + ")  Gold Find: +" + `self.goldFind` + "%\n")
         cs.append("| ----------->>> Elemental Resistances <<<--------------\n")
         cs.append("| Arcane Resistance:   " + `self.totalArcaneResistance` + "% (" + `self.equipmentArcaneResistance` + ")\n")

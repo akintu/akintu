@@ -202,7 +202,7 @@
 [DR Gradient: 1,11]
 [Gold Value: 75]
 [Stealth Mod: 2]
-[Type: Helm]
+[Type: Head]
 [Grade: Light]
 [Weight: 2]
 

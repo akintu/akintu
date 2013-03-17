@@ -7,10 +7,10 @@ import math
 import region
 import monster
 
-# TODO: Use user-defined timed-turns
-seconds = 45
 
 class CombatServer():
+    SECONDS = 45
+    
     def __init__(self, server):
         self.server = server
         self.combatStates = {}
@@ -236,8 +236,9 @@ class CombatServer():
             #monsterLeader.cPane = combatPane
             self.server.load_pane(combatPane, monsterId)
             # Timer set
-            self.combatStates[combatPane].turnTimer = reactor.callLater(seconds, self.check_turn_end,
-                    combatPane, True)
+            if CombatServer.SECONDS > 0:
+                self.combatStates[combatPane].turnTimer = reactor.callLater(CombatServer.SECONDS, self.check_turn_end,
+                        combatPane, True)
 
         # Put player into combat -- Stop running if needed.
         currentPlayer.ai.remove("RUN")
@@ -274,7 +275,8 @@ class CombatServer():
                 break
         if not APRemains:
             if not self.combatStates[combatPane].turnTimer:
-                print "No timer found!"
+                if CombatServer.SECONDS > 0:
+                    print "No timer found!"
             else:
                 self.combatStates[combatPane].turnTimer.cancel()
         if timeExpired or not APRemains:
@@ -297,8 +299,9 @@ class CombatServer():
                         pane=combatPane)
             for character in [self.server.person[x] for x in self.server.pane[combatPane].person]:
                 self.shout_turn_start(character, turn="Player")
-            self.combatStates[combatPane].turnTimer = reactor.callLater(seconds, self.check_turn_end,
-                    combatPane, True)
+            if CombatServer.SECONDS > 0:
+                self.combatStates[combatPane].turnTimer = reactor.callLater(CombatServer.SECONDS, self.check_turn_end,
+                        combatPane, True)
 
     def monster_phase(self, combatPane):
         chars = [self.server.person[x] for x in self.server.pane[combatPane].person]
@@ -335,8 +338,9 @@ class CombatServer():
         '''Cleans up arena, gives experience/gold to players, 
         restores their health to full, and kicks them out of combat.'''
         state = self.combatStates[combatPane]
-        if state.turnTimer.active():
-            state.turnTimer.cancel()
+        if CombatServer.SECONDS > 0:
+            if state.turnTimer.active():
+                state.turnTimer.cancel()
         char = livingPlayers[0]
 
         monsterLeader = self.server.get_monster_leader(char)
@@ -410,8 +414,9 @@ class CombatServer():
 
     def monster_victory(self, combatPane):
         p = [p for i, p in self.server.person.iteritems() if p.location == combatPane][0]
-        if self.combatStates[combatPane].turnTimer.active():
-            self.combatStates[combatPane].turnTimer.cancel()
+        if self.combatStates[combatPane].turnTimer:
+            if self.combatStates[combatPane].turnTimer.active():
+                self.combatStates[combatPane].turnTimer.cancel()
         
         p.ai.resume()
         p.cPane = None

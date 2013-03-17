@@ -621,7 +621,6 @@ class Combat(object):
         if 'noCounter' not in params:
             params['noCounter'] = False
         if source.team == "Players":
-            print source.usingWeaponStyle("Dual")
             if source.usingWeaponStyle("Dual"):
                 originalCounterStatus = params['noCounter']
                 params['noCounter'] = True

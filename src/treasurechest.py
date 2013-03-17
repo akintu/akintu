@@ -61,26 +61,26 @@ class TreasureChest(entity.Entity):
             return
         valuables = []
         if self.type == "Small":
-            valuables = self._generateSmallTreasure()
+            valuables = self._generateSmallTreasure(player.totalSorcery)
         elif self.type == "Large":
-            valuables = self._generateLargeTreasure()
+            valuables = self._generateLargeTreasure(player.totalSorcery)
         else:
             pass # TODO
-            #valuables = self._generateGildedTreasure(playerList)
+            #valuables = self._generateGildedTreasure(player.characterClass, player.totalSorcery)
         for v in valuables:
             if isinstance(v, int):
                 v = int(round(v + v * player.goldFind * 0.01))
             player.inventory.addItem(v)
         return valuables
             
-    def _generateSmallTreasure(self):
+    def _generateSmallTreasure(self, sorcery):
         selection = Dice.roll(1, 100)
         if selection <= 20:
             # One piece of gear
-            return [TreasureChest._selectGear(self.ip)]
+            return [TreasureChest._selectGear(self.ip, sorcery)]
         elif selection <= 40:
             # Only Gold
-            return [TreasureChest._selectGold(self.ip)]
+            return [TreasureChest._selectGold(self.ip, sorcery)]
         else:
             # 1-3 Consumables and gold
             currentIp = self.ip
@@ -122,15 +122,18 @@ class TreasureChest(entity.Entity):
 
 
     @staticmethod
-    def _selectGear(givenIp):
+    def _selectGear(givenIp, sorcery):
         selectedItem = None
         giveWeapon = Dice.rollBeneath(33)
+        totalIp = givenIp
         if giveWeapon:
             baseWeaponSelection = Dice.roll(0, len(TheoryCraft.weapons) - 1)
             selectedItem = equipment.Weapon(TheoryCraft.weapons[baseWeaponSelection])
         else:
             baseArmorSelection = Dice.roll(0, len(TheoryCraft.armors) - 1)
             selectedItem = equipment.Armor(TheoryCraft.armors[baseArmorSelection])
+            if selectedItem.type == "Neck" or selectedItem.type == "Fingers":
+                givenIp += int(max(0, (sorcery - 10) / 5))
         return selectedItem.cloneWithMagicalProperties(givenIp)
 
     @staticmethod
@@ -141,25 +144,25 @@ class TreasureChest(entity.Entity):
             gold = 5
         return gold
 
-    def _generateLargeTreasure(self):
+    def _generateLargeTreasure(self, sorcery):
         selection = Dice.roll(1, 100)
         if selection <= 60:
             # Two pieces of gear ip=50/50
-            return [TreasureChest._selectGear(self.ip / 2), TreasureChest._selectGear(self.ip / 2)]
+            return [TreasureChest._selectGear(self.ip / 2, sorcery), TreasureChest._selectGear(self.ip / 2, sorcery)]
         elif selection <= 90:
             # Two pieces of gear and gold, ip=40/40/20
             gValue = self.ip * 2 / 10
             if gValue <= 0:
                 gValue = 1
-            return [TreasureChest._selectGear(round(self.ip * 0.4)),
-                    TreasureChest._selectGear(round(self.ip * 0.4)),
+            return [TreasureChest._selectGear(round(self.ip * 0.4), sorcery),
+                    TreasureChest._selectGear(round(self.ip * 0.4), sorcery),
                     TreasureChest._selectGold(gValue)]
         else:
             # One piece of gear ip=100
             return [TreasureChest._selectGear(self.ip)]
 
 
-    def _generateGildedTreasure(self, playerList):
+    def _generateGildedTreasure(self, playerClass, sorcery):
         return []
         # TODO: Two pieces of class-approriate gear.
 

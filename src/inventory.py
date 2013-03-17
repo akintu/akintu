@@ -30,6 +30,10 @@ class Inventory(object):
             self.addItem(theorycraft.TheoryCraft.getWeaponByName("Great Axe"))
         elif ccName == "Dragoon":
             self.addItem(theorycraft.TheoryCraft.getWeaponByName("Spear"))
+            self.addItem(consumable.Consumable("Rock Potion"))
+            self.addItem(consumable.Consumable("Vaccine"))
+            self.addItem(consumable.Consumable("Prismatic Potion"))
+            self.addItem(consumable.Consumable("Spirit Potion"))
         elif ccName == "Weapon Master":
             self.addItem(theorycraft.TheoryCraft.getWeaponByName("Long Sword"))
             self.addItem(theorycraft.TheoryCraft.getArmorByName("Heavy Shield"))

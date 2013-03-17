@@ -145,6 +145,10 @@ class GameServer():
                 self.person[command.id].ai.shutdown()
                 self.person[command.id] = newPerson
 
+            ###### Set CombatServer Time ######
+            if command.type == "SETTINGS" and command.action == "SET_TIME":
+                CombatServer.SECONDS = command.time
+                
             ###### Get Item / Open Chest ######
             if command.type == "PERSON" and command.action == "OPEN":
                 activePlayer = self.person[command.id]
