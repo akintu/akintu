@@ -109,12 +109,18 @@ class Consumable(entity.Entity):
 
     def _rockPotion(self, user):
         if user.hasStatus(statusCategory="Stone") and not user.hasStatus("Rock Potion"):
-            Combat.addStatus(user, "Rock Potion", duration=8)
+            duration = 8
+            if user.hasExtraLengthBuffs:
+                duration += 1
+            Combat.addStatus(user, "Rock Potion", duration)
         else:
             print "Cannot stack Stone effects."
 
     def _prismaticPotion(self, user):
-        Combat.addStatus(user, "Prismatic Potion", duration=8)
+        duration = 8
+        if user.hasExtraLengthBuffs:
+            duration += 1
+        Combat.addStatus(user, "Prismatic Potion", duration)
 
     def _vaccine(self, user):
         Combat.addStatus(user, "Vaccine", duration=99)
@@ -124,7 +130,10 @@ class Consumable(entity.Entity):
         Combat.lowerHP(user, damage)
 
     def _spiritPotion(self, user):
-        Combat.addStatus(user, "Spirit Potion", duration = 8)
+        duration = 8
+        if user.hasExtraLengthBuffs:
+            duration += 1
+        Combat.addStatus(user, "Spirit Potion", duration)
 
     # Buffing potions go above.
 
@@ -133,6 +142,8 @@ class Consumable(entity.Entity):
         base = Consumable._calcWeaponAverageDamage(user.equippedItems.equippedWeapon)
         total = round(float(bonus) / 100 * base)
         duration = 8
+        if user.hasExtraLengthBuffs:
+            duration += 1
         Combat.addStatus(user, "Applied Basic Poison", duration, total)
 
     def _vilePoison(self, user):
