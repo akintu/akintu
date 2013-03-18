@@ -14,10 +14,11 @@ class State(object):
     
     world_data = None
     tmp_world_data = dict()
-
+    
+    log_data = ""
     
     @staticmethod
-    def load(path, filename):
+    def load(path, filename, pickled=True):
         path_to_file = os.path.join(path, filename)
         try:
             if os.path.exists(path_to_file):
@@ -39,7 +40,7 @@ class State(object):
             
             
     @staticmethod
-    def save(path, filename, data, overwrite=True):
+    def save(path, filename, data, overwrite=True, pickled=True):
         # Create the saves directories if they don't exist
         if not os.path.exists(path):
             os.makedirs(path)
@@ -173,7 +174,22 @@ class State(object):
         
         if not State.world_file:
             #Loop through the WORLD_SAVE_PATH and get incremental save
-            State.world_file = "NOTIMPLEMENTED" + WORLD_SAVE_EXT
+            
+            max_save = 0
+            saved_list = os.listdir(WORLD_SAVE_PATH)
+            if saved_list:
+                increment_list = []
+                for filename in saved_list:
+                    split_list = filename.split("_")
+                    tmp = split_list[0] #Get first element from list (the incremental save number)
+                    try:
+                        tmp = int(tmp)
+                    except:
+                        tmp = 0
+                    increment_list.append(tmp)
+                max_save = max(increment_list)
+            max_save += 1
+            State.world_file = str("%03d" % max_save) + "_" + WORLD_SAVE_EXT
             
         #Reconcile tmp_world_data with world_data
         #tmp_world_data takes precidence.
@@ -208,4 +224,11 @@ class State(object):
         #print "Saving pane " + str(pane_loc)+ " with data " + str(data)
         State.tmp_world_data[pane_loc] = data
         
+    @staticmethod
+    def log(data):
+        pass
+
+    @staticmethod
+    def save_log():
+        pass
         
