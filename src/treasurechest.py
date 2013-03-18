@@ -159,7 +159,7 @@ class TreasureChest(entity.Entity):
                     TreasureChest._selectGold(gValue)]
         else:
             # One piece of gear ip=100
-            return [TreasureChest._selectGear(self.ip)]
+            return [TreasureChest._selectGear(self.ip, sorcery)]
 
 
     def _generateGildedTreasure(self, playerClass, sorcery):
