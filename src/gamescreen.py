@@ -45,6 +45,7 @@ class GameScreen(object):
         self.overlays['red'] = generate_overlay(TILE_SIZE, TILE_SIZE,
                                                 (200, 0, 0, 50))
         pygame.display.flip()
+        self.turntime = 0
 
         # Draw the sidebar text area and make sure it has at least one item
         # in it (even though it's a blank item)
@@ -388,6 +389,25 @@ class GameScreen(object):
         if not self.dialog:
             self._draw_text()
 
+    def set_turntime(self, turntime):
+        '''
+        Sets the turntime, which should be between 0.0 and 1.0 (percent of turn
+        remaining
+        '''
+        self.turntime = turntime
+        self._drawturntime()
+
+    def _drawturntime(self):
+        '''
+        Draw the turn timer
+        '''
+        timerrect = (PANE_X * TILE_SIZE + 251, 0, 5, 296)
+        diff = (1-self.turntime)*296
+        ctimerrect = (PANE_X * TILE_SIZE + 251, diff, 5, 296-diff)
+        self.screen.fill(Color('black'), timerrect)
+        self.screen.fill(Color('green'), ctimerrect)
+        pygame.display.update([timerrect])
+
     def _draw_text(self):
         '''
         Draw up to 10 lines of text in the sidebar text box
@@ -667,6 +687,7 @@ class GameScreen(object):
         for personid in self.playerframes:
             self.screen.blit(self.playerframes[personid], (left, top))
             top += 74
+        self._drawturntime()
         pygame.display.update([rect])
 
     def _drawmonsterframes(self):

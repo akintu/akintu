@@ -17,9 +17,13 @@ CLASSES = ('Assassin', 'Barbarian', 'Dragoon', 'Weapon Master', 'Spellsword',
            'Nightblade', 'Battle Mage', 'Arcane Archer', 'Trickster',
            'Sorcerer')
 RACES = ('Human', 'Dwarf', 'Elf', 'Halfling', 'Orc')
-CHARSAVES = glob.glob(os.path.join('res', 'saves', 'characters', '*.akinc'))
+savesprefix = os.path.join('res', 'saves', 'characters')
+CHARSAVES = [path.lstrip(savesprefix).lstrip(os.path.sep) for path in
+             glob.glob(os.path.join(savesprefix, '*.akinc'))]
 CHARSAVESWIDTH = len(max(CHARSAVES, key=len))
-WORLDSAVES = glob.glob(os.path.join('res', 'saves', 'worlds', '*.akinw'))
+savesprefix = os.path.join('res', 'saves', 'worlds')
+WORLDSAVES = [path.lstrip(savesprefix).lstrip(os.path.sep) for path in
+              glob.glob(os.path.join(savesprefix, '*.akinw'))]
 WORLDSAVESWIDTH = len(max(WORLDSAVES, key=len))
 
 
