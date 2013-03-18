@@ -56,7 +56,9 @@ class WelcomeWindow(object):
         # Create the widgets
         akintul = ttk.Label(frame, text='Akintu', style='TitleLabel.TLabel')
         newchar = ttk.Button(frame, text='New Character', command=self.newchar)
-        loadchar = ttk.Button(frame, text='Load Character', command=self.loadchar)
+        loadchar = ttk.Button(frame,
+                              text='Load Character',
+                              command=self.loadchar)
         # Lay out the widgets
         akintul.grid(column=1, row=1, sticky=(N, W, E, S), padx=10, pady=50)
         newchar.grid(column=1, row=2, stick=(N, S), padx=10, pady=10)
@@ -68,14 +70,28 @@ class WelcomeWindow(object):
         # Create the widgets
         backb = ttk.Button(frame, text='Back', command=self.mainmenu)
         nextb = ttk.Button(frame, text='Next', command=self.playtype)
-        classcombo = ttk.Combobox(frame, textvariable=self.charclass, values=CLASSES, state='readonly')
-        racecombo = ttk.Combobox(frame, textvariable=self.charrace, values=RACES, state='readonly')
+        classcombo = ttk.Combobox(frame,
+                                  textvariable=self.charclass,
+                                  values=CLASSES,
+                                  state='readonly')
+        racecombo = ttk.Combobox(frame,
+                                 textvariable=self.charrace,
+                                 values=RACES,
+                                 state='readonly')
         classl = ttk.Label(frame, text='Class:')
         racel = ttk.Label(frame, text='Race:')
         namel = ttk.Label(frame, text='Name:')
         namebox = ttk.Entry(frame, textvariable=self.charname)
-        ironmancheck = ttk.Checkbutton(frame, text='Iron Man Mode', variable=self.ironman, onvalue=True, offvalue=False)
-        hardcorecheck = ttk.Checkbutton(frame, text='Hardcore Mode', variable=self.hardcore, onvalue=True, offvalue=False)
+        ironmancheck = ttk.Checkbutton(frame,
+                                       text='Iron Man Mode',
+                                       variable=self.ironman,
+                                       onvalue=True,
+                                       offvalue=False)
+        hardcorecheck = ttk.Checkbutton(frame,
+                                        text='Hardcore Mode',
+                                        variable=self.hardcore,
+                                        onvalue=True,
+                                        offvalue=False)
         # Lay out the widgets
         namel.grid(column=2, row=1, stick=W, padx=5, pady=5)
         namebox.grid(column=2, row=2, stick=(W, E), padx=5, pady=5)
@@ -95,7 +111,11 @@ class WelcomeWindow(object):
         backb = ttk.Button(frame, text='Back', command=self.mainmenu)
         nextb = ttk.Button(frame, text='Next', command=self.playtype)
         savel = ttk.Label(frame, text='Load game:')
-        savecombo = ttk.Combobox(frame, textvariable=self.charsave, values=CHARSAVES, state='readonly', width=CHARSAVESWIDTH)
+        savecombo = ttk.Combobox(frame,
+                                 textvariable=self.charsave,
+                                 values=CHARSAVES,
+                                 state='readonly',
+                                 width=CHARSAVESWIDTH)
         # Lay out the widgets
         savel.grid(column=2, row=1, stick=W, padx=5, pady=5)
         savecombo.grid(column=2, row=2, stick=(N, S), padx=5, pady=5)
@@ -139,7 +159,8 @@ class WelcomeWindow(object):
         # Try to get your ip
         localip = ''
         try:
-            fullhtml = urllib2.urlopen('http://www.internetfrog.com/myinternet/traceroute/').read()
+            url = 'http://www.internetfrog.com/myinternet/traceroute/'
+            fullhtml = urllib2.urlopen(url).read()
             match = re.search('(?<=Your IP is: )\d+\.\d+\.\d+\.\d+', fullhtml)
             localip = match.group(0)
         except:
@@ -158,10 +179,19 @@ class WelcomeWindow(object):
         ipl = ttk.Label(frame, text='Your IP address:  ' + localip)
         portl = ttk.Label(frame, text='Port to listen on:')
         portbox = ttk.Entry(frame, textvariable=self.portstr)
-        newworldr = ttk.Radiobutton(frame, text='New World', variable=self.loadingworldvar, value='New World')
-        loadworldr = ttk.Radiobutton(frame, text='Load World', variable=self.loadingworldvar, value='Load World')
+        newworldr = ttk.Radiobutton(frame,
+                                    text='New World',
+                                    variable=self.loadingworldvar,
+                                    value='New World')
+        loadworldr = ttk.Radiobutton(frame,
+                                     text='Load World',
+                                     variable=self.loadingworldvar,
+                                     value='Load World')
         newworldbox = Entry(frame, textvariable=self.worldseed)
-        loadworldcombo = ttk.Combobox(frame, textvariable=self.worldsave, values=(), state='readonly')
+        loadworldcombo = ttk.Combobox(frame,
+                                      textvariable=self.worldsave,
+                                      values=(),
+                                      state='readonly')
         turnlengthbox = Entry(frame, textvariable=self.turnlengthstr)
         turnlengthl = ttk.Label(frame, text='Turn length (empty for infinite)')
         # Lay out the widgets
