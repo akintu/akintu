@@ -515,6 +515,8 @@ class Game(object):
             self.levelup.next()
         else:
             player.addExperience(100)
+            if player.experience >= player.getExpForNextLevel() and player.level < LEVEL_MAX:
+                self.screen.show_text("LEVEL UP!" , color='magenta')
 
     def open_inventory(self):
         self.viewingInventory = True

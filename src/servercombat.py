@@ -369,10 +369,12 @@ class CombatServer():
         '''Grants the appropriate amount of EXP to a player at the end of
         a victorious combat.'''
         exp = Combat.calcExperienceGain(player, monsterList)
-        oldLevel = player.level
-        newLevel = player.addExperience(exp)
-        if oldLevel != newLevel:
-            Combat.sendCombatMessage(player.name + " LEVELUP!", player, color='magenta')
+        #oldLevel = player.level
+        player.addExperience(exp)
+        #if oldLevel != newLevel:
+        #    Combat.sendCombatMessage(player.name + " LEVELUP!", player, color='magenta')
+        if player.experience >= player.getExpForNextLevel() and player.level < 5: # Remove hardcoded value TODO
+                Combat.sendCombatMessage(player.name + " LEVELUP!", player, color='magenta')
         Combat.sendCombatMessage("Gained " + str(exp) + " Experience. (" + str(player.experience) +
                                  "/" + str(player.getExpForNextLevel()) + ")", 
                                  player, color='magenta', toAll=False)
