@@ -147,7 +147,7 @@ class Equipment(e.Entity):
                 firstProperty = prop
                 maxValue = value
         if firstProperty and not secondProperty:
-            secondaryPropList = self.propertyList
+            secondaryPropList = [x for x in self.propertyList]
             secondaryPropList.remove(firstProperty)
             maxValue = 0
             for prop in secondaryPropList:
