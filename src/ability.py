@@ -1915,7 +1915,8 @@ class Ability(object):
         'image' : SHADOW_SKILLS + 'shadow-walk.png',
         'text' : 'Enter stealth, making enemies lose track of you until you take an action\n' + \
                 'that removes stealth.  Movement cost is raised to 6 AP for the duration.\n' + \
-                'Shadow Walk benefits doubly from Cunning, making the Shadow very hard to detect.'
+                'Shadow Walk benefits a time and a half from Cunning, making the Shadow\n' + \
+                'very hard to detect.'
         },
         'Bleeding Backstab':
         {

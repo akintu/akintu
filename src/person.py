@@ -1163,7 +1163,7 @@ class Person(en.Entity):
         """
         cunningBonus = max(0, self.totalCunning - 10)
         if self.team == "Players" and self.characterClass == "Shadow":
-            cunningBonus *= 2
+            cunningBonus *= 1.5
         return int(cunningBonus +
                 self._equipmentSneak +
                 self._statusSneak +
