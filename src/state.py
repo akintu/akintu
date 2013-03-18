@@ -143,7 +143,7 @@ class State(object):
         
         if not os.path.exists(file):
             file = os.path.join(CHAR_SAVE_PATH, file)
-        if not os.path.exists(file)
+        if not os.path.exists(file):
             assert False, "Could not find character file to delete: " + str(file)
         
         os.remove(file)
