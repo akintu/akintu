@@ -100,7 +100,8 @@ class EquippedItems(object):
         elif handsUsed == "One-Handed" and hand == "Left":
             oldPieceOne = self._allGear['Off Hand']
             self._allGear['Off Hand'] = newPiece
-            if self._allGear['Main Hand'].handsRequired == "One-Handed Exclusive" or self._allGear['Main Hand'].handsRequired == "Two-Handed":
+            if self._allGear['Main Hand'] and (self._allGear['Main Hand'].handsRequired == "One-Handed Exclusive" \
+             or self._allGear['Main Hand'].handsRequired == "Two-Handed"):
                 oldPieceTwo = self._allGear['Main Hand']
                 self._allGear['Main Hand'] = None
         if oldPieceTwo:

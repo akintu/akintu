@@ -987,8 +987,8 @@ class Ability(object):
 
     def _curiousDrain(self, target):
         source = self.owner
-        hit = Combat.calcHit(source, target, "Physical")
-        Combat.basicAttack(source, target, hit, modifier=-4)
+        hit = Combat.calcHit(source, target, "Physical", modifier=-4)
+        Combat.basicAttack(source, target, hit)
         if hit != "Miss":
             duration = 4
             Combat.addStatus(source, "Curious Drain", duration)
@@ -2296,7 +2296,9 @@ class Ability(object):
         'action' : _riskyFocus,
         'cooldown' : 1,
         'checkFunction' : None,
-        'breakStealth' : 0
+        'breakStealth' : 0,
+        'image' : TRICKSTER_SKILLS + 'risky-focus.png',
+        'text' : 'Increase your spellpower by 6 at the cost of 5 Dodge'
         },
         'Weary Bolt':
         {
@@ -2309,7 +2311,11 @@ class Ability(object):
         'action' : _wearyBolt,
         'cooldown' : None,
         'checkFunction' : _wearyBoltCheck,
-        'breakStealth' : 100
+        'breakStealth' : 100,
+        'image' : TRICKSTER_SKILLS + 'weary-bolt.png',
+        'text' : 'A ranged attack that requires a crossbow.  On a successful\n' + \
+                'hit, your target loses 5% attack power for 3 turns.  This effect\n' + \
+                'may stack up to 4 times to a total of -20% attack power.'
         },
         'Curious Drain':
         {
@@ -2321,8 +2327,11 @@ class Ability(object):
         'target' : 'hostile',
         'action' : _curiousDrain,
         'cooldown' : 1,
-        'checkFunction' : _curiousDrain,
-        'breakStealth' : 100
+        'checkFunction' : None,
+        'breakStealth' : 100,
+        'image' : TRICKSTER_SKILLS + 'curious-drain.png',
+        'text' : 'An attack at -4 Accuracy that lowers enemy dodge by 8 and\n' + \
+                'gives +8 dodge to the Trickster for 4 turns.'
         },
 
         # Monsters

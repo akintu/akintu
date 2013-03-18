@@ -459,7 +459,7 @@ class PassiveAbility(object):
 
     def applyInfuriatingBlows(self, target, reverse=False, other=None):
         source = self.owner
-        source.MP += 2
+        Combat.modifyResource(source, "MP", 2)
 
     def applyDoubleDodge(self, target, reverse=False):
         source = self.owner
