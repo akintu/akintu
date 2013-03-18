@@ -12,6 +12,13 @@ import glob
 import re
 import urllib2
 
+savesprefix = os.path.join('res', 'saves', 'characters')
+if not os.path.exists(savesprefix):
+    os.makedirs(savesprefix)
+savesprefix = os.path.join('res', 'saves', 'worlds')
+if not os.path.exists(savesprefix):
+    os.makedirs(savesprefix)
+
 CLASSES = ('Assassin', 'Barbarian', 'Dragoon', 'Weapon Master', 'Spellsword',
            'Marksman', 'Druid', 'Tactician', 'Ninja', 'Anarchist', 'Shadow',
            'Nightblade', 'Battle Mage', 'Arcane Archer', 'Trickster',
@@ -20,11 +27,11 @@ RACES = ('Human', 'Dwarf', 'Elf', 'Halfling', 'Orc')
 savesprefix = os.path.join('res', 'saves', 'characters')
 CHARSAVES = [path.lstrip(savesprefix).lstrip(os.path.sep) for path in
              glob.glob(os.path.join(savesprefix, '*.akinc'))]
-CHARSAVESWIDTH = len(max(CHARSAVES, key=len))
+CHARSAVESWIDTH = len(max(CHARSAVES, key=len)) if CHARSAVES else 10
 savesprefix = os.path.join('res', 'saves', 'worlds')
 WORLDSAVES = [path.lstrip(savesprefix).lstrip(os.path.sep) for path in
               glob.glob(os.path.join(savesprefix, '*.akinw'))]
-WORLDSAVESWIDTH = len(max(WORLDSAVES, key=len))
+WORLDSAVESWIDTH = len(max(WORLDSAVES, key=len)) if WORLDSAVES else 10
 
 
 class WelcomeWindow(object):
