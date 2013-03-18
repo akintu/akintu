@@ -129,6 +129,23 @@ class State(object):
         
     
     @staticmethod
+    def delete_player():
+        '''
+        Used for Hardcore Death to delete the player's save file
+        '''
+        file = State.char_file
+        #If we haven't saved our character yet we can do nothing
+        if file == None:    
+            return
+        
+        if not os.path.exists(file):
+            file = os.path.join(CHAR_SAVE_PATH, file)
+        if not os.path.exists(file)
+            assert False, "Could not find character file to delete: " + str(file)
+        
+        os.remove(file)
+    
+    @staticmethod
     def load_world(state):
         '''
         Returns a dictionary with the state of this world.
@@ -165,6 +182,7 @@ class State(object):
         assert State.world_data != None, "World should be a dictionary with at least a SEED_KEY"
         return State.world_data
     
+    
     @staticmethod
     def save_world():
         '''
@@ -194,8 +212,8 @@ class State(object):
         #Reconcile tmp_world_data with world_data
         #tmp_world_data takes precidence.
         data = dict(State.world_data.items() + State.tmp_world_data.items())
-        
         State.save(WORLD_SAVE_PATH, State.world_file, data)
+        
         
     @staticmethod
     def load_pane(pane_loc):
