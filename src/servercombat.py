@@ -346,7 +346,7 @@ class CombatServer():
         '''Cleans up arena, gives experience/gold to players, 
         restores their health to full, and kicks them out of combat.'''
         state = self.combatStates[combatPane]
-        if CombatServer.SECONDS > 0 and state.turnTime and state.turnTime.active():
+        if CombatServer.SECONDS > 0 and state.turnTimer and state.turnTimer.active():
             state.turnTimer.cancel()
         char = livingPlayers[0]
 
