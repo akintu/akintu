@@ -12,8 +12,8 @@ import glob
 import re
 import urllib2
 
-CLASSES = ('Barbarian', 'Dragoon', 'Weapon Master', 'Spellsword', 'Anarchist',
-           'Marksman', 'Druid', 'Tactician', 'Ninja', 'Assassin', 'Shadow',
+CLASSES = ('Assassin', 'Barbarian', 'Dragoon', 'Weapon Master', 'Spellsword',
+           'Marksman', 'Druid', 'Tactician', 'Ninja', 'Anarchist', 'Shadow',
            'Nightblade', 'Battle Mage', 'Arcane Archer', 'Trickster',
            'Sorcerer')
 RACES = ('Human', 'Dwarf', 'Elf', 'Halfling', 'Orc')
@@ -31,8 +31,8 @@ class WelcomeWindow(object):
         self.master = master
         # Set a variable which tells whether the Player completed the menus
         self.success = False
-        self.charrace = StringVar()
-        self.charclass = StringVar()
+        self.charrace = StringVar(value=RACES[0])
+        self.charclass = StringVar(value=CLASSES[0])
         self.charname = StringVar(value='Mysterious Adventurer')
         self.charsave = StringVar(value='')
         self.joinip = StringVar()
@@ -41,7 +41,7 @@ class WelcomeWindow(object):
         self.hosting = True
         self.loadingchar = False
         self.loadingworld = False
-        self.loadingworldvar = StringVar()
+        self.loadingworldvar = StringVar(value='New World')
         self.worldseed = StringVar()
         self.worldsave = StringVar()
         self.turnlengthstr = StringVar(value='')
