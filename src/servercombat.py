@@ -241,8 +241,8 @@ class CombatServer():
             self.server.load_pane(combatPane, monsterId)
             # Timer set
             if CombatServer.SECONDS > 0:
-                self.combatStates[combatPane].turnTimer = reactor.callLater(CombatServer.SECONDS, self.check_turn_end,
-                        combatPane, True)
+                self.combatStates[combatPane].turnTimer = reactor.callLater(CombatServer.SECONDS, \
+                        self.check_turn_end, combatPane, True)
 
         # Put player into combat -- Stop running if needed.
         currentPlayer.ai.remove("RUN")
@@ -342,9 +342,8 @@ class CombatServer():
         '''Cleans up arena, gives experience/gold to players, 
         restores their health to full, and kicks them out of combat.'''
         state = self.combatStates[combatPane]
-        if CombatServer.SECONDS > 0:
-            if state.turnTimer.active():
-                state.turnTimer.cancel()
+        if CombatServer.SECONDS > 0 and state.turnTime and state.turnTime.active():
+            state.turnTimer.cancel()
         char = livingPlayers[0]
 
         monsterLeader = self.server.get_monster_leader(char)
@@ -418,9 +417,8 @@ class CombatServer():
 
     def monster_victory(self, combatPane):
         p = [p for i, p in self.server.person.iteritems() if p.location == combatPane][0]
-        if self.combatStates[combatPane].turnTimer:
-            if self.combatStates[combatPane].turnTimer.active():
-                self.combatStates[combatPane].turnTimer.cancel()
+        if self.combatStates[combatPane].turnTimer and self.combatStates[combatPane].turnTimer.active():
+            self.combatStates[combatPane].turnTimer.cancel()
         
         p.ai.resume()
         p.cPane = None
@@ -442,6 +440,12 @@ class CombatServer():
             # This player was the only one left.
             doMonsterVictory = True
         
+        self.refillResources(player)
+        self.removeTemporaryStatuses(player)
+        self.server.broadcast(Command("CLIENT", "RESET_TARGETS", id=player.id), player.id)
+        self.server.broadcast(Command("PERSON", "REMOVE", id=player.id), -player.id)
+        self.server.broadcast(Command("UPDATE", "COMBAT", combat=False), player.id)
+
         respawn_location = Location((0, 0), (PANE_X / 2, PANE_Y / 2))
         self.server.pane[player.cPane].person.remove(player.id)
         self.server.pane[player.location.pane].person.remove(player.id)
@@ -451,12 +455,6 @@ class CombatServer():
         player.cLocation = None
         player.location = respawn_location
         
-        # Exit combat
-        self.refillResources(player)
-        self.removeTemporaryStatuses(player)
-        self.server.broadcast(Command("CLIENT", "RESET_TARGETS", id=player.id), player.id)
-        self.server.broadcast(Command("PERSON", "REMOVE", id=player.id), player.id)
-        self.server.broadcast(Command("UPDATE", "COMBAT", combat=False), player.id)
         self.server.broadcast(Command("PERSON", "CREATE", id=player.id, \
                 location=player.location, details=player.dehydrate()), player.id)
         for i in self.server.pane[player.location.pane].person:
