@@ -19,6 +19,8 @@ CLASSES = ('Assassin', 'Barbarian', 'Dragoon', 'Weapon Master', 'Spellsword',
 RACES = ('Human', 'Dwarf', 'Elf', 'Halfling', 'Orc')
 CHARSAVES = glob.glob(os.path.join('res', 'saves', 'characters', '*.akinc'))
 CHARSAVESWIDTH = len(max(CHARSAVES, key=len))
+WORLDSAVES = glob.glob(os.path.join('res', 'saves', 'worlds', '*.akinw'))
+WORLDSAVESWIDTH = len(max(WORLDSAVES, key=len))
 
 
 class WelcomeWindow(object):
@@ -43,7 +45,7 @@ class WelcomeWindow(object):
         self.loadingworld = False
         self.loadingworldvar = StringVar(value='New World')
         self.worldseed = StringVar()
-        self.worldsave = StringVar()
+        self.worldsave = StringVar(value='')
         self.turnlengthstr = StringVar(value='')
         self.turnlength = -1
         self.ironman = BooleanVar(value=False)
@@ -190,7 +192,7 @@ class WelcomeWindow(object):
         newworldbox = Entry(frame, textvariable=self.worldseed)
         loadworldcombo = ttk.Combobox(frame,
                                       textvariable=self.worldsave,
-                                      values=(),
+                                      values=WORLDSAVES,
                                       state='readonly')
         turnlengthbox = Entry(frame, textvariable=self.turnlengthstr)
         turnlengthl = ttk.Label(frame, text='Turn length (empty for infinite)')
@@ -270,14 +272,18 @@ class WelcomeWindow(object):
                 if self.turnlength <= 0:
                     self.turnlength = -1
         except ValueError:
+            print 'Bad port number, try again.'
             return
-        if self.loadingworldvar.get() == '' or self.worldseed.get() == '':
+        if self.loadingworldvar.get() == '':
             return
         if self.loadingworldvar.get() == 'New World':
+            if self.worldseed.get() == '':
+                return
             self.loadingworld = False
         else:
+            if self.worldsave.get() == '':
+                return
             self.loadingworld = True
-            return
 
         self.hosting = True
         self.success = True
@@ -299,6 +305,9 @@ def runwelcome():
         root.destroy()
     except:
         sys.exit()
+    if not window.success:
+        raise Exception('Something went wrong with the welcome screens. '
+                        'Aborting...')
     ret = []
 
     if window.loadingchar:
