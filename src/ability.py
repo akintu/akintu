@@ -290,7 +290,8 @@ class Ability(object):
         
     def _feint(self, target):
         source = self.owner
-        success = Dice.rollBeneath(min(80, (source.totalCunning - target.totalCunning) * 8))
+        chance = min(80, (source.totalCunning - target.totalCunning) * 8)
+        success = Dice.rollBeneath(chance)
         if success:
             duration = 2
             Combat.addStatus(target, "Feint", duration)

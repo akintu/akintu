@@ -790,7 +790,7 @@
   [ELEMENT: None]
   [INTERNAL: Dodge_bonus]
     [MAGNITUDE: 12]
-  [CATEGORY: Debuff]
+  [CATEGORY: Buff]
 	
 [NAME: Feint]
   [TYPE: Display]

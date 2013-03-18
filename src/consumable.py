@@ -29,7 +29,7 @@ class Consumable(entity.Entity):
             self.ip = Consumable.allPotions[name]['ip']
             self.details = Consumable.allPotions[name]['details']
         elif name in Consumable.allPoisons:
-            self.type = "Applied Poison"
+            self.type = "Poison"
             self.value = Consumable.allPoisons[name]['value']
             self.level = Consumable.allPoisons[name]['level']
             self.effect = Consumable.allPoisons[name]['effect']
