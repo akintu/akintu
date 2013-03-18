@@ -219,6 +219,12 @@ class Game(object):
                 else:
                     if self.pane.person[command.id].anim:
                         self.pane.person[command.id].anim.stop()
+                        
+                    if self.currentTargetId == command.id:
+                        loc = self.pane.person[command.id].location
+                        tile = self.pane.get_tile(loc.tile)
+                        self.screen.update_tile(tile, loc)
+                    
                     self.screen.remove_person(command.id)
                     if command.id == self.currentTargetId:
                         self.currentTargetId = None
@@ -658,9 +664,12 @@ class Game(object):
             return
         
         if self.currentTargetId:
-            loc = self.pane.person[self.currentTargetId].location
-            tile = self.pane.get_tile(loc.tile)
-            self.screen.update_tile(tile, loc)
+            if self.currentTargetId not in self.pane.person.keys():
+                self.currentTargetId = None
+            else:
+                loc = self.pane.person[self.currentTargetId].location
+                tile = self.pane.get_tile(loc.tile)
+                self.screen.update_tile(tile, loc)
         
         resetNeeded = False
         for x in self.panePersonIdList:

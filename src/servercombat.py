@@ -306,7 +306,7 @@ class CombatServer():
                 self.shout_turn_start(character, turn="Player")
             if CombatServer.SECONDS > 0:
                 if self.combatStates[combatPane].turnTimer.active():
-                    self.combatStates[combatPane].turnTimer.cancel():
+                    self.combatStates[combatPane].turnTimer.cancel()
                 self.combatStates[combatPane].turnTimer = reactor.callLater(CombatServer.SECONDS, self.check_turn_end,
                         combatPane, True)
 
