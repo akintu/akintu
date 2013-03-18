@@ -7,14 +7,20 @@ import ttk
 import socket
 import const
 import sys
+import os
+import glob
 import re
 import urllib2
 
-CLASSES = ('Barbarian', 'Dragoon', 'Weapon Master', 'Spellsword', 'Anarchist',
-           'Marksman', 'Druid', 'Tactician', 'Ninja', 'Assassin', 'Shadow',
+CLASSES = ('Assassin', 'Barbarian', 'Dragoon', 'Weapon Master', 'Spellsword',
+           'Marksman', 'Druid', 'Tactician', 'Ninja', 'Anarchist', 'Shadow',
            'Nightblade', 'Battle Mage', 'Arcane Archer', 'Trickster',
            'Sorcerer')
 RACES = ('Human', 'Dwarf', 'Elf', 'Halfling', 'Orc')
+CHARSAVES = glob.glob(os.path.join('res', 'saves', 'characters', '*.akinc'))
+CHARSAVESWIDTH = len(max(CHARSAVES, key=len))
+WORLDSAVES = glob.glob(os.path.join('res', 'saves', 'worlds', '*.akinw'))
+WORLDSAVESWIDTH = len(max(WORLDSAVES, key=len))
 
 
 class WelcomeWindow(object):
@@ -27,18 +33,19 @@ class WelcomeWindow(object):
         self.master = master
         # Set a variable which tells whether the Player completed the menus
         self.success = False
-        self.charrace = StringVar()
-        self.charclass = StringVar()
+        self.charrace = StringVar(value=RACES[0])
+        self.charclass = StringVar(value=CLASSES[0])
         self.charname = StringVar(value='Mysterious Adventurer')
+        self.charsave = StringVar(value='')
         self.joinip = StringVar()
         self.portstr = StringVar(value='1337')
         self.port = 1337
         self.hosting = True
         self.loadingchar = False
         self.loadingworld = False
-        self.loadingworldvar = StringVar()
+        self.loadingworldvar = StringVar(value='New World')
         self.worldseed = StringVar()
-        self.worldsave = StringVar()
+        self.worldsave = StringVar(value='')
         self.turnlengthstr = StringVar(value='')
         self.turnlength = -1
         self.ironman = BooleanVar(value=False)
@@ -51,7 +58,9 @@ class WelcomeWindow(object):
         # Create the widgets
         akintul = ttk.Label(frame, text='Akintu', style='TitleLabel.TLabel')
         newchar = ttk.Button(frame, text='New Character', command=self.newchar)
-        loadchar = ttk.Button(frame, text='Load Character', command=self.loadchar)
+        loadchar = ttk.Button(frame,
+                              text='Load Character',
+                              command=self.loadchar)
         # Lay out the widgets
         akintul.grid(column=1, row=1, sticky=(N, W, E, S), padx=10, pady=50)
         newchar.grid(column=1, row=2, stick=(N, S), padx=10, pady=10)
@@ -63,14 +72,28 @@ class WelcomeWindow(object):
         # Create the widgets
         backb = ttk.Button(frame, text='Back', command=self.mainmenu)
         nextb = ttk.Button(frame, text='Next', command=self.playtype)
-        classcombo = ttk.Combobox(frame, textvariable=self.charclass, values=CLASSES, state='readonly')
-        racecombo = ttk.Combobox(frame, textvariable=self.charrace, values=RACES, state='readonly')
+        classcombo = ttk.Combobox(frame,
+                                  textvariable=self.charclass,
+                                  values=CLASSES,
+                                  state='readonly')
+        racecombo = ttk.Combobox(frame,
+                                 textvariable=self.charrace,
+                                 values=RACES,
+                                 state='readonly')
         classl = ttk.Label(frame, text='Class:')
         racel = ttk.Label(frame, text='Race:')
         namel = ttk.Label(frame, text='Name:')
         namebox = ttk.Entry(frame, textvariable=self.charname)
-        ironmancheck = ttk.Checkbutton(frame, text='Iron Man Mode', variable=self.ironman, onvalue=True, offvalue=False)
-        hardcorecheck = ttk.Checkbutton(frame, text='Hardcore Mode', variable=self.hardcore, onvalue=True, offvalue=False)
+        ironmancheck = ttk.Checkbutton(frame,
+                                       text='Iron Man Mode',
+                                       variable=self.ironman,
+                                       onvalue=True,
+                                       offvalue=False)
+        hardcorecheck = ttk.Checkbutton(frame,
+                                        text='Hardcore Mode',
+                                        variable=self.hardcore,
+                                        onvalue=True,
+                                        offvalue=False)
         # Lay out the widgets
         namel.grid(column=2, row=1, stick=W, padx=5, pady=5)
         namebox.grid(column=2, row=2, stick=(W, E), padx=5, pady=5)
@@ -82,6 +105,24 @@ class WelcomeWindow(object):
         hardcorecheck.grid(column=2, row=8, stick=W, padx=5, pady=5)
         backb.grid(column=1, row=9, stick=(N, S), padx=20, pady=20)
         nextb.grid(column=3, row=9, stick=(N, S), padx=20, pady=20)
+        return frame
+
+    def _getloadchar(self):
+        frame = ttk.Frame(self.master, padding='50 50 50 50')
+        # Create the widgets
+        backb = ttk.Button(frame, text='Back', command=self.mainmenu)
+        nextb = ttk.Button(frame, text='Next', command=self.playtype)
+        savel = ttk.Label(frame, text='Load game:')
+        savecombo = ttk.Combobox(frame,
+                                 textvariable=self.charsave,
+                                 values=CHARSAVES,
+                                 state='readonly',
+                                 width=CHARSAVESWIDTH)
+        # Lay out the widgets
+        savel.grid(column=2, row=1, stick=W, padx=5, pady=5)
+        savecombo.grid(column=2, row=2, stick=(N, S), padx=5, pady=5)
+        backb.grid(column=1, row=3, stick=(N, S), padx=20, pady=20)
+        nextb.grid(column=3, row=3, stick=(N, S), padx=20, pady=20)
         return frame
 
     def _getplaytype(self):
@@ -120,7 +161,8 @@ class WelcomeWindow(object):
         # Try to get your ip
         localip = ''
         try:
-            fullhtml = urllib2.urlopen('http://www.internetfrog.com/myinternet/traceroute/').read()
+            url = 'http://www.internetfrog.com/myinternet/traceroute/'
+            fullhtml = urllib2.urlopen(url).read()
             match = re.search('(?<=Your IP is: )\d+\.\d+\.\d+\.\d+', fullhtml)
             localip = match.group(0)
         except:
@@ -139,10 +181,19 @@ class WelcomeWindow(object):
         ipl = ttk.Label(frame, text='Your IP address:  ' + localip)
         portl = ttk.Label(frame, text='Port to listen on:')
         portbox = ttk.Entry(frame, textvariable=self.portstr)
-        newworldr = ttk.Radiobutton(frame, text='New World', variable=self.loadingworldvar, value='New World')
-        loadworldr = ttk.Radiobutton(frame, text='Load World', variable=self.loadingworldvar, value='Load World')
+        newworldr = ttk.Radiobutton(frame,
+                                    text='New World',
+                                    variable=self.loadingworldvar,
+                                    value='New World')
+        loadworldr = ttk.Radiobutton(frame,
+                                     text='Load World',
+                                     variable=self.loadingworldvar,
+                                     value='Load World')
         newworldbox = Entry(frame, textvariable=self.worldseed)
-        loadworldcombo = ttk.Combobox(frame, textvariable=self.worldsave, values=(), state='readonly')
+        loadworldcombo = ttk.Combobox(frame,
+                                      textvariable=self.worldsave,
+                                      values=WORLDSAVES,
+                                      state='readonly')
         turnlengthbox = Entry(frame, textvariable=self.turnlengthstr)
         turnlengthl = ttk.Label(frame, text='Turn length (empty for infinite)')
         # Lay out the widgets
@@ -172,12 +223,19 @@ class WelcomeWindow(object):
         self.prevplaytype = self.newchar
 
     def loadchar(self):
-        #TODO implement loading a character
         self.loadingchar = True
+        self.frame.pack_forget()
+        self.frame = self._getloadchar()
+        self.frame.pack()
+        self.prevplaytype = self.loadchar
 
     def playtype(self):
-        if self.charrace.get() == '' or self.charclass.get() == '':
-            return
+        if not self.loadingchar:
+            if self.charrace.get() == '' or self.charclass.get() == '':
+                return
+        else:
+            if self.charsave.get() == '':
+                return
         self.frame.pack_forget()
         self.frame = self._getplaytype()
         self.frame.pack()
@@ -214,14 +272,18 @@ class WelcomeWindow(object):
                 if self.turnlength <= 0:
                     self.turnlength = -1
         except ValueError:
+            print 'Bad port number, try again.'
             return
-        if self.loadingworldvar.get() == '' or self.worldseed.get() == '':
+        if self.loadingworldvar.get() == '':
             return
         if self.loadingworldvar.get() == 'New World':
+            if self.worldseed.get() == '':
+                return
             self.loadingworld = False
         else:
+            if self.worldsave.get() == '':
+                return
             self.loadingworld = True
-            return
 
         self.hosting = True
         self.success = True
@@ -243,10 +305,13 @@ def runwelcome():
         root.destroy()
     except:
         sys.exit()
+    if not window.success:
+        raise Exception('Something went wrong with the welcome screens. '
+                        'Aborting...')
     ret = []
 
     if window.loadingchar:
-        ret.append('')  # TODO will be window.charsave.get() instead of ''
+        ret.append(window.charsave.get())
     else:
         ret.append((window.charname.get(),
                     window.charrace.get(),
