@@ -444,6 +444,7 @@ class CombatServer():
         
         respawn_location = Location((0, 0), (PANE_X / 2, PANE_Y / 2))
         self.server.pane[player.cPane].person.remove(player.id)
+        self.server.pane[player.location.pane].person.remove(player.id)
         self.server.load_pane(respawn_location.pane)
         self.server.pane[respawn_location.pane].person.append(player.id)
         player.cPane = None
