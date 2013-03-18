@@ -2890,7 +2890,7 @@ class Person(en.Entity):
         if not stealthedTarget.inStealth():
             print "Target is not in stealth."
             return True
-        chance = max(1, 15 - stealthedTarget.totalSneak + self.totalAwareness)
+        chance = max(1, 20 - stealthedTarget.totalSneak + self.totalAwareness + self.level * 2)
         if Dice.rollBeneath(chance):
             return True
         else:
