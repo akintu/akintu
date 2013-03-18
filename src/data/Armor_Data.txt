@@ -411,7 +411,7 @@
 [Weight: 5]
 
 [Name: Ring]
-[Bonus Mod: 3]
+[Bonus Mod: 1]
 [Bonus Tendency 1: None]
 [Bonus Tendency 2: None]
 [Bonus Tendency 3: None]
@@ -428,7 +428,7 @@
 [Weight: 0]
 
 [Name: Amulet]
-[Bonus Mod: 3]
+[Bonus Mod: 2]
 [Bonus Tendency 1: None]
 [Bonus Tendency 2: None]
 [Bonus Tendency 3: None]
