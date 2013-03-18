@@ -299,6 +299,7 @@ class CombatServer():
                 self.upkeep(character)
             # New Turn here
             for character in [self.server.person[x] for x in self.server.pane[combatPane].person]:
+                #if not character.hasStatus("Stun"): TODO, uncomment after Beta
                 character.AP = character.totalAP
                 self.server.broadcast(Command("PERSON", "UPDATE", id=character.id, AP=character.AP),
                         pane=combatPane)

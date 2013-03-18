@@ -366,21 +366,13 @@
   [RECURRING: False]
   [IMMUNE: Boss]  
 	
-[NAME: Stunning_recovery_internal]
+[NAME: Stun_internal]
   [TYPE: Internal]
   [RECURRING: False]
 	
-#[NAME: Target_ranged_accuracy_bonus]
-#  [TYPE: Internal]
-#  [RECURRING: False]
-  
-#[NAME: Target_ranged_dodge_bonus]
-#  [TYPE: Internal]
-#  [RECURRING: False]
-
-#[NAME: Target_ranged_dodge_penalty_marksman]
-#  [TYPE: Internal]
-#  [RECURRING: False]
+[NAME: Stunning_recovery_internal]
+  [TYPE: Internal]
+  [RECURRING: False]
   
 [NAME: Target_throat_internal]
   [TYPE: Internal]

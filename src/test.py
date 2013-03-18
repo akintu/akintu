@@ -56,11 +56,24 @@ if __name__ == "__main__":
             # for abil in char.abilities:
                 # print abil.name + " " + str(abil.APCost)
         #print "   " + char.equippedItems.equippedWeapon.name
-    # char = theorycraft.TheoryCraft.getNewPlayerCharacter("Elf", "Battle Mage")
-    #char.printCharacterSheet()
+    char = theorycraft.TheoryCraft.getNewPlayerCharacter("Orc", "Barbarian")
+    mon = theorycraft.TheoryCraft.getMonster(level=3)
+    for i in range(120):
+        tc = treasurechest.TreasureChest("Large", 19, None)
+        tc.generateTreasure(char)
+        for item in char.inventory.allItems:
+            if isinstance(item, equipment.Equipment) and item.type != "Shield":
+                char.equip(item)
+                print char.equippedItems.equippedWeapon.displayName
+                for prop in char.equippedItems.equippedWeapon.propertyList:
+                    print prop.name + " " + `prop.counts`
+                    
+                combat.Combat.weaponAttack(char, mon, "Critical Hit")
+        if i % 5 == 1:
+            print `i`
+            char.inventory._allItems =[]
     
-    print `False`
-    print `True`
+    
     
     # saved = char.dehydrate()
     # with open('./data/testSaveFile.txt', 'wb') as f:

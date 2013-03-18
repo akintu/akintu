@@ -146,6 +146,16 @@ class Equipment(e.Entity):
                 secondProperty = firstProperty
                 firstProperty = prop
                 maxValue = value
+        if firstProperty and not secondProperty:
+            secondaryPropList = self.propertyList
+            secondaryPropList.remove(firstProperty)
+            maxValue = 0
+            for prop in secondaryPropList:
+                value = prop.cost * prop.counts
+                if value > maxValue or \
+                 (secondProperty and value == maxValue and prop.name > secondProperty.name):
+                    secondProperty = prop
+                    maxValue = value
         if firstProperty and secondProperty:
             self.displayName = secondProperty.prefix + " " + self.name + " " + firstProperty.suffix
             self.prefix = secondProperty.prefix

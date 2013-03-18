@@ -75,7 +75,7 @@ class OnHitEffect(object):
     def applySpellhunger(self, magnitude, source, target):
         # Magnitude determines MP destroyed.
         MPLoss = magnitude
-        target.MP -= MPLoss
+        Combat.modifyResource(target, "MP", -MPLoss)
         return None
 
     def applyStunning(self, magnitude, source, target):

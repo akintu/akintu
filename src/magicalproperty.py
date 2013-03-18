@@ -90,6 +90,11 @@ class MagicalProperty(object):
         attempts = 0
         ip = givenIp
         while( ip > 0 ):
+            if attempts > 20:
+                ip = givenIp
+                chosenList = []
+                position = 0
+                attempts = 0 
             if (len(chosenList) < maxListSize):
                 dieRoll = Dice.roll(1, totalWeight)
                 possibleProperty = MagicalProperty.selection(subList, dieRoll)
@@ -116,14 +121,8 @@ class MagicalProperty(object):
                     chosenList.append(property)
             else:
                 if position >= len(chosenList):
-                    if attempts > 10:
-                        ip = givenIp
-                        chosenList = []
-                        position = 0
-                        continue
-                    else:
-                        attempts += 1
-                        position = Dice.roll(0, len(chosenList) - 1)
+                    attempts += 1
+                    position = Dice.roll(0, len(chosenList) - 1)
                 currentProperty = chosenList[position]
                 thisIp = currentProperty.cost
                 if thisIp == "Varies":
@@ -133,6 +132,7 @@ class MagicalProperty(object):
                         thisIp = item.gradientPoints
                 if thisIp > ip or (currentProperty.max and currentProperty.counts >= currentProperty.max):
                     position += 1
+                    attempts += 1
                 else:
                     ip -= thisIp
                     currentProperty.counts += 1
@@ -198,7 +198,7 @@ class MagicalProperty(object):
 
 
     def _AP(self, owner, reverse=False):
-        APIncrease = max(self.max)
+        APIncrease = min(self.max, self.counts)
         if not reverse:
             owner.equipmentAP += APIncrease
         else:
@@ -237,7 +237,9 @@ class MagicalProperty(object):
     def _carryingCapacity(self, owner, reverse=False):
         bonus = self.counts * 2
         if not reverse:
-            owner.equipment
+            owner.equipmentCarryingCapacity += bonus
+        else:
+            owner.equipmentCarryingCapacity -= bonus
 
     def _criticalHitChance(self, owner, reverse=False):
         bonus = self.counts * 0.50
@@ -350,10 +352,10 @@ class MagicalProperty(object):
         bonusMin = self.counts
         bonusMax = self.counts * 2
         if not reverse:
-            hitEffect = onhiteffect.OnHitEffect("ElementalDamage Cold", self.counts)
+            hitEffect = onhiteffect.OnHitEffect(self.counts, onhiteffect.OnHitEffect.applyElementalDamage, "Cold")
             owner.onHitEffects.append(hitEffect)
         else:
-            owner.removeOnHitEffect(self.counts, onhiteffect.OnHitEffect.applyElementalDamage, "Cold")
+            owner.removeOnHitEffect("ElementalDamage Cold", self.counts)
 
     def _elementalDamageElectric(self, owner, reverse=False):
         bonusMin = self.counts
