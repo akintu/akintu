@@ -7,6 +7,8 @@ import ttk
 import socket
 import const
 import sys
+import os
+import glob
 import re
 import urllib2
 
@@ -15,6 +17,8 @@ CLASSES = ('Barbarian', 'Dragoon', 'Weapon Master', 'Spellsword', 'Anarchist',
            'Nightblade', 'Battle Mage', 'Arcane Archer', 'Trickster',
            'Sorcerer')
 RACES = ('Human', 'Dwarf', 'Elf', 'Halfling', 'Orc')
+CHARSAVES = glob.glob(os.path.join('res', 'saves', 'characters', '*.akinc'))
+CHARSAVESWIDTH = len(max(CHARSAVES, key=len))
 
 
 class WelcomeWindow(object):
@@ -30,6 +34,7 @@ class WelcomeWindow(object):
         self.charrace = StringVar()
         self.charclass = StringVar()
         self.charname = StringVar(value='Mysterious Adventurer')
+        self.charsave = StringVar(value='')
         self.joinip = StringVar()
         self.portstr = StringVar(value='1337')
         self.port = 1337
@@ -82,6 +87,20 @@ class WelcomeWindow(object):
         hardcorecheck.grid(column=2, row=8, stick=W, padx=5, pady=5)
         backb.grid(column=1, row=9, stick=(N, S), padx=20, pady=20)
         nextb.grid(column=3, row=9, stick=(N, S), padx=20, pady=20)
+        return frame
+
+    def _getloadchar(self):
+        frame = ttk.Frame(self.master, padding='50 50 50 50')
+        # Create the widgets
+        backb = ttk.Button(frame, text='Back', command=self.mainmenu)
+        nextb = ttk.Button(frame, text='Next', command=self.playtype)
+        savel = ttk.Label(frame, text='Load game:')
+        savecombo = ttk.Combobox(frame, textvariable=self.charsave, values=CHARSAVES, state='readonly', width=CHARSAVESWIDTH)
+        # Lay out the widgets
+        savel.grid(column=2, row=1, stick=W, padx=5, pady=5)
+        savecombo.grid(column=2, row=2, stick=(N, S), padx=5, pady=5)
+        backb.grid(column=1, row=3, stick=(N, S), padx=20, pady=20)
+        nextb.grid(column=3, row=3, stick=(N, S), padx=20, pady=20)
         return frame
 
     def _getplaytype(self):
@@ -172,12 +191,19 @@ class WelcomeWindow(object):
         self.prevplaytype = self.newchar
 
     def loadchar(self):
-        #TODO implement loading a character
         self.loadingchar = True
+        self.frame.pack_forget()
+        self.frame = self._getloadchar()
+        self.frame.pack()
+        self.prevplaytype = self.loadchar
 
     def playtype(self):
-        if self.charrace.get() == '' or self.charclass.get() == '':
-            return
+        if not self.loadingchar:
+            if self.charrace.get() == '' or self.charclass.get() == '':
+                return
+        else:
+            if self.charsave.get() == '':
+                return
         self.frame.pack_forget()
         self.frame = self._getplaytype()
         self.frame.pack()
@@ -246,7 +272,7 @@ def runwelcome():
     ret = []
 
     if window.loadingchar:
-        ret.append('')  # TODO will be window.charsave.get() instead of ''
+        ret.append(window.charsave.get())
     else:
         ret.append((window.charname.get(),
                     window.charrace.get(),
