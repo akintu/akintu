@@ -106,6 +106,9 @@ class State(object):
         '''
         Dehydrates our current player and saves it.
         '''
+        
+        if not player:
+            return
 
         if not State.char_file:
             saved_list = os.listdir(CHAR_SAVE_PATH)
