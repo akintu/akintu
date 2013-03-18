@@ -1112,7 +1112,7 @@ class Ability(object):
             Combat.lowerHP(target, damage)
 
     def _poisonFang(self, target):
-        ''' Lowers target's poison tolerance and deals poison damage if successful. '''
+        ''' Lowers target's poison tolerance, might and deals poison damage if successful. '''
         source = self.owner
         if Combat.calcHit(source, target, "Physical") != "Miss":
             pRating = 6 + source.level * 2
@@ -1313,8 +1313,9 @@ class Ability(object):
         'checkFunction' : _backstabCheck,
         'breakStealth' : 100,
         'image' : THIEF_SKILLS + "backstab.png",
-        'text' : 'Melee attack from stealth with a high critical hit chance.\n' +
-                'Must be behind the target and wielding only sword or knife type weapons.'
+        'text' : 'Melee attack from stealth with a high critical hit chance.\n' + \
+                'Must be behind the target and wielding only sword or knife type weapons.\n' + \
+                'If the attack doesn\'t critical, it still deals +50% damage.'
         },
         'Chain Grasp':
         {
@@ -1346,7 +1347,7 @@ class Ability(object):
         'checkFunction' : _agilePositionCheck,
         'breakStealth' : 0,
         'image' : THIEF_SKILLS + "agile-position.png",
-        'text' : 'Defensive move that ends turn but grants a large bonus to dodge.'
+        'text' : 'Defensive move that ends turn but grants +12 to dodge.'
         },
         'Hit and Run':
         {
