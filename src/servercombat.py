@@ -41,6 +41,7 @@ class CombatServer():
                 if port:
                     command.id = self.server.player[port]
                     del self.server.player[port]
+                    self.server.pane[self.server.person[command.id].location.pane].person.remove(command.id)
                 self.server.pane[self.server.person[command.id].cPane].person.remove(command.id)
 
                 #Notify clients in the affected pane
@@ -281,7 +282,7 @@ class CombatServer():
             if not self.combatStates[combatPane].turnTimer:
                 if CombatServer.SECONDS > 0:
                     print "No timer found!"
-            else:
+            elif self.combatStates[combatPane].turnTimer.active():
                 self.combatStates[combatPane].turnTimer.cancel()
         if timeExpired or not APRemains:
             self.end_turn(combatPane)
@@ -456,7 +457,7 @@ class CombatServer():
         player.location = respawn_location
         
         self.server.broadcast(Command("PERSON", "CREATE", id=player.id, \
-                location=player.location, details=player.dehydrate()), player.id)
+                location=player.location, details=player.dehydrate()), -player.id)
         for i in self.server.pane[player.location.pane].person:
             if i != player.id:
                 self.server.broadcast(Command("PERSON", "CREATE", id=i, \

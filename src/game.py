@@ -555,6 +555,8 @@ class Game(object):
             self.running = False
 
         newloc = self.pane.person[self.id].location.move(direction, distance)
+        if self.combat and newloc.pane != (0, 0):
+            return False
         if not self.pane.person[self.id].anim and ((self.pane.person[self.id].location.pane == \
                 newloc.pane and self.pane.is_tile_passable(newloc) and \
                 newloc.tile not in [x.location.tile for x in self.pane.person.values()]) or \

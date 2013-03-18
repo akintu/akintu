@@ -33,7 +33,7 @@ class ServerData(LineReceiver):
             print('ServerData lost connection to client on ' + str(self.port) + '.  Reason: ' + reason.getErrorMessage())
         if self.port in self.factory.clients:
             del self.factory.clients[self.port]
-            self.factory.queue.put((self.port, Command("PERSON", "REMOVE", id=None)))
+            self.factory.queue.put((self.port, Command("PERSON", "REMOVE")))
 
     def lineReceived(self, data):
         data = cPickle.loads(data)

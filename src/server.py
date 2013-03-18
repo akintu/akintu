@@ -22,7 +22,10 @@ class GameServer():
         while not self.SDF.queue.empty():
             port, command = self.SDF.queue.get()
             
-            if 'id' in command.__dict__ and command.id in self.person and self.person[command.id].cPane:
+            if command.type == "PERSON" and command.action == "REMOVE" and port \
+                    and not hasattr(command, 'id'):
+                command.id = self.player[port]
+            if hasattr(command, 'id') and command.id in self.person and self.person[command.id].cPane:
                 self.CS.handle(port, command)
                 continue
 
@@ -122,7 +125,7 @@ class GameServer():
                         del self.player[port]
                     
                     self.pane[self.person[command.id].location.pane].person.remove(command.id)
-                    self.broadcast(command, pid=-command.id)
+                    self.broadcast(command, -command.id)
                     del self.person[command.id]
                     self.unload_panes()
 
