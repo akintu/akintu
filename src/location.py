@@ -167,6 +167,9 @@ class Location(object):
             (self.tile[0] + dx, self.tile[1] + dy) for dx in range(-1, 2) for dy in range(1, -2, -1)}        
     
     def line_to(self, dest):
+        if self == dest:
+            return [self]
+            
         locs = []
         distx = dest.abs_x - self.abs_x
         disty = dest.abs_y - self.abs_y
