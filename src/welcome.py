@@ -22,7 +22,7 @@ if not os.path.exists(savesprefix):
 IPFILENAME = os.path.join('res', 'ip_history.txt')
 try:
     with open(IPFILENAME, 'r') as ipfile:
-        IP = tuple(list(set(ipfile.readlines()))[::-1][:5])
+        IP = tuple(ipfile.readlines()[::-1][:5])
 except Exception as e:
     print 'Could not load ip file: ', IPFILENAME
     print e
@@ -345,8 +345,12 @@ def runwelcome():
     else:
         ret.append(None)
         ret.append(window.joinip.get())
-        with open(IPFILENAME, 'a') as ipfile:
-            ipfile.write(window.joinip.get())
+        ips = list(IP)[::-1]
+        if window.joinip.get() + '\n' not in ips:
+            ips.append(window.joinip.get() + '\n')
+        with open(IPFILENAME, 'w') as ipfile:
+            for ip in ips:
+                ipfile.write(ip)
 
     ret.append(window.port)
 
