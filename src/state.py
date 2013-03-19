@@ -82,6 +82,7 @@ class State(object):
             return None
         else:
             if not os.path.exists(file_name):   #Perchance they provide a custom path
+                #Used to get filename with just the number
                 try:
                     tmp = int(file_name)    #Force try/catch
                     saved_list = os.listdir(CHAR_SAVE_PATH)
@@ -93,13 +94,13 @@ class State(object):
                                 #path_to_file = os.path.join(CHAR_SAVE_PATH, filename)
                                 print "Substituting " + file_name + " with " + filename
                                 file_name = filename
-                                State.char_file = filename
                                 break
                 except:
-                    print "Could not find " + str(file_name)
+                    pass
 
-        player_string = State.load(CHAR_SAVE_PATH, file_name)
-        return player_string
+            State.char_file = file_name
+            player_string = State.load(CHAR_SAVE_PATH, State.char_file)
+            return player_string
         
         
     @staticmethod
@@ -129,7 +130,12 @@ class State(object):
             State.char_file = str("%03d" % max_save) + "_" + str(player.name) + "_" + str(player.race) + "_" + str(player.characterClass) + CHAR_SAVE_EXT
         
         player_string = player.dehydrate()
-        State.save(CHAR_SAVE_PATH, State.char_file, player_string)
+        if os.path.exists(State.char_file):
+            path = ""
+        else:
+            path = CHAR_SAVE_PATH
+            
+        State.save(path, State.char_file, player_string)
         
     
     @staticmethod
