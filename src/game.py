@@ -740,8 +740,6 @@ class Game(object):
         self.screen.update_tile(tile, loc, overlay=overlay)
         
     def show_range(self, show, loc=None):
-        return
-    
         if not loc:
             loc = self.pane.person[self.id].location
         R = Region()
@@ -750,6 +748,7 @@ class Game(object):
                 if self.currentAbility.range != -1 else self.pane.person[self.id].attackRange)
         for l in [x for x in R if x.pane == (0, 0)]:
             self.set_overlay(l, 'blue' if show else None)
+        self.screen.update()
         
     def select_self(self):
         if not self.combat or self.id not in self.pane.person:
