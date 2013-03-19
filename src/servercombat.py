@@ -123,9 +123,7 @@ class CombatServer():
         '''Checks the list of Persons on this combat Pane to see if they have HP > 0.
         If they do not, it will "remove them" from the combatPane and add them to a
         deadList associated with this CombatState.  If all monsters are dead and at least
-        one player remains, enters the victory phase.'''
-        print "HELLO, My name is update dead people! I was just called."
-        
+        one player remains, enters the victory phase.'''       
         if not combatPane:
             return
             
