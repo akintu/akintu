@@ -264,7 +264,8 @@ class Person(en.Entity):
         self._clientStatusView[statusName] = {'image' : image, 'turnsLeft' : turnsLeft}
         
     def removeClientStatus(self, statusName):
-        del self._clientStatusView[statusName]
+        if statusName in self._clientStatusView:
+            del self._clientStatusView[statusName]
         
         
     @property

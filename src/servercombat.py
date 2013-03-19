@@ -400,8 +400,11 @@ class CombatServer():
         player.cooldownList = []
 
     def removeTemporaryStatuses(self, player):
-        '''Used to remove statuses that don't persist outside of combat'''
-        removalList = [x for x in player.statusList if x.turnsLeft > -1]
+        '''Used to remove statuses that don't persist outside of combat.
+        Currently all statuses are removed, as statuses aren't functioning
+        properly when persisting.  This would be nice to implement later
+        however. TODO'''
+        removalList = [x for x in player.statusList]
         for removalStatus in removalList:
             Combat.removeStatus(player, removalStatus.name)
 
