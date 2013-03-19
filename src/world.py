@@ -25,7 +25,7 @@ class World(object):
     '''
 
     def __init__(self, seed):
-        self.seed = seed#world_state[SEED_KEY]
+        self.seed = seed
         self.panes = dict()
         self.pane_items = dict()
         self.pane_chests = dict()
