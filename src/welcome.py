@@ -19,6 +19,14 @@ savesprefix = os.path.join('res', 'saves', 'worlds')
 if not os.path.exists(savesprefix):
     os.makedirs(savesprefix)
 
+IPFILENAME = os.path.join('res', 'ip_history.txt')
+try:
+    with open(IPFILENAME, 'r') as ipfile:
+        IP = tuple(list(set(ipfile.readlines()))[::-1][:5])
+except Exception as e:
+    print 'Could not load ip file: ', IPFILENAME
+    print e
+    IP = ()
 CLASSES = ('Assassin', 'Barbarian', 'Dragoon', 'Weapon Master', 'Spellsword',
            'Marksman', 'Druid', 'Tactician', 'Ninja', 'Anarchist', 'Shadow',
            'Nightblade', 'Battle Mage', 'Arcane Archer', 'Trickster',
@@ -155,11 +163,11 @@ class WelcomeWindow(object):
         finishb = ttk.Button(frame, text='Start', command=self.finishjoin)
         ipl = ttk.Label(frame, text='Host IP:')
         portl = ttk.Label(frame, text='Host Port:')
-        ipbox = ttk.Entry(frame, textvariable=self.joinip)
+        ipcombobox = ttk.Combobox(frame, textvariable=self.joinip, values=IP)
         portbox = ttk.Entry(frame, textvariable=self.portstr)
         # Lay out the widgets
         ipl.grid(column=2, row=1, stick=W, padx=5, pady=5)
-        ipbox.grid(column=2, row=2, stick=(W, E), padx=5, pady=5)
+        ipcombobox.grid(column=2, row=2, stick=(W, E), padx=5, pady=5)
         portl.grid(column=2, row=3, stick=W, padx=5, pady=5)
         portbox.grid(column=2, row=4, stick=(W, E), padx=5, pady=5)
         backb.grid(column=1, row=5, stick=(N, S), padx=20, pady=20)
@@ -337,6 +345,8 @@ def runwelcome():
     else:
         ret.append(None)
         ret.append(window.joinip.get())
+        with open(IPFILENAME, 'a') as ipfile:
+            ipfile.write(window.joinip.get())
 
     ret.append(window.port)
 
