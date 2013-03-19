@@ -46,6 +46,7 @@ class GameScreen(object):
                                                 (200, 0, 0, 50))
         pygame.display.flip()
         self.turntime = 0
+        self.tile_updated = False
 
         # Draw the sidebar text area and make sure it has at least one item
         # in it (even though it's a blank item)
@@ -225,14 +226,7 @@ class GameScreen(object):
             self.background.blit(self.overlays[overlay],
                                  (i*TILE_SIZE, j*TILE_SIZE))
 
-        if not self.dialog:
-            # Blit the entire background (if this becomes an issue we'll
-            # refactor)
-            self.screen.blit(self.background, [0, 0])
-            self.personsgroup.update()
-            self.personsgroup.draw(self.screen)
-            pygame.display.update()
-            self.personsgroup.clear(self.screen, self.background)
+        self.tile_updated = True
 
     def add_person(self, personid, statsdict):
         '''
@@ -339,10 +333,17 @@ class GameScreen(object):
         Should be called once per game loop cycle
         '''
         if not self.dialog:
-            self.personsgroup.update()
-            rectlist = self.personsgroup.draw(self.screen)
-            pygame.display.update(rectlist)
-            self.personsgroup.clear(self.screen, self.background)
+            if self.tile_updated:
+                self.screen.blit(self.background, [0, 0])
+                self.personsgroup.update()
+                self.personsgroup.draw(self.screen)
+                pygame.display.update()
+                self.personsgroup.clear(self.screen, self.background)
+            else:
+                self.personsgroup.update()
+                rectlist = self.personsgroup.draw(self.screen)
+                pygame.display.update(rectlist)
+                self.personsgroup.clear(self.screen, self.background)
 
     def set_fps(self, fps):
         '''
