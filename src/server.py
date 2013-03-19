@@ -44,6 +44,8 @@ class GameServer():
                     self.player[port] = person.id
                 self.person[person.id] = person
                 self.pane[command.location.pane].person.append(person.id)
+                if port:
+                    self.broadcast(Command("UPDATE", "SEED", seed=self.world.seed), command.id)
 
                 # Send command to each player in the affected pane
                 self.broadcast(command, -command.id)

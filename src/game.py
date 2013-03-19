@@ -58,7 +58,7 @@ class Game(object):
         self.pane = None
 
         # Game state
-        self.id = -1
+        self.id = -2
         self.keystate = []
         self.running = False
         self.combat = False
@@ -90,7 +90,6 @@ class Game(object):
             self.serverip = "localhost"
             self.gs = GameServer(self.world, self.port)
             Combat.gameServer = self.gs
-            
 
         self.CDF = ClientDataFactory()
         reactor.connectTCP(self.serverip, self.port, self.CDF)
@@ -124,21 +123,30 @@ class Game(object):
         if not self.CDF.port:
             return
             
-        #===========================================================================
-        #KYLE, Just set self.seed prior to this logic
-        self.seed = "fdsa"  #TODO: REMOVE THIS LINE
+        if self.id == -2:
+            self.CDF.send(person)
+            self.id = -1
+            
+        if not self.CDF.queue.empty():
+            command = self.CDF.queue.get()
+            if command.type == "UPDATE" and command.action == "SEED":
+                self.seed = command.seed
+                
+        if not self.seed:
+            return
+            
         self.world = World(self.seed)
-        #===========================================================================
         
         # Set up game engine
         self.screen = GameScreen()
         Combat.screen = self.screen
-
-        self.CDF.send(person)
+        
         if self.serverip == "localhost":
             action = Command("SETTINGS", "SET_TIME", id=None, time=self.turnTime)
             self.CDF.send(action)
-        
+
+        pygame.mixer.music.set_volume(0.1)
+
         self.setup.stop()
         LoopingCall(self.game_loop).start(1.0 / DESIRED_FPS)
 

@@ -19,9 +19,6 @@ def main():
     #argv[2] = character name
     port = 1337
     if len(sys.argv) > 1:
-        
-        state = {SEED_KEY: "fdsa"}
-
         num_players = sys.argv[1]
         name = sys.argv[2]
         
@@ -34,8 +31,10 @@ def main():
 
         if num_players == "1":
             ip = None
+            state = {SEED_KEY: "fdsa"}
         else:
             ip = "localhost"
+            state = None
         turnlength = -1
         ironman = True
         hardcore = False
