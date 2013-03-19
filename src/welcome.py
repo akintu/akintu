@@ -55,7 +55,7 @@ class WelcomeWindow(object):
         self.loadingchar = False
         self.loadingworld = False
         self.loadingworldvar = StringVar(value='New World')
-        self.worldseed = StringVar()
+        self.worldseed = StringVar(value='Correct Horse Battery Staple')
         self.worldsave = StringVar(value='')
         self.turnlengthstr = StringVar(value='')
         self.turnlength = -1
