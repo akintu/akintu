@@ -314,6 +314,7 @@ class Game(object):
                     for each in self.pane.person:
                         each._clientStatusView = []
                     self.play_music("overworld", True)
+                    self.show_range(False)
 
             ###### Update HP Buffers ######
             elif command.type == "UPDATE" and command.action == "HP_BUFFER":
