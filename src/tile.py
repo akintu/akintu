@@ -22,6 +22,13 @@ class Tile(object):
 
     def set_image(self, image):
         self.image = image
+        
+    def clear_all_entities(self):
+        self.entities = []
+        self.obstacles = []
+        self.items = []
+        self.chest = None
+        self.entity_keys = []
 
     def is_passable(self, check_entity_keys=False):
         if self.passable == False:

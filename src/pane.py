@@ -236,6 +236,12 @@ class Pane(object):
             self.tiles[tile].add_entity_key(self.objects[tile])
         if tile in self.objects:
             return self.objects[tile]
+    
+    def remove_obstacles(self, tile):
+        if tile in self.objects:
+            del self.objects[tile]
+        if tile in self.tiles:
+            self.tiles[tile].clear_all_entities()
         
     def remove_chest(self, tile):
         self.tiles[tile].remove_chest()
@@ -298,7 +304,11 @@ class Pane(object):
             for loc in region:
                 if not loc in self.tiles:
                     self.tiles[loc] = Tile(None, True)
-                    self.add_obstacle(loc.tile, 1, entity_type)
+                self.add_obstacle(loc.tile, 1, entity_type)
+    
+    def clear_region(self, region):
+        for loc in region:
+            self.remove_obstacles(loc.tile)
 
     def get_combat_pane(self, focus_tile, monster = None):
         return CombatPane(self, focus_tile, monster)
@@ -353,9 +363,9 @@ class Pane(object):
 
                 
 class Town(Pane):
-    buildings = dict()
     def __init__(self, seed, location, is_server=False, load_entities=False, pane_state=None):
         super(Town, self).__init__(seed, location, is_server, False, pane_state)
+        self.buildings = []
         if load_entities:
             self.add_buildings()
         if is_server:
@@ -366,14 +376,21 @@ class Town(Pane):
         random.seed(seed)
         #Generate a rectangle region within bounds
         
-        boundary_type = "tree"
-        bounds = (4, 14, 4, 9)
-        for i in range(2):
-            building = Building(boundary_type, bounds, self.location)
-            super(Town, self).load_region(building.boundary, boundary_type)
+        bounds = (7, 14, 5, 9)
+
+        for i in range(6):
+            building = Building("tree", bounds, self.location)#, (15, 6), Location(self.location, (start[0], start[1]+i*7)))
+            self.buildings.append(building)
+            super(Town, self).load_region(building.boundary, building.boundary_type)
+        
+        
+        for building in self.buildings:
+            super(Town, self).clear_region(building.clear)
+            super(Town, self).clear_region(building.path)
         
     def add_npcs(self):
-        pass
+        for building in self.buildings:
+            self.person.update(building.npcs)
 
                 
 class CombatPane(Pane):
