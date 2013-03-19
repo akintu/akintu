@@ -46,7 +46,9 @@ class CombatServer():
 
                 #Notify clients in the affected pane
                 self.server.broadcast(command, -command.id)
+                self.update_dead_people(self.server.person[command.id].cPane)
                 del self.server.person[command.id]
+                
                 self.server.unload_panes()
         
         #### Attack Target ####
