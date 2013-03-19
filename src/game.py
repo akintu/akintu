@@ -41,15 +41,20 @@ class Game(object):
         '''
 
         TheoryCraft.loadAll()   #Static method call, Devin's stuff.
-        if not state:  # This is a hack, should be getting seed from host
-            state = {SEED_KEY: 'fdsa'}
-        assert player
-
-        self.state = State.load_world(state)
+        Sprites.load()  #Static method call to load sprites
         
-        seed = self.state[SEED_KEY]
-        Sprites.load(seed)  #Static method call to load sprites
-        self.world = World(seed)
+        # if not state:  # This is a hack, should be getting seed from host
+            # state = {SEED_KEY: 'fdsa'}
+        # assert player
+
+        if state:   #We are the server here, setup state and pull out seed.
+            loaded_state = State.load_world(state)
+            self.seed = loaded_state[SEED_KEY]
+            self.world = World(self.seed)
+        else:       #We are a client, we'll need to get the seed from server
+            self.seed = None
+            self.world = None
+            
         self.pane = None
 
         # Game state
@@ -118,7 +123,13 @@ class Game(object):
     def setup_game(self, person):
         if not self.CDF.port:
             return
-
+            
+        #===========================================================================
+        #KYLE, Just set self.seed prior to this logic
+        self.seed = "fdsa"  #TODO: REMOVE THIS LINE
+        self.world = World(self.seed)
+        #===========================================================================
+        
         # Set up game engine
         self.screen = GameScreen()
         Combat.screen = self.screen

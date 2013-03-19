@@ -4,6 +4,7 @@ Save/Load State
 
 import os
 import pickle
+import datetime
 
 from const import *
 
@@ -195,7 +196,6 @@ class State(object):
         
         if not State.world_file:
             #Loop through the WORLD_SAVE_PATH and get incremental save
-            
             max_save = 0
             saved_list = os.listdir(WORLD_SAVE_PATH)
             if saved_list:
@@ -210,8 +210,9 @@ class State(object):
                     increment_list.append(tmp)
                 max_save = max(increment_list)
             max_save += 1
-            State.world_file = str("%03d" % max_save) + "_" + WORLD_SAVE_EXT
-            
+            now = datetime.datetime.now()
+            State.world_file = str("%03d" % max_save) + "_" + str(now.strftime("%Y-%m-%d_%H%M")) + WORLD_SAVE_EXT
+
         #Reconcile tmp_world_data with world_data
         #tmp_world_data takes precidence.
         data = dict(State.world_data.items() + State.tmp_world_data.items())

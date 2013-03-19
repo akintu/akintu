@@ -44,7 +44,7 @@ class Sprites(object):
     sheets = dict()
 
     @staticmethod
-    def load(seed):
+    def load():
         if Sprites.hasLoaded:
             print "Sprites.load() has already been called."
 
