@@ -424,7 +424,6 @@ class CombatServer():
                         details=self.server.person[i].dehydrate()), player.id)
 
         self.server.unload_panes()
-        self.server.broadcast(Command("CLIENT", "RESET_TARGETS", id=player.id), player.id)
 
     def monster_victory(self, combatPane):
         p = [p for i, p in self.server.person.iteritems() if p.location == combatPane][0]
@@ -453,7 +452,6 @@ class CombatServer():
         
         self.refillResources(player)
         self.removeTemporaryStatuses(player)
-        self.server.broadcast(Command("CLIENT", "RESET_TARGETS", id=player.id), player.id)
         self.server.broadcast(Command("PERSON", "REMOVE", id=player.id), -player.id)
         self.server.broadcast(Command("UPDATE", "COMBAT", combat=False), player.id)
 

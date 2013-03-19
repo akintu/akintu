@@ -314,7 +314,13 @@ class Game(object):
                     for each in self.pane.person:
                         each._clientStatusView = []
                     self.play_music("overworld", True)
-                    self.show_range(False)
+                    self.selectionMode = "targeting"
+                    self.currentTargetId = None
+                    self.panePersonIdList = []
+                    self.currentAbility = None
+                    self.abilityList = []
+                    self.currentItem = None
+                    self.itemList = []
 
             ###### Update HP Buffers ######
             elif command.type == "UPDATE" and command.action == "HP_BUFFER":
@@ -358,15 +364,6 @@ class Game(object):
                     self.remove_entities(command.location)
                     #self.pane.remove_chest(command.location.tile)
                 self.screen.update_tile(self.pane.get_tile(command.location.tile), command.location)
-
-            elif command.type == "CLIENT" and command.action == "RESET_TARGETING" and command.id == self.id:
-                self.selectionMode = "targeting"
-                self.currentTargetId = None
-                self.panePersonIdList = []
-                self.currentAbility = None
-                self.abilityList = []
-                self.currentItem = None
-                self.itemList = []
 
             elif command.type == "CLIENT" and command.action == "QUIT":
                 self.save_and_quit()
