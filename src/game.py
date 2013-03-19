@@ -299,8 +299,12 @@ class Game(object):
             elif command.type == "UPDATE" and command.action == "COMBAT":
                 self.combat = command.combat
                 if self.combat:
+                    for each in self.pane.person:
+                        each._clientStatusView = []
                     self.play_music("battle", True)
                 else:
+                    for each in self.pane.person:
+                        each._clientStatusView = []
                     self.play_music("overworld", True)
 
             ###### Update HP Buffers ######
@@ -541,7 +545,7 @@ class Game(object):
         self.viewingInventory = True
         player = self.pane.person[self.id]
         isEquipment = True
-        text = "Looking in your bag... you have no tea."
+        text = "Looking in your bag..."
         eq = player.equippedItems.allGear
         inv = player.inventory.allItems
         capacity = `player.inventoryWeight` + "/" + `player.inventoryCapacity`
