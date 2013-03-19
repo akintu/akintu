@@ -62,7 +62,7 @@ class Game(object):
         self.keystate = []
         self.running = False
         self.combat = False
-        self.musicQueue = None
+        self.musicState = "overworld"
         self.performingLevelup = False
         self.viewingInventory = False
         self.selectingConsumable = False
@@ -159,23 +159,18 @@ class Game(object):
         self.play_music()
         self.screen.update()
 
-    def play_music(self, state="overworld", stop=False):
-        musicDir = os.path.join('res', 'music', state)
+    def play_music(self, state=None, stop=False):
+        if state and state != self.musicState:
+            self.musicState = state
+        musicDir = os.path.join('res', 'music', self.musicState)
         if not os.access(musicDir, os.F_OK):
             return
             
         if stop:
             pygame.mixer.music.fadeout(500)
-            self.musicQueue = os.path.join(musicDir, random.choice(os.listdir(musicDir)))
 
         if not pygame.mixer.music.get_busy():
-            music = None
-            if self.musicQueue:
-                music = self.musicQueue
-                self.musicQueue = None
-            else:
-                music = os.path.join(musicDir, random.choice(os.listdir(musicDir)))
-
+            music = os.path.join(musicDir, random.choice(os.listdir(musicDir)))
             pygame.mixer.music.load(music)
             pygame.mixer.music.play()
 
