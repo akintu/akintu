@@ -19,7 +19,7 @@ from const import *
 from gamescreen import GameScreen
 from theorycraft import TheoryCraft
 from world import *
-
+from region import Region
 
 import levelup as lvl
 
@@ -220,6 +220,8 @@ class Game(object):
 
             ###### MovePerson ######
             if command.type == "PERSON" and command.action == "MOVE":
+                if command.id == self.id and self.currentAbility:
+                    self.show_range(False)
                 if 'details' in command.__dict__:
                     if self.pane.person[command.id].anim:
                         self.pane.person[command.id].anim.stop()
@@ -228,7 +230,10 @@ class Game(object):
                 else:
                     self.animate(command.id, self.pane.person[command.id].location, command.location, \
                             1.0 / self.pane.person[command.id].movementSpeed)
+                    
                 self.pane.person[command.id].location = command.location
+                if command.id == self.id and self.currentAbility:
+                    self.show_range(True)
 
             ###### RemovePerson ######
             if command.type == "PERSON" and command.action == "REMOVE":
@@ -484,6 +489,8 @@ class Game(object):
                             self.selectionMode = "targeting"
                             if self.currentAbility.range == 0:
                                 self.select_self()
+                            else:
+                                self.show_range(True)
 
                     elif event.key == K_e:
                         self.cycle_targets()
@@ -695,9 +702,7 @@ class Game(object):
             if self.currentTargetId not in self.pane.person.keys():
                 self.currentTargetId = None
             else:
-                loc = self.pane.person[self.currentTargetId].location
-                tile = self.pane.get_tile(loc.tile)
-                self.screen.update_tile(tile, loc)
+                self.set_overlay(self.currentTargetId, None)
         
         resetNeeded = False
         for x in self.panePersonIdList:
@@ -721,10 +726,31 @@ class Game(object):
                 currentTargetPlace = self.panePersonIdList.index(self.currentTargetId)
                 self.currentTargetId = self.panePersonIdList[currentTargetPlace - 1]
         
-        loc = self.pane.person[self.currentTargetId].location
-        tile = self.pane.get_tile(loc.tile)
-        self.screen.update_tile(tile, loc, overlay='red')
+        self.set_overlay(self.currentTargetId, 'red')
 
+    def set_overlay(self, where, overlay):
+        loc = None
+        if isinstance(where, int): #Person id
+            loc = self.pane.person[where].location
+        elif isinstance(where, Location): #Location
+            loc = where
+        else: #Person object
+            loc = where.location
+        tile = self.pane.get_tile(loc.tile)
+        self.screen.update_tile(tile, loc, overlay=overlay)
+        
+    def show_range(self, show, loc=None):
+        return
+    
+        if not loc:
+            loc = self.pane.person[self.id].location
+        R = Region()
+        
+        R("ADD", "DIAMOND", loc, self.currentAbility.range \
+                if self.currentAbility.range != -1 else self.pane.person[self.id].attackRange)
+        for l in [x for x in R if x.pane == (0, 0)]:
+            self.set_overlay(l, 'blue' if show else None)
+        
     def select_self(self):
         if not self.combat or self.id not in self.pane.person:
             return
@@ -782,6 +808,10 @@ class Game(object):
                 self.pane.person[id].anim.stop()
             self.pane.person[id].anim = None
             self.pane.person[id].anim_start = 0
+            
+            if id == self.id and self.currentAbility:
+                self.show_range(False, source)
+                self.show_range(True)
         self.screen.update_person(id, statsdict)
 
     def animate_entity(self, location):
