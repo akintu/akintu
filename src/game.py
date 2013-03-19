@@ -161,6 +161,9 @@ class Game(object):
 
     def play_music(self, state="overworld", stop=False):
         musicDir = os.path.join('res', 'music', state)
+        if not os.access(musicDir, os.F_OK):
+            return
+            
         if stop:
             pygame.mixer.music.fadeout(500)
             self.musicQueue = os.path.join(musicDir, random.choice(os.listdir(musicDir)))
