@@ -1053,9 +1053,9 @@ class PlayerCharacter(p.Person):
         """How much the player can fit in his inventory."""
         # TODO: Worry about how +Strength and +Capacity gear could allow you to carry more than your capacity.
         if self.totalStrength <= 15:
-            return int(8 * self.totalStrength + self._baseInventoryCapacity + self._equipmentCarryingCapacity)
+            return int(6 * self.totalStrength + self._baseInventoryCapacity + self._equipmentCarryingCapacity)
         else:
-            return int(120 + (self.totalStrength - 15) * 12 + self._baseInventoryCapacity + self._equipmentCarryingCapacity)
+            return int(90 + (self.totalStrength - 15) * 9 + self._baseInventoryCapacity + self._equipmentCarryingCapacity)
 
     @property
     def baseInventoryCapacity(self):
