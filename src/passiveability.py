@@ -408,7 +408,7 @@ class PassiveAbility(object):
         else:
             target.statusSpellpower -= 2
 
-    def applyMilitaryOffensiveTraining(self, target, reverse=False, spell=None):
+    def applyMilitaryOffensiveTraining(self, target, reverse=False, other=None):
         if target.usingWeapon("Club"):
             if not reverse:
                 target.statusMight += 5
