@@ -1308,7 +1308,7 @@ class PlayerCharacter(p.Person):
         cs.append("| Character Name: " + self.name + "\n")
         cs.append("| Level: " + `self.level` + "  Experience: " + `self.experience` + "/" + `self.getExpForNextLevel()` + "\n")
         cs.append("| Character Class: " + self.characterClass + "  Race: " + self.race + "\n")
-        cs.append("| HP: " + `int(self.HP)` + "/" + `int(self.totalHP)` + "  MP: " + `int(self.MP)` + "/" + `int(self.totalMP)` + "  AP: " + `self.AP` + "/" + `self.totalAP` + "\n" )
+        cs.append("| HP: " + `int(self.HP)` + "/" + `int(self.totalHP)` + " (" + `self.equipmentHP` + ") " + "MP: " + `int(self.MP)` + "/" + `int(self.totalMP)` + " (" + `self.equipmentMP` + ")  AP: " + `self.totalAP`+ " (" + `self.equipmentAP` + ")\n" )
         cs.append("| ----------->>> Primary Statistics <<<-----------------\n")
         cs.append("| Strength: " + `int(self.totalStrength)` + " (" + `self.equipmentStrength` + ")  Dexterity: " + `int(self.totalDexterity)` + " (" + `self.equipmentDexterity` + ")\n")
         cs.append("| Cunning:  " + `int(self.totalCunning)` + " (" + `self.equipmentCunning` + ")  Sorcery: " + `int(self.totalSorcery)` + " (" + `self.equipmentSorcery` + ")\n")

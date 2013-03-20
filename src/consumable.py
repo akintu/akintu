@@ -59,34 +59,34 @@ class Consumable(entity.Entity):
 
 
     def _basicHealingPotion(self, user):
-        healing = Dice.roll(3, 10)
-        healing *= (1 + float(user.totalPotionEffect) / 100)
-        Combat.healTarget(user, user, round(healing))
-
-    def _lesserHealingPotion(self, user):
         healing = Dice.roll(6, 20)
         healing *= (1 + float(user.totalPotionEffect) / 100)
         Combat.healTarget(user, user, round(healing))
 
-    def _moderateHealingPotion(self, user):
+    def _lesserHealingPotion(self, user):
         healing = Dice.roll(9, 30)
+        healing *= (1 + float(user.totalPotionEffect) / 100)
+        Combat.healTarget(user, user, round(healing))
+
+    def _moderateHealingPotion(self, user):
+        healing = Dice.roll(12, 40)
         healing *= (1 + float(user.totalPotionEffect) / 100)
         Combat.healTarget(user, user, round(healing))
 
     # Healing functions go above
 
     def _basicManaPotion(self, user):
-        mana = Dice.roll(5, 8)
-        mana *= (1 + float(user.totalPotionEffect) / 100)
-        Combat.modifyResource(user, "MP", mana)
-
-    def _lesserManaPotion(self, user):
         mana = Dice.roll(10, 17)
         mana *= (1 + float(user.totalPotionEffect) / 100)
         Combat.modifyResource(user, "MP", mana)
 
-    def _moderateManaPotion(self, user):
+    def _lesserManaPotion(self, user):
         mana = Dice.roll(18, 30)
+        mana *= (1 + float(user.totalPotionEffect) / 100)
+        Combat.modifyResource(user, "MP", mana)
+
+    def _moderateManaPotion(self, user):
+        mana = Dice.roll(30, 45)
         mana *= (1 + float(user.totalPotionEffect) / 100)
         Combat.modifyResource(user, "MP", mana)
 
@@ -172,7 +172,7 @@ class Consumable(entity.Entity):
             'level' : 1,
             'effect' : _basicHealingPotion,
             'ip' : 1,
-            'details' : 'Restores 3-10 points of HP'
+            'details' : 'Restores 6-20 points of HP'
             },
         'Lesser Healing Potion' :
             {
@@ -180,7 +180,7 @@ class Consumable(entity.Entity):
             'level' : 3,
             'effect' : _lesserHealingPotion,
             'ip' : 3,
-            'details' : 'Restores 6-20 points of HP'
+            'details' : 'Restores 9-30 points of HP'
             },
         'Moderate Healing Potion' :
             {
@@ -188,7 +188,7 @@ class Consumable(entity.Entity):
             'level' : 6,
             'effect' : _moderateHealingPotion,
             'ip' : 7,
-            'details' : 'Restores 9-30 points of HP'
+            'details' : 'Restores 12-40 points of HP'
             },
         # Other healing potions here
         'Basic Mana Potion' :
@@ -197,7 +197,7 @@ class Consumable(entity.Entity):
             'level' : 1,
             'effect' : _basicManaPotion,
             'ip' : 2,
-            'details' : 'Restores 5-8 points of MP'
+            'details' : 'Restores 10-17 points of MP'
             },
         'Lesser Mana Potion' :
             {
@@ -205,7 +205,7 @@ class Consumable(entity.Entity):
             'level' : 3,
             'effect' : _lesserManaPotion,
             'ip' : 6,
-            'details' : 'Restores 10-17 points of MP'
+            'details' : 'Restores 18-30 points of MP'
             },
         'Moderate Mana Potion' :
             {
@@ -213,7 +213,7 @@ class Consumable(entity.Entity):
             'level' : 6,
             'effect' : _moderateManaPotion,
             'ip' : 12,
-            'details' : 'Restores 18-30 points of MP'
+            'details' : 'Restores 30-45 points of MP'
             },
         # Other mana potions here
         'Antidote' :

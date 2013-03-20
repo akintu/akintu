@@ -572,46 +572,46 @@ class Trait(object):
         #self.rank = Trait.getTraiself.rank(target, "Dueling")
         if not reverse:
             if self.rank == 1:
-                target.statusDodge += 1
-                target.statusMeleeAccuracy += 1
-                target.statusRangedAccuracy += 1
-                target.statusCriticalChance += 2
-            elif self.rank == 2:
                 target.statusDodge += 2
                 target.statusMeleeAccuracy += 2
                 target.statusRangedAccuracy += 2
-                target.statusCriticalChance += 4
-            elif self.rank == 3:
+                target.statusCriticalChance += 3
+            elif self.rank == 2:
                 target.statusDodge += 3
                 target.statusMeleeAccuracy += 3
                 target.statusRangedAccuracy += 3
                 target.statusCriticalChance += 6
+            elif self.rank == 3:
+                target.statusDodge += 4
+                target.statusMeleeAccuracy += 4
+                target.statusRangedAccuracy += 4
+                target.statusCriticalChance += 9
             elif self.rank == 4:
-                target.statusDodge += 5
-                target.statusMeleeAccuracy += 5
-                target.statusRangedAccuracy += 5
-                target.statusCriticalChance += 8
+                target.statusDodge += 6
+                target.statusMeleeAccuracy += 6
+                target.statusRangedAccuracy += 6
+                target.statusCriticalChance += 12
         else:
             if self.rank == 1:
-                target.statusDodge -= 1
-                target.statusMeleeAccuracy -= 1
-                target.statusRangedAccuracy -= 1
-                target.statusCriticalChance -= 2
-            elif self.rank == 2:
                 target.statusDodge -= 2
                 target.statusMeleeAccuracy -= 2
                 target.statusRangedAccuracy -= 2
-                target.statusCriticalChance -= 4
-            elif self.rank == 3:
+                target.statusCriticalChance -= 3
+            elif self.rank == 2:
                 target.statusDodge -= 3
                 target.statusMeleeAccuracy -= 3
                 target.statusRangedAccuracy -= 3
                 target.statusCriticalChance -= 6
+            elif self.rank == 3:
+                target.statusDodge -= 4
+                target.statusMeleeAccuracy -= 4
+                target.statusRangedAccuracy -= 4
+                target.statusCriticalChance -= 9
             elif self.rank == 4:
-                target.statusDodge -= 5
-                target.statusMeleeAccuracy -= 5
-                target.statusRangedAccuracy -= 5
-                target.statusCriticalChance -= 8
+                target.statusDodge -= 6
+                target.statusMeleeAccuracy -= 6
+                target.statusRangedAccuracy -= 6
+                target.statusCriticalChance -= 12
 
     
     def applyTwoWeaponFighting(self, target, reverse=False, other=None):
@@ -1273,10 +1273,10 @@ class Trait(object):
             'offStringList' : ['Outgoing Ranged Attack Complete', 'Outgoing Melee Attack Complete', 'Incoming Ranged Attack Complete', 'Incoming Melee Attack Complete'],
             'image' : THIEF + 'dueling.png',
             'text' : 'Grants a bonus to dodge, accuracy, and critical chance if wielding one weapon and no shield.\n' + \
-                    'Rank I:   +1 Dodge, +1 Accuracy, +2% Critical Chance\n' + \
-                    'Rank II:  +2 Dodge, +2 Accuracy, +4% Critical Chance\n' + \
-                    'Rank III: +3 Dodge, +3 Accuracy, +6% Critical Chance\n' + \
-                    'Rank IV:  +5 Dodge, +5 Accuracy, +8% Critical Chance'
+                    'Rank I:   +2 Dodge, +2 Accuracy, +3% Critical Chance\n' + \
+                    'Rank II:  +3 Dodge, +3 Accuracy, +6% Critical Chance\n' + \
+                    'Rank III: +4 Dodge, +4 Accuracy, +9% Critical Chance\n' + \
+                    'Rank IV:  +6 Dodge, +6 Accuracy, +12% Critical Chance'
             },
         'Two-Weapon Fighting':
             {
