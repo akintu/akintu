@@ -2,15 +2,23 @@ from location import Location
 from const import *
 import zlib
 import os
+import re
 
 class Region:
-    def __init__(self, history=None):
+    def __init__(self, *args):
         self.locations = set()
-        self.history = [] if not history else zlib.decompress(history).split("\r\n")
+        self.history = []
         self.shape = {"SQUARE": self.square, "DIAMOND": self.diamond, "CIRCLE": self.circle,
-                      "LINE": self.line, "CURVE": self.curve}
-        if history:
-            self.rehydrate()
+                      "LINE": self.line, "CURVE": self.curve, "REGION": self.region}
+        if len(args) == 1:
+            if isinstance(args[0], Region):
+                self.history = args[0].history[:]
+                self.locations = args[0].locations.copy()
+            else:
+                self.history = zlib.decompress(args[0]).split("\r\n")
+                self.rehydrate()
+        elif len(args) > 1:
+            self.__call__("ADD", *args)
 
     def __iter__(self):
         for x in self.locations:
@@ -42,12 +50,17 @@ class Region:
                         self.locations else "  "
             strrep += os.linesep
         return strrep
-        
+
     def __repr__(self):
         return zlib.compress("\r\n".join(self.history), 9)
 
-    def __call__(self, method, shape, *details):
-        if shape.upper() in self.shape:
+    def __call__(self, method, shape, *details, **opts):
+        if method.upper() == "SHIFT":
+            temp = set()
+            for l in self.locations:
+                temp.add(l + shape)
+            self.locations = temp
+        elif shape.upper() in self.shape:
             if method.upper() == "ADD":
                 self.locations |= self.shape[shape.upper()](*details)
             elif method.upper() == "SUB":
@@ -56,36 +69,65 @@ class Region:
                 self.locations &= self.shape[shape.upper()](*details)
             elif method.upper() == "XOR":
                 self.locations ^= self.shape[shape.upper()](*details)
-            self.history.append(method + "|" + shape + "|" + "|".join([str(x) for x in details]))
-            
+
+        if 'append' not in opts or opts['append'] == True:
+            self.history.append(method + "|" + str(shape) + "|" + "|".join([x.__repr__() for x in details]))
+
     def __eq__(self, other):
         return all(x in other for x in self) and all (x in self for x in other)
-            
+
+    def __add__(self, other):
+        R = Region(self)
+        R("ADD", "REGION", other, append=False)
+        return R
+
+    def __or__(self, other):
+        return self.__add__(other)
+
+    def __sub__(self, other):
+        R = Region(self)
+        R("SUB", "REGION", other)
+        return R
+
+    def __and__(self, other):
+        R = Region(self)
+        R("INT", "REGION", other)
+        return R
+
+    def __xor__(self, other):
+        R = Region(self)
+        R("XOR", "REGION", other)
+        return R
+
+    def __lshift__(self, other):
+        R = Region(self)
+        R("SHIFT", other)
+        return R
+
     def dehydrate(self):
         return self.__repr__()
-            
+
     def rehydrate(self):
         for line in self.history:
             parts = line.split("|")
-            method = parts[0]
-            shape = parts[1]
-            details = parts[2:]
-            for i, d in enumerate(details):
+            for i, p in enumerate(parts):
                 try:
-                    details[i] = int(d)
+                    parts[i] = int(p)
                 except ValueError:
-                    details[i] = Location(d)
-            
-            if shape.upper() in self.shape:
-                if method.upper() == "ADD":
-                    self.locations |= self.shape[shape.upper()](*details)
-                elif method.upper() == "SUB":
-                    self.locations -= self.shape[shape.upper()](*details)
-                elif method.upper() == "INT":
-                    self.locations &= self.shape[shape.upper()](*details)
-                elif method.upper() == "XOR":
-                    self.locations ^= self.shape[shape.upper()](*details)
-                
+                    try:
+                        parts[i] = Location(p)
+                    except AttributeError:
+                        try:
+                            r = re.match(r'\((?P<x>\d*), (?P<y>\d*)\)', p)
+                            parts[i] = (int(r.group('x')), int(r.group('y')))
+                        except AttributeError:
+                            try:
+                                parts[i] = Region(p)
+                            except:
+                                pass
+
+            self.__call__(*parts, append=False)
+
     def square(self, loc1, loc2):
         locations = set()
         for y in loc1.line_to(Location(loc1.abs_x, loc2.abs_y)):
@@ -112,10 +154,10 @@ class Region:
                 if round(loc.true_distance(tile)) <= rad:
                     locations |= {tile}
         return locations
-        
+
     def line(self, loc1, loc2, width=1):
         locations = set()
-        
+
         for x in range(-(width - 1) / 2, ((width - 1) / 2) + 1):
             if abs(loc1.abs_x - loc2.abs_x) > abs(loc1.abs_y - loc2.abs_y):
                 locations |= set(Location(loc1.abs_x, loc1.abs_y + x).line_to(
@@ -124,12 +166,18 @@ class Region:
                 locations |= set(Location(loc1.abs_x + x, loc1.abs_y).line_to(
                         Location(loc2.abs_x + x, loc2.abs_y)))
         return locations
-        
+
     def curve(self, center, radius, width=1):
         locations = set()
         locations |= self.circle(center, radius + width / 2)
         locations -= self.circle(center, radius - width / 2)
         return locations
+
+    def region(self, R):
+        if isinstance(R, Region):
+            return R.locations
+        else:
+            return Region(R).locations
 
 if __name__ == "__main__":
     R = Region()
@@ -143,15 +191,38 @@ if __name__ == "__main__":
     R("ADD", "LINE", Location(20, 10), Location(22, 10), 3)
     #R("ADD", "CURVE", Location(20, 18), 5, 3)
 
-    print R
+    T = Region()
+    T("ADD", "DIAMOND", Location(0, 0), 4)
+    T <<= (2, 3)        #Shifts all Locations in T 2 tiles to the right, and 3 tiles down
+    R("XOR", "REGION", T)
+
+    #These two lines do the exact same thing.  However, the first is preferred as it only creates
+    #a shape in generating the mask, as opposed to an entire Region.  Therefore, the serialization
+    #of R after the first call is smaller than the serialization of R after only running the second
+    #line.
+    R("INT", "SQUARE", Location(0, 0), Location(31, 19))
+    R &= Region("SQUARE", Location(0, 0), Location(31, 19))
 
     l1 = Location(15, 10)
     assert l1 in R
+    R("XOR", "SQUARE", Location(0, 0), Location(31, 19))
+    assert l1 not in R
+    R ^= Region("SQUARE", Location(0, 0), Location(31, 19))
+    assert l1 in R
+    print R
+
     assert l1.move(6, 2) not in R
     for l2 in R:
         assert l2 in R
-        
+
+    S = Region(R)
+    assert S == R
+    S("ADD", "LINE", Location(0, 0), Location(31, 19), 3)
+    S("ADD", "LINE", Location(0, 19), Location(31, 0), 3)
+    assert S != R
     S = Region(R.dehydrate())
     assert S == R
-    S("ADD", "CIRCLE", Location(4, 4), 3)
+    S("ADD", "CIRCLE", Location(4, 12), 3)
     assert S != R
+
+    assert Location(0, 0) in Region("CIRCLE", Location(0, 0), 10)

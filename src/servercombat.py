@@ -10,7 +10,7 @@ import monster
 
 class CombatServer():
     SECONDS = 45
-    
+
     def __init__(self, server):
         self.server = server
         self.combatStates = {}
@@ -34,7 +34,7 @@ class CombatServer():
                 activePlayer.cLocation = command.location
                 self.server.broadcast(command, -command.id, exclude=True)
                 self.check_turn_end(activePlayer.cPane)
-        
+
         ###### RemovePerson ######
         elif command.type == "PERSON" and command.action == "REMOVE":
             if command.id in self.server.person:
@@ -48,9 +48,9 @@ class CombatServer():
                 self.server.broadcast(command, -command.id)
                 self.update_dead_people(self.server.person[command.id].cPane)
                 del self.server.person[command.id]
-                
+
                 self.server.unload_panes()
-        
+
         #### Attack Target ####
         elif command.type == "ABILITY" and command.action == "ATTACK":
             source = self.server.person[command.id]
@@ -84,7 +84,7 @@ class CombatServer():
             Combat.modifyResource(target, "AP", -target.AP)
             Combat.decrementMovementTiles(target, removeAll=True)
             self.check_turn_end(self.server.person[command.id].cPane)
-        
+
         #### Using Items ####
         elif command.type == "ITEM" and command.action == "USE":
             user = self.server.person[command.id]
@@ -100,19 +100,19 @@ class CombatServer():
             if usable[0]:
                 itemMessage = item.use(user)
                 Combat.sendCombatMessage(itemMessage, user, color='purple', toAll=False)
-                self.server.broadcast(Command("ITEM", "REMOVE", id=command.id, 
+                self.server.broadcast(Command("ITEM", "REMOVE", id=command.id,
                         itemName=command.itemName), port=port)
             else:
                 itemMessage = usable[1]
                 Combat.sendCombatMessage(itemMessage, user, color='white', toAll=False)
-            
-            
+
+
         if command.id in self.server.person:
             self.update_dead_people(self.server.person[command.id].cPane)
-        
-    
+
+
     ### Utility Methods ###
-                
+
     def shout_turn_start(self, player, turn="Player"):
         '''Shouts to the Player that this particular turn is starting.
         Defaults to "Player"; "Monster" is the other valid value.'''
@@ -123,10 +123,10 @@ class CombatServer():
         '''Checks the list of Persons on this combat Pane to see if they have HP > 0.
         If they do not, it will "remove them" from the combatPane and add them to a
         deadList associated with this CombatState.  If all monsters are dead and at least
-        one player remains, enters the victory phase.'''       
+        one player remains, enters the victory phase.'''
         if not combatPane:
             return
-            
+
         toUpdateList = []
         for char in [self.server.person[x] for x in self.server.pane[combatPane].person]:
             if char.HP <= 0:
@@ -138,14 +138,14 @@ class CombatServer():
                 elif char.team == "Players" and char.hardcore:
                     Combat.sendCombatMessage(char.name + " has Perished!", color='darkred', character=char)
                     # TODO: Delete saves, end game?
-            
-        
-                
+
+
+
         for char in toUpdateList:
             self.combatStates[combatPane].deadMonsterList.append(char)
             Combat.sendCombatMessage(message=char.name + " Died!", color='magenta', character=char)
             self.server.SDF.queue.put((None, Command("PERSON", "REMOVE", id=char.id)))
-            
+
         monstersAlive = False
         livingPlayers = []
         for char in [self.server.person[x] for x in self.server.pane[combatPane].person]:
@@ -153,11 +153,11 @@ class CombatServer():
                 monstersAlive = True
             if char.team == "Players":
                 livingPlayers.append(char)
-                
+
         if not livingPlayers:
             self.monster_victory(combatPane)
             return "END_COMBAT"
-                
+
         rValue = "CONTINUE_COMBAT"
         if not monstersAlive and livingPlayers:
             rValue = "END_COMBAT"
@@ -200,7 +200,7 @@ class CombatServer():
     def upkeep(self, target):
         '''Applies all upkeep operations for this Person.  (Used during the combat
         phase: "Upkeep"'''
-        
+
         if target.HPRegen > 0:
             Combat.healTarget(target, target.HPRegen)
         if target.MPRegen > 0:
@@ -227,7 +227,7 @@ class CombatServer():
                 print target.name + " has status enabled: " + stat.name
             else:
                 print target.name + " has status: " + stat.name + " T=" + `int(stat.turnsLeft)`
-     
+
     def startCombat(self, playerId, monsterId):
         '''Initiates combat for the first player to enter combat.
         monsterId is the identifier for the Monster on the overworld
@@ -236,7 +236,7 @@ class CombatServer():
         self.combatStates[combatPane] = CombatState()
         monsterLeader = self.server.person[monsterId]
         currentPlayer = self.server.person[playerId]
-        
+
         if not monsterLeader.cPane:
             # Put monster into combat
             monsterLeader.ai.pause()
@@ -258,18 +258,18 @@ class CombatServer():
 
         self.server.broadcast(Command("PERSON", "REMOVE", id=playerId), playerId)
         self.server.broadcast(Command("UPDATE", "COMBAT", combat=True), playerId)
-        
+
         self.server.broadcast(Command("PERSON", "CREATE", id=playerId,
                     location=currentPlayer.cLocation, cPane=currentPlayer.cPane,
                     details=currentPlayer.dehydrate()), -playerId)
-                                 
+
         # Populate the combat pane with all of the monsters.
         for id in self.server.pane[combatPane].person:
             if playerId != id:
                 self.server.broadcast(Command("PERSON", "CREATE", id=id,
-                        location=self.server.person[id].cLocation, 
+                        location=self.server.person[id].cLocation,
                         details=self.server.person[id].dehydrate()), playerId)
-            
+
         self.shout_turn_start(self.server.person[playerId], turn="Player")
 
     def check_turn_end(self, combatPane, timeExpired=False):
@@ -325,7 +325,7 @@ class CombatServer():
                     visiblePlayers.append(player)
                 elif mon.detectStealth(player):
                     visiblePlayers.append(player)
-                    Combat.sendCombatMessage("Detected " + player.name + "! (" + 
+                    Combat.sendCombatMessage("Detected " + player.name + "! (" +
                                  str(mon.totalAwareness) + " vs " + str(player.totalSneak) + ")",
                                 player, color='red')
             while( True ):
@@ -345,7 +345,7 @@ class CombatServer():
         return
 
     def victory_phase(self, livingPlayers, combatPane):
-        '''Cleans up arena, gives experience/gold to players, 
+        '''Cleans up arena, gives experience/gold to players,
         restores their health to full, and kicks them out of combat.'''
         state = self.combatStates[combatPane]
         if CombatServer.SECONDS > 0 and state.turnTimer and state.turnTimer.active():
@@ -354,7 +354,7 @@ class CombatServer():
 
         monsterLeader = self.server.get_monster_leader(char)
         self.server.SDF.queue.put((None, Command("PERSON", "REMOVE", id=monsterLeader.id)))
-        
+
         for player in livingPlayers:
             self.giveVictoryExperience(player, state.deadMonsterList)
             self.giveGold(player, state.deadMonsterList)
@@ -362,8 +362,8 @@ class CombatServer():
             self.refillResources(player)
             self.exit_combat(player)
         # Cleanup, exit combat TODO
-        
-    
+
+
 
     #### End of Combat Phase Methods ####
 
@@ -378,11 +378,11 @@ class CombatServer():
         if player.experience >= player.getExpForNextLevel() and player.level < 5: # Remove hardcoded value TODO
                 Combat.sendCombatMessage(player.name + " LEVELUP!", player, color='magenta')
         Combat.sendCombatMessage("Gained " + str(exp) + " Experience. (" + str(player.experience) +
-                                 "/" + str(player.getExpForNextLevel()) + ")", 
+                                 "/" + str(player.getExpForNextLevel()) + ")",
                                  player, color='magenta', toAll=False)
         # Levelup is not performed here.
-        
-        
+
+
     def giveGold(self, player, monsterList):
         gold = 0
         for monster in monsterList:
@@ -390,7 +390,7 @@ class CombatServer():
         player.inventory.addItem(gold)
         Combat.sendCombatMessage("Gained " + str(gold) + " gold. (total: " + str(player.inventory.gold) +
                                  ")", player, color='magenta', toAll=False)
-        
+
     def refillResources(self, player):
         Combat.modifyResource(player, "MP", player.totalMP)
         Combat.modifyResource(player, "HP", player.totalHP)
@@ -429,11 +429,11 @@ class CombatServer():
         p = [p for i, p in self.server.person.iteritems() if p.location == combatPane][0]
         if self.combatStates[combatPane].turnTimer and self.combatStates[combatPane].turnTimer.active():
             self.combatStates[combatPane].turnTimer.cancel()
-        
+
         p.ai.resume()
         p.cPane = None
         p.cLocation = None
-        
+
     def softcoreDeath(self, player):
         '''Kicks player out of combat, back to Pane 0,0 and subtracts 10% of gold.
         Will restore HP/MP/AP to maximum, and remove all temporary status effects.'''
@@ -441,7 +441,7 @@ class CombatServer():
         Combat.sendCombatMessage("You lose: " + str(goldLoss) + " gold for dying!",
                                 player, color='darkred', toAll=False)
         player.inventory.gold -= goldLoss
-        
+
         combatPane = player.cPane
         chars = [self.server.person[x] for x in self.server.pane[combatPane].person]
         players = [x for x in chars if x.team == "Players"]
@@ -449,7 +449,7 @@ class CombatServer():
         if players == [player]:
             # This player was the only one left.
             doMonsterVictory = True
-        
+
         self.refillResources(player)
         self.removeTemporaryStatuses(player)
         self.server.broadcast(Command("PERSON", "REMOVE", id=player.id), -player.id)
@@ -463,7 +463,7 @@ class CombatServer():
         player.cPane = None
         player.cLocation = None
         player.location = respawn_location
-        
+
         self.server.broadcast(Command("PERSON", "CREATE", id=player.id, \
                 location=player.location, details=player.dehydrate()), -player.id)
         for i in self.server.pane[player.location.pane].person:

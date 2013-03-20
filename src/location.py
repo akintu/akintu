@@ -14,10 +14,10 @@ class Location(object):
             else:
                 xy = r.group('p')[1:-1].split(', ')
                 self.pane = (int(xy[0]), int(xy[1]))
-                
+
             xy = r.group('t')[1:-1].split(', ')
             self.tile = (int(xy[0]), int(xy[1]))
-            
+
             self.direction = int(r.group('d'))
         else:
             if isinstance(pane, tuple) or pane is None:
@@ -35,7 +35,7 @@ class Location(object):
     # So it turns out __repr__ is like toString()
     def __repr__(self):
         return "(%s, %s, %d)" % (self.pane, self.tile, self.direction)
-        
+
     def __str__(self):
         return self.__repr__()
 
@@ -54,6 +54,9 @@ class Location(object):
 
     def __le__(self, other):
         return self < other or self == other
+
+    def __add__(self, other):
+        return Location(self.abs_x + other[0], self.abs_y + other[1])
 
     def __hash__(self):
         str = "%d0%d" % (self.abs_x, self.abs_y)
@@ -158,18 +161,18 @@ class Location(object):
     def get_surrounding_tiles(self):
         '''
         Gets the locations of the surrounding tiles
-        Only returns locations on the current pane, so edge cases will 
+        Only returns locations on the current pane, so edge cases will
         contain invalid tile locations.
         Returns a dictionary with the facing direction as the key
         '''
 
         return {((-dy + 1) * 3) + dx + 2: \
-            (self.tile[0] + dx, self.tile[1] + dy) for dx in range(-1, 2) for dy in range(1, -2, -1)}        
-    
+            (self.tile[0] + dx, self.tile[1] + dy) for dx in range(-1, 2) for dy in range(1, -2, -1)}
+
     def line_to(self, dest):
         if self == dest:
             return [self]
-            
+
         locs = []
         distx = dest.abs_x - self.abs_x
         disty = dest.abs_y - self.abs_y
@@ -178,23 +181,23 @@ class Location(object):
             locs.append(Location(self.abs_x + int(round(float(x) / dist * distx)),
                     self.abs_y + int(round(float(x) / dist * disty))))
         return locs
-        
+
     def direction_to(self, dest):
         if self == dest:
             return 5
         distx = dest.abs_x - self.abs_x
         #disty is negated because our y axis in game is flipped from the cartesian plane
-        disty = -(dest.abs_y - self.abs_y) 
+        disty = -(dest.abs_y - self.abs_y)
         mag = self.true_distance(dest)
-        
+
         x = distx / mag
         y = disty / mag
-        
+
         if abs(x) < 0.38268343236508984:
             x = 1
         else:
             x = cmp(x, 0) + 1
-            
+
         if abs(y) < 0.38268343236508984:
             y = 1
         else:
@@ -284,6 +287,6 @@ if __name__ == "__main__":
         for x in range(0, 2 * radius + 1):
             strrep += str(Location(radius, radius).direction_to(Location(x, y))) + " "
         print strrep
-            
+
     n = Location(b.__str__())
     assert n == b

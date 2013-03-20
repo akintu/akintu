@@ -21,7 +21,7 @@ class GameServer():
     def server_loop(self):
         while not self.SDF.queue.empty():
             port, command = self.SDF.queue.get()
-            
+
             if command.type == "PERSON" and command.action == "REMOVE" and port \
                     and not hasattr(command, 'id'):
                 command.id = self.player[port]
@@ -58,7 +58,7 @@ class GameServer():
                                     location=self.person[i].location, \
                                     details=self.person[i].dehydrate())
                             self.broadcast(comm, port=port)
-                                    
+
                     self.send_world_items(port, command.location)
 
             ###### MovePerson ######
@@ -96,10 +96,10 @@ class GameServer():
                                             location=self.person[i].location, \
                                             details=self.person[i].dehydrate())
                                     self.broadcast(comm, command.id)
-                            
+
                             # HANDLE SENDING SPECIFIC PANE THINGS HERE
                             self.send_world_items(command.id, command.location)
-                        
+
                         self.unload_panes()
 
                     # Check for combat range and initiate combat states
@@ -125,7 +125,7 @@ class GameServer():
                     if port:
                         command.id = self.player[port]
                         del self.player[port]
-                    
+
                     self.pane[self.person[command.id].location.pane].person.remove(command.id)
                     self.broadcast(command, -command.id)
                     del self.person[command.id]
@@ -140,7 +140,7 @@ class GameServer():
             ###### StopPerson ######
             if command.type == "PERSON" and command.action == "STOP":
                 self.person[command.id].ai.remove("RUN")
-                        
+
             ###### Levelup Player ######
             if command.type == "PERSON" and command.action == "REPLACE":
                 newPerson = TheoryCraft.rehydratePlayer(command.player)
@@ -153,7 +153,7 @@ class GameServer():
             ###### Set CombatServer Time ######
             if command.type == "SETTINGS" and command.action == "SET_TIME":
                 CombatServer.SECONDS = command.time
-                
+
             ###### Get Item / Open Chest ######
             if command.type == "PERSON" and command.action == "OPEN":
                 activePlayer = self.person[command.id]
@@ -161,7 +161,7 @@ class GameServer():
                 chest, loc = currentPane.get_treasure_chest(activePlayer.location)
                 if chest:
                     inventories = chest.open(self.get_nearby_players(command.id))
-                    
+
                     #Notify clients in the affected pane
                     for p, i in self.player.iteritems():    #Replace this with list of players on current pane
                         if self.person[i].location.pane == self.person[command.id].location.pane:
@@ -199,11 +199,11 @@ class GameServer():
                                 action = Command("UPDATE", "TEXT", text=text, color='lightskyblue')
                                 self.broadcast(action, port=p)
                             action = Command("PERSON", "UDPATE", id=thisPlayer.id, AP=thisPlayer.AP, totalAP=thisPlayer.totalAP)
-                            
+
             # Get items: TODO
-            
+
     ###### Utility Methods ######
-    
+
     def broadcast(self, command, pid=None, port=None, pane=None, exclude=False):
         """Broadcast a given command to a player or all players in a pane.
         Accepts one of a port, a person id (pid), or a pane.  (Do not pass in more than one!)
@@ -236,7 +236,7 @@ class GameServer():
             if not port:
                 port = [p for p, i in self.player.iteritems() if i == pid][0]
             self.SDF.send(port, command)
-    
+
     def send_world_items(self, p, location):
         chests = self.pane[location.pane].get_chest_list()
         # CHESTS
@@ -245,7 +245,7 @@ class GameServer():
                 cmd = Command("CHEST", "ADD", chestType=chest[0], level=chest[1], location=Location(location.pane, chest[2]))
                 self.broadcast(cmd, p)
         # TODO: ITEMS
-    
+
     def tile_is_open(self, location, pid=None, cPane=None):
         if location.pane not in self.pane and not pid and not cPane:
             return False
@@ -259,7 +259,7 @@ class GameServer():
             return self.pane[location.pane].is_tile_passable(location) and \
                     location.tile not in [self.person[i].location.tile \
                     for i in self.pane[location.pane].person]
-            
+
     def load_pane(self, pane, pid=None):
         if pane not in self.pane:
             print("Loading pane " + str(pane))
@@ -303,14 +303,14 @@ class GameServer():
                         people[i] = self.person[i]
                     del self.person[i]
                 self.pane[pane].person = people
-                
+
                 self.pane[pane].save_state()
                 del self.pane[pane]
-                
+
     def save_all(self):
         self.unload_panes(True)
         State.save_world()
-                
+
     def getAllCombatPorts(self, character):
         '''Get all ports in the same combat instance as this playerCharacter.'''
         if isinstance(character, int):
@@ -325,7 +325,7 @@ class GameServer():
             return [p for p, i in self.player.iteritems() if i == character][0]
         else:
             return [p for p, i in self.player.iteritems() if i == character.id][0]
-            
+
     def get_nearby_players(self, personId):
         pane = self.person[personId].cPane if self.person[personId].cPane else \
                 self.person[personId].location.pane

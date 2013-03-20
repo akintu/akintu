@@ -259,15 +259,15 @@ class Person(en.Entity):
     def clientStatusView(self):
         '''A dict of status components to be displayed to the UI.'''
         return self._clientStatusView
-        
+
     def addClientStatus(self, statusName, image, turnsLeft):
         self._clientStatusView[statusName] = {'image' : image, 'turnsLeft' : turnsLeft}
-        
+
     def removeClientStatus(self, statusName):
         if statusName in self._clientStatusView:
             del self._clientStatusView[statusName]
-        
-        
+
+
     @property
     def HPBufferList(self):
         """The list of any HP buffers that should absorb damage before
@@ -1026,7 +1026,7 @@ class Person(en.Entity):
         ArmorPenetration is determined by CUN, equipment that boosts ArmorPenetration,
         "static" abililties that boost ArmorPenetration, and "dynamic"
         statuses that boost or reduce ArmorPenetration.
-        
+
         Intended to be a float rounded to the nearest 0.25
         """
         return (max(0, (self.totalCunning - 10) * 0.25) +
@@ -2154,7 +2154,7 @@ class Person(en.Entity):
         if self.team == "Players":
             return self.calcBurden()
         return 0
-        
+
     @property
     def totalAP(self):
         return max(1, self._baseAP + min(5, self._equipmentAP) - self.restrictionAP - self.burdenAP)
@@ -2577,7 +2577,7 @@ class Person(en.Entity):
                 if x in self.clientStatusView.keys():
                     return True
             return False
-        
+
         for item in self.statusList:
             if (item.name in stealthList):
                 return True
@@ -2868,7 +2868,7 @@ class Person(en.Entity):
         elif element == "Physical":
             if self.totalDR > 0:
                 testValue = max(1, self.totalDR - 2 * self.level)
-            
+
         if 50 <= testValue:
             return "Strong vs " + element + " +++"
         elif 20 <= testValue and testValue < 50:
@@ -2882,8 +2882,8 @@ class Person(en.Entity):
             return "Weak vs " + element + " --"
         elif testValue <= -50:
             return "Weak vs " + element + " ---"
-        
-        
+
+
     def detectStealth(self, stealthedTarget):
         ''' Rolls to see if this Person can detect the stealthed
         target.  Currently does not factor in "boss" monsters etc.
