@@ -71,7 +71,8 @@ class Region:
                 self.locations ^= self.shape[shape.upper()](*details)
 
         if 'append' not in opts or opts['append'] == True:
-            self.history.append(method + "|" + str(shape) + "|" + "|".join([x.__repr__() for x in details]))
+            self.history.append(method + "|" + str(shape) + "|" + \
+                    "|".join([x.__repr__() for x in details]))
 
     def __eq__(self, other):
         return all(x in other for x in self) and all (x in self for x in other)
