@@ -31,9 +31,14 @@ OBSTACLE_KEYS = sorted(OBSTACLES.keys())
 
 #ITEMS AND SUCH
 CHEST = (ITEMS_IMAGES_PATH, "treasure_chest.png", TILE_SIZE, None, None)
-ROCK_PATH = (BACKGROUND_IMAGES_PATH, "rockpath.png", TILE_SIZE, None, TILE_SIZE)
+HOUSE = (ITEMS_IMAGES_PATH, "house.png", TILE_SIZE, None, None)
+PATH = (ITEMS_IMAGES_PATH, "rockpath.png", TILE_SIZE, None, TILE_SIZE)
 
-SHEETS = {CHEST_KEY: CHEST}
+#KEYS
+HOUSE_KEY = "house"
+PATH_KEY = "path"
+
+SHEETS = {CHEST_KEY: CHEST, HOUSE_KEY: HOUSE, PATH_KEY: PATH}
 
 class Sprites(object):
 

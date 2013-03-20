@@ -82,6 +82,14 @@ class Pane(object):
         if location in self.tiles:
             self.tiles[location].remove_items()
 
+    def add_entities(self, entities_dict):
+        # print entities_dict
+        for loc, entity in entities_dict.iteritems():
+            if not loc in self.tiles:
+                self.tiles[loc] = Tile(None, True)
+            self.tiles[loc].add_entity(entity)
+            # print "Loc: " + str(loc) + " Entity: " + str(entity)
+    
     def load_monsters(self, monsters=None):
         '''
         Parameters:
@@ -378,15 +386,21 @@ class Town(Pane):
         
         bounds = (7, 14, 5, 9)
 
-        for i in range(6):
+        for i in range(3):
             building = Building("tree", bounds, self.location)#, (15, 6), Location(self.location, (start[0], start[1]+i*7)))
             self.buildings.append(building)
-            super(Town, self).load_region(building.boundary, building.boundary_type)
         
+        loc = (random.randrange(0, PANE_X-8), random.randrange(0, PANE_Y-6))
+        house = House(Location(self.location, loc))
+        self.buildings.append(house)
+
+        for building in self.buildings:
+            super(Town, self).load_region(building.boundary, building.boundary_type)
         
         for building in self.buildings:
             super(Town, self).clear_region(building.clear)
             super(Town, self).clear_region(building.path)
+            super(Town, self).add_entities(building.entities)
         
     def add_npcs(self):
         for building in self.buildings:
