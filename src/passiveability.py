@@ -178,17 +178,17 @@ class PassiveAbility(object):
         if not eStatus:
             return
         else:
-            holyDamage = (round(15 * (1 + target.totalDivineBonusDamage / 100) *
-                                     (1 - other.totalDivineResistance / 100)))
+            holyDamage = (round(15 * (1 + target.totalDivineBonusDamage * 0.01) *
+                                     (1 - other.totalDivineResistance * 0.01)))
             Combat.lowerHP(other, holyDamage)
 
-    def applyBladesOfReduction(self, target, reverse=False, victim=None):
+    def applyBladesOfReduction(self, target, reverse=False, other=None):
         if not target.usingWeapon("Sword") and not target.usingWeapon("Axe"):
             return
-        doApply = Dice.rollPresetChance(target, victim, "Reliable")
+        doApply = Dice.rollPresetChance(target, other, "Reliable")
         if doApply:
             duration = -1 # Never ends
-            Combat.applyStatus(victim, "Blades of Reduction", duration)
+            Combat.addStatus(other, "Blades of Reduction", duration)
 
     # Marksman
     def applyExcellentVision(self, target):

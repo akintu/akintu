@@ -493,17 +493,43 @@ class Ability(object):
             return (False, "Too much MP remaining to use " + self.name)
         else:
             return (True, "")
-
-    def _martialModeDisable(self, target, reverse=False, percent=None):
+            
+    @staticmethod
+    def _martialModeDisable(dirtyHack, target, reverse=False, percent=None):
         if percent > 0.15:
             Combat.removeStatus(target, "Martial Mode")
         toRemove = None
         for x in target.listeners:
-            if x.action == self._martialModeDisable:
+            if x.action == Ability._martialModeDisable:
                 toRemove = x
         if toRemove:
             target.listeners.remove(toRemove)
 
+    def _splashMagic(self, target):
+        source = self.owner
+        hit = Combat.calcHit(source, target, "Physical")
+        Combat.basicAttack(source, target, hit)
+        if hit != "Miss":
+            stat = None
+            for status in source.statusList:
+                if status.categoryList and "Weapon Enchantment" in status.categoryList:
+                    stat = status
+                    break
+            element = stat.element
+            if not element:
+                element = "Arcane"
+            allTargets = Combat.getAOETargets(source.cPane, target.cLocation, radius=1)
+            damage = 3 + source.totalSpellpower / 3
+            for tar in allTargets:
+                tarDamage = Combat.calcDamage(source, target, damage, damage, element, "Normal Hit")
+                Combat.lowerHP(tar, tarDamage)
+    
+    def _splashMagicCheck(self, target):
+        source = self.owner
+        if source.hasWeaponEnchant():
+            return (True, "")
+        return (False, "Must have a Spellsword enchantment active to use " + self.name)
+            
     # Marksman
     def _cuspOfEscape(self, target):
         hitType = Combat.calcHit(source, target, "Physical", modifier=10, critMod=5)
@@ -1721,9 +1747,28 @@ class Ability(object):
         'cooldown' : None,
         'checkFunction' : _martialModeCheck,
         'breakStealth' : 0,
-        'image' : SPELLSWORD_SKILLS + 'marital-mode.png',
+        'image' : SPELLSWORD_SKILLS + 'martial-mode.png',
         'text' : 'When at less than 15% MP, your fighting style returns to that of a warrior. \n' +\
-                '+5 Might and +3% DR. Lasts entire battle or until MP rises above 15%.'
+                '+5 Might, +1 Melee Accuracy and +3% DR.\n' + \
+                'Lasts entire battle or until MP rises above 15%.'
+        },
+        'Splash Magic':
+        {
+        'level' : 3,
+        'class' : 'Spellsword',
+        'HPCost' : 0,
+        'APCost' : 10,
+        'range' : 1,
+        'target' : 'hostile',
+        'action' : _splashMagic,
+        'cooldown' : 2,
+        'checkFunction' : _splashMagicCheck,
+        'breakStealth' : 100,
+        'image' : SPELLSWORD_SKILLS + 'splash-magic.png',
+        'text' : 'Melee Attack that blasts targets adjacent to your primary target with\n' + \
+                'elemental damage according to the most recent enchantment\'s element on\n' + \
+                'your weapon.  If that enchantment has no element, the element will be\n' + \
+                'arcane.  Requires an enchantment on your weapon.'
         },
 
         #Marksman

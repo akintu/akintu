@@ -926,7 +926,8 @@
     [MAGNITUDE: 5]
   [INTERNAL: DR_bonus]
 	[MAGNITUDE: 3]
-  [REMOVED_ON: MP > 15%]
+  [INTERNAL: Melee_accuracy_bonus]
+    [MAGNITUDE: 1]
   [CATEGORY: Buff] 
   
 [NAME: Improved Martial Mode]
@@ -936,8 +937,9 @@
   [INTERNAL: Might_bonus]
     [MAGNITUDE: 7]
   [INTERNAL: DR_bonus]
-	[MAGNITUDE: 3]
-  [REMOVED_ON: MP > 20%] 
+	[MAGNITUDE: 5]
+  [INTERNAL: Melee_accuracy_bonus]
+    [MAGNITUDE: 2]
   [CATEGORY: Buff]
   
 #[NAME: Rebound]
@@ -1519,9 +1521,11 @@
 [NAME: Blades of Reduction]
   [TYPE: Display]
   [IMAGE: all-for-one.png]
-  [ELEMENT: Arcane]
+  [ELEMENT: Fire]
   [INTERNAL: Magic_resist_penalty]
     [MAGNITUDE: 3]
+  [INTERNAL: Elemental_vulnerability]
+	[MAGNITUDE: 10]
   [CATEGORY: Debuff]
 	
 # Display Effects -- Anarchist Passives
