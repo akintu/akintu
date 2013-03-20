@@ -42,7 +42,7 @@ class Game(object):
 
         TheoryCraft.loadAll()   #Static method call, Devin's stuff.
         Sprites.load()  #Static method call to load sprites
-        
+
         # if not state:  # This is a hack, should be getting seed from host
             # state = {SEED_KEY: 'fdsa'}
         # assert player
@@ -54,7 +54,7 @@ class Game(object):
         else:       #We are a client, we'll need to get the seed from server
             self.seed = None
             self.world = None
-            
+
         self.pane = None
 
         # Game state
@@ -66,7 +66,7 @@ class Game(object):
         self.performingLevelup = False
         self.viewingInventory = False
         self.selectingConsumable = False
-        
+
         # Levelup state
         self.levelup = None
 
@@ -81,7 +81,7 @@ class Game(object):
         self.playerSaveFile = None
 
         self.turnTime = kwargs.get('turnlength')
-        
+
         # Setup server if host
         self.port = port
         if serverip:
@@ -93,7 +93,7 @@ class Game(object):
 
         self.CDF = ClientDataFactory()
         reactor.connectTCP(self.serverip, self.port, self.CDF)
-        
+
         hardcore = False
         if kwargs.get('hardcore'):
             hardcore = True
@@ -122,25 +122,25 @@ class Game(object):
     def setup_game(self, person):
         if not self.CDF.port:
             return
-            
+
         if self.id == -2:
             self.CDF.send(person)
             self.id = -1
-            
+
         if not self.CDF.queue.empty():
             command = self.CDF.queue.get()
             if command.type == "UPDATE" and command.action == "SEED":
                 self.seed = command.seed
-                
+
         if not self.seed:
             return
-            
+
         self.world = World(self.seed)
-        
+
         # Set up game engine
         self.screen = GameScreen()
         Combat.screen = self.screen
-        
+
         if self.serverip == "localhost":
             action = Command("SETTINGS", "SET_TIME", id=None, time=self.turnTime)
             self.CDF.send(action)
@@ -165,7 +165,7 @@ class Game(object):
         musicDir = os.path.join('res', 'music', self.musicState)
         if not os.access(musicDir, os.F_OK):
             return
-            
+
         if stop:
             pygame.mixer.music.fadeout(500)
 
@@ -225,7 +225,7 @@ class Game(object):
                 else:
                     self.animate(command.id, self.pane.person[command.id].location, command.location, \
                             1.0 / self.pane.person[command.id].movementSpeed)
-                    
+
                 self.pane.person[command.id].location = command.location
                 if command.id == self.id and self.currentAbility:
                     self.show_range(True)
@@ -241,12 +241,12 @@ class Game(object):
                 else:
                     if self.pane.person[command.id].anim:
                         self.pane.person[command.id].anim.stop()
-                        
+
                     if self.currentTargetId == command.id:
                         loc = self.pane.person[command.id].location
                         tile = self.pane.get_tile(loc.tile)
                         self.screen.update_tile(tile, loc)
-                    
+
                     self.screen.remove_person(command.id)
                     if command.id == self.currentTargetId:
                         self.currentTargetId = None
@@ -371,12 +371,12 @@ class Game(object):
         if not self.id in self.pane.person:
             return
         State.save_player(self.pane.person[self.id])
-    
+
     def save_and_quit(self):
         '''
         Calls self.save_player() and then quits
         '''
-        
+
         if hasattr(self, 'gs'):
             self.gs.save_all()
         self.save_player()#player_string)
@@ -429,7 +429,7 @@ class Game(object):
                         self.performingLevelup = False
                         self.CDF.send(Command("PERSON", "REPLACE", id=self.id, player=upgradedHero))
                         self.screen.update_person(self.id, {'team' : "Players",
-                                                            'level': self.pane.person[self.id].level, 
+                                                            'level': self.pane.person[self.id].level,
                                                             'HP' : self.pane.person[self.id].HP,
                                                             'totalHP' : self.pane.person[self.id].totalHP,
                                                             'MP' : self.pane.person[self.id].MP,
@@ -444,7 +444,7 @@ class Game(object):
                     if newlyEquippedPlayer:
                         self.CDF.send(Command("PERSON", "REPLACE", id=self.id, player=newlyEquippedPlayer))
                         self.viewingInventory = False
-                        
+
                 ## Consumable Use ###
                 elif self.selectingConsumable:
                     if event.key == K_RIGHT or event.key == K_KP6 or event.key == K_l:
@@ -460,7 +460,7 @@ class Game(object):
                         self.selectionMode = "items"
                         self.select_self()
                         self.selectingConsumable = False
-                        
+
                 ### Combat Only Commands ###
                 elif self.combat:
 
@@ -552,11 +552,11 @@ class Game(object):
         eq = player.equippedItems.allGear
         inv = player.inventory.allItems
         capacity = `player.inventoryWeight` + "/" + `player.inventoryCapacity`
-        if not eq and not inv: 
+        if not eq and not inv:
             self.viewingInventory = False
             return
         self.screen.show_item_dialog(text, inv, eq, isEquipment, bgcolor='tan', capacity=capacity)
-            
+
     def open_consumables(self):
         self.selectingConsumable = True
         player = self.pane.person[self.id]
@@ -567,7 +567,7 @@ class Game(object):
             self.screen.show_item_dialog(text, cons, [], isCons, bgcolor='tan')
         else:
             self.selectingConsumable = False
-            
+
     def choose_ability(self):
         text = "Select an Ability"
         bgcolor = "cadetblue"
@@ -639,8 +639,8 @@ class Game(object):
         #self.itemList = []
 
     def begin_select_consumable(self):
-        pass     
-        
+        pass
+
     # def cycle_items(self, reverse=False):
         # if not self.combat:
             # return
@@ -690,13 +690,13 @@ class Game(object):
         # Cycles through the current persons in the current combat pane.
         if not self.combat:
             return
-        
+
         if self.currentTargetId:
             if self.currentTargetId not in self.pane.person.keys():
                 self.currentTargetId = None
             else:
                 self.set_overlay(self.currentTargetId, None)
-        
+
         resetNeeded = False
         for x in self.panePersonIdList:
             if x not in self.pane.person:
@@ -718,7 +718,7 @@ class Game(object):
             else:
                 currentTargetPlace = self.panePersonIdList.index(self.currentTargetId)
                 self.currentTargetId = self.panePersonIdList[currentTargetPlace - 1]
-        
+
         self.set_overlay(self.currentTargetId, 'red')
 
     def set_overlay(self, where, overlay):
@@ -731,18 +731,18 @@ class Game(object):
             loc = where.location
         tile = self.pane.get_tile(loc.tile)
         self.screen.update_tile(tile, loc, overlay=overlay)
-        
+
     def show_range(self, show, loc=None):
         if not loc:
             loc = self.pane.person[self.id].location
         R = Region()
-        
+
         R("ADD", "DIAMOND", loc, self.currentAbility.range \
                 if self.currentAbility.range != -1 else self.pane.person[self.id].attackRange)
         for l in [x for x in R if x.pane == (0, 0)]:
             self.set_overlay(l, 'blue' if show else None)
         self.screen.update()
-        
+
     def select_self(self):
         if not self.combat or self.id not in self.pane.person:
             return
@@ -800,7 +800,7 @@ class Game(object):
                 self.pane.person[id].anim.stop()
             self.pane.person[id].anim = None
             self.pane.person[id].anim_start = 0
-            
+
             if id == self.id and self.currentAbility:
                 self.show_range(False, source)
                 self.show_range(True)

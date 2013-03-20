@@ -12,6 +12,8 @@ import random
 
 from const import*
 from region import*
+from sprites import*
+from entity import*
 from theorycraft import TheoryCraft
 
 class Building(object):
@@ -20,6 +22,9 @@ class Building(object):
         '''
         bounds: (min_x, max_x, min_y, max_y)
         '''
+        
+        self.path_sheet = Sprites.get_sheet(PATH_KEY)
+        self.entities = dict()
         
         if not size:
             size = (random.randrange(bounds[0], bounds[1]), random.randrange(bounds[2], bounds[3]))
@@ -55,7 +60,7 @@ class Building(object):
         
         self.path = Region()
         self.path("ADD", "LINE", Location(pane_loc, self.center), Location(pane_loc, opening), 2)
-        self.boundary("SUB", "LINE", Location(pane_loc, self.center), Location(pane_loc, opening), 2)
+        #self.boundary("SUB", "LINE", Location(pane_loc, self.center), Location(pane_loc, opening), 2)
         
         self.add_npc()
         
@@ -73,8 +78,43 @@ class Shop(Building):
     pass
     
 class House(Building):
-    pass
+    def __init__(self, location):
+        '''
+        House has size (4, 2)
+        '''
+        #self.entities = dict()
+        
+        super(House, self).__init__(boundary_type="tree", bounds=None, pane_loc=location.pane, size=(7, 5), location=location)
+        house_sheet = Sprites.get_sheet(HOUSE_KEY)
+        
+        
+        house_loc = (location.tile[0] + 2, location.tile[1] + 2)
+        
+        for x in range(4):
+            for y in range(2):
+                loc = (house_loc[0]+x, house_loc[1]+y)
+                if x == y and x == 1:
+                    self.door = loc
+                    passable = True
+                else:
+                    passable = False
+                self.entities[loc] = Entity(location=loc, image=house_sheet.getimage((x, y)), passable=passable)
+            y = 0
+            
+        self.opening = (self.door[0], self.door[1]+4)
+        self.path = Region()
+        self.path("ADD", "LINE", Location(location.pane, (self.door[0], self.door[1]+1)), Location(location.pane, self.opening), 1)
+        self.boundary("SUB", "LINE", Location(location.pane, (self.door[0], self.door[1]+1)), Location(location.pane, self.opening), 1)
+        for loc in self.path:
+            if loc.pane == location.pane:
+                self.entities[loc.tile] = Entity(location=loc.tile, image=self.path_sheet.getimage((loc.tile)), passable=True)
     
+    def add_npc(self, information=None):
+        '''
+        Add a random npc here that might talk to you
+        '''
+        pass
+
 class Garden(Building):
     pass
     

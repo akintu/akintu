@@ -51,7 +51,7 @@ class Combat(object):
         '''Send a message to all players in combat with the provided character.'''
         messageObj = command.Command("UPDATE", "TEXT", text=message, color=color)
         Combat.gameServer.broadcast(messageObj, -character.id if toAll else character.id)
-            
+
     @staticmethod
     def encodeStatuses(character):
         '''Returns a version of this character's statusList that only contains the name and turnsLeft.
@@ -191,7 +191,7 @@ class Combat(object):
                 # Ranged attack with penalty 20% miss chance
                 outrightMissChance = int(round(20 * (1 - float(source.meleeRangedAttackPenaltyReduction) / 100)))
                 if Dice.rollBeneath(outrightMissChance):
-                    Combat.sendCombatMessage("Jammed (" + str(outrightMissChance) + "%)", source) 
+                    Combat.sendCombatMessage("Jammed (" + str(outrightMissChance) + "%)", source)
                     return "Miss"
             if source.usingWeapon("Longbow") and not source.baseClass == "Ranger" and not source.secondaryClass == "Ranger":
                 # -25% Accuracy
@@ -223,13 +223,13 @@ class Combat(object):
         defense = target.totalMagicResist
         result = Combat.calcMagicalHit(offense, defense)
         if source.team == "Monsters":
-            Combat.sendCombatMessage("Roll: " + result + "(" + str(offense) + " vs " + str(defense) + ")", 
+            Combat.sendCombatMessage("Roll: " + result + "(" + str(offense) + " vs " + str(defense) + ")",
                                     target)
         else:
-            Combat.sendCombatMessage("Roll: " + result + "(" + str(offense) + " vs " + str(defense) + ")", 
+            Combat.sendCombatMessage("Roll: " + result + "(" + str(offense) + " vs " + str(defense) + ")",
                                     source)
         return result
-        
+
     @staticmethod
     def calcHit(source, target, type, rating=0, modifier=0, critMod=0, ignoreMeleeBowPenalty=False):
         """Determies if the attack performed from the source to the target is successful, and returns
@@ -268,7 +268,7 @@ class Combat(object):
                 source.lastUsedRating = None
                 source.lastUsedCritMod = None
                 source.lastUsedModifier = None
-                
+
         if (type == "Physical"):
             Combat._shoutAttackStart(source, target)
             if Dice.rollBeneath(target.totalAvoidanceChance):
@@ -279,9 +279,9 @@ class Combat(object):
             offenseMessage = str(source.totalMeleeAccuracy + modifier)
             if source.usingWeapon("Ranged"):
                 offenseMessage = str(source.totalRangedAccuracy + modifier)
-            Combat.sendCombatMessage("Rolled: " + attackOne + " (" + offenseMessage + " vs " + 
+            Combat.sendCombatMessage("Rolled: " + attackOne + " (" + offenseMessage + " vs " +
                                      str(target.totalDodge) + ")", source)
-                   
+
             return attackOne
 
         if (type == "Magical"):
@@ -378,11 +378,11 @@ class Combat(object):
                         Combat.removeStatus(target, display.name, notifyClients=False)
                         target.statusList.append(dStatus)
                         dStatus.activate(target)
-                        
+
         comm = command.Command("PERSON", "ADDSTATUS", id=target.id, status=dStatus.name, \
                 turns=dStatus.turnsLeft, image='cubeforce.png')
         Combat.gameServer.broadcast(comm, -comm.id)
-        
+
     @staticmethod
     def removeStatus(target, statusName, notifyClients=True):
         """Removes a specific status effect from a given Person.
@@ -392,7 +392,7 @@ class Combat(object):
           statusName -- the name of a status effect to remove
           notifyClients -- boolean; indicates whether we need to tell
             all of the clients that this status has been removed.  Should
-            remain True unless this status is going to be reapplied 
+            remain True unless this status is going to be reapplied
             immediately after being removed.
         Outputs:
           None"""
@@ -408,7 +408,7 @@ class Combat(object):
             if notifyClients:
                 comm = command.Command("PERSON", "REMOVESTATUS", id=target.id, status=statusName)
                 Combat.gameServer.broadcast(comm, -comm.id)
-            
+
     @staticmethod
     def setStatusDuration(target, statusName, newDuration):
         """Applies a new duration to an existing status.
@@ -469,7 +469,7 @@ class Combat(object):
                 choice = Dice.roll(0, len(removalCandidates) - 1)
                 Combat.removeStatus(target, removalCandidates[choice].name)
 
-     
+
     @staticmethod
     def instantMove(target, desiredCombatLocation):
         '''Moves a Person from one location to another instantly without animation.'''
@@ -505,23 +505,23 @@ class Combat(object):
         else:
             target.remainingMovementTiles -= 1
             Combat.sendToAll(target, "MOVE_TILES")
-            
+
     @staticmethod
     def resetMovementTiles(target, freeMove=False):
-        ''' Reset the movement tiles to maximum minus this last move.  
+        ''' Reset the movement tiles to maximum minus this last move.
         (Used after an AP cost has been incurred.) '''
         if freeMove:
             target.remainingMovementTiles = target.totalMovementTiles
         else:
             target.remainingMovementTiles = target.totalMovementTiles - 1
         Combat.sendToAll(target, "MOVE_TILES")
-        
+
     @staticmethod
     def addMovementTiles(target, tileAmount):
         ''' Add movement tiles to the current move. '''
         target.remainingMovementTiles += tileAmount
         Combat.sendToAll(target, "MOVE_TILES")
-        
+
     @staticmethod
     def calcDamage(source, target, minimum, maximum, element, hitValue, partial=1, critical=1, scalesWith=None, scaleFactor=0):
         """Computes the amount of damage that should be dealt to the target after considering all bonuses and penalties
@@ -572,7 +572,7 @@ class Combat(object):
         if source:
             dieRoll = source.applyBonusDamage(dieRoll, element)
             # DoTs have no source.
-            
+
         if element == "Fire":
             dieRoll *= 1 - (min(80, float(target.totalFireResistance) / 100))
         elif element == "Cold":
@@ -599,7 +599,7 @@ class Combat(object):
         if dieRoll <= 0:
             print "0 damage dealt"
             return 0
-            
+
         result = int(round(dieRoll))
         color = 'orange'
         receiver = source
@@ -607,10 +607,10 @@ class Combat(object):
             color = 'red'
             receiver = target
         if source:
-            Combat.sendCombatMessage(source.name + " --> " + target.name + ": " + str(result) + " " + 
+            Combat.sendCombatMessage(source.name + " --> " + target.name + ": " + str(result) + " " +
                                     element + " damage", receiver, color)
         else:
-            Combat.sendCombatMessage("DoT --> " + target.name + ": " + str(result) + " " + element + 
+            Combat.sendCombatMessage("DoT --> " + target.name + ": " + str(result) + " " + element +
                                     " damage", target, color)
         return result
 
@@ -661,8 +661,8 @@ class Combat(object):
         elif source.attackElement == "Arcane":
             baseAttackDamage *= 1 - (float(target.totalArcaneResistance) / 100)
         baseAttackDamage = source.applyBonusDamage(baseAttackDamage, source.attackElement)
-        Combat.sendCombatMessage("Incoming Attack From: " + source.name + " dealing " + 
-                                str(int(baseAttackDamage)) + " " + source.attackElement + " damage!", 
+        Combat.sendCombatMessage("Incoming Attack From: " + source.name + " dealing " +
+                                str(int(baseAttackDamage)) + " " + source.attackElement + " damage!",
                                 color='red', character=target)
         Combat.lowerHP(target, round(baseAttackDamage))
         Combat._shoutAttackComplete(source, target, params['noCounter'])
@@ -716,13 +716,13 @@ class Combat(object):
         outgoingDamage *= overallDamageMod
 
         if hitType == "Critical Hit":
-            outgoingDamage += int(round(outgoingDamage * criticalDamageMod * 
+            outgoingDamage += int(round(outgoingDamage * criticalDamageMod *
                             float(weapon.criticalMultiplier + source.totalCriticalMagnitude) / 100))
-        
+
         elementalEffects = []
         if not ignoreOnHitEffects:
             elementalEffects = Combat.applyOnHitEffects(source, target)
-        
+
         if elementOverride:
             # Treat all damage thus far as elemental.
             elementalEffects.append([elementOverride, outgoingDamage])
@@ -743,7 +743,7 @@ class Combat(object):
             elif weapon.damageType == "Bludgeoning & Slashing" or wepaon.damageType == "Slashing & Bludgeoning":
                 resistance = min(target.totalBludgeoningResistance, target.totalSlashingResistance)
                 outgoingDamage *= (1 - (float(resistance / 100)))
-        totalDamage = int(round(Combat.sumElementalEffects(elementalEffects, source, target, 
+        totalDamage = int(round(Combat.sumElementalEffects(elementalEffects, source, target,
                                 elementOverride) + outgoingDamage))
         Combat.sendCombatMessage("Dealt " + str(totalDamage) + " total Damage.", source, color="yellow")
 
@@ -804,7 +804,7 @@ class Combat(object):
             elif duple[0] == "Slashing":
                 currentDamage = duple[1]
                 currentDamage = round(currentDamage * (1 - float(target.totalSlashingResistance) / 100))
-                damSum += currentDamage                
+                damSum += currentDamage
         return damSum
 
     @staticmethod
@@ -918,7 +918,7 @@ class Combat(object):
         elif direction == 3:
             directionValues = [2,6]
         return target.cLocation.direction in directionValues
-        
+
     @staticmethod
     def lowerHP(target, amount):
         """Used to actually lower the amount of HP a Person has.  May kill that person.
@@ -1084,9 +1084,8 @@ class Combat(object):
             selectMonsters: Boolean for whether targets are Monsters or Players
         Output:
             people: A list of Person objects who are inside the area"""
-            
-        R = Region()
-        R("ADD", "CIRCLE", center, radius)
+
+        R = Region("CIRCLE", center, radius)
         return Combat.getTargetsInRegion(cPane, R, selectMonsters)
 
     @staticmethod
@@ -1102,11 +1101,10 @@ class Combat(object):
         Output:
             people: A list of Person objects inside the area.  A list is returned even if
                     selectFirstOnly is True"""
-                    
-        R = Region()
-        R("ADD", "LINE", start, end, width)
+
+        R = Region("LINE", start, end, width)
         people = Combat.getTargetsInRegion(cPane, R, selectMonsters)
-        
+
         if selectFirstOnly and len(people) > 0:
             minDist = start.distance(people[0].cLocation)
             index = 0
@@ -1116,9 +1114,9 @@ class Combat(object):
                     minDist = dist
                     index = i
             people = [people[index]]
-                    
+
         return people
-        
+
     @staticmethod
     def getConeTargets(cPane, center, distance, degrees, selectMonsters=True):
         """Gets all people in combat affected by a cone-shaped AOE field
@@ -1127,7 +1125,7 @@ class Combat(object):
             center: A Location that is the center or origin of the cone
                 Note: Ensure that center.direction is the facing direction.  This is used
                 to determine where the front, sides, and back are.
-            distance: An Integer for how long the range of it 
+            distance: An Integer for how long the range of it
             degrees: Determines the shape of the cone
                 90 -- Front and front-diagonals
                 180 -- Front, front-diagonals, sides
@@ -1136,7 +1134,7 @@ class Combat(object):
             selectMonsters: Boolean for whether targets are Monsters or Players
         Output:
             people: A list of Person objects inside the cone."""
-            
+
         R = Region()
         if degrees == 90:
             R("ADD", "DIAMOND", center.move(center.direction, distance), distance)
@@ -1149,30 +1147,28 @@ class Combat(object):
         if degrees == 270:
             R("ADD", "CIRCLE", center, distance)
             R("SUB", "DIAMOND", center.move(10 - center.direction, distance + 1), distance)
-            
+
         return Combat.getTargetsInRegion(cPane, R, selectMonsters)
 
     @staticmethod
     def againstWall(cPane, location, direction):
         return not Combat.gameServer.pane[cPane].is_tile_passable(location.move(direction, 1))
-        
+
     @staticmethod
     def getDiagonalTargets(cPane, location):
-        R = Region()
-        R("ADD", "CIRCLE", location, 1)
+        R = Region("CIRCLE", location, 1)
         R("SUB", "DIAMOND", location, 1)
         return Combat.getTargetsInRegion(cPane, R)
-        
+
     @staticmethod
     def checkParryPosition(cPane, location, targetLoc):
-        R = Region()
-        R("ADD", "CIRCLE", location, 1)
+        R = Region("CIRCLE", location, 1)
         if targetLoc in R:
             facings = {2: [1, 2, 3], 4: [1, 4, 7], 6: [3, 6, 9], 8: [7, 8, 9]}
             if location.direction_to(targetLoc) in facings[location.direction]:
                 return True
         return False
-        
+
     @staticmethod
     def getTargetsInRegion(cPane, R, selectMonsters=True):
         people = []
@@ -1181,9 +1177,8 @@ class Combat(object):
                     "Monsters" if selectMonsters else "Players":
                 people.append(Combat.gameServer.person[i])
         return people
-        
+
     @staticmethod
     def getRandomAdjacentLocation(cPane, location):
-        R = Region()
-        R("ADD", "CIRCLE", location, 1)
+        R = Region("CIRCLE", location, 1)
         return random.choice([x for x in R if Combat.gameServer.tile_is_open(x, cPane=cPane)])
