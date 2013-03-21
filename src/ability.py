@@ -877,7 +877,40 @@ class Ability(object):
             Combat.lowerHP(monster, shadowDamage)
         duration = 2
         Combat.addStatus(target, "Shroud", duration)
-
+        
+    def _hex(self, target):
+        source = self.owner
+        hit = Combat.calcHit(source, target, "Magical")
+        if hit != "Resisted" and hit != "Fully Resisted" and hit != "Miss":
+            Combat.sendCombatMessage("Hex Successful", source, color='darkorange', toAll=False)
+            duration = 3
+            Combat.addStatus(target, self.name, duration)
+        else:
+            Combat.sendCombatMessage("Hex Failed", source, color='darkorange', toAll=False)
+            
+    def _vampireStrike(self, target):
+        source = self.owner
+        mod = 0
+        if source.inStealth():
+            mod = 3
+        hit = Combat.calcHit(source, target, "Physical", modifier=mod)
+        if hit != "Miss":
+            min = 1 + 2 * source.level
+            max = 16 + 2 * source.level
+            if source.inStealth():
+                min = int(min * 1.3)
+                max = int(max * 1.3)
+            dam = Combat.calcDamage(source, target, min, max, element="Shadow", hitValue="Normal Hit")
+            healing = dam * 2
+            Combat.lowerHP(target, dam)
+            Combat.healTarget(source, source, healing)  
+        
+    def _vampireStrikeCheck(self, target):
+        source = self.owner
+        if not source.usingWeapon("Melee"):
+            return (False, "Must be using a melee weapon to use " + self.name)
+        return (True, "")
+            
     def _shadowstep(self, target):
         source = self.owner
         Combat.addMovementTiles(target, 4)
@@ -2200,6 +2233,42 @@ class Ability(object):
                 'Also activates a protective shroud for the next 2 turns that\n' + \
                 'gives +20% Avoidance chance.'
         },
+        'Hex':
+        {
+        'level' : 2,
+        'class' : 'Nightblade',
+        'HPCost' : 0,
+        'APCost' : 7,
+        'range' : 4,
+        'target' : 'hostile',
+        'action' : _hex,
+        'cooldown' : 2,
+        'checkFunction' : None,
+        'breakStealth' : 100,
+        'image' : NIGHTBLADE_SKILLS + 'hex.png',
+        'text' : 'Weaken a target foe.  On a successful magical hit roll, the foe\'s\n' + \
+                'Slashing resistance is lowered 25%, DR by 10% and Shadow Resistance\n' + \
+                'is dropped by 25%.'
+        },
+        'Vampire Strike':
+        {
+        'level' : 3,
+        'class' : 'Nightblade',
+        'HPCost' : 0,
+        'APCost' : 8,
+        'range' : 1,
+        'target' : 'hostile',
+        'action' : _vampireStrike,
+        'cooldown' : 3,
+        'checkFunction' : _vampireStrikeCheck,
+        'breakStealth' : 100,
+        'image' : NIGHTBLADE_SKILLS + 'vampire-strike.png',
+        'text' : 'Melee Attack that deals 1-16 + 2 * level shadow damage on\n' + \
+                'a successful physical attack roll.  Receive double the damage\n' + \
+                'dealt as healing.  Both effects +30% if used from stealth and\n' + \
+                'accuracy used to hit is raised by 3.  Breaks stealth.'
+        },
+        
         'Shadowstep':
         {
         'level' : 4,

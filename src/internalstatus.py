@@ -279,6 +279,9 @@ class InternalStatus(object):
     def Set_movement_AP_cost_method(self, target, magnitude):
         Combat.setMovementCost(target, magnitude)
 
+    def Slashing_resist_penalty_method(self, target, magnitude):
+        target.statusSlashingResistance -= 25
+        
     def Snake_style_method(self, target, magnitude):
         pass
 
@@ -533,6 +536,9 @@ class InternalStatus(object):
     def Set_movement_AP_cost_method_reverse(self, target, magnitude):
         Combat.setMovementCost(target, -1)
 
+    def Slashing_resist_penalty_method_reverse(self, target, magnitude):
+        target.statusSlashingResistance += 25
+        
     def Snake_style_method_reverse(self, target, magnitude):
         pass
 
@@ -640,6 +646,7 @@ class InternalStatus(object):
         'Send_empathy_damage_to_summon' : Send_empathy_damage_to_summon_method,
         'Set_maximum_stealth_break_chance' : Set_maximum_stealth_break_chance_method,
         'Set_movement_AP_cost' : Set_movement_AP_cost_method,
+        'Slashing_resist_penalty' : Slashing_resist_penalty_method,
         'Snake_style' : None,
         'Sneak_bonus' : Sneak_bonus_method,
         'Sneak_penalty' : Sneak_penalty_method,
@@ -732,6 +739,7 @@ class InternalStatus(object):
         'Send_empathy_damage_to_summon' : Send_empathy_damage_to_summon_method_reverse,
         'Set_maximum_stealth_break_chance' : Set_maximum_stealth_break_chance_method_reverse,
         'Set_movement_AP_cost' : Set_movement_AP_cost_method_reverse,
+        'Slashing_resist_penalty' : Slashing_resist_penalty_method_reverse,
         'Snake_style' : None,
         'Sneak_bonus' : Sneak_bonus_method_reverse,
         'Sneak_penalty' : Sneak_penalty_method_reverse,

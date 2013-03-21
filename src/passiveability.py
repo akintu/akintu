@@ -186,7 +186,7 @@ class PassiveAbility(object):
                                  (1 - other.totalDivineResistance * 0.01)))
         Combat.lowerHP(other, holyDamage)
         Combat.sendCombatMessage(target.name + " --> " + other.name + ": " + `holyDamage` + " " +
-                                "Holy" + " damage", target, 'orange')
+                                "Holy" + " damage", target, 'yellow')
 
     def applyBladesOfReduction(self, target, reverse=False, other=None):
         if not target.usingWeapon("Sword") and not target.usingWeapon("Axe"):

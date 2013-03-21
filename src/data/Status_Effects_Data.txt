@@ -340,6 +340,10 @@
   [TYPE: Internal]
   [RECURRING: False]
   
+[NAME: Slashing_resist_penalty]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
 [NAME: Snake_style]
   [TYPE: Internal]
   [RECURRING: False]
@@ -1161,6 +1165,18 @@
   [INTERNAL: Avoidance]
     [MAGNITUDE: 20]
   [CATEGORY: Buff]
+	
+[NAME: Hex]
+  [TYPE: Display]
+  [IMAGE: hex.png]
+  [ELEMENT: Shadow]
+  [INTERNAL: Slashing_resist_penalty]
+    [MAGNITUDE: 25]
+  [INTERNAL: DR_penalty]
+    [MAGNITUDE: 10]
+  [INTERNAL: Elemental_vulnerability]
+    [MAGNITUDE: 25]
+  [CATEGORY: Debuff]
 	
 [NAME: Dark Intent]
   [TYPE: Display]
