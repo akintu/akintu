@@ -41,7 +41,7 @@ class Game(object):
         '''
 
         TheoryCraft.loadAll()   #Static method call, Devin's stuff.
-        Sprites.load()  #Static method call to load sprites
+        Sprites.load_all()      #Static method call to load sprites
 
         # if not state:  # This is a hack, should be getting seed from host
             # state = {SEED_KEY: 'fdsa'}

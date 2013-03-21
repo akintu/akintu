@@ -81,6 +81,11 @@ class House(Building):
     def __init__(self, location):
         '''
         House has size (4, 2)
+        Will use outdoor paths from path_sheet (set in building)
+            Row 0: Outdoor Rocks
+            Row 1: Outdoor cement/Brick
+            Row 2: Tile or specialty (in or out)
+            Row 3: Indoor Wood/Carpet
         '''
         #self.entities = dict()
         
@@ -105,14 +110,26 @@ class House(Building):
         self.path = Region()
         self.path("ADD", "LINE", Location(location.pane, (self.door[0], self.door[1]+1)), Location(location.pane, self.opening), 1)
         self.boundary("SUB", "LINE", Location(location.pane, (self.door[0], self.door[1]+1)), Location(location.pane, self.opening), 1)
+        
+        #Choose the type of path that we want, probably from rows 0 to 2 (from self.path_sheet)
+        row = random.randrange(0, 3)
+        col = random.randrange(0, 4)
+        path_image = self.path_sheet.getimage((col, row))
         for loc in self.path:
             if loc.pane == location.pane:
-                self.entities[loc.tile] = Entity(location=loc.tile, image=self.path_sheet.getimage((loc.tile)), passable=True)
+                self.entities[loc.tile] = Entity(location=loc.tile, image=path_image, passable=True)
+                #TODO: Add outer edge entities here (to give edge to path)
     
     def add_npc(self, information=None):
         '''
         Add a random npc here that might talk to you
         '''
+        # tolerance = 1
+        # lvl = 1
+        # person = TheoryCraft.getMonster(level=lvl, tolerance=tolerance)
+        # person.location = Location(self.location.pane, self.center)
+        # person.ai.add("WANDER", person.ai.wander, person.movementSpeed, pid=id(person), region=self.clear, move_chance=1.0 / (person.movementSpeed))
+        # self.npcs[id(person)] = person
         pass
 
 class Garden(Building):
