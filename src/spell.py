@@ -252,10 +252,10 @@ class Spell(object):
         damage = Combat.calcDamage(source, target, minimum=13, maximum=20, element="Shadow", hitValue=hitType,
                                    scalesWith="Spellpower", scaleFactor=0.01)
         Combat.lowerHP(target, damage)
-
-        duration = Dice.scale(source.totalSpellpower, 3, 0.02, cap=4)
-        magnitude = round(Dice.roll(2,8) * (1 + source.totalSpellpower * 0.005))
-        Combat.addStatus(target, self.name, duration, magnitude, hitValue=hitType)
+        if hitType not in ["Partial Resist", "Partially Resisted", "Miss", "Fully Resisted", "Resisted"]:
+            duration = Dice.scale(source.totalSpellpower, 3, 0.02, cap=4)
+            magnitude = round(Dice.roll(2,8) * (1 + source.totalSpellpower * 0.005))
+            Combat.addStatus(target, self.name, duration, magnitude, hitValue=hitType)
 
     def _zoneOfSilence(self, target):
         pass
