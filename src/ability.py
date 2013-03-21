@@ -479,6 +479,17 @@ class Ability(object):
             return (True, "")
         return (False, "Must be using a polearm to use: " + self.name)
         
+    def _longReach(self, target):
+        source = self.owner
+        hit = Combat.calcHit(source, target, "Physical")
+        Combat.basicAttack(source, target, hit, noCounter=True)
+        
+    def _longReachCheck(self, target):
+        source = self.owner
+        if source.usingWeapon("Polearm"):
+            return (True, "")
+        return (False, "Must be using a polearm to use: " + self.name)
+        
     # Spellsword
     def _martialMode(self, target):
         source = self.owner
@@ -1713,7 +1724,6 @@ class Ability(object):
         },
 
         # Dragoon
-        # Bunch of other abilities go here TODO
         'Jump Attack':
         {
         'level' : 1,
@@ -1766,6 +1776,42 @@ class Ability(object):
         'text' : 'Strike foes in all diagonal directions.  Attack with Force x 1.20 and +5% critical magnitude\n' + \
                 'on each strike.  Must have a polearm equipped.'
         },
+        'Faster Jump Attack++':
+        {
+        'level' : 4,
+        'class' : 'Dragoon',
+        'HPCost' : 0,
+        'APCost' : 14,
+        'range' : 8,
+        'target' : 'hostile',
+        'action' : _jumpAttack,
+        'cooldown' : 1,
+        'checkFunction' : _jumpAttackCheck,
+        'breakStealth' : 100,
+        'image' : DRAGOON_SKILLS + 'jump-attack.png',
+        'text' : 'Jump from your current location to immediately next to a selected enemy.\n' + \
+                'You will land on a random adjacent tile to the target dealing 175% damage if you hit.\n ' + \
+                'Additionally, you will deal 25% of weapon damage to all targets adjacent to\n' + \
+                'your landing location (including the primary target) as bludgeoning damage.\n' + \
+                'Now has a reduced cooldown.'
+        },
+        'Long Reach':
+        {
+        'level' : 4,
+        'class' : 'Dragoon',
+        'HPCost' : 0,
+        'APCost' : 7,
+        'range' : 2,
+        'target' : 'hostile',
+        'action' : _longReach,
+        'cooldown' : None,
+        'checkFunction' : _longReachCheck,
+        'breakStealth' : 100,
+        'image' : DRAGOON_SKILLS + 'long-reach.png',
+        'text' : 'Melee attack with a polearm that can strike\n' + \
+                'a foe from 2 tiles away and ignores counterattacks.'
+        },
+        
         
         #Spellsword
         'Martial Mode':

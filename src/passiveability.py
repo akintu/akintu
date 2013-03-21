@@ -149,6 +149,15 @@ class PassiveAbility(object):
         if toRemove:
             target.abilities.remove(toRemove)
         
+    def applyJumpAttackUpgrade2(self, target):
+        toRemove = None
+        for abil in target.abilities:
+            if abil.name == "Faster Jump Attack":
+                toRemove = abil
+                break
+        if toRemove:
+            target.abilities.remove(toRemove)
+        
     # Spellsword
     def applySeekerOfEnchantments(self, target, reverse=False, spell=None):
         if not reverse:
@@ -646,6 +655,13 @@ class PassiveAbility(object):
         'level' : 3,
         'type' : 'static',
         'action' : applyJumpAttackUpgrade
+        },
+        '--IGNORE-- Jump Attack Upgrade 2':
+        {
+        'class' : 'Dragoon',
+        'level' : 4,
+        'type' : 'static',
+        'action' : applyJumpAttackUpgrade2
         },
 
 
