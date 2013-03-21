@@ -37,10 +37,8 @@ class Monster(person.Person):
         self.minLevel = self.level
         self.maxLevel = Monster.setFrom(argDict, 'maxLevel')
         self.name = Monster.setFrom(argDict, 'name')
-        self.experienceGiven = Monster.setFrom(argDict, 'experience')
-        self.levelupExperience = Monster.setFrom(argDict, 'levelupExperience')
         self.GP = Monster.setFrom(argDict, 'GP')
-
+        self.experience = self.GP * self.level
         self.type = Monster.setFrom(argDict, 'type')
 
         self.abilityList = []
@@ -142,7 +140,6 @@ class Monster(person.Person):
         self.HP = self.totalHP
         self.baseMP += self.levelupMP * diff
         self.MP = self.totalMP
-        self.experienceGiven += self.levelupExperience * diff
         self._baseArcaneResistance += self.levelupArcaneResistance * diff
         self._baseBludgeoningResistance += self.levelupBludgeoningResistance * diff
         self._baseColdResistance += self.levelupColdResistance * diff
@@ -158,7 +155,7 @@ class Monster(person.Person):
         self.baseSpellpower += self.levelupSpellpower * diff
         self.baseStrength += self.levelupStrength * diff
         self.level = level
-
+        self.experience = self.GP * self.level
 
     def adjustMaxHP(self, numberOfPlayers):
         if numberOfPlayers == 1:
@@ -169,7 +166,7 @@ class Monster(person.Person):
             self.baseHP = round(self.baseHP * 2)
         elif numberOfPlayers == 4:
             self.baseHP = round(self.baseHP * 2.5)
-
+            
     def getDetailTuple(self):
         '''DEPRECATED'''
         return ("Monster", self.name, self.level)

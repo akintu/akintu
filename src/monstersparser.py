@@ -67,7 +67,6 @@ class MonstersParser(object):
         poisonResistTag = re.compile("(?:\[ELEMENTAL RESIST POISON: )(.*)(?:\])", re.I)
         shadowResistTag = re.compile("(?:\[ELEMENTAL RESIST SHADOW: )(.*)(?:\])", re.I)
         slashingResistTag = re.compile("(?:\[SLASHING RESIST: )(.*)(?:\])", re.I)
-        experienceTag = re.compile("(?:\[EXPERIENCE GIVEN: )(.*)(?:\])", re.I)
         GPTag = re.compile("(?:\[GP: )(.*)(?:\])", re.I)
         HPTag = re.compile("(?:\[HP: )(.*)(?:\])", re.I)
         imageTag = re.compile("(?:\[IMAGE: )(.*)(?:\])", re.I)
@@ -125,7 +124,6 @@ class MonstersParser(object):
                                                                            'levelupShadowResistance')
                 MonstersParser.associate(f, f.readline(), slashingResistTag, mDict, 'startingSlashingResistance',
                                                                            'levelupSlashingResistance')
-                MonstersParser.associate(f, f.readline(), experienceTag, mDict, 'experience', 'levelupExperience')
                 MonstersParser.associate(f, f.readline(), GPTag, mDict, 'GP')
                 MonstersParser.associate(f, f.readline(), HPTag, mDict, 'startingHP', 'levelupHP')
                 MonstersParser.associate(f, f.readline(), imageTag, mDict, 'image')

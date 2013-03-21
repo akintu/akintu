@@ -16,8 +16,8 @@ import consumable
 
 class PlayerCharacter(p.Person):
 
-    expRequiredForLevel = {1 : 100, 2 : 250, 3 : 500, 4 : 900, 5 : 1700}
-    demoExpRequiredForLevel = {1 : 10, 2 : 25, 3 : 50, 4 : 90, 5 : 170}
+    expRequiredForLevel = {1 : 30, 2 : 150, 3 : 420, 4 : 820, 5 : 1570}
+    demoExpRequiredForLevel = {1 : 3, 2 : 15, 3 : 42, 4 : 82, 5 : 157}
     LEVEL_MAX = 5
 
     def __init__(self, argDict, name="Guy Threepwood", new=True, ironman=False, hardcore=False):
@@ -27,8 +27,10 @@ class PlayerCharacter(p.Person):
         self.name = name
         if name in ["Kyle Rich", "Devin Ekins", "Joshua Belcher", "Colton Myers"]:
             self.name = "Awesome Dude"
-        elif name == "jabelch":
+        elif name == "jabelch" or name == "JAB":
             self.name = "Flagrant Noob"
+        elif name == "Jzar":
+            self.name = "Prolific Troll"
         elif name == "yourself":
             self.name = "Ugly Grue"
             

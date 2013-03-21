@@ -984,11 +984,11 @@ class Combat(object):
         expGain = 0
         for mon in monsterList:
             if player.level <= mon.level:
-                expGain += mon.experienceGiven
+                expGain += mon.experience
             elif player.level <= mon.level - 2:
-                expGain += int(round(mon.experienceGiven * 0.75))
+                expGain += int(round(mon.experience * 0.75))
             else:
-                expGain += int(round(mon.experienceGiven * 0.15))
+                expGain += int(round(mon.experience * 0.15))
         return expGain
 
     @staticmethod

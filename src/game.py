@@ -540,7 +540,7 @@ class Game(object):
             self.levelup = lvl.Levelup(player, self.screen)
             self.levelup.next()
         else:
-            player.addExperience(100)
+            player.addExperience(75)
             if player.experience >= player.getExpForNextLevel() and player.level < LEVEL_MAX:
                 self.screen.show_text("LEVEL UP!" , color='magenta')
 
