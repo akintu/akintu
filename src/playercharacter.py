@@ -1131,7 +1131,6 @@ class PlayerCharacter(p.Person):
                 return
                 # Need to return immediately to remove exactly one fx.
 
-    # TODO: Change the amount Rings/Amulets affect you based on Sorcery.
     def equip(self, newPiece, hand="Right"):
         """Equips a piece of gear, and places any replaced gear in the inventory."""
         if newPiece not in self.inventory.allItems:
@@ -1289,7 +1288,8 @@ class PlayerCharacter(p.Person):
             if selectionTuple[0] == 0:
                 # This is the inventory side.
                 item = self.inventory.allItems[selectionTuple[1]]
-                if isinstance(item, equipment.Weapon) and item.handsRequired == "One-Handed":
+                if (isinstance(item, equipment.Weapon) and item.handsRequired == "One-Handed") or \
+                   (isinstance(item, equipment.Armor) and (item.type == "Fingers" or item.type == "Finger")):
                     self.equip(item, "Left")
                     text = "Equipped: " + item.displayName + " in the off-hand"
                     inv = self.inventory.allItems

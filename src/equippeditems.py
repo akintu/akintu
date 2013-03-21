@@ -90,10 +90,16 @@ class EquippedItems(object):
                 self._allGear['Off Hand'] = None
             # Case 4: Both hands full
             elif self._allGear['Main Hand'] and self._allGear['Off Hand']:
-                oldPieceOne = self._allGear['Main Hand']
-                oldPieceTwo = self._allGear['Off Hand']
-                self._allGear['Main Hand'] = newPiece
-                self._allGear['Off Hand'] = None
+                # Case 4a : Off-hand is using a shield and this is One-Handed Exclusive
+                if self.equippedShield and handsUsed == "One-Handed Exclusive":
+                    oldPieceOne = self._allGear['Main Hand']
+                    self._allGear['Main Hand'] = newPiece
+                # Case 4b : Off-hand is using a weapon, or this is a Two-Handed weapon
+                else:
+                    oldPieceOne = self._allGear['Main Hand']
+                    oldPieceTwo = self._allGear['Off Hand']
+                    self._allGear['Main Hand'] = newPiece
+                    self._allGear['Off Hand'] = None
         elif handsUsed == "One-Handed" and hand == "Right":
             oldPieceOne = self._allGear['Main Hand']
             self._allGear['Main Hand'] = newPiece
@@ -137,7 +143,7 @@ class EquippedItems(object):
             hand = "Right"
         if isinstance(newPiece, equipment.Weapon):
             return self._equipWeapon(newPiece, hand)
-        if newPiece.type == "Finger":
+        if newPiece.type == "Finger" or newPiece.type == "Fingers":
             return self._equipRing(newPiece, hand)
         if newPiece.type == "Shield":
             return self._equipShield(newPiece)
@@ -178,7 +184,7 @@ class EquippedItems(object):
             old = self._allGear['Neck']
             self._allGear['Neck'] = None
             return [old]
-        if slot == "Fingers":
+        if slot == "Fingers" or slot == "Finger":
             old = []
             if self._allGear['Left Finger']:
                 old.append(self._allGear['Left Finger'])
