@@ -233,7 +233,10 @@ class Ability(object):
                 accuracy = 5
         hit = Combat.calcHit(source, target, "Physical", modifier=accuracy, critMod=critChance)
         if hit != "Critical Hit":
-            Combat.basicAttack(source, target, hit, overallDamageMod=1.5)
+            if source.usingWeaponStyle("Single"):
+                Combat.basicAttack(source, target, hit, overallDamageMod=1.5)
+            else:
+                Combat.basicAttack(source, target, hit, overallDamageMod=1.25)
         else:
             Combat.basicAttack(source, target, hit, criticalDamageMod=critMag)
 
@@ -803,7 +806,10 @@ class Ability(object):
                 accuracy = 5
         hit = Combat.calcHit(source, target, "Physical", modifier=accuracy, critMod=critChance)
         if hit != "Critical Hit":
-            Combat.basicAttack(source, target, hit, overallDamageMod=1.5)
+            if source.usingWeaponStyle("Single"):
+                Combat.basicAttack(source, target, hit, overallDamageMod=1.5)
+            else:
+                Combat.basicAttack(source, target, hit, overallDamageMod=1.25)
         else:
             Combat.basicAttack(source, target, hit, criticalDamageMod=critMag)
         if hit != "Miss":
@@ -838,7 +844,13 @@ class Ability(object):
                 accuracy = 5
         accuracy -= 14
         hit = Combat.calcHit(source, target, "Physical", modifier=accuracy, critMod=critChance)
-        Combat.basicAttack(source, target, hit, criticalDamageMod=critMag)
+        if hit != "Critical Hit":
+            if source.usingWeaponStyle("Single"):
+                Combat.basicAttack(source, target, hit, overallDamageMod=1.5)
+            else:
+                Combat.basicAttack(source, target, hit, overallDamageMod=1.25)
+        else:
+            Combat.basicAttack(source, target, hit, criticalDamageMod=critMag)
         if hit != "Miss":
             duration = 2
             magnitude = 3
@@ -1386,7 +1398,8 @@ class Ability(object):
         'image' : THIEF_SKILLS + "backstab.png",
         'text' : 'Melee attack from stealth with a high critical hit chance.\n' + \
                 'Must be behind the target and wielding only sword or knife type weapons.\n' + \
-                'If the attack doesn\'t critical, it still deals +50% damage.'
+                'If the attack doesn\'t critical, it still deals +50% damage. (+25%\n' + \
+                'if dual-wielding.)'
         },
         'Chain Grasp':
         {
