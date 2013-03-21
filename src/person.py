@@ -2524,7 +2524,7 @@ class Person(en.Entity):
         if (style == "Dual"):
             return (handOne and handTwo and not self.usingShield("Any"))
         if (style == "Two Handed"):
-            return (handOne is not None and handTwo == "Occupied")
+            return (handOne is not None and handOne.handsRequired == "Two-Handed")
         if (style == "Single"):
             return (handOne is not None and handTwo is None)
         if (style == "Single and Shield"):

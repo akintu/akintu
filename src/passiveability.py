@@ -164,23 +164,29 @@ class PassiveAbility(object):
 
     def applyLastingEnchantment(self, target, reverse=False, spell=None):
         if spell.school == "Enchantment":
-                for buff in [x for x in target.statusList if x.name == spell.name]:
-                    buff.turnsLeft += 1
+            for buff in [x for x in target.statusList if x.name == spell.name or
+                         x.name == "Weapon Enhance Striking" or
+                         x.name == "Weapon Enhance Punishing" or
+                         x.name == "Weapon Enhance Precision"]:
+                buff.turnsLeft += 1
         # Has no reverse.
 
-    def applyFocalPoint(self, target, reverse=False, other=None):
-        if not target.usingWeaponStyle("Two Handed"):
+    def applyKeenEnchantment(self, target, reverse=False, other=None):
+        if not target.usingWeaponStyle("Two Handed") or not target.hasWeaponEnchant():
             return
-        eStatus = None
-        for s in target.statusList:
-            if "Enchantment" in s.categoryList:
-                eStatus = s
-        if not eStatus:
-            return
+        if not reverse:
+            target.statusCriticalChance += 8
         else:
-            holyDamage = (round(15 * (1 + target.totalDivineBonusDamage * 0.01) *
-                                     (1 - other.totalDivineResistance * 0.01)))
-            Combat.lowerHP(other, holyDamage)
+            target.statusCriticalChance -= 8
+        
+    def applyFocalPoint(self, target, reverse=False, other=None):
+        if not target.usingWeaponStyle("Two Handed") or not target.hasWeaponEnchant():
+            return
+        holyDamage = (int(15 * (1 + target.totalDivineBonusDamage * 0.01) *
+                                 (1 - other.totalDivineResistance * 0.01)))
+        Combat.lowerHP(other, holyDamage)
+        Combat.sendCombatMessage(target.name + " --> " + other.name + ": " + `holyDamage` + " " +
+                                "Holy" + " damage", target, 'orange')
 
     def applyBladesOfReduction(self, target, reverse=False, other=None):
         if not target.usingWeapon("Sword") and not target.usingWeapon("Axe"):
@@ -674,6 +680,18 @@ class PassiveAbility(object):
         'image' : SPELLSWORD + 'lasting-enchantment.png',
         'text' : '+1 Turn to all enchantments cast on yourself'
         },
+        'Keen Enchantment':
+        {
+        'class' : 'Spellsword',
+        'level' : 3,
+        'type' : 'dynamic',
+        'action' : applyKeenEnchantment,
+        'onStringList' : ['Outgoing Melee Attack'],
+        'offStringList' : ['Outgoing Melee Attack Complete'],
+        'image' : SPELLSWORD + 'keen-enchantment.png',
+        'text' : '+8% To critical hit chance when using a two-handed weapon\n' + \
+                'that is also benefiting from a Spellsword enchantment.'
+        },
         'Focal Point':
         {
         'class' : 'Spellsword',
@@ -696,7 +714,7 @@ class PassiveAbility(object):
         'offStringList' : [],
         'image' : SPELLSWORD + 'blades-of-reduction.png',
         'text' : 'If wielding a weapon that deals slashing damage, successful hits reduce\n' + \
-                'a target\'s magic resist by 3 with a reliable chance.'
+                'a target\'s magic resist by 4 and fire resistance by 10% with a reliable chance.'
         },
 
         'Excellent Vision':

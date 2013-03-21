@@ -506,6 +506,7 @@
   [INTERNAL: Armor_penetration_bonus]
     [MAGNITUDE: 0]
   [CATEGORY: Buff]
+  [CATEGORY: Weapon Enchantment]
 	
 [NAME: Weapon Enhance Punishing]
   [TYPE: Display]
@@ -1523,7 +1524,7 @@
   [IMAGE: all-for-one.png]
   [ELEMENT: Fire]
   [INTERNAL: Magic_resist_penalty]
-    [MAGNITUDE: 3]
+    [MAGNITUDE: 4]
   [INTERNAL: Elemental_vulnerability]
 	[MAGNITUDE: 10]
   [CATEGORY: Debuff]
