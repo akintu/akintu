@@ -192,13 +192,13 @@ class Spell(object):
     def _stoneGuard(self, target):
         source = self.owner
         duration = Dice.scale(source.totalSpellpower, 4, 0.05, cap=6)
-        magnitude = Dice.scale(source.totalSpellpower, 10, 0.008)
+        magnitude = Dice.scale(source.totalSpellpower, 12, 0.008)
         Combat.addStatus(target, self.name, duration, magnitude)
 
     def _singe(self, target):
         source = self.owner
         hitType = Combat.calcHit(source, target, "Magical")
-        damage = (Combat.calcDamage(source, target, minimum=2, maximum=9, element="Fire",
+        damage = (Combat.calcDamage(source, target, minimum=2, maximum=10, element="Fire",
                                     hitValue=hitType, critical=1.2, partial=0.5,
                                     scalesWith="Spellpower", scaleFactor=0.05))
         Combat.lowerHP(target, damage)
@@ -209,7 +209,7 @@ class Spell(object):
         damage = Combat.calcDamage(source, target, minimum=1, maximum=12, element="Cold",
                                    hitValue=hitType, scalesWith="Spellpower",
                                    scaleFactor=0.01)
-        duration = 2
+        duration = 3
         chance = Dice.rollPresetChance(source, target, "Frequent")
         magnitude = Dice.scale(source.totalSpellpower, 5, 0.012)
         Combat.addStatus(target, self.name, duration, magnitude, hitValue=hitType, chance=chance)
@@ -345,7 +345,7 @@ class Spell(object):
         'tier' : 1,
         'school' : 'Mystic',
         'MPCost' : 2,
-        'APCost' : 5,
+        'APCost' : 6,
         'range' : 14,
         'target' : 'hostile',
         'action' : _arcaneDart,
@@ -367,7 +367,8 @@ class Spell(object):
         'cooldown' : None,
         'image' : TIER1 + "arcane-ward.png",
         'text' : 'Grants a defensive warding that raises dodge chance, DR and magic resist\n' + \
-                'for 3 turns + 1 per 10 spellpower up to a maximum of 6 turns.'
+                'for 3 turns + 1 per 10 spellpower up to a maximum of 6 turns. Starting\n' + \
+                'values are +5% DR, +5 Dodge, +5 Magic Resist.'
         },
 
         'Mystic Shield':
@@ -404,13 +405,14 @@ class Spell(object):
         'school' : 'Natural',
         'MPCost' : 15,
         'APCost' : 9,
-        'range' : 4,
+        'range' : 5,
         'target' : 'friendly',
         'action' : _stoneGuard,
         'cooldown' : None,
         'image' : TIER1 + 'stone-guard.png',
         'text' : 'Grant a protective stone barrier increasing DR and poison tolerance.' + \
-                '\nLasts between 4 and 6 turns.'
+                '\nLasts between 4 and 6 turns.  Starting values are +12% DR and\n' + \
+                '+12 Poison Tolerance.'
         },
 
         'Singe':
@@ -424,7 +426,7 @@ class Spell(object):
         'action' : _singe,
         'cooldown' : None,
         'image' : TIER1 + 'singe.png',
-        'text' : 'Deals 2-9 + 5% fire damage.\n' + \
+        'text' : 'Deals 2-10 + 5% fire damage.\n' + \
                 'On Critical +20% damage'
         },
 
@@ -440,7 +442,7 @@ class Spell(object):
         'cooldown' : None,
         'image' : TIER1 + 'chill.png',
         'text' : 'Deals 1-12 + 1% cold damage and has a frequent chance to lower\n' + \
-                'the dodge of the target for 2 turns.'
+                'the dodge of the target by at least 5 points for 3 turns.'
         },
 
         'Shock':
@@ -548,7 +550,7 @@ class Spell(object):
         'image' : TIER1 + 'blurry.png',
         'text' : 'Cause your own image, sound and smells to become slightly\n' + \
                 'distorted, leading foes to find you harder to target and detect.\n' + \
-                'Lasts one turn.'
+                'Lasts one turn.  Starting values are +5 Dodge and Sneak'
         },
 
         'Weapon Enhance':
@@ -564,7 +566,8 @@ class Spell(object):
         'image' : TIER1 + 'weapon-enhance.png',
         'text' : 'Enhance a weapon to become more accurate, penetrate armor better,\n' + \
                 'critically hit more often and deal more damage when it does.\n' + \
-                'lasts between 3 and 7 turns.'
+                'lasts between 3 and 7 turns.  Starting values are +3 Accuracy,\n' + \
+                '+5% Critical Damage, +3% Armor Penetration, +1% Critical Hit Chance.'
         },
 
         'Flaming Weapon':
