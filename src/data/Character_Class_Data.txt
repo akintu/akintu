@@ -241,7 +241,7 @@
 [SEC_CLASS: Thief]
 
 [SKILL_GROWTH: Non-Caster]
-[ARMOR_TOLERANCE: Light]
+[ARMOR_TOLERANCE: Medium]
 
 [MOVE_AP: 5]
 [MELEE_AP: 7]
@@ -277,7 +277,7 @@
 [SEC_CLASS: Wizard]
 
 [SKILL_GROWTH: Hybrid]
-[ARMOR_TOLERANCE: Light]
+[ARMOR_TOLERANCE: Medium]
 
 [MOVE_AP: 6]
 [MELEE_AP: 7]
