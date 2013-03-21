@@ -35,11 +35,18 @@ TILES_BOTTOM = (TILE_BOTTOM_LEFT, TILE_BOTTOM_RIGHT)
 DESIRED_FPS = 120
 
 #=======================PATHS=============================
+#     =====================STAMPS=========================
+STAMP_PATH = os.path.join("res", "stamps")
+STAMP_DUNGEON_PATH = os.path.join(STAMP_PATH, "dungeon")
+STAMP_HOUSE_PATH = os.path.join(STAMP_PATH, "house")
+STAMP_TOWN_PATH = os.path.join(STAMP_PATH, "town")
+STAMP_PANE_PATH = os.path.join(STAMP_PATH, "pane")
+STAMP_GENERATED_PATH = os.path.join(STAMP_PATH, "generated")
+
 #     =====================SAVES (AND RELATED)============
 SAVES_PATH = os.path.join("res", "saves")
 CHAR_SAVE_PATH = os.path.join(SAVES_PATH, "characters")
 WORLD_SAVE_PATH = os.path.join(SAVES_PATH, "worlds")
-TMP_WORLD_SAVE_PATH = os.path.join(SAVES_PATH, "tmp")
 CHAR_SAVE_EXT = ".akinc"
 WORLD_SAVE_EXT = ".akinw"
 
@@ -59,8 +66,6 @@ SEED_KEY = "seed"
 MONSTER_KEY = "monsters"
 ITEM_KEY = "items"
 CHEST_KEY = "chests"    #Also used with images
-
-#=====================CMD TYPES/ACTIONS========================
 
 
 #======================KEY COMMANDS==========================
