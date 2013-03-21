@@ -386,13 +386,14 @@ class Town(Pane):
         
         bounds = (7, 14, 5, 9)
 
-        for i in range(3):
+        for i in range(2):
             building = Building("tree", bounds, self.location)#, (15, 6), Location(self.location, (start[0], start[1]+i*7)))
             self.buildings.append(building)
         
-        loc = (random.randrange(0, PANE_X-8), random.randrange(0, PANE_Y-6))
-        house = House(Location(self.location, loc))
-        self.buildings.append(house)
+        for i in range(2):
+            loc = (random.randrange(0, PANE_X-8), random.randrange(0, PANE_Y-6))
+            house = House(Location(self.location, loc))
+            self.buildings.append(house)
 
         for building in self.buildings:
             super(Town, self).load_region(building.boundary, building.boundary_type)
@@ -400,6 +401,7 @@ class Town(Pane):
         for building in self.buildings:
             super(Town, self).clear_region(building.clear)
             super(Town, self).clear_region(building.path)
+        for building in self.buildings:
             super(Town, self).add_entities(building.entities)
         
     def add_npcs(self):

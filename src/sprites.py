@@ -32,13 +32,14 @@ OBSTACLE_KEYS = sorted(OBSTACLES.keys())
 #ITEMS AND SUCH
 CHEST = (ITEMS_IMAGES_PATH, "treasure_chest.png", TILE_SIZE, None, None)
 HOUSE = (ITEMS_IMAGES_PATH, "house.png", TILE_SIZE, None, None)
-PATH = (ITEMS_IMAGES_PATH, "rockpath.png", TILE_SIZE, None, TILE_SIZE)
+
+PATHS = (BACKGROUND_IMAGES_PATH, "paths.png", TILE_SIZE, None, None)
 
 #KEYS
 HOUSE_KEY = "house"
 PATH_KEY = "path"
 
-SHEETS = {CHEST_KEY: CHEST, HOUSE_KEY: HOUSE, PATH_KEY: PATH}
+SHEETS = {CHEST_KEY: CHEST, HOUSE_KEY: HOUSE, PATH_KEY: PATHS}
 
 class Sprites(object):
 
@@ -50,7 +51,7 @@ class Sprites(object):
     sheets = dict()
 
     @staticmethod
-    def load():
+    def load_all():
         if Sprites.hasLoaded:
             print "Sprites.load() has already been called."
 
@@ -68,11 +69,15 @@ class Sprites(object):
             Sprites.images.update(spritesheet.images.items())
             
         for key, image in SHEETS.iteritems():
-            spritesheet = crop_helper(image)
-            Sprites.sheets[key] = spritesheet
-            Sprites.images.update(spritesheet.images.items())
+            Sprites.load_sheet(key, image)
         Sprites.hasLoaded = True
 
+    @staticmethod
+    def load_sheet(key, image):
+        spritesheet = crop_helper(image)
+        Sprites.sheets[key] = spritesheet
+        Sprites.images.update(spritesheet.images.items())
+    
     @staticmethod
     def get_background(seed):
         random.seed(seed)
