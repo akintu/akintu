@@ -106,7 +106,7 @@ class PassiveAbility(object):
     def applyStunningRecovery(self, target, reverse=False, statusName=None):
         if statusName == "Stun" and not target.hasStatus("Stunning Recovery"):
             healing = round(target.totalHP * 0.05)
-            Combat.healTarget(target, healing)
+            Combat.healTarget(target, target, healing)
             Combat.addStatus(target, "Stunning Recovery", duration=1)
 
     # Dragoon

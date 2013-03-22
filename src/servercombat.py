@@ -202,7 +202,7 @@ class CombatServer():
         phase: "Upkeep"'''
 
         if target.HPRegen > 0:
-            Combat.healTarget(target, target.HPRegen)
+            Combat.healTarget(target, target, target.HPRegen)
         if target.MPRegen > 0:
             Combat.modifyResource(target, "MP", target.MPRegen)
         for stat in target.statusList:
@@ -301,10 +301,11 @@ class CombatServer():
                 self.upkeep(character)
             # New Turn here
             for character in [self.server.person[x] for x in self.server.pane[combatPane].person]:
-                if not character.hasStatus("Stun"):
-                    character.AP = character.totalAP
+                character.AP = character.totalAP
                 self.server.broadcast(Command("PERSON", "UPDATE", id=character.id, AP=character.AP),
                         pane=combatPane)
+                if character.hasStatus("Stun") and character.team == "Players":
+                    Combat.modifyResource(character, "AP", -character.AP)
             for character in [self.server.person[x] for x in self.server.pane[combatPane].person]:
                 self.shout_turn_start(character, turn="Player")
             if CombatServer.SECONDS > 0:
@@ -312,6 +313,13 @@ class CombatServer():
                     self.combatStates[combatPane].turnTimer.cancel()
                 self.combatStates[combatPane].turnTimer = reactor.callLater(CombatServer.SECONDS, self.check_turn_end,
                         combatPane, True)
+            skipPlayerTurn = True
+            for character in [self.server.person[x] for x in self.server.pane[combatPane].person if self.server.person[x].team == "Players"]:
+                if character.AP > 0:
+                    skipPlayerTurn = False
+                    break
+            if skipPlayerTurn:
+                self.check_turn_end(combatPane)
 
     def monster_phase(self, combatPane):
         chars = [self.server.person[x] for x in self.server.pane[combatPane].person]

@@ -299,7 +299,7 @@ class InternalStatus(object):
 
     def Spell_failure_chance_method(self, target, magnitude):
         target.spellFailureChance += magnitude
-
+        
     def Target_throat_method(self, target, magnitude):
         target.onHitEffects.appedn(onhiteffect.OnHitEffect(magnitude, onhiteffect.OnHitEffect.applyTargetThroat))
 

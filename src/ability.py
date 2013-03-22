@@ -216,6 +216,30 @@ class Ability(object):
             return (True, "")
         return (False, self.name + " requires a Melee weapon.")
 
+    def _thrust(self, target):
+        source = self.owner
+        hit = Combat.calcHit(source, target, "Physical", modifier=1)
+        Combat.basicAttack(source, target, hit, elementOverride="Piercing")
+       
+    def _thrustCheck(self, target):
+        if self.owner.usingWeapon("Sword"):
+            return (True, "")
+        return (False, "Must be using a sword to use " + self.name + ".")
+      
+    def _clobber(self, target):
+        source = self.owner
+        hit = Combat.calcHit(source, target, "Physical", modifier=-3)
+        Combat.basicAttack(source, target, hit, armorPenetrationMod=10, overallDamageMod=1.1)
+        if hit != "Miss" and target.size != "Huge" and target.size != "Large":
+            if Dice.rollBeneath(25):
+                duration = 1
+                Combat.addStatus(target, "Stun", duration) 
+        
+    def _clobberCheck(self, target):
+        if self.owner.usingWeapon("Club"):
+            return (True, "")
+        return (False, "Must be using a club to use " + self.name + ".")
+        
     def _backstab(self, target):
         source = self.owner
         critChance = 0
@@ -1183,9 +1207,9 @@ class Ability(object):
         and lowers spellpower and melee accuracy.'''
         source = self.owner
         hit = Combat.calcHit(source, target, "Magical")
-        if hit != "Miss":
+        if hit != "Miss" and hit != "Fully Resisted" and hit != "Resisted":
             if Dice.rollBeneath(5):
-                Combat.addStatus(target, "Stun", duration=1)
+                Combat.addStatus(target, "Stun", duration=2)
             duration = 3
             magnitude = 3 + source.level # Used for both spellpower and accuracy loss
             Combat.addStatus(target, "Phantom Stare", duration)
@@ -1381,7 +1405,40 @@ class Ability(object):
         'image' : FIGHTER_SKILLS + "precise-blow.png",
         'text' : "Melee attack with +5 additional Accuracy and +6% Critical Hit chance"
         },
-
+        'Thrust':
+        {
+        'level' : 4,
+        'class' : 'Fighter',
+        'HPCost' : 0,
+        'APCost' : 5,
+        'range' : 1,
+        'target' : 'hostile',
+        'action' : _thrust,
+        'cooldown' : 1,
+        'checkFunction' : _thrustCheck,
+        'breakStealth' : 100,
+        'image' : FIGHTER_SKILLS + "thrust.png",
+        'text' : "Melee Sword attack that deals piercing damage instead of slashing.\n" + \
+                "Also has +1 Accuracy."
+        },
+        'Clobber':
+        {
+        'level' : 4,
+        'class' : 'Fighter',
+        'HPCost' : 0,
+        'APCost' : 8,
+        'range' : 1,
+        'target' : 'hostile',
+        'action' : _clobber,
+        'cooldown' : None,
+        'checkFunction' : _clobberCheck,
+        'breakStealth' : 100,
+        'image' : FIGHTER_SKILLS + 'clobber.png',
+        'text' : 'Melee Club attack at -3 Accuracy.  Deals +10% Damage, has +10%\n' + \
+                'Armor Penetration, and a 25% chance to stun.  Large and huge\n' + \
+                'enemies are immune to the stun.'
+        },
+        
         # Thief
         'Backstab':
         {

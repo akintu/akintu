@@ -194,6 +194,8 @@ class Monster(person.Person):
         else:
             self.currentCombatPane = combatPane
 
+        if self.hasStatus("Stun"):
+            return []
         sufficient = self.getSufficientAbilities()
         # We now have a list of abilities that can be used according to
         # AP/MP costs and cooldowns.
