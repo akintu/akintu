@@ -367,6 +367,17 @@ class PassiveAbility(object):
             if spell.school == "Bane" and source.cLocation.in_melee_range(target.cLocation):
                 source.statusSpellpower -= 4
 
+    def applySingleBlade2(self, target, reverse=False, other=None):
+        source = self.owner
+        if not reverse:
+            if source.usingWeaponStyle("Single"):
+                source.statusMeleeAccuracy += 4
+                source.statusCriticalChance += 6
+        else:
+            if source.usingWeaponStyle("Single"):
+                source.statusMeleeAccuracy -= 4
+                source.statusCriticalChance -= 6
+                
     # Battle Mage
     def applyCloseRangedMagic(self, target, reverse=False, spell=None):
         if not reverse:
@@ -1005,7 +1016,18 @@ class PassiveAbility(object):
         'image' : NIGHTBLADE + 'up-close-and-personal.png',
         'text' : 'Bane spells cast in melee range have +4 Spellpower.'
         },
-
+        'Single Blade 2':
+        {
+        'class' : 'Nightblade',
+        'level' : 5,
+        'type' : 'dynamic',
+        'action' : applySingleBlade2,
+        'onStringList' : ['Outgoing Melee Attack'],
+        'offStringList' : ['Outgoing Melee Attack Complete'],
+        'image' : NIGHTBLADE + 'single-blade.png',
+        'text' : 'Grants an additional +4 Melee Accuracy and +6% Critical Chance when\n' + \
+                'using only one one-handed weapon and no shield.'
+        },
 
         # Battle Mage
         'Close-Ranged Magic':

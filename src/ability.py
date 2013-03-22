@@ -968,6 +968,12 @@ class Ability(object):
             return (False, "Must be in stealth to use " + self.name)
         return (True, "")
 
+    def _darkIntent(self, target):
+        source = self.owner
+        duration = 1
+        magnitude = 3 + source.level / 2
+        Combat.addStatus(source, "Dark Intent", duration, magnitude)
+        
     # Battle Mage
     def _bufferStrike(self, target):
         source = self.owner
@@ -2384,7 +2390,6 @@ class Ability(object):
                 'dealt as healing.  Both effects +30% if used from stealth and\n' + \
                 'accuracy used to hit is raised by 3.  Breaks stealth.'
         },
-        
         'Shadowstep':
         {
         'level' : 4,
@@ -2399,6 +2404,22 @@ class Ability(object):
         'breakStealth' : 0,
         'image' : NIGHTBLADE_SKILLS + 'shadowstep.png',
         'text' : 'Move up to 4 tiles while in stealth.'
+        },
+        'Dark Intent':
+        {
+        'level' : 5,
+        'class' : 'Nightblade',
+        'HPCost' : 0,
+        'APCost' : 1,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _darkIntent,
+        'cooldown' : 1,
+        'checkFunction' : None,
+        'breakStealth' : 0,
+        'image' : NIGHTBLADE_SKILLS + 'dark-intent.png',
+        'text' : 'Gain +3 + 1 per 2 levels shadow damage to each\n' + \
+                'attack this turn.'
         },
 
         # Battle Mage
