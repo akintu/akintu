@@ -516,7 +516,34 @@ class Ability(object):
         if source.usingWeapon("Polearm"):
             return (True, "")
         return (False, "Must be using a polearm to use: " + self.name)
+    
+    def _crushingJumpAttack(self, target):
+        source = self.owner
+        landingZone = Combat.getRandomAdjacentLocation(target.cPane, target.cLocation)
+        Combat.instantMove(source, landingZone)
+        hit = Combat.calcHit(source, target, "Physical")
+        Combat.basicAttack(source, target, hit, overallDamageMod=2.0, noCounter=True)
+        if hit:
+            for t in Combat.getAOETargets(source.cPane, source.cLocation, radius=1, selectMonsters=True):
+                Combat.basicAttack(source, t, "Normal Hit", overallDamageMod=0.30, ignoreOnHitEffects=True,
+                                elementOverride="Bludgeoning", noCounter=True)
+            if target.size != "Huge" and Dice.rollPresetChance(source, target, "Rare"):
+                Combat.addStatus(target, "Stun", 1)
+                
+    def _spearPierce(self, target):
+        source = self.owner
+        hit = Combat.calcHit(source, target, "Physical", modifier=-2)
+        Combat.basicAttack(source, target, hit)
+        if hit != "Miss" and Dice.rollPresetChance(source, target, "Reliable"):
+            duration = 3
+            magnitude = 10
+            Combat.addStatus(target, "Bleeding", duration, magnitude)
         
+    def _spearPierceCheck(self, target):
+        if self.owner.usingWeapon("Polearm"):
+            return (True, "")
+        return (False, "Must be using a polearm to use: " + self.name)
+    
     # Spellsword
     def _martialMode(self, target):
         source = self.owner
@@ -1887,7 +1914,42 @@ class Ability(object):
         'text' : 'Melee attack with a polearm that can strike\n' + \
                 'a foe from 2 tiles away and ignores counterattacks.'
         },
-        
+        'Crushing Jump Attack':
+        {
+        'level' : 5,
+        'class' : 'Dragoon',
+        'HPCost' : 0,
+        'APCost' : 14,
+        'range' : 8,
+        'target' : 'hostile',
+        'action' : _crushingJumpAttack,
+        'cooldown' : 1,
+        'checkFunction' : _jumpAttackCheck,
+        'breakStealth' : 100,
+        'image' : DRAGOON_SKILLS + 'jump-attack.png',
+        'text' : 'Jump from your current location to immediately next to a selected enemy.\n' + \
+                'You will land on a random adjacent tile to the target dealing 200% damage if you hit.\n ' + \
+                'Additionally, you will deal 30% of weapon damage to all targets adjacent to\n' + \
+                'your landing location (including the primary target) as bludgeoning damage.\n' + \
+                'Has a rare chance to stun the target if it is not Huge.'
+        },
+        'Spear-Pierce':
+        {
+        'level' : 5,
+        'class' : 'Dragoon',
+        'HPCost' : 0,
+        'APCost' : 10,
+        'range' : 1,
+        'target' : 'hostile',
+        'action' : _spearPierce,
+        'cooldown' : None,
+        'checkFunction' : _spearPierceCheck,
+        'breakStealth' : 100,
+        'image' : DRAGOON_SKILLS + 'spear-pierce.png',
+        'text' : 'Melee Attack with -2 Accuracy.  Applies 10% bleeding for 3 turns\n' + \
+                'with a reliable chance if the hit is successful.  Must be using\n' + \
+                'a polearm.'
+        },
         
         #Spellsword
         'Martial Mode':
