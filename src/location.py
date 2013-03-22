@@ -193,15 +193,8 @@ class Location(object):
         x = distx / mag
         y = disty / mag
 
-        if abs(x) < 0.38268343236508984:
-            x = 1
-        else:
-            x = cmp(x, 0) + 1
-
-        if abs(y) < 0.38268343236508984:
-            y = 1
-        else:
-            y = cmp(y, 0) + 1
+        x = 1 if abs(x) < 0.38268343236508984 else cmp(x, 0) + 1
+        y = 1 if abs(y) < 0.38268343236508984 else cmp(y, 0) + 1
         return int((y * 3) + x + 1)
 
     def distance(self, dest):
