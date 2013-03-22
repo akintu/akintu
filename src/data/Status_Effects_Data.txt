@@ -562,9 +562,9 @@
   [IMAGE: terror.png]
   [ELEMENT: Shadow]
   [INTERNAL: Elemental_vulnerability]
-    [MAGNITUDE: 20]
+    [MAGNITUDE: 30]
   [INTERNAL: Attack_power_penalty]
-    [MAGNITUDE: 5]
+    [MAGNITUDE: 10]
   [CATEGORY: Debuff]
 
 [NAME: Infection]
@@ -574,7 +574,7 @@
   [INTERNAL: Damage_over_time]
     [MAGNITUDE: 0]
   [INTERNAL: Poison_tolerance_penalty]
-    [MAGNITUDE: 5]
+    [MAGNITUDE: 8]
   
 [NAME: Elemental Boon]
   [TYPE: Display]

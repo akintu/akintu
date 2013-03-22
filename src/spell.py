@@ -296,9 +296,9 @@ class Spell(object):
 
     def _infection(self, target):
         source = self.owner
-        minDam = round(7 * (1 + source.totalSpellpower * 0.03) *
+        minDam = int(7 * (1 + source.totalSpellpower * 0.03) *
                            (1 + float(source.totalPoisonBonusDamage) / 100))
-        maxDam = round(10 * (1 + source.totalSpellpower * 0.03) *
+        maxDam = int(12 * (1 + source.totalSpellpower * 0.03) *
                            (1 + float(source.totalPoisonBonusDamage) / 100))
         dieRoll = Dice.roll(minDam, maxDam)
         rating = round(35 + 0.4 * source.totalSpellpower)
@@ -597,18 +597,24 @@ class Spell(object):
         'range' : 0,
         'target' : 'self',
         'action' : _hoveringShield,
-        'cooldown' : 5
+        'cooldown' : 5,
+        'image' : TIER2 + 'hovering-shield.png',
+        'text' : 'Gives the caster a 12 + 0.8% Bonus dodge vs. ranged\n' + \
+                'attacks for five turns.'
         },
         'Fright':
         {
         'tier' : 2,
         'school' : 'Bane',
         'MPCost' : 6,
-        'APCost' : 3,
+        'APCost' : 2,
         'range' : 6,
         'target' : 'hostile',
         'action' : _fright,
-        'cooldown' : 1
+        'cooldown' : 1,
+        'image' : TIER2 + 'fright.png',
+        'text' : 'Lowers the target\'s shadow resistance by 30% aand\n' + \
+                'it\'s attack power by 10% for four turns.'
         },
         'Infection':
         {
@@ -619,7 +625,11 @@ class Spell(object):
         'range' : 1,
         'target' : 'hostile',
         'action' : _infection,
-        'cooldown' : None
+        'cooldown' : None,
+        'image' : TIER2 + 'infection.png',
+        'text' : 'Deals 7-12 + 3% poison damage against the foe and lowers\n' + \
+                'poison tolerance by 8.  Lasts 4 turns + 1 per 20 spellpower.\n' + \
+                'Has a poison rating of 40 + 1%.'
         },
         'Torrent':
         {
