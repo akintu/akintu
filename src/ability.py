@@ -1704,7 +1704,7 @@ class Ability(object):
         'breakStealth' : 100,
         'image' : WIZARD_SKILLS + 'reverse-hex.png',
         'text' : 'Remove one random negative status effect from an ally\n' + \
-            'or from yourself.'
+            'or from yourself. Does not affect bleeding.'
         },
         'Spell Sight':
         {
