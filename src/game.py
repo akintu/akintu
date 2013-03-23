@@ -66,7 +66,8 @@ class Game(object):
         self.performingLevelup = False
         self.viewingInventory = False
         self.selectingConsumable = False
-
+        self.placingTrap = False
+        
         # Levelup state
         self.levelup = None
 
@@ -485,6 +486,29 @@ class Game(object):
                             else:
                                 self.show_range(True)
 
+                    ### Trap Placing ####
+                    # elif self.placingTrap:
+                        # if event.key == K_KP8:
+                            # pass # Select above
+                        # elif event.key == K_KP9:
+                            # pass # Select up-right
+                        # elif event.key == K_KP6:
+                            # pass # Select right
+                        # elif event.key == K_KP3:
+                            # pass # Select down-right
+                        # elif event.key == K_KP2:
+                            # pass # Select down
+                        # elif event.key == K_KP1:
+                            # pass # Select down-left
+                        # elif event.key == K_KP4:
+                            # pass # Select left
+                        # elif event.key == K_KP7:
+                            # pass
+                        # elif event.key == K_KP5 or event.key == K_SPACE:
+                            # self.placingTrap = False
+                            #Cancel button
+                        
+                                
                     elif event.key == K_e:
                         self.cycle_targets()
                     elif event.key == K_w:

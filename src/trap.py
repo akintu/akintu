@@ -17,7 +17,7 @@ class Trap(e.Entity):
             self.name = name
             trapDict = Trap.playerTraps[name]
             self.level = player.level
-            self.trapRating = round(trapDict['rating'] * (1 + trapDict['ratingScale'] * player.totalCunning))
+            self.trapRating = int(trapDict['rating'] * (1 + trapDict['ratingScale'] * player.totalCunning))
             self.owner = player
             self.rarityWeight = 0 # Not used by player traps
             self.effect = trapDict['effect']
@@ -31,7 +31,7 @@ class Trap(e.Entity):
             self.owner = None
             if not level:
                 self.level = 1
-            self.trapRating = round(trapDict['rating'] * (1 + trapDict['ratingScale'] * self.level))
+            self.trapRating = int(trapDict['rating'] * (1 + trapDict['ratingScale'] * self.level))
             self.rarityWeight = trapDict['rarityWeight']
             self.effect = trapDict['effect']
             self.team = "Monsters"
@@ -40,8 +40,8 @@ class Trap(e.Entity):
 
     # Player traps
     def _shrapnelTrap(self, target):
-        minDamage = round(5 * (1 + self.owner.totalCunning * 0.017))
-        maxDamage = round(12 * (1 + self.owner.totalCunning * 0.017))
+        minDamage = int(5 * (1 + self.owner.totalCunning * 0.017))
+        maxDamage = int(12 * (1 + self.owner.totalCunning * 0.017))
         dieRoll = Dice.roll(minDamage, maxDamage)
         element = "Piercing"
         damage = Trap.calcTrapDamage(target, dieRoll, element)
@@ -52,8 +52,8 @@ class Trap(e.Entity):
         Combat.addStatus(target, "Sticky Trap", duration)
 
     def _boulderPitTrap(self, target):
-        minDamage = round(3 * (1 + self.owner.totalCunning * 0.02))
-        maxDamage = round(8 * (1 + self.owner.totalCunning * 0.02))
+        minDamage = int(3 * (1 + self.owner.totalCunning * 0.02))
+        maxDamage = int(8 * (1 + self.owner.totalCunning * 0.02))
         dieRoll = Dice.roll(minDamage, maxDamage)
         element = "Bludgeoning"
         damage = Trap.calcTrapDamage(target, dieRoll, element)
@@ -62,15 +62,15 @@ class Trap(e.Entity):
             Combat.addStatus(target, "Stun", duration=1)
 
     def _poisonThornTrap(self, target):
-        minDamage = round(5 * (1 + self.owner.totalPoisonBonusDamage))
-        maxDamage = round(10 * (1 + self.owner.totalPoisonBonusDamage))
+        minDamage = int(5 * (1 + self.owner.totalPoisonBonusDamage))
+        maxDamage = int(10 * (1 + self.owner.totalPoisonBonusDamage))
         dieRoll = Dice.roll(minDamage, maxDamage)
         element = "Poison"
         damage = Trap.calcTrapDamage(target, dieRoll, element)
         # Apply DoT
-        poisonRating = 22 + self.owner.totalPoisonRatingBonus
-        minDot = round((3 + self.owner.totalCunning / 4) * (1 + self.owner.totalPoisonBonusDamage))
-        maxDot = round((6 + self.owner.totalCunning / 4) * (1 + self.owner.totalPoisonBonusDamage))
+        poisonRating = 22 + self.owner.totalPoisonRatingBonus + self.owner.level
+        minDot = int((3 + self.owner.totalCunning / 4) * (1 + self.owner.totalPoisonBonusDamage))
+        maxDot = int((6 + self.owner.totalCunning / 4) * (1 + self.owner.totalPoisonBonusDamage))
         dot = Dice.roll(minDot, maxDot)
         duration = min(4, 3 + self.owner.totalCunning / 30)
         Combat.addStatus(target, "Poison Thorn Trap", duration, dot)
@@ -110,9 +110,9 @@ class Trap(e.Entity):
         maxDamage = 8 + 4 * self.level
         dieRoll = Dice.roll(minDamage, maxDamage)
         if target.equippedItems.armorLevel == "Heavy":
-            dieRoll = round(dieRoll * 1.40)
+            dieRoll = int(dieRoll * 1.40)
         elif target.equippedItems.armorLevel == "Medium":
-            dieRoll = round(dieRoll * 1.25)
+            dieRoll = int(dieRoll * 1.25)
         element = "Bludgeoning"
         damage = Trap.calcTrapDamage(target, dieRoll, element)
         Combat.lowerHP(target, damage)
