@@ -490,7 +490,7 @@ class PassiveAbility(object):
 
     def applyGlee(self, target, reverse=False):
         source = self.owner
-        source.MP += source.level * 2 + 18
+        Combat.modifyResource(source, "MP", source.level * 2 + 18)
 
     def applyInfuriatingBlows(self, target, reverse=False, other=None):
         source = self.owner

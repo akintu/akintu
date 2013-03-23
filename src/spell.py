@@ -219,7 +219,7 @@ class Spell(object):
         source = self.owner
         hitType = Combat.calcHit(source, target, "Magical")
         damage = Combat.calcDamage(source, target, minimum=15, maximum=22, element="Electric", hitValue=hitType,
-                                   scalesWith="Spellpower", scaleFactor=0.014)
+                                   scalesWith="Spellpower", scaleFactor=0.014, partial=0.5)
         Combat.lowerHP(target, damage)
 
     def _suggestLaziness(self, target):
