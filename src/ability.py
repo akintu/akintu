@@ -376,10 +376,10 @@ class Ability(object):
     def _rangersAimCheck(self, target):
         return (True, "")
 
-    def _shrapnelTrap(self, target):
+    def _shrapnelTrap(self, targetLocation):
         pass
         # Remove Trap
-        # Add trap.Trap("Shrapnel Trap", self.owner, target.location)
+        # Add trap.Trap("Shrapnel Trap", player=self.owner, location=targetLocation)
 
     def _stickyTrap(self, target):
         pass
@@ -669,8 +669,9 @@ class Ability(object):
             duration = 5
             Combat.addStatus(target, "Deep Wound", duration)
 
-    def _deepWoundDisable(self, target, reverse=False, other=None):
-        self.owner.statusPoisonRatingBonus -= 5
+    @staticmethod
+    def _deepWoundDisable(dirtyHack, target, reverse=False, other=None):
+        target.statusPoisonRatingBonus -= 5
 
     def _painfulShot(self, target):
         source = self.owner
@@ -685,7 +686,7 @@ class Ability(object):
 
     def _poisonousTouch(self, target):
         source = self.owner
-        hit = Combat.calcHit(source, target, "Physical Poison", modifier=5, rating=12)
+        hit = Combat.calcHit(source, target, "Physical Poison", modifier=5, rating=12 + source.level)
         if hit != "Miss":
             duration = 4
             damage = round(Dice.roll(5, 15) * (1 + source.totalCunning * 0.07))
@@ -1639,7 +1640,7 @@ class Ability(object):
         'class' : 'Ranger*',
         'HPCost' : 0,
         'APCost' : 5,
-        'range' : 0,
+        'range' : 1,
         'target' : 'location',
         'action' : _shrapnelTrap,
         'cooldown' : 1,
@@ -1652,7 +1653,7 @@ class Ability(object):
         'class' : 'Ranger*',
         'HPCost' : 0,
         'APCost' : 3,
-        'range' : 0,
+        'range' : 1,
         'target' : 'location',
         'action' : _stickyTrap,
         'cooldown' : 1,
@@ -1725,7 +1726,7 @@ class Ability(object):
         'class' : 'Ranger*',
         'HPCost' : 0,
         'APCost' : 5,
-        'range' : 0,
+        'range' : 1,
         'target' : 'self',
         'action' : _boulderPitTrap,
         'cooldown' : 1,
@@ -2097,7 +2098,12 @@ class Ability(object):
         'action' : _deepWound,
         'cooldown' : 1,
         'checkFunction' : None,
-        'breakStealth' : 100
+        'breakStealth' : 100,
+        'image' : DRUID_SKILLS + 'deep-wound.png',
+        'text' : 'Melee or Ranged Attack that causes bleeding in addition to\n' + \
+                'its normal damage.  10% bleeding lasts for 5 turns.  If the\n' + \
+                'attack has an applied poison, the poison rating will be\n' + \
+                'increased by 5 points.'
         },
         'Painful Shot':
         {
@@ -2110,7 +2116,10 @@ class Ability(object):
         'action' : _painfulShot,
         'cooldown' : None,
         'checkFunction' : _painfulShotCheck,
-        'breakStealth' : 100
+        'breakStealth' : 100,
+        'image' : DRUID_SKILLS + 'painful-shot.png',
+        'text' : 'Ranged attack that has +10% critical magnitude and an occasional\n' + \
+                'chance to lower attack power by 10% for 5 turns.'
         },
         'Poisonous Touch':
         {
@@ -2123,7 +2132,12 @@ class Ability(object):
         'action' : _poisonousTouch,
         'cooldown' : 3,
         'checkFunction' : None,
-        'breakStealth' : 100
+        'breakStealth' : 100,
+        'image' : DRUID_SKILLS + 'poisonous-touch.png',
+        'text' : 'Melee attack that deals no direct damage but if it hits\n' + \
+                'with +5 Accuracy, the enemy will take 5-15 + 1/2 Cunning\n' + \
+                'poison damage every turn.  The poison rating is 12 + 1 per\n' + \
+                'player level.'
         },
         'Target Throat':
         {
@@ -2136,7 +2150,12 @@ class Ability(object):
         'action' : _targetThroat,
         'cooldown' : 6,
         'checkFunction' : None,
-        'breakStealth' : 0
+        'breakStealth' : 0,
+        'image' : DRUID_SKILLS + 'target-throat.png',
+        'text' : 'Grants +30% critical magnitude on ranged attacks at the\n' + \
+                'cost of 3 Accuracy.  Adds 10 poison rating to applied\n' + \
+                'poisons.  Ranged attacks also have a rare chance to stun\n' + \
+                'enemies that are not huge. Lasts 4 turns.'
         },
         'Poison Thorn Trap':
         {
@@ -2144,13 +2163,35 @@ class Ability(object):
         'class' : 'Druid',
         'HPCost' : 0,
         'APCost' : 5,
-        'range' : 0,
+        'range' : 1,
         'target' : 'location',
         'action' : _poisonThornTrap,
         'cooldown' : 1,
         'checkFunction' : None,
-        'breakStealth' : 0
+        'breakStealth' : 0,
+        'image' : DRUID_SKILLS + 'poison-thorn-trap.png',
+        'text' : 'Lay a trap that deals 5-10 poison damage when triggered and\n' + \
+                'deals 3-6 + 1/4 Cunning poison damage each turn afterward.\n' + \
+                'Trap rating = 18 + 1/5 Cunning; Poison Rating = 22 + 1/level.\n' + \
+                'Lasts at least 3 turns.'
         },
+        # 'Lethargic Shot':
+        # {
+        # 'level' : 5,
+        # 'class' : 'Druid',
+        # 'HPCost' : 0,
+        # 'APCost' : 8,
+        # 'range' : -1,
+        # 'target' : 'hostile',
+        # 'action' : _lethargicShot,
+        # 'cooldown' : None,
+        # 'checkFunction' : _lethargicShotCheck,
+        # 'breakStealth' : 100,
+        # 'image' : DRUID_SKILLS + 'lethargic-shot.png',
+        # 'text' : 'Ranged attack with Force x 1.10 that applies a slowing poison\n' + \
+                # 'which lowers movement tiles by 1, dodge by 5, and accuracy by 2.\n' + \
+                # 'Lasts 3 turns and has a poison rating of 25 + 1/5 Cunning.'
+        # },
 
         # Tactician
         'Accuracy Favor':
@@ -2185,7 +2226,7 @@ class Ability(object):
         'class' : 'Tactician',
         'HPCost' : 0,
         'APCost' : 5,
-        'range' : 0,
+        'range' : 1,
         'target' : 'location',
         'action' : _magicalDampeningTrap,
         'cooldown' : 0,
@@ -2198,7 +2239,7 @@ class Ability(object):
         'class' : 'Tactician',
         'HPCost' : 0,
         'APCost' : 5,
-        'range' : 0,
+        'range' : 1,
         'target' : 'location',
         'action' : _nearsightedTrap,
         'cooldown' : 2,

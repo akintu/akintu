@@ -843,34 +843,44 @@ class PassiveAbility(object):
         'text' : 'If the Marksman is hit with a non-magical ranged attack, her accuracy\n' + \
                 'increases by 3 for the next turn.'
         },
-
+        
+        # Druid
         'Knowledge of Poison':
         {
         'class' : 'Druid',
         'level' : 1,
         'type' : 'static',
-        'action' : applyKnowledgeOfPoison
+        'action' : applyKnowledgeOfPoison,
+        'image' : DRUID + 'knowledge-of-poison.png',
+        'text' : '+30% to all poison damage dealt.'
         },
         'Potency of Poisons':
         {
         'class' : 'Druid',
         'level' : 1,
         'type' : 'static',
-        'action' : applyPotencyOfPoisons
+        'action' : applyPotencyOfPoisons,
+        'image' : DRUID + 'potency-of-poisons.png',
+        'text' : '+5 Poison rating to all poison skills and\n' + \
+                'applications.'
         },
         'Exposure to Poison':
         {
         'class' : 'Druid',
         'level' : 1,
         'type' : 'static',
-        'action' : applyExposureToPoison
+        'action' : applyExposureToPoison,
+        'image' : DRUID + 'exposure-to-poison.png',
+        'text' : '+5 Poison Tolerance and +20% Poison resistance.'
         },
         'Time with Nature':
         {
         'class' : 'Druid',
         'level' : 3,
         'type' : 'static',
-        'action' : applyTimeWithNature
+        'action' : applyTimeWithNature,
+        'image' : DRUID + 'time-with-nature.png',
+        'text' : '+5% Poison Resistance; +5% Cold Resistance'
         },
 
         # Tactician
