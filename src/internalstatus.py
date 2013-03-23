@@ -252,7 +252,7 @@ class InternalStatus(object):
     def Ranged_dodge_bonus_method(self, target, magnitude):
         target.statusRangedDodge += magnitude
 
-    def Ranged_dodge_penalty_method(self, target, mangitude):
+    def Ranged_dodge_penalty_method(self, target, magnitude):
         target.statusRangedDodge -= magnitude
 
     def Ranged_force_bonus_method(self, target, magnitude):
@@ -503,10 +503,10 @@ class InternalStatus(object):
     def Ranged_critical_magnitude_bonus_method_reverse(self, target, magnitude):
         target.statusRangedCriticalMagnitude -= magnitude
 
-    def Ranged_dodge_bonus_method_reverse(self, target, mangitude):
+    def Ranged_dodge_bonus_method_reverse(self, target, magnitude):
         target.statusRangedDodge -= magnitude
 
-    def Ranged_dodge_penalty_method_reverse(self, target, mangitude):
+    def Ranged_dodge_penalty_method_reverse(self, target, magnitude):
         target.statusRangedDodge += magnitude
 
     def Ranged_force_bonus_method_reverse(self, target, magnitude):

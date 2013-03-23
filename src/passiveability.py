@@ -336,6 +336,15 @@ class PassiveAbility(object):
         if toRemove:
             target.abilities.remove(toRemove)
 
+    def applyBackstabUpgrade2(self, target):
+        toRemove = None
+        for abil in target.abilities:
+            if abil.name == "Bleeding Backstab":
+                toRemove = abil
+                break
+        if toRemove:
+            target.abilities.remove(toRemove)
+            
     # Nightblade
     def applyNightArmor(self, target):
         target.baseDR += 3
@@ -975,6 +984,13 @@ class PassiveAbility(object):
         'image' : SHADOW + 'hide-in-peril.png',
         'text' : 'When harmed by anything dealing at least 40% of your maximum HP,\n' + \
                 'you will immediately enter stealth if you aren\'t in stealth already.'
+        },
+        '--IGNORE-- Backstab Upgrade 2':
+        {
+        'class' : 'Shadow',
+        'level' : 5,
+        'type' : 'static',
+        'action' : applyBackstabUpgrade2
         },
 
 

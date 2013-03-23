@@ -939,6 +939,49 @@ class Ability(object):
             return (True, "")
         return (False, "Must be in stealth to use " + self.name + ".")
 
+    def _stunningBackstab(self, target):
+        source = self.owner
+        critChance = 0
+        critMag = 0
+        accuracy = 0
+        if source.usingWeapon("Sword"):
+            critChance = 25
+            critMag = 1.5
+            if source.usingWeaponStyle("Single"):
+                accuracy = 9
+        elif source.usingWeapon("Knife"):
+            critChance = 50
+            critMag = 2
+            if source.usingWeaponStyle("Single"):
+                accuracy = 5
+        hit = Combat.calcHit(source, target, "Physical", modifier=accuracy, critMod=critChance)
+        sizeBonus = 0
+        if target.size == "Small":
+            sizeBonus = 0.1
+        if hit != "Critical Hit":
+            if source.usingWeaponStyle("Single"):
+                Combat.basicAttack(source, target, hit, overallDamageMod=1.5 + sizeBonus)
+            else:
+                Combat.basicAttack(source, target, hit, overallDamageMod=1.25 + sizeBonus)
+        else:
+            Combat.basicAttack(source, target, hit, criticalDamageMod=critMag, overallDamageMod=1.0 + sizeBonus)
+        if hit != "Miss":
+            duration = 2
+            magnitude = 3
+            Combat.addStatus(target, "Bleeding", duration, magnitude)
+            if Dice.rollPresetChance(source, target, "Occasional"):
+                Combat.addStatus(target, "Stun", 1)
+        
+    def _stunningBackstabCheck(self, target):
+        source = self.owner
+        if not source.inStealth():
+            return (False, "Must be in stealth to perform " + self.name + " .")
+        if not Combat.inBackstabPosition(source, target):
+            return (False, "Must be in backstab position to perform " + self.name + " .")
+        if not source.usingWeapon("Sword") and not source.usingWeapon("Knife"):
+            return (False, "Must be using either swords or knives to preform " + self.name + " .")
+        return(True, "")
+        
     # Nightblade
     
     def _shroud(self, target):
@@ -2213,7 +2256,7 @@ class Ability(object):
         'checkFunction' : _rearAssaultCheck,
         'breakStealth' : 100,
         'image' : SHADOW_SKILLS + 'rear-assault.png',
-        'text' : 'A backstab attack performed while NOT in stealth will all benefits of a standard\n' + \
+        'text' : 'A backstab attack performed while NOT in stealth with all benefits of a standard\n' + \
                 'backstab plus bleeding.  However, it is performed at -14 Accuracy and is thus\n' + \
                 'unlikely to hit.'
         },
@@ -2247,6 +2290,24 @@ class Ability(object):
         'breakStealth' : 0,
         'image' : SHADOW_SKILLS + 'stealth-recovery.png',
         'text' : 'Recover 4% of max HP while in stealth.  Will not break stealth.'
+        },
+        'Stunning Backstab':
+        {
+        'level' : 5,
+        'class' : 'Shadow',
+        'HPCost' : 0,
+        'APCost' : 10,
+        'range' : 1,
+        'target' : 'hostile',
+        'action' : _stunningBackstab,
+        'cooldown' : 2,
+        'checkFunction' : _stunningBackstabCheck,
+        'breakStealth' : 100,
+        'image' : THIEF_SKILLS + 'backstab.png',
+        'text' : 'Melee attack from stealth with a high critical hit chance.\n' + \
+                'Must be behind the target and wielding only sword or knife type weapons.\n' + \
+                'Causes 5% bleeding for two turns. Has an occasional chance to stun.\n' + \
+                'Also deals an additional +10% damage against small targets.'
         },
 
 
