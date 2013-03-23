@@ -14,6 +14,7 @@ from const import*
 from region import*
 from sprites import*
 from entity import*
+from portal import Portal
 from theorycraft import TheoryCraft
 
 class Building(object):
@@ -101,9 +102,10 @@ class House(Building):
                 if x == y and x == 1:
                     self.door = loc
                     passable = True
+                    self.entities[loc] = Portal(location=loc, image=house_sheet.getimage((x, y)), passable=passable)
                 else:
                     passable = False
-                self.entities[loc] = Entity(location=loc, image=house_sheet.getimage((x, y)), passable=passable)
+                    self.entities[loc] = Entity(location=loc, image=house_sheet.getimage((x, y)), passable=passable)
             y = 0
             
         self.opening = (self.door[0], self.door[1]+4)

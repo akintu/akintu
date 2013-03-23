@@ -14,14 +14,3 @@ class Entity(object):
         self.passable = passable
         self.cPane = None
         self.cLocation = None
-
-    def getAnimationImages(self):
-        # print "Called unimplemented method Entity.getAnimationImages()."
-        # print "You must override this function in child implementation."
-        return None
-        
-    def getAnimationDuration(self):
-        # print "Called unimplemented method Entity.getAnimationSpeed()."
-        # print "You must override this function in child implementation."
-        return None
-        

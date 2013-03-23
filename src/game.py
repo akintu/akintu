@@ -813,11 +813,15 @@ class Game(object):
         items = tile.get_items()
         if items:
             item = items[0]
-            images = item.getAnimationImages()
+            images = None
+            if hasattr(item, 'getAnimationImages'):
+                images = item.getAnimationImages()
             steps = 0
             if images:
                 steps = len(images)
-            length = item.getAnimationDuration()
+            length = 0
+            if hasattr(item, 'getAnimationDuration'):
+                length = item.getAnimationDuration()
             item.anim = LoopingCall(self.do_animation_entity, location, time.time(), length, steps, images)
             if steps > 0:
                 item.anim.start(float(length) / (steps*2))
