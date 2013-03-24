@@ -396,7 +396,7 @@ class Pane(object):
         if trap:
             if trap.team == "Players":
                 return "Trap-Friendly"
-            elif trap.team == "Monsters"
+            elif trap.team == "Monsters":
                 return "Trap-Hostile"
         return "Nothing"
                 

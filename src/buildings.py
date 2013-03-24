@@ -102,7 +102,7 @@ class House(Building):
                 if x == y and x == 1:
                     self.door = loc
                     passable = True
-                    self.entities[loc] = Portal(location=loc, image=house_sheet.getimage((x, y)), passable=passable)
+                    self.entities[loc] = Portal(Location((0, 0), (16, 10)), location=loc, image=house_sheet.getimage((x, y)), passable=passable)
                 else:
                     passable = False
                     self.entities[loc] = Entity(location=loc, image=house_sheet.getimage((x, y)), passable=passable)

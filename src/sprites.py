@@ -23,7 +23,7 @@ GRASS4 = (BACKGROUND_IMAGES_PATH, "grass4.jpg", TILE_SIZE, None, None)
 GRAVEL1 = (BACKGROUND_IMAGES_PATH, "gravel1.jpg", TILE_SIZE, None, None)
 
 OBSTACLES = {'tree': TREE, 'rock': ROCK}
-ENTITIES = dict(OBSTACLES.items()) #ADD MORE ITEMS HERE
+ENTITIES = dict(OBSTACLES.items())  #ADD MORE ITEMS HERE
 ZOOMED_ENTITIES = {'rock_zoom': ROCK_ZOOM, 'tree_zoom': TREE_ZOOM}
 BACKGROUNDS = {'summer': GRASS2, 'fall': GRASS3, 'desert': GRAVEL1}
 ENTITY_KEYS = sorted(ENTITIES.keys())

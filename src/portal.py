@@ -8,5 +8,5 @@ class Portal(Entity):
         
     def trigger(self, target):
         print "Portal.trigger(target) called"
-        pass
+        return Command("PERSON", "MOVE", id=target.id, location=self.new_location)
         
