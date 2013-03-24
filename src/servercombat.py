@@ -79,13 +79,10 @@ class CombatServer():
             else:
                 Combat.sendCombatMessage(useDuple[1], source, toAll=False)
             self.check_turn_end(self.server.person[command.id].cPane)
-            
+
         #### Place Trap or Use ability on location ####
         elif command.type == "ABILITY" and command.action == "PLACE_TRAP":
             source = self.server.person[command.id]
-            direction = int(command.targetLoc[0])
-            distance = int(command.targetLoc[2:])
-            targetLoc = source.cLocation.move(direction, distance)
             abilToUse = None
             for abil in source.abilities:
                 if abil.name == command.abilityName:
@@ -95,11 +92,12 @@ class CombatServer():
                 if useDuple[0]:
                     Combat.sendCombatMessage(source.name + " is placing a " + abilToUse.name, source,
                                              color='orange')
+                    self.server.broadcast(command, -command.id)
                     abilToUse.use(targetLoc)
             else:
                 Combat.sendCombatMessage(useDuple[1], source, toAll=False)
             self.check_turn_end(self.server.person[command.id].cPane)
-        
+
         #### End turn command "N" ####
         elif command.type == "ABILITY" and command.action == "END_TURN":
             target = self.server.person[command.id]
@@ -107,7 +105,7 @@ class CombatServer():
             Combat.decrementMovementTiles(target, removeAll=True)
             self.check_turn_end(self.server.person[command.id].cPane)
 
-            
+
         #### Using Items ####
         elif command.type == "ITEM" and command.action == "USE":
             user = self.server.person[command.id]
@@ -216,6 +214,8 @@ class CombatServer():
                         tEnt.trigger(monster)
                     if tEnt.charges <= 0:
                         tile.removeTrap()
+                        self.server.broadcast(Command("TRAP", "REMOVE", location=desiredLocation), \
+                                -monster.id)
             elif tilesLeft == monster.totalMovementTiles:
                 # Monster couldn't move at all.
                 return "Failed"
