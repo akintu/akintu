@@ -51,7 +51,7 @@ class Trap(e.Entity):
         Combat.sendCombatMessage("Trap dealt " + str(damage) + " total damage.", self.owner, color="yellow")
 
     def _stickyTrap(self, target):
-        duration = 2
+        duration = 3
         Combat.addStatus(target, "Sticky Trap", duration)
 
     def _boulderPitTrap(self, target):
@@ -62,7 +62,7 @@ class Trap(e.Entity):
         damage = Trap.calcTrapDamage(target, dieRoll, element)
         Combat.lowerHP(target, damage)
         if (target.size == "Small" or target.size == "Medium") and Dice.rollBeneath(20):
-            Combat.addStatus(target, "Stun", duration=1)
+            Combat.addStatus(target, "Stun", duration=2)
 
     def _poisonThornTrap(self, target):
         minDamage = int(5 * (1 + self.owner.totalPoisonBonusDamage))

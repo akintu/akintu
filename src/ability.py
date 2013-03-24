@@ -395,14 +395,12 @@ class Ability(object):
             #return (False, "Cannot place a trap on a monster.")
         
     def _stickyTrap(self, target):
-        pass
-        # Remove Trap
-        # Add trap.Trap("Sticky Trap", self.owner, target.location)
+        source = self.owner
+        Combat.gameServer.pane[source.cPane].addTrap(targetLocation, trap.Trap("Sticky Trap", player=source, location=targetLocation))
 
     def _boulderPitTrap(self, target):
-        pass
-        # Remove Trap
-        # Add trap.Trap("Boulder Pit Trap", self.owner, target.location)
+        source = self.owner
+        Combat.gameServer.pane[source.cPane].addTrap(targetLocation, trap.Trap("Boulder Pit Trap", player=source, location=targetLocation))
 
     def _magicGuard(self, target):
         source = self.owner
@@ -1661,7 +1659,7 @@ class Ability(object):
         'breakStealth' : 0,
         'image' : RANGER_SKILLS + 'shrapnel-trap.png',
         'text' : 'Lay a trap down that will deal 5-12 + 1.4% Piercing damage\n' + \
-                'to any one enemy that steps on it.  Rating = 13 + 1/5 Cunning.'
+                'to any one enemy that steps on it.  Rating = 16 + 1/5 Cunning.'
         },
         'Sticky Trap':
         {
@@ -1673,8 +1671,13 @@ class Ability(object):
         'target' : 'location',
         'action' : _stickyTrap,
         'cooldown' : 1,
-        'checkFunction' : None,
-        'breakStealth' : 0
+        'checkFunction' : _shrapnelTrapCheck,
+        'breakStealth' : 0,
+        'image' : RANGER_SKILLS + 'sticky-trap.png',
+        'text' : 'Lay a trap that will reduce enemy movement speed by\n' + \
+                'one tile per move action for three turns.  Has two\n' + \
+                'charges.  Debuff lasts 3 turns.  Rating = 24 + 1/6\n' + \
+                'Cunning.'
         },
         'Tunnel Vision':
         {
@@ -1746,8 +1749,12 @@ class Ability(object):
         'target' : 'self',
         'action' : _boulderPitTrap,
         'cooldown' : 1,
-        'checkFunction' : None,
-        'breakStealth' : 0
+        'checkFunction' : _shrapnelTrapCheck,
+        'breakStealth' : 0,
+        'image' : RANGER_SKILLS + 'boulder-pit-trap.png', 
+        'text' : 'Lay a trap that deals 3-8 + 2% bludgeoning damage and has a\n' + \
+                '20% chance to stun small and medium enemies.  Rating = 30 +\n' + \
+                '1/6 Cunning.'
         },
 
         # Wizard
@@ -2126,7 +2133,7 @@ class Ability(object):
         'level' : 1,
         'class' : 'Druid',
         'HPCost' : 0,
-        'APCost' : 7,
+        'APCost' : 6,
         'range' : -1,
         'target' : 'hostile',
         'action' : _painfulShot,
@@ -2188,7 +2195,7 @@ class Ability(object):
         'image' : DRUID_SKILLS + 'poison-thorn-trap.png',
         'text' : 'Lay a trap that deals 5-10 poison damage when triggered and\n' + \
                 'deals 3-6 + 1/4 Cunning poison damage each turn afterward.\n' + \
-                'Trap rating = 18 + 1/5 Cunning; Poison Rating = 22 + 1/level.\n' + \
+                'Trap rating = 23 + 1/5 Cunning; Poison Rating = 22 + 1/level.\n' + \
                 'Lasts at least 3 turns.'
         },
         # 'Lethargic Shot':
