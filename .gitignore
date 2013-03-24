@@ -28,8 +28,12 @@ pip-log.txt
 #Mr Developer
 .mr.developer.cfg
 
+#NetBeans
+project.*
+
 treasure_chest.psd
 saves
 testSaveFile.txt
 SAVE_LOAD_STATE.txt
 ip_history.txt
+/nbproject/private/
