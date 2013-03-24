@@ -42,6 +42,13 @@ class Tile(object):
     def add_entity(self, entity):
         self.entities.append(entity)
         
+    def get_trigger_entities(self):
+        list = []
+        for entity in self.entities:
+            if hasattr(entity, 'trigger'):
+                list.append(entity)
+        return list
+        
     def remove_entity(self, entity):
         if entity in self.entities:
             self.entities.remove(entity)

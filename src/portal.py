@@ -7,6 +7,6 @@ class Portal(Entity):
         self.new_location = new_location
         
     def trigger(self, target):
-        print "Portal.trigger(target) called"
-        return Command("PERSON", "MOVE", id=target.id, location=self.new_location)
+        print "Portal.trigger() called"
+        return self.new_location
         

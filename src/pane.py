@@ -376,9 +376,14 @@ class Pane(object):
         self.tiles[loc].addTrap(trap)
         
     def removeTrap(self, location):
-        loc = location.loc
+        loc = location.tile
         if loc in self.tiles:
             self.tiles[loc].removeTrap()
+            
+    def get_trigger_entities(self, location):
+        loc = location.tile
+        if loc in self.tiles:
+            return self.tiles[loc].get_trigger_entities()
             
     def getTileContents(self, location):
         '''

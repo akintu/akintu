@@ -68,6 +68,13 @@ class GameServer():
                 # If this is a legal move request
                 if self.tile_is_open(command.location):
 
+                    # ---JAB--- Check for entities that have a trigger() attribute
+                    if command.location.pane in self.pane:
+                        ent_list = self.pane[command.location.pane].get_trigger_entities(command.location)
+                        for entity in ent_list:
+                            new_loc = entity.trigger(command.id)
+                            self.broadcast(Command("PERSON", "MOVE", id=command.id, location=new_loc), -command.id)
+                    
                     # If the origin and destination are in the same pane
                     if self.person[command.id].location.pane == command.location.pane:
 

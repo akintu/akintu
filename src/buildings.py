@@ -88,7 +88,7 @@ class House(Building):
             Row 2: Tile or specialty (in or out)
             Row 3: Indoor Wood/Carpet
         '''
-        #self.entities = dict()
+        #self.entities = dict() #IN SUPER CLASS BUILDING
         
         super(House, self).__init__(boundary_type="tree", bounds=None, pane_loc=location.pane, size=(7, 5), location=location)
         house_sheet = Sprites.get_sheet(HOUSE_KEY)
