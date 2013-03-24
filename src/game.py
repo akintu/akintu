@@ -20,6 +20,7 @@ from gamescreen import GameScreen
 from theorycraft import TheoryCraft
 from world import *
 from region import Region
+import trap
 
 import levelup as lvl
 
@@ -362,10 +363,14 @@ class Game(object):
                 self.screen.update_tile(self.pane.get_tile(command.location.tile), command.location)
 
             elif command.type == "ABILITY" and command.action == "PLACE_TRAP":
-                pass
+                placer = self.pane.person[command.id]
+                thisTrap = trap.Trap(name=command.abilityName, player=placer, location=command.targetLoc)
+                self.pane.addTrap(command.targetLoc, thisTrap)
+                self.set_overlay(command.targetLoc)
 
             elif command.type == "TRAP" and command.action == "REMOVE":
-                pass
+                self.pane.removeTrap(command.location)
+                self.set_overlay(command.location)
 
             elif command.type == "CLIENT" and command.action == "QUIT":
                 self.save_and_quit()
@@ -415,7 +420,7 @@ class Game(object):
                     self.keystate.append(event.key)
                 elif event.key in MOVE_KEYS and not self.performingLevelup and not self.viewingInventory and not \
                     self.selectingConsumable and not \
-                     (self.combat and (self.selectionMode == "abilities" or self.selectionMode == "spells")):
+                     (self.combat and (self.selectionMode == "abilities" or self.selectionMode == "spells" or self.placingTrap)):
                     self.move_person(MOVE_KEYS[event.key], 1)
                 elif event.key == K_EQUALS or event.key == K_PAGEUP:
                     self.screen.scroll_up(1 if not any(mod in [K_LSHIFT, K_RSHIFT] \
@@ -768,7 +773,7 @@ class Game(object):
 
         self.set_overlay(self.currentTargetId, 'red')
 
-    def set_overlay(self, where, overlay):
+    def set_overlay(self, where, overlay=None):
         loc = None
         if isinstance(where, int): #Person id
             loc = self.pane.person[where].location

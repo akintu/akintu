@@ -88,12 +88,12 @@ class CombatServer():
                 if abil.name == command.abilityName:
                     abilToUse = abil
             if abilToUse:
-                useDuple = abilToUse.canUse(targetLoc)
+                useDuple = abilToUse.canUse(command.targetLoc)
                 if useDuple[0]:
                     Combat.sendCombatMessage(source.name + " is placing a " + abilToUse.name, source,
                                              color='orange')
+                    abilToUse.use(command.targetLoc)
                     self.server.broadcast(command, -command.id)
-                    abilToUse.use(targetLoc)
             else:
                 Combat.sendCombatMessage(useDuple[1], source, toAll=False)
             self.check_turn_end(self.server.person[command.id].cPane)
@@ -207,13 +207,12 @@ class CombatServer():
                 self.server.broadcast(action, -monster.id)
                 monster.cLocation = desiredLocation
                 tilesLeft -= 1
-                tile = monster.cPane.get_tile(desiredLocation)
-                triggerEnts = tile.get_trigger_entities()
+                triggerEnts = self.server.pane[monster.cPane].get_trigger_entities(desiredLocation)
                 for tEnt in triggerEnts:
                     if tEnt.shouldTrigger(monster):
                         tEnt.trigger(monster)
                     if tEnt.charges <= 0:
-                        tile.removeTrap()
+                        self.server.pane[monster.cPane].removeTrap(desiredLocation)
                         self.server.broadcast(Command("TRAP", "REMOVE", location=desiredLocation), \
                                 -monster.id)
             elif tilesLeft == monster.totalMovementTiles:

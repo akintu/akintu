@@ -103,8 +103,9 @@ class Tile(object):
         self.add_item(trap)
         self.trap = trap
         
-    def removeTrap(self, trap):
-        self.remove_item(self.trap)
+    def removeTrap(self):
+        if self.trap:
+            self.remove_item(self.trap)
         self.trap = None
         
     def getTrap(self):

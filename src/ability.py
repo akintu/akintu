@@ -4,6 +4,7 @@ import sys
 from dice import *
 import listener
 from combat import *
+import trap
 
 ROOT_FOLDER = "./res/images/icons/skills/"
 
@@ -128,7 +129,7 @@ class Ability(object):
         if self.targetType == "friendly" and source.team != target.team:
             return (False, "Cannot target hostile with beneficial ability.")
         # TODO: Modify inRange to accept a location object as well.
-        if not source.inRange(target, self.range) and not self.targetType == 'location':
+        if not self.targetType == 'location' and not source.inRange(target, self.range):
             return (False, "Target is out of range.")
         if source.onCooldown(self.name):
             return (False, self.name + " is on Cooldown " + source.getCooldownTurns(self.name) +
@@ -378,11 +379,11 @@ class Ability(object):
 
     def _shrapnelTrap(self, targetLocation):
         source = self.owner
-        source.cPane.addTrap(targetLocation, trap.Trap("Shrapnel Trap", player=source, location=targetLocation))
+        Combat.gameServer.pane[source.cPane].addTrap(targetLocation, trap.Trap("Shrapnel Trap", player=source, location=targetLocation))
 
     def _shrapnelTrapCheck(self, targetLocation):
         source = self.owner
-        contentString = source.cPane.getTileContents(targetLocation)
+        contentString = Combat.gameServer.pane[source.cPane].getTileContents(targetLocation)
         if contentString == "Nothing" or contentString == "Trap-Friendly":
             return (True, "")
         if contentString == "Trap-Hostile":
@@ -1656,8 +1657,11 @@ class Ability(object):
         'target' : 'location',
         'action' : _shrapnelTrap,
         'cooldown' : 1,
-        'checkFunction' : None,
-        'breakStealth' : 0
+        'checkFunction' : _shrapnelTrapCheck,
+        'breakStealth' : 0,
+        'image' : RANGER_SKILLS + 'shrapnel-trap.png',
+        'text' : 'Lay a trap down that will deal 5-12 + 1.4% Piercing damage\n' + \
+                'to any one enemy that steps on it.  Rating = 13 + 1/5 Cunning.'
         },
         'Sticky Trap':
         {

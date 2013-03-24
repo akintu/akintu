@@ -214,7 +214,8 @@ class PlayerCharacter(p.Person):
             for abil in ability.Ability.allAbilities:
                 current = ability.Ability.allAbilities[abil]
                 if current['class'] == self.baseClass or current['class'] == self.secondaryClass or current['class'] == self.characterClass or \
-                (current['class'] == "Thief*" and self.baseClass == "Thief"):
+                (current['class'] == "Thief*" and self.baseClass == "Thief") or (current['class'] == "Ranger*" and self.baseClass == "Ranger" and
+                 self.characterClass != "Anarchist"):
                     if current['level'] == 1:
                         newAbil = ability.Ability(abil, self)
                         self.abilities.append(newAbil)

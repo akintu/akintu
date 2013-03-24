@@ -48,6 +48,7 @@ class Trap(e.Entity):
         element = "Piercing"
         damage = Trap.calcTrapDamage(target, dieRoll, element)
         Combat.lowerHP(target, damage)
+        Combat.sendCombatMessage("Trap dealt " + str(damage) + " total damage.", self.owner, color="yellow")
 
     def _stickyTrap(self, target):
         duration = 2
@@ -216,14 +217,19 @@ class Trap(e.Entity):
         be called if a friendly target steps on it.'''
         if self.isFavor:
             # Print some message.
-            self.effect(target)
+            self.effect(self, target)
             self.charges -= 1
         else:
-            print self.name + " Sprung!"
             if Dice.rollTrapHit(self, target):
-                self.effect(target)
-                self.charges -= 1
-            # If self.charges <= 0, remove from tile. TODO
+                self.effect(self, target)
+                Combat.sendCombatMessage(target.name + " sprung a " + self.name + "! (" + 
+                                        `self.trapRating` + " vs. " + `target.totalTrapEvade` + ")", 
+                                        target, color='lightblue')
+            else:
+                Combat.sendCombatMessage(target.name + " evaded a " + self.name + ". (" + 
+                                        `self.trapRating` + " vs. " + `target.totalTrapEvade` + ")",
+                                        target, color='lightblue')
+            self.charges -= 1
 
     def shouldTrigger(self, target):
         '''Determines if this trap should attempt to
@@ -241,30 +247,31 @@ class Trap(e.Entity):
 
     @staticmethod
     def calcTrapDamage(target, amount, element):
+        endAmount = 0
         if element == "Fire":
-            amount = round(amount * (1 - (float(target.totalFireResistance) / 100)))
+            endAmount = int(amount * (1 - (float(target.totalFireResistance) / 100)))
         elif element == "Cold":
-            amount = round(amount * (1 - (float(target.totalColdResistance) / 100)))
+            endAmount = int(amount * (1 - (float(target.totalColdResistance) / 100)))
         elif element == "Electric":
-            amount = round(amount * (1 - (float(target.totalElectricResistance) / 100)))
+            endAmount = int(amount * (1 - (float(target.totalElectricResistance) / 100)))
         elif element == "Poison":
-            amount = round(amount * (1 - (float(target.totalPoisonResistance) / 100)))
+            endAmount = int(amount * (1 - (float(target.totalPoisonResistance) / 100)))
         elif element == "Shadow":
-            amount = round(amount * (1 - (float(target.totalShadowResistance) / 100)))
+            endAmount = int(amount * (1 - (float(target.totalShadowResistance) / 100)))
         elif element == "Divine":
-            amount = round(amount * (1 - (float(target.totalDivineResistance) / 100)))
+            endAmount = int(amount * (1 - (float(target.totalDivineResistance) / 100)))
         elif element == "Arcane":
-            amount = round(amount * (1 - (float(target.totalArcaneResistance) / 100)))
+            endAmount = int(amount * (1 - (float(target.totalArcaneResistance) / 100)))
         elif element == "Bludgeoning":
-            amount = round(amount * (1 - (float(target.totalBludgeoningResistance) / 100)))
-            amount = round(amount * (1 - max(0, min(80, target.totalDR))))
+            endAmount1 = int(amount * (1 - target.totalBludgeoningResistance * 0.01))
+            endAmount = int(endAmount1 * (1 - max(0, min(80, target.totalDR)) * 0.01))
         elif element == "Piercing":
-            amount = round(amount * (1 - (float(target.totalPiercingResistance) / 100)))
-            amount = round(amount * (1 - max(0, min(80, target.totalDR))))
+            endAmount1 = int(amount * (1 - target.totalPiercingResistance * 0.01))
+            endAmount = int(endAmount1 * (1 - max(0, min(80, target.totalDR)) * 0.01))
         elif element == "Slashing":
-            amount = round(amount * (1 - (float(target.totalSlashingResistance) / 100)))
-            amount = round(amount * (1 - max(0, min(80, target.totalDR))))
-        return amount
+            endAmount1 = int(amount * (1 - target.totalSlashingResistance * 0.01))
+            endAmount = int(endAmount1 * (1 - max(0, min(80, target.totalDR)) * 0.01))
+        return endAmount
 
     @staticmethod
     def getRandomTrap(level):
@@ -283,7 +290,7 @@ class Trap(e.Entity):
     playerTraps = {
         'Shrapnel Trap':
             {
-            'rating' : 13,
+            'rating' : 16,
             'ratingScale' : 0.015,
             'effect' : _shrapnelTrap,
             'isFavor' : False,
@@ -291,7 +298,7 @@ class Trap(e.Entity):
             },
         'Sticky Trap':
             {
-            'rating' : 20,
+            'rating' : 24,
             'ratingScale' : 0.007,
             'effect' : _stickyTrap,
             'isFavor' : False,
@@ -299,7 +306,7 @@ class Trap(e.Entity):
             },
         'Boulder Pit Trap':
             {
-            'rating' : 25,
+            'rating' : 30,
             'ratingScale' : 0.007,
             'effect' : _boulderPitTrap,
             'isFavor' : False,
@@ -309,7 +316,7 @@ class Trap(e.Entity):
         # Druid only traps
         'Poison Thorn Trap':
             {
-            'rating' : 18,
+            'rating' : 23,
             'ratingScale' : 0.01,
             'effect' : _poisonThornTrap,
             'isFavor' : False,
@@ -354,56 +361,56 @@ class Trap(e.Entity):
     monsterTraps = {
         'Bear Trap':
             {
-            'rating' : 5,
+            'rating' : 10,
             'ratingScale' : 0.2,
             'effect' : _bearTrap,
             'rarityWeight' : 12
             },
         'Snake Pit':
             {
-            'rating' : 7,
+            'rating' : 14,
             'ratingScale' : 0.285,
             'effect' : _snakePit,
             'rarityWeight' : 5
             },
         'Standard Dart Trap':
             {
-            'rating' : 7,
+            'rating' : 14,
             'ratingScale' : 0.285,
             'effect' : _standardDartTrap,
             'rarityWeight' : 10
             },
         'Poisonous Dart Trap':
             {
-            'rating' : 7,
+            'rating' : 14,
             'ratingScale' : 0.285,
             'effect' : _poisonousDartTrap,
             'rarityWeight' : 2
             },
         'Fire Trap':
             {
-            'rating' : 8,
+            'rating' : 16,
             'ratingScale' : 0.25,
             'effect' : _fireTrap,
             'rarityWeight' : 5
             },
         'Ice Trap' :
             {
-            'rating' : 15,
+            'rating' : 30,
             'ratingScale' : 0.2,
             'effect' : _iceTrap,
             'rarityWeight' : 2
             },
         'Lightning Trap' :
             {
-            'rating' : 8,
+            'rating' : 16,
             'ratingScale' : 0.25,
             'effect' : _lightningTrap,
             'rarityWeight' : 2
             },
         'Mana Siphon Trap' :
             {
-            'rating' : 25,
+            'rating' : 50,
             'ratingScale' : 0.2,
             'effect' : _manaSiphonTrap,
             'rarityWeight' : 1
