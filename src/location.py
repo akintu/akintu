@@ -80,7 +80,7 @@ class Location(object):
     def abs_pos(self):
         return (self.abs_x, self.abs_y)
 
-    def move(self, direction, distance):
+    def move(self, direction, distance=1):
         '''
         Direction is number based (with diagonals)
         See diagram:

@@ -67,7 +67,7 @@ class Game(object):
         self.viewingInventory = False
         self.selectingConsumable = False
         self.placingTrap = False
-        
+
         # Levelup state
         self.levelup = None
 
@@ -361,6 +361,12 @@ class Game(object):
                     #self.pane.remove_chest(command.location.tile)
                 self.screen.update_tile(self.pane.get_tile(command.location.tile), command.location)
 
+            elif command.type == "ABILITY" and command.action == "PLACE_TRAP":
+                pass
+
+            elif command.type == "TRAP" and command.action == "REMOVE":
+                pass
+
             elif command.type == "CLIENT" and command.action == "QUIT":
                 self.save_and_quit()
 
@@ -493,34 +499,34 @@ class Game(object):
                         # TODO: Check for out-of-bounds
                         if event.key == K_KP8:
                             # Select above
-                            self.attempt_attack(targetingLocation="8,1")
+                            self.attempt_attack(targetingLocation=8)
                         elif event.key == K_KP9:
                             # Select up-right
-                            self.attempt_attack(targetingLocation="9,1")
+                            self.attempt_attack(targetingLocation=9)
                         elif event.key == K_KP6:
                            # Select right
-                           self.attempt_attack(targetingLocation="6,1")
+                           self.attempt_attack(targetingLocation=6)
                         elif event.key == K_KP3:
                             # Select down-right
-                            self.attempt_attack(targetingLocation="3,1")
+                            self.attempt_attack(targetingLocation=3)
                         elif event.key == K_KP2:
                             # Select down
-                            self.attempt_attack(targetingLocation="2,1")
+                            self.attempt_attack(targetingLocation=2)
                         elif event.key == K_KP1:
                             # Select down-left
-                            self.attempt_attack(targetingLocation="1,1")
+                            self.attempt_attack(targetingLocation=1)
                         elif event.key == K_KP4:
                             # Select left
-                            self.attempt_attack(targetingLocation="4,1")
+                            self.attempt_attack(targetingLocation=4)
                         elif event.key == K_KP7:
                             # Select up-left
-                            self.attempt_attack(targetingLocation="7,1")
+                            self.attempt_attack(targetingLocation=7)
                         elif event.key == K_KP5 or event.key == K_SPACE:
                             # Cancel button
                             self.screen.show_text("Cancelled trap placement.", color='white')
                         self.placingTrap = False
                         self.currentAbility = None
-                                
+
                     elif event.key == K_e:
                         self.cycle_targets()
                     elif event.key == K_w:
@@ -666,8 +672,9 @@ class Game(object):
             self.CDF.send(Command("ABILITY", "ATTACK", id=self.id, targetId=self.currentTargetId,
                 abilityName=self.currentAbility.name))
         else:
-            self.CDF.send(Command("ABILITY", "PLACE_TRAP", id=self.id, targetLoc=targetingLocation,
-                abilityName=self.currentAbility.name))
+            self.CDF.send(Command("ABILITY", "PLACE_TRAP", id=self.id, \
+                    targetLoc=self.pane.person[self.id].location.move(targetingLocation), \
+                    abilityName=self.currentAbility.name))
 
     def use_item(self):
         if not self.currentItem or \
