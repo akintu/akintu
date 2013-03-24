@@ -53,7 +53,8 @@ class Trap(e.Entity):
     def _stickyTrap(self, target):
         duration = 3
         Combat.addStatus(target, "Sticky Trap", duration)
-
+        Combat.sendCombatMessage("Trap lowered movement speed.", self.owner, color="yellow")
+        
     def _boulderPitTrap(self, target):
         minDamage = int(3 * (1 + self.owner.totalCunning * 0.02))
         maxDamage = int(8 * (1 + self.owner.totalCunning * 0.02))
@@ -63,6 +64,8 @@ class Trap(e.Entity):
         Combat.lowerHP(target, damage)
         if (target.size == "Small" or target.size == "Medium") and Dice.rollBeneath(20):
             Combat.addStatus(target, "Stun", duration=2)
+            Combat.sendCombatMessage("Trap Stunned " + target.name, self.owner, color="yellow")
+        Combat.sendCombatMessage("Trap dealt " + `damage` + " total damage.", self.owner, color="yellow")
 
     def _poisonThornTrap(self, target):
         minDamage = int(5 * (1 + self.owner.totalPoisonBonusDamage))
@@ -77,6 +80,7 @@ class Trap(e.Entity):
         dot = Dice.roll(minDot, maxDot)
         duration = min(4, 3 + self.owner.totalCunning / 30)
         Combat.addStatus(target, "Poison Thorn Trap", duration, dot)
+        Combat.sendCombatMessage("Trap dealt " + `damage` + " damage.", self.owner, color="yellow")
 
     def _accuracyFavor(self, target):
         accuracyBonus = 3 + self.owner.totalCunning / 4
