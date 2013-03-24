@@ -127,8 +127,8 @@ class Ability(object):
             return (False, "Cannot target own team with hostile ability.")
         if self.targetType == "friendly" and source.team != target.team:
             return (False, "Cannot target hostile with beneficial ability.")
-        # Do we need any check for AoE spells?
-        if not source.inRange(target, self.range):
+        # TODO: Modify inRange to accept a location object as well.
+        if not source.inRange(target, self.range) and not self.targetType == 'location':
             return (False, "Target is out of range.")
         if source.onCooldown(self.name):
             return (False, self.name + " is on Cooldown " + source.getCooldownTurns(self.name) +
@@ -377,10 +377,22 @@ class Ability(object):
         return (True, "")
 
     def _shrapnelTrap(self, targetLocation):
-        pass
-        # Remove Trap
-        # Add trap.Trap("Shrapnel Trap", player=self.owner, location=targetLocation)
+        source = self.owner
+        source.cPane.addTrap(targetLocation, trap.Trap("Shrapnel Trap", player=source, location=targetLocation))
 
+    def _shrapnelTrapCheck(self, targetLocation):
+        source = self.owner
+        contentString = source.cPane.getTileContents(targetLocation)
+        if contentString == "Nothing" or contentString == "Trap-Friendly":
+            return (True, "")
+        if contentString == "Trap-Hostile":
+            return (False, "TODO: Enemy trap here.")
+        if contentString == "Obstacle":
+            return (False, "Cannot place a trap on an obstacle.")
+        return (False, "TODO: Failed to catch a case...")
+        #if contentString == "Monster":
+            #return (False, "Cannot place a trap on a monster.")
+        
     def _stickyTrap(self, target):
         pass
         # Remove Trap

@@ -480,6 +480,8 @@ class Game(object):
                                 self.currentAbility = self.pane.person[self.id].spellList[self.screen.hide_dialog()]
                             else:
                                 self.currentAbility = self.pane.person[self.id].abilities[self.screen.hide_dialog()]
+                                if "Trap" in self.currentAbility.name:
+                                    self.placingTrap = True
                             self.selectionMode = "targeting"
                             if self.currentAbility.range == 0:
                                 self.select_self()
@@ -487,27 +489,37 @@ class Game(object):
                                 self.show_range(True)
 
                     ### Trap Placing ####
-                    # elif self.placingTrap:
-                        # if event.key == K_KP8:
-                            # pass # Select above
-                        # elif event.key == K_KP9:
-                            # pass # Select up-right
-                        # elif event.key == K_KP6:
-                            # pass # Select right
-                        # elif event.key == K_KP3:
-                            # pass # Select down-right
-                        # elif event.key == K_KP2:
-                            # pass # Select down
-                        # elif event.key == K_KP1:
-                            # pass # Select down-left
-                        # elif event.key == K_KP4:
-                            # pass # Select left
-                        # elif event.key == K_KP7:
-                            # pass
-                        # elif event.key == K_KP5 or event.key == K_SPACE:
-                            # self.placingTrap = False
-                            #Cancel button
-                        
+                    elif self.placingTrap:
+                        # TODO: Check for out-of-bounds
+                        if event.key == K_KP8:
+                            # Select above
+                            self.attempt_attack(targetingLocation="8,1")
+                        elif event.key == K_KP9:
+                            # Select up-right
+                            self.attempt_attack(targetingLocation="9,1")
+                        elif event.key == K_KP6:
+                           # Select right
+                           self.attempt_attack(targetingLocation="6,1")
+                        elif event.key == K_KP3:
+                            # Select down-right
+                            self.attempt_attack(targetingLocation="3,1")
+                        elif event.key == K_KP2:
+                            # Select down
+                            self.attempt_attack(targetingLocation="2,1")
+                        elif event.key == K_KP1:
+                            # Select down-left
+                            self.attempt_attack(targetingLocation="1,1")
+                        elif event.key == K_KP4:
+                            # Select left
+                            self.attempt_attack(targetingLocation="4,1")
+                        elif event.key == K_KP7:
+                            # Select up-left
+                            self.attempt_attack(targetingLocation="7,1")
+                        elif event.key == K_KP5 or event.key == K_SPACE:
+                            # Cancel button
+                            self.screen.show_text("Cancelled trap placement.", color='white')
+                        self.placingTrap = False
+                        self.currentAbility = None
                                 
                     elif event.key == K_e:
                         self.cycle_targets()
@@ -643,14 +655,18 @@ class Game(object):
             action = Command("ABILITY", "END_TURN", id=self.id)
             self.CDF.send(action)
 
-    def attempt_attack(self):
-        if not self.currentTargetId:
+    def attempt_attack(self, targetingLocation=None):
+        if not self.currentTargetId and not targetingLocation:
             print "No target selected."
             return
         if not self.currentAbility:
             print "No ability selected."
             return
-        self.CDF.send(Command("ABILITY", "ATTACK", id=self.id, targetId=self.currentTargetId,
+        if not targetingLocation:
+            self.CDF.send(Command("ABILITY", "ATTACK", id=self.id, targetId=self.currentTargetId,
+                abilityName=self.currentAbility.name))
+        else:
+            self.CDF.send(Command("ABILITY", "PLACE_TRAP", id=self.id, targetLoc=targetingLocation,
                 abilityName=self.currentAbility.name))
 
     def use_item(self):

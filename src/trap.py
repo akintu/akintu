@@ -12,6 +12,8 @@ class Trap(e.Entity):
     def __init__(self, name, level=None, player=None, location=None, image=None):
         """Constructor for Traps.  Should only be used with
         keyword arguments."""
+        if not image:
+            image = "./res/images/items/trap.png"
         e.Entity.__init__(self, location=location, image=image, passable=True)
         if player:
             self.name = name
@@ -233,7 +235,7 @@ class Trap(e.Entity):
           True or False'''
         if self.isFavor and self.team == target.team:
             return True
-        elif self.team != target.team:
+        elif not self.isFavor and self.team != target.team:
             return True
         return False
 
