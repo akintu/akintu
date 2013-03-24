@@ -13,6 +13,7 @@ class Tile(object):
         self.obstacles = []
         self.items = []
         self.chest = None
+        self.trap = None
         self.image = image
         self.passable = passable
         self.entity_keys = []
@@ -50,6 +51,7 @@ class Tile(object):
         self.obstacles = []
         self.items = []
         self.chest = None
+        self.trap = None
         self.entity_keys = []
     
     def add_item(self, entity):
@@ -75,13 +77,6 @@ class Tile(object):
         self.entities.append(entity)
         self.obstacles.append(entity)
         
-    def remove_obstacle(self, entity):
-        assert False
-        pass
-        
-    def get_obstacles(self):
-        return self.obstacles
-        
     def add_chest(self, chest):
         if self.chest:
             self.remove_item(self.chest)
@@ -94,4 +89,17 @@ class Tile(object):
         
     def get_chest(self):
         return self.chest
+        
+    def addTrap(self, trap):
+        if self.trap:
+            self.remove_item(self.trap)
+        self.add_item(trap)
+        self.trap = trap
+        
+    def removeTrap(self, trap):
+        self.remove_item(self.trap)
+        self.trap = None
+        
+    def getTrap(self):
+        return self.trap
         

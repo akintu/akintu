@@ -369,6 +369,36 @@ class Pane(object):
                 #print "Loading chests from state: " + str(chests)
                 self.load_chests(chests=state[CHEST_KEY])
 
+    def addTrap(self, location, trap):
+        loc = location.tile
+        if not loc in self.tiles:
+            self.tiles[loc] = Tile(None, True)
+        self.tiles[loc].addTrap(trap)
+        
+    def removeTrap(self, location):
+        loc = location.loc
+        if loc in self.tiles:
+            self.tiles[loc].removeTrap()
+            
+    def getTileContents(self, location):
+        '''
+        Method used to determine if a trap can be placed here
+        '''
+        loc = location.tile
+        if not loc in self.tiles:
+            self.tiles[loc] = Tile(None, True)
+            return "Nothing"
+        tile = self.tiles[loc]
+        
+        if not tile.is_passable():
+            return "Obstacle"
+        trap = tile.getTrap()
+        if trap:
+            if trap.team == "Players":
+                return "Trap-Friendly"
+            elif trap.team == "Monsters"
+                return "Trap-Hostile"
+        return "Nothing"
                 
 class Town(Pane):
     def __init__(self, seed, location, is_server=False, load_entities=False, pane_state=None):
