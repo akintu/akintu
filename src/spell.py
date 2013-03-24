@@ -306,6 +306,17 @@ class Spell(object):
         if Combat.calcPoisonHit(source, target, rating):
             Combat.addStatus(target, "Infection", duration, dieRoll)
 
+    def _handsOfHealing(self, target):
+        source = self.owner
+        value = int(Dice.roll(20, 40) * (1 + 0.02 * source.totalSpellpower))
+        Combat.healTarget(source, target, value)
+            
+    def _elementalBoon(self, target):
+        source = self.owner
+        magnitude = 15 + source.totalSpellpower / 10
+        duration = max(7, 6 + source.totalSpellpower / 50)
+        Combat.addStatus(target, "Elemental Boon", duration, magnitude)
+            
     def _torrent(self, target):
         source = self.owner
         lower = 10
@@ -421,7 +432,7 @@ class Spell(object):
         'school' : 'Primal',
         'MPCost' : 6,
         'APCost' : 7,
-        'range' : 7,
+        'range' : 8,
         'target' : 'hostile',
         'action' : _singe,
         'cooldown' : None,
@@ -630,6 +641,35 @@ class Spell(object):
         'text' : 'Deals 7-12 + 3% poison damage against the foe and lowers\n' + \
                 'poison tolerance by 8.  Lasts 4 turns + 1 per 20 spellpower.\n' + \
                 'Has a poison rating of 40 + 1%.'
+        },
+        'Hands of Healing':
+        {
+        'tier' : 2,
+        'school' : 'Natural',
+        'MPCost' : 22,
+        'APCost' : 8,
+        'range' : 1,
+        'target' : 'friendly',
+        'action' : _handsOfHealing,
+        'cooldown' : 1,
+        'image' : TIER2 + 'hands-of-healing.png',
+        'text' : 'Restore 20-40 + 2% health to yourself or an adjacent\n' + \
+                'ally.'
+        },
+        'Elemental Boon':
+        {
+        'tier' : 2,
+        'school' : 'Primal',
+        'MPCost' : 8,
+        'APCost' : 10,
+        'range' : 6,
+        'target' : 'friendly',
+        'action' : _elementalBoon,
+        'cooldown' : None,
+        'image' : TIER2 + 'elemental-boon.png',
+        'text' : 'Grant +15% Fire, Cold, and Electric Resistance to\n' + \
+                'the target.  Each resistance grows 1% per 10 spellpower.\n' + \
+                'Lasts 6 Turns (7 with 50+ spellpower).'
         },
         'Torrent':
         {
