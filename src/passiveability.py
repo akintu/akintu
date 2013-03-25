@@ -464,6 +464,12 @@ class PassiveAbility(object):
             else:
                 target.statusMeleeAccuracy -= 2
 
+    def applyRefraction(self, target, reverse=False, spell=None):
+        if spell.range > -1 and spell.range < 5:
+            duration = 1
+            magnitude = 5
+            Combat.addStatus(self.owner, "Refraction", duration, magnitude)
+                
     # Arcane Archer
     def applyManaArrows(self, target, reverse=False, other=None):
         source = self.owner
@@ -1182,6 +1188,18 @@ class PassiveAbility(object):
         'image' : BATTLEMAGE + 'military-training.png',
         'text' : 'If wielding a club weapon, +5 Might; otherwise, +2 Accuracy.\n' + \
                 'If wielding a shield, +3 magic resist; otherwise, +2 spellpower.'
+        },
+        'Refraction':
+        {
+        'class' : 'Battle Mage',
+        'level' : 5,
+        'type' : 'dynamic',
+        'action' : applyRefraction,
+        'onStringList' : ['Outgoing Spell Cast Complete'],
+        'offStringList' : [],
+        'image' : BATTLEMAGE + 'refraction.png',
+        'text' : 'After casting a spell with a max range of 4 or less,\n' + \
+                'gain +5% DR for the remainder of this turn.'
         },
 
         # Arcane Archer
