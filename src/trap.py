@@ -160,17 +160,17 @@ class Trap(e.Entity):
         minDamage = (1 + self.level) * count
         maxDamage = (4 + self.level * 3) * count
         pRating = 8 + 2 * self.level
-        shouldPoison = False
+        pHit = "Miss"
         while( count > 0 ):
-            shouldPoison = Combat.calcPoisonHit(self, target, pRating)
-            if shouldPoison:
+            pHit = Combat.calcPoisonHit(self, target, pRating)
+            if pHit == "Normal Hit":
                 break
             count -= 1
         dieRoll = Dice.roll(minDamage, maxDamage)
         element = "Piercing"
         damage = Trap.calcTrapDamage(target, dieRoll, element)
         Combat.lowerHP(target, damage)
-        if shouldPoison:
+        if pHit == "Normal Hit":
             pass
             # TODO: Apply toxin
 

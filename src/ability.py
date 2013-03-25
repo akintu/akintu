@@ -394,11 +394,11 @@ class Ability(object):
         #if contentString == "Monster":
             #return (False, "Cannot place a trap on a monster.")
         
-    def _stickyTrap(self, target):
+    def _stickyTrap(self, targetLocation):
         source = self.owner
         Combat.gameServer.pane[source.cPane].addTrap(targetLocation, trap.Trap("Sticky Trap", player=source, location=targetLocation))
 
-    def _boulderPitTrap(self, target):
+    def _boulderPitTrap(self, targetLocation):
         source = self.owner
         Combat.gameServer.pane[source.cPane].addTrap(targetLocation, trap.Trap("Boulder Pit Trap", player=source, location=targetLocation))
 
@@ -692,16 +692,11 @@ class Ability(object):
     def _deepWound(self, target):
         source = self.owner
         source.statusPoisonRatingBonus += 5
-        newListener = listener.Listener(self, self.owner, [], Ability._deepWoundDisable,
-                                       ['Outgoing Melee Attack Complete', 'Outgoing Ranged Attack Complete'])
         hit = Combat.calcHit(source, target, "Physical")
         Combat.basicAttack(source, target, hit)
         if hit != "Miss":
             duration = 5
             Combat.addStatus(target, "Deep Wound", duration)
-
-    @staticmethod
-    def _deepWoundDisable(dirtyHack, target, reverse=False, other=None):
         target.statusPoisonRatingBonus -= 5
 
     def _painfulShot(self, target):
@@ -717,11 +712,12 @@ class Ability(object):
 
     def _poisonousTouch(self, target):
         source = self.owner
-        hit = Combat.calcHit(source, target, "Physical Poison", modifier=5, rating=12 + source.level)
-        if hit != "Miss":
+        physHit = Combat.calcHit(source, target, "Physical", modifier=5, ignoreMeleeBowPenalty=True)
+        hit = Combat.calcHit(source, target, "Poison", rating=12 + source.level)
+        if hit != "Miss" and physHit != "Miss":
             duration = 4
-            damage = round(Dice.roll(5, 15) * (1 + source.totalCunning * 0.07))
-            Combat.addStatus(target, "Poisonous Toch", duration, damage)
+            damage = Dice.roll(1, 8) + source.totalCunning / 2
+            Combat.addStatus(target, "Poisonous Touch", duration, damage)
 
     def _targetThroat(self, target):
         source = self.owner
@@ -1390,7 +1386,7 @@ class Ability(object):
         source = self.owner
         rating = 6 + self.level * 3
         hit = Combat.calcPoisonHit(source, target, rating)
-        if hit:
+        if hit == "Normal Hit":
             duration = 3 + source.level / 4
             magnitude = 5 + source.level # Used for accuracy debuff
             Combat.applyStatus(target, "Toxic Spit", duration, magnitude)
@@ -2213,7 +2209,7 @@ class Ability(object):
         'breakStealth' : 100,
         'image' : DRUID_SKILLS + 'poisonous-touch.png',
         'text' : 'Melee attack that deals no direct damage but if it hits\n' + \
-                'with +5 Accuracy, the enemy will take 5-15 + 1/2 Cunning\n' + \
+                'with +5 Accuracy, the enemy will take 1-8 + 1/2 Cunning\n' + \
                 'poison damage every turn.  The poison rating is 12 + 1 per\n' + \
                 'player level.'
         },

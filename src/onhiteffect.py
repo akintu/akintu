@@ -153,13 +153,13 @@ class OnHitEffect(object):
     def applyNumbingPoison(self, magnitude, source, target):
         pRating = 13
         duration = 1
-        if Combat.calcPoisonHit(source, target, pRating):
+        if Combat.calcPoisonHit(source, target, pRating) == "Normal Hit":
             Combat.addStatus(target, "Numbing Poison", duration)
 
     def applyVilePoison(self, magnitude, source, target):
         pRating = 24
         duration = 1
-        if Combat.calcPoisonHit(source, target, pRating):
+        if Combat.calcPoisonHit(source, target, pRating) == "Normal Hit":
             Combat.addStatus(target, "Vile Poison", duration)
 
     def applyWeakeningFire(self, magnitude, source, target):
@@ -223,7 +223,7 @@ class OnHitEffect(object):
         rating = None
         if self.element == "Poison":
             rating = source.level * 3 + 7
-            if not Combat.calcPoisonHit(source, target, rating):
+            if not Combat.calcPoisonHit(source, target, rating) == "Normal Hit":
                 magnitude = 0
         return [self.element, magnitude]
 

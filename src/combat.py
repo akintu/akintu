@@ -166,19 +166,29 @@ class Combat(object):
           source -- attacker (Person)
           target -- victim (Person)
         Outputs:
-          True or False """
+          "Normal Hit" is the poison worked,
+          "Miss" if the poison was tolerated."""
         offense = None
         defense = source.totalPoisonTolerance
+        color = 'darkgreen'
         if source.team == "Players":
             offense = source.totalPoisonRatingBonus + rating
         else:
             offense = rating
-        offense *= Dice.rollFloat(0.5, 1.0)
-        defense *= Dice.rollFloat(0.5, 1.0)
-        if(offense >= defense):
-            return True
+            color = 'red'
+        offenseAdj = offense * Dice.rollFloat(0.5, 1.0)
+        defenseAdj = defense * Dice.rollFloat(0.5, 1.0)
+        if(offenseAdj >= defenseAdj):
+            result = "Normal Hit"
+            Combat.sendCombatMessage(target.name + " was poisoned (" + `offense` + " vs " + `defense` + ")",
+                                     source, color=color)   
         else:
-            return False
+            result = "Miss"
+            Combat.sendCombatMessage(target.name + " tolerated a poison attack (" + `offense` + " vs " + `defense` + ")",
+                                     source, color=color)
+        return result
+             
+        
 
     @staticmethod
     def physicalHitMechanics(source, target, modifier, critMod, ignoreMeleeBowPenalty):
@@ -295,12 +305,7 @@ class Combat(object):
                 return "Miss"
 
         if (type == "Poison"):
-            result = Combat.calcPoisonHit(source, target, rating)
-            if result == "Miss":
-                print "Tolerated"
-            else:
-                print "Poisoned"
-            return result
+            return Combat.calcPoisonHit(source, target, rating)
 
         if (type == "Trap"):
             raise NotImplementedError("This method does not yet support the Trap type.")

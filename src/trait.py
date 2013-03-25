@@ -391,19 +391,22 @@ class Trait(object):
 
     
     def applyNatureTraining(self, target):
-        #self.rank = Trait.getTraiself.rank(target, "Nature Training")
         if self.rank == 1:
             target.basePoisonTolerance += 2
             target.basePoisonResistance += 2
+            target.basePoisonRatingBonus += 1
         elif self.rank == 2:
             target.basePoisonTolerance += 1
             target.basePoisonResistance += 2
+            target.basePoisonRatingBonus += 1
         elif self.rank == 3:
             target.basePoisonTolerance += 1
             target.basePoisonResistance += 2
+            target.basePoisonRatingBonus += 1
         elif self.rank == 4:
             target.basePoisonTolerance += 2
             target.basePoisonResistance += 3
+            target.basePoisonRatingBonus += 2
 
     
     def applyExplorer(self, target):
@@ -638,19 +641,19 @@ class Trait(object):
 
     
     def applyClever(self, target):
-        #self.rank = Trait.getTraiself.rank(target, "Clever")
         if self.rank == 1:
             target.baseMagicResist += 2
+            target.baseMeleeDodge += 1
         elif self.rank == 2:
             target.baseMagicResist += 2
         elif self.rank == 3:
             target.baseMagicResist += 2
+            target.baseMeleeDodge += 1
         elif self.rank == 4:
             target.baseMagicResist += 2
 
     
     def applyLucky(self, target):
-        #self.rank = Trait.getTraiself.rank(target, "Lucky")
         if self.rank == 1:
             target.baseTrapEvade += 5
             target.baseCriticalChance += 0.5
@@ -1152,10 +1155,10 @@ class Trait(object):
             'action' : applyNatureTraining,
             'image' : RANGER + 'nature-training.png',
             'text' : 'Increases poison tolerance and poison elemental resistance.\n' + \
-                    'Rank I:   +2 Poison Tolerance, +2% Poison Elemental Resistance\n' + \
-                    'Rank II:  +3 Poison Tolerance, +4% Poison Elemental Resistance\n' + \
-                    'Rank III: +4 Poison Tolerance, +6% Poison Elemental Resistance\n' + \
-                    'Rank IV:  +6 Poison Tolerance, +9% Poison Elemental Resistance'
+                    'Rank I:   +2 Poison Tolerance, +2% Poison Elemental Resistance, +1 Poison Rating\n' + \
+                    'Rank II:  +3 Poison Tolerance, +4% Poison Elemental Resistance, +2 Poison Rating\n' + \
+                    'Rank III: +4 Poison Tolerance, +6% Poison Elemental Resistance, +3 Poison Rating\n' + \
+                    'Rank IV:  +6 Poison Tolerance, +9% Poison Elemental Resistance, +5 Poison Rating'
             },
         'Explorer':
             {
@@ -1298,10 +1301,10 @@ class Trait(object):
             'action' : applyClever,
             'image' : THIEF + 'clever.png',
             'text' : 'Grants bonus magic resist.\n' + \
-                    'Rank I:   +2 Magic Resist\n' + \
-                    'Rank II:  +4 Magic Resist\n' + \
-                    'Rank III: +6 Magic Resist\n' + \
-                    'Rank IV:  +8 Magic Resist'
+                    'Rank I:   +2 Magic Resist, +1 Melee Dodge\n' + \
+                    'Rank II:  +4 Magic Resist, +1 Melee Dodge\n' + \
+                    'Rank III: +6 Magic Resist, +2 Melee Dodge\n' + \
+                    'Rank IV:  +8 Magic Resist, +2 Melee Dodge'
             },
         'Lucky':
             {
