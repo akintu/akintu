@@ -1151,6 +1151,24 @@ class Ability(object):
             return (True, "")
         return (False, "Must be using a bow or crossbow to use: " + self.name)
 
+    def _warpShot(self, target):
+        source = self.owner
+        hit = Combat.calcHit(source, target, "Physical", modifier=-2)
+        Combat.basicAttack(source, target, hit)
+        if hit != "Miss" and target.size != "Huge":
+            direction = source.cLocation.direction_to(target.cLocation)
+            landingZone = target.cLocation.move(direction, 1)
+            if Combat.gameServer.tile_is_open(landingZone, cPane=source.cPane):
+                Combat.instantMove(target, landingZone)
+            duration = 2
+            Combat.addStatus(target, "Warp Shot", duration)
+        
+    def _warpShotCheck(self, target):
+        source = self.owner
+        if source.usingWeapon("Ranged"):
+            return (True, "")
+        return (False, "Must be using a ranged weapon to use " + self.name)
+        
     # Trickster
 
     def _sidestep(self, target):
@@ -2706,7 +2724,25 @@ class Ability(object):
         'text' : '+8 Electric damage to all bow and crossbow attacks.\n' + \
             'Lasts until replaced by another threading.'
         },
-
+        'Warp Shot':
+        {
+        'level' : 5,
+        'class' : 'Arcane Archer',
+        'HPCost' : 0,
+        'APCost' : 1,
+        'range' : -1,
+        'target' : 'hostile',
+        'action' : _warpShot,
+        'cooldown' : 2,
+        'checkFunction' : _warpShotCheck,
+        'breakStealth' : 100,
+        'image' : ARCANE_ARCHER_SKILLS + 'warp-shot.png',
+        'text' : 'Ranged attack at -2 Accuracy that knocks back the target\n' + \
+                'one tile and slows its movement speed by 3 tiles\\move\n' + \
+                'Huge creatures are immune to both effects.'
+        },
+        
+        
         # Trickster
         'Sidestep':
         {
