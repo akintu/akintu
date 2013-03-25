@@ -1072,7 +1072,7 @@
   [INTERNAL: Ranged_accuracy_penalty]
     [MAGNITUDE: 3]
   [INTERNAL: Applied_poison_rating_bonus]
-    [MAGNITUDE: 10]
+    [MAGNITUDE: 5]
   [INTERNAL: Target_throat_internal]
     [MAGNITUDE: 0]
   [CATEGORY: Buff] 

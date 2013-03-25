@@ -697,7 +697,7 @@ class Ability(object):
         if hit != "Miss":
             duration = 5
             Combat.addStatus(target, "Deep Wound", duration)
-        target.statusPoisonRatingBonus -= 5
+        source.statusPoisonRatingBonus -= 5
 
     def _painfulShot(self, target):
         source = self.owner
