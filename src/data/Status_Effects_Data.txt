@@ -323,8 +323,8 @@
 [NAME: Reduced_missile_range]
   [TYPE: Internal]
   [RECURRING: False]
-  
-[NAME: Refund_mana_on_cast]
+
+[NAME: Refund_mana_on_resist]
   [TYPE: Internal]
   [RECURRING: False]
   
@@ -947,14 +947,12 @@
     [MAGNITUDE: 2]
   [CATEGORY: Buff]
   
-#[NAME: Rebound]
-#  [TYPE: Display]
-#  [IMAGE: skills/spellsword_skills/rebound.png]
-#  [ELEMENT: Arcane]
-#  [INTERNAL: Refund_mana_on_cast]
-#	[TRIGGERED_BY: Spell Cast Resisted] # Hardcoded, do not change.
-#	  [CONDITIONAL: Spel Mana Cost > 4] # Hardcoded, do not change.
-#	[MAGNITUDE: 5] # 5 MP recovered
+[NAME: Rebound]
+  [TYPE: Display]
+  [IMAGE: skills/spellsword_skills/rebound.png]
+  [ELEMENT: Arcane]
+  [INTERNAL: Refund_mana_on_resist]
+	[MAGNITUDE: 5]
 
 # Display Effects -- Anarchist
 

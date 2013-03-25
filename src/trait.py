@@ -87,7 +87,6 @@ class Trait(object):
                 target.statusDodge -= 6
             elif self.rank == 4:
                 target.statusDodge -= 11
-
     
     def applyPreparation(self, target, reverse=False, other=None):
         if target.attacksPerformed[0] > 0:

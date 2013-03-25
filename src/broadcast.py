@@ -55,6 +55,13 @@ class SpellBroadcast(Broadcast):
 
         self.spell = argDict['spell']
 
+class SpellResistBroadcast(Broadcast):
+    def __init__(self, argDict):
+        Broadcast.__init__(self)
+        
+        self.message = "Outgoing Spell Resisted"
+        self.spell = argDict['spell']
+        
 class DamageBroadcast(Broadcast):
     def __init__(self, argDict):
         Broadcast.__init__(self)

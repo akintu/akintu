@@ -560,7 +560,7 @@ class Ability(object):
         source = self.owner
         duration = -1
         Combat.addStatus(target, "Martial Mode", duration)
-        newListener = listener.Listener(self, self.owner, [], self._martialModeDisable, ['Player MP level changed'])
+        newListener = listener.Listener(self, self.owner, [], Ability._martialModeDisable, ['Player MP level changed'])
         source.listeners.append(newListener)
 
     def _martialModeCheck(self, target):
@@ -605,6 +605,26 @@ class Ability(object):
         if source.hasWeaponEnchant():
             return (True, "")
         return (False, "Must have a Spellsword enchantment active to use " + self.name)
+            
+    def _rebound(self, target):
+        source = self.owner
+        duration = 3
+        Combat.addStatus(source, "Rebound", 3) # For display only.
+        newListener = listener.Listener(self, self.owner, ['Outgoing Spell Resisted'], Ability._reboundEffect, [])
+        source.listeners.append(newListener)
+        
+    @staticmethod
+    def _reboundEffect(dirtyHack, target, reverse=False, spell=None):
+        if target.hasStatus("Rebound"):
+            if spell.MPCost >= 5:
+                Combat.modifyResource(target, "MP", 5)
+        else:
+            toRemove = None
+            for x in target.listeners:
+                if x.action == Ability._reboundEffect:
+                    toRemove = x
+            if toRemove:
+                target.listeners.remove(toRemove)
             
     # Marksman
     def _cuspOfEscape(self, target):
@@ -672,7 +692,7 @@ class Ability(object):
     def _deepWound(self, target):
         source = self.owner
         source.statusPoisonRatingBonus += 5
-        newListener = listener.Listener(self, self.owner, [], self._deepWoundDisable,
+        newListener = listener.Listener(self, self.owner, [], Ability._deepWoundDisable,
                                        ['Outgoing Melee Attack Complete', 'Outgoing Ranged Attack Complete'])
         hit = Combat.calcHit(source, target, "Physical")
         Combat.basicAttack(source, target, hit)
@@ -2071,6 +2091,23 @@ class Ability(object):
                 'elemental damage according to the most recent enchantment\'s element on\n' + \
                 'your weapon.  If that enchantment has no element, the element will be\n' + \
                 'arcane.  Requires an enchantment on your weapon.'
+        },
+        'Rebound':
+        {
+        'level' : 5,
+        'class' : 'Spellsword',
+        'HPCost' : 0,
+        'APCost' : 4,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _rebound,
+        'cooldown' : 1,
+        'checkFunction' : None,
+        'breakStealth' : 0,
+        'image' : SPELLSWORD_SKILLS + 'rebound.png',
+        'text' : 'Enter a state of focus such that if one of your spells that\n' + \
+                'costs 5 MP or more is completely resisted by an enemy, you\n' + \
+                'will regain 5 MP.  Lasts 3 Turns.'
         },
 
         #Marksman

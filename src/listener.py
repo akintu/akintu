@@ -34,6 +34,9 @@ class Listener(object):
                 elif isinstance(bCast, broadcast.TurnBroadcast):
                     self.action(self.callObject, self.host, reverse=False)
                     return
+                elif isinstance(bCast, broadcast.SpellResistBroadcast):
+                    self.action(self.callObject, self.host, reverse=False, spell=bCast.spell)
+                    return
         for string in self.offStringList:
             if string == bCast.message.strip():
                 if isinstance(bCast, broadcast.SpellBroadcast):
@@ -57,4 +60,6 @@ class Listener(object):
                 elif isinstance(bCast, broadcast.TurnBroadcast):
                     self.action(self.callObject, self.host, reverse=True)
                     return
-
+                elif isinstance(bCast, broadcast.SpellResistBroadcast):
+                    self.action(self.callObject, self.host, reverse=True, spell=bCast.spell)
+                    return

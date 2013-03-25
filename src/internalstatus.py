@@ -267,9 +267,6 @@ class InternalStatus(object):
     def Reduced_missile_range_method(self, target, magnitude):
         target.missleRange -= magnitude
 
-    def Refund_mana_on_cast_method(self, target, magnitude):
-        pass
-
     def Send_empathy_damage_to_summon_method(self, target, magnitude):
         target.empathyToSummon = magnitude
 
@@ -301,7 +298,7 @@ class InternalStatus(object):
         target.spellFailureChance += magnitude
         
     def Target_throat_method(self, target, magnitude):
-        target.onHitEffects.appedn(onhiteffect.OnHitEffect(magnitude, onhiteffect.OnHitEffect.applyTargetThroat))
+        target.onHitEffects.append(onhiteffect.OnHitEffect(magnitude, onhiteffect.OnHitEffect.applyTargetThroat))
 
     def Tiger_style_method(self, target, magnitude):
         pass
@@ -524,9 +521,6 @@ class InternalStatus(object):
     def Reduced_missile_range_method_reverse(self, target, magnitude):
         target.missleRange += magnitude
 
-    def Refund_mana_on_cast_method_reverse(self, target, magnitude):
-        pass
-
     def Send_empathy_damage_to_summon_method_reverse(self, target, magnitude):
         target.empathyToSummon = 0
 
@@ -642,7 +636,7 @@ class InternalStatus(object):
         'Recover_HP_percent' : Recover_HP_percent_method,
         'Reduced_stealth_AP_cost' : Reduced_stealth_AP_cost_method,
         'Reduced_missile_range' : Reduced_missile_range_method,
-        'Refund_mana_on_cast' : None,
+        'Refund_mana_on_resist' : None,
         'Send_empathy_damage_to_summon' : Send_empathy_damage_to_summon_method,
         'Set_maximum_stealth_break_chance' : Set_maximum_stealth_break_chance_method,
         'Set_movement_AP_cost' : Set_movement_AP_cost_method,
@@ -735,7 +729,7 @@ class InternalStatus(object):
         'Redirect_melee_attacks' : None,
         'Reduced_stealth_AP_cost' : Reduced_stealth_AP_cost_method_reverse,
         'Reduced_missile_range' : Reduced_missile_range_method_reverse,
-        'Refund_mana_on_cast' : None,
+        'Refund_mana_on_resist' : None,
         'Send_empathy_damage_to_summon' : Send_empathy_damage_to_summon_method_reverse,
         'Set_maximum_stealth_break_chance' : Set_maximum_stealth_break_chance_method_reverse,
         'Set_movement_AP_cost' : Set_movement_AP_cost_method_reverse,

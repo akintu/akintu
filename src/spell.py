@@ -87,9 +87,9 @@ class Spell(object):
 
 
     def use(self, target):
-        ''' Casts the given spell on or around the given target Person (Location?)
+        ''' Casts the given spell on or around the given target Person (or location)
         Performs a check if this is possible, but this is not where the canUse
-        check should be made.  If caught here, it will raise an exception!'''
+        check should be made.  If caught here, will print a message to the console.'''
         if self.canUse(target)[0]:
             Combat.modifyResource(self.owner, "MP", -self.MPCost)
             Combat.modifyResource(self.owner, "AP", -self.APCost)
@@ -97,13 +97,16 @@ class Spell(object):
                 Combat.applyCooldown(self.owner, self.name, self.cooldown)
             spellSuccess = Dice.rollSuccess(100 - self.owner.spellFailureChance)
             if spellSuccess:
+                hitType = None
                 self._shoutSpellCast(self.owner, target)
                 if self.targetType == "hostile" and target.team == "Players":
                     self.applySchoolResistance(target)
-                    self.action(self, target)
+                    hitType = self.action(self, target)
                     self.unapplySchoolResistance(target)
                 else:
                     self.action(self, target)
+                if hitType == "Miss" or hitType == "Fully Resisted":
+                    self._shoutSpellResisted()
                 self._shoutSpellCastComplete(self.owner, target)
                 if self.targetType != "friendly" and self.targetType != "self":
                     Combat.removeStealth(self.owner)
@@ -114,8 +117,8 @@ class Spell(object):
                 return
                 
         else:
+            print "Caught an unusable spell late!"
             return
-            # TODO! Make this raise an exception rather than silently return.
 
     def applySchoolResistance(self, target):
         if self.school == "Enchantment":
@@ -161,7 +164,7 @@ class Spell(object):
                                    partial=0.33, scalesWith="Spellpower", scaleFactor=0.02)
         #TODO: This hits a 3x3 area.  Include all targets!
         Combat.lowerHP(target, damage)
-
+        return hitType
 
     # Player & Monster Spells
 
@@ -171,30 +174,35 @@ class Spell(object):
         damage = (Combat.calcDamage(source, target, minimum=2, maximum=4, element="Arcane",
                                     hitValue=hitType, critical=1.25, scalesWith="Spellpower", scaleFactor=0.03))
         Combat.lowerHP(target, damage)
-
+        return hitType
+        
     def _arcaneWard(self, target):
         source = self.owner
         duration = Dice.scale(source.totalSpellpower, 3, 0.1, cap=6)
         magnitude = Dice.scale(source.totalSpellpower, 5, 0.01)
         Combat.addStatus(target, self.name, duration, magnitude)
-
+        return "Normal Hit"
+        
     def _mysticShield(self, target):
         source = self.owner
         duration = 5
         magnitude = Dice.scale(source.totalSpellpower, 7, 0.06)
         Combat.addStatus(target, self.name, duration, magnitude)
-
+        return "Normal Hit"
+        
     def _flickerOfLife(self, target):
         source = self.owner
         magnitude = Dice.scale(source.totalSpellpower, Dice.roll(10,20), 0.02)
         Combat.healTarget(source, target, magnitude)
-
+        return "Normal Hit"
+        
     def _stoneGuard(self, target):
         source = self.owner
         duration = Dice.scale(source.totalSpellpower, 4, 0.05, cap=6)
         magnitude = Dice.scale(source.totalSpellpower, 12, 0.008)
         Combat.addStatus(target, self.name, duration, magnitude)
-
+        return "Normal Hit"
+        
     def _singe(self, target):
         source = self.owner
         hitType = Combat.calcHit(source, target, "Magical")
@@ -202,7 +210,8 @@ class Spell(object):
                                     hitValue=hitType, critical=1.2, partial=0.5,
                                     scalesWith="Spellpower", scaleFactor=0.05))
         Combat.lowerHP(target, damage)
-
+        return hitType
+        
     def _chill(self, target):
         source = self.owner
         hitType = Combat.calcHit(source, target, "Magical")
@@ -214,20 +223,22 @@ class Spell(object):
         magnitude = Dice.scale(source.totalSpellpower, 5, 0.012)
         Combat.addStatus(target, self.name, duration, magnitude, hitValue=hitType, chance=chance)
         Combat.lowerHP(target, damage)
-
+        return hitType
+        
     def _shock(self, target):
         source = self.owner
         hitType = Combat.calcHit(source, target, "Magical")
         damage = Combat.calcDamage(source, target, minimum=15, maximum=22, element="Electric", hitValue=hitType,
                                    scalesWith="Spellpower", scaleFactor=0.014, partial=0.5)
         Combat.lowerHP(target, damage)
-
+        return hitType
+        
     def _suggestLaziness(self, target):
         source = self.owner
         hitType = Combat.calcHit(source, target, "Magical")
-        pass
         # TODO: this status requires AI -- we don't have that yet.
-
+        return hitType
+        
     def _stutter(self, target):
         source = self.owner
         hitType = Combat.calcHit(source, target, "Magical")
@@ -235,7 +246,8 @@ class Spell(object):
         magnitude = Dice.scale(source.totalSpellpower, 5, 0.02)
         if hitType != "Miss" and hitType != "Fully Resisted":
             Combat.addStatus(target, self.name, duration, magnitude)
-
+        return hitType
+            
     def _cloudVision(self, target):
         source = self.owner
         hitType = Combat.calcHit(source, target, "Magical")
@@ -245,7 +257,8 @@ class Spell(object):
             magnitude /= 2
         if hitType != "Miss" and hitType != "Fully Resisted":
             Combat.addStatus(target, self.name, duration, magnitude)
-
+        return hitType
+            
     def _haunt(self, target):
         source = self.owner
         hitType = Combat.calcHit(source, target, "Magical")
@@ -256,7 +269,8 @@ class Spell(object):
             duration = Dice.scale(source.totalSpellpower, 3, 0.02, cap=4)
             magnitude = round(Dice.roll(2,8) * (1 + source.totalSpellpower * 0.005))
             Combat.addStatus(target, self.name, duration, magnitude, hitValue=hitType)
-
+        return hitType
+            
     def _zoneOfSilence(self, target):
         pass
         # TODO!!
@@ -266,7 +280,8 @@ class Spell(object):
         duration = 1
         magnitude = Dice.scale(source.totalSpellpower, 5, 0.02)
         Combat.addStatus(target, self.name, duration, magnitude)
-
+        return "Normal Hit"
+        
     def _weaponEnhance(self, target):
         source = self.owner
         duration = Dice.scale(source.totalSpellpower, 3, 0.03, cap=7)
@@ -276,24 +291,30 @@ class Spell(object):
         Combat.addStatus(target, "Weapon Enhance Striking", duration, magnitudeA)
         Combat.addStatus(target, "Weapon Enhance Punishing", duration, magnitudeB)
         Combat.addStatus(target, "Weapon Enhance Precision", duration, magnitudeC)
-
+        return "Normal Hit"
+        
     def _flamingWeapon(self, target):
         source = self.owner
         duration = Dice.scale(source.totalSpellpower, 3, 0.03, cap=7)
         magnitude = round(Dice.roll(1,8) * (1 + source.totalSpellpower * 0.01))
         Combat.addStatus(target, self.name, duration, magnitude)
-
+        return "Normal Hit"
+        
     def _hoveringShield(self, target):
         source = self.owner
         duration = 5
         magnitude = 12 + source.totalSpellpower / 10
         Combat.addStatus(target, self.name, duration, magnitude)
-
+        return "Normal Hit"
+        
     def _fright(self, target):
         source = self.owner
         duration = 4
-        Combat.addStatus(target, self.name, duration)
-
+        hitType = Combat.calcHit(source, target, "Magical")
+        if hitType != "Miss":
+            Combat.addStatus(target, self.name, duration)
+        return hitType
+        
     def _infection(self, target):
         source = self.owner
         minDam = int(7 * (1 + source.totalSpellpower * 0.03) *
@@ -303,37 +324,43 @@ class Spell(object):
         dieRoll = Dice.roll(minDam, maxDam)
         rating = round(35 + 0.4 * source.totalSpellpower)
         duration = 4 + source.totalSpellpower / 20
-        if Combat.calcPoisonHit(source, target, rating):
+        hitType = Combat.calcHit(source, target, "Poison Magical", rating=rating)
+        if hitType != "Miss" and hitType != "Fully Resisted":
             Combat.addStatus(target, "Infection", duration, dieRoll)
-
+        return hitType
+            
     def _handsOfHealing(self, target):
         source = self.owner
         value = int(Dice.roll(20, 40) * (1 + 0.02 * source.totalSpellpower))
         Combat.healTarget(source, target, value)
+        return "Normal Hit"
             
     def _elementalBoon(self, target):
         source = self.owner
         magnitude = 15 + source.totalSpellpower / 10
         duration = max(7, 6 + source.totalSpellpower / 50)
         Combat.addStatus(target, "Elemental Boon", duration, magnitude)
+        return "Normal Hit"
             
     def _torrent(self, target):
         source = self.owner
         lower = 10
         upper = 35
         knockbackDistance = 5 # TODO -- Knockback
-        hit = Combat.calcHit(source, target, "Magical") # TODO: Allow to miss
-        dam = Combat.calcDamage(source, target, lower, upper, "Cold", hitValue="Normal Hit", scalesWith="Spellpower", scaleFactor=0.014)
+        hitType = Combat.calcHit(source, target, "Magical")
+        dam = Combat.calcDamage(source, target, lower, upper, "Cold", hitValue=hitType, scalesWith="Spellpower", scaleFactor=0.014)
         # Get line AOE and hit the first target. TODO
+        return hitType
         
     def _lightningBolt(self, target):
         source = self.owner
         lower = 5
         upper = 33
-        hit = Combat.calcHit(source, target, "Magical") # TODO: Allow to miss
-        dam = Combat.calcDamage(source, target, lower, upper, "Electric", hitValue="Normal Hit", critical=1.3, partial=0.5,
+        hitType = Combat.calcHit(source, target, "Magical")
+        dam = Combat.calcDamage(source, target, lower, upper, "Electric", hitValue=hitType, critical=1.3, partial=0.5,
                                 scalesWith="Spellpower", scaleFactor=0.005)
         # Get line AOE and hit all targets with damage
+        return hitType
             
     monsterSpells = {
         'Shadow Field':
@@ -751,3 +778,8 @@ class Spell(object):
             hearer = source
             bc.shout(hearer)
 
+    def _shoutSpellResisted(self):
+        if not self.owner.team == "Players":
+            return
+        bc = broadcast.SpellResistBroadcast({spell : self})
+        bc.shout(self.owner)

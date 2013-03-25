@@ -1022,7 +1022,7 @@ class Combat(object):
         if hitType == "Normal Hit":
             hitTypeString = "Hit"
         if hitType == "Miss":
-            hitTypeString = ""
+            hitTypeString = "Miss"
         if source.team == "Monsters":
             direction = "Incoming"
             otherParty = source
