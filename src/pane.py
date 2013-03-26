@@ -385,11 +385,22 @@ class Pane(object):
         if loc in self.tiles:
             return self.tiles[loc].get_trigger_entities()
             
-    def getTileContents(self, location):
+    def getTileContents(self, location, monsters=None):
         '''
         Method used to determine if a trap can be placed here
+        Member Variables:
+            location:   a Location object to check
+            monsters:   a dictionary of Monster objects to check against
         '''
+        
         loc = location.tile
+        
+        if monsters:
+            for id in self.persons:
+                if id in monsters:
+                    if loc == monsters[id].location.tile:
+                        return "Monster"
+        
         if not loc in self.tiles:
             self.tiles[loc] = Tile(None, True)
             return "Nothing"
@@ -404,6 +415,7 @@ class Pane(object):
             elif trap.team == "Monsters":
                 return "Trap-Hostile"
         return "Nothing"
+                
                 
 class Town(Pane):
     def __init__(self, seed, location, is_server=False, load_entities=False, pane_state=None):
