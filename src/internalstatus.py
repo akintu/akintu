@@ -163,6 +163,9 @@ class InternalStatus(object):
 
     def Increased_movement_AP_cost_method(self, target, magnitude):
         target.statusMovementAPCost += magnitude
+        
+    def Knockback_resistance_bonus_method(self, target, magnitude):
+        target.knockbackResistance += magnitude
 
     def Magic_resist_bonus_method(self, target, magnitude):
         target.statusMagicResist += magnitude
@@ -414,6 +417,9 @@ class InternalStatus(object):
 
     def Increased_movement_AP_cost_method_reverse(self, target, magnitude):
         target.statusMovementAPCost -= magnitude
+        
+    def Knockback_resistance_bonus_method_reverse(self, target, magnitude):
+        target.knockbackResistance -= magnitude
 
     def Magic_resist_bonus_method_reverse(self, target, magnitude):
         target.statusMagicResist -= magnitude
@@ -603,6 +609,7 @@ class InternalStatus(object):
         'Hidden_double_cunning' : None,
         'HP_buffer' : HP_buffer_method,
         'Increased_movement_AP_cost' : Increased_movement_AP_cost_method,
+        'Knockback_resistance_bonus' : Knockback_resistance_bonus_method,
         'Magic_resist_bonus' : Magic_resist_bonus_method,
         'Magic_resist_penalty' : Magic_resist_penalty_method,
         'Melee_accuracy_bonus' : Melee_accuracy_bonus_method,
@@ -695,6 +702,7 @@ class InternalStatus(object):
         'Hidden_double_cunning' : None,
         'HP_buffer' : HP_buffer_method_reverse,
         'Increased_movement_AP_cost' : Increased_movement_AP_cost_method_reverse,
+        'Knockback_resistance_bonus' : Knockback_resistance_bonus_method_reverse,
         'Magic_resist_bonus' : Magic_resist_bonus_method_reverse,
         'Magic_resist_penalty' : Magic_resist_penalty_method_reverse,
         'Melee_accuracy_bonus' : Melee_accuracy_bonus_method_reverse,

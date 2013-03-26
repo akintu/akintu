@@ -458,10 +458,10 @@ class Trait(object):
             target.bonusTrapDamage += 5
         
     def applyMastermind(self, target, reverse=False, trap=None):
-        pass
-        # TODO: We need to be able to track the total number of player
-        # traps on the combat arena in order to implement this trait.
-
+        if target.record._trapsOwned < 4:
+            return
+        # Multipliers for the magnitude * rank equation are included in the data file.
+        Combat.addStatus(target, "Mastermind", duration=1, magnitude=self.rank)
     
     def applyFollowupExpert(self, target, reverse=False, other=None):
         duration = 2
@@ -487,7 +487,6 @@ class Trait(object):
     def applyTrapSadism(self, target, reverse=False, trap=None):
         duration = 2
         magnitude = None
-        #self.rank = Trait.getTraiself.rank(target, "Trap Sadism")
         if self.rank == 1:
             magnitude = 15
         elif self.rank == 2:
@@ -501,7 +500,6 @@ class Trait(object):
     # Thief
     
     def applyUncannyEvasion(self, target):
-        #self.rank = Trait.getTraiself.rank(target, "Uncanny Evasion")
         if self.rank == 1:
             target.statusRangedDodge += 3
         elif self.rank == 2:
@@ -1201,10 +1199,10 @@ class Trait(object):
             'class' : 'Ranger',
             'type' : 'dynamic',
             'action' : applyMastermind,
-            'onStringList' : ['Monster Triggered Trap Complete'],
-            'offStringList' : ['Player Trap Removed'],
+            'onStringList' : ['Player Turn Start'],
+            'offStringList' : [],
             'image' : RANGER + 'mastermind.png',
-            'text' : 'You gain confidence while you have at least four traps on the map and gain magic resist, knockback resistance, and bonus critical hit chance.\n' + \
+            'text' : 'You gain confidence when starting a turn where you have at least four traps on the map and gain magic resist, knockback resistance, and bonus critical hit chance.\n' + \
                     'Rank I:   +2 Magic Resist, 10% Knockback Resist, +1% Critical Hit Chance\n' + \
                     'Rank II:  +4 Magic Resist, 20% Knockback Resist, +2% Critical Hit Chance\n' + \
                     'Rank III: +6 Magic Resist, 30% Knockback Resist, +3% Critical Hit Chance\n' + \

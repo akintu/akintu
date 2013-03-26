@@ -2,6 +2,7 @@
 
 import sys
 import internalstatus
+import math
 
 class Status(object):
 
@@ -35,6 +36,8 @@ class Status(object):
         """If no magnitude is provided, use the value given from the data
         file."""
         for item in self.internalList:
+            if item.magnitude < 0:
+                item.magnitude = magnitude * math.abs(item.magnitude)
             if item.magnitude == 0:
                 item.magnitude = magnitude
 
