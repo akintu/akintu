@@ -13,6 +13,7 @@ import inventory
 import trait
 import math
 import consumable
+import playercombatrecord
 
 class PlayerCharacter(p.Person):
 
@@ -250,11 +251,7 @@ class PlayerCharacter(p.Person):
         else:
             self.inventory = inventory.Inventory()
         
-        self.movesPerformed = [0,0]
-        self.attacksPerformed = [0,0]
-        # TODO: Need to update attacksPerformed each turn.  The previous turn's number of attacks is in position 0, this turn's
-        # in position 1.  Need to also shift those at the end of each turn...
-        
+        self.record = playercombatrecord.PlayerCombatRecord()
         self.remainingMovementTiles = 0
         
         #### Used for dual wielding mechanics ####

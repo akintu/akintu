@@ -705,7 +705,7 @@ class Combat(object):
             # Enemy still counters
             Combat._shoutAttackComplete(source, target, noCounter)
             return
-        # TODO: Barehands...
+        # Barehands not allowed
         if hand == "Right":
             weapon = source.equippedItems.equippedWeapon
         else:
@@ -753,6 +753,10 @@ class Combat(object):
         Combat.sendCombatMessage("Dealt " + str(totalDamage) + " total Damage.", source, color="yellow")
 
         Combat.lowerHP(target, totalDamage)
+        if weapon.range > 1:
+            source.record.recordRangedAttack()
+        else:
+            source.record.recordMeleeAttack()
         Combat._shoutAttackComplete(source, target, noCounter)
 
     @staticmethod

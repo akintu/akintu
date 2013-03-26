@@ -380,7 +380,8 @@ class Ability(object):
     def _shrapnelTrap(self, targetLocation):
         source = self.owner
         Combat.gameServer.pane[source.cPane].addTrap(targetLocation, trap.Trap("Shrapnel Trap", player=source, location=targetLocation))
-
+        source.record.recordTrapPlacement()
+        
     def _shrapnelTrapCheck(self, targetLocation):
         source = self.owner
         contentString = Combat.gameServer.pane[source.cPane].getTileContents(targetLocation)
@@ -397,11 +398,13 @@ class Ability(object):
     def _stickyTrap(self, targetLocation):
         source = self.owner
         Combat.gameServer.pane[source.cPane].addTrap(targetLocation, trap.Trap("Sticky Trap", player=source, location=targetLocation))
-
+        source.record.recordTrapPlacement()
+        
     def _boulderPitTrap(self, targetLocation):
         source = self.owner
         Combat.gameServer.pane[source.cPane].addTrap(targetLocation, trap.Trap("Boulder Pit Trap", player=source, location=targetLocation))
-
+        source.record.recordTrapPlacement()
+        
     def _magicGuard(self, target):
         source = self.owner
         duration = 1
@@ -728,6 +731,7 @@ class Ability(object):
         pass
         # Remove Trap
         # Add trap.Trap("Poison Thorn Trap", self.owner, target.location)
+        # source.record.recordTrapPlacement()
 
     # Tactician
 
@@ -735,21 +739,25 @@ class Ability(object):
         pass
         # Remove Trap
         # Add trap.Trap("Accuracy Favor", self.owner, target.location)
+        # source.record.recordTrapPlacement()
 
     def _manaFavor(self, target):
         pass
         # Remove Trap
         # Add trap.Trap("Mana Favor", self.owner, target.location)
+        # source.record.recordTrapPlacement()
 
     def _magicalDampeningTrap(self, target):
         pass
         # Remove Trap
         # Add trap.Trap("Magical Dampening Trap", self.owner, target.location)
+        # source.record.recordTrapPlacement()
 
     def _nearsightedTrap(self, target):
         pass
         # Remove Trap
         # Add trap.Trap("Nearsighted Trap", self.owner, target.location)
+        # source.record.recordTrapPlacement()
 
     # Assassin
 

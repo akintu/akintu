@@ -229,11 +229,17 @@ class Trap(e.Entity):
                 Combat.sendCombatMessage(target.name + " sprung a " + self.name + "! (" + 
                                         `self.trapRating` + " vs. " + `target.totalTrapEvade` + ")", 
                                         target, color='lightblue')
+                if self.team == "Players":
+                    self.owner.record.recordTrapSuccess()
             else:
                 Combat.sendCombatMessage(target.name + " evaded a " + self.name + ". (" + 
                                         `self.trapRating` + " vs. " + `target.totalTrapEvade` + ")",
                                         target, color='lightblue')
+                if self.team == "Players":
+                    self.owner.record.recordTrapFailure()
             self.charges -= 1
+            if self.charges == 0 and self.team == "Players":
+                self.owner.record.recordTrapRemoval()
 
     def shouldTrigger(self, target):
         '''Determines if this trap should attempt to
