@@ -2,7 +2,6 @@
 
 import sys
 import internalstatus
-import math
 
 class Status(object):
 
@@ -37,7 +36,7 @@ class Status(object):
         file."""
         for item in self.internalList:
             if item.magnitude < 0:
-                item.magnitude = magnitude * math.abs(item.magnitude)
+                item.magnitude = magnitude * abs(item.magnitude)
             if item.magnitude == 0:
                 item.magnitude = magnitude
 

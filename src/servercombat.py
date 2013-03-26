@@ -24,7 +24,7 @@ class CombatServer():
             if self.server.tile_is_open(command.location, command.id) and \
                  activePlayer.AP >= activePlayer.totalMovementAPCost or\
                  activePlayer.remainingMovementTiles > 0:
-                 activePlayer.record.recordMovement()
+                activePlayer.record.recordMovement()
                 if activePlayer.remainingMovementTiles == 0:
                     Combat.modifyResource(activePlayer, "AP", -activePlayer.totalMovementAPCost)
                     Combat.resetMovementTiles(activePlayer)
