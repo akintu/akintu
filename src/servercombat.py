@@ -230,6 +230,9 @@ class CombatServer():
         '''Applies all upkeep operations for this Person.  (Used during the combat
         phase: "Upkeep"'''
 
+        # This will break on summoned monsters (allied monsters)
+        if target.team == "Players":
+            target.record.nextTurn()
         if target.HPRegen > 0:
             Combat.healTarget(target, target, target.HPRegen)
         if target.MPRegen > 0:
