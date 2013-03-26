@@ -133,6 +133,7 @@ class TheoryCraft(object):
         
         newChar = TheoryCraft.getNewPlayerCharacter(race, cls, name=name, new=False, hardcore=hardcore, ironman=ironman)
 
+        newChar.inventory.gold = gold
         newChar._experience = experience
         for i in range(level - 1):
             newChar.level += 1

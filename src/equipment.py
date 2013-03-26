@@ -5,6 +5,7 @@ import dice
 import entity as e
 import magicalproperty
 import copy
+import math
 
 class Equipment(e.Entity):
 
@@ -166,6 +167,19 @@ class Equipment(e.Entity):
         else:
             self.displayName = self.name
             
+class GambleItem(object):
+    def __init__(self, ip, underlyingType):
+        if underlyingType not in ["Armor", "Weapon"]:
+            self.underlyingType = "Armor"
+        self.underlyingType = underlyingType
+        self.type = underlyingType
+        self.ip = ip
+        self.name = "Unidentified " + underlyingType
+        self.value = int(110 * math.pow(1.12, ip))
+        self.weight = 0
+        self.displayName = self.name
+        self.details = "Gambling Item! Buy to find out what it is!"
+    
             
 class Armor(Equipment):
     def __init__(self, argDict):

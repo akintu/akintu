@@ -10,7 +10,7 @@ import equippeditems
 class Inventory(object):
     MAX_SLOTS = 20
 
-    def __init__(self, presetItems=None, presetGoldAmount=0, ccName=None):
+    def __init__(self, presetItems=None, presetGoldAmount=None, ccName=None):
         self._allItems = []
         if presetItems:
             self._allItems = presetItems
@@ -25,7 +25,7 @@ class Inventory(object):
             self.addItem(consumable.Consumable("Basic Healing Potion"))
         for i in range(2):
             self.addItem(consumable.Consumable("Antidote"))
-        self.gold = 75
+        self.gold = 5075
         if ccName == "Barbarian":
             self.addItem(theorycraft.TheoryCraft.getWeaponByName("Great Axe"))
         elif ccName == "Dragoon":
@@ -128,7 +128,6 @@ class Inventory(object):
                 return toReturn
             else:
                 return None
-        # Check for weight here?
         # Caller needs to provide a location for this object if it was dropped.
 
     @property

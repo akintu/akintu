@@ -1078,7 +1078,7 @@ class PlayerCharacter(p.Person):
 
     @property
     def totalShopBonus(self):
-        return int(min(40, max(0, (self.totalCunning - 10) * 0.5 + self.equipmentShopBonus)))
+        return int(min(35, max(0, max((self.totalCunning - 10) * 0.5 + self.equipmentShopBonus, self.equipmentShopBonus))))
 
     @property
     def equipmentShopBonus(self):

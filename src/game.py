@@ -21,6 +21,7 @@ from theorycraft import TheoryCraft
 from world import *
 from region import Region
 import trap
+import shop
 
 import levelup as lvl
 
@@ -68,10 +69,14 @@ class Game(object):
         self.viewingInventory = False
         self.selectingConsumable = False
         self.placingTrap = False
+        self.inShop = False
 
         # Levelup state
         self.levelup = None
 
+        # Shop state
+        self.currentShop = None
+        
         # Selection state
         self.selectionMode = "targeting"
         self.currentTargetId = None
@@ -419,7 +424,7 @@ class Game(object):
                 elif event.key in MODIFIER_KEYS:
                     self.keystate.append(event.key)
                 elif event.key in MOVE_KEYS and not self.performingLevelup and not self.viewingInventory and not \
-                    self.selectingConsumable and not \
+                    self.selectingConsumable and not self.inShop and not \
                      (self.combat and (self.selectionMode == "abilities" or self.selectionMode == "spells" or self.placingTrap)):
                     self.move_person(MOVE_KEYS[event.key], 1)
                 elif event.key == K_EQUALS or event.key == K_PAGEUP:
@@ -450,6 +455,25 @@ class Game(object):
                                                             'AP' : self.pane.person[self.id].AP})
 
 
+                elif self.inShop:
+                    hero = self.currentShop.input(event.key)
+                    if hero:
+                        # Hero is None until the shop phase is finished.  Then it is a dehydrated hero.
+                        newHero = TheoryCraft.rehydratePlayer(hero)
+                        newHero.location = self.pane.person[self.id].location
+                        newHero.id = self.id
+                        self.pane.person[self.id] = newHero
+                        self.inShop = False
+                        self.CDF.send(Command("PERSON", "REPLACE", id=self.id, player=hero))
+                        self.screen.update_person(self.id, {'team' : "Players",
+                                                            'level': self.pane.person[self.id].level,
+                                                            'HP' : self.pane.person[self.id].HP,
+                                                            'totalHP' : self.pane.person[self.id].totalHP,
+                                                            'MP' : self.pane.person[self.id].MP,
+                                                            'totalMP' : self.pane.person[self.id].totalMP,
+                                                            'totalAP' : self.pane.person[self.id].totalAP,
+                                                            'AP' : self.pane.person[self.id].AP})
+                                                            
                 ### Inventory Management ###
                 elif self.viewingInventory:
                     newlyEquippedPlayer = self.pane.person[self.id].navigateInventory(self.screen, event.key)
@@ -569,7 +593,9 @@ class Game(object):
                         self.request_levelup()
                     elif event.key == K_i:
                         self.open_inventory()
-
+                    elif event.key == K_F2:
+                        self.request_shop()
+                        
     def get_item(self):
         self.CDF.send(Command("PERSON", "OPEN", id=self.id))
         # If player is on an item, pick it up (the top item).
@@ -591,6 +617,14 @@ class Game(object):
             if player.experience >= player.getExpForNextLevel() and player.level < LEVEL_MAX:
                 self.screen.show_text("LEVEL UP!" , color='magenta')
 
+    def request_shop(self):
+        player = self.pane.person[self.id]
+        # if player is actually on a shop tile or whatever... TODO
+        if player.inventory.allItems:
+            self.inShop = True
+            self.currentShop = shop.Shop(player, self.screen) # Using all default parameters at the moment TODO
+            self.currentShop.open()
+            
     def open_inventory(self):
         self.viewingInventory = True
         player = self.pane.person[self.id]
