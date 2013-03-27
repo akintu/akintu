@@ -516,6 +516,9 @@ class PassiveAbility(object):
         source = self.owner
         Combat.modifyResource(source, "MP", 2)
 
+    def applyBurningPassion(self, target):
+        target.baseFireBonusDamage += 15
+        
     def applyDoubleDodge(self, target, reverse=False):
         source = self.owner
         Combat.addStatus(source, "Double Dodge", 1)
@@ -1292,6 +1295,15 @@ class PassiveAbility(object):
         'offStringList' : [],
         'image' : TRICKSTER + 'infuriating-blows.png',
         'text' : 'Regain 2 MP for every successful melee or ranged attack.'
+        },
+        'Burning Passion':
+        {
+        'class' : 'Trickster',
+        'level' : 1,
+        'type' : 'static',
+        'action' : applyBurningPassion,
+        'image' : TRICKSTER + 'burning-passion.png',
+        'text' : '+15% Bonus Fire Damage'
         },
         'Double Dodge':
         {

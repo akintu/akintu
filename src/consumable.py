@@ -298,7 +298,7 @@ class Consumable(entity.Entity):
     allPoisons = {
         'Basic Poison' :
             {
-            'value' : 10,
+            'value' : 50,
             'level' : 1,
             'effect' : _basicPoison,
             'ip' : 1,
@@ -309,7 +309,7 @@ class Consumable(entity.Entity):
             },
         'Numbing Poison' :
             {
-            'value' : 15,
+            'value' : 45,
             'level' : 1,
             'effect' : _numbingPoison,
             'ip' : 1,
@@ -320,7 +320,7 @@ class Consumable(entity.Entity):
             # Sickening Poison
         'Vile Poison' :
             {
-            'value' : 40,
+            'value' : 65,
             'level' : 1,
             'effect' : _vilePoison,
             'ip' : 2,

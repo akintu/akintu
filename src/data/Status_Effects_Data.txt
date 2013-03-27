@@ -1689,7 +1689,7 @@
   [IMAGE: weapon_status/weakening-fire-magic-weapon.png]
   [ELEMENT: Fire]
   [INTERNAL: Elemental_vulnerability]
-    [MAGNITUDE: 10]
+    [MAGNITUDE: 30]
   [CATEGORY: Debuff]
 	
 [NAME: Weakening Cold Magic Weapon]
@@ -1697,7 +1697,7 @@
   [IMAGE: weapon_status/weakening-cold-magic-weapon.png]
   [ELEMENT: Cold]
   [INTERNAL: Elemental_vulnerability]
-    [MAGNITUDE: 10]
+    [MAGNITUDE: 30]
   [CATEGORY: Debuff]
   
 [NAME: Weakening Electric Magic Weapon]
@@ -1705,7 +1705,7 @@
   [IMAGE: weapon_status/weakening-electric-magic-weapon.png]
   [ELEMENT: Electric]
   [INTERNAL: Elemental_vulnerability]
-    [MAGNITUDE: 10]
+    [MAGNITUDE: 30]
   [CATEGORY: Debuff]
   
 [NAME: Weakening Poison Magic Weapon]
@@ -1713,7 +1713,7 @@
   [IMAGE: weapon_status/weakening-poison-magic-weapon.png]
   [ELEMENT: Poison]
   [INTERNAL: Elemental_vulnerability]
-    [MAGNITUDE: 10]
+    [MAGNITUDE: 30]
   [CATEGORY: Debuff]
   
 [NAME: Weakening Divine Magic Weapon]
@@ -1721,7 +1721,7 @@
   [IMAGE: weapon_status/weakening-divine-magic-weapon.png]
   [ELEMENT: Divine]
   [INTERNAL: Elemental_vulnerability]
-    [MAGNITUDE: 10]
+    [MAGNITUDE: 30]
   [CATEGORY: Debuff]
   
 [NAME: Weakening Shadow Magic Weapon]
@@ -1729,7 +1729,7 @@
   [IMAGE: weapon_status/weakening-shadow-magic-weapon.png]
   [ELEMENT: Shadow]
   [INTERNAL: Elemental_vulnerability]
-    [MAGNITUDE: 10]
+    [MAGNITUDE: 30]
   [CATEGORY: Debuff]
   
 [NAME: Weakening Arcane Magic Weapon]
@@ -1737,7 +1737,7 @@
   [IMAGE: weapon_status/weakening-arcane-magic-weapon.png]
   [ELEMENT: Arcane]
   [INTERNAL: Elemental_vulnerability]
-    [MAGNITUDE: 10]
+    [MAGNITUDE: 30]
   [CATEGORY: Debuff]
   
 # Display Effects -- Common
