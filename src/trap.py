@@ -337,7 +337,8 @@ class Trap(e.Entity):
             'ratingScale' : 0.007,
             'effect' : _stickyTrap,
             'isFavor' : False,
-            'charges' : 2
+            'charges' : 2, 
+            'image' : TRAP_ROOT + 'sticky-trap.png'    
             },
         'Boulder Pit Trap':
             {
