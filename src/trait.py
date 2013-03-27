@@ -1227,7 +1227,7 @@ class Trait(object):
             'class' : 'Ranger',
             'type' : 'dynamic',
             'action' : applyTrapSadism,
-            'onStringList' : ['Monster Hit By Trap Complete'],
+            'onStringList' : ['Monster Hit By Trap'],
             'offStringList' : [],
             'image' : RANGER + 'trap-sadism.png',
             'text' : 'If a monster triggers and is affected by one of your traps, you gain a bonus to critical magnitude for the next turn.\n' + \

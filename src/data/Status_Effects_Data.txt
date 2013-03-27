@@ -1511,7 +1511,7 @@
   [TYPE: Display]
   [IMAGE: traits/ranger_traits/trap-sadism.png]
   [ELEMENT: None]
-  [INTERNAL: Critical_damage_bonus]
+  [INTERNAL: Critical_magnitude_bonus]
     [MAGNITUDE: 0]
   [CATEGORY: Buff]
 
@@ -1554,7 +1554,7 @@
   [TYPE: Display]
   [IMAGE: skills/anarchist_skills/celebrate-misfortune.png]
   [ELEMENT: None]
-  [INTERNAL: Critical_damage_bonus]
+  [INTERNAL: Critical_magnitude_bonus]
     [MAGNITUDE: 20]
   [INTERNAL: Melee_force_bonus]
     [MAGNITUDE: 10]

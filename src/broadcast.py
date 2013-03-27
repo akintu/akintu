@@ -98,5 +98,28 @@ class TurnBroadcast(Broadcast):
         self.turn = argDict['turn']
         self.message = self.turn + " Turn Start"
 
-
+class TrapBroadcast(Broadcast):
+    def __init__(self, argDict):
+        Broadcast.__init__(self)
+        
+        self.victim = argDict['victim']
+        self.didHit = argDict['didHit']
+        if self.didHit:
+            self.hitString = " Hit By "
+        else:
+            self.hitString = " Avoided "
+        if "suffix" in argDict:
+            self.suffix = " " + argDict['suffix']
+        else:
+            self.suffix = ""
+            
+        if "trap" in argDict:
+            self.trap = argDict['trap']
+        else:
+            self.trap = None
+        self.message = self.victim + self.hitString + "Trap" + self.suffix
+        
+        
+        
+        
 

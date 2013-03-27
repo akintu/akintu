@@ -4,6 +4,7 @@ import sys
 from dice import *
 from combat import *
 import entity as e
+import broadcast
 
 class Trap(e.Entity):
 
@@ -19,7 +20,7 @@ class Trap(e.Entity):
             self.name = name
             trapDict = Trap.playerTraps[name]
             self.level = player.level
-            self.trapRating = int(trapDict['rating'] * (1 + trapDict['ratingScale'] * player.totalCunning))
+            self.trapRating = int(trapDict['rating'] * (1 + trapDict['ratingScale'] * player.totalCunning) + player.bonusTrapRating)
             self.owner = player
             self.rarityWeight = 0 # Not used by player traps
             self.effect = trapDict['effect']
@@ -46,7 +47,7 @@ class Trap(e.Entity):
         maxDamage = int(12 * (1 + self.owner.totalCunning * 0.017))
         dieRoll = Dice.roll(minDamage, maxDamage)
         element = "Piercing"
-        damage = Trap.calcTrapDamage(target, dieRoll, element)
+        damage = self.calcTrapDamage(target, dieRoll, element)
         Combat.lowerHP(target, damage)
         Combat.sendCombatMessage("Trap dealt " + str(damage) + " total damage.", self.owner, color="yellow")
 
@@ -60,7 +61,7 @@ class Trap(e.Entity):
         maxDamage = int(8 * (1 + self.owner.totalCunning * 0.02))
         dieRoll = Dice.roll(minDamage, maxDamage)
         element = "Bludgeoning"
-        damage = Trap.calcTrapDamage(target, dieRoll, element)
+        damage = self.calcTrapDamage(target, dieRoll, element)
         Combat.lowerHP(target, damage)
         if (target.size == "Small" or target.size == "Medium") and Dice.rollBeneath(20):
             Combat.addStatus(target, "Stun", duration=2)
@@ -72,7 +73,7 @@ class Trap(e.Entity):
         maxDamage = int(10 * (1 + self.owner.totalPoisonBonusDamage))
         dieRoll = Dice.roll(minDamage, maxDamage)
         element = "Poison"
-        damage = Trap.calcTrapDamage(target, dieRoll, element)
+        damage = self.calcTrapDamage(target, dieRoll, element)
         # Apply DoT
         poisonRating = 22 + self.owner.totalPoisonRatingBonus + self.owner.level
         minDot = int((3 + self.owner.totalCunning / 4) * (1 + self.owner.totalPoisonBonusDamage))
@@ -108,7 +109,7 @@ class Trap(e.Entity):
         maxDamage = 15 + 5 * self.level
         dieRoll = Dice.roll(minDamage, maxDamage)
         element = "Slashing"
-        damage = Trap.calcTrapDamage(target, dieRoll, element)
+        damage = self.calcTrapDamage(target, dieRoll, element)
         Combat.lowerHP(target, damage)
 
     def _snakePit(self, target):
@@ -121,7 +122,7 @@ class Trap(e.Entity):
         elif target.equippedItems.armorLevel == "Medium":
             dieRoll = int(dieRoll * 1.25)
         element = "Bludgeoning"
-        damage = Trap.calcTrapDamage(target, dieRoll, element)
+        damage = self.calcTrapDamage(target, dieRoll, element)
         Combat.lowerHP(target, damage)
         # Poison via toxin TODO
         # Summon snake ever?
@@ -142,7 +143,7 @@ class Trap(e.Entity):
         maxDamage = (4 + self.level * 3) * count
         dieRoll = Dice.roll(minDamage, maxDamage)
         element = "Piercing"
-        damage = Trap.calcTrapDamage(target, dieRoll, element)
+        damage = self.calcTrapDamage(target, dieRoll, element)
         Combat.lowerHP(target, damage)
 
     def _poisonousDartTrap(self, target):
@@ -168,7 +169,7 @@ class Trap(e.Entity):
             count -= 1
         dieRoll = Dice.roll(minDamage, maxDamage)
         element = "Piercing"
-        damage = Trap.calcTrapDamage(target, dieRoll, element)
+        damage = self.calcTrapDamage(target, dieRoll, element)
         Combat.lowerHP(target, damage)
         if pHit == "Normal Hit":
             pass
@@ -180,7 +181,7 @@ class Trap(e.Entity):
         maxDamage = 20 + self.level * 6
         dieRoll = Dice.roll(minDamage, maxDamage)
         element = "Fire"
-        damage = Trap.calcTrapDamage(target, dieRoll, element)
+        damage = self.calcTrapDamage(target, dieRoll, element)
         Combat.lowerHP(target, damage)
 
     def _iceTrap(self, target):
@@ -190,7 +191,7 @@ class Trap(e.Entity):
         maxDamage = 10 + self.level * 3
         dieRoll = Dice.roll(minDamage, maxDamage)
         element = "Cold"
-        damage = Trap.calcTrapDamage(target, dieRoll, element)
+        damage = self.calcTrapDamage(target, dieRoll, element)
         Combat.lowerHP(target, damage)
         duration = 5
         magnitude = 1
@@ -203,7 +204,7 @@ class Trap(e.Entity):
         maxDamage = 14 + self.level * 4
         dieRoll = Dice.roll(minDamage, maxDamage)
         element = "Electric"
-        damage = Trap.calcTrapDamage(target, dieRoll, element)
+        damage = self.calcTrapDamage(target, dieRoll, element)
         Combat.lowerHP(target, damage)
         duration = 20
         magnitude = 50
@@ -231,12 +232,14 @@ class Trap(e.Entity):
                                         target, color='lightblue')
                 if self.team == "Players":
                     self.owner.record.recordTrapSuccess()
+                self._shout(target, didHit=True)
             else:
                 Combat.sendCombatMessage(target.name + " evaded a " + self.name + ". (" + 
                                         `self.trapRating` + " vs. " + `target.totalTrapEvade` + ")",
                                         target, color='lightblue')
                 if self.team == "Players":
                     self.owner.record.recordTrapFailure()
+                self._shout(target, didHit=False)
             self.charges -= 1
             if self.charges == 0 and self.team == "Players":
                 self.owner.record.recordTrapRemoval()
@@ -255,8 +258,16 @@ class Trap(e.Entity):
             return True
         return False
 
-    @staticmethod
-    def calcTrapDamage(target, amount, element):
+    def _shout(self, victim, didHit):
+        vString = "Player"
+        if victim.team == "Monsters":
+            vString = "Monster"
+        bundle = {'victim' : vString, 'didHit' : didHit, 'trap' : self}
+        bc = broadcast.TrapBroadcast(bundle)
+        bc.shout(self.owner)
+        bc.shout(victim)
+        
+    def calcTrapDamage(self, target, amount, element):
         endAmount = 0
         if element == "Fire":
             endAmount = int(amount * (1 - (float(target.totalFireResistance) / 100)))
@@ -281,6 +292,9 @@ class Trap(e.Entity):
         elif element == "Slashing":
             endAmount1 = int(amount * (1 - target.totalSlashingResistance * 0.01))
             endAmount = int(endAmount1 * (1 - max(0, min(80, target.totalDR)) * 0.01))
+            
+        if self.owner.team == "Players":
+            return int(endAmount * (1 + self.owner.bonusTrapDamage * 0.01))
         return endAmount
 
     @staticmethod
