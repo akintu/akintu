@@ -303,9 +303,8 @@ class TheoryCraft(object):
                 selection = randint(0, len(subList) - 1)
             if subList[selection]['GP'] <= TheoryCraft.GROUP_GP - currentGP:
                 addingMonster = monster.Monster(subList[selection])
-                if initialMonster.level >= addingMonster.minLevel:
-                    addingMonster.setLevel(initialMonster.level)
-                listOfMonsters.append(monster.Monster(subList[selection]))
+                addingMonster.setLevel(initialMonster.level)
+                listOfMonsters.append(addingMonster)
                 currentGP += subList[selection]['GP']
                 numMonsters += 1
 
