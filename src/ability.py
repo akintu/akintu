@@ -487,6 +487,27 @@ class Ability(object):
             return (True, "")
         return (False, "HP already at maximum; cannot use: " + self.name + " .")
 
+    def _crushArmor(self, target):
+        source = self.owner
+        damageBonusPercent = 0
+        if (source.usingWeaponStyle("Two-Handed") or source.usingWeaponStyle("Dual Same Type")) and \
+            source.usingWeapon("Club"):
+            damageBonusPercent = 0.25
+        attackBonus = 0
+        if source.HP > source.totalHP * 0.75:
+            attackBonus = 5
+        hit = Combat.calcHit(source, target, "Physical", modifier=attackBonus)
+        Combat.basicAttack(source, target, hit, overallDamageMod=(0.75 + damageBonusPercent))
+        if hit != "Miss":
+            duration = 3
+            Combat.addStatus(target, "Crush Armor", duration)
+        
+    def _crushArmorCheck(self, target):
+        source = self.owner
+        if source.usingWeapon("Melee"):
+            return (True, "")
+        return (False, "Must be using a melee weapon to use " + self.name)    
+        
     # Dragoon
     def _jumpAttack(self, target):
         source = self.owner
@@ -1933,6 +1954,24 @@ class Ability(object):
         'breakStealth' : 0,
         'image' : BARBARIAN_SKILLS + 'blood-of-the-ancients.png',
         'text' : 'Recover 15% of your HP but reduce your DR by 5% for 1 turn.'
+        },
+        'Crush Armor':
+        {
+        'level' : 5,
+        'class' : 'Barbarian',
+        'HPCost' : 0,
+        'APCost' : 8,
+        'range' : 1,
+        'target' : 'hostile',
+        'action' : _crushArmor,
+        'cooldown' : 3,
+        'checkFunction' : _crushArmorCheck,
+        'breakStealth' : 100,
+        'image' : BARBARIAN_SKILLS + 'crush-armor.png',
+        'text' : 'Melee attack that deals 75% overall damage but reduces enemy DR by 15%\n' + \
+                'for three turns.  If only club weapon(s) are equipped, 100% overall\n' + \
+                'damage is dealt instead of 75%.  If the Barbarian\'s HP is above 75%,\n' + \
+                'the accuracy of this attack is 5 points higher.'
         },
 
         # Dragoon

@@ -109,6 +109,11 @@ class PassiveAbility(object):
             Combat.healTarget(target, target, healing)
             Combat.addStatus(target, "Stunning Recovery", duration=1)
 
+    def applyWalkItOff(self, target, reverse=False, other=None):
+        source = self.owner
+        if source.record._previousTurnTilesMoved > 0:
+            Combat.healTarget(source, source, int(source.totalHP * 0.01))
+            
     # Dragoon
 
     def applyPolearmSpecialization(self, target, reverse=False, other=None):
@@ -649,6 +654,19 @@ class PassiveAbility(object):
         'image' : BARBARIAN + "stunning-recovery.png",
         'text' : 'Whenever the Barbarian is stunned, he recovers 5% of his\n' + \
                 'Maximum HP.  May occur once per monster turn.'
+        },
+        'Walk it off':
+        {
+        'class' : 'Barbarian',
+        'level' : 5,
+        'type' : 'dynamic',
+        'action' : applyWalkItOff,
+        'onStringList' : ['Player Turn Start'],
+        'offStringList' : [],
+        'image' : BARBARIAN + "walk-it-off.png",
+        'text' : 'As long as the Barbarian performed at least one movement action\n' + \
+                'during the previous turn, he regains 1% Max HP at the start of\n' + \
+                'this turn.'
         },
 
         'Polearm Specialization':
