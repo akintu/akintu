@@ -333,16 +333,24 @@ class Game(object):
             ###### Remove Item ######
             elif command.type == "ITEM" and command.action == "REMOVE":
                 self.pane.person[command.id].inventory.removeItem(itemName=command.itemName)
-
+                self.screen.update_person(command.id, {'totalAP' : self.pane.person[command.id].totalAP,
+                                                       'AP' : self.pane.person[command.id].AP,
+                                                       'team' : self.pane.person[command.id].team})
             ###### Get Item ######
             elif command.type == "ITEM" and command.action == "CREATE":
                 item = TheoryCraft.rehydrateTreasure(command.itemIdentifier)
                 self.pane.person[command.id].inventory.addItem(item)
-
+                self.screen.update_person(command.id, {'totalAP' : self.pane.person[command.id].totalAP,
+                                                       'AP' : self.pane.person[command.id].AP,
+                                                       'team' : self.pane.person[command.id].team})
+                
             elif command.type == "ITEM" and command.action == "EQUIP":
                 item = TheoryCraft.rehydrateTreasure(command.itemIdentifier)
                 self.pane.person[command.id].equip(item)
-
+                self.screen.update_person(command.id, {'totalAP' : self.pane.person[command.id].totalAP,
+                                                       'AP' : self.pane.person[command.id].AP,
+                                                       'team' : self.pane.person[command.id].team})
+                
             ###### Entity Operations ######
 
             elif command.type == "ENTITY":
@@ -480,6 +488,14 @@ class Game(object):
                     if newlyEquippedPlayer:
                         self.CDF.send(Command("PERSON", "REPLACE", id=self.id, player=newlyEquippedPlayer))
                         self.viewingInventory = False
+                        self.screen.update_person(self.id, {'team' : "Players",
+                                                            'level': self.pane.person[self.id].level,
+                                                            'HP' : self.pane.person[self.id].HP,
+                                                            'totalHP' : self.pane.person[self.id].totalHP,
+                                                            'MP' : self.pane.person[self.id].MP,
+                                                            'totalMP' : self.pane.person[self.id].totalMP,
+                                                            'totalAP' : self.pane.person[self.id].totalAP,
+                                                            'AP' : self.pane.person[self.id].totalAP}) # This is an intentional mismatch.
 
                 ## Consumable Use ###
                 elif self.selectingConsumable:

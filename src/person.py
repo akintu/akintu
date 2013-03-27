@@ -2149,6 +2149,13 @@ class Person(en.Entity):
             return self.calcBurden()
         return 0
 
+    def refreshAP(self):
+        '''Re-calculates the AP of this person; really only useful for playercharacters.'''
+        a = self.totalAP
+        b = self.AP
+        c = self.totalAP
+        return
+        
     @property
     def totalAP(self):
         if self.team == "Players":
