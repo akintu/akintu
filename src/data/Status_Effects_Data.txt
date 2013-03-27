@@ -1483,6 +1483,16 @@
 	
 # Display Effects -- Traits
 
+[NAME: Preparation]
+  [TYPE: Display]
+  [IMAGE: traits/ranger_traits/preparation.png]
+  [ELEMENT: None]
+  [INTERNAL: Melee_accuracy_bonus]
+    [MAGNITUDE: 0]
+  [INTERNAL: Ranged_accuracy_bonus]
+    [MAGNITUDE: 0]
+  [CATEGORY: Buff]
+
 [NAME: Wounding Projectiles]
   [TYPE: Display]
   [IMAGE: traits/ranger_traits/wounding-projectiles.png]

@@ -89,41 +89,23 @@ class Trait(object):
                 target.statusDodge -= 11
     
     def applyPreparation(self, target, reverse=False, other=None):
-        if target.attacksPerformed[0] > 0:
-            return
-        #self.rank = Trait.getTraiself.rank(target, "Preparation")
         if not reverse:
+            if target.record._previousTurnMeleeAttacks != 0 or target.record._previousTurnRangedAttacks != 0:
+                return
             if self.rank == 1:
-                target.statusMeleeAccuracy += 8
-                target.statusRangedAccuracy += 8
+                Combat.addStatus(target, "Preparation", duration=1, magnitude=8)
             elif self.rank == 2:
-                target.statusMeleeAccuracy += 11
-                target.statusRangedAccuracy += 11
+                Combat.addStatus(target, "Preparation", duration=1, magnitude=11)
             elif self.rank == 3:
-                target.statusMeleeAccuracy += 14
-                target.statusRangedAccuracy += 14
+                Combat.addStatus(target, "Preparation", duration=1, magnitude=14)
             elif self.rank == 4:
-                target.statusMeleeAccuracy += 18
-                target.statusRangedAccuracy += 18
+                Combat.addStatus(target, "Preparation", duration=1, magnitude=18)
         else:
-            if self.rank == 1:
-                target.statusMeleeAccuracy -= 8
-                target.statusRangedAccuracy -= 8
-            elif self.rank == 2:
-                target.statusMeleeAccuracy -= 11
-                target.statusRangedAccuracy -= 11
-            elif self.rank == 3:
-                target.statusMeleeAccuracy -= 14
-                target.statusRangedAccuracy -= 14
-            elif self.rank == 4:
-                target.statusMeleeAccuracy -= 18
-                target.statusRangedAccuracy -= 18
-
+            Combat.removeStatus(target, "Preparation")
     
     def applyTank(self, target, reverse=False, other=None):
         if not target.usingArmor("Heavy"):
             return
-        #self.rank = Trait.getTraiself.rank(target, "Tank")
         if not reverse:
             if self.rank == 1:
                 target.statusDR += 1
@@ -147,7 +129,6 @@ class Trait(object):
     def applyFencer(self, target, reverse=False, other=None):
         if not target.usingArmor("Medium"):
             return
-        #self.rank = Trait.getTraiself.rank(target, "Fencer")
         if not reverse:
             if self.rank == 1:
                 target.statusMeleeAccuracy += 2
@@ -171,7 +152,6 @@ class Trait(object):
     def applyShieldResilience(self, target, reverse=False, other=None):
         if not target.usingShield("Any"):
             return
-        #self.rank = Trait.getTraiself.rank(target, "Shield Resilience")
         if not reverse:
             if self.rank == 1:
                 target.knockbackResistance += 30
@@ -203,7 +183,6 @@ class Trait(object):
     def applyBully(self, target, reverse=False, other=None):
         if not target.usingWeaponStyle("Two-Handed") or other.size == "Large" or other.size == "Huge":
             return
-        #self.rank = Trait.getTraiself.rank(target, "Bully")
         if not reverse:
             if self.rank == 1:
                 target.statusForce += 5
@@ -251,7 +230,6 @@ class Trait(object):
     def applyBoldness(self, target, reverse=False, other=None):
         if other.size == "Small" or other.size == "Medium":
             return
-        #self.rank = Trait.getTraiself.rank(target, "Boldness")
         if not reverse:
             if other.size == "Large":
                 if self.rank == 1:
@@ -293,7 +271,6 @@ class Trait(object):
 
     
     def applyWellTraveled(self, target):
-        #self.rank = Trait.getTraiself.rank(target, "Well-Traveled")
         if self.rank == 1:
             target._baseInventoryCapacity += 15
             target.baseFireResistance += 1
@@ -311,10 +288,10 @@ class Trait(object):
             target.baseFireResistance += 2
             target.baseColdResistance += 2
 
-    
     def applyHammerAndAnvil(self, target, reverse=False, other=None):
-        # TODO: if target has back against wall...
-        #self.rank = Trait.getTraiself.rank(target, "Hammer and Anvil")
+        direction = target.cLocation.direction_to(other.cLocation)
+        if not Combat.againstWall(other.cPane, other.cLocation, direction):
+            return
         if not reverse:
             if self.rank == 1:
                 target.baseOverallDamageBonus += 5
@@ -1010,7 +987,7 @@ class Trait(object):
             'class' : 'Fighter',
             'type' : 'dynamic',
             'action' : applyPreparation,
-            'onStringList' : ['Starting Player Turn'],
+            'onStringList' : ['Player Turn Start'],
             'offStringList' : ['Outgoing Melee Attack Complete', 'Outgoing Ranged Attack Complete'],
             'image' : FIGHTER + 'preparation.png',
             'text' : 'If no attacks were attempted the previous turn, Gain bonus accuracy on your next attack.\n' + \
