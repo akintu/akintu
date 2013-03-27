@@ -26,7 +26,6 @@ class Shop(object):
         text = "Welcome to my shop! (You have " + `self.player.inventory.gold` + " gold.)"
         inv = self.player.inventory.allItems
         capacity = `self.player.inventoryWeight` + "/" + `self.player.inventoryCapacity`
-        print inv
         self.screen.show_item_dialog(text, inv, self.stock, isEquipment, bgcolor='mistyrose', capacity=capacity)
         
     def input(self, keystroke):

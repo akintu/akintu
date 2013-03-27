@@ -105,7 +105,8 @@ class Spell(object):
                     self.unapplySchoolResistance(target)
                 else:
                     self.action(self, target)
-                self.owner.record.recordSpell()
+                if self.owner.team == "Players":
+                    self.owner.record.recordSpell()
                 if hitType == "Miss" or hitType == "Fully Resisted":
                     self._shoutSpellResisted()
                 self._shoutSpellCastComplete(self.owner, target)

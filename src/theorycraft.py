@@ -177,6 +177,10 @@ class TheoryCraft(object):
             for i in range(rankUps):
                 newTrait.advanceTier()
             
+        newChar.HP = newChar.totalHP
+        newChar.AP = newChar.totalAP
+        newChar.MP = newChar.totalMP
+            
         return newChar
         
     @staticmethod

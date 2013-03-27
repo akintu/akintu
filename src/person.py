@@ -2144,12 +2144,6 @@ class Person(en.Entity):
         self._AP = value
 
     @property
-    def restrictionAP(self):
-        '''The amount of AP lost due to armor beyond maximum.
-        Always 0 for monsters.'''
-        return 0
-
-    @property
     def burdenAP(self):
         if self.team == "Players":
             return self.calcBurden()
@@ -2157,7 +2151,10 @@ class Person(en.Entity):
 
     @property
     def totalAP(self):
-        return max(1, self._baseAP + min(5, self._equipmentAP) - self.restrictionAP - self.burdenAP)
+        if self.team == "Players":
+            return max(1, self._baseAP + min(5, self._equipmentAP) - self.restrictionAP - self.burdenAP)
+        else:
+            return self._baseAP
 
     @property
     def equipmentAP(self):

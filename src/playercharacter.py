@@ -1101,7 +1101,7 @@ class PlayerCharacter(p.Person):
             return True
         return False
 
-    @p.Person.restrictionAP.getter
+    @property
     def restrictionAP(self):
         toleranceGrade = 0
         if self.armorTolerance == "Light":
@@ -1111,7 +1111,7 @@ class PlayerCharacter(p.Person):
         elif self.armorTolerance == "Heavy":
             toleranceGrade = 30
         aGrade = self.equippedItems.totalArmorGrade
-        return max(0, round(aGrade / 2.0) - toleranceGrade)
+        return max(0, int(aGrade / 2) - toleranceGrade)
 
 
     @p.Person.movementSpeed.getter
@@ -1173,7 +1173,8 @@ class PlayerCharacter(p.Person):
             elif isinstance(oldPiece2, equipment.Weapon):
                 pass
             self.inventory.allItems.append(oldPiece2)
-        # TODO: Check to see if weight capacity has changed?
+        if self.AP > self.totalAP:
+            self.AP = self.totalAP
 
     def unequip(self, slot):
         oldPieces = self.equippedItems.unequip(slot)
@@ -1186,6 +1187,7 @@ class PlayerCharacter(p.Person):
                 prop.effect(prop, self, reverse=True)
             self.inventory.allItems.append(item)
         
+            
     def shouldAutoEquip(self, armor):
         ''' Determines if a piece of equipment should be 
         auto-equipped upon acquisition. '''
