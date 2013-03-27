@@ -844,7 +844,7 @@ class PassiveAbility(object):
         'onStringList' : ['Outgoing Ranged Attack'],
         'offStringList' : ['Outgoing Ranged Attack Complete'],
         'image' : MARKSMAN + 'shortbow-niche.png',
-        'text' : '+10% Critical Magnitude and +1 Accuracy when using a shortbow.'
+        'text' : '+10% Critical Magnitude and +5% Critical Chance when using a shortbow.'
         },
         'Incredible Focus':
         {

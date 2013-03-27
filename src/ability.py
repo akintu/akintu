@@ -668,7 +668,7 @@ class Ability(object):
         source = self.owner
         hitType = Combat.calcHit(source, target, "Physical", modifier=-1)
         Combat.basicAttack(source, target, hitType)
-        fireBase = 3
+        fireBase = 3 + source.totalCunning / 8
         fireDamage = Combat.calcDamage(source, target, fireBase, fireBase, "Fire", hitType)
         Combat.lowerHP(target, fireDamage)
 
@@ -682,10 +682,10 @@ class Ability(object):
         source = self.owner
         hitType = Combat.calcHit(source, target, "Physical")
         Combat.basicAttack(sourcd, target, hitType, criticalDamageMod=1.1)
-        fireBase = 8
+        fireBase = 8 + source.totalCunning / 6
         fireDamage = Combat.calcDamage(source, target, fireBase, fireBase, "Fire", hitType)
         Combat.lowerHP(target, fireDamage)
-
+        
     def _hotBulletCheck(self, target):
         source = self.owner
         if source.usingWeapon("Sling"):
@@ -695,8 +695,23 @@ class Ability(object):
     def _suppressingFire(self, target):
         source = self.owner
         duration = 4
-        Combat.addStatus(self, "Suppressing Fire", duration)
+        Combat.addStatus(source, "Suppressing Fire", duration)
 
+    def _smokingProjectile(self, target):
+        source = self.owner
+        hit = Combat.calcHit(source, target, "Physical", modifier=5)
+        Combat.basicAttack(source, target, hit, overallDamageMod=0.0)
+        fireDam = Combat.calcDamage(source, target, 2, 10, "Fire", hit, scalesWith="Cunning", scaleFactor=0.03)
+        duration = 4
+        if hit != "Miss":
+            Combat.addStatus(target, "Smoking Projectile", duration=4, magnitude=fireDam)
+        
+    def _smokingProjectileCheck(self, target):
+        source = self.owner
+        if source.usingWeapon("Ranged"):
+            return (True, "")
+        return (False, "Must be using a ranged weapon to use " + self.name)
+        
     # Thief
 
     def _stealth(self, target):
@@ -1763,7 +1778,7 @@ class Ability(object):
         'level' : 2,
         'class' : 'Ranger',
         'HPCost' : 0,
-        'APCost' : 10,
+        'APCost' : 4,
         'range' : 0,
         'target' : 'self',
         'action' : _tunnelVision,
@@ -2198,7 +2213,10 @@ class Ability(object):
         'action' : _hotArrow,
         'cooldown' : 1,
         'checkFunction' : _hotArrowCheck,
-        'breakStealth' : 100
+        'breakStealth' : 100,
+        'image' : MARKSMAN_SKILLS + 'hot-arrow.png',
+        'text' : 'Ranged Bow/Crossbow attack with -1 Accuracy that deals\n' + \
+                '3 + 1/8 Cunning Fire damage in addition to its normal damage.'
         },
         'Hot Bullet':
         {
@@ -2211,7 +2229,10 @@ class Ability(object):
         'action' : _hotBullet,
         'cooldown' : 1,
         'checkFunction' : _hotBulletCheck,
-        'breakStealth' : 100
+        'breakStealth' : 100,
+        'image' : MARKSMAN_SKILLS + 'hot-bullet.png',
+        'text' : 'Ranged Sling attack with +10% Critical Magnitude that deals\n' + \
+                '8 + 1/6 Cunning Fire damage in addition to its normal damage.'
         },
         'Suppressing Fire':
         {
@@ -2224,7 +2245,31 @@ class Ability(object):
         'action' : _suppressingFire,
         'cooldown' : 4,
         'checkFunction' : None,
-        'breakStealth' : 0
+        'breakStealth' : 0,
+        'image' : MARKSMAN_SKILLS + 'suppressing-fire.png',
+        'text' : 'While active, successful ranged attacks reduce enemy accuracy\n' + \
+                'by 5 and attack power by 5% but these attacks have -10% chance\n' + \
+                'to critically hit.  If a shortbow, sling, or crossbow is being used,\n' + \
+                'attacks also have a rare chance to cripple movement speed by one 1\n' + \
+                'tile per move and further reduce attack power by 5%.'
+        },
+        'Smoking Projectile':
+        {
+        'level' : 5,
+        'class' : 'Marksman',
+        'HPCost' : 0,
+        'APCost' : 12,
+        'range' : -1,
+        'target' : 'hostile',
+        'action' : _smokingProjectile,
+        'cooldown' : None,
+        'checkFunction' : _smokingProjectileCheck,
+        'breakStealth' : 100,
+        'image' : MARKSMAN_SKILLS + 'smoking-projectile.png',
+        'text' : 'Ranged attack that deals no direct damage.  If it hits at +5 accuracy,\n' + \
+                'it ignites the feet of the target dealing 2-10 + 3% fire damage per turn.\n' + \
+                'The smoke from the flames cause a 10 point decrease in accuracy and -10%\n' + \
+                'Fire resistance as well. (Lasts 4 Turns)'
         },
 
         #Druid
