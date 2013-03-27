@@ -181,7 +181,7 @@ class Pane(object):
             #Adds a random Chest
             #TODO: remove none from level
             loc_list = []
-            for i in range(10):
+            for i in range(3):
                 loc_list.append((TreasureChest.CHEST_TYPE[random.randrange(len(TreasureChest.CHEST_TYPE))], \
                                 (random.randrange(1, PANE_X-1), random.randrange(1, PANE_Y-1))))
             for type, loc in loc_list:
