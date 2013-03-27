@@ -565,9 +565,9 @@ class Spell(object):
         {
         'tier' : 1,
         'school' : 'Illusion',
-        'MPCost' : 20,
-        'APCost' : 6,
-        'range' : 4,
+        'MPCost' : 10,
+        'APCost' : 5,
+        'range' : 6,
         'target' : 'terrain',
         'action' : _zoneOfSilence,
         'cooldown' : None,

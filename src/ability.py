@@ -748,12 +748,27 @@ class Ability(object):
         duration = 4
         Combat.addStatus(source, "Target Throat", duration)
 
-    def _poisonThornTrap(self, target):
-        pass
-        # Remove Trap
-        # Add trap.Trap("Poison Thorn Trap", self.owner, target.location)
-        # source.record.recordTrapPlacement()
+    def _poisonThornTrap(self, targetLocation):
+        source = self.owner
+        Combat.gameServer.pane[source.cPane].addTrap(targetLocation, trap.Trap("Poison Thorn Trap", player=source, location=targetLocation))
+        source.record.recordTrapPlacement()
 
+    def _lethargicShot(self, target):
+        source = self.owner
+        hit = Combat.calcHit(source, target, "Physical")
+        Combat.basicAttack(source, target, hit, forceMod=1.1)
+        if hit != "Miss":
+            pHit = Combat.calcPoisonHit(source, target, rating=(25 + source.totalCunning / 5))
+            if pHit != "Miss":
+                duration = 3
+                Combat.addStatus(target, "Lethargic Shot", duration)
+        
+    def _lethargicShotCheck(self, target):
+        source = self.owner
+        if source.usingWeapon("Ranged"):
+            return (True, "")
+        return (False, "Must be using a ranged weapon to use " + self.name)
+        
     # Tactician
 
     def _accuracyFavor(self, target):
@@ -1809,7 +1824,7 @@ class Ability(object):
         'HPCost' : 0,
         'APCost' : 5,
         'range' : 1,
-        'target' : 'self',
+        'target' : 'location',
         'action' : _boulderPitTrap,
         'cooldown' : 1,
         'checkFunction' : _shrapnelTrapCheck,
@@ -2288,7 +2303,7 @@ class Ability(object):
         'target' : 'location',
         'action' : _poisonThornTrap,
         'cooldown' : 1,
-        'checkFunction' : None,
+        'checkFunction' : _shrapnelTrapCheck,
         'breakStealth' : 0,
         'image' : DRUID_SKILLS + 'poison-thorn-trap.png',
         'text' : 'Lay a trap that deals 5-10 poison damage when triggered and\n' + \
@@ -2296,23 +2311,23 @@ class Ability(object):
                 'Trap rating = 23 + 1/5 Cunning; Poison Rating = 22 + 1/level.\n' + \
                 'Lasts at least 3 turns.'
         },
-        # 'Lethargic Shot':
-        # {
-        # 'level' : 5,
-        # 'class' : 'Druid',
-        # 'HPCost' : 0,
-        # 'APCost' : 8,
-        # 'range' : -1,
-        # 'target' : 'hostile',
-        # 'action' : _lethargicShot,
-        # 'cooldown' : None,
-        # 'checkFunction' : _lethargicShotCheck,
-        # 'breakStealth' : 100,
-        # 'image' : DRUID_SKILLS + 'lethargic-shot.png',
-        # 'text' : 'Ranged attack with Force x 1.10 that applies a slowing poison\n' + \
-                # 'which lowers movement tiles by 1, dodge by 5, and accuracy by 2.\n' + \
-                # 'Lasts 3 turns and has a poison rating of 25 + 1/5 Cunning.'
-        # },
+        'Lethargic Shot':
+        {
+        'level' : 5,
+        'class' : 'Druid',
+        'HPCost' : 0,
+        'APCost' : 8,
+        'range' : -1,
+        'target' : 'hostile',
+        'action' : _lethargicShot,
+        'cooldown' : None,
+        'checkFunction' : _lethargicShotCheck,
+        'breakStealth' : 100,
+        'image' : DRUID_SKILLS + 'lethargic-shot.png',
+        'text' : 'Ranged attack with Force x 1.10 that applies a slowing poison\n' + \
+                'which lowers movement tiles by 1, dodge by 5, and accuracy by 2.\n' + \
+                'Lasts 3 turns and has a poison rating of 25 + 1/5 Cunning.'
+        },
 
         # Tactician
         'Accuracy Favor':

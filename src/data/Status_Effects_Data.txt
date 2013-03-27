@@ -1085,7 +1085,9 @@
     [MAGNITUDE: 1]
   [INTERNAL: Dodge_penalty]
     [MAGNITUDE: 5]
-  [INTERNAL: Accuracy_penalty]
+  [INTERNAL: Melee_accuracy_penalty]
+    [MAGNITUDE: 2]
+  [INTERNAL: Ranged_accuracy_penalty]
     [MAGNITUDE: 2]
   [CATEGORY: Debuff]
 	

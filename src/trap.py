@@ -6,6 +6,8 @@ from combat import *
 import entity as e
 import broadcast
 
+TRAP_ROOT = "./res/images/items/"
+
 class Trap(e.Entity):
 
     totalWeight = 0
@@ -14,11 +16,13 @@ class Trap(e.Entity):
         """Constructor for Traps.  Should only be used with
         keyword arguments."""
         if not image:
-            image = "./res/images/items/trap.png"
+            image = TRAP_ROOT + "trap.png"
         e.Entity.__init__(self, location=location, image=image, passable=True)
         if player:
             self.name = name
             trapDict = Trap.playerTraps[name]
+            if 'image' in trapDict:
+                self.image = trapDict['image']
             self.level = player.level
             self.trapRating = int(trapDict['rating'] * (1 + trapDict['ratingScale'] * player.totalCunning) + player.bonusTrapRating)
             self.owner = player
@@ -30,6 +34,8 @@ class Trap(e.Entity):
         else:
             self.name = name
             trapDict = Trap.monsterTraps[name]
+            if 'image' in trapDict:
+                self.image = trapDict['image']
             self.level = level
             self.owner = None
             if not level:
@@ -69,19 +75,24 @@ class Trap(e.Entity):
         Combat.sendCombatMessage("Trap dealt " + `damage` + " total damage.", self.owner, color="yellow")
 
     def _poisonThornTrap(self, target):
-        minDamage = int(5 * (1 + self.owner.totalPoisonBonusDamage))
-        maxDamage = int(10 * (1 + self.owner.totalPoisonBonusDamage))
+        minDamage = int(5 * (1 + self.owner.totalPoisonBonusDamage * 0.01))
+        maxDamage = int(10 * (1 + self.owner.totalPoisonBonusDamage * 0.01))
         dieRoll = Dice.roll(minDamage, maxDamage)
         element = "Poison"
         damage = self.calcTrapDamage(target, dieRoll, element)
+        poisonHit = Combat.calcPoisonHit(self.owner, target, rating=(22 + self.owner.level))
+        if poisonHit != "Miss":
+            Combat.lowerHP(target, damage)
+            Combat.sendCombatMessage("Trap dealt " + `damage` + " damage.", self.owner, color="yellow")
         # Apply DoT
         poisonRating = 22 + self.owner.totalPoisonRatingBonus + self.owner.level
-        minDot = int((3 + self.owner.totalCunning / 4) * (1 + self.owner.totalPoisonBonusDamage))
-        maxDot = int((6 + self.owner.totalCunning / 4) * (1 + self.owner.totalPoisonBonusDamage))
+        minDot = int((3 + self.owner.totalCunning / 4) * (1 + self.owner.totalPoisonBonusDamage * 0.01))
+        maxDot = int((6 + self.owner.totalCunning / 4) * (1 + self.owner.totalPoisonBonusDamage * 0.01))
         dot = Dice.roll(minDot, maxDot)
         duration = min(4, 3 + self.owner.totalCunning / 30)
-        Combat.addStatus(target, "Poison Thorn Trap", duration, dot)
-        Combat.sendCombatMessage("Trap dealt " + `damage` + " damage.", self.owner, color="yellow")
+        dotHit = Combat.calcPoisonHit(self.owner, target, rating=(22 + self.owner.level))
+        if dotHit != "Miss":
+            Combat.addStatus(target, "Poison Thorn Trap", duration, dot)
 
     def _accuracyFavor(self, target):
         accuracyBonus = 3 + self.owner.totalCunning / 4
@@ -344,7 +355,8 @@ class Trap(e.Entity):
             'ratingScale' : 0.01,
             'effect' : _poisonThornTrap,
             'isFavor' : False,
-            'charges' : 1
+            'charges' : 1,
+            'image' : TRAP_ROOT + 'poison-thorn-trap.png'
             },
 
         # Tactician only traps
