@@ -224,12 +224,12 @@ class PassiveAbility(object):
         target._bonusRange += 2
         target.baseAwareness += 2
 
-    def applyLayingInWait(self, target, reverse=False):
+    def applyLayingInWait(self, target, reverse=False, other=False):
         source = self.owner
         if not reverse:
-            # If no moves last turn TODO
-            mag = (source.getStatusStackCount("Laying in Wait") + 1) * 2
-            Combat.addStatus(source, "Laying in Wait", duration=-1, magnitude=mag, overwrite=False)
+            if source.record._previousTurnTilesMoved == 0:
+                mag = 4
+                Combat.addStatus(source, "Laying in Wait", duration=-1, magnitude=mag)
         else:
             Combat.removeStatus(source, "Laying in Wait")
 
@@ -247,11 +247,11 @@ class PassiveAbility(object):
         if not reverse:
             if source.usingWeapon("Shortbow"):
                 source.statusCriticalMagnitude += 10
-                source.statusRangedAccuracy += 1
+                source.statusCriticalChance += 5
         else:
             if source.usingWeapon("Shortbow"):
                 source.statusCriticalMagnitude -= 10
-                source.statusRangedAccuracy -= 1
+                source.statusCriticalChance -= 5
 
     def applyIncredibleFocus(self, target, reverse=False, statusName=None):
         source = self.owner
@@ -813,7 +813,7 @@ class PassiveAbility(object):
         'onStringList' : ['Player Turn Start'],
         'offStringList' : ['Outgoing Melee Attack', 'Outgoing Ranged Attack'],
         'image' : MARKSMAN + 'laying-in-wait.png',
-        'text' : 'If the marksman did not move last turn, gain +2 Accuracy (stacking.)'
+        'text' : 'If the Marksman did not move last turn, gain +4 Accuracy.'
         },
         'Fire Handler':
         {

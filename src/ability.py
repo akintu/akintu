@@ -652,15 +652,16 @@ class Ability(object):
             
     # Marksman
     def _cuspOfEscape(self, target):
-        hitType = Combat.calcHit(source, target, "Physical", modifier=10, critMod=5)
+        source = self.owner
+        hitType = Combat.calcHit(source, target, "Physical", modifier=12, critMod=12)
         Combat.basicAttack(source, target, hitType)
 
     def _cuspOfEscapeCheck(self, target):
         source = self.owner
         if source.usingWeapon("Melee"):
             return (False, "Must be using a ranged weapon for: " + self.name)
-        if source.location.distance(target.location) != source.attackRange:
-            return (False, "Target must be exactly " + source.attackRange + " tiles away.")
+        if source.cLocation.distance(target.cLocation) != source.attackRange:
+            return (False, "Target must be exactly " + `source.attackRange` + " tiles away.")
         return (True, "")
 
     def _hotArrow(self, target):
@@ -2180,7 +2181,11 @@ class Ability(object):
         'action' : _cuspOfEscape,
         'cooldown' : 1,
         'checkFunction' : _cuspOfEscapeCheck,
-        'breakStealth' : 100
+        'breakStealth' : 100,
+        'image' : MARKSMAN_SKILLS + 'cusp-of-escape.png',
+        'text' : 'Ranged attack with +12 Accuracy and +12% Critical hit chance.\n' + \
+                'Only usable if the target is exactly on the edge of your weapon\'s\n' + \
+                'range.'
         },
         'Hot Arrow':
         {

@@ -659,9 +659,9 @@ class Game(object):
         player = self.pane.person[self.id]
         cons = player.inventory.allConsumables
         if cons:
-            isCons = True
+            isEquipment = False
             text = "Select a consumable"
-            self.screen.show_item_dialog(text, cons, [], isCons, bgcolor='tan')
+            self.screen.show_item_dialog(text, cons, [], isEquipment, bgcolor='tan')
         else:
             self.selectingConsumable = False
 
