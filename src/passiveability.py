@@ -116,6 +116,10 @@ class PassiveAbility(object):
             
     # Dragoon
 
+    def applyOblivious(self, target):
+        target.baseIntuition -= 12
+        target.baseAwareness -= 5
+    
     def applyPolearmSpecialization(self, target, reverse=False, other=None):
         source = self.owner
         if not reverse:
@@ -672,6 +676,17 @@ class PassiveAbility(object):
                 'this turn.'
         },
 
+        
+        'Oblivious':
+        {
+        'class' : 'Dragoon',
+        'level' : 1,
+        'type' : 'static',
+        'action' : applyOblivious,
+        'image' : DRAGOON + "oblivious.png",
+        'text' : 'Focusing on the sky all the time clouds your mind.\n' + \
+                '-12 Intuition, -5 Awareness'
+        },
         'Polearm Specialization':
         {
         'class' : 'Dragoon',

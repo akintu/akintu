@@ -143,6 +143,7 @@ class PlayerCharacter(p.Person):
         self.knockbackResistance = 0 # Amount above 100 is treated as 100.
         self._equipmentIntuition = 0
         self._statusIntuition = 0
+        self._baseIntuition = 0
         self._equipmentShopBonus = 0
 
         # --- Thief classes ---
@@ -962,7 +963,7 @@ class PlayerCharacter(p.Person):
         
     @property
     def totalIntuition(self):
-        return int(self.totalSorcery + self.equipmentIntuition + self.statusIntuition)
+        return int(self.totalPiety + self.equipmentIntuition + self.statusIntuition + self.baseIntuition)
 
     @property
     def equipmentIntuition(self):
@@ -980,6 +981,14 @@ class PlayerCharacter(p.Person):
     def statusIntuition(self, value):
         self._statusIntuition = value
 
+    @property
+    def baseIntuition(self):
+        return int(self._baseIntuition)
+        
+    @baseIntuition.setter
+    def baseIntuition(self, value):
+        self._baseIntuition = value
+        
     @property
     def lockpicking(self):
         if self.baseClass == "Thief":
@@ -1340,12 +1349,12 @@ class PlayerCharacter(p.Person):
         cs.append("| Poison Tolerance:  " + `self.totalPoisonTolerance` + " (" + `self.equipmentPoisonTolerance` + ")  Poison Rating Bonus: " + `self.totalPoisonRatingBonus` + " (" + `self.equipmentPoisonRatingBonus` + ")\n")  
         cs.append("| Awareness:         " + `self.totalAwareness` + " (" + `self.equipmentAwareness` + ")  Sneak: " + `self.totalSneak` + " (" + `self.equipmentSneak` + ")\n")
         cs.append("| Trap Evade:        " + `self.totalTrapEvade` + " (" + `self.equipmentTrapEvade` + ")  Movement Tiles: " + `self.totalMovementTiles` + " (" + `self.equipmentMovementTiles` + ")\n")
+        cs.append("| Intuition:         " + `self.totalIntuition` + " (" + `self.equipmentIntuition` + ")\n")
         cs.append("| ----------->>> Tertiary Statistics <<<----------------\n")
         cs.append("| Shop Bonus:            " + `self.totalShopBonus` + "% (" + `self.equipmentShopBonus` + "%)  Carrying Capacity: " + `self.inventoryCapacity` + " (" + `self.equipmentCarryingCapacity` + ")\n")
         cs.append("| Trap Rating Bonus:     " + `self.bonusTrapRating` + "      Trap Damage Bonus: " + `self.bonusTrapDamage` + "%\n")
         cs.append("| Jewlery Bonus:        +" + `self.totalJewleryBonus` + "     Potion Bonus Effect: " + `self.totalPotionEffect` + "%\n") 
-        cs.append("| Intuition:             " + `self.totalIntuition` + " (" + `self.equipmentIntuition` + ")  Gold Find: +" + `self.goldFind` + "%\n")
-        cs.append("| Trap Damage Reduction: " + `self.totalTrapDamageReduction` + "%\n")
+        cs.append("| Trap Damage Reduction: " + `self.totalTrapDamageReduction` + "% (" + `self.equipmentIntuition` + ")  Gold Find: +" + `self.goldFind` + "%\n")
         cs.append("| ----------->>> Elemental Resistances <<<--------------\n")
         cs.append("| Arcane Resistance:   " + `self.totalArcaneResistance` + "% (" + `self.equipmentArcaneResistance` + ")\n")
         cs.append("| Cold Resistance:     " + `self.totalColdResistance` + "% (" + `self.equipmentColdResistance` + ")\n")
