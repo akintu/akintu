@@ -60,6 +60,7 @@ BACKGROUND_IMAGES_PATH = os.path.join(IMAGES_PATH, "background")
 MONSTERS_IMAGES_PATH = os.path.join(IMAGES_PATH, "monsters")
 SPRITES_IMAGES_PATH = os.path.join(IMAGES_PATH, "sprites")
 ITEMS_IMAGES_PATH = os.path.join(IMAGES_PATH, "items")
+TRAPS_IMAGES_PATH = os.path.join(ITEMS_IMAGES_PATH, "traps")
 
 #======================SAVE/LOAD KEYS==========================
 SEED_KEY = "seed"

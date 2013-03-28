@@ -1,12 +1,14 @@
 #!/usr/bin/python
 
 import sys
+import os
 from dice import *
 from combat import *
+from const import *
 import entity as e
 import broadcast
 
-TRAP_ROOT = "./res/images/items/"
+TRAP_ROOT = TRAPS_IMAGES_PATH
 
 class Trap(e.Entity):
 
@@ -16,7 +18,7 @@ class Trap(e.Entity):
         """Constructor for Traps.  Should only be used with
         keyword arguments."""
         if not image:
-            image = TRAP_ROOT + "trap.png"
+            image = os.path.join(TRAPS_IMAGES_PATH, "trap.png")
         e.Entity.__init__(self, location=location, image=image, passable=True)
         if player:
             self.name = name
@@ -338,7 +340,7 @@ class Trap(e.Entity):
             'effect' : _stickyTrap,
             'isFavor' : False,
             'charges' : 2, 
-            'image' : TRAP_ROOT + 'sticky-trap.png'    
+            'image' : os.path.join(TRAPS_IMAGES_PATH, 'sticky-trap.png')
             },
         'Boulder Pit Trap':
             {
@@ -347,8 +349,7 @@ class Trap(e.Entity):
             'effect' : _boulderPitTrap,
             'isFavor' : False,
             'charges' : 1,
-            'image' : TRAP_ROOT + 'boulder-pit-trap.png'
-            },
+            'image' : os.path.join(TRAPS_IMAGES_PATH, 'boulder-pit-trap.png')            },
 
         # Druid only traps
         'Poison Thorn Trap':
@@ -358,7 +359,7 @@ class Trap(e.Entity):
             'effect' : _poisonThornTrap,
             'isFavor' : False,
             'charges' : 1,
-            'image' : TRAP_ROOT + 'poison-thorn-trap.png'
+            'image' : os.path.join(TRAPS_IMAGES_PATH, 'poison-thorn-trap.png')
             },
 
         # Tactician only traps
