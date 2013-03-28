@@ -346,7 +346,8 @@ class Trap(e.Entity):
             'ratingScale' : 0.007,
             'effect' : _boulderPitTrap,
             'isFavor' : False,
-            'charges' : 1
+            'charges' : 1,
+            'image' : TRAP_ROOT + 'boulder-pit-trap.png'
             },
 
         # Druid only traps
