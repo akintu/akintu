@@ -122,6 +122,7 @@ class Trap(e.Entity):
         element = "Slashing"
         damage = self.calcTrapDamage(target, dieRoll, element)
         Combat.lowerHP(target, damage)
+        Combat.sendCombatMessage(self.name + " dealt " + `damage` + " damage to " + target.name, target, color="red")
 
     def _snakePit(self, target):
         ''' Uncommon trap that poisons and summons a snake? (overworld) '''
@@ -135,6 +136,7 @@ class Trap(e.Entity):
         element = "Bludgeoning"
         damage = self.calcTrapDamage(target, dieRoll, element)
         Combat.lowerHP(target, damage)
+        Combat.sendCombatMessage(self.name + " dealt " + `damage` + " damage to " + target.name, target, color="red")
         # Poison via toxin TODO
         # Summon snake ever?
 
@@ -156,6 +158,7 @@ class Trap(e.Entity):
         element = "Piercing"
         damage = self.calcTrapDamage(target, dieRoll, element)
         Combat.lowerHP(target, damage)
+        Combat.sendCombatMessage(self.name + " dealt " + `damage` + " damage to " + target.name, target, color="red")
 
     def _poisonousDartTrap(self, target):
         ''' Rare trap that fires multiple darts and deals poison.
@@ -185,6 +188,7 @@ class Trap(e.Entity):
         if pHit == "Normal Hit":
             pass
             # TODO: Apply toxin
+        Combat.sendCombatMessage(self.name + " dealt " + `damage` + " damage to " + target.name, target, color="red")
 
     def _fireTrap(self, target):
         ''' Uncommon trap that deals a large amount of fire damage. '''
@@ -194,6 +198,7 @@ class Trap(e.Entity):
         element = "Fire"
         damage = self.calcTrapDamage(target, dieRoll, element)
         Combat.lowerHP(target, damage)
+        Combat.sendCombatMessage(self.name + " dealt " + `damage` + " damage to " + target.name, target, color="red")
 
     def _iceTrap(self, target):
         ''' Rare trap that deals a moderate amount of cold damage and
@@ -207,6 +212,7 @@ class Trap(e.Entity):
         duration = 5
         magnitude = 1
         Combat.addStatus(target, "Hostile Trap Slow", duration, magnitude)
+        Combat.sendCombatMessage(self.name + " dealt " + `damage` + " damage to " + target.name, target, color="red")
 
     def _lightningTrap(self, target):
         ''' Rare trap that deals moderate amount of electric damage and
@@ -220,10 +226,12 @@ class Trap(e.Entity):
         duration = 20
         magnitude = 50
         Combat.addStatus(target, "Hostile Trap Blind", duration, magnitude)
+        Combat.sendCombatMessage(self.name + " dealt " + `damage` + " damage to " + target.name, target, color="red")
 
     def _manaSiphonTrap(self, target):
         ''' Ultra-rare trap that drains all mana from a player. '''
         Combat.modifyResource(target, "MP", -target.totalMP)
+        Combat.sendCombatMessage(self.name + " drained " + `target.totalMP` + " mana from " + target.name, target, color="red")
 
     # Utility methods
     def trigger(self, target):
@@ -275,7 +283,8 @@ class Trap(e.Entity):
             vString = "Monster"
         bundle = {'victim' : vString, 'didHit' : didHit, 'trap' : self}
         bc = broadcast.TrapBroadcast(bundle)
-        bc.shout(self.owner)
+        if self.owner:
+            bc.shout(self.owner)
         bc.shout(victim)
         
     def calcTrapDamage(self, target, amount, element):
@@ -304,23 +313,26 @@ class Trap(e.Entity):
             endAmount1 = int(amount * (1 - target.totalSlashingResistance * 0.01))
             endAmount = int(endAmount1 * (1 - max(0, min(80, target.totalDR)) * 0.01))
             
-        if self.owner.team == "Players":
+        if target.team == "Players":
+            return int(endAmount * (1 - target.totalTrapDamageReduction * 0.01))
+            
+        if self.team == "Players":
             return int(endAmount * (1 + self.owner.bonusTrapDamage * 0.01))
         return endAmount
 
     @staticmethod
-    def getRandomTrap(level):
+    def getRandomTrap(level, loc):
         ''' Returns a random hostile trap of the given level. '''
         if Trap.totalWeight == 0:
             # Hasn't been initialized.
             for hTrap in Trap.monsterTraps:
-                Trap.totalWeight += hTrap['rarityWeight']
+                Trap.totalWeight += Trap.monsterTraps[hTrap]['rarityWeight']
 
         choice = Dice.roll(0, Trap.totalWeight)
         for hTrap in Trap.monsterTraps:
-            choice -= hTrap['rarityWeight']
+            choice -= Trap.monsterTraps[hTrap]['rarityWeight']
             if choice <= 0:
-                return Trap(hTrap, level)
+                return Trap(hTrap, level=level, location=loc)
 
     playerTraps = {
         'Shrapnel Trap':
@@ -347,7 +359,8 @@ class Trap(e.Entity):
             'effect' : _boulderPitTrap,
             'isFavor' : False,
             'charges' : 1,
-            'image' : os.path.join(TRAPS_IMAGES_PATH, 'boulder-pit-trap.png')            },
+            'image' : os.path.join(TRAPS_IMAGES_PATH, 'boulder-pit-trap.png')
+            },
 
         # Druid only traps
         'Poison Thorn Trap':
@@ -403,13 +416,13 @@ class Trap(e.Entity):
             'effect' : _bearTrap,
             'rarityWeight' : 12
             },
-        'Snake Pit':
-            {
-            'rating' : 14,
-            'ratingScale' : 0.285,
-            'effect' : _snakePit,
-            'rarityWeight' : 5
-            },
+        #'Snake Pit':
+        #    {
+        #    'rating' : 14,
+        #    'ratingScale' : 0.285,
+        #    'effect' : _snakePit,
+        #    'rarityWeight' : 5
+        #    },
         'Standard Dart Trap':
             {
             'rating' : 14,
@@ -417,16 +430,16 @@ class Trap(e.Entity):
             'effect' : _standardDartTrap,
             'rarityWeight' : 10
             },
-        'Poisonous Dart Trap':
-            {
-            'rating' : 14,
-            'ratingScale' : 0.285,
-            'effect' : _poisonousDartTrap,
-            'rarityWeight' : 2
-            },
+        #'Poisonous Dart Trap':
+        #    {
+        #    'rating' : 14,
+        #    'ratingScale' : 0.285,
+        #    'effect' : _poisonousDartTrap,
+        #    'rarityWeight' : 2
+        #    },
         'Fire Trap':
             {
-            'rating' : 16,
+            'rating' : 15,
             'ratingScale' : 0.25,
             'effect' : _fireTrap,
             'rarityWeight' : 5

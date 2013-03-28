@@ -31,9 +31,10 @@ class CombatServer():
                 else:
                     Combat.decrementMovementTiles(activePlayer)
 
-                # Update location and broadcast
+                # Update location and broadcast, including possible trap interactions.
                 activePlayer.cLocation = command.location
                 self.server.broadcast(command, -command.id, exclude=True)
+                self.check_trap_trigger(activePlayer, activePlayer.cLocation)
                 self.check_turn_end(activePlayer.cPane)
 
         ###### RemovePerson ######
@@ -135,6 +136,19 @@ class CombatServer():
 
     ### Utility Methods ###
 
+    def check_trap_trigger(self, actor, location):
+        '''Checks to see if a monster or player just stepped on a trap
+        at the given location, and if so, trigger the trap.  If the trap
+        is out of charges, this will remove the trap.'''
+        triggerEnts = self.server.pane[actor.cPane].get_trigger_entities(location)
+        for tEnt in triggerEnts:
+            if tEnt.shouldTrigger(actor):
+                tEnt.trigger(actor)
+            if tEnt.charges <= 0:
+                self.server.pane[actor.cPane].removeTrap(location)
+                self.server.broadcast(Command("TRAP", "REMOVE", location=location), \
+                        -actor.id)
+    
     def shout_turn_start(self, player, turn="Player"):
         '''Shouts to the Player that this particular turn is starting.
         Defaults to "Player"; "Monster" is the other valid value.'''
@@ -208,14 +222,7 @@ class CombatServer():
                 self.server.broadcast(action, -monster.id)
                 monster.cLocation = desiredLocation
                 tilesLeft -= 1
-                triggerEnts = self.server.pane[monster.cPane].get_trigger_entities(desiredLocation)
-                for tEnt in triggerEnts:
-                    if tEnt.shouldTrigger(monster):
-                        tEnt.trigger(monster)
-                    if tEnt.charges <= 0:
-                        self.server.pane[monster.cPane].removeTrap(desiredLocation)
-                        self.server.broadcast(Command("TRAP", "REMOVE", location=desiredLocation), \
-                                -monster.id)
+                self.check_trap_trigger(monster, desiredLocation)
             elif tilesLeft == monster.totalMovementTiles:
                 # Monster couldn't move at all.
                 return "Failed"

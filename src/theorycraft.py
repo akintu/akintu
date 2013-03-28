@@ -107,8 +107,62 @@ class TheoryCraft(object):
         return rValue
         
     @staticmethod
+    def resetPlayerLevel(player):
+        '''Returns a rehydrated character but with the level
+        set to 1 from the PlayerCharacter provided.'''
+        longString = player.dehydrate()
+        
+        bigSplit = longString.split("@")
+        basicDetails = bigSplit[0].split("&")
+        name = basicDetails[0]
+        race = basicDetails[1]
+        cls = basicDetails[2]
+        level = int(basicDetails[3])
+        gold = int(basicDetails[4])
+        experience = int(basicDetails[5])
+        hardcore = False
+        if str(basicDetails[6]) == "True":
+            hardcore = True
+        ironman = False
+        if str(basicDetails[7]) == "True":
+            ironman = True
+        abilityNames = bigSplit[1].split("&")
+        spellNames = bigSplit[2].split("&")
+        passiveNames = bigSplit[3].split("&")
+        inventoryNames = bigSplit[4].split("&")
+        toEquip = bigSplit[5].split("&")
+        traitNames = bigSplit[6].split("&")
+        
+        newChar = TheoryCraft.getNewPlayerCharacter(race, cls, name=name, new=False, hardcore=hardcore, ironman=ironman, respec=True)
+
+        newChar.inventory.gold = gold
+        newChar._experience = experience
+        
+        for itemName in inventoryNames:
+            if itemName == '':
+                continue
+            newChar.inventory.addItem(TheoryCraft.rehydrateTreasure(itemName))
+        for itemName in toEquip:
+            if itemName == '':
+                continue
+            item = TheoryCraft.rehydrateEquipment(itemName)
+            newChar.inventory.addItem(item)
+            if isinstance(item, equipment.Weapon) and newChar.equippedItems._allGear['Main Hand']:
+                # Already has gear on the main hand.
+                newChar.equip(item, "Left")
+            else:
+                newChar.equip(item)
+            newChar.inventory.removeItem(item)
+        
+        newChar.HP = newChar.totalHP
+        newChar.AP = newChar.totalAP
+        newChar.MP = newChar.totalMP
+            
+        return newChar
+        
+    @staticmethod
     def rehydratePlayer(longString):
-        '''Returns a rehydrated character from the comnpressed 
+        '''Returns a rehydrated character from the compressed 
         string provided.'''
         bigSplit = longString.split("@")
         basicDetails = bigSplit[0].split("&")
@@ -194,7 +248,11 @@ class TheoryCraft(object):
         splits = details.split("@")
         name = splits[1]
         level = int(splits[2])
-        return TheoryCraft.getMonster(name=name, level=level)
+        playerNum = int(splits[3])
+        rMonster = TheoryCraft.getMonster(name=name, level=level, playerNum=playerNum)
+        rMonster.adjustMaxHP()
+        rMonster.HP = rMonster.totalHP
+        return rMonster
             
     @staticmethod
     def rehydratePerson(details):
@@ -204,7 +262,7 @@ class TheoryCraft(object):
             return TheoryCraft.rehydratePlayer(details)
             
     @staticmethod
-    def getMonster(index=None, loc=location.Location((0, 0), (PANE_X/2, PANE_Y/2)), level=None, name=None, tolerance=1, ignoreMaxLevel=False):
+    def getMonster(index=None, loc=location.Location((0, 0), (PANE_X/2, PANE_Y/2)), level=None, name=None, tolerance=1, ignoreMaxLevel=False, playerNum=1):
         ''' Generates a monster for the overworld.
         If name is specified:
             Create the exact monster specified with the exact level specified.
@@ -219,7 +277,7 @@ class TheoryCraft(object):
         if name:
             for mon in TheoryCraft.monsters:
                 if mon['name'] == name:
-                    theMonster = monster.Monster(mon)
+                    theMonster = monster.Monster(mon, playerNum=playerNum)
                     break
         else:
             inLevelList = None
@@ -239,7 +297,7 @@ class TheoryCraft(object):
                 theMonster = monster.Monster(choice(inLevelList))
             else:
                 # No monster of this level exists, just give a default monster for testing.
-                theMonster = monster.Monster(TheoryCraft.monsters[0])
+                theMonster = monster.Monster(TheoryCraft.monsters[0], playerNum=playerNum)
         theMonster.location = loc
         theMonster.setLevel(levelChoice)
         return theMonster
@@ -280,7 +338,7 @@ class TheoryCraft(object):
         
         # Add in category logic when we have regions?  Do we want this ever?
         firstMonster = TheoryCraft.getMonster(loc=initialMonster.location, level=initialMonster.level,
-                                              name=initialMonster.name)
+                                              name=initialMonster.name, playerNum=numberOfPlayers)
         listOfMonsters = [firstMonster]
         if ignoreMaxLevel:
             subList = [x for x in TheoryCraft.monsters if
@@ -302,14 +360,14 @@ class TheoryCraft(object):
             else:
                 selection = randint(0, len(subList) - 1)
             if subList[selection]['GP'] <= TheoryCraft.GROUP_GP - currentGP:
-                addingMonster = monster.Monster(subList[selection])
+                addingMonster = monster.Monster(subList[selection], playerNum=numberOfPlayers)
                 addingMonster.setLevel(initialMonster.level)
                 listOfMonsters.append(addingMonster)
                 currentGP += subList[selection]['GP']
                 numMonsters += 1
 
-        for mon in listOfMonsters:
-            mon.adjustMaxHP(numberOfPlayers)
+        # for mon in listOfMonsters:
+            # mon.adjustMaxHP()
         return listOfMonsters
 
 

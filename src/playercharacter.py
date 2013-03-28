@@ -21,7 +21,7 @@ class PlayerCharacter(p.Person):
     demoExpRequiredForLevel = {1 : 3, 2 : 15, 3 : 42, 4 : 82, 5 : 157}
     LEVEL_MAX = 5
 
-    def __init__(self, argDict, name="Guy Threepwood", new=True, ironman=False, hardcore=False):
+    def __init__(self, argDict, name="Guy Threepwood", new=True, ironman=False, hardcore=False, respec=False):
         p.Person.__init__(self, argDict)
 
         self.team = "Players"
@@ -141,8 +141,8 @@ class PlayerCharacter(p.Person):
         # self._abilityAPModsList [["AbilityName", -2], [...]] I don't think we need these...
         # self._spellMPModsList [["SpellName", -1], [...]]
         self.knockbackResistance = 0 # Amount above 100 is treated as 100.
-        self._equipmentIdentification = 0
-        self._statusIdentification = 0
+        self._equipmentIntuition = 0
+        self._statusIntuition = 0
         self._equipmentShopBonus = 0
 
         # --- Thief classes ---
@@ -193,7 +193,7 @@ class PlayerCharacter(p.Person):
 
         self.spellList = []
 
-        if new:
+        if new or respec:
             spellOneName = p.Person.setFrom(argDict, 'spellOne', None)
             if spellOneName:
                 spellOne = spell.Spell(spellOneName, self)
@@ -210,7 +210,7 @@ class PlayerCharacter(p.Person):
                 self.spellList.append(spellThree)
 
         self.abilities = []
-        if new:
+        if new or respec:
             self.registerBasicAttacks()
             for abil in ability.Ability.allAbilities:
                 current = ability.Ability.allAbilities[abil]
@@ -222,7 +222,7 @@ class PlayerCharacter(p.Person):
                         self.abilities.append(newAbil)
 
         self.passiveAbilities = []
-        if new:
+        if new or respec:
             for pAbil in passiveability.PassiveAbility.allContentByName:
                 current = passiveability.PassiveAbility.allContentByName[pAbil]
                 if current['class'] == self.baseClass or current['class'] == self.secondaryClass or current['class'] == self.characterClass or \
@@ -946,24 +946,39 @@ class PlayerCharacter(p.Person):
         self._arcaneArcherManaRegenBase = value
 
     @property
-    def totalIdentification(self):
-        return int(self.totalSorcery + self.equipmentIdentification + self.statusIdentification)
+    def totalTrapDamageReduction(self):
+        '''Granted solely from intuition'''
+        tdr = 0
+        if self.totalIntuition <= 20:
+            tdr = self.totalIntuition * 1.5
+        elif 20 < self.totalIntuition <= 40:
+            tdr = 30 + (self.totalIntuition - 20)
+        elif 40 < self.totalIntuition <= 80:
+            tdr = 50 + (self.totalIntuition - 40) * 0.25
+        else:
+            tdr = 60
+        return int(tdr)
+        
+        
+    @property
+    def totalIntuition(self):
+        return int(self.totalSorcery + self.equipmentIntuition + self.statusIntuition)
 
     @property
-    def equipmentIdentification(self):
-        return int(self._equipmentIdentification)
+    def equipmentIntuition(self):
+        return int(self._equipmentIntuition)
 
-    @equipmentIdentification.setter
-    def equipmentIdentification(self, value):
-        self._equipmentIdentification = value
+    @equipmentIntuition.setter
+    def equipmentIntuition(self, value):
+        self._equipmentIntuition = value
 
     @property
-    def statusIdentification(self):
-        return int(self._statusIdentification)
+    def statusIntuition(self):
+        return int(self._statusIntuition)
 
-    @statusIdentification.setter
-    def statusIdentification(self, value):
-        self._statusIdentification = value
+    @statusIntuition.setter
+    def statusIntuition(self, value):
+        self._statusIntuition = value
 
     @property
     def lockpicking(self):
@@ -1326,10 +1341,11 @@ class PlayerCharacter(p.Person):
         cs.append("| Awareness:         " + `self.totalAwareness` + " (" + `self.equipmentAwareness` + ")  Sneak: " + `self.totalSneak` + " (" + `self.equipmentSneak` + ")\n")
         cs.append("| Trap Evade:        " + `self.totalTrapEvade` + " (" + `self.equipmentTrapEvade` + ")  Movement Tiles: " + `self.totalMovementTiles` + " (" + `self.equipmentMovementTiles` + ")\n")
         cs.append("| ----------->>> Tertiary Statistics <<<----------------\n")
-        cs.append("| Shop Bonus:           " + `self.totalShopBonus` + "% (" + `self.equipmentShopBonus` + "%)  Carrying Capacity: " + `self.inventoryCapacity` + " (" + `self.equipmentCarryingCapacity` + ")\n")
-        cs.append("| Trap Rating Bonus:    " + `self.bonusTrapRating` + "      Trap Damage Bonus: " + `self.bonusTrapDamage` + "%\n")
-        cs.append("| Jewlery Bonus:       +" + `self.totalJewleryBonus` + "     Potion Bonus Effect: " + `self.totalPotionEffect` + "%\n") 
-        cs.append("| Identification:       " + `self.totalIdentification` + " (" + `self.equipmentIdentification` + ")  Gold Find: +" + `self.goldFind` + "%\n")
+        cs.append("| Shop Bonus:            " + `self.totalShopBonus` + "% (" + `self.equipmentShopBonus` + "%)  Carrying Capacity: " + `self.inventoryCapacity` + " (" + `self.equipmentCarryingCapacity` + ")\n")
+        cs.append("| Trap Rating Bonus:     " + `self.bonusTrapRating` + "      Trap Damage Bonus: " + `self.bonusTrapDamage` + "%\n")
+        cs.append("| Jewlery Bonus:        +" + `self.totalJewleryBonus` + "     Potion Bonus Effect: " + `self.totalPotionEffect` + "%\n") 
+        cs.append("| Intuition:             " + `self.totalIntuition` + " (" + `self.equipmentIntuition` + ")  Gold Find: +" + `self.goldFind` + "%\n")
+        cs.append("| Trap Damage Reduction: " + `self.totalTrapDamageReduction` + "%\n")
         cs.append("| ----------->>> Elemental Resistances <<<--------------\n")
         cs.append("| Arcane Resistance:   " + `self.totalArcaneResistance` + "% (" + `self.equipmentArcaneResistance` + ")\n")
         cs.append("| Cold Resistance:     " + `self.totalColdResistance` + "% (" + `self.equipmentColdResistance` + ")\n")

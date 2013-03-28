@@ -13,6 +13,9 @@ from tile import Tile
 from theorycraft import TheoryCraft
 from state import State
 from ai import AI
+from dice import *
+
+import trap
 
 class Pane(object):
     '''
@@ -537,12 +540,24 @@ class CombatPane(Pane):
             loc = self.rand_move_within_pane(loc, [1,9], [2,5], 3)
             
     def place_traps(self, number):
-        #TODO: Devin, go ahead and modify this to your needs.
+        ''' Number indicates the number of players '''
         print "Possible trap locations: " 
         print self.traps_region
-        for i in range(number*3):
+        
+        paneCharacterLevel = 1 # TODO: Find out the level of this area.
+        numberOfTraps = Dice.rollNumberOfTraps(paneCharacterLevel)
+        if 2 <= number <= 3:
+            numberOfTraps += 1
+        elif number == 4:
+            numberOfTraps += 2
+            
+        for i in range(numberOfTraps):
             location = random.choice(list(self.traps_region))
+            
             #Place a trap here
+            trapLevel = 1 # TODO: Find out the level of this area.
+            hostileTrap = trap.Trap.getRandomTrap(trapLevel, location)
+            self.addTrap(location, hostileTrap)
             
             #Ensure we don't place a trap in the same spot
             self.traps_region -= Region("SQUARE", location, location)

@@ -191,6 +191,25 @@ class Dice(object):
         Dice.popGen()
         return rValue
 
-
+    @staticmethod
+    def rollNumberOfTraps(level, reductionPercent=0):
+        '''Determines the number of traps to be placed on a combat
+        pane.'''
+        Dice.stashGen()
+        # TODO: Smaller combat panes will need a reductionPercent.
+        maximum = 10
+        minimum = 2
+        if level < 3:
+            maximum = 4
+        if level > 8:
+            minimum = 5
+        selectionList = ['2', '2', '3', '3', '3', '4', '4', '4', '5', '5', '6', '7', '8', '9', '10']
+        rValue = int(random.choice(selectionList))
+        if rValue > maximum:
+            rValue = maximum
+        elif rValue < minimum:
+            rValue = minimum
+        Dice.popGen()
+        return rValue
 
 

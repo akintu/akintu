@@ -28,11 +28,12 @@ class Monster(person.Person):
             return argDict[variableName]
 
 
-    def __init__(self, argDict):
+    def __init__(self, argDict, playerNum=1):
         person.Person.__init__(self, argDict)
         self.attackPower = 100
         self.team = "Monsters"
         # TODO: Find a way to distinguish between summons and monsters for the 'team'. Perhaps inherit from Person seperately?
+        self.playerNum = playerNum
         self.level = Monster.setFrom(argDict, 'minLevel')
         self.minLevel = self.level
         self.maxLevel = Monster.setFrom(argDict, 'maxLevel')
@@ -157,22 +158,20 @@ class Monster(person.Person):
         self.level = level
         self.experience = self.GP * self.level
 
-    def adjustMaxHP(self, numberOfPlayers):
-        if numberOfPlayers == 1:
-            pass
-        elif numberOfPlayers == 2:
-            self.baseHP = round(self.baseHP * 1.5)
-        elif numberOfPlayers == 3:
-            self.baseHP = round(self.baseHP * 2)
-        elif numberOfPlayers == 4:
-            self.baseHP = round(self.baseHP * 2.5)
+    def adjustMaxHP(self):
+        if self.playerNum == 2:
+            self.baseHP = int(self.baseHP * 1.5)
+        elif self.playerNum == 3:
+            self.baseHP = int(self.baseHP * 2)
+        elif self.playerNum == 4:
+            self.baseHP = int(self.baseHP * 2.5)
             
     def getDetailTuple(self):
         '''DEPRECATED'''
         return ("Monster", self.name, self.level)
 
     def dehydrate(self):
-        return "@" + self.name + "@" + `self.level`
+        return "@" + self.name + "@" + `self.level` + "@" + `self.playerNum`
         
     def getSufficientAbilities(self):
         sufficient = []

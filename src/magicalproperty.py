@@ -463,12 +463,12 @@ class MagicalProperty(object):
         else:
             owner.equipmentHP -= bonus
 
-    def _identification(self, owner, reverse=False):
+    def _intuition(self, owner, reverse=False):
         bonus = self.counts
         if not reverse:
-            owner.equipmentIdentification += bonus
+            owner.equipmentIntuition += bonus
         else:
-            owner.equipmentIdentification -= bonus
+            owner.equipmentIntuition -= bonus
 
     def _magicResist(self, owner, reverse=False):
         bonus = self.counts
@@ -1183,17 +1183,17 @@ class MagicalProperty(object):
             'prefix' : 'Stout',
             'suffix' : 'of the Tortoise'
             },
-        'Identification':
+        'Intuition':
             {
             'weight' : 5,
             'cost' : 1,
-            'effect' : _identification,
+            'effect' : _intuition,
             'max' : None,
             'doubled' : False,
             'exclusion' : 'Armor Only',
             'categories' : [],
             'goldMod' : 10,
-            'prefix' : 'Illuminating',
+            'prefix' : 'Intuitive',
             'suffix' : 'of Elucidation'
             },
         'Magic Resist':
