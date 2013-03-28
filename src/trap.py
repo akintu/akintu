@@ -8,8 +8,6 @@ from const import *
 import entity as e
 import broadcast
 
-TRAP_ROOT = TRAPS_IMAGES_PATH
-
 class Trap(e.Entity):
 
     totalWeight = 0
