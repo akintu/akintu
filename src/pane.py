@@ -483,6 +483,7 @@ class CombatPane(Pane):
         '''
         super(CombatPane, self).__init__(pane.seed, (0,0), False)
         self.objects = dict()           #Fixed combat/overworld passability bug
+        self.paneCharacterLevel = 1
         
         self.traps_region = Region("SQUARE", Location(self.location, (0, 0)), Location(self.location, (PANE_X-1, PANE_Y-1)))
         #Remove areas where players can enter
@@ -534,6 +535,8 @@ class CombatPane(Pane):
         loc = temp = start_location
         #print monsters
         for person in monsters:
+            self.paneCharacterLevel = max(self.paneCharacterLevel, person.level)
+            print "Combat Pane Level: " + str(self.paneCharacterLevel)
             print "Monster baseHP: " + str(person.baseHP)
             while not self.is_passable(loc) or not self.is_within_bounds(loc, 3):
                 #Choose a new location
@@ -550,8 +553,7 @@ class CombatPane(Pane):
         print "Possible trap locations: " 
         print self.traps_region
         
-        paneCharacterLevel = 1 # TODO: Find out the level of this area.
-        numberOfTraps = Dice.rollNumberOfTraps(paneCharacterLevel)
+        numberOfTraps = Dice.rollNumberOfTraps(self.paneCharacterLevel)
         if 2 <= number <= 3:
             numberOfTraps += 1
         elif number == 4:
@@ -561,8 +563,7 @@ class CombatPane(Pane):
             location = random.choice(list(self.traps_region))
             
             #Place a trap here
-            trapLevel = 1 # TODO: Find out the level of this area.
-            hostileTrap = trap.Trap.getRandomTrap(trapLevel, location)
+            hostileTrap = trap.Trap.getRandomTrap(self.paneCharacterLevel, location)
             self.addTrap(location, hostileTrap)
             
             
