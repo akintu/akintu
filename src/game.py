@@ -380,6 +380,11 @@ class Game(object):
                 thisTrap = trap.Trap(name=command.abilityName, player=placer, location=command.targetLoc)
                 self.pane.addTrap(command.targetLoc, thisTrap)
                 self.set_overlay(command.targetLoc)
+                
+            elif command.type == "TRAP" and command.action == "DISCOVER":
+                thisTrap = trap.Trap(name=command.trapName, level=command.trapLevel, location=command.targetLoc)
+                self.pane.addTrap(command.targetLoc, thisTrap)
+                self.set_overlay(command.targetLoc)
 
             elif command.type == "TRAP" and command.action == "REMOVE":
                 self.pane.removeTrap(command.location)

@@ -140,6 +140,19 @@ class Dice(object):
             return True
 
     @staticmethod
+    def rollTrapDetect(trap, player):
+        '''Determines if the player detects the trap this turn.
+        Returns True or False.'''
+        Dice.stashGen()
+        adjustedDifficulty = round((trap.level * 3 + 13) * random.uniform(0.75, 1.0))
+        adjustedDetection = round(max(player.totalAwareness, player.totalIntuition) * random.uniform(0.75, 1.0))
+        wasDetected = False
+        if adjustedDetection >= adjustedDifficulty:
+            wasDetected = True
+        Dice.popGen()
+        return wasDetected
+            
+    @staticmethod
     def rollPresetChance(source, target, chance):
         """Rolls the level-adjusted present chance roll as defined on the Misc. page of the wiki.
         Inputs:

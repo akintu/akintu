@@ -41,7 +41,9 @@ class Pane(object):
         self.objects = dict()
         self.person = {}
         self.background_key = Sprites.get_background(self.seed + str(self.location))
-
+        self.hostileTraps = []
+        
+        
         for i in range(PANE_X):
             for j in range(PANE_Y):
                 self.tiles[(i, j)] = Tile(None, True)
@@ -377,8 +379,12 @@ class Pane(object):
         if not loc in self.tiles:
             self.tiles[loc] = Tile(None, True)
         self.tiles[loc].addTrap(trap)
+        if trap.team == "Monsters":
+            self.hostileTraps.append(trap)
+            # Only used for checking for traps.  We don't even need to bother
+            # removing anything from this list.
         
-    def removeTrap(self, location):
+    def removeTrap(self, location, hostile=False):
         loc = location.tile
         if loc in self.tiles:
             self.tiles[loc].removeTrap()
@@ -558,6 +564,7 @@ class CombatPane(Pane):
             trapLevel = 1 # TODO: Find out the level of this area.
             hostileTrap = trap.Trap.getRandomTrap(trapLevel, location)
             self.addTrap(location, hostileTrap)
+            
             
             #Ensure we don't place a trap in the same spot
             self.traps_region -= Region("SQUARE", location, location)

@@ -31,6 +31,7 @@ class Trap(e.Entity):
             self.team = "Players"
             self.isFavor = trapDict['isFavor']
             self.charges = trapDict['charges']
+            self.visible = True
         else:
             self.name = name
             trapDict = Trap.monsterTraps[name]
@@ -46,6 +47,7 @@ class Trap(e.Entity):
             self.team = "Monsters"
             self.isFavor = False # Monsters do not place Favors
             self.charges = 1 # Monster traps only have one charge
+            self.visible = False
 
     # Player traps
     def _shrapnelTrap(self, target):

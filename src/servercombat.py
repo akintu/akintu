@@ -136,6 +136,30 @@ class CombatServer():
 
     ### Utility Methods ###
 
+    def check_trap_discover(self, player):
+        '''Iterates through every trap and attempts to discover its location (and report it to the player.)'''
+        # Get a list of all hostile traps on the pane.
+        combatPane = self.server.pane[player.cPane]
+        hostileTraps = combatPane.hostileTraps
+        
+        # Iterate through the list checking to see if it was detected and is not yet visible, if so, add it to a set of traps.
+        detectedTraps = []
+        for trap in hostileTraps:
+            if not trap.visible:
+                if Dice.rollTrapDetect(trap, player):
+                    detectedTraps.append(trap)
+        
+        # Actually discover the trap.
+        for trap in detectedTraps:
+            self.discover_trap(trap, player)
+    
+    def discover_trap(self, trap, finder):
+        '''Tells all players where a trap is, and who found it.'''
+        Combat.sendCombatMessage(finder.name + " found a " + trap.name + "!", finder, color='beige')
+        trap.visible = True
+        action = Command("TRAP", "DISCOVER", id=finder.id, trapName=trap.name, trapLevel=trap.level, targetLoc=trap.location)
+        self.server.broadcast(action, pid=-finder.id)
+    
     def check_trap_trigger(self, actor, location):
         '''Checks to see if a monster or player just stepped on a trap
         at the given location, and if so, trigger the trap.  If the trap
@@ -145,7 +169,7 @@ class CombatServer():
             if tEnt.shouldTrigger(actor):
                 tEnt.trigger(actor)
             if tEnt.charges <= 0:
-                self.server.pane[actor.cPane].removeTrap(location)
+                self.server.pane[actor.cPane].removeTrap(location, hostile=True)
                 self.server.broadcast(Command("TRAP", "REMOVE", location=location), \
                         -actor.id)
     
@@ -266,6 +290,9 @@ class CombatServer():
                 print target.name + " has status enabled: " + stat.name
             else:
                 print target.name + " has status: " + stat.name + " T=" + `int(stat.turnsLeft)`
+        if target.team == "Players":
+            self.check_trap_discover(target)
+                
 
     def startCombat(self, playerId, monsterId):
         '''Initiates combat for the first player to enter combat.
