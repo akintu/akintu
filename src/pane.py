@@ -507,7 +507,6 @@ class CombatPane(Pane):
         if monster:
             monsters = TheoryCraft.generateMonsterGroup(monster, numberOfPlayers=num_players)
             self.place_monsters(monsters, self.focus_location)
-        
         # print pane
         # print self
 
@@ -515,6 +514,7 @@ class CombatPane(Pane):
         loc = temp = start_location
         #print monsters
         for person in monsters:
+            print "Monster baseHP: " + str(person.baseHP)
             while not self.is_passable(loc) or not self.is_within_bounds(loc, 3):
                 #Choose a new location
                 #print str(loc) + " New Location"
