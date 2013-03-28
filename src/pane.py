@@ -318,8 +318,8 @@ class Pane(object):
         for loc in region:
             self.remove_obstacles(loc.tile)
 
-    def get_combat_pane(self, focus_tile, monster = None):
-        return CombatPane(self, focus_tile, monster)
+    def get_combat_pane(self, focus_tile, monster = None, num_players=1):
+        return CombatPane(self, focus_tile, monster, num_players)
                 
 
     def save_state(self):
@@ -458,7 +458,7 @@ class Town(Pane):
                 
 class CombatPane(Pane):
 
-    def __init__(self, pane, pane_focus, monster):
+    def __init__(self, pane, pane_focus, monster, num_players):
         '''
         A subpane of the current pane.  It will contain 10x6 of the original
         tiles which turn into 3x3 grids on the CombatPane.
@@ -505,7 +505,7 @@ class CombatPane(Pane):
 
         self.load_background_images()
         if monster:
-            monsters = TheoryCraft.generateMonsterGroup(monster)
+            monsters = TheoryCraft.generateMonsterGroup(monster, numberOfPlayers=num_players)
             self.place_monsters(monsters, self.focus_location)
         
         # print pane
@@ -524,6 +524,9 @@ class CombatPane(Pane):
             self.person[id(person)] = person
             temp = loc
             loc = self.rand_move_within_pane(loc, [1,9], [2,5], 3)
+            
+    def place_traps(self, number):
+        pass
 
 
     def rand_move_within_pane(self, location, dir_range, dist_range, bounds):

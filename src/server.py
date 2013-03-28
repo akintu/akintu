@@ -271,7 +271,9 @@ class GameServer():
         if pane not in self.pane:
             print("Loading pane " + str(pane))
             if pid:
-                self.pane[pane] = self.pane[pane.pane].get_combat_pane(pane, self.person[pid])
+                numPlayers = len([x for x in self.player.values() if self.person[x].location.pane == self.person[pid].location.pane])
+                print "Num Players: " + str(numPlayers)
+                self.pane[pane] = self.pane[pane.pane].get_combat_pane(pane, self.person[pid], numPlayers)
                 for i, p in self.pane[pane].person.iteritems():
                     p.cLocation = p.location
                     p.location = None
