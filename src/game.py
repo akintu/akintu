@@ -217,6 +217,9 @@ class Game(object):
                     'level': p.level, 'name' : p.name, 'size' : sizeAbbr}
                 self.screen.add_person(command.id, persondict)
 
+                if hasattr(command, 'checkLevelup') and command.checkLevelup == True:
+                    self.request_levelup()
+                
             if command.type == "PERSON" and command.id not in self.pane.person:
                 continue
 
@@ -611,7 +614,7 @@ class Game(object):
                     elif event.key == K_c:
                         self.display_character_sheet()
                     elif event.key == K_y:
-                        self.request_levelup()
+                        self.request_levelup(True)
                     elif event.key == K_i:
                         self.open_inventory()
                     elif event.key == K_F2:
@@ -625,7 +628,7 @@ class Game(object):
         # If the chest is unlocked, distribute treasure to this player
         #    and all others on this pane.
 
-    def request_levelup(self):
+    def request_levelup(self, debug=False):
         # Remove EXP code left for testing, TODO
         player = self.pane.person[self.id]
         if player.experience >= player.getExpForNextLevel() and player.level < LEVEL_MAX:
@@ -633,7 +636,7 @@ class Game(object):
             self.performingLevelup = True
             self.levelup = lvl.Levelup(player, self.screen)
             self.levelup.next()
-        else:
+        elif debug:
             player.addExperience(75)
             if player.experience >= player.getExpForNextLevel() and player.level < LEVEL_MAX:
                 self.screen.show_text("LEVEL UP!" , color='magenta')
@@ -743,55 +746,6 @@ class Game(object):
             return
         self.CDF.send(Command("ITEM", "USE", id=self.id, itemName=self.currentItem.name))
         self.selectionMode = "targeting"
-        #self.itemList = []
-
-    def begin_select_consumable(self):
-        pass
-
-    # def cycle_items(self, reverse=False):
-        # if not self.combat:
-            # return
-        # if not self.itemList or not self.currentItem or self.currentItem not in self.itemList:
-            # self.itemList = self.pane.person[self.id].inventory.allConsumables
-            # if not self.itemList:
-                # return
-            # self.currentItem = self.itemList[0]
-        # elif not reverse:
-            # if self.currentItem == self.itemList[-1]:
-                # self.currentItem = self.itemList[0]
-            # else:
-                # itemIndex = self.itemList.index(self.currentItem)
-                # self.currentItem = self.itemList[itemIndex + 1]
-        # else:
-            # if self.currentItem == self.itemList[0]:
-                # self.currentItem = self.itemList[-1]
-            # else:
-                # itemIndex = self.itemList.index(self.currentItem)
-                # self.currentItem = self.itemList[itemIndex - 1]
-        # self.screen.show_text("Selected item: " + self.currentItem.name, color='lightblue')
-
-    # def cycle_abilities(self, reverse=False):
-        # if not self.combat:
-            # return
-        # if not self.abilityList or not self.currentAbility or self.currentAbility not in self.abilityList:
-            # self.abilityList = self.pane.person[self.id].abilities
-            # self.abilityList.extend(self.pane.person[self.id].spellList)
-            # self.currentAbility = self.abilityList[0]
-        # elif not reverse:
-            # if self.currentAbility == self.abilityList[-1]:
-                # self.currentAbility = self.abilityList[0]
-            # else:
-                # abilityIndex = self.abilityList.index(self.currentAbility)
-                # self.currentAbility = self.abilityList[abilityIndex + 1]
-        # else:
-            # if self.currentAbility == self.abilityList[0]:
-                # self.currentAbility = self.abilityList[-1]
-            # else:
-                # abilityIndex = self.abilityList.index(self.currentAbility)
-                # self.currentAbility = self.abilityList[abilityIndex - 1]
-        # self.screen.show_text("Selected: " + self.currentAbility.name + " AP COST: " +
-                                # str(self.currentAbility.APCost),
-                                # color='lightblue')
 
     def cycle_targets(self, reverse=False):
         # Cycles through the current persons in the current combat pane.

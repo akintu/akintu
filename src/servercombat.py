@@ -199,10 +199,8 @@ class CombatServer():
                     Combat.sendCombatMessage(char.name + " has Perished!", color='darkred', character=char)
                     # TODO: Delete saves, end game?
 
-
-
         for char in toUpdateList:
-            self.combatStates[combatPane].deadMonsterList.append(char)
+            self.combatStates[combatPane].deadMonsterSet.add(char)
             Combat.sendCombatMessage(message=char.name + " Died!", color='magenta', character=char)
             self.server.SDF.queue.put((None, Command("PERSON", "REMOVE", id=char.id)))
 
@@ -391,7 +389,7 @@ class CombatServer():
         chars = [self.server.person[x] for x in self.server.pane[combatPane].person]
         players = [x for x in chars if x.team == "Players"]
         monsters = [x for x in chars if x.team == "Monsters" and x not in
-                    self.combatStates[combatPane].deadMonsterList]
+                    self.combatStates[combatPane].deadMonsterSet]
         for mon in monsters:
             visiblePlayers = []
             for player in players:
@@ -430,32 +428,25 @@ class CombatServer():
         self.server.SDF.queue.put((None, Command("PERSON", "REMOVE", id=monsterLeader.id)))
 
         for player in livingPlayers:
-            self.giveVictoryExperience(player, state.deadMonsterList)
-            self.giveGold(player, state.deadMonsterList)
+            self.giveVictoryExperience(player, state.deadMonsterSet)
+            self.giveGold(player, state.deadMonsterSet)
             self.removeTemporaryStatuses(player)
             self.refillResources(player)
             self.exit_combat(player)
-        # Cleanup, exit combat TODO
-
-
-
+            
     #### End of Combat Phase Methods ####
 
     def giveVictoryExperience(self, player, monsterList):
         '''Grants the appropriate amount of EXP to a player at the end of
         a victorious combat.'''
         exp = Combat.calcExperienceGain(player, monsterList)
-        #oldLevel = player.level
         player.addExperience(exp)
-        #if oldLevel != newLevel:
-        #    Combat.sendCombatMessage(player.name + " LEVELUP!", player, color='magenta')
         if player.experience >= player.getExpForNextLevel() and player.level < 5: # Remove hardcoded value TODO
                 Combat.sendCombatMessage(player.name + " LEVELUP!", player, color='magenta')
         Combat.sendCombatMessage("Gained " + str(exp) + " Experience. (" + str(player.experience) +
                                  "/" + str(player.getExpForNextLevel()) + ")",
                                  player, color='magenta', toAll=False)
         # Levelup is not performed here.
-
 
     def giveGold(self, player, monsterList):
         gold = 0
@@ -489,7 +480,7 @@ class CombatServer():
         self.server.broadcast(Command("PERSON", "REMOVE", id=player.id), player.id)
         self.server.broadcast(Command("UPDATE", "COMBAT", combat=False), player.id)
         self.server.broadcast(Command("PERSON", "CREATE", id=player.id, \
-                location=player.location, details=player.dehydrate()), player.id)
+                location=player.location, details=player.dehydrate(), checkLevelup=True), player.id)
         self.server.send_world_items(player.id, player.location)
         for i in self.server.pane[player.location.pane].person:
             if i != player.id:
@@ -551,4 +542,4 @@ class CombatServer():
 class CombatState(object):
     def __init__(self):
         self.turnTimer = None
-        self.deadMonsterList = []
+        self.deadMonsterSet = set([])
