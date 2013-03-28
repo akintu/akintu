@@ -458,6 +458,7 @@ class Town(Pane):
                 
 class CombatPane(Pane):
 
+    CombatEntrances = [TILE_LEFT, TILE_TOP, TILE_RIGHT, TILE_BOTTOM, TILE_TOP_LEFT, TILE_TOP_RIGHT, TILE_BOTTOM_LEFT, TILE_BOTTOM_RIGHT]
     def __init__(self, pane, pane_focus, monster, num_players):
         '''
         A subpane of the current pane.  It will contain 10x6 of the original
@@ -473,7 +474,12 @@ class CombatPane(Pane):
         '''
         super(CombatPane, self).__init__(pane.seed, (0,0), False)
         self.objects = dict()           #Fixed combat/overworld passability bug
-
+        
+        self.traps_region = Region("SQUARE", Location(self.location, (0, 0)), Location(self.location, (PANE_X-1, PANE_Y-1)))
+        #Remove areas where players can enter
+        for (x, y) in CombatPane.CombatEntrances:
+            self.traps_region("SUB", "SQUARE", Location(self.location, (x-1, y-1)), Location(self.location, (x+1, y+1)))
+        
         loc_x = pane_focus.tile[0]
         loc_y = pane_focus.tile[1]
 
@@ -500,6 +506,8 @@ class CombatPane(Pane):
                 # print "(" + str(x) + ", " + str(y) + ")"
                 if (x,y) in pane.objects:
                     self.add_zoomed_obstacle((i, j), pane.objects[(x,y)])
+                    #Remove areas where there are obstacles
+                    self.traps_region("SUB", "SQUARE", Location(self.location, (i-1, j-1)), Location(self.location, (i+1, j+1)))
                 j+=3
             i+=3
 
@@ -507,8 +515,11 @@ class CombatPane(Pane):
         if monster:
             monsters = TheoryCraft.generateMonsterGroup(monster, numberOfPlayers=num_players)
             self.place_monsters(monsters, self.focus_location)
-        # print pane
-        # print self
+            
+            for id, monster in self.person.iteritems():
+                loc = monster.location
+                self.traps_region("SUB", "SQUARE", loc, loc)
+            self.place_traps(num_players)
 
     def place_monsters(self, monsters, start_location):
         loc = temp = start_location
@@ -526,9 +537,18 @@ class CombatPane(Pane):
             loc = self.rand_move_within_pane(loc, [1,9], [2,5], 3)
             
     def place_traps(self, number):
-        pass
-
-
+        #TODO: Devin, go ahead and modify this to your needs.
+        print "Possible trap locations: " 
+        print self.traps_region
+        for i in range(number*3):
+            location = random.choice(list(self.traps_region))
+            #Place a trap here
+            
+            #Ensure we don't place a trap in the same spot
+            self.traps_region -= Region("SQUARE", location, location)
+        print "After Trap Locations were chosen: " 
+        print self.traps_region
+            
     def rand_move_within_pane(self, location, dir_range, dist_range, bounds):
         random.seed()
         while True:
