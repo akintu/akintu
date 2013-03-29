@@ -37,3 +37,4 @@ testSaveFile.txt
 SAVE_LOAD_STATE.txt
 ip_history.txt
 /nbproject/private/
+src/setup.py

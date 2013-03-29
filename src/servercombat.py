@@ -3,6 +3,7 @@ import broadcast
 from combat import *
 from location import *
 from dice import *
+import theorycraft
 import math
 import region
 import monster
@@ -197,7 +198,7 @@ class CombatServer():
                     self.softcoreDeath(char)
                 elif char.team == "Players" and char.hardcore:
                     Combat.sendCombatMessage(char.name + " has Perished!", color='darkred', character=char)
-                    # TODO: Delete saves, end game?
+                    self.hardcoreDeath(char)
 
         for char in toUpdateList:
             self.combatStates[combatPane].deadMonsterSet.add(char)
@@ -498,15 +499,8 @@ class CombatServer():
         p.ai.resume()
         p.cPane = None
         p.cLocation = None
-
-    def softcoreDeath(self, player):
-        '''Kicks player out of combat, back to Pane 0,0 and subtracts 10% of gold.
-        Will restore HP/MP/AP to maximum, and remove all temporary status effects.'''
-        goldLoss = player.inventory.gold / 10
-        Combat.sendCombatMessage("You lose: " + str(goldLoss) + " gold for dying!",
-                                player, color='darkred', toAll=False)
-        player.inventory.gold -= goldLoss
-
+        
+    def death(self, player):
         combatPane = player.cPane
         chars = [self.server.person[x] for x in self.server.pane[combatPane].person]
         players = [x for x in chars if x.team == "Players"]
@@ -538,6 +532,33 @@ class CombatServer():
                         details=self.server.person[i].dehydrate()), player.id)
         if doMonsterVictory:
             self.monster_victory(combatPane)
+        
+    def hardcoreDeath(self, player):
+        Combat.sendCombatMessage("You've Died Forever... HARDCORE!!", player, color='darkred', toAll=False)
+        # new_char = theorycraft.TheoryCraft.getNewPlayerCharacter(
+                            # name=player.name, race=player.race, characterClass=player.characterClass,
+                            # ironman=player.ironman, hardcore=player.hardcore)
+        # new_char.id = player.id
+        # new_char.location = player.location
+        # new_char.cPane = player.cPane
+        # new_char.cLocation = player.cLocation
+        
+        #TODO: Devin, I need a player.reset or something like that - 
+        #player.reset
+        
+        #TODO: Remove save file or overwrite it with a reset player.
+        
+        self.death(player)
+        
+    def softcoreDeath(self, player):
+        '''Kicks player out of combat, back to Pane 0,0 and subtracts 10% of gold.
+        Will restore HP/MP/AP to maximum, and remove all temporary status effects.'''
+        goldLoss = player.inventory.gold / 10
+        Combat.sendCombatMessage("You lose: " + str(goldLoss) + " gold for dying!",
+                                player, color='darkred', toAll=False)
+        player.inventory.gold -= goldLoss
+        self.death(player)
+        
 
 class CombatState(object):
     def __init__(self):
