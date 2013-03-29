@@ -86,10 +86,13 @@ class Location(object):
         See diagram:
                  UP
              7   8   9
-        LEFT 4       6 RIGHT
+        LEFT 4   5   6 RIGHT
              1   2   3
                 DOWN
         '''
+
+        if direction == 5:
+            return self
 
         tile = list(self.tile)
         pane = list(self.pane)
