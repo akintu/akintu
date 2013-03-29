@@ -64,7 +64,7 @@ class Levelup(object):
             self.screen.show_tiling_dialog(text, summaryDisplay, bgcolor="darkturquoise")
 
     def input(self, keystroke):
-        '''Returns True if this levelup is complete.'''
+        '''Returns a dehydrated player if this levelup is complete.'''
         if keystroke == K_RIGHT or keystroke == K_KP6 or keystroke == K_l:
             self.screen.move_dialog(6)
             return False

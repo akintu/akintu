@@ -469,8 +469,7 @@ class Game(object):
                                                             'totalMP' : self.pane.person[self.id].totalMP,
                                                             'totalAP' : self.pane.person[self.id].totalAP,
                                                             'AP' : self.pane.person[self.id].AP})
-
-
+                
                 elif self.inShop:
                     hero = self.currentShop.input(event.key)
                     if hero:
@@ -615,6 +614,8 @@ class Game(object):
                         self.display_character_sheet()
                     elif event.key == K_y:
                         self.request_levelup(True)
+                    elif event.key == K_r:
+                        self.respec()
                     elif event.key == K_i:
                         self.open_inventory()
                     elif event.key == K_F2:
@@ -640,7 +641,35 @@ class Game(object):
             player.addExperience(75)
             if player.experience >= player.getExpForNextLevel() and player.level < LEVEL_MAX:
                 self.screen.show_text("LEVEL UP!" , color='magenta')
+        else:
+            print "DEBUG: " + `player.experience` + " exp " + `player.getExpForNextLevel()` + " needed " + `player.level` + " level "
 
+            
+    def respec(self):
+        player = self.pane.person[self.id]
+        if player.ironman:
+            self.screen.show_text("You are an ironman, and are thus too cool to respec!", color='magenta')
+        elif player.level > 1:
+            oldLevel = player.level
+            oldExp = player._experience
+            player.level -= 1
+            remainderExp = oldExp - player.getExpForNextLevel()
+            player._experience = 0
+            
+            newHero = TheoryCraft.resetPlayerLevel(player)
+            newHero.location = self.pane.person[self.id].location
+            newHero.id = self.id
+            self.pane.person[self.id] = newHero
+
+            for i in range(oldLevel - 1):
+                self.performingLevelup = True
+                self.pane.person[self.id]._experience = self.pane.person[self.id].getExpForNextLevel()
+                self.pane.person[self.id].level += 1
+                self.levelup = lvl.Levelup(self.pane.person[self.id], self.screen)
+                self.levelup.next()
+            
+            self.pane.person[self.id].addExperience(remainderExp)
+                
     def request_shop(self):
         player = self.pane.person[self.id]
         # if player is actually on a shop tile or whatever... TODO
