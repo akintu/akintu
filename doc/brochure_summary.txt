@@ -7,7 +7,7 @@ variety of races and classes, and then adventure through a randomly-generated
 world, fighting monsters and collecting treasure.  We have over 50 different
 race/class combinations, many different monsters, and millions of possible
 randomly-generated items in the game.  Up to 4 players can play together.  The
-game is written exclusively in Python, leveraging the Pygame libraries and
+game is written exclusively in Python, leveraging the Pygame libraries and the
 Twisted network engine.
 
 Website:  http://akintu.net  (won’t be live until close to demo day, FYI)
