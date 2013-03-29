@@ -1,0 +1,13 @@
+Team Name:  Gelatinous Cube
+Project Name:  Akintu
+
+Akintu is a multi-player role-playing game which is modeled after the genre of
+Roguelikes, based on the 1980s game Rogue.  The player can choose from a
+variety of races and classes, and then adventure through a randomly-generated
+world, fighting monsters and collecting treasure.  We have over 50 different
+race/class combinations, many different monsters, and millions of possible
+randomly-generated items in the game.  Up to 4 players can play together.  The
+game is written exclusively in Python, leveraging the Pygame libraries and
+Twisted network engine.
+
+Website:  http://akintu.net  (won’t be live until close to demo day, FYI)
