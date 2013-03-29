@@ -1,5 +1,6 @@
 default:
 	@echo 'Please use `make app` or `make clean`'
+	@echo 'Be aware -- `make clean` deletes your saves'
 
 app:
 	if [ -f setup.py ]; then rm setup.py; fi
