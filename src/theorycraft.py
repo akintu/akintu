@@ -117,9 +117,9 @@ class TheoryCraft(object):
         name = basicDetails[0]
         race = basicDetails[1]
         cls = basicDetails[2]
-        level = int(basicDetails[3])
+        # level = 1
         gold = int(basicDetails[4])
-        experience = int(basicDetails[5])
+        # experience = 0
         hardcore = False
         if str(basicDetails[6]) == "True":
             hardcore = True
@@ -136,7 +136,6 @@ class TheoryCraft(object):
         newChar = TheoryCraft.getNewPlayerCharacter(race, cls, name=name, new=False, hardcore=hardcore, ironman=ironman, respec=True)
 
         newChar.inventory.gold = gold
-        newChar._experience = experience
         
         for itemName in inventoryNames:
             if itemName == '':
@@ -304,13 +303,13 @@ class TheoryCraft(object):
 
     @staticmethod
     def getNewPlayerCharacter(race, characterClass, loc=location.Location((0, 0), (PANE_X/2, PANE_Y/2)),
-                              name="Milton Filbert", new=True, hardcore=False, ironman=False):
+                              name="Milton Filbert", new=True, hardcore=False, ironman=False, respec=False):
         race = race.lower()
         characterClass = characterClass.lower()
         selection = race + " " + characterClass
         for char_dict in TheoryCraft.classes:
             if char_dict['name'].lower() == race + " " + characterClass:
-                pc = playercharacter.PlayerCharacter(char_dict, name=name, new=new, hardcore=hardcore, ironman=ironman)
+                pc = playercharacter.PlayerCharacter(char_dict, name=name, new=new, hardcore=hardcore, ironman=ironman, respec=respec)
                 pc.location = loc
                 return pc
         print "Bad character name/race, returning nothing; you're so stupid."
