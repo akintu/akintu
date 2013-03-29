@@ -614,8 +614,8 @@ class Game(object):
                         self.display_character_sheet()
                     elif event.key == K_y:
                         self.request_levelup(True)
-                    elif event.key == K_r:
-                        self.respec()
+                    #elif event.key == K_r:
+                    #    self.respec()
                     elif event.key == K_i:
                         self.open_inventory()
                     elif event.key == K_F2:
