@@ -536,8 +536,8 @@ class CombatPane(Pane):
         #print monsters
         for person in monsters:
             self.paneCharacterLevel = max(self.paneCharacterLevel, person.level)
-            print "Combat Pane Level: " + str(self.paneCharacterLevel)
-            print "Monster baseHP: " + str(person.baseHP)
+            # print "Combat Pane Level: " + str(self.paneCharacterLevel)
+            # print "Monster baseHP: " + str(person.baseHP)
             while not self.is_passable(loc) or not self.is_within_bounds(loc, 3):
                 #Choose a new location
                 #print str(loc) + " New Location"
@@ -550,9 +550,7 @@ class CombatPane(Pane):
             
     def place_traps(self, number):
         ''' Number indicates the number of players '''
-        print "Possible trap locations: " 
-        print self.traps_region
-        
+
         numberOfTraps = Dice.rollNumberOfTraps(self.paneCharacterLevel)
         if 2 <= number <= 3:
             numberOfTraps += 1
@@ -569,8 +567,6 @@ class CombatPane(Pane):
             
             #Ensure we don't place a trap in the same spot
             self.traps_region -= Region("SQUARE", location, location)
-        print "After Trap Locations were chosen: " 
-        print self.traps_region
             
     def rand_move_within_pane(self, location, dir_range, dist_range, bounds):
         random.seed()

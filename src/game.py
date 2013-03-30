@@ -273,8 +273,7 @@ class Game(object):
 
             ###### DELETE PERSON -- HARDCORE DEATH ######
             if command.type == "PERSON" and command.action == "DELETE":
-                pass
-                #TODO: Delete person's savefile logic
+                State.delete_player()
 
             ###### Update Person Stats ######
             if command.type == "PERSON" and command.action == "UPDATE":

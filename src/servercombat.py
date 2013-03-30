@@ -536,23 +536,22 @@ class CombatServer():
     def hardcoreDeath(self, player):
         Combat.sendCombatMessage("You've Died Forever... HARDCORE!!", player, color='darkred', toAll=False)
 
-        self.server.broadcast(Command("PERSON", "DELETE", filename='filename'), player.id)
-        #TODO: Josh, fill in 'filename' with the correct name of the file to delete
+        #Tell client to remove player's save file
+        self.server.broadcast(Command("PERSON", "DELETE", id=player.id), player.id)
 
-        # new_char = theorycraft.TheoryCraft.getNewPlayerCharacter(
-                            # name=player.name, race=player.race, characterClass=player.characterClass,
-                            # ironman=player.ironman, hardcore=player.hardcore)
-        # new_char.id = player.id
-        # new_char.location = player.location
-        # new_char.cPane = player.cPane
-        # new_char.cLocation = player.cLocation
+        new_char = theorycraft.TheoryCraft.getNewPlayerCharacter(
+                            name=player.name, race=player.race, characterClass=player.characterClass,
+                            ironman=player.ironman, hardcore=player.hardcore)
+        new_char.location = player.location
+        new_char.cLocation = player.cLocation
+        new_char.cPane = player.cPane
+        new_char.id = player.id
+        new_char.ai.startup(self.server)
+        
+        self.server.person[player.id].ai.shutdown()
+        self.server.person[player.id] = new_char
 
-        #TODO: Devin, I need a player.reset or something like that -
-        #player.reset
-
-        #TODO: Remove save file or overwrite it with a reset player.
-
-        self.death(player)
+        self.death(new_char)
 
     def softcoreDeath(self, player):
         '''Kicks player out of combat, back to Pane 0,0 and subtracts 10% of gold.
