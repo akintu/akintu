@@ -22,6 +22,7 @@ class GameServer():
     def server_loop(self):
         while not self.SDF.queue.empty():
             port, command = self.SDF.queue.get()
+            #print str(command)
 
             if command.type == "PERSON" and command.action == "REMOVE" and port \
                     and not hasattr(command, 'id'):
@@ -75,7 +76,8 @@ class GameServer():
                         ent_list = self.pane[command.location.pane].get_trigger_entities(command.location)
                         for entity in ent_list:
                             new_loc = entity.trigger(command.id)
-                            self.broadcast(Command("PERSON", "MOVE", id=command.id, location=new_loc), -command.id)
+                            print "Portal Trigger Called: " + str(new_loc)
+                            self.SDF.queue.put((port, Command("PERSON", "MOVE", id=command.id, location=new_loc)))
 
                     # If the origin and destination are in the same pane
                     if self.person[command.id].location.pane == command.location.pane:
@@ -224,7 +226,8 @@ class GameServer():
         if port:
             sendToAll = True if port < 0 else False
             port = abs(port)
-            person = self.person[self.player[port]]
+            playerkey = self.player[port]
+            person = self.person[playerkey]#self.player[port]]
             pane = person.cPane if person.cPane else person.location.pane
         elif pid:
             sendToAll = True if pid < 0 else False
