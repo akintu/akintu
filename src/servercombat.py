@@ -142,25 +142,25 @@ class CombatServer():
         # Get a list of all hostile traps on the pane.
         combatPane = self.server.pane[player.cPane]
         hostileTraps = combatPane.hostileTraps
-        
+
         # Iterate through the list checking to see if it was detected and is not yet visible, if so, add it to a set of traps.
         detectedTraps = []
         for trap in hostileTraps:
             if not trap.visible:
                 if Dice.rollTrapDetect(trap, player):
                     detectedTraps.append(trap)
-        
+
         # Actually discover the trap.
         for trap in detectedTraps:
             self.discover_trap(trap, player)
-    
+
     def discover_trap(self, trap, finder):
         '''Tells all players where a trap is, and who found it.'''
         Combat.sendCombatMessage(finder.name + " found a " + trap.name + "!", finder, color='beige')
         trap.visible = True
         action = Command("TRAP", "DISCOVER", id=finder.id, trapName=trap.name, trapLevel=trap.level, targetLoc=trap.location)
         self.server.broadcast(action, pid=-finder.id)
-    
+
     def check_trap_trigger(self, actor, location):
         '''Checks to see if a monster or player just stepped on a trap
         at the given location, and if so, trigger the trap.  If the trap
@@ -173,7 +173,7 @@ class CombatServer():
                 self.server.pane[actor.cPane].removeTrap(location, hostile=True)
                 self.server.broadcast(Command("TRAP", "REMOVE", location=location), \
                         -actor.id)
-    
+
     def shout_turn_start(self, player, turn="Player"):
         '''Shouts to the Player that this particular turn is starting.
         Defaults to "Player"; "Monster" is the other valid value.'''
@@ -291,7 +291,7 @@ class CombatServer():
                 print target.name + " has status: " + stat.name + " T=" + `int(stat.turnsLeft)`
         if target.team == "Players":
             self.check_trap_discover(target)
-                
+
 
     def startCombat(self, playerId, monsterId):
         '''Initiates combat for the first player to enter combat.
@@ -434,7 +434,7 @@ class CombatServer():
             self.removeTemporaryStatuses(player)
             self.refillResources(player)
             self.exit_combat(player)
-            
+
     #### End of Combat Phase Methods ####
 
     def giveVictoryExperience(self, player, monsterList):
@@ -499,7 +499,7 @@ class CombatServer():
         p.ai.resume()
         p.cPane = None
         p.cLocation = None
-        
+
     def death(self, player):
         combatPane = player.cPane
         chars = [self.server.person[x] for x in self.server.pane[combatPane].person]
@@ -532,9 +532,13 @@ class CombatServer():
                         details=self.server.person[i].dehydrate()), player.id)
         if doMonsterVictory:
             self.monster_victory(combatPane)
-        
+
     def hardcoreDeath(self, player):
         Combat.sendCombatMessage("You've Died Forever... HARDCORE!!", player, color='darkred', toAll=False)
+
+        self.server.broadcast(Command("PERSON", "DELETE", filename='filename'), player.id)
+        #TODO: Josh, fill in 'filename' with the correct name of the file to delete
+
         # new_char = theorycraft.TheoryCraft.getNewPlayerCharacter(
                             # name=player.name, race=player.race, characterClass=player.characterClass,
                             # ironman=player.ironman, hardcore=player.hardcore)
@@ -542,14 +546,14 @@ class CombatServer():
         # new_char.location = player.location
         # new_char.cPane = player.cPane
         # new_char.cLocation = player.cLocation
-        
-        #TODO: Devin, I need a player.reset or something like that - 
+
+        #TODO: Devin, I need a player.reset or something like that -
         #player.reset
-        
+
         #TODO: Remove save file or overwrite it with a reset player.
-        
+
         self.death(player)
-        
+
     def softcoreDeath(self, player):
         '''Kicks player out of combat, back to Pane 0,0 and subtracts 10% of gold.
         Will restore HP/MP/AP to maximum, and remove all temporary status effects.'''
@@ -558,7 +562,7 @@ class CombatServer():
                                 player, color='darkred', toAll=False)
         player.inventory.gold -= goldLoss
         self.death(player)
-        
+
 
 class CombatState(object):
     def __init__(self):

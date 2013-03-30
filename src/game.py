@@ -76,7 +76,7 @@ class Game(object):
 
         # Shop state
         self.currentShop = None
-        
+
         # Selection state
         self.selectionMode = "targeting"
         self.currentTargetId = None
@@ -219,7 +219,7 @@ class Game(object):
 
                 if hasattr(command, 'checkLevelup') and command.checkLevelup == True:
                     self.request_levelup()
-                
+
             if command.type == "PERSON" and command.id not in self.pane.person:
                 continue
 
@@ -270,6 +270,11 @@ class Game(object):
             ###### SAVE PERSON ######
             if command.type == "PERSON" and command.action == "SAVE":
                 self.save_player()
+
+            ###### DELETE PERSON -- HARDCORE DEATH ######
+            if command.type == "PERSON" and command.action == "DELETE":
+                pass
+                #TODO: Delete person's savefile logic
 
             ###### Update Person Stats ######
             if command.type == "PERSON" and command.action == "UPDATE":
@@ -346,14 +351,14 @@ class Game(object):
                 self.screen.update_person(command.id, {'totalAP' : self.pane.person[command.id].totalAP,
                                                        'AP' : self.pane.person[command.id].AP,
                                                        'team' : self.pane.person[command.id].team})
-                
+
             elif command.type == "ITEM" and command.action == "EQUIP":
                 item = TheoryCraft.rehydrateTreasure(command.itemIdentifier)
                 self.pane.person[command.id].equip(item)
                 self.screen.update_person(command.id, {'totalAP' : self.pane.person[command.id].totalAP,
                                                        'AP' : self.pane.person[command.id].AP,
                                                        'team' : self.pane.person[command.id].team})
-                
+
             ###### Entity Operations ######
 
             elif command.type == "ENTITY":
@@ -383,7 +388,7 @@ class Game(object):
                 thisTrap = trap.Trap(name=command.abilityName, player=placer, location=command.targetLoc)
                 self.pane.addTrap(command.targetLoc, thisTrap)
                 self.set_overlay(command.targetLoc)
-                
+
             elif command.type == "TRAP" and command.action == "DISCOVER":
                 thisTrap = trap.Trap(name=command.trapName, level=command.trapLevel, location=command.targetLoc)
                 self.pane.addTrap(command.targetLoc, thisTrap)
@@ -433,8 +438,6 @@ class Game(object):
                     #TODO: Open Menu Here
                     ##SAVE PERSON##
 
-                    save = Command("PERSON", "SAVE", id=self.id)
-                    self.CDF.send(save)
                     self.save_and_quit()
 
                 elif event.key in MODIFIER_KEYS:
@@ -469,7 +472,7 @@ class Game(object):
                                                             'totalMP' : self.pane.person[self.id].totalMP,
                                                             'totalAP' : self.pane.person[self.id].totalAP,
                                                             'AP' : self.pane.person[self.id].AP})
-                
+
                 elif self.inShop:
                     hero = self.currentShop.input(event.key)
                     if hero:
@@ -488,7 +491,7 @@ class Game(object):
                                                             'totalMP' : self.pane.person[self.id].totalMP,
                                                             'totalAP' : self.pane.person[self.id].totalAP,
                                                             'AP' : self.pane.person[self.id].AP})
-                                                            
+
                 ### Inventory Management ###
                 elif self.viewingInventory:
                     newlyEquippedPlayer = self.pane.person[self.id].navigateInventory(self.screen, event.key)
@@ -620,7 +623,7 @@ class Game(object):
                         self.open_inventory()
                     elif event.key == K_F2:
                         self.request_shop()
-                        
+
     def get_item(self):
         self.CDF.send(Command("PERSON", "OPEN", id=self.id))
         # If player is on an item, pick it up (the top item).
@@ -644,7 +647,7 @@ class Game(object):
         else:
             print "DEBUG: " + `player.experience` + " exp " + `player.getExpForNextLevel()` + " needed " + `player.level` + " level "
 
-            
+
     def respec(self):
         player = self.pane.person[self.id]
         if player.ironman:
@@ -655,7 +658,7 @@ class Game(object):
             player.level -= 1
             remainderExp = oldExp - player.getExpForNextLevel()
             player._experience = 0
-            
+
             newHero = TheoryCraft.resetPlayerLevel(player)
             newHero.location = self.pane.person[self.id].location
             newHero.id = self.id
@@ -667,9 +670,9 @@ class Game(object):
                 self.pane.person[self.id].level += 1
                 self.levelup = lvl.Levelup(self.pane.person[self.id], self.screen)
                 self.levelup.next()
-            
+
             self.pane.person[self.id].addExperience(remainderExp)
-                
+
     def request_shop(self):
         player = self.pane.person[self.id]
         # if player is actually on a shop tile or whatever... TODO
@@ -677,7 +680,7 @@ class Game(object):
             self.inShop = True
             self.currentShop = shop.Shop(player, self.screen) # Using all default parameters at the moment TODO
             self.currentShop.open()
-            
+
     def open_inventory(self):
         self.viewingInventory = True
         player = self.pane.person[self.id]
