@@ -743,6 +743,16 @@ class Game(object):
                     self.animate(self.id, self.pane.person[self.id].location, newloc, \
                         1.0 / self.pane.person[self.id].movementSpeed)
                     self.pane.person[self.id].location = newloc
+        elif self.pane.person[self.id].location.direction != direction:
+            self.pane.person[self.id].location.direction = direction
+
+            statsdict = {}
+            statsdict['location'] = self.pane.person[self.id].location
+            self.screen.update_person(self.id, statsdict)
+
+            self.CDF.send(Command("PERSON", "MOVE", id=self.id, \
+                    location=self.pane.person[self.id].location))
+
 
     def display_character_sheet(self):
         player = self.pane.person[self.id]

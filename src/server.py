@@ -66,7 +66,7 @@ class GameServer():
                 self.load_pane(command.location.pane)
 
                 # If this is a legal move request
-                if self.tile_is_open(command.location):
+                if self.tile_is_open(command.location, pid=command.id):
 
                     # ---JAB--- Check for entities that have a trigger() attribute
                     if command.location.pane in self.pane:
@@ -74,7 +74,7 @@ class GameServer():
                         for entity in ent_list:
                             new_loc = entity.trigger(command.id)
                             self.broadcast(Command("PERSON", "MOVE", id=command.id, location=new_loc), -command.id)
-                    
+
                     # If the origin and destination are in the same pane
                     if self.person[command.id].location.pane == command.location.pane:
 
@@ -256,16 +256,16 @@ class GameServer():
     def tile_is_open(self, location, pid=None, cPane=None):
         if location.pane not in self.pane and not pid and not cPane:
             return False
-        if pid or cPane:
-            if not cPane:
-                cPane = self.person[pid].cPane
+        if not cPane and pid and self.person[pid] and self.person[pid].cPane:
+            cPane = self.person[pid].cPane
+        if cPane:
             return self.pane[cPane].is_tile_passable(location) and \
                     location.tile not in [self.person[i].cLocation.tile \
-                    for i in self.pane[cPane].person]
+                    for i in self.pane[cPane].person if i != pid]
         else:
             return self.pane[location.pane].is_tile_passable(location) and \
                     location.tile not in [self.person[i].location.tile \
-                    for i in self.pane[location.pane].person]
+                    for i in self.pane[location.pane].person if i != pid]
 
     def load_pane(self, pane, pid=None):
         if pane not in self.pane:
