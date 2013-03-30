@@ -15,13 +15,13 @@ class AI():
             self.start(name)
 
     ###### AI BEHAVIORS ######
-    def run(self, name, pid=None, direction=None, region=None):
+    def run(self, pid=None, direction=None):
         newloc = self.server.person[pid].location.move(direction, 1)
         self.server.SDF.queue.put((None, Command("PERSON", "MOVE", id=pid, location=newloc)))
 
-    def wander(self, name, pid=None, region=None, move_chance=0):
-        if time() < self.behavior[name]['time']:
-            return
+    def wander(self, pid=None, region=None, move_chance=0):
+        if time() < self.behavior['wander']['time']:
+            return False
         if random.random() <= move_chance:
             dirs = [2, 4, 6, 8]
             direction = random.choice(dirs)
@@ -29,19 +29,21 @@ class AI():
             while not newloc in region or not self.server.tile_is_open(newloc):
                 dirs.remove(direction)
                 if len(dirs) == 0:
-                    return
+                    return False
                 direction = random.choice(dirs)
                 newloc = self.server.person[pid].location.move(direction, 1)
 
             self.server.SDF.queue.put((None, Command("PERSON", "MOVE", id=pid, location=newloc)))
-            self.behavior[name]['time'] = time() + (1.0 / self.behavior[name]['frequency'])
+            self.behavior['wander']['time'] = time() + (1.0 / self.behavior['wander']['frequency'])
+            return True
 
     ###### AI MANAGEMENT ######
-    def add(self, name, ai_func, frequency, **details):
-        self.behavior[name] = {}
-        self.behavior[name]['frequency'] = frequency
-        self.behavior[name]['running'] = False
-        self.behavior[name]['task'] = LoopingCall(ai_func, name, **details)
+    def add(self, name, frequency, **details):
+        if hasattr(self, name):
+            self.behavior[name] = {}
+            self.behavior[name]['frequency'] = frequency
+            self.behavior[name]['running'] = False
+            self.behavior[name]['task'] = LoopingCall(getattr(self, name), **details)
 
     def remove(self, name):
         if name in self.behavior:

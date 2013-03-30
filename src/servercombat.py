@@ -311,7 +311,7 @@ class CombatServer():
                         self.check_turn_end, combatPane, True)
 
         # Put player into combat -- Stop running if needed.
-        currentPlayer.ai.remove("RUN")
+        currentPlayer.ai.remove("run")
         currentPlayer.cPane = combatPane
         self.server.pane[combatPane].person.append(playerId)
 

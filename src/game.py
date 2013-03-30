@@ -157,7 +157,8 @@ class Game(object):
         clock.tick()
         self.screen.set_fps(clock.get_fps())
         if hasattr(self, 'combatTurnStart'):
-            turnTime = 1 - (time.time() - self.combatTurnStart) / self.turnTime
+            turnTime = 1 - (time.time() - self.combatTurnStart) / self.turnTime if self.turnTime > 0 \
+                    else 0
             self.screen.set_turntime(turnTime)
 
         self.check_queue()

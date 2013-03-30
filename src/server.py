@@ -142,13 +142,13 @@ class GameServer():
 
             ###### RunPerson ######
             if command.type == "PERSON" and command.action == "RUN":
-                self.person[command.id].ai.add("RUN", self.person[command.id].ai.run, \
-                        self.person[command.id].movementSpeed, pid=command.id, direction=command.direction)
-                self.person[command.id].ai.start("RUN")
+                self.person[command.id].ai.add("run", self.person[command.id].movementSpeed, \
+                        pid=command.id, direction=command.direction)
+                self.person[command.id].ai.start("run")
 
             ###### StopPerson ######
             if command.type == "PERSON" and command.action == "STOP":
-                self.person[command.id].ai.remove("RUN")
+                self.person[command.id].ai.remove("run")
 
             ###### Levelup Player ######
             if command.type == "PERSON" and command.action == "REPLACE":

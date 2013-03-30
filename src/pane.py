@@ -27,7 +27,7 @@ class Pane(object):
         load_entities:
         pane_state:
     '''
-    
+
     PaneCorners = {1:TILE_BOTTOM_LEFT, 3:TILE_BOTTOM_RIGHT, 7:TILE_TOP_LEFT, 9:TILE_TOP_RIGHT}
     PaneEdges = {2:TILES_BOTTOM, 4:TILES_LEFT, 6:TILES_RIGHT, 8:TILES_TOP}
 
@@ -42,8 +42,8 @@ class Pane(object):
         self.person = {}
         self.background_key = Sprites.get_background(self.seed + str(self.location))
         self.hostileTraps = []
-        
-        
+
+
         for i in range(PANE_X):
             for j in range(PANE_Y):
                 self.tiles[(i, j)] = Tile(None, True)
@@ -57,7 +57,7 @@ class Pane(object):
                 self.load_chests()
                 self.load_monsters()
                 #self.load_items()
-                
+
 
     def __repr__(self):
         s = "\nPane " + str(self.location) + "\n"
@@ -69,7 +69,7 @@ class Pane(object):
                     s += " "
             s += "|\n"
         return s
-        
+
     def __del__(self):
         if not self.is_server:
             pass#print "Calling __del__ on client's Pane object at " + str(self.location)
@@ -81,8 +81,8 @@ class Pane(object):
         if location in self.tiles:
             return self.tiles[location]
         else:
-            print "Could not find tile at " + str(location) + " on pane " + str(self.location) 
-            
+            print "Could not find tile at " + str(location) + " on pane " + str(self.location)
+
     def remove_entities(self, location):
         if location in self.tiles:
             self.tiles[location].remove_items()
@@ -94,15 +94,15 @@ class Pane(object):
                 self.tiles[loc] = Tile(None, True)
             self.tiles[loc].add_entity(entity)
             # print "Loc: " + str(loc) + " Entity: " + str(entity)
-    
+
     def load_monsters(self, monsters=None):
         '''
         Parameters:
             monsters:   A list of monster dehydrated string and location tuples:
                 [("dehydrated_string", Location()), (..., ...), ...]
-                
+
         '''
-    
+
         if monsters != None:
             for monster in monsters:
                 person = TheoryCraft.rehydratePerson(monster[0])
@@ -126,27 +126,26 @@ class Pane(object):
                 person.location = Location(self.location, (random.randrange(PANE_X), random.randrange(PANE_Y)))
                 r = Region()
                 r("ADD", "CIRCLE", person.location, PANE_Y/4)
-                #r.build("SUB", "CIRCLE", Location(self.location, CENTER), int(PANE_Y/6))
-                person.ai.add("WANDER", person.ai.wander, person.movementSpeed, pid=id(person), region=r, move_chance=1.0 / (person.movementSpeed))
+                person.ai.add("wander", person.movementSpeed, pid=id(person), region=r, move_chance=1.0 / (person.movementSpeed))
                 self.person[id(person)] = person
-    
+
     def save_items(self):
         '''
         item_list = [(name, attributes, location, ...), (...)]
         '''
-        
+
         item_list = []
         for tile_loc, tile in self.tiles.iteritems():
             for item in tile.get_items():
                 item_list.append((item.name, item.attributes, tile_loc))
         return item_list
-    
+
     def load_items(self, items=None):
         '''
         Parameters:
             items:  A list of item tuples in the following format:
                     ("Name", "Attributes", "tile_location", ...)
-                    
+
                     TODO: STILL UNIMPLEMENTED, need info on creating items from name...
         '''
 
@@ -156,10 +155,10 @@ class Pane(object):
                 self.add_item(item[0], item[1], item[2])
         else:
             print "LOAD ITEMS HERE (Pane.load_items())"
-            
+
     def add_item(self, name, attributes, location):
         self.tiles[location].add_item(Item(name, attributes))
-           
+
     def get_chest_list(self):
         '''
         Returns a list of chests in the following format:
@@ -171,14 +170,14 @@ class Pane(object):
             if chest:
                 chest_list.append((chest.type, chest.treasureLevel, tile_loc))
         return chest_list
-        
+
     def load_chests(self, chests=None):
         '''
         Parameters:
             chests:  A list of chest tuples in the following format:
                     [(type, level, location, ...), (...)]
         '''
-        
+
         if chests != None:
             for chest in chests:
                 self.add_chest(chest[0], chest[1], chest[2])
@@ -191,7 +190,7 @@ class Pane(object):
                                 (random.randrange(1, PANE_X-1), random.randrange(1, PANE_Y-1))))
             for type, loc in loc_list:
                 self.add_chest(type, None, loc)
-        
+
     def add_chest(self, chest_type, level, tile):
         if not level:
             level = max(abs(self.location[0]), abs(self.location[1]))
@@ -249,22 +248,22 @@ class Pane(object):
             self.tiles[tile].add_entity_key(self.objects[tile])
         if tile in self.objects:
             return self.objects[tile]
-    
+
     def remove_obstacles(self, tile):
         if tile in self.objects:
             del self.objects[tile]
         if tile in self.tiles:
             self.tiles[tile].clear_all_entities()
-        
+
     def remove_chest(self, tile):
         self.tiles[tile].remove_chest()
-        
+
     def get_treasure_chest(self, location):
         '''
         Loops through the surrounding tiles and returns the first chest it finds.
         Currently it looks for chests in front of the player as the first option
         but remaining checks are undefined.
-        
+
         '''
 
         if location.pane != self.location:
@@ -274,7 +273,7 @@ class Pane(object):
             return (None, None)
 
         tiles = location.get_surrounding_tiles()
-        
+
         #First attempt to get a chest in front of you
         facing = tiles[location.direction]
         if facing in self.tiles:
@@ -283,7 +282,7 @@ class Pane(object):
                 #print "Found chest in front of you on tile " + str(facing)
                 self.tiles[facing].remove_chest()
                 return (chest, Location(self.location, facing))
-        
+
         #If there was no chest, look on surrounding tiles
         for key, tile in tiles.iteritems():
             if tile in self.tiles:
@@ -293,12 +292,12 @@ class Pane(object):
                     self.tiles[tile].remove_chest()
                     return (chest, Location(self.location, tile))
         return (None, None)
-        
+
     def get_item(self, location):
         '''
-        
+
         '''
-        
+
         if location.pane != self.location:
             print "Tried to get item from pane " + str(location.pane) + ","
             print "but requested it from " + str(self.location)
@@ -307,10 +306,10 @@ class Pane(object):
 
         tiles = location.get_surrounding_tiles()
         assert False, "pane.get_item(location) is not yet implemented"
-    
+
     def get_item_list(self):
         pass
-        
+
 
     def load_region(self, region, entity_type=None):
         if entity_type:
@@ -318,14 +317,14 @@ class Pane(object):
                 if not loc in self.tiles:
                     self.tiles[loc] = Tile(None, True)
                 self.add_obstacle(loc.tile, 1, entity_type)
-    
+
     def clear_region(self, region):
         for loc in region:
             self.remove_obstacles(loc.tile)
 
     def get_combat_pane(self, focus_tile, monster = None, num_players=1):
         return CombatPane(self, focus_tile, monster, num_players)
-                
+
 
     def save_state(self):
         '''
@@ -341,12 +340,12 @@ class Pane(object):
         save_dict = self.get_state()
         State.save_pane(self.location, save_dict)
 
-        
+
     def get_state(self):
         save_dict = dict()
         monster_list = []
 
-        #Save Monsters.  
+        #Save Monsters.
         # print self.person
         for key, monster in self.person.iteritems():
             monster_list.append((monster.dehydrate(), monster.location))
@@ -354,11 +353,11 @@ class Pane(object):
 
         #Save Items.
         #save_dict[ITEM_KEY] = self.save_items()
-        
+
         #Save Chests.
         save_dict[CHEST_KEY] = self.get_chest_list()
         return save_dict
-        
+
     def load_state(self, state):
         print "Pane.load_state(state) " + str(state)
         if state:
@@ -383,17 +382,17 @@ class Pane(object):
             self.hostileTraps.append(trap)
             # Only used for checking for traps.  We don't even need to bother
             # removing anything from this list.
-        
+
     def removeTrap(self, location, hostile=False):
         loc = location.tile
         if loc in self.tiles:
             self.tiles[loc].removeTrap()
-            
+
     def get_trigger_entities(self, location):
         loc = location.tile
         if loc in self.tiles:
             return self.tiles[loc].get_trigger_entities()
-            
+
     def getTileContents(self, location, monsters=None):
         '''
         Method used to determine if a trap can be placed here
@@ -401,20 +400,20 @@ class Pane(object):
             location:   a Location object to check
             monsters:   a dictionary of Monster objects to check against
         '''
-        
+
         loc = location.tile
-        
+
         if monsters:
             for id in self.persons:
                 if id in monsters:
                     if loc == monsters[id].location.tile:
                         return "Monster"
-        
+
         if not loc in self.tiles:
             self.tiles[loc] = Tile(None, True)
             return "Nothing"
         tile = self.tiles[loc]
-        
+
         if not tile.is_passable():
             return "Obstacle"
         trap = tile.getTrap()
@@ -424,8 +423,8 @@ class Pane(object):
             elif trap.team == "Monsters":
                 return "Trap-Hostile"
         return "Nothing"
-                
-                
+
+
 class Town(Pane):
     def __init__(self, seed, location, is_server=False, load_entities=False, pane_state=None):
         super(Town, self).__init__(seed, location, is_server, False, pane_state)
@@ -434,18 +433,18 @@ class Town(Pane):
             self.add_buildings()
         if is_server:
             self.add_npcs()
-        
+
     def add_buildings(self):
         seed = self.seed + str(self.location) + "Building"
         random.seed(seed)
         #Generate a rectangle region within bounds
-        
+
         bounds = (7, 14, 5, 9)
 
         for i in range(2):
             building = Building("tree", bounds, self.location)#, (15, 6), Location(self.location, (start[0], start[1]+i*7)))
             self.buildings.append(building)
-        
+
         for i in range(2):
             loc = (random.randrange(0, PANE_X-8), random.randrange(0, PANE_Y-6))
             house = House(Location(self.location, loc))
@@ -453,18 +452,18 @@ class Town(Pane):
 
         for building in self.buildings:
             super(Town, self).load_region(building.boundary, building.boundary_type)
-        
+
         for building in self.buildings:
             super(Town, self).clear_region(building.clear)
             super(Town, self).clear_region(building.path)
         for building in self.buildings:
             super(Town, self).add_entities(building.entities)
-        
+
     def add_npcs(self):
         for building in self.buildings:
             self.person.update(building.npcs)
 
-                
+
 class CombatPane(Pane):
 
     CombatEntrances = [TILE_LEFT, TILE_TOP, TILE_RIGHT, TILE_BOTTOM, TILE_TOP_LEFT, TILE_TOP_RIGHT, TILE_BOTTOM_LEFT, TILE_BOTTOM_RIGHT]
@@ -484,12 +483,12 @@ class CombatPane(Pane):
         super(CombatPane, self).__init__(pane.seed, (0,0), False)
         self.objects = dict()           #Fixed combat/overworld passability bug
         self.paneCharacterLevel = 1
-        
+
         self.traps_region = Region("SQUARE", Location(self.location, (0, 0)), Location(self.location, (PANE_X-1, PANE_Y-1)))
         #Remove areas where players can enter
         for (x, y) in CombatPane.CombatEntrances:
             self.traps_region("SUB", "SQUARE", Location(self.location, (x-1, y-1)), Location(self.location, (x+1, y+1)))
-        
+
         loc_x = pane_focus.tile[0]
         loc_y = pane_focus.tile[1]
 
@@ -525,7 +524,7 @@ class CombatPane(Pane):
         if monster:
             monsters = TheoryCraft.generateMonsterGroup(monster, numberOfPlayers=num_players)
             self.place_monsters(monsters, self.focus_location)
-            
+
             for id, monster in self.person.iteritems():
                 loc = monster.location
                 self.traps_region("SUB", "SQUARE", loc, loc)
@@ -547,7 +546,7 @@ class CombatPane(Pane):
             self.person[id(person)] = person
             temp = loc
             loc = self.rand_move_within_pane(loc, [1,9], [2,5], 3)
-            
+
     def place_traps(self, number):
         ''' Number indicates the number of players '''
 
@@ -556,18 +555,18 @@ class CombatPane(Pane):
             numberOfTraps += 1
         elif number == 4:
             numberOfTraps += 2
-            
+
         for i in range(numberOfTraps):
             location = random.choice(list(self.traps_region))
-            
+
             #Place a trap here
             hostileTrap = trap.Trap.getRandomTrap(self.paneCharacterLevel, location)
             self.addTrap(location, hostileTrap)
-            
-            
+
+
             #Ensure we don't place a trap in the same spot
             self.traps_region -= Region("SQUARE", location, location)
-            
+
     def rand_move_within_pane(self, location, dir_range, dist_range, bounds):
         random.seed()
         while True:
