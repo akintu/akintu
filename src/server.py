@@ -125,7 +125,7 @@ class GameServer():
                         command.details = True
                         self.broadcast(command, port=port)
                     elif command.id in self.player.values():
-                        self.person[command.id].ai.remove("RUN")
+                        self.person[command.id].ai.remove("run")
                         self.broadcast(Command("PERSON", "STOP", id=command.id), command.id)
 
             ###### RemovePerson ######
