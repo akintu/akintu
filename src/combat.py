@@ -181,14 +181,14 @@ class Combat(object):
         if(offenseAdj >= defenseAdj):
             result = "Normal Hit"
             Combat.sendCombatMessage(target.name + " was poisoned (" + `offense` + " vs " + `defense` + ")",
-                                     source, color=color)   
+                                     source, color=color)
         else:
             result = "Miss"
             Combat.sendCombatMessage(target.name + " tolerated a poison attack (" + `offense` + " vs " + `defense` + ")",
                                      source, color=color)
         return result
-             
-        
+
+
 
     @staticmethod
     def physicalHitMechanics(source, target, modifier, critMod, ignoreMeleeBowPenalty):
@@ -496,8 +496,18 @@ class Combat(object):
                     was included to allow simpler logic in the data files."""
         if not didHit:
             return
-        pass
-        # TODO
+        #ignored = target.RollForResistance goes here
+        ignored = False
+        if ignoreResistance or not ignored:
+            newloc = target.clocation.move(sourceOfImpact.direction_to(target.clocation), distance)
+            line = target.clocation.line_to(newloc)
+            for i, loc in enumerate(line):
+                if not Combat.gameServer.tile_is_open(loc, target.id):
+                    line = line[:i]
+            newloc = [x for x in line if x.pane == (0, 0)]
+            newloc = newloc.pop() if len(newloc) > 0 else target.cLocation
+            action = Command("PERSON", "MOVE", id=target.id, location=newloc)
+            Combat.gameServer.SDF.queue.put((None, action))
 
     @staticmethod
     def decrementMovementTiles(target, removeAll=False):
