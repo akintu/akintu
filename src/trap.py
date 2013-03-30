@@ -416,7 +416,8 @@ class Trap(e.Entity):
             'rating' : 10,
             'ratingScale' : 0.2,
             'effect' : _bearTrap,
-            'rarityWeight' : 12
+            'rarityWeight' : 12,
+            'image' : os.path.join(TRAPS_IMAGES_PATH, 'bear-trap.png')
             },
         #'Snake Pit':
         #    {
@@ -430,7 +431,8 @@ class Trap(e.Entity):
             'rating' : 14,
             'ratingScale' : 0.285,
             'effect' : _standardDartTrap,
-            'rarityWeight' : 10
+            'rarityWeight' : 10,
+            'image' : os.path.join(TRAPS_IMAGES_PATH, 'standard-dart-trap.png')
             },
         #'Poisonous Dart Trap':
         #    {
@@ -444,28 +446,32 @@ class Trap(e.Entity):
             'rating' : 15,
             'ratingScale' : 0.25,
             'effect' : _fireTrap,
-            'rarityWeight' : 5
+            'rarityWeight' : 5,
+            'image' : os.path.join(TRAPS_IMAGES_PATH, 'fire-trap.png')
             },
         'Ice Trap' :
             {
             'rating' : 30,
             'ratingScale' : 0.2,
             'effect' : _iceTrap,
-            'rarityWeight' : 2
+            'rarityWeight' : 2,
+            'image' : os.path.join(TRAPS_IMAGES_PATH, 'ice-trap.png')
             },
         'Lightning Trap' :
             {
             'rating' : 16,
             'ratingScale' : 0.25,
             'effect' : _lightningTrap,
-            'rarityWeight' : 2
+            'rarityWeight' : 2,
+            'image' : os.path.join(TRAPS_IMAGES_PATH, 'lightning-trap.png')
             },
         'Mana Siphon Trap' :
             {
             'rating' : 50,
             'ratingScale' : 0.2,
             'effect' : _manaSiphonTrap,
-            'rarityWeight' : 1
+            'rarityWeight' : 1,
+            'image' : os.path.join(TRAPS_IMAGES_PATH, 'mana-siphon-trap.png')
             }
     }
 
