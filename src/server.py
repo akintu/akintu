@@ -156,6 +156,7 @@ class GameServer():
                 newPerson.ai.startup(self)
                 self.person[command.id].ai.shutdown()
                 self.person[command.id] = newPerson
+                self.broadcast(command, -command.id, exclude=True)
 
             ###### Set CombatServer Time ######
             if command.type == "SETTINGS" and command.action == "SET_TIME":

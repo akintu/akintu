@@ -267,6 +267,22 @@ class Game(object):
                 if command.id == self.id:
                     self.running = False
 
+            ###### Levelup Player ######
+            if command.type == "PERSON" and command.action == "REPLACE" and command.id != self.id:
+                newPerson = TheoryCraft.rehydratePlayer(command.player)
+                newPerson.location = self.pane.person[command.id].location
+                newPerson.id = command.id
+                self.pane.person[command.id] = newPerson
+
+                self.screen.update_person(command.id, {'team' : self.pane.person[command.id].team,
+                        'level': self.pane.person[command.id].level,
+                        'HP' : self.pane.person[command.id].HP,
+                        'totalHP' : self.pane.person[command.id].totalHP,
+                        'MP' : self.pane.person[command.id].MP,
+                        'totalMP' : self.pane.person[command.id].totalMP,
+                        'totalAP' : self.pane.person[command.id].totalAP,
+                        'AP' : self.pane.person[command.id].AP})
+
             ###### SAVE PERSON ######
             if command.type == "PERSON" and command.action == "SAVE":
                 self.save_player()
