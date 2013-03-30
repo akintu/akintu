@@ -95,7 +95,7 @@ class Game(object):
             self.serverip = serverip
         else:
             self.serverip = "localhost"
-            self.gs = GameServer(self.world, self.port)
+            self.gs = GameServer(self.world, self.port, self.turnTime)
             Combat.gameServer = self.gs
 
         self.CDF = ClientDataFactory()
@@ -148,10 +148,6 @@ class Game(object):
         self.screen = GameScreen()
         Combat.screen = self.screen
 
-        if self.serverip == "localhost":
-            action = Command("SETTINGS", "SET_TIME", id=None, time=self.turnTime)
-            self.CDF.send(action)
-
         pygame.mixer.music.set_volume(0.1)
 
         self.setup.stop()
@@ -160,6 +156,9 @@ class Game(object):
     def game_loop(self):
         clock.tick()
         self.screen.set_fps(clock.get_fps())
+        if hasattr(self, 'combatTurnStart'):
+            turnTime = 1 - (time.time() - self.combatTurnStart) / self.turnTime
+            self.screen.set_turntime(turnTime)
 
         self.check_queue()
         self.handle_events()
@@ -328,6 +327,13 @@ class Game(object):
             elif command.type == "UPDATE" and command.action == "TEXT":
                 self.screen.show_text(command.text, color=command.color)
 
+            ###### Start combat turn ######
+            elif command.type == "UPDATE" and command.action == "TURNTIME":
+                if hasattr(command, 'turnTime'):
+                    self.turnTime = command.turnTime
+                else:
+                    self.combatTurnStart = time.time()
+
             ###### Initiate Combat ######
             elif command.type == "UPDATE" and command.action == "COMBAT":
                 self.combat = command.combat
@@ -335,7 +341,10 @@ class Game(object):
                     for each in self.pane.person:
                         each._clientStatusView = []
                     self.play_music("battle", True)
+                    self.combatTurnStart = time.time()
                 else:
+                    self.screen.set_turntime(0)
+                    del self.combatTurnStart
                     for each in self.pane.person:
                         each._clientStatusView = []
                     self.play_music("overworld", True)

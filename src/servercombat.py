@@ -10,8 +10,6 @@ import monster
 
 
 class CombatServer():
-    SECONDS = 45
-
     def __init__(self, server):
         self.server = server
         self.combatStates = {}
@@ -308,8 +306,8 @@ class CombatServer():
             #monsterLeader.cPane = combatPane
             self.server.load_pane(combatPane, monsterId)
             # Timer set
-            if CombatServer.SECONDS > 0:
-                self.combatStates[combatPane].turnTimer = reactor.callLater(CombatServer.SECONDS, \
+            if self.server.turnTime > 0:
+                self.combatStates[combatPane].turnTimer = reactor.callLater(self.server.turnTime, \
                         self.check_turn_end, combatPane, True)
 
         # Put player into combat -- Stop running if needed.
@@ -347,7 +345,7 @@ class CombatServer():
                 break
         if not APRemains:
             if not self.combatStates[combatPane].turnTimer:
-                if CombatServer.SECONDS > 0:
+                if self.server.turnTime > 0:
                     print "No timer found!"
             elif self.combatStates[combatPane].turnTimer.active():
                 self.combatStates[combatPane].turnTimer.cancel()
@@ -371,12 +369,13 @@ class CombatServer():
                         pane=combatPane)
                 if character.hasStatus("Stun") and character.team == "Players":
                     Combat.modifyResource(character, "AP", -character.AP)
+            self.server.broadcast(Command("UPDATE", "TURNTIME"), pane=combatPane)
             for character in [self.server.person[x] for x in self.server.pane[combatPane].person]:
                 self.shout_turn_start(character, turn="Player")
-            if CombatServer.SECONDS > 0:
+            if self.server.turnTime > 0:
                 if self.combatStates[combatPane].turnTimer.active():
                     self.combatStates[combatPane].turnTimer.cancel()
-                self.combatStates[combatPane].turnTimer = reactor.callLater(CombatServer.SECONDS, self.check_turn_end,
+                self.combatStates[combatPane].turnTimer = reactor.callLater(self.server.turnTime, self.check_turn_end,
                         combatPane, True)
             skipPlayerTurn = True
             for character in [self.server.person[x] for x in self.server.pane[combatPane].person if self.server.person[x].team == "Players"]:
@@ -421,7 +420,7 @@ class CombatServer():
         '''Cleans up arena, gives experience/gold to players,
         restores their health to full, and kicks them out of combat.'''
         state = self.combatStates[combatPane]
-        if CombatServer.SECONDS > 0 and state.turnTimer and state.turnTimer.active():
+        if self.server.turnTime > 0 and state.turnTimer and state.turnTimer.active():
             state.turnTimer.cancel()
         char = livingPlayers[0]
 
@@ -547,7 +546,7 @@ class CombatServer():
         new_char.cPane = player.cPane
         new_char.id = player.id
         new_char.ai.startup(self.server)
-        
+
         self.server.person[player.id].ai.shutdown()
         self.server.person[player.id] = new_char
 

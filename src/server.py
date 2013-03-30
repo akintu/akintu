@@ -6,11 +6,12 @@ from servercombat import *
 from state import State
 
 class GameServer():
-    def __init__(self, world, port):
+    def __init__(self, world, port, turnTime):
         self.world = world
         self.SDF = ServerDataFactory()
         self.CS = CombatServer(self)
         reactor.listenTCP(port, self.SDF)
+        self.turnTime = turnTime
 
         LoopingCall(self.server_loop).start(0)
 
@@ -46,6 +47,7 @@ class GameServer():
                 self.pane[command.location.pane].person.append(person.id)
                 if port:
                     self.broadcast(Command("UPDATE", "SEED", seed=self.world.seed), command.id)
+                    self.broadcast(Command("UPDATE", "TURNTIME", turnTime=self.turnTime), command.id)
 
                 # Send command to each player in the affected pane
                 self.broadcast(command, -command.id)
@@ -157,10 +159,6 @@ class GameServer():
                 self.person[command.id].ai.shutdown()
                 self.person[command.id] = newPerson
                 self.broadcast(command, -command.id, exclude=True)
-
-            ###### Set CombatServer Time ######
-            if command.type == "SETTINGS" and command.action == "SET_TIME":
-                CombatServer.SECONDS = command.time
 
             ###### Get Item / Open Chest ######
             if command.type == "PERSON" and command.action == "OPEN":
