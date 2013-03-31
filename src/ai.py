@@ -2,12 +2,18 @@ import random
 from command import *
 from network import *
 from time import time
+import collections
+import cPickle
+import zlib
 
 class AI():
-    def __init__(self):
+    def __init__(self, history=None):
         self.server = None
-        self.behavior = {}
+        self.behavior = collections.OrderedDict()
         self.paused = False
+        self.history = []
+        if history:
+            self.rehydrate(cPickle.loads(zlib.decompress(history)))
 
     def startup(self, server):
         self.server = server
@@ -18,6 +24,7 @@ class AI():
     def run(self, pid=None, direction=None):
         newloc = self.server.person[pid].location.move(direction, 1)
         self.server.SDF.queue.put((None, Command("PERSON", "MOVE", id=pid, location=newloc)))
+        return True
 
     def wander(self, pid=None, region=None, move_chance=0):
         if time() < self.behavior['wander']['time']:
@@ -40,10 +47,27 @@ class AI():
     ###### AI MANAGEMENT ######
     def add(self, name, frequency, **details):
         if hasattr(self, name):
-            self.behavior[name] = {}
-            self.behavior[name]['frequency'] = frequency
-            self.behavior[name]['running'] = False
-            self.behavior[name]['task'] = LoopingCall(getattr(self, name), **details)
+            behavior = {}
+            behavior['frequency'] = frequency
+            behavior['running'] = False
+            behavior['task'] = LoopingCall(getattr(self, name), **details)
+            self.behavior[name] = behavior
+
+            hist = {}
+            hist['name'] = name
+            hist['frequency'] = frequency
+            hist['details'] = details
+            self.history.append(hist)
+
+    def dehydrate(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return zlib.compress(cPickle.dumps(self.history), 9)
+
+    def rehydrate(self, history):
+        for behavior in history:
+            self.add(behavior['name'], behavior['frequency'], **behavior['details'])
 
     def remove(self, name):
         if name in self.behavior:
