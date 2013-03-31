@@ -112,7 +112,7 @@ class Region:
         return self.__repr__()
 
     def __setstate__(self, state):
-        self.history = zlib.decompress(args[0]).split("\r\n")
+        self.history = zlib.decompress(state).split("\r\n")
         self.rehydrate()
 
     def rehydrate(self):
