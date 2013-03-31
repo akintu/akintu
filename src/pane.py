@@ -105,7 +105,7 @@ class Pane(object):
 
         if monsters != None:
             for monster in monsters:
-                person = TheoryCraft.rehydratePerson(monster[0])
+                person = TheoryCraft.rehydrateMonster(monster[0], save=True)
                 person.location = monster[1]
                 # r = Region()#region=monster[3])
                 #TODO: Rehydrate r with monsters[3]
@@ -348,7 +348,7 @@ class Pane(object):
         #Save Monsters.
         # print self.person
         for key, monster in self.person.iteritems():
-            monster_list.append((monster.dehydrate(), monster.location))
+            monster_list.append((monster.dehydrate(save=True), monster.location))
         save_dict[MONSTER_KEY] = monster_list
 
         #Save Items.

@@ -170,9 +170,13 @@ class Monster(person.Person):
         '''DEPRECATED'''
         return ("Monster", self.name, self.level)
 
-    def dehydrate(self):
-        return "@" + self.name + "@" + `self.level` + "@" + `self.playerNum`
-        
+    def dehydrate(self, save=False):
+        if not save:
+            return "@" + self.name + "@" + `self.level` + "@" + `self.playerNum`
+        _monst = {"NAME": self.name, "LEVEL": self.level, "PLAYERNUM": self.playerNum, "AI": self.ai.dehydrate()}
+        print _monst
+        return _monst
+
     def getSufficientAbilities(self):
         sufficient = []
         for abil in self.abilityList:

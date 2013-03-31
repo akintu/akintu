@@ -243,16 +243,21 @@ class TheoryCraft(object):
         return TheoryCraft.rehydratePerson(tuple)
 
     @staticmethod
-    def rehydrateMonster(details):
-        splits = details.split("@")
-        name = splits[1]
-        level = int(splits[2])
-        playerNum = int(splits[3])
-        rMonster = TheoryCraft.getMonster(name=name, level=level, playerNum=playerNum)
+    def rehydrateMonster(details, save=False):
+        if not save:
+            splits = details.split("@")
+            name = splits[1]
+            level = int(splits[2])
+            playerNum = int(splits[3])
+            rMonster = TheoryCraft.getMonster(name=name, level=level, playerNum=playerNum)
+        else:
+            rMonster = TheoryCraft.getMonster(name=details["NAME"], level=details["LEVEL"], playerNum=details["PLAYERNUM"])
+            rMonster.ai.rehydrate(details["AI"])
+
         rMonster.adjustMaxHP()
         rMonster.HP = rMonster.totalHP
         return rMonster
-            
+
     @staticmethod
     def rehydratePerson(details):
         if details[0] == "@":
