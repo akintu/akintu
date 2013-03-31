@@ -13,7 +13,7 @@ class AI():
         self.paused = False
         self.history = []
         if history:
-            self.rehydrate(cPickle.loads(zlib.decompress(history)))
+            self.rehydrate(history)
 
     def startup(self, server):
         self.server = server
@@ -66,6 +66,8 @@ class AI():
         return zlib.compress(cPickle.dumps(self.history), 9)
 
     def rehydrate(self, history):
+        if not isinstance(history, list):
+            history = cPickle.loads(zlib.decompress(history))
         for behavior in history:
             self.add(behavior['name'], behavior['frequency'], **behavior['details'])
 
