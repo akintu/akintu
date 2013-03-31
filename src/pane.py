@@ -88,18 +88,16 @@ class Pane(object):
             self.tiles[location].remove_items()
 
     def add_entities(self, entities_dict):
-        # print entities_dict
         for loc, entity in entities_dict.iteritems():
             if not loc in self.tiles:
                 self.tiles[loc] = Tile(None, True)
             self.tiles[loc].add_entity(entity)
-            # print "Loc: " + str(loc) + " Entity: " + str(entity)
 
     def load_monsters(self, monsters=None):
         '''
         Parameters:
-            monsters:   A list of monster dehydrated string and location tuples:
-                [("dehydrated_string", Location()), (..., ...), ...]
+            monsters:   A list of tuples with a monster dehydrated string and location object:
+                [("dehydrated_string", Location()), ...]
 
         '''
 
@@ -107,13 +105,7 @@ class Pane(object):
             for monster in monsters:
                 person = TheoryCraft.rehydrateMonster(monster[0], save=True)
                 person.location = monster[1]
-                # r = Region()#region=monster[3])
-                #TODO: Rehydrate r with monsters[3]
-                #TODO: Somehow rehydrate AI...
-                #person.ai(monster[4])
                 self.person[id(person)] = person
-                # assert False
-                print "WARNING! AI and Region may not work"
         else:   #TODO: Make this better. We're creating monsters from scratch here
             random.seed(self.seed + str(self.location) + "load_monsters")
             for i in range(3):
