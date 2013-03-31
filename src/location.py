@@ -6,7 +6,7 @@ import math
 import re
 
 class Location(object):
-    def __init__(self, pane, tile=None, direction=2):
+    def __init__(self, pane, tile=None, z=0, direction=2):
         if isinstance(pane, basestring):
             r = re.match(r'\((?P<p>\(.*\)|None), (?P<t>\(.*\)), (?P<d>.*)\)', pane)
             if r.group('p') == "None":
@@ -30,18 +30,19 @@ class Location(object):
             else:
                 self.tile = (pane % PANE_X, tile % PANE_Y)
 
-            self.direction = direction
+        self.z = z
+        self.direction = direction
 
     # So it turns out __repr__ is like toString()
     def __repr__(self):
-        return "(%s, %s, %d)" % (self.pane, self.tile, self.direction)
+        return "(%s, %s, %d, %d)" % (self.pane, self.tile, self.z, self.direction)
 
     def __str__(self):
         return self.__repr__()
 
     def __eq__(self, other):
         if isinstance(other, self.__class__):
-            return self.pane == other.pane and self.tile == other.tile
+            return self.pane == other.pane and self.tile == other.tile and self.z == other.z
 
     def __ne__(self, other):
         return not self == other
@@ -59,7 +60,7 @@ class Location(object):
         return Location(self.abs_x + other[0], self.abs_y + other[1])
 
     def __hash__(self):
-        str = "%d0%d" % (self.abs_x, self.abs_y)
+        str = "%d0%d0%d" % (self.abs_x, self.abs_y, self.z)
         return int(str.replace("-", "9"))
 
     @property
@@ -125,7 +126,7 @@ class Location(object):
                 dirs = {1: 4, 3: 6, 7: 4, 9: 6}
             direction = dirs[direction]
 
-        return Location(tuple(pane), tuple(tile), direction)
+        return Location(tuple(pane), tuple(tile), self.z, direction)
 
     def get_opposite_tile(self, edge):
         x = self.tile[0]
@@ -138,7 +139,7 @@ class Location(object):
             x = int(math.fabs(x - (PANE_X - 1)))
         if edge in [2, 8, 1, 3, 7, 9]:
             y = int(math.fabs(y - (PANE_Y - 1)))
-        return Location(self.pane, tuple((x, y)))
+        return Location(self.pane, tuple((x, y)), self.z)
 
     def get_surrounding_panes(self):
         '''
@@ -182,7 +183,7 @@ class Location(object):
         dist = max(abs(distx), abs(disty))
         for x in range(dist + 1):
             locs.append(Location(self.abs_x + int(round(float(x) / dist * distx)),
-                    self.abs_y + int(round(float(x) / dist * disty))))
+                    self.abs_y + int(round(float(x) / dist * disty)), self.z))
         return locs
 
     def direction_to(self, dest):
@@ -207,7 +208,7 @@ class Location(object):
         return math.sqrt((self.abs_x - dest.abs_x)**2 + (self.abs_y - dest.abs_y)**2)
 
     def in_melee_range(self, dest):
-        if self.pane != dest.pane:
+        if self.pane != dest.pane or self.z != dest.z:
             return False
         if dest.tile in [(self.tile[0] + dx, self.tile[1] + dy) for dx in range(-1, 2) \
                 for dy in range(-1, 2)]:

@@ -305,6 +305,7 @@ class GameServer():
                 # Save pane state to disk and then...
                 print("Unloading pane " + str(pane))
 
+                print self.pane[pane].person
                 people = {}
                 # Stop all AI behaviors
                 for i in self.pane[pane].person:
