@@ -502,10 +502,10 @@ class Combat(object):
             newloc = target.clocation.move(sourceOfImpact.direction_to(target.clocation), distance)
             line = target.clocation.line_to(newloc)
             for i, loc in enumerate(line):
-                if not Combat.gameServer.tile_is_open(loc, target.id):
+                if not Combat.gameServer.tile_is_open(loc, target.id) or loc.pane != (0, 0):
                     line = line[:i]
-            newloc = [x for x in line if x.pane == (0, 0)]
-            newloc = newloc.pop() if len(newloc) > 0 else target.cLocation
+                    break
+            newloc = line.pop() if len(line) > 0 else target.cLocation
             action = Command("PERSON", "MOVE", id=target.id, location=newloc)
             Combat.gameServer.SDF.queue.put((None, action))
 
