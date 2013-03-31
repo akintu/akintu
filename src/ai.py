@@ -65,10 +65,12 @@ class AI():
     def __repr__(self):
         return zlib.compress(cPickle.dumps(self.history), 9)
 
-    def rehydrate(self, history):
+    def rehydrate(self, history, pid):
         if not isinstance(history, list):
             history = cPickle.loads(zlib.decompress(history))
         for behavior in history:
+            if 'pid' in behavior['details']:
+                behavior['details']['pid'] = pid
             self.add(behavior['name'], behavior['frequency'], **behavior['details'])
 
     def remove(self, name):
