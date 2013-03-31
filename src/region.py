@@ -8,8 +8,6 @@ class Region:
     def __init__(self, *args):
         self.locations = set()
         self.history = []
-        self.shape = {"SQUARE": self.square, "DIAMOND": self.diamond, "CIRCLE": self.circle,
-                      "LINE": self.line, "CURVE": self.curve, "REGION": self.region}
         if len(args) == 1:
             if isinstance(args[0], Region):
                 self.history = args[0].history[:]
@@ -60,15 +58,15 @@ class Region:
             for l in self.locations:
                 temp.add(l + shape)
             self.locations = temp
-        elif shape.upper() in self.shape:
+        elif hasattr(self, shape.lower()):
             if method.upper() == "ADD":
-                self.locations |= self.shape[shape.upper()](*details)
+                self.locations |= getattr(self, shape.lower())(*details)
             elif method.upper() == "SUB":
-                self.locations -= self.shape[shape.upper()](*details)
+                self.locations -= getattr(self, shape.lower())(*details)
             elif method.upper() == "INT":
-                self.locations &= self.shape[shape.upper()](*details)
+                self.locations &= getattr(self, shape.lower())(*details)
             elif method.upper() == "XOR":
-                self.locations ^= self.shape[shape.upper()](*details)
+                self.locations ^= getattr(self, shape.lower())(*details)
 
         if 'append' not in opts or opts['append'] == True:
             self.history.append(method + "|" + str(shape) + "|" + \
@@ -112,6 +110,7 @@ class Region:
         return self.__repr__()
 
     def __setstate__(self, state):
+        self.locations = set()
         self.history = zlib.decompress(state).split("\r\n")
         self.rehydrate()
 
