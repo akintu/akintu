@@ -175,7 +175,6 @@ class Pane(object):
                 self.add_chest(chest[0], chest[1], chest[2])
         else:
             #Adds a random Chest
-            #TODO: remove none from level
             loc_list = []
             for i in range(3):
                 loc_list.append((TreasureChest.CHEST_TYPE[random.randrange(len(TreasureChest.CHEST_TYPE))], \
@@ -351,7 +350,7 @@ class Pane(object):
         return save_dict
 
     def load_state(self, state):
-        print "Pane.load_state(state) " + str(state)
+        #print "Pane.load_state(state) " + str(state)
         if state:
             #Get Monsters
             if MONSTER_KEY in state:

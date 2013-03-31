@@ -252,7 +252,8 @@ class TheoryCraft(object):
             rMonster = TheoryCraft.getMonster(name=name, level=level, playerNum=playerNum)
         else:
             rMonster = TheoryCraft.getMonster(name=details["NAME"], level=details["LEVEL"], playerNum=details["PLAYERNUM"])
-            rMonster.ai.rehydrate(details["AI"])
+            _id = id(rMonster)
+            rMonster.ai.rehydrate(details["AI"], _id)
 
         rMonster.adjustMaxHP()
         rMonster.HP = rMonster.totalHP
