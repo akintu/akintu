@@ -108,6 +108,13 @@ class Region:
     def dehydrate(self):
         return self.__repr__()
 
+    def __getstate__(self):
+        return self.__repr__()
+
+    def __setstate__(self, state):
+        self.history = zlib.decompress(args[0]).split("\r\n")
+        self.rehydrate()
+
     def rehydrate(self):
         for line in self.history:
             parts = line.split("|")
