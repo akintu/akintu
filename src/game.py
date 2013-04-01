@@ -295,17 +295,15 @@ class Game(object):
             if command.type == "PERSON" and command.action == "UPDATE":
                 for k, v in command.__dict__.iteritems():
                     if k not in ['type', 'action', 'id']:
-                        if k == 'totalAP':
-                            self.pane.person[command.id].AP = self.pane.person[command.id].totalAP
-                            self.screen.update_person(command.id, {'AP' : self.pane.person[command.id].AP,
-                                                                   'totalAP' : self.pane.person[command.id].totalAP,
-                                                                   'team' : self.pane.person[command.id].team})
-                        else:
+                        if k != 'totalAP':
                             setattr(self.pane.person[command.id], k, v)
+                        else:
+                            self.pane.person[command.id].refreshAP()
                         if k in ['HP', 'MP', 'AP', 'totalAP']:
                             self.screen.update_person(command.id, {k: v, \
                                     'team': self.pane.person[command.id].team})
 
+                                    
             ###### Character Progression ######
             if command.type == "PERSON" and command.action == "ADD_EXPERIENCE":
                 self.pane.person[command.id].addExperience(command.experience)
@@ -530,7 +528,7 @@ class Game(object):
                                                             'MP' : self.pane.person[self.id].MP,
                                                             'totalMP' : self.pane.person[self.id].totalMP,
                                                             'totalAP' : self.pane.person[self.id].totalAP,
-                                                            'AP' : self.pane.person[self.id].totalAP}) # This is an intentional mismatch.
+                                                            'AP' : self.pane.person[self.id].AP})
 
                 ## Consumable Use ###
                 elif self.selectingConsumable:
@@ -670,7 +668,8 @@ class Game(object):
             if player.experience >= player.getExpForNextLevel() and player.level < LEVEL_MAX:
                 self.screen.show_text("LEVEL UP!" , color='magenta')
         else:
-            print "DEBUG: " + `player.experience` + " exp " + `player.getExpForNextLevel()` + " needed " + `player.level` + " level "
+            pass
+            #print "DEBUG: " + `player.experience` + " exp " + `player.getExpForNextLevel()` + " needed " + `player.level` + " level "
 
 
     def respec(self):

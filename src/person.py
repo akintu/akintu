@@ -2148,13 +2148,6 @@ class Person(en.Entity):
         if self.team == "Players":
             return self.calcBurden()
         return 0
-
-    def refreshAP(self):
-        '''Re-calculates the AP of this person; really only useful for playercharacters.'''
-        a = self.totalAP
-        b = self.AP
-        c = self.totalAP
-        return
         
     @property
     def totalAP(self):
@@ -2188,7 +2181,10 @@ class Person(en.Entity):
             value = 0
         self._baseAP = value
 
-
+    def refreshAP(self):
+        '''Refresh the AP of this character to its maximum if it has exceeded it.'''
+        if self.AP > self.totalAP:
+            self.AP = self.totalAP
 
     @property
     def HP(self):
