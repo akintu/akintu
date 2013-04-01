@@ -896,19 +896,20 @@ class Combat(object):
           thief -- Person; the thief disarming the traps
         Outputs:
           None"""
-        nearbyTraps = [Combat.gameServer.pane[thief.cPane].tiles[loc].getTrap() for loc in \
+        nearbyTraps = [Combat.gameServer.pane[thief.cPane].tiles[loc.tile].getTrap() for loc in \
                 Region("CIRCLE", thief.cLocation, 1) \
-                if Combat.gameServer.pane[thief.cPane].tiles[loc].getTrap()]
+                if Combat.gameServer.pane[thief.cPane].tiles[loc.tile].getTrap() and 
+                   Combat.gameServer.pane[thief.cPane].tiles[loc.tile].getTrap().visible]
         numberTrapsDisarmed = 0
         for trap in nearbyTraps:
-            chance = min(95, 55 + 5 * (thief.level - trap.level) + 2 * (thief.totalCunning - trap.trapRating))
+            chance = min(95, 55 + 5 * (thief.level - trap.level) + 2 * (thief.totalCunning + thief.trapDisarmBonus - trap.trapRating))
             if Dice.rollBeneath(chance):
                 Combat.gameServer.pane[thief.cPane].removeTrap(trap.location)
                 numberTrapsDisarmed += 1
-                Combat.gameServer.broadcast(command.Command("TRAP", "REMOVE", location=location), -thief.id)
+                Combat.gameServer.broadcast(command.Command("TRAP", "REMOVE", location=trap.location), -thief.id)
                 Combat.sendCombatMessage(trap.name + " disarmed.", thief, color='orange')
-            if numberTrapsDisarmed == 0:
-                Combat.sendCombatMessage("Failed to disarm any traps.", thief, color='oragne', toAll=False)
+        if numberTrapsDisarmed == 0:
+            Combat.sendCombatMessage("Failed to disarm any traps.", thief, color='orange', toAll=False)
 
     @staticmethod
     def inBackstabPosition(source, target):

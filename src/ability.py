@@ -293,6 +293,10 @@ class Ability(object):
             return (False, self.name + " cannot be used on Huge targets.")
         return (True, "")
 
+    def _disarmTraps(self, target):
+        source = self.owner
+        Combat.disarmTraps(source)
+        
     def _agilePosition(self, target):
         source = self.owner
         duration = 1
@@ -1673,6 +1677,22 @@ class Ability(object):
         'text' : 'Throw a chain to tangle a target, lowering its dodge, movement speed,\n' +
                     'and spell casting success.  Dependent on Cunning and cannot be used on\n' +
                     'huge foes.'
+        },
+        'Disarm traps':
+        {
+        'level' : 2,
+        'class' : 'Thief',
+        'HPCost' : 0,
+        'APCost' : 6,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _disarmTraps,
+        'cooldown' : 1,
+        'checkFunction' : None,
+        'breakStealth' : 0,
+        'image' : THIEF_SKILLS + 'disarm-traps.png',
+        'text' : 'Attempt to disarm all detected traps in melee range.  Success is\n' + \
+                'dependent on level and Cunning.'
         },
         'Agile Position':
         {
