@@ -370,10 +370,13 @@ class Spell(object):
         source = self.owner
         lower = 5
         upper = 33
-        hitType = Combat.calcHit(source, target, "Magical")
-        dam = Combat.calcDamage(source, target, lower, upper, "Electric", hitValue=hitType, critical=1.3, partial=0.5,
-                                scalesWith="Spellpower", scaleFactor=0.005)
-        # Get line AOE and hit all targets with damage
+        manyTargets = Combat.getLineTargets(target.cPane, source.cLocation, target.cLocation, selectMonsters=True, width=2)
+        for t in manyTargets:
+            hitType = Combat.calcHit(source, t, "Magical")
+            if hitType != "Miss" and hitType != "Fully Resisted":
+                dam = Combat.calcDamage(source, t, lower, upper, "Electric", hitValue=hitType, critical=1.3, partial=0.5,
+                                        scalesWith="Spellpower", scaleFactor=0.005)
+                Combat.lowerHP(t, dam)
         return hitType
             
     monsterSpells = {
