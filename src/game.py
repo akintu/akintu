@@ -63,11 +63,8 @@ class Game(object):
         self.running = False
         self.combat = False
         self.musicState = "overworld"
-        self.performingLevelup = False
-        self.viewingInventory = False
-        self.selectingConsumable = False
+        self.inputState = "MOVEMENT" #"MOVEMENT", "LEVELUP", "INVENTORY", "CONSUMABLE", "TARGET", "SHOP"
         self.placingTrap = False
-        self.inShop = False
 
         # Levelup state
         self.levelup = None
@@ -76,7 +73,8 @@ class Game(object):
         self.currentShop = None
 
         # Selection state
-        self.selectionMode = "targeting"
+        self.selectionMode = "targeting" #"spells", "abilities", "targeting", "items"
+        #Ability.targetType can be "friendly", "hostile", "self", "location"
         self.currentTargetId = None
         self.panePersonIdList = []
         self.currentAbility = None
@@ -463,10 +461,9 @@ class Game(object):
 
                 elif event.key in MODIFIER_KEYS:
                     self.keystate.append(event.key)
-                elif event.key in MOVE_KEYS and not self.performingLevelup and not self.viewingInventory and not \
-                    self.selectingConsumable and not self.inShop and not \
-                     (self.combat and (self.selectionMode == "abilities" or self.selectionMode == "spells" or self.placingTrap)):
-                    self.move_person(MOVE_KEYS[event.key], 1)
+                elif event.key in DIRECTION_KEYS and not DIRECTION_KEYS[event.key] % 2 and \
+                        self.inputState == "MOVEMENT":
+                    self.move_person(DIRECTION_KEYS[event.key], 1)
                 elif event.key == K_EQUALS or event.key == K_PAGEUP:
                     self.screen.scroll_up(1 if not any(mod in [K_LSHIFT, K_RSHIFT] \
                             for mod in self.keystate) else 1000)
@@ -475,7 +472,7 @@ class Game(object):
                             for mod in self.keystate) else 1000)
 
                 ### Levelup Commands ###
-                if self.performingLevelup:
+                if self.inputState == "LEVELUP":
                     upgradedHero = False
                     if event.key == K_RIGHT or event.key == K_KP6 or event.key == K_l:
                         self.screen.move_dialog(6)
@@ -493,7 +490,7 @@ class Game(object):
                         newHero.location = self.pane.person[self.id].location
                         newHero.id = self.id
                         self.pane.person[self.id] = newHero
-                        self.performingLevelup = False
+                        self.inputState = "MOVEMENT"
                         self.CDF.send(Command("PERSON", "REPLACE", id=self.id, player=upgradedHero))
                         self.screen.update_person(self.id, {'team' : "Players",
                                                             'level': self.pane.person[self.id].level,
@@ -504,7 +501,7 @@ class Game(object):
                                                             'totalAP' : self.pane.person[self.id].totalAP,
                                                             'AP' : self.pane.person[self.id].AP})
 
-                elif self.inShop:
+                elif self.inputState == "SHOP":
                     hero = False
                     if event.key == K_RIGHT or event.key == K_KP6 or event.key == K_l:
                         self.screen.move_dialog(6)
@@ -527,7 +524,7 @@ class Game(object):
                         newHero.location = self.pane.person[self.id].location
                         newHero.id = self.id
                         self.pane.person[self.id] = newHero
-                        self.inShop = False
+                        self.inputState = "MOVEMENT"
                         self.CDF.send(Command("PERSON", "REPLACE", id=self.id, player=hero))
                         self.screen.update_person(self.id, {'team' : "Players",
                                                             'level': self.pane.person[self.id].level,
@@ -539,7 +536,7 @@ class Game(object):
                                                             'AP' : self.pane.person[self.id].AP})
 
                 ### Inventory Management ###
-                elif self.viewingInventory:
+                elif self.inputState == "INVENTORY":
                     newlyEquippedPlayer = None
                     if event.key == K_RIGHT or event.key == K_KP6 or event.key == K_l:
                         self.screen.move_dialog(6)
@@ -563,7 +560,7 @@ class Game(object):
                         newlyEquippedPlayer = self.pane.person[self.id].dehydrate()
                     if newlyEquippedPlayer:
                         self.CDF.send(Command("PERSON", "REPLACE", id=self.id, player=newlyEquippedPlayer))
-                        self.viewingInventory = False
+                        self.inputState = "MOVEMENT"
                         self.screen.update_person(self.id, {'team' : "Players",
                                                             'level': self.pane.person[self.id].level,
                                                             'HP' : self.pane.person[self.id].HP,
@@ -574,7 +571,7 @@ class Game(object):
                                                             'AP' : self.pane.person[self.id].AP})
 
                 ## Consumable Use ###
-                elif self.selectingConsumable:
+                elif self.inputState == "CONSUMABLE":
                     if event.key == K_RIGHT or event.key == K_KP6 or event.key == K_l:
                         self.screen.move_dialog(6)
                     elif event.key == K_LEFT or event.key == K_KP4 or event.key == K_h:
@@ -587,7 +584,7 @@ class Game(object):
                         self.currentItem = self.pane.person[self.id].inventory.allConsumables[self.screen.hide_dialog()[1]]
                         self.selectionMode = "items"
                         self.select_self()
-                        self.selectingConsumable = False
+                        self.inputState = "MOVEMENT"
 
                 ### Combat Only Commands ###
                 elif self.combat:
@@ -703,7 +700,7 @@ class Game(object):
         player = self.pane.person[self.id]
         if player.experience >= player.getExpForNextLevel() and player.level < LEVEL_MAX:
             player.level += 1
-            self.performingLevelup = True
+            self.inputState = "LEVELUP"
             self.levelup = lvl.Levelup(player, self.screen)
             self.levelup.next()
         elif debug:
@@ -731,8 +728,8 @@ class Game(object):
             newHero.id = self.id
             self.pane.person[self.id] = newHero
 
-            for i in range(oldLevel - 1):
-                self.performingLevelup = True
+            for _ in range(oldLevel - 1):
+                self.inputState = "LEVELUP"
                 self.pane.person[self.id]._experience = self.pane.person[self.id].getExpForNextLevel()
                 self.pane.person[self.id].level += 1
                 self.levelup = lvl.Levelup(self.pane.person[self.id], self.screen)
@@ -744,12 +741,12 @@ class Game(object):
         player = self.pane.person[self.id]
         # if player is actually on a shop tile or whatever... TODO
         if player.inventory.allItems:
-            self.inShop = True
+            self.inputState = "SHOP"
             self.currentShop = shop.Shop(player, self.screen) # Using all default parameters at the moment TODO
             self.currentShop.open()
 
     def open_inventory(self):
-        self.viewingInventory = True
+        self.inputState = "INVENTORY"
         player = self.pane.person[self.id]
         isEquipment = True
         text = "Looking in your bag..."
@@ -757,12 +754,12 @@ class Game(object):
         inv = player.inventory.allItems
         capacity = `player.inventoryWeight` + "/" + `player.inventoryCapacity`
         if not eq and not inv:
-            self.viewingInventory = False
+            self.inputState = "MOVEMENT"
             return
         self.screen.show_item_dialog(text, inv, eq, isEquipment, bgcolor='tan', capacity=capacity)
 
     def open_consumables(self):
-        self.selectingConsumable = True
+        self.inputState = "CONSUMABLE"
         player = self.pane.person[self.id]
         cons = player.inventory.allConsumables
         if cons:
@@ -770,7 +767,7 @@ class Game(object):
             text = "Select a consumable"
             self.screen.show_item_dialog(text, cons, [], isEquipment, bgcolor='tan')
         else:
-            self.selectingConsumable = False
+            self.inputState = "MOVEMENT"
 
     def choose_ability(self):
         text = "Select an Ability"
