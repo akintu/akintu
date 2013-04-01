@@ -303,7 +303,7 @@ class Game(object):
                             self.screen.update_person(command.id, {k: v, \
                                     'team': self.pane.person[command.id].team})
 
-                                    
+
             ###### Character Progression ######
             if command.type == "PERSON" and command.action == "ADD_EXPERIENCE":
                 self.pane.person[command.id].addExperience(command.experience)
@@ -478,7 +478,17 @@ class Game(object):
 
                 ### Levelup Commands ###
                 if self.performingLevelup:
-                    upgradedHero = self.levelup.input(event.key)
+                    upgradedHero = False
+                    if keystroke == K_RIGHT or keystroke == K_KP6 or keystroke == K_l:
+                        self.screen.move_dialog(6)
+                    elif keystroke == K_LEFT or keystroke == K_KP4 or keystroke == K_h:
+                        self.screen.move_dialog(4)
+                    elif keystroke == K_UP or keystroke == K_KP8 or keystroke == K_k:
+                        self.screen.move_dialog(8)
+                    elif keystroke == K_DOWN or keystroke == K_KP2 or keystroke == K_j:
+                        self.screen.move_dialog(2)
+                    elif keystroke == K_SPACE or keystroke == K_a:
+                        upgradedHero = self.levelup.advance()
                     if upgradedHero:
                         # Upgraded Hero is "False" until the levelup is finished. Then it is a dehydrated hero.
                         newHero = TheoryCraft.rehydratePlayer(upgradedHero)
