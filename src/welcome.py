@@ -20,12 +20,15 @@ if not os.path.exists(savesprefix):
     os.makedirs(savesprefix)
 
 IPFILENAME = os.path.join('res', 'ip_history.txt')
-try:
-    with open(IPFILENAME, 'r') as ipfile:
-        IP = tuple(ipfile.readlines()[::-1][:5])
-except Exception as e:
-    print 'Could not load ip file: ', IPFILENAME
-    print e
+if os.path.exists(IPFILENAME):
+    try:
+        with open(IPFILENAME, 'r') as ipfile:
+            IP = tuple(ipfile.readlines()[::-1][:5])
+    except Exception as e:
+        print 'Could not load ip file: ', IPFILENAME
+        print e
+        IP = ()
+else:
     IP = ()
 CLASSES = ('Assassin', 'Barbarian', 'Dragoon', 'Weapon Master', 'Spellsword',
            'Marksman', 'Druid', 'Tactician', 'Ninja', 'Anarchist', 'Shadow',
