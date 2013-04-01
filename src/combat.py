@@ -492,22 +492,20 @@ class Combat(object):
           distance -- int number of tiles to move
           ignoreResistance -- (optional) if True, will not roll to see if the resistance of
                               the Person causes him to remain unaffected by the knockback
-          didHit -- (optional) boolean; used to determine if this method should do anything.
-                    was included to allow simpler logic in the data files."""
-        if not didHit:
+          """
+        if not ignoreResistance and target.team == "Players" and Dice.rollBeneath(target.knockbackResistance):
+            Combat.sendCombatMessage("Knockback resisted (" + `target.knockbackResistance` + ")", target)
             return
-        #ignored = target.RollForResistance goes here
-        ignored = False
-        if ignoreResistance or not ignored:
-            newloc = target.clocation.move(sourceOfImpact.direction_to(target.clocation), distance)
-            line = target.clocation.line_to(newloc)
-            for i, loc in enumerate(line):
-                if not Combat.gameServer.tile_is_open(loc, target.id) or loc.pane != (0, 0):
-                    line = line[:i]
-                    break
-            newloc = line.pop() if len(line) > 0 else target.cLocation
-            action = Command("PERSON", "MOVE", id=target.id, location=newloc)
-            Combat.gameServer.SDF.queue.put((None, action))
+            
+        newloc = target.clocation.move(sourceOfImpact.direction_to(target.clocation), distance)
+        line = target.clocation.line_to(newloc)
+        for i, loc in enumerate(line):
+            if not Combat.gameServer.tile_is_open(loc, target.id) or loc.pane != (0, 0):
+                line = line[:i]
+                break
+        newloc = line.pop() if len(line) > 0 else target.cLocation
+        action = Command("PERSON", "MOVE", id=target.id, location=newloc)
+        Combat.gameServer.SDF.queue.put((None, action))
 
     @staticmethod
     def decrementMovementTiles(target, removeAll=False):
@@ -846,20 +844,6 @@ class Combat(object):
         target.overrideMovementAPCost = newCost
         Combat.sendToAll(target, "MoveAPCost")
 
-
-    @staticmethod
-    def movePerson(target, destination, instant=False):
-        """Will move the player character from its current location to the given
-        destination tile.  By default, will show the moving animation.
-        Inputs:
-          target -- Person; the Person to move
-          destination -- Tile; the location to move the target to
-          instant -- boolean*; if set, the moving animation will not be displayed
-                               and the player will immediately be sent to the Tile.
-        Outputs:
-          None"""
-        pass #TODO
-
     @staticmethod
     def endTurn(player):
         """Will end the turn of the given player-character.
@@ -906,22 +890,23 @@ class Combat(object):
         pass #TODO
 
     @staticmethod
-    def disarmTrap(thief, trap, wasSuccessful):
-        """Disarm the trap specified with the thief and his allies gaining
-        experience.  If wasSuccessful is False, simply return with no effect.
+    def disarmTraps(thief):
+        """Disarm the traps within melee range.
         Inputs:
-          thief -- Person; the thief disarming the trap
-          trap -- Trap; the trap being disarmed
-          wasSuccessful -- boolean*; If False, will cause this method to do
-                           nothing.  It was included to simplify data file
-                           logic and possibly for extension later with
-                           'critical failure' type penalties etc.
+          thief -- Person; the thief disarming the traps
         Outputs:
           None"""
-        if not wasSuccessful:
-            return
+        # nearbyTraps = ...getTrapsInMeleeRangeOfThiefLogic... (only get hostile traps) TODO
+        # numberTrapsDisarmed = 0
+        # for trap in nearbyTraps:
+        #     chance = min(95, 15 + 5 * (thief.level - trap.level) + 2 * (thief.totalCunning - trap.trapRating))
+        #     if Dice.rollBeneath(chance):
+        #         ...remove this trap from its tile... TODO
+        #         numberTrapsDisarmed += 1
+        #         Combat.sendCombatMessage(trap.name + " disarmed.", thief, color='orange')
+        #     if numberTrapsDisarmed == 0:
+        #         Combat.sendCombatMessage("Failed to disarm any traps.", thief, color='oragne', toAll=False)        
         pass
-        #TODO
 
     @staticmethod
     def inBackstabPosition(source, target):
