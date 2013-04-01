@@ -6,9 +6,7 @@ import pygame
 from pygame.locals import *
 
 import os
-import sys
 import time
-import datetime
 
 from combat import *
 from command import *
