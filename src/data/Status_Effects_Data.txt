@@ -177,6 +177,10 @@
   [TYPE: Internal]
   [RECURRING: False]
   
+[NAME: Intuition_bonus]
+  [TYPE: Internal]
+  [RECURRING: False]
+  
 [NAME: Magic_resist_bonus]
   [TYPE: Internal]
   [RECURRING: False]
@@ -539,7 +543,9 @@
   [IMAGE: tier2_spells/identification.png]
   [ELEMENT: Arcane]
   [INTERNAL: Spellpower_bonus]
-    [MAGNITUDE: 0]
+    [MAGNITUDE: 5]
+  [INTERNAL: Intuition_bonus]
+    [MAGNITUDE: 15]
   [CATEGORY: Buff]
 	
 [NAME: Hovering Shield]

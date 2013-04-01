@@ -302,6 +302,14 @@ class Spell(object):
         Combat.addStatus(target, self.name, duration, magnitude)
         return "Normal Hit"
         
+    # TIER 2
+    
+    def _identification(self, target):
+        source = self.owner
+        duration = 3
+        Combat.addStatus(source, self.name, duration)
+        return "Normal Hit"
+        
     def _hoveringShield(self, target):
         source = self.owner
         duration = 5
@@ -627,7 +635,19 @@ class Spell(object):
 
         # Tier 2
         # Burst
-        # Identification
+        'Identification':
+        {
+        'tier' : 2,
+        'school' : 'Mystic',
+        'MPCost' : 5,
+        'APCost' : 5,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _identification,
+        'cooldown' : 1,
+        'image' : TIER2 + 'identification.png',
+        'text' : 'Grants +5 Spellpower and +15 Intuition for 3 turns.'
+        },
         'Hovering Shield':
         {
         'tier' : 2,
