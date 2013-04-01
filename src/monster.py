@@ -252,9 +252,17 @@ class Monster(person.Person):
     def faceTarget(self, target):
         dir = self.cLocation.direction_to(target.cLocation)
         if dir != self.cLocation.direction:
-            self.cLocation.direciton = dir
+            if dir == 7:
+                dir = 8
+            elif dir == 1:
+                dir = 4
+            elif dir == 3:
+                dir = 2
+            elif dir == 9:
+                dir = 6
+            self.cLocation.direction = dir
             messageObj = command.Command("PERSON", "MOVE", id=self.id, location=self.cLocation)
-            #self.globalServer.SDF.queue.put((None, messageObj))
+            self.globalServer.SDF.queue.put((None, messageObj))
        
     def getPlayersInRange(self, range, server=None, combatPane=None, visiblePlayers="All"):
         """Returns a list of players within a set range of this monster.  Will sort them according

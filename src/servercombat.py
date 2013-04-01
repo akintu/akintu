@@ -23,18 +23,20 @@ class CombatServer():
             if self.server.tile_is_open(command.location, command.id) and \
                  activePlayer.AP >= activePlayer.totalMovementAPCost or\
                  activePlayer.remainingMovementTiles > 0:
-                activePlayer.record.recordMovement()
-                if activePlayer.remainingMovementTiles == 0:
-                    Combat.modifyResource(activePlayer, "AP", -activePlayer.totalMovementAPCost)
-                    Combat.resetMovementTiles(activePlayer)
-                else:
-                    Combat.decrementMovementTiles(activePlayer)
+                if activePlayer.team == "Players":
+                    activePlayer.record.recordMovement()
+                    if activePlayer.remainingMovementTiles == 0:
+                        Combat.modifyResource(activePlayer, "AP", -activePlayer.totalMovementAPCost)
+                        Combat.resetMovementTiles(activePlayer)
+                    else:
+                        Combat.decrementMovementTiles(activePlayer)
 
                 # Update location and broadcast, including possible trap interactions.
                 activePlayer.cLocation = command.location
                 self.server.broadcast(command, -command.id, exclude=True)
-                self.check_trap_trigger(activePlayer, activePlayer.cLocation)
-                self.check_turn_end(activePlayer.cPane)
+                if activePlayer.team == "Players":
+                    self.check_trap_trigger(activePlayer, activePlayer.cLocation)
+                    self.check_turn_end(activePlayer.cPane)
 
         ###### RemovePerson ######
         elif command.type == "PERSON" and command.action == "REMOVE":
