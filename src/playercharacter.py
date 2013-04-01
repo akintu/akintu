@@ -1295,6 +1295,7 @@ class PlayerCharacter(p.Person):
                 capacity = `self.inventoryWeight` + "/" + `self.inventoryCapacity`
                 screen.update_item_dialog_text(text, capacity)
                 screen.update_item_dialog_items(inv, eq)
+                self.AP = self.totalAP
                 return None
         elif key == K_u:
             selectionTuple = screen.get_dialog_selection()
