@@ -496,7 +496,7 @@ class Combat(object):
         if not ignoreResistance and target.team == "Players" and Dice.rollBeneath(target.knockbackResistance):
             Combat.sendCombatMessage("Knockback resisted (" + `target.knockbackResistance` + ")", target)
             return
-            
+
         newloc = target.clocation.move(sourceOfImpact.direction_to(target.clocation), distance)
         line = target.clocation.line_to(newloc)
         for i, loc in enumerate(line):
@@ -896,16 +896,18 @@ class Combat(object):
           thief -- Person; the thief disarming the traps
         Outputs:
           None"""
-        # nearbyTraps = ...getTrapsInMeleeRangeOfThiefLogic... (only get hostile traps) TODO
-        # numberTrapsDisarmed = 0
-        # for trap in nearbyTraps:
-        #     chance = min(95, 55 + 5 * (thief.level - trap.level) + 2 * (thief.totalCunning - trap.trapRating))
-        #     if Dice.rollBeneath(chance):
-        #         ...remove this trap from its tile... TODO
-        #         numberTrapsDisarmed += 1
-        #         Combat.sendCombatMessage(trap.name + " disarmed.", thief, color='orange')
-        #     if numberTrapsDisarmed == 0:
-        #         Combat.sendCombatMessage("Failed to disarm any traps.", thief, color='oragne', toAll=False)        
+        nearbyTraps = [Combat.gameServer.pane[thief.cPane].tiles[loc].getTrap() for loc in \
+                Region("CIRCLE", thief.cLocation, 1) \
+                if Combat.gameServer.pane[thief.cPane].tiles[loc].getTrap()]
+        numberTrapsDisarmed = 0
+        for trap in nearbyTraps:
+            chance = min(95, 55 + 5 * (thief.level - trap.level) + 2 * (thief.totalCunning - trap.trapRating))
+            if Dice.rollBeneath(chance):
+                Combat.gameServer.pane[thief.cPane].removeTrap(trap.location)
+                numberTrapsDisarmed += 1
+                Combat.sendCombatMessage(trap.name + " disarmed.", thief, color='orange')
+            if numberTrapsDisarmed == 0:
+                Combat.sendCombatMessage("Failed to disarm any traps.", thief, color='oragne', toAll=False)
         pass
 
     @staticmethod
