@@ -356,10 +356,14 @@ class Spell(object):
         source = self.owner
         lower = 10
         upper = 35
-        knockbackDistance = 5 # TODO -- Knockback
-        hitType = Combat.calcHit(source, target, "Magical")
-        dam = Combat.calcDamage(source, target, lower, upper, "Cold", hitValue=hitType, scalesWith="Spellpower", scaleFactor=0.014)
-        # Get line AOE and hit the first target. TODO
+        knockbackDistance = 5
+        newTar = Combat.getLineTargets(target.cPane, source.cLocation, target.cLocation, selectMonsters=True, width=1, selectFirstOnly=True)[0]
+        hitType = Combat.calcHit(source, newTar, "Magical")
+        if hitType != "Miss" and hitType != "Fully Resisted":
+            dam = Combat.calcDamage(source, newTar, lower, upper, "Cold", hitValue=hitType, scalesWith="Spellpower", scaleFactor=0.014)
+            Combat.lowerHP(newTar, dam)
+            if hitType == "Normal Hit" or hitType == "Critical Hit":
+                Combat.knockback(newTar, source.cLocation, knockbackDistance)
         return hitType
         
     def _lightningBolt(self, target):

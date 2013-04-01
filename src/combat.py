@@ -483,12 +483,12 @@ class Combat(object):
         target.cLocation = desiredCombatLocation
 
     @staticmethod
-    def knockback(target, sourceOfImpact, distance, ignoreResistance=False, didHit=True):
+    def knockback(target, sourceOfImpact, distance, ignoreResistance=False):
         """Moves the target via 'knockback' a set number of tiles away from the source of
         impact.
         Inputs:
           target -- Person to move
-          sourceOfImpact -- Tile from which the knockback originated
+          sourceOfImpact -- Location from which the knockback originated
           distance -- int number of tiles to move
           ignoreResistance -- (optional) if True, will not roll to see if the resistance of
                               the Person causes him to remain unaffected by the knockback
@@ -497,14 +497,14 @@ class Combat(object):
             Combat.sendCombatMessage("Knockback resisted (" + `target.knockbackResistance` + ")", target)
             return
 
-        newloc = target.clocation.move(sourceOfImpact.direction_to(target.clocation), distance)
-        line = target.clocation.line_to(newloc)
+        newloc = target.cLocation.move(sourceOfImpact.direction_to(target.cLocation), distance)
+        line = target.cLocation.line_to(newloc)
         for i, loc in enumerate(line):
             if not Combat.gameServer.tile_is_open(loc, target.id) or loc.pane != (0, 0):
                 line = line[:i]
                 break
         newloc = line.pop() if len(line) > 0 else target.cLocation
-        action = Command("PERSON", "MOVE", id=target.id, location=newloc)
+        action = command.Command("PERSON", "MOVE", id=target.id, location=newloc)
         Combat.gameServer.SDF.queue.put((None, action))
 
     @staticmethod
@@ -905,10 +905,10 @@ class Combat(object):
             if Dice.rollBeneath(chance):
                 Combat.gameServer.pane[thief.cPane].removeTrap(trap.location)
                 numberTrapsDisarmed += 1
+                Combat.gameServer.broadcast(command.Command("TRAP", "REMOVE", location=location), -thief.id)
                 Combat.sendCombatMessage(trap.name + " disarmed.", thief, color='orange')
             if numberTrapsDisarmed == 0:
                 Combat.sendCombatMessage("Failed to disarm any traps.", thief, color='oragne', toAll=False)
-        pass
 
     @staticmethod
     def inBackstabPosition(source, target):
