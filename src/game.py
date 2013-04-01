@@ -294,7 +294,6 @@ class Game(object):
             ###### Update Person Stats ######
             if command.type == "PERSON" and command.action == "UPDATE":
                 for k, v in command.__dict__.iteritems():
-                    print "key " + `k`
                     if k not in ['type', 'action', 'id']:
                         if k != 'totalAP':
                             setattr(self.pane.person[command.id], k, v)
@@ -669,7 +668,8 @@ class Game(object):
             if player.experience >= player.getExpForNextLevel() and player.level < LEVEL_MAX:
                 self.screen.show_text("LEVEL UP!" , color='magenta')
         else:
-            print "DEBUG: " + `player.experience` + " exp " + `player.getExpForNextLevel()` + " needed " + `player.level` + " level "
+            pass
+            #print "DEBUG: " + `player.experience` + " exp " + `player.getExpForNextLevel()` + " needed " + `player.level` + " level "
 
 
     def respec(self):

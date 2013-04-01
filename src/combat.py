@@ -899,7 +899,7 @@ class Combat(object):
         # nearbyTraps = ...getTrapsInMeleeRangeOfThiefLogic... (only get hostile traps) TODO
         # numberTrapsDisarmed = 0
         # for trap in nearbyTraps:
-        #     chance = min(95, 15 + 5 * (thief.level - trap.level) + 2 * (thief.totalCunning - trap.trapRating))
+        #     chance = min(95, 55 + 5 * (thief.level - trap.level) + 2 * (thief.totalCunning - trap.trapRating))
         #     if Dice.rollBeneath(chance):
         #         ...remove this trap from its tile... TODO
         #         numberTrapsDisarmed += 1
