@@ -1945,7 +1945,16 @@
     [MAGNITUDE: 0]
   [CATEGORY: Debuff]
 	
-	
-	
+[NAME: Sedate]
+  [TYPE: Display]
+  [IMAGE: monster_status/sedate.png]
+  [ELEMENT: Poison]
+  [INTERNAL: Dodge_penalty]
+	[MAGNITUDE: 0]
+  [INTERNAL: Movement_tiles_penalty]
+    [MAGNITUDE: 1]
+  [INTERNAL: Poison_tolerance_penalty]
+    [MAGNITUDE: 5]
+  [CATEGORY: Debuff]
 	
 	

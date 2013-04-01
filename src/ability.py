@@ -1419,12 +1419,29 @@ class Ability(object):
         source = self.owner
         # Get all AOE targets within melee range -- TODO
         # Deal heavy shadow damage to each if they fail a magical resistance check
-
+        
     def _shadowBurstCheck(self, target):
         ''' Should only be used if HP < 30% of maximum OR 3+ players are in melee range '''
         source = self.owner
         return (False, "") # TODO
 
+    def _sedate(self, target):
+        ''' Inject a toxin into the target, dealing a small amount of piercing damage, 
+        but infecting them with a sedating toxin that lowers movement tiles, dodge, 
+        and poison tolerance. '''
+        source = self.owner
+        dartHit = Combat.calcHit(source, target, "Physical", modifier=8)
+        if dartHit != "Miss":
+            dartMin = 4
+            dartMax = 8
+            damage = Combat.calcDamage(source, target, dartMin, dartMax, "Piercing", "Normal Hit")
+            rating = 7 + self.level * 2
+            pHit = Combat.calcPoisonHit(source, target, rating)
+            if pHit != "Miss":
+                duration = 4
+                magnitude = 3 + source.level # Used for dodge penalty not poison tolerance loss.
+                Combat.applyStatus(target, "Sedate", duration, magnitude)
+        
     def _smash(self, target):
         ''' Deal +20% damage with +15 armor penetration '''
         source = self.owner
@@ -3068,6 +3085,19 @@ class Ability(object):
         'target' : 'hostile',
         'action' : _poisonFang,
         'cooldown' : 1,
+        'checkFunction' : None,
+        'breakStealth' : 100
+        },
+        'Sedate':
+        {
+        'level' : 1,
+        'class' : 'Monster',
+        'HPCost' : 0,
+        'APCost' : 10,
+        'range' : 2,
+        'target' : 'hostile',
+        'action' : _sedate,
+        'cooldown' : 3,
         'checkFunction' : None,
         'breakStealth' : 100
         },

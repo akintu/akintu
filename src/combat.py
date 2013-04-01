@@ -299,7 +299,7 @@ class Combat(object):
             return result
 
         if (type == "Magical Poison" or type == "Poison Magical"):
-            if (Combat.poisonHitMechanics(source, target, rating) == "Normal Hit"):
+            if (Combat.calcPoisonHit(source, target, rating) == "Normal Hit"):
                 return Combat.magicalHitMechanics(source, target)
             else:
                 return "Miss"
