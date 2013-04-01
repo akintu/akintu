@@ -1250,82 +1250,59 @@ class PlayerCharacter(p.Person):
         else:
             return 25
             
-    def navigateInventory(self, screen, key):
-        if key == K_RIGHT or key == K_KP6 or key == K_l:
-            screen.move_dialog(6)
-            return None
-        elif key == K_LEFT or key == K_KP4 or key == K_h:
-            screen.move_dialog(4)
-            return None
-        elif key == K_UP or key == K_KP8 or key == K_k:
-            screen.move_dialog(8)
-            return None
-        elif key == K_DOWN or key == K_KP2 or key == K_j:
-            screen.move_dialog(2)
-            return None
-        elif key == K_SPACE or key == K_i:
-            screen.hide_dialog()
-            return self.dehydrate()
-        elif key == K_e:
-            selectionTuple = screen.get_dialog_selection()
-            if selectionTuple[0] == 0:
-                # This is the inventory side.
-                item = self.inventory.allItems[selectionTuple[1]]
-                if isinstance(item, consumable.Consumable):
-                    return None
-                else:
-                    self.equip(item)
-                    self.inventory.removeItem(item)
-                    text = "Equipped: " + item.displayName                                                            
-                    inv = self.inventory.allItems
-                    eq = self.equippedItems.allGear
-                    capacity = `self.inventoryWeight` + "/" + `self.inventoryCapacity`
-                    screen.update_item_dialog_text(text, capacity)
-                    screen.update_item_dialog_items(inv, eq)
-                    return None
-        elif key == K_d:
-            selectionTuple = screen.get_dialog_selection()
-            if selectionTuple[0] == 0:
-                # This is the inventory side.
-                item = self.inventory.allItems[selectionTuple[1]]
-                self.inventory.removeItem(item)
-                text = "Destroyed: " + item.displayName
-                inv = self.inventory.allItems
-                eq = self.equippedItems.allGear
-                capacity = `self.inventoryWeight` + "/" + `self.inventoryCapacity`
-                screen.update_item_dialog_text(text, capacity)
-                screen.update_item_dialog_items(inv, eq)
-                self.AP = self.totalAP
-                return None
-        elif key == K_u:
-            selectionTuple = screen.get_dialog_selection()
-            if selectionTuple[0] == 1:
-                # This is the equipped items side.
-                type = selectionTuple[2]
-                self.unequip(type)
-                text = "Unequipped an item"
-                inv = self.inventory.allItems
-                eq = self.equippedItems.allGear
-                capacity = `self.inventoryWeight` + "/" + `self.inventoryCapacity`
-                screen.update_item_dialog_text(text, capacity)
-                screen.update_item_dialog_items(inv, eq)
-                return None
-        elif key == K_o:
-            selectionTuple = screen.get_dialog_selection()
-            if selectionTuple[0] == 0:
-                # This is the inventory side.
-                item = self.inventory.allItems[selectionTuple[1]]
-                if (isinstance(item, equipment.Weapon) and item.handsRequired == "One-Handed") or \
-                   (isinstance(item, equipment.Armor) and (item.type == "Fingers" or item.type == "Finger")):
-                    self.equip(item, "Left")
-                    text = "Equipped: " + item.displayName + " in the off-hand"
-                    inv = self.inventory.allItems
-                    eq = self.equippedItems.allGear
-                    capacity = `self.inventoryWeight` + "/" + `self.inventoryCapacity`
-                    screen.update_item_dialog_text(text, capacity)
-                    screen.update_item_dialog_items(inv, eq)
-                    return None
-        return None
+    def equipMainHand(self, index, screen):
+        ''' INVENTORY MANAGMENET 
+        Equip a selected item into the main hand slot.'''
+        item = self.inventory.allItems[index]
+        if isinstance(item, consumable.Consumable):
+            return
+        self.equip(item)
+        self.inventory.removeItem(item)
+        text = "Equipped: " + item.displayName                                                            
+        inv = self.inventory.allItems
+        eq = self.equippedItems.allGear
+        capacity = `self.inventoryWeight` + "/" + `self.inventoryCapacity`
+        screen.update_item_dialog_text(text, capacity)
+        screen.update_item_dialog_items(inv, eq)
+        
+    def dropItem(self, index, screen):
+        ''' INVENTORY MANAGEMENT
+        Drop (destroy) a selected item.'''
+        item = self.inventory.allItems[index]
+        self.inventory.removeItem(item)
+        text = "Destroyed: " + item.displayName
+        inv = self.inventory.allItems
+        eq = self.equippedItems.allGear
+        capacity = `self.inventoryWeight` + "/" + `self.inventoryCapacity`
+        screen.update_item_dialog_text(text, capacity)
+        screen.update_item_dialog_items(inv, eq)
+        self.AP = self.totalAP
+        
+    def unequipGear(self, index, type, screen):
+        ''' INVENTORY MANAGEMENT
+        Unequip a selected item.'''
+        type = selectionTuple[2]
+        self.unequip(type)
+        text = "Unequipped an item"
+        inv = self.inventory.allItems
+        eq = self.equippedItems.allGear
+        capacity = `self.inventoryWeight` + "/" + `self.inventoryCapacity`
+        screen.update_item_dialog_text(text, capacity)
+        screen.update_item_dialog_items(inv, eq)
+
+    def equipOffHand(self, index, screen):
+        ''' INVENTORY MANAGEMENT
+        Equip an item in the off-hand'''
+        item = self.inventory.allItems[index]
+        if (isinstance(item, equipment.Weapon) and item.handsRequired == "One-Handed") or \
+           (isinstance(item, equipment.Armor) and (item.type == "Fingers" or item.type == "Finger")):
+            self.equip(item, "Left")
+            text = "Equipped: " + item.displayName + " in the off-hand"
+            inv = self.inventory.allItems
+            eq = self.equippedItems.allGear
+            capacity = `self.inventoryWeight` + "/" + `self.inventoryCapacity`
+            screen.update_item_dialog_text(text, capacity)
+            screen.update_item_dialog_items(inv, eq)
         
     def printCharacterSheet(self):
         '''Method prints a mock-up of a character sheet to the console as

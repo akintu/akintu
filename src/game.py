@@ -479,15 +479,15 @@ class Game(object):
                 ### Levelup Commands ###
                 if self.performingLevelup:
                     upgradedHero = False
-                    if keystroke == K_RIGHT or keystroke == K_KP6 or keystroke == K_l:
+                    if event.key == K_RIGHT or event.key == K_KP6 or event.key == K_l:
                         self.screen.move_dialog(6)
-                    elif keystroke == K_LEFT or keystroke == K_KP4 or keystroke == K_h:
+                    elif event.key == K_LEFT or event.key == K_KP4 or event.key == K_h:
                         self.screen.move_dialog(4)
-                    elif keystroke == K_UP or keystroke == K_KP8 or keystroke == K_k:
+                    elif event.key == K_UP or event.key == K_KP8 or event.key == K_k:
                         self.screen.move_dialog(8)
-                    elif keystroke == K_DOWN or keystroke == K_KP2 or keystroke == K_j:
+                    elif event.key == K_DOWN or event.key == K_KP2 or event.key == K_j:
                         self.screen.move_dialog(2)
-                    elif keystroke == K_SPACE or keystroke == K_a:
+                    elif event.key == K_SPACE or event.key == K_a:
                         upgradedHero = self.levelup.advance()
                     if upgradedHero:
                         # Upgraded Hero is "False" until the levelup is finished. Then it is a dehydrated hero.
@@ -507,7 +507,22 @@ class Game(object):
                                                             'AP' : self.pane.person[self.id].AP})
 
                 elif self.inShop:
-                    hero = self.currentShop.input(event.key)
+                    hero = False
+                    if event.key == K_RIGHT or event.key == K_KP6 or event.key == K_l:
+                        self.screen.move_dialog(6)
+                    elif event.key == K_LEFT or event.key == K_KP4 or event.key == K_h:
+                        self.screen.move_dialog(4)
+                    elif event.key == K_UP or event.key == K_KP8 or event.key == K_k:
+                        self.screen.move_dialog(8)
+                    elif event.key == K_DOWN or event.key == K_KP2 or event.key == K_j:
+                        self.screen.move_dialog(2)
+                    elif event.key == K_a:
+                        if self.screen.get_dialog_selection()[0] == 0:
+                            self.currentShop.sell(self.screen.get_dialog_selection()[1])
+                        else:
+                            self.currentShop.buy(self.screen.get_dialog_selection()[1])
+                    elif event.key == K_SPACE:
+                        hero = self.currentShop.close()
                     if hero:
                         # Hero is None until the shop phase is finished.  Then it is a dehydrated hero.
                         newHero = TheoryCraft.rehydratePlayer(hero)
@@ -527,7 +542,27 @@ class Game(object):
 
                 ### Inventory Management ###
                 elif self.viewingInventory:
-                    newlyEquippedPlayer = self.pane.person[self.id].navigateInventory(self.screen, event.key)
+                    newlyEquippedPlayer = None
+                    if event.key == K_RIGHT or event.key == K_KP6 or event.key == K_l:
+                        self.screen.move_dialog(6)
+                    elif event.key == K_LEFT or event.key == K_KP4 or event.key == K_h:
+                        self.screen.move_dialog(4)
+                    elif event.key == K_UP or event.key == K_KP8 or event.key == K_k:
+                        self.screen.move_dialog(8)
+                    elif event.key == K_DOWN or event.key == K_KP2 or event.key == K_j:
+                        self.screen.move_dialog(2)
+                    elif event.key == K_e and self.screen.get_dialog_selection()[0] == 0:
+                        self.pane.person[self.id].equipMainHand(self.screen.get_dialog_selection()[1], self.screen)
+                    elif event.key == K_d and self.screen.get_dialog_selection()[0] == 0:
+                        self.pane.person[self.id].dropItem(self.screen.get_dialog_selection()[1], self.screen)
+                    elif event.key == K_u and self.screen.get_dialog_selection()[0] == 1:
+                        self.pane.person[self.id].unequipGear(self.screen.get_dialog_selection()[1], self.screen.get_dialog_selection()[2],
+                                                                self.screen)
+                    elif event.key == K_o and self.screen.get_dialog_selection()[0] == 0:
+                        self.pane.person[self.id].equipOffHand(self.screen.get_dialog_selection()[1], self.screen)
+                    elif event.key == K_SPACE or event.key == K_i:
+                        self.screen.hide_dialog()
+                        newlyEquippedPlayer = self.pane.person[self.id].dehydrate()
                     if newlyEquippedPlayer:
                         self.CDF.send(Command("PERSON", "REPLACE", id=self.id, player=newlyEquippedPlayer))
                         self.viewingInventory = False

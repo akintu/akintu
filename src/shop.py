@@ -28,52 +28,35 @@ class Shop(object):
         capacity = `self.player.inventoryWeight` + "/" + `self.player.inventoryCapacity`
         self.screen.show_item_dialog(text, inv, self.stock, isEquipment, bgcolor='mistyrose', capacity=capacity)
         
-    def input(self, keystroke):
-        '''Returns True if this levelup is complete.'''
-        if keystroke == K_RIGHT or keystroke == K_KP6 or keystroke == K_l:
-            self.screen.move_dialog(6)
-            return None
-        elif keystroke == K_LEFT or keystroke == K_KP4 or keystroke == K_h:
-            self.screen.move_dialog(4)
-            return None
-        elif keystroke == K_UP or keystroke == K_KP8 or keystroke == K_k:
-            self.screen.move_dialog(8)
-            return None
-        elif keystroke == K_DOWN or keystroke == K_KP2 or keystroke == K_j:
-            self.screen.move_dialog(2)
-            return None
-        elif keystroke == K_a:
-            selectionTuple = self.screen.get_dialog_selection()
-            if selectionTuple[0] == 1:
-                # This is the shop side -- buy item
-                item = self.stock[selectionTuple[1]]
-                if item.value > self.player.inventory.gold:
-                    self.screen.update_item_dialog_text("You don't have enough money for that! (Gold = " + \
-                                                        `self.player.inventory.gold` + ")",
-                                                        capacity=`self.player.inventoryWeight` + "/" + `self.player.inventoryCapacity`)
-                else:
-                    self.player.inventory.gold -= self._getBuyingPrice(item)
-                    if isinstance(item, GambleItem):
-                        self.player.inventory.addItem(self._revealGambleItem(item))
-                    else:
-                        self.player.inventory.addItem(item)
-                    self.screen.update_item_dialog_items(self.player.inventory.allItems, self.stock)
-                    self.screen.update_item_dialog_text("Thank you for your purchase! (Gold = " + \
-                                                        `self.player.inventory.gold` + ")",
-                                                        capacity=`self.player.inventoryWeight` + "/" + `self.player.inventoryCapacity`)
-            elif selectionTuple[0] == 0:
-                # This is the inventory side -- sell item
-                item = self.player.inventory.allItems[selectionTuple[1]]
-                self.player.inventory.gold += self._getSellingPrice(item)
-                self.player.inventory.removeItem(item)
-                self.screen.update_item_dialog_items(self.player.inventory.allItems, self.stock)
-                self.screen.update_item_dialog_text("Thank you for your sale! (Gold = " + \
-                                                        `self.player.inventory.gold` + ")",
-                                                        capacity=`self.player.inventoryWeight` + "/" + `self.player.inventoryCapacity`)
-            return None
-        elif keystroke == K_SPACE:
-            self.screen.hide_dialog()
-            return self.player.dehydrate()
+    def buy(self, index):
+        item = self.stock[index]
+        if item.value > self.player.inventory.gold:
+            self.screen.update_item_dialog_text("You don't have enough money for that! (Gold = " + \
+                                                `self.player.inventory.gold` + ")",
+                                                capacity=`self.player.inventoryWeight` + "/" + `self.player.inventoryCapacity`)
+        else:
+            self.player.inventory.gold -= self._getBuyingPrice(item)
+            if isinstance(item, GambleItem):
+                self.player.inventory.addItem(self._revealGambleItem(item))
+            else:
+                self.player.inventory.addItem(item)
+            self.screen.update_item_dialog_items(self.player.inventory.allItems, self.stock)
+            self.screen.update_item_dialog_text("Thank you for your purchase! (Gold = " + \
+                                                `self.player.inventory.gold` + ")",
+                                                capacity=`self.player.inventoryWeight` + "/" + `self.player.inventoryCapacity`)
+                                                
+    def sell(self, index):
+        item = self.player.inventory.allItems[index]
+        self.player.inventory.gold += self._getSellingPrice(item)
+        self.player.inventory.removeItem(item)
+        self.screen.update_item_dialog_items(self.player.inventory.allItems, self.stock)
+        self.screen.update_item_dialog_text("Thank you for your sale! (Gold = " + \
+                                                `self.player.inventory.gold` + ")",
+                                                capacity=`self.player.inventoryWeight` + "/" + `self.player.inventoryCapacity`)
+            
+    def close(self):
+        self.screen.hide_dialog()
+        return self.player.dehydrate()
         
     def _getBuyingPrice(self, item):
         '''Returns the price of buying or selling an 
