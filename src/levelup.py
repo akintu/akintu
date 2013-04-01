@@ -63,47 +63,34 @@ class Levelup(object):
             summaryDisplay = [x for x in self.summary if '--IGNORE--' not in x.name]
             self.screen.show_tiling_dialog(text, summaryDisplay, bgcolor="darkturquoise")
 
-    def input(self, keystroke):
+    def advance(self):
         '''Returns a dehydrated player if this levelup is complete.'''
-        if keystroke == K_RIGHT or keystroke == K_KP6 or keystroke == K_l:
-            self.screen.move_dialog(6)
+        if self.phase == "TRAIT":
+            self.trait = self.traitOptions[self.screen.hide_dialog()]
+            self._advancePhase()
             return False
-        elif keystroke == K_LEFT or keystroke == K_KP4 or keystroke == K_h:
-            self.screen.move_dialog(4)
+        elif self.phase == "SKILL":
+            self.skill = self.skillOptions[self.screen.hide_dialog()]
+            self._advancePhase()
             return False
-        elif keystroke == K_UP or keystroke == K_KP8 or keystroke == K_k:
-            self.screen.move_dialog(8)
+        elif self.phase == "SPELL_1":
+            self.spellA = self.spellOptions[self.screen.hide_dialog()]
+            self.spellOptions.remove(self.spellA)
+            self._advancePhase()
             return False
-        elif keystroke == K_DOWN or keystroke == K_KP2 or keystroke == K_j:
-            self.screen.move_dialog(2)
+        elif self.phase == "SPELL_2":
+            self.spellB = self.spellOptions[self.screen.hide_dialog()]
+            self._advancePhase()
             return False
-        elif keystroke == K_SPACE or keystroke == K_a:
-            if self.phase == "TRAIT":
-                self.trait = self.traitOptions[self.screen.hide_dialog()]
-                self._advancePhase()
-                return False
-            elif self.phase == "SKILL":
-                self.skill = self.skillOptions[self.screen.hide_dialog()]
-                self._advancePhase()
-                return False
-            elif self.phase == "SPELL_1":
-                self.spellA = self.spellOptions[self.screen.hide_dialog()]
-                self.spellOptions.remove(self.spellA)
-                self._advancePhase()
-                return False
-            elif self.phase == "SPELL_2":
-                self.spellB = self.spellOptions[self.screen.hide_dialog()]
-                self._advancePhase()
-                return False
-            elif self.phase == "COMBO":
-                self.summary.extend(self.player.getLevelupCombos())
-                self._advancePhase()
-                return False
-            elif self.phase == "SUMMARY":
-                self._modifyHero()
-                self.screen.hide_dialog()
-                self.reset()
-                return self.player.dehydrate()
+        elif self.phase == "COMBO":
+            self.summary.extend(self.player.getLevelupCombos())
+            self._advancePhase()
+            return False
+        elif self.phase == "SUMMARY":
+            self._modifyHero()
+            self.screen.hide_dialog()
+            self.reset()
+            return self.player.dehydrate()
 
     def _modifyHero(self):
         # skills are added via summary object.
