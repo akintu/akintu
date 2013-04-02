@@ -65,7 +65,6 @@ class Game(object):
         self.musicState = "overworld"
         self.inputState = "MOVEMENT"    # "MOVEMENT", "LEVELUP", "INVENTORY", "CONSUMABLE", "TARGET", "SHOP",
                                         # "ABILITIES", "SPELLS", "ITEMS"
-        self.placingTrap = False
 
         # Levelup state
         self.levelup = None
@@ -579,7 +578,7 @@ class Game(object):
                             else:
                                 self.currentAbility = self.pane.person[self.id].abilities[self.screen.hide_dialog()]
                                 if "Trap" in self.currentAbility.name:
-                                    self.placingTrap = True
+                                    self.inputState = "TARGET"
                             self.selectionMode = "targeting"
                             self.inputState = "MOVEMENT"
                             if self.currentAbility.range == 0:
@@ -588,7 +587,7 @@ class Game(object):
                                 self.show_range(True)
 
                     ### Trap Placing ####
-                    elif self.placingTrap:
+                    elif self.inputState == "TARGET":
                         # TODO: Check for out-of-bounds
                         if event.key == K_KP8:
                             # Select above
@@ -617,7 +616,7 @@ class Game(object):
                         elif event.key == K_KP5 or event.key == K_SPACE:
                             # Cancel button
                             self.screen.show_text("Cancelled trap placement.", color='white')
-                        self.placingTrap = False
+                        self.inputState = "MOVEMENT"
                         self.currentAbility = None
 
                     elif event.key == K_e:
