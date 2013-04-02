@@ -701,6 +701,11 @@ class Ability(object):
         else:
             Combat.sendCombatMessage("Failed. (" + `successChance` + ")", source, color="darkorange", toAll=False)
             
+    def _explosiveTrap(self, targetLocation):
+        source = self.owner
+        Combat.gameServer.pane[source.cPane].addTrap(targetLocation, trap.Trap("Explosive Trap", player=source, location=targetLocation))
+        source.record.recordTrapPlacement()
+            
     # Marksman
     def _cuspOfEscape(self, target):
         source = self.owner
@@ -2337,6 +2342,23 @@ class Ability(object):
         'text' : 'Trick the target into believing you are NOT going to lay a trap under them.\n' + \
                 'If successful, the enemy suffers -12 trap evasion for 3 turns.  Success is\n' + \
                 'based upon Cunning.'
+        },
+        'Explosive Trap':
+        {
+        'level' : 4,
+        'class' : 'Anarchist',
+        'HPCost' : 0,
+        'APCost' : 5,
+        'range' : 1,
+        'target' : 'location',
+        'action' : _explosiveTrap,
+        'cooldown' : 2,
+        'checkFunction' : _shrapnelTrapCheck,
+        'breakStealth' : 0,
+        'image' : ANARCHIST_SKILLS + 'explosive-trap.png',
+        'text' : 'Lay down a trap that deals 5-10 + 1% Fire damage to the target that\n' + \
+                'triggers it and 75% of that to all foes within 1 tile (including the\n' + \
+                'original target again!) Trap rating = 25 + 1/4 Cunning'
         },
         
         #Marksman

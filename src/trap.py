@@ -96,6 +96,24 @@ class Trap(e.Entity):
         if dotHit != "Miss":
             Combat.addStatus(target, "Poison Thorn Trap", duration, dot)
 
+    def _explosiveTrap(self, target):
+        minDamage = int(5 * (1 + self.owner.totalFireBonusDamage * 0.01))
+        maxDamage = int(10 * (1 + self.owner.totalFireBonusDamage * 0.01))
+        dieRoll = Dice.roll(minDamage, maxDamage)
+        element = "Fire"
+        damage = self.calcTrapDamage(target, dieRoll, element)
+        Combat.lowerHP(target, damage)
+        Combat.sendCombatMessage("Trap dealt " + `damage` + " primary damage.", self.owner, color="yellow")
+        # Secondary Targets
+        splashMin = int(minDamage * 0.75)
+        splashMax = int(maxDamage * 0.75)
+        targetGroup = Combat.getAOETargets(target.cPane, target.cLocation, radius=1)
+        for tar in targetGroup:
+            dieRoll = Dice.roll(splashMin, splashMax)
+            dam = self.calcTrapDamage(tar, dieRoll, element)
+            Combat.lowerHP(tar, dam)
+            Combat.sendCombatMessage("Trap dealt " + `damage` + " secondary damage.", self.owner, color="yellow")
+            
     def _accuracyFavor(self, target):
         accuracyBonus = 3 + self.owner.totalCunning / 4
         duration = 2
@@ -375,6 +393,17 @@ class Trap(e.Entity):
             'image' : os.path.join(TRAPS_IMAGES_PATH, 'poison-thorn-trap.png')
             },
 
+        # Anarchist only traps
+        'Explosive Trap':
+            {
+            'rating' : 25,
+            'ratingScale' : 0.01,
+            'effect' : _explosiveTrap,
+            'isFavor' : False,
+            'charges' : 1,
+            'image' : os.path.join(TRAPS_IMAGES_PATH, 'explosive-trap.png')
+            },
+            
         # Tactician only traps
         'Accuracy Favor':
             {

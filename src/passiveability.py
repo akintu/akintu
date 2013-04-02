@@ -223,6 +223,13 @@ class PassiveAbility(object):
             duration = -1 # Never ends
             Combat.addStatus(other, "Blades of Reduction", duration)
 
+    # Anarchist
+    def applyShockAndBurn(self, target):
+        target.baseFireBonusDamage += 5
+        target.baseElectricBonusDamage += 5
+        target.baseElectricResistance += 10
+        target.baseArmorPenetration += 2
+            
     # Marksman
     def applyExcellentVision(self, target):
         target._bonusRange += 2
@@ -822,6 +829,18 @@ class PassiveAbility(object):
                 'a target\'s magic resist by 4 and fire resistance by 10% with a reliable chance.'
         },
 
+        # Anarchist
+        'Shock and Burn':
+        {
+        'class' : 'Anarchist',
+        'level' : 3,
+        'type' : 'static',
+        'action' : applyShockAndBurn,
+        'image' : ANARCHIST + 'shock-and-burn.png',
+        'text' : '+5% Fire and Electric Damage, +10% Electric resistance and\n' + \
+                '+2% Armor Penetration on all attacks.'
+        },
+        
         'Excellent Vision':
         {
         'class' : 'Marksman',
