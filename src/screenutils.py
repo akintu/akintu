@@ -1,6 +1,7 @@
 '''
 Series of helper classes for use in GameScreen
 '''
+import os
 
 import pygame
 from pygame.locals import *
@@ -439,6 +440,327 @@ class ItemDialog(object):
             surface.blit(curfont, (0, y))
             y += curfont.get_rect().height
         return surface
+
+
+class CharacterDialog(object):
+    '''
+    Provides a dialog for viewing character status, including acting as a
+    portal to view character abilities, traits, etc
+    '''
+    def __init__(self,
+                 player,
+                 bgcolor='gray',
+                 abilitykey='H',
+                 spellkey='J',
+                 passivekey='K',
+                 traitkey='L'):
+        '''
+        Initialize the class
+        '''
+        self.player = player
+        self.bgcolor = bgcolor
+        self.akey = abilitykey
+        self.skey = spellkey
+        self.pkey = passivekey
+        self.tkey = traitkey
+        self.surface = pygame.Surface((1280, 640))
+        self.surface.fill(Color(self.bgcolor))
+
+        self._draw_status()
+
+    def _draw_status(self):
+        '''
+        Draw the actual status screen
+        '''
+        p = self.player
+        s = self.surface
+
+        # Draw the player image
+        ipath = os.path.join('res', 'images', 'sprites', p.image + '_fr1.png')
+        psprite = pygame.image.load(ipath).convert_alpha()
+        #psprite = pygame.transform.scale(psprite, (512, 512))
+        psprite = pygame.transform.scale2x(psprite)
+        psprite = pygame.transform.scale2x(psprite)
+        psprite = pygame.transform.scale2x(psprite)
+        #psprite = pygame.transform.scale2x(psprite)
+        s.blit(psprite, (32, 40))
+
+        hfont = pygame.font.SysFont('Arial', 20)
+        pfont = pygame.font.SysFont('Arial', 16)
+        nfont = pygame.font.SysFont('Arial', 32)
+
+        x = 340
+        y = 40
+
+        l = p.name
+        f = nfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Level:  ' + str(p.level)
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Experience:  ' + str(p.experience) + '/' + str(p.getExpForNextLevel())
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Character Class:  ' + p.characterClass
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Race:  ' + p.race
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'HP:  ' + str(int(p.HP)) + '/' + str(int(p.totalHP)) + ' (' + str(p.equipmentHP) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'MP:  ' + str(int(p.MP)) + '/' + str(int(p.totalMP)) + ' (' + str(p.equipmentMP) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'AP:  ' + str(p.totalAP) + ' (' + str(p.equipmentAP) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height * 2
+
+        l = 'Primary Statistics'
+        f = hfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Strength:  ' + str(int(p.totalStrength)) + ' (' + str(p.equipmentStrength) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Dexterity:  ' + str(int(p.totalDexterity)) + ' (' + str(p.equipmentDexterity) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Cunning:  ' + str(int(p.totalCunning)) + ' (' + str(p.equipmentCunning) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Sorcery:  ' + str(int(p.totalSorcery)) + ' (' + str(p.equipmentSorcery) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Piety:  ' + str(int(p.totalPiety)) + ' (' + str(p.equipmentPiety) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Constitution:  ' + str(int(p.totalConstitution)) + ' (' + str(p.equipmentConstitution) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height * 2
+        y = 40
+        x += 320
+
+        hfont = pygame.font.SysFont('Arial', 18)
+        pfont = pygame.font.SysFont('Arial', 14)
+
+        l = 'Secondary Statistics'
+        f = hfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Melee Accuracy:  ' + str(p.totalMeleeAccuracy) + ' (' + str(p.equipmentMeleeAccuracy) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Ranged Accuracy:  ' + str(p.totalRangedAccuracy) + ' (' + str(p.equipmentRangedAccuracy) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Dodge:  ' + str(p.totalDodge) + ' (' + str(p.equipmentDodge) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Ranged Dodge:  ' + str(p.totalRangedDodge) + ' (' + str(p.equipmentRangedDodge) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Might:  ' + str(p.totalMight) + ' (' + str(p.equipmentMight) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Melee Dodge:  ' + str(p.totalMeleeDodge) + ' (' + str(p.equipmentMeleeDodge) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Spellpower:  ' + str(p.totalSpellpower) + ' (' + str(p.equipmentSpellpower) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Magic Resist:  ' + str(p.totalMagicResist) + ' (' + str(p.equipmentMagicResist) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Critical Chance:  ' + str(p.totalCriticalChance) + '% (' + str(int(p.equipmentCriticalChance)) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Critical Magnitude:  ' + str(p.totalCriticalMagnitude) + '% (' + str(p.equipmentCriticalMagnitude) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Armor Penetration:  ' + str(p.totalArmorPenetration) + '% (' + str(p.equipmentArmorPenetration) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Damage Resistance:  ' + str(p.totalDR) + '% (' + str(p.equipmentDR) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Poison Tolerance:  ' + str(p.totalPoisonTolerance) + ' (' + str(p.equipmentPoisonTolerance) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Poison Rating Bonus:  ' + str(p.totalPoisonRatingBonus) + ' (' + str(p.equipmentPoisonRatingBonus) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Awareness:  ' + str(p.totalAwareness) + ' (' + str(p.equipmentAwareness) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Sneak:  ' + str(p.totalSneak) + ' (' + str(p.equipmentSneak) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Trap Evade:  ' + str(p.totalTrapEvade) + ' (' + str(p.equipmentTrapEvade) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Movement Tiles:  ' + str(p.totalMovementTiles) + ' (' + str(p.equipmentMovementTiles) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Intuition:  ' + str(p.totalIntuition) + ' (' + str(p.equipmentIntuition) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height * 2
+
+        l = 'Tertiary Statistics'
+        f = hfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Shop Bonus:  ' + str(p.totalShopBonus) + '% (' + str(p.equipmentShopBonus) + '%)'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Carrying Capacity:  ' + str(p.inventoryCapacity) + ' (' + str(p.equipmentCarryingCapacity) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Trap Rating Bonus:  ' + str(p.bonusTrapRating)
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Trap Damage Bonus:  ' + str(p.bonusTrapDamage) + '%'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Jewlery Bonus:  +' + str(p.totalJewleryBonus)
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Potion Bonus Effect:  ' + str(p.totalPotionEffect) + '%'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Trap Damage Reduction:  ' + str(p.totalTrapDamageReduction) + '% (' + str(p.equipmentIntuition) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Gold Find:  +' + str(p.goldFind) + '%'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height * 2
+        y = 40
+        x += 320
+
+        l = 'Elemental Resistances'
+        f = hfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Arcane Resistance:  ' + str(p.totalArcaneResistance) + '% (' + str(p.equipmentArcaneResistance) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Cold Resistance:  ' + str(p.totalColdResistance) + '% (' + str(p.equipmentColdResistance) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Divine Resistance:  ' + str(p.totalDivineResistance) + '% (' + str(p.equipmentDivineResistance) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Electric Resistance:  ' + str(p.totalElectricResistance) + '% (' + str(p.equipmentElectricResistance) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Fire Resistance:  ' + str(p.totalFireResistance) + '% (' + str(p.equipmentFireResistance) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Poison Resistance:  ' + str(p.totalPoisonResistance) + '% (' + str(p.equipmentPoisonResistance) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Shadow Resistance:  ' + str(p.totalShadowResistance) + '% (' + str(p.equipmentShadowResistance) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height * 2
+
+        l = 'Elemental Power'
+        f = hfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Arcane Damage Bonus:  ' + str(p.totalArcaneBonusDamage) + '% (' + str(p.equipmentArcaneBonusDamage) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Cold Damage Bonus:  ' + str(p.totalColdBonusDamage) + '% (' + str(p.equipmentColdBonusDamage) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Divine Damage Bonus:  ' + str(p.totalDivineBonusDamage) + '% (' + str(p.equipmentDivineBonusDamage) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Electric Damage Bonus:  ' + str(p.totalElectricBonusDamage) + '% (' + str(p.equipmentElectricBonusDamage) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Fire Damage Bonus:  ' + str(p.totalFireBonusDamage) + '% (' + str(p.equipmentFireBonusDamage) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Poison Damage Bonus:  ' + str(p.totalPoisonBonusDamage) + '% (' + str(p.equipmentPoisonBonusDamage) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Shadow Damage Bonus:  ' + str(p.totalShadowBonusDamage) + '% (' + str(p.equipmentShadowBonusDamage) + ')'
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height * 4
+
+        l = 'Press ' + self.akey + ' to view Active Abilities'
+        f = hfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Press ' + self.pkey + ' to view Passive Abilities'
+        f = hfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Press ' + self.skey + ' to view Spells'
+        f = hfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Press ' + self.tkey + ' to view Traits'
+        f = hfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
 
 
 if __name__ == '__main__':
