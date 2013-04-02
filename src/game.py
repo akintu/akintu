@@ -573,6 +573,7 @@ class Game(object):
                     #### Ability/Spell Selection ####
                     if self.selectionMode == "abilities" or self.selectionMode == "spells":
                         if event.key == K_SPACE or event.key == K_a:
+                            self.inputState = "MOVEMENT"
                             if self.selectionMode == "spells":
                                 self.currentAbility = self.pane.person[self.id].spellList[self.screen.hide_dialog()]
                             else:
@@ -580,7 +581,6 @@ class Game(object):
                                 if "Trap" in self.currentAbility.name:
                                     self.inputState = "TARGET"
                             self.selectionMode = "targeting"
-                            self.inputState = "MOVEMENT"
                             if self.currentAbility.range == 0:
                                 self.select_self()
                             else:
