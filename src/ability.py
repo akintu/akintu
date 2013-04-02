@@ -282,11 +282,11 @@ class Ability(object):
         success = Dice.rollBeneath(chance)
         
         if success:
-            Combat.sendCombatMessage("Success! (" + str(chance) + ")", source, color="darkorange")  
+            Combat.sendCombatMessage("Success! (" + str(chance) + ")", source, color="darkorange", toAll=False)  
             duration = 3
             Combat.addStatus(target, "Chain Grasp", duration)
         else:
-            Combat.sendCombatMessage("Failed. (" + str(chance) + ")", source, color="darkorange")  
+            Combat.sendCombatMessage("Failed. (" + str(chance) + ")", source, color="darkorange", toAll=False)  
             
     def _chainGraspCheck(self, target):
         if target.size == "Huge":
@@ -327,9 +327,9 @@ class Ability(object):
         if success:
             duration = 2
             Combat.addStatus(target, "Feint", duration)
-            Combat.sendCombatMessage("Success! (" + str(chance) + ")", source, color="darkorange")
+            Combat.sendCombatMessage("Success! (" + str(chance) + ")", source, color="darkorange", toAll=False)
         else:
-            Combat.sendCombatMessage("Failed. (" + str(chance) + ")", source, color="darkorange") 
+            Combat.sendCombatMessage("Failed. (" + str(chance) + ")", source, color="darkorange", toAll=False) 
 
     def _farSightedFocus(self, target):
         source = self.owner
@@ -680,6 +680,26 @@ class Ability(object):
         if source.record._currentTurnTrapChaos > 0:
             return (True, "")
         return (False, "Must use trap chaos before using " + self.name)
+            
+    def _trapWorry(self, target):
+        source = self.owner
+        successChance = min(80, 20 + (10 * (source.totalCunning - target.totalCunning)))
+        if Dice.rollBeneath(successChance):
+            duration = 3
+            Combat.addStatus(target, "Trap Worry", duration)
+            Combat.sendCombatMessage("Success! (" + `successChance` + ")", source, color="darkorange", toAll=False)
+        else:
+            Combat.sendCombatMessage("Failed. (" + `successChance` + ")", source, color="darkorange", toAll=False)
+            
+    def _harmlessGrin(self, target):
+        source = self.owner
+        successChance = min(80, 10 + (10 * (source.totalCunning - target.totalCunning)))
+        if Dice.rollBeneath(successChance):
+            duration = 3
+            Combat.addStatus(target, "Harmless Grin", duration)
+            Combat.sendCombatMessage("Success! (" + `successChance` + ")", source, color="darkorange", toAll=False)
+        else:
+            Combat.sendCombatMessage("Failed. (" + `successChance` + ")", source, color="darkorange", toAll=False)
             
     # Marksman
     def _cuspOfEscape(self, target):
@@ -2271,7 +2291,7 @@ class Ability(object):
         'level' : 1,
         'class' : 'Anarchist',
         'HPCost' : 0,
-        'APCost' : 8,
+        'APCost' : 7,
         'range' : 1,
         'target' : 'hostile',
         'action' : _faceShot,
@@ -2284,7 +2304,40 @@ class Ability(object):
                 'using a ranged weapon in melee and has +15% critical magnitude,\n' + \
                 '+5% Armor Penetration, and +5% critical hit chance.'
         },
-        
+        'Trap Worry':
+        {
+        'level' : 2,
+        'class' : 'Anarchist',
+        'HPCost' : 0,
+        'APCost' : 8,
+        'range' : 4,
+        'target' : 'hostile',
+        'action' : _trapWorry,
+        'cooldown' : None,
+        'checkFunction' : None,
+        'breakStealth' : 0,
+        'image' : ANARCHIST_SKILLS + 'trap-worry.png',
+        'text' : 'Trick the target into believing you are going to lay a trap under them.\n' + \
+                'If successful, the enemy suffers -8 Dodge, -4 Accuracy and -5% DR but\n' + \
+                'gains +10 Trap evasion for 3 turns.  Sucess is based upon Cunning.'
+        },
+        'Harmless Grin':
+        {
+        'level' : 2,
+        'class' : 'Anarchist',
+        'HPCost' : 0,
+        'APCost' : 5,
+        'range' : 4,
+        'target' : 'hostile',
+        'action' : _harmlessGrin,
+        'cooldown' : None,
+        'checkFunction' : None,
+        'breakStealth' : 100,
+        'image' : ANARCHIST_SKILLS + 'harmless-grin.png',
+        'text' : 'Trick the target into believing you are NOT going to lay a trap under them.\n' + \
+                'If successful, the enemy suffers -12 trap evasion for 3 turns.  Success is\n' + \
+                'based upon Cunning.'
+        },
         
         #Marksman
         'Cusp of Escape':
