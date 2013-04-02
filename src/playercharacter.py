@@ -1140,12 +1140,7 @@ class PlayerCharacter(p.Person):
     @p.Person.movementSpeed.getter
     def movementSpeed(self):
         '''The overworld movement speed.  Overrides from Person.'''
-        if(True):
-            return 5.0
-            #float(self.totalMovementTiles) / float(self.totalMovementAPCost)
-        else:
-            pass
-            # TODO: Should check for encumberment.
+        return max(1.0, 5.0 - min(4.0, self.burdenAP / 8.0) - min(4.0, self.restrictionAP / 8.0))
             
     def removeOnHitEffect(self, name, count, element=None):
         for fx in self.onHitEffects:
