@@ -69,8 +69,8 @@ class Region:
                 self.locations ^= getattr(self, shape.lower())(*details)
 
         if 'append' not in opts or opts['append'] == True:
-            self.history.append(method + "|" + str(shape) + "|" + \
-                    "|".join([x.__repr__() for x in details]))
+            self.history.append(method + "|||" + str(shape) + "|||" + \
+                    "|||".join([x.__repr__() for x in details]))
 
     def __eq__(self, other):
         return all(x in other for x in self) and all (x in self for x in other)
@@ -116,7 +116,7 @@ class Region:
 
     def rehydrate(self):
         for line in self.history:
-            parts = line.split("|")
+            parts = line.split("|||")
             for i, p in enumerate(parts):
                 try:
                     parts[i] = int(p)
