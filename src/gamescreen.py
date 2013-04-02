@@ -81,6 +81,26 @@ class GameScreen(object):
         pygame.display.update()
         return self.dialog.get_selection()
 
+    def show_character_dialog(self,
+                              player,
+                              bgcolor='gray',
+                              abilitykey='H',
+                              spellkey='J',
+                              passivekey='K',
+                              traitkey='L'):
+        '''
+        Show the character status dialog
+        '''
+        self.dialog = screenutils.CharacterDialog(player,
+                                                  bgcolor,
+                                                  abilitykey,
+                                                  spellkey,
+                                                  passivekey,
+                                                  traitkey)
+        self.screen.blit(self.dialog.surface, (0, ))
+        pygame.display.update()
+        return None
+
     def update_item_dialog_text(self, text, capacity=None):
         '''
         Update the top text (and optionally capacity) of an item dialog
