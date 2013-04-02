@@ -8,7 +8,7 @@ import re
 class Location(object):
     def __init__(self, pane, tile=None, z=0, direction=2):
         if isinstance(pane, basestring):
-            r = re.match(r'\((?P<p>\(.*\)|None), (?P<t>\(.*\)), (?P<d>.*)\)', pane)
+            r = re.match(r'\((?P<p>\(.*\)|None), (?P<t>\(.*\)), (?P<z>.*), (?P<d>.*)\)', pane)
             if r.group('p') == "None":
                 self.pane = None
             else:
@@ -18,6 +18,7 @@ class Location(object):
             xy = r.group('t')[1:-1].split(', ')
             self.tile = (int(xy[0]), int(xy[1]))
 
+            self.z = int(r.group('z'))
             self.direction = int(r.group('d'))
         else:
             if isinstance(pane, tuple) or pane is None:
@@ -30,8 +31,8 @@ class Location(object):
             else:
                 self.tile = (pane % PANE_X, tile % PANE_Y)
 
-        self.z = z
-        self.direction = direction
+            self.z = z
+            self.direction = direction
 
     # So it turns out __repr__ is like toString()
     def __repr__(self):
