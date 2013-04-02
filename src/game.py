@@ -779,12 +779,12 @@ class Game(object):
                 self.CDF.send(Command("PERSON", "RUN", id=self.id, direction=direction))
                 self.running = True
 
-            elif self.pane.person[self.id].remainingMovementTiles > 0 or \
-                 self.pane.person[self.id].AP >= self.pane.person[self.id].totalMovementAPCost:
+            elif not self.combat or (self.pane.person[self.id].remainingMovementTiles > 0 or \
+                    self.pane.person[self.id].AP >= self.pane.person[self.id].totalMovementAPCost):
                 self.CDF.send(Command("PERSON", "MOVE", id=self.id, location=newloc))
                 if self.pane.person[self.id].location.pane == newloc.pane:
                     self.animate(self.id, self.pane.person[self.id].location, newloc, \
-                        1.0 / self.pane.person[self.id].movementSpeed)
+                            1.0 / self.pane.person[self.id].movementSpeed)
                     self.pane.person[self.id].location = newloc
         elif self.pane.person[self.id].location.direction != direction:
             self.pane.person[self.id].location.direction = direction
