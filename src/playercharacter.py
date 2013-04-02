@@ -124,10 +124,6 @@ class PlayerCharacter(p.Person):
         if (self.characterClass == "Ninja"):
             self._ninjaStyle = "Tiger" # TODO: Apply Tiger passives on startup.
 
-        # --- Kahajit Race ---
-        # Worry about whether we are 'outside' or not in the Combat class, perhaps? TODO
-        self.DROutside = None
-
         # --- Ranger classes ---
         self._bonusTrapDamage = 0
         self._bonusTrapRating = 0
@@ -138,8 +134,6 @@ class PlayerCharacter(p.Person):
         # self._empathyToSummon
 
         # --- Other ---
-        # self._abilityAPModsList [["AbilityName", -2], [...]] I don't think we need these...
-        # self._spellMPModsList [["SpellName", -1], [...]]
         self.knockbackResistance = 0 # Amount above 100 is treated as 100.
         self._equipmentIntuition = 0
         self._statusIntuition = 0
@@ -152,7 +146,7 @@ class PlayerCharacter(p.Person):
 
         # --- Weaponmaster ---
         self.weaponAttackArc = 0
-          # Possible Values = 30, 90, 180, 270, 360
+        # Possible Values = 30, 90, 180, 270, 360
 
         # --- Wizard classes ---
         self.healingBonus = 0
@@ -231,7 +225,9 @@ class PlayerCharacter(p.Person):
                     if current['level'] == 1:
                         newPAbil = passiveability.PassiveAbility(pAbil, self)
                         self.passiveAbilities.append(newPAbil)
-
+                if current['class'] == "Debug" and self.name == "RoNpAuL":
+                    newPAbil = passiveability.PassiveAbility(pAbil, self)
+                    self.passiveAbilities.append(newPAbil)
         self.traits = []
 
         # Items
@@ -251,6 +247,9 @@ class PlayerCharacter(p.Person):
                     break
         else:
             self.inventory = inventory.Inventory()
+        
+        if new and self.name == "xkcd":
+            self.inventory.addItem(10000) # Gold
         
         self.record = playercombatrecord.PlayerCombatRecord()
         self.remainingMovementTiles = 0

@@ -549,6 +549,11 @@ class PassiveAbility(object):
     def applyJustPlainLucky(self, target):
         target.baseDodge += 3
         
+    # Debug
+    
+    def applyLibertarian(self, target):
+        target.baseHP += 1000
+        
     # Monsters
 
     def applyDeflectMissiles(self, target, reverse=False, other=None):
@@ -1376,6 +1381,15 @@ class PassiveAbility(object):
         'text' : '+3 Dodge'
         },
 
+        # Debug
+        'Libertarian':
+        {
+        'class' : 'Debug',
+        'level' : 1,
+        'type' : 'static',
+        'action' : applyLibertarian
+        },
+        
         # Monsters
         'Deflect Missiles':
         {

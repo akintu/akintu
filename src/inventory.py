@@ -23,9 +23,8 @@ class Inventory(object):
         to the character class name provided (as a new character.)'''
         for i in range(3):
             self.addItem(consumable.Consumable("Basic Healing Potion"))
-        for i in range(2):
-            self.addItem(consumable.Consumable("Antidote"))
-        self.gold = 5075 # TODO: Change back to 150 once shop testing is over.
+        self.addItem(consumable.Consumable("Antidote"))
+        self.gold = 325
         if ccName == "Barbarian":
             self.addItem(theorycraft.TheoryCraft.getWeaponByName("Great Axe"))
         elif ccName == "Dragoon":
