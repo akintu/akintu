@@ -186,6 +186,13 @@ class State(object):
         else:                       #Option 2
             State.world_file = state
             State.world_data = State.load(WORLD_SAVE_PATH, State.world_file)
+            
+        for key, value in State.world_data.iteritems():
+            if isinstance(value, dict):
+                # print "PANE: " + str(key)
+                monsters = value[MONSTER_KEY]
+                # for monster in monsters:
+                    # print "\tMonster loc: " + str(monster[1])
         
         assert State.world_data != None, "World should be a dictionary with at least a SEED_KEY"
         return State.world_data
@@ -197,7 +204,7 @@ class State(object):
         Automatically overwrites the save file (located in State.world_file)
         or creates a new one in WORLD_SAVE_PATH
         '''
-        
+        #print "State.save_world called"
         if not State.world_file:
             #Loop through the WORLD_SAVE_PATH and get incremental save
             max_save = 0
@@ -219,7 +226,15 @@ class State(object):
 
         #Reconcile tmp_world_data with world_data
         #tmp_world_data takes precidence.
+
         data = dict(State.world_data.items() + State.tmp_world_data.items())
+        for key, value in data.iteritems():
+            if isinstance(value, dict):
+                # print "PANE: " + str(key)
+                monsters = value[MONSTER_KEY]
+                # for monster in monsters:
+                    # print "\tMonster loc: " + str(monster[1])
+                
         State.save(WORLD_SAVE_PATH, State.world_file, data)
         
         
@@ -237,6 +252,11 @@ class State(object):
             data = State.world_data[pane_loc]
         
         #print "Loading pane " + str(pane_loc) + " with data " + str(data)
+        if data:
+            # print "PANE: " + str(pane_loc)
+            monsters = data[MONSTER_KEY]
+            # for monster in monsters:
+                # print "\tMonster loc: " + str(monster[1])
         return data
         
     @staticmethod
@@ -249,6 +269,12 @@ class State(object):
         assert isinstance(pane_loc, tuple), "Pane location should be a tuple"
         #print "Saving pane " + str(pane_loc)+ " with data " + str(data)
         State.tmp_world_data[pane_loc] = data
+        
+        if data:
+            #print "PANE: " + str(pane_loc)
+            monsters = data[MONSTER_KEY]
+            # for monster in monsters:
+                # print "\tMonster loc: " + str(monster[1])
         
     @staticmethod
     def log(data):

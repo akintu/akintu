@@ -424,6 +424,9 @@ class Town(Pane):
             self.add_buildings()
         if is_server:
             self.add_npcs()
+            if load_entities:
+                if self.pane_state:
+                    super(Town, self).load_state(pane_state)
 
     def add_buildings(self):
         seed = self.seed + str(self.location) + "Building"

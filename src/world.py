@@ -30,6 +30,12 @@ class World(object):
         self.pane_items = dict()
         self.pane_chests = dict()
         self.curr_pane = None
+        
+    def is_town(self, location):
+        if location in self._listTowns(location):
+            return True
+        else:
+            return False
 
     def get_pane(self, location, is_server=False):
         surrounding_locations = Location(location, None).get_surrounding_panes()

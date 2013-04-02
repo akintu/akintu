@@ -20,6 +20,7 @@ from world import *
 from region import Region
 import trap
 import shop
+from keybindings import keystate
 
 import levelup as lvl
 
@@ -449,19 +450,12 @@ class Game(object):
             #### General commands ####
             if event.type == QUIT:
                 self.save_and_quit()
-            if event.type == KEYUP:
-                if event.key in MODIFIER_KEYS:
-                    if event.key in self.keystate:
-                        self.keystate.remove(event.key)
+            if event.type == KEYUP or event.type == KEYDOWN:
+                keystate(event)
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     #TODO: Open Menu Here
-                    ##SAVE PERSON##
-
                     self.save_and_quit()
-
-                elif event.key in MODIFIER_KEYS:
-                    self.keystate.append(event.key)
                 elif event.key in DIRECTION_KEYS and not DIRECTION_KEYS[event.key] % 2 and \
                         self.inputState == "MOVEMENT":
                     self.move_person(DIRECTION_KEYS[event.key], 1)
@@ -774,7 +768,7 @@ class Game(object):
                 newloc.tile not in [x.location.tile for x in self.pane.person.values()]) or \
                 self.pane.person[self.id].location.pane != newloc.pane):
 
-            if any(mod in [K_LSHIFT, K_RSHIFT] for mod in self.keystate) and not self.combat:
+            if "SHIFT" in keystate and not self.combat:
                 self.CDF.send(Command("PERSON", "RUN", id=self.id, direction=direction))
                 self.running = True
 
