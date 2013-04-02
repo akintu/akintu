@@ -1019,6 +1019,17 @@ class Combat(object):
         bundle = {'direction' : direction, 'type' : attackType, 'otherPerson' : otherParty}
         bc = broadcast.AttackBroadcast(bundle)
         bc.shout(hearer)
+        
+        # Now for the monster
+        if direction == "Outgoing":
+            direction = "Incoming"
+        else:
+            direction = "Outgoing"
+        otherParty = source
+        hearer = target
+        bundle = {'direction' : direction, 'type' : attackType, 'otherPerson' : otherParty}
+        bc = broadcast.AttackBroadcast(bundle)
+        bc.shout(hearer)
 
     @staticmethod
     def _shoutAttackHit(source, target, hitType):
@@ -1040,7 +1051,18 @@ class Combat(object):
         bundle = {'direction' : direction, 'type' : attackType, 'otherPerson' : otherParty, 'suffix' : hitTypeString}
         bc = broadcast.AttackBroadcast(bundle)
         bc.shout(hearer)
-
+        
+        # Now for the monster
+        if direction == "Outgoing":
+            direction = "Incoming"
+        else:
+            direction = "Outgoing"
+        otherParty = source
+        hearer = target
+        bundle = {'direction' : direction, 'type' : attackType, 'otherPerson' : otherParty, 'suffix' : hitTypeString}
+        bc = broadcast.AttackBroadcast(bundle)
+        bc.shout(hearer)
+        
     @staticmethod
     def _shoutAttackComplete(source, target, noCounter):
         direction = "Outgoing"
@@ -1056,7 +1078,18 @@ class Combat(object):
         bundle = {'direction' : direction, 'type' : attackType, 'otherPerson' : otherParty, 'suffix' : 'Complete', 'noCounter' : noCounter}
         bc = broadcast.AttackBroadcast(bundle)
         bc.shout(hearer)
-
+        
+        # Now for the monster
+        if direction == "Outgoing":
+            direction = "Incoming"
+        else:
+            direction = "Outgoing"
+        otherParty = source
+        hearer = target
+        bundle = {'direction' : direction, 'type' : attackType, 'otherPerson' : otherParty, 'suffix' : 'Complete', 'noCounter' : noCounter}
+        bc = broadcast.AttackBroadcast(bundle)
+        bc.shout(hearer)
+        
     @staticmethod
     def _shoutDamage(target, amount):
         direction = "Incoming"
