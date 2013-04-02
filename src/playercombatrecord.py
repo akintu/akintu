@@ -11,6 +11,7 @@ class PlayerCombatRecord(object):
         self._previousTurnTrapSuccess = -1
         self._previousTurnRangedAttacks = -1
         self._previousTurnMeleeAttacks = -1
+        self._previousTurnTrapChaos = -1
         
         self._currentTurnTilesMoved = 0
         self._currentTurnSpells = 0
@@ -18,6 +19,7 @@ class PlayerCombatRecord(object):
         self._currentTurnTrapSuccess = 0
         self._currentTurnRangedAttacks = 0
         self._currentTurnMeleeAttacks = 0
+        self._currentTurnTrapChaos = 0
         
         self._trapsOwned = 0
     
@@ -29,6 +31,7 @@ class PlayerCombatRecord(object):
         self._previousTurnTrapSuccess = self._currentTurnTrapSuccess
         self._previousTurnRangedAttacks = self._currentTurnRangedAttacks
         self._previousTurnMeleeAttacks = self._currentTurnMeleeAttacks
+        self._previousTurnTrapChaos = self._currentTurnTrapChaos
         
         self._currentTurnTilesMoved = 0
         self._currentTurnSpells = 0
@@ -36,6 +39,7 @@ class PlayerCombatRecord(object):
         self._currentTurnTrapSuccess = 0
         self._currentTurnRangedAttacks = 0
         self._currentTurnMeleeAttacks = 0
+        self._currentTurnTrapChaos = 0
         
     # Modifier functions
         
@@ -63,12 +67,9 @@ class PlayerCombatRecord(object):
   
     def recordTrapRemoval(self):
         self._trapsOwned -= 1
-    
-    # Query Functions
-    #  Context is assumed to be the current turn
-    #  unless otherwise mentioned.
-    
-    # TODO? Should we just use this as a struct?
+        
+    def recordTrapChaos(self):
+        self._currentTurnTrapChaos += 1
     
     
     

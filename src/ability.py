@@ -654,6 +654,33 @@ class Ability(object):
             if toRemove:
                 target.listeners.remove(toRemove)
             
+    # Anarchist
+    def _followUp(self, target):
+        source = self.owner
+        hit = Combat.calcHit(source, target, "Physical")
+        Combat.basicAttack(source, target, hit, armorPenetrationMod=20)
+    
+    def _followUpCheck(self, target):
+        source = self.owner
+        if not source.usingWeapon("Melee"):
+            return (False, "Must be using a melee weapon to use " + self.name)
+        if source.record._currentTurnTrapChaos > 0:
+            return (True, "")
+        return (False, "Must use trap chaos before using " + self.name)
+            
+    def _faceShot(self, target):
+        source = self.owner
+        hit = Combat.calcHit(source, target, "Physical", ignoreMeleeBowPenalty=True, critMod=5)
+        Combat.basicAttack(source, target, hit, criticalDamageMod=1.15, armorPenetrationMod=5)
+        
+    def _faceShotCheck(self, target):
+        source = self.owner
+        if not source.usingWeapon("Ranged"):
+            return (False, "Must be using a ranged weapon in melee range to use " + self.name)
+        if source.record._currentTurnTrapChaos > 0:
+            return (True, "")
+        return (False, "Must use trap chaos before using " + self.name)
+            
     # Marksman
     def _cuspOfEscape(self, target):
         source = self.owner
@@ -2221,6 +2248,44 @@ class Ability(object):
                 'will regain 5 MP.  Lasts 3 Turns.'
         },
 
+        #Anarchist
+        'Follow Up':
+        {
+        'level' : 1,
+        'class' : 'Anarchist',
+        'HPCost' : 0,
+        'APCost' : 5,
+        'range' : 1,
+        'target' : 'hostile',
+        'action' : _followUp,
+        'cooldown' : 1,
+        'checkFunction' : _followUpCheck,
+        'breakStealth' : 100,
+        'image' : ANARCHIST_SKILLS + 'follow-up.png',
+        'text' : 'Melee attack against a foe you after you attempted to hit a target with\n' + \
+                'trap chaos earlier this turn.  Has +20% Armor Penetration and a\n' + \
+                'lower AP cost than your standard melee attack.'
+        },
+        'Face Shot':
+        {
+        'level' : 1,
+        'class' : 'Anarchist',
+        'HPCost' : 0,
+        'APCost' : 8,
+        'range' : 1,
+        'target' : 'hostile',
+        'action' : _faceShot,
+        'cooldown' : None,
+        'checkFunction' : _faceShotCheck,
+        'breakStealth' : 100,
+        'image' : ANARCHIST_SKILLS + 'face-shot.png',
+        'text' : 'Ranged attack in melee after attacking a foe with trap chaos earlier\n' + \
+                'in this turn.  This attack does not suffer from any penalties from\n' + \
+                'using a ranged weapon in melee and has +15% critical magnitude,\n' + \
+                '+5% Armor Penetration, and +5% critical hit chance.'
+        },
+        
+        
         #Marksman
         'Cusp of Escape':
         {
