@@ -63,7 +63,8 @@ class Game(object):
         self.running = False
         self.combat = False
         self.musicState = "overworld"
-        self.inputState = "MOVEMENT" #"MOVEMENT", "LEVELUP", "INVENTORY", "CONSUMABLE", "TARGET", "SHOP"
+        self.inputState = "MOVEMENT"    # "MOVEMENT", "LEVELUP", "INVENTORY", "CONSUMABLE", "TARGET", "SHOP",
+                                        # "ABILITIES", "SPELLS", "ITEMS"
         self.placingTrap = False
 
         # Levelup state
@@ -343,6 +344,7 @@ class Game(object):
                     for each in self.pane.person:
                         each._clientStatusView = []
                     self.play_music("overworld", True)
+                    self.inputState = "MOVEMENT"
                     self.selectionMode = "targeting"
                     self.currentTargetId = None
                     self.panePersonIdList = []
@@ -471,9 +473,9 @@ class Game(object):
                     self.screen.scroll_down(1 if not any(mod in [K_LSHIFT, K_RSHIFT] \
                             for mod in self.keystate) else 1000)
 
-                ### Levelup Commands ###
-                if self.inputState == "LEVELUP":
-                    upgradedHero = False
+                # "MOVEMENT", "LEVELUP", "INVENTORY", "CONSUMABLE", "TARGET", "SHOP",
+                # "ABILITIES", "SPELLS", "ITEMS"
+                if self.inputState in ["LEVELUP", "INVENTORY", "CONSUMABLE", "SHOP", "DIALOG"]:
                     if event.key == K_RIGHT or event.key == K_KP6 or event.key == K_l:
                         self.screen.move_dialog(6)
                     elif event.key == K_LEFT or event.key == K_KP4 or event.key == K_h:
@@ -482,7 +484,11 @@ class Game(object):
                         self.screen.move_dialog(8)
                     elif event.key == K_DOWN or event.key == K_KP2 or event.key == K_j:
                         self.screen.move_dialog(2)
-                    elif event.key == K_SPACE or event.key == K_a:
+
+                ### Levelup Commands ###
+                if self.inputState == "LEVELUP":
+                    upgradedHero = False
+                    if event.key == K_SPACE or event.key == K_a:
                         upgradedHero = self.levelup.advance()
                     if upgradedHero:
                         # Upgraded Hero is "False" until the levelup is finished. Then it is a dehydrated hero.
@@ -503,15 +509,7 @@ class Game(object):
 
                 elif self.inputState == "SHOP":
                     hero = False
-                    if event.key == K_RIGHT or event.key == K_KP6 or event.key == K_l:
-                        self.screen.move_dialog(6)
-                    elif event.key == K_LEFT or event.key == K_KP4 or event.key == K_h:
-                        self.screen.move_dialog(4)
-                    elif event.key == K_UP or event.key == K_KP8 or event.key == K_k:
-                        self.screen.move_dialog(8)
-                    elif event.key == K_DOWN or event.key == K_KP2 or event.key == K_j:
-                        self.screen.move_dialog(2)
-                    elif event.key == K_a:
+                    if event.key == K_a:
                         if self.screen.get_dialog_selection()[0] == 0:
                             self.currentShop.sell(self.screen.get_dialog_selection()[1])
                         else:
@@ -538,15 +536,7 @@ class Game(object):
                 ### Inventory Management ###
                 elif self.inputState == "INVENTORY":
                     newlyEquippedPlayer = None
-                    if event.key == K_RIGHT or event.key == K_KP6 or event.key == K_l:
-                        self.screen.move_dialog(6)
-                    elif event.key == K_LEFT or event.key == K_KP4 or event.key == K_h:
-                        self.screen.move_dialog(4)
-                    elif event.key == K_UP or event.key == K_KP8 or event.key == K_k:
-                        self.screen.move_dialog(8)
-                    elif event.key == K_DOWN or event.key == K_KP2 or event.key == K_j:
-                        self.screen.move_dialog(2)
-                    elif event.key == K_e and self.screen.get_dialog_selection()[0] == 0:
+                    if event.key == K_e and self.screen.get_dialog_selection()[0] == 0:
                         self.pane.person[self.id].equipMainHand(self.screen.get_dialog_selection()[1], self.screen)
                     elif event.key == K_d and self.screen.get_dialog_selection()[0] == 0:
                         self.pane.person[self.id].dropItem(self.screen.get_dialog_selection()[1], self.screen)
@@ -572,15 +562,7 @@ class Game(object):
 
                 ## Consumable Use ###
                 elif self.inputState == "CONSUMABLE":
-                    if event.key == K_RIGHT or event.key == K_KP6 or event.key == K_l:
-                        self.screen.move_dialog(6)
-                    elif event.key == K_LEFT or event.key == K_KP4 or event.key == K_h:
-                        self.screen.move_dialog(4)
-                    elif event.key == K_UP or event.key == K_KP8 or event.key == K_k:
-                        self.screen.move_dialog(8)
-                    elif event.key == K_DOWN or event.key == K_KP2 or event.key == K_j:
-                        self.screen.move_dialog(2)
-                    elif event.key == K_SPACE or event.key == K_a:
+                    if event.key == K_SPACE or event.key == K_a:
                         self.currentItem = self.pane.person[self.id].inventory.allConsumables[self.screen.hide_dialog()[1]]
                         self.selectionMode = "items"
                         self.select_self()
@@ -591,15 +573,7 @@ class Game(object):
 
                     #### Ability/Spell Selection ####
                     if self.selectionMode == "abilities" or self.selectionMode == "spells":
-                        if event.key == K_RIGHT or event.key == K_KP6 or event.key == K_l:
-                            self.screen.move_dialog(6)
-                        elif event.key == K_LEFT or event.key == K_KP4 or event.key == K_h:
-                            self.screen.move_dialog(4)
-                        elif event.key == K_UP or event.key == K_KP8 or event.key == K_k:
-                            self.screen.move_dialog(8)
-                        elif event.key == K_DOWN or event.key == K_KP2 or event.key == K_j:
-                            self.screen.move_dialog(2)
-                        elif event.key == K_SPACE or event.key == K_a:
+                        if event.key == K_SPACE or event.key == K_a:
                             if self.selectionMode == "spells":
                                 self.currentAbility = self.pane.person[self.id].spellList[self.screen.hide_dialog()]
                             else:
@@ -607,6 +581,7 @@ class Game(object):
                                 if "Trap" in self.currentAbility.name:
                                     self.placingTrap = True
                             self.selectionMode = "targeting"
+                            self.inputState = "MOVEMENT"
                             if self.currentAbility.range == 0:
                                 self.select_self()
                             else:
@@ -664,9 +639,11 @@ class Game(object):
                         self.display_target_details()
                     elif event.key == K_SPACE:
                         self.selectionMode = "abilities"
+                        self.inputState = "DIALOG"
                         self.choose_ability()
                     elif event.key == K_b:
                         self.selectionMode = "spells"
+                        self.inputState = "DIALOG"
                         self.choose_spell()
                 ### Strictly non-combat commands ###
                 if not self.combat:
@@ -781,6 +758,7 @@ class Game(object):
         itemslist = self.pane.person[self.id].spellList
         if not itemslist:
             self.selectionMode = "targeting"
+            self.inputState = "MOVEMENT"
             return
         self.screen.show_tiling_dialog(text, itemslist, bgcolor=bgcolor)
 
