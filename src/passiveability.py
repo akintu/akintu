@@ -551,37 +551,49 @@ class PassiveAbility(object):
         
     # Monsters
 
-    def applyDeflectMissiles(self, target, reverse=False, hero=None):
+    def applyDeflectMissiles(self, target, reverse=False, other=None):
         ''' Monsters with Deflect Missiles gain 10 Dodge and 5% DR against Ranged
         attacks.'''
         source = self.owner
         if not reverse:
+            print "DEBUG: Deflecting missiles"
             source.statusDR += 5
             source.statusDodge += 10
         else:
             source.statusDR -= 5
             source.statusDodge -= 10
 
-    def applyGrowingBoldness(self, target, reverse=False, hero=None):
+    def applyGrowingBoldness(self, target, reverse=False, other=None):
         ''' Monsters with Growing Boldness gain +2 Strength and 1% attack power after
         every attempt to attack in melee. '''
+        print "DEBUG: Used Apply Growing Boldness passive"
         source = self.owner
         source.statusStrength += 2
         source.attackPower += 1
-        Combat.sendCombatMessage(source.name + " Grows more bold.", hero, color='lightred')
+        Combat.sendCombatMessage(source.name + " Grows more bold.", other, color='lightred')
 
+    def applyKnockback2(self, target, reverse=False, other=None):
+        ''' Monsters with Knockback 2, will knockback targets when they successfully
+        hit them with their basic attack 2 tiles. '''
+        source = self.owner
+        distance = 2
+        Combat.knockback(other, self.cLocation, distance)
+        
     def applyMonsterAgility(self, target):
         ''' Monsters with 'Monster Agility' have +10-30 Dodge (based on level). '''
         target.baseDodge += target.level + 10
 
-    def applyPanic(self, target, reverse=False, hero=None):
+    def applyPanic(self, target, reverse=False, other=None):
         ''' Monsters that Panic gain Dexterity (increasing their accuracy and
         dodge) every time they are hit with melee attacks when at half health
         or lower.  Lasts the entire battle and stacks. '''
         source = self.owner
+        print "DEBUG: checking for applyPanic"
         if source.HP <= 0.5 * source.totalHP:
+            print "Panic applied"
             source.statusDexterity += 2
-            Combat.sendCombatMessage(source.name + " Panics and gains +2 Dexterity.", hero, color='lightred')
+            Combat.sendCombatMessage(source.name + " Panics and gains +2 Dexterity.", other, color='lightred')
+        
 
     def applyRegeneration(self, target, reverse=False):
         ''' Monsters with regerenation recover 15% of their max HP each turn.'''
@@ -1381,6 +1393,15 @@ class PassiveAbility(object):
         'type' : 'dynamic',
         'action' : applyGrowingBoldness,
         'onStringList' : ['Outgoing Melee Attack Complete'],
+        'offStringList' : []
+        },
+        'Knockback 2':
+        {
+        'class' : 'Monster',
+        'level' : 1,
+        'type' : 'dynamic',
+        'action' : applyKnockback2,
+        'onStringList' : ['Outgoing Melee Attack Hit', 'Outgoing Ranged Attack Hit'],
         'offStringList' : []
         },
         'Monster Agility':
