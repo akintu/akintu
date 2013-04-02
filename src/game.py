@@ -65,7 +65,6 @@ class Game(object):
         self.musicState = "overworld"
         self.inputState = "MOVEMENT"    # "MOVEMENT", "LEVELUP", "INVENTORY", "CONSUMABLE", "TARGET", "SHOP",
                                         # "ABILITIES", "SPELLS", "ITEMS"
-        self.placingTrap = False
 
         # Levelup state
         self.levelup = None
@@ -579,7 +578,7 @@ class Game(object):
                             else:
                                 self.currentAbility = self.pane.person[self.id].abilities[self.screen.hide_dialog()]
                                 if "Trap" in self.currentAbility.name:
-                                    self.placingTrap = True
+                                    self.inputState = "TARGET"
                             self.selectionMode = "targeting"
                             self.inputState = "MOVEMENT"
                             if self.currentAbility.range == 0:
@@ -588,7 +587,7 @@ class Game(object):
                                 self.show_range(True)
 
                     ### Trap Placing ####
-                    elif self.placingTrap:
+                    elif self.inputState == "TARGET":
                         # TODO: Check for out-of-bounds
                         if event.key == K_KP8:
                             # Select above
@@ -617,7 +616,7 @@ class Game(object):
                         elif event.key == K_KP5 or event.key == K_SPACE:
                             # Cancel button
                             self.screen.show_text("Cancelled trap placement.", color='white')
-                        self.placingTrap = False
+                        self.inputState = "MOVEMENT"
                         self.currentAbility = None
 
                     elif event.key == K_e:
@@ -779,12 +778,12 @@ class Game(object):
                 self.CDF.send(Command("PERSON", "RUN", id=self.id, direction=direction))
                 self.running = True
 
-            elif self.pane.person[self.id].remainingMovementTiles > 0 or \
-                 self.pane.person[self.id].AP >= self.pane.person[self.id].totalMovementAPCost:
+            elif not self.combat or (self.pane.person[self.id].remainingMovementTiles > 0 or \
+                    self.pane.person[self.id].AP >= self.pane.person[self.id].totalMovementAPCost):
                 self.CDF.send(Command("PERSON", "MOVE", id=self.id, location=newloc))
                 if self.pane.person[self.id].location.pane == newloc.pane:
                     self.animate(self.id, self.pane.person[self.id].location, newloc, \
-                        1.0 / self.pane.person[self.id].movementSpeed)
+                            1.0 / self.pane.person[self.id].movementSpeed)
                     self.pane.person[self.id].location = newloc
         elif self.pane.person[self.id].location.direction != direction:
             self.pane.person[self.id].location.direction = direction
