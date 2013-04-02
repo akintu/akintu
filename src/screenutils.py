@@ -478,11 +478,9 @@ class CharacterDialog(object):
         # Draw the player image
         ipath = os.path.join('res', 'images', 'sprites', p.image + '_fr1.png')
         psprite = pygame.image.load(ipath).convert_alpha()
-        #psprite = pygame.transform.scale(psprite, (512, 512))
         psprite = pygame.transform.scale2x(psprite)
         psprite = pygame.transform.scale2x(psprite)
         psprite = pygame.transform.scale2x(psprite)
-        #psprite = pygame.transform.scale2x(psprite)
         s.blit(psprite, (32, 40))
 
         hfont = pygame.font.SysFont('Arial', 20)
