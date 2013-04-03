@@ -101,6 +101,15 @@ class GameScreen(object):
         pygame.display.update()
         return None
 
+    def show_menu_dialog(self, items, bgcolor='gray', toptext='Game Paused'):
+        '''
+        Show the menu dialog
+        '''
+        self.dialog = screenutils.CharacterDialog(items, bgcolor, toptext)
+        self.screen.blit(self.dialog.surface, (0, 0))
+        pygame.display.update()
+        return self.dialog.get_selection()
+
     def update_item_dialog_text(self, text, capacity=None):
         '''
         Update the top text (and optionally capacity) of an item dialog
