@@ -642,7 +642,7 @@ class CharacterDialog(object):
         f = hfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Shop Bonus:  ' + str(p.totalShopBonus) + '% (' + str(p.equipmentShopBonus) + '%)'
+        l = 'Shop Bonus:  ' + str(p.totalShopBonus) + '% (' + str(p.equipmentShopBonus) + ')'
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
