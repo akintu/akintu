@@ -761,6 +761,99 @@ class CharacterDialog(object):
         y += f.get_rect().height
 
 
+class MenuDialog(object):
+    '''
+    Provides a generic menu dialog for text selections
+    '''
+    def __init__(self,
+                 selections,
+                 bgcolor='gray',
+                 toptext='Game Paused'):
+        '''
+        Initialize the class
+        '''
+        self.bgcolor = bgcolor
+        self.toptext = toptext
+        self.items = selections
+        self.surface = pygame.Surface((1280, 640))
+        self.surface.fill(Color(self.bgcolor))
+        self.selection = 0
+
+        self._drawtoptext()
+        self._drawitems()
+        self._updateselection()
+
+    def get_selection(self):
+        '''
+        Get the current selection
+        '''
+        return self.selection
+
+    def move_selection(self, direction):
+        '''
+        Move the current selection (based on num pad directions, 2 4 6 8)
+        '''
+        selection = list(self.selection)
+        if direction == 2:
+            selection += 1
+        elif direction == 4 or direction == 6:
+            pass
+        elif direction == 8:
+            selection -= 1
+        else:
+            raise Exception('Invalid direction passed to '
+                            'MenuDialog.move_selection')
+        selection = min(selection, len(self.items) - 1)
+        selection = max(selection, 0)
+        self.selection = selection
+        self._updateselection()
+
+        return self.selection
+
+    def _updateselection(self):
+        '''
+        Draw a rectangle around current selection, removing from previous
+        '''
+
+        self._drawitems()
+
+        font = pygame.font.SysFont('Arial', 20)
+        selected = font.render(items[self.selection], True, Color('black'))
+
+        rect = selected.get_rect()
+
+        x = int(640 - (rect.width / 2))
+        y = 100 + (self.selection * 44)
+
+        rect = rect.move(x, y)
+        rect = rect.inflate(10, 10)
+
+        pygame.draw.rect(self.surface, Color('yellow'), rect, 3)
+
+    def _drawitems(self):
+        '''
+        Draw the menu items
+        '''
+        self.surface.fill(Color(self.bgcolor), (0, 100, 1280, 640))
+        y = 100
+        font = pygame.font.SysFont('Arial', 20)
+        for line in self.items:
+            curfont = font.render(line, True, Color('black'))
+            x = int(640 - (curfont.get_rect().width / 2))
+            self.surface.blit(self.leftitems[i], (x, y))
+            y += 44
+
+    def _drawtoptext(self):
+        '''
+        Draw the top text area
+        '''
+        font = pygame.font.SysFont('Arial', 32)
+        textsurface = font.render(self.toptext, True, Color('black'))
+        x = int(640 - (textsurface.get_rect().width / 2))
+        y = 20
+        self.surface.blit(textsurface, (x, y))
+
+
 if __name__ == '__main__':
     import theorycraft
     import sys
