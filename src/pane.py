@@ -443,6 +443,10 @@ class Town(Pane):
             loc = (random.randrange(0, PANE_X-8), random.randrange(0, PANE_Y-6))
             house = House(Location(self.location, loc))
             self.buildings.append(house)
+        for i in range(1):
+            loc = (random.randrange(0, PANE_X-8), random.randrange(0, PANE_Y-6))
+            dungeon = Dungeon(Location(self.location, loc))
+            self.buildings.append(dungeon)
 
         for building in self.buildings:
             super(Town, self).load_region(building.boundary, building.boundary_type)
