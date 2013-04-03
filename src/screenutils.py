@@ -855,22 +855,76 @@ class MenuDialog(object):
 
 
 if __name__ == '__main__':
-    import theorycraft
-    import sys
-
-    theorycraft.TheoryCraft.loadAll()
-    player = theorycraft.TheoryCraft.getNewPlayerCharacter('Human', 'Shadow')
-    if not player:
-        print 'PROBLEM!  Oh noes!'
-        sys.exit()
+    import time
 
     pygame.init()
 
+    items = ['Save Game', 'Load Game', 'Quit Game', 'Party']
+
     screen = pygame.display.set_mode((1280, 640))
-    dialog = CharacterDialog(player, bgcolor='gray')
+    dialog = MenuDialog(items, bgcolor='gray')
     screen.blit(dialog.surface, (0, 0))
     pygame.display.flip()
 
     while(True):
+        time.sleep(1)
+        dialog.move_selection(2)
+        screen.blit(dialog.surface, (0, 0))
+        print dialog.get_selection()
         pygame.event.clear()
-        pass
+        time.sleep(1)
+        pygame.display.flip()
+        dialog.move_selection(2)
+        screen.blit(dialog.surface, (0, 0))
+        print dialog.get_selection()
+        pygame.event.clear()
+        time.sleep(1)
+        pygame.display.flip()
+        dialog.move_selection(2)
+        screen.blit(dialog.surface, (0, 0))
+        print dialog.get_selection()
+        pygame.event.clear()
+        time.sleep(1)
+        pygame.display.flip()
+        dialog.move_selection(2)
+        screen.blit(dialog.surface, (0, 0))
+        print dialog.get_selection()
+        pygame.event.clear()
+        time.sleep(1)
+        pygame.display.flip()
+        dialog.move_selection(4)
+        screen.blit(dialog.surface, (0, 0))
+        print dialog.get_selection()
+        pygame.event.clear()
+        time.sleep(1)
+        pygame.display.flip()
+        dialog.move_selection(6)
+        screen.blit(dialog.surface, (0, 0))
+        print dialog.get_selection()
+        pygame.event.clear()
+        time.sleep(1)
+        pygame.display.flip()
+        dialog.move_selection(8)
+        screen.blit(dialog.surface, (0, 0))
+        print dialog.get_selection()
+        pygame.event.clear()
+        time.sleep(1)
+        pygame.display.flip()
+        dialog.move_selection(8)
+        screen.blit(dialog.surface, (0, 0))
+        print dialog.get_selection()
+        pygame.event.clear()
+        time.sleep(1)
+        pygame.display.flip()
+        dialog.move_selection(8)
+        screen.blit(dialog.surface, (0, 0))
+        print dialog.get_selection()
+        pygame.event.clear()
+        time.sleep(1)
+        pygame.display.flip()
+        dialog.move_selection(8)
+        screen.blit(dialog.surface, (0, 0))
+        print dialog.get_selection()
+        pygame.event.clear()
+        time.sleep(1)
+        pygame.display.flip()
