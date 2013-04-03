@@ -141,4 +141,38 @@ class Respec(Building):
     pass
     
 class Dungeon(Building):
-    pass
+    '''
+    Dungeon-hand has size (3, 4)
+    '''
+    def __init__(self, location):
+        super(Dungeon, self).__init__(boundary_type="bones", bounds=None, pane_loc=location.pane, size=(6, 7), location=location)
+        house_sheet = Sprites.get_sheet(DUNGEON_HAND_KEY)
+
+        house_loc = (location.tile[0] + 2, location.tile[1] + 2)
+        
+        for x in range(3):
+            for y in range(4):
+                loc = (house_loc[0]+x, house_loc[1]+y)
+                if x == 1 and y == 3:   #Door opening
+                    self.door = loc
+                    passable = True
+                    self.entities[loc] = Portal(Location((0, -3), (17, 10)), location=loc, image=house_sheet.getimage((x, y)), passable=passable)
+                else:
+                    passable = False
+                    self.entities[loc] = Entity(location=loc, image=house_sheet.getimage((x, y)), passable=passable)
+            y = 0
+            
+        self.opening = (self.door[0], self.door[1]+4)
+        self.path = Region()
+        self.path("ADD", "LINE", Location(location.pane, (self.door[0], self.door[1]+1)), Location(location.pane, self.opening), 1)
+        self.boundary("SUB", "LINE", Location(location.pane, (self.door[0], self.door[1]+1)), Location(location.pane, self.opening), 1)
+        
+        #Choose the type of path that we want, probably from rows 0 to 2 (from self.path_sheet)
+        row = random.randrange(0, 3)
+        col = random.randrange(0, 4)
+        path_image = self.path_sheet.getimage((col, row))
+        for loc in self.path:
+            if loc.pane == location.pane:
+                self.entities[loc.tile] = Entity(location=loc.tile, image=path_image, passable=True)
+                #TODO: Add outer edge entities here (to give edge to path)
+        

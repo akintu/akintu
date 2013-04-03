@@ -14,6 +14,12 @@ TREE = (OBSTACLES_IMAGES_PATH, "tree_green.png", TILE_SIZE, None, TILE_SIZE)
 TREE_ZOOM = TREE
 ROCK = (OBSTACLES_IMAGES_PATH, "rock.png", TILE_SIZE, None, TILE_SIZE)
 ROCK_ZOOM = (OBSTACLES_IMAGES_PATH, "rock_zoom.png", TILE_SIZE, None, TILE_SIZE)
+SHRUB = (OBSTACLES_IMAGES_PATH, "shrub.png", TILE_SIZE, None, TILE_SIZE)
+SHRUB_ZOOM = SHRUB
+GRASS = (OBSTACLES_IMAGES_PATH, "grass.png", TILE_SIZE, None, TILE_SIZE)
+GRASS_ZOOM = GRASS
+BONES = (OBSTACLES_IMAGES_PATH, "bones.png", TILE_SIZE, None, TILE_SIZE)
+BONES_ZOOM = BONES
 
 #BACKGROUNDS
 GRASS1 = (BACKGROUND_IMAGES_PATH, "grass1.jpg", TILE_SIZE, None, None)
@@ -22,9 +28,9 @@ GRASS3 = (BACKGROUND_IMAGES_PATH, "grass3.jpg", TILE_SIZE, None, None)
 GRASS4 = (BACKGROUND_IMAGES_PATH, "grass4.jpg", TILE_SIZE, None, None)
 GRAVEL1 = (BACKGROUND_IMAGES_PATH, "gravel1.jpg", TILE_SIZE, None, None)
 
-OBSTACLES = {'tree': TREE, 'rock': ROCK}
+OBSTACLES = {'tree': TREE, 'rock': ROCK, 'shrub': SHRUB, 'grass': GRASS, 'bones': BONES}
 ENTITIES = dict(OBSTACLES.items())  #ADD MORE ITEMS HERE
-ZOOMED_ENTITIES = {'rock_zoom': ROCK_ZOOM, 'tree_zoom': TREE_ZOOM}
+ZOOMED_ENTITIES = {'rock_zoom': ROCK_ZOOM, 'tree_zoom': TREE_ZOOM, 'shrub_zoom': SHRUB_ZOOM, 'grass_zoom': GRASS_ZOOM, 'bones_zoom': BONES_ZOOM}
 BACKGROUNDS = {'summer': GRASS2, 'fall': GRASS3, 'desert': GRAVEL1}
 ENTITY_KEYS = sorted(ENTITIES.keys())
 OBSTACLE_KEYS = sorted(OBSTACLES.keys())
@@ -32,14 +38,18 @@ OBSTACLE_KEYS = sorted(OBSTACLES.keys())
 #ITEMS AND SUCH
 CHEST = (ITEMS_IMAGES_PATH, "treasure_chest.png", TILE_SIZE, None, None)
 HOUSE = (ITEMS_IMAGES_PATH, "house.png", TILE_SIZE, None, None)
+DUNGEON_HAND = (ITEMS_IMAGES_PATH, "dungeon-hand.png", TILE_SIZE, None, None)
 
 PATHS = (BACKGROUND_IMAGES_PATH, "paths.png", TILE_SIZE, None, None)
 
 #KEYS
+DUNGEON_HAND_KEY = "dungeon_hand"
 HOUSE_KEY = "house"
 PATH_KEY = "path"
 
+DUNGEONS = {DUNGEON_HAND_KEY: DUNGEON_HAND}
 SHEETS = {CHEST_KEY: CHEST, HOUSE_KEY: HOUSE, PATH_KEY: PATHS}
+SHEETS = dict(SHEETS.items() + DUNGEONS.items())
 
 class Sprites(object):
 
