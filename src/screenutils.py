@@ -793,7 +793,7 @@ class MenuDialog(object):
         '''
         Move the current selection (based on num pad directions, 2 4 6 8)
         '''
-        selection = list(self.selection)
+        selection = self.selection
         if direction == 2:
             selection += 1
         elif direction == 4 or direction == 6:
@@ -834,13 +834,13 @@ class MenuDialog(object):
         '''
         Draw the menu items
         '''
-        self.surface.fill(Color(self.bgcolor), (0, 100, 1280, 640))
+        self.surface.fill(Color(self.bgcolor), (0, 80, 1280, 640))
         y = 100
         font = pygame.font.SysFont('Arial', 20)
         for line in self.items:
             curfont = font.render(line, True, Color('black'))
             x = int(640 - (curfont.get_rect().width / 2))
-            self.surface.blit(self.leftitems[i], (x, y))
+            self.surface.blit(curfont, (x, y))
             y += 44
 
     def _drawtoptext(self):
