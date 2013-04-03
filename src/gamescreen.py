@@ -97,7 +97,7 @@ class GameScreen(object):
                                                   spellkey,
                                                   passivekey,
                                                   traitkey)
-        self.screen.blit(self.dialog.surface, (0, ))
+        self.screen.blit(self.dialog.surface, (0, 0))
         pygame.display.update()
         return None
 
