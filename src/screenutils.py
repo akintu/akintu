@@ -252,7 +252,7 @@ class ItemDialog(object):
             pass
         else:
             raise Exception('Invalid direction passed to '
-                            'TilingDialog.move_selection')
+                            'ItemDialog.move_selection')
         selection[1] = min(selection[1], len(self.items[selection[0]]) - 1)
         selection[1] = max(selection[1], 0)
         if self.selection != selection:
