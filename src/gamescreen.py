@@ -840,7 +840,8 @@ def facing_overlays(imageloc):
     # Stealthed images
     simagedict = dict()
     for key, rect in zip(keys, rects):
-        simagedict[key] = set_alpha(pygame.image.load(imageloc).convert_alpha())
+        simagedict[key] = \
+            set_alpha(pygame.image.load(imageloc).convert_alpha())
         simagedict[key].fill(Color('blue'), rect)
     return [imagedict, imagedict, simagedict, simagedict]
 
