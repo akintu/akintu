@@ -14,7 +14,8 @@ class Status(object):
         self.categoryList = None
         self.internalList = None
         self.image = None
-
+        self.text = ""
+        
         # Values given to individual instances of this Status
         self.turnsLeft = None
         self.stacks = 1
@@ -30,6 +31,9 @@ class Status(object):
         self.element = element
         self.categoryList = categoryList
         self.internalList = internalList
+        for internal in internalList:
+            if internal:
+                self.text += internal.staticText + "\n"
 
     def applyMagnitude(self, magnitude):
         """If no magnitude is provided, use the value given from the data
@@ -45,9 +49,11 @@ class Status(object):
         clone.populate(self.name, self.image, self.element, self.categoryList, self.internalList)
         clone.turnsLeft = duration
         clone.applyMagnitude(magnitude)
+        clone.text = ""
         for iStatus in clone.internalList:
             iStatus.element = clone.element
             iStatus.duration = duration
+            clone.text += iStatus.text + "\n"
         return clone
 
     def activate(self, target):
@@ -66,7 +72,6 @@ class Status(object):
         for iStatus in self.internalList:
             if iStatus.recurring == "True":
                 iStatus.applyEffect(iStatus, target, iStatus.magnitude)
-
 
 
 

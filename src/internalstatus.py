@@ -46,7 +46,8 @@ class InternalStatus(object):
         self.immunity = immunity
         self.applyEffect = InternalStatus.applyFunctionDict[name]
         self.unapplyEffect = InternalStatus.unapplyFunctionDict[name]
-
+        
+        
         # Known only from loaded data file instantiation:
         self.parentName = None
 
@@ -55,12 +56,16 @@ class InternalStatus(object):
         self.duration = None # Not typically used or kept track of here.  Only for HP Buffers
                              # thus far.
         self.element = element
-
+        self.staticText = InternalStatus.textDict[name].format(magnitude="x", element=self.element)
+        self.text = InternalStatus.textDict[name]
+        
     def cloneWithDetails(self, magnitude, element, parent):
         """Returns a Status with 'ready-to-use' values based off of a previously defined InternalStatus."""
         cloneStatus = InternalStatus(self.name, self.recurring, self.immunity, self.element)
         cloneStatus.magnitude = magnitude
         cloneStatus.parentName = parent
+        cloneStatus.text = InternalStatus.textDict[cloneStatus.name].format(
+                                magnitude=str(cloneStatus.magnitude), element=cloneStatus.element)
         return cloneStatus
 
 
@@ -764,6 +769,185 @@ class InternalStatus(object):
         'Trap_evade_penalty' : Trap_evade_penalty_method_reverse,
         'Vile_poison_internal' : Vile_poison_method_reverse,
         'Weapon_damage_bonus' : Weapon_damage_bonus_method_reverse
+    }
+    
+    textDict = {
+        'Applied_poison_rating_bonus' : 
+            "Poison-based attacks will have a greater chance to overcome Poison tolerance. (Rating + {magnitude})",
+        'Attack_power_bonus' : 
+            "Monster attack damage is increased by {magnitude}%.",
+        'Attack_power_penalty' : 
+            "Monster attack damage is reduced by {magnitude}%.",
+        'Arcane_archer_mana_regen_penalty' : 
+            "Mana recovered from ranged attacks is reduced by {magnitude}.",
+        'Armor_penetration_bonus' : 
+            "Attacks will ignore an additional {magnitude}% of Damage Reduction (DR).",
+        'Avoidance' : 
+            "Physical attacks have at least a {magnitude}% chance of missing completely.",
+        'Awareness_penalty' : 
+            "Awareness is reduced by {magnitude} points, lowering the chance of detecting traps or stealthed targets.",
+        'Bleeding' : 
+            "Current HP is lowered by {magnitude}% each turn.",
+        'Combo_attack_internal' : 
+            "A combo attack has been performed.",
+        'Crane_style' : 
+            "The Crane style is enabled lending ranged attack bonuses and access to Crane abilities.",
+        'Critical_chance_bonus' :
+            "Chance to critically hit on physical attacks is {magnitude}% higher.",
+        'Critical_magnitude_bonus' :
+            "Bonus damage dealt on a critical hit is {magnitude}% greater than usual.",
+        'Damage_over_time' : 
+            "Each turn, {magnitude} {element} damage will be received.", 
+        'Dodge_bonus' :
+            "Chance to dodge attacks is higher than usual. (Dodge +{magnitude})",
+        'Dodge_penalty' :
+            "Chance to dodge attacks is lower then usual. (Dodge -{magnitude})",
+        'Double_dodge_internal' :
+            "Chance to dodge attacks is higher than usual. (Dodge +{magnitude} x # of stacks)", 
+        'Dragon_style' : 
+            "The Dragon style is enabled, lending a balanced approach to combat and Dragon abilities.",
+        'DR_bonus' :
+            "Armor is stronger than normal, increasing Damage Reduction (DR) by {magnitude} points.",
+        'DR_penalty' :
+            "Armor is weaker than normal, lowering Damage Reduction (DR) by {magnitude} points.",
+        'Elemental_offense_arcane' :
+            "The power of Arcane damage dealt has been increased {magnitude}%.",
+        'Elemental_offense_divine' :
+            "The power of Divine damage dealt has been increased {magnitude}%.",
+        'Elemental_resistance_arcane' :
+            "Damage received from Arcane sources is reduced by {magnitude}%.",
+        'Elemental_resistance_cold' :
+            "Damage received from Cold sources is reduced by {magnitude}%.",
+        'Elemental_resistance_electric' :
+            "Damage received from Electric sources is reduced by {magnitude}%.",
+        'Elemental_resistance_divine' :
+            "Damage received from Divine sources is reduced by {magnitude}%.",
+        'Elemental_resistance_fire' :
+            "Damage received from Fire sources is reduced by {magnitude}%.",
+        'Elemental_resistance_poison' :
+            "Damage received from Poison sources is reduced by {magnitude}%.",
+        'Elemental_resistance_shadow' :
+            "Damage received from Shadow sources is reduced by {magnitude}%.",
+        'Elemental_vulnerability' :
+            "Incoming elemental damage of the {element} type is increased by {magnitude}%.",
+        'Hidden' :
+            "Hidden from creatures that fail their Awareness check.",
+        'Hidden_double_cunning' :
+            "Hidden from creatures that fail their Awareness check.",
+        'HP_buffer' :
+            "Temporary HP will prevent most incoming damage until depleted.",
+        'Increased_movement_AP_cost' :
+            "Movement is more difficult and costs more AP per movement action.",
+        'Intuition_bonus' :
+            "Intuition is {magnitude} higher, making it easier to detect traps and receive less harm from them.",
+        'Knockback_resistance_bonus' :
+            "Chance to be knocked back from attacks and spells is {magnitude}% lower than usual.",
+        'Magic_resist_bonus' :
+            "Magic resist has been raised {magnitude} points, increasing the chance that incoming hostile spells will have no effect.",
+        'Magic_resist_penalty' :
+            "Magic resist has been lowered {magnitude} points, decreasing the chance that incoming hostile spells will have no effect.",
+        'Melee_accuracy_bonus' :
+            "Melee accuracy has been raised {magnitude} points.  Melee attacks will hit their targets more frequently.",
+        'Melee_accuracy_penalty' :
+            "Melee accuracy has been lowered {magnitude} points.  Melee attacks will miss their targets more frequently.",
+        'Melee_dodge_bonus' :
+            "Dodge against melee attacks has been raised {magnitude} points.  Melee attacks will be easier to dodge.",
+        'Melee_force_bonus' :
+            "Melee Force has been raised {magnitude}%.  Outgoing Melee attacks will deal additional damage dependent on Might.",
+        'Might_bonus' :
+            "Might has been raised {magnitude} points.  Outgoing Melee attacks will deal additional damage dependent on Force.",
+        'Might_penalty' :
+            "Might has been reduced {magnitude} points.  Outgoing Melee attacks will deal less damage dependent on Force.",
+        'Numbing_poison_internal' :
+            "Numbing poison has been applied to weapons.  Targets hit may move fewer tiles next turn.",
+        'Movement_speed_penalty' :
+            "Movement speed has been decreased; {magnitude} fewer tiles may be moved per movement action.",
+        'Movement_tiles_penalty' :
+            "Movement speed has been decreased; {magnitude} fewer tiles may be moved per movement action.",
+        'No_turn' :
+            "Stunned for this turn.",
+        'On_hit_cripple_weapon' :
+            "This weapon will cripple targets some of the time, lowering movement speed and attack power.",
+        'On_hit_frost_weapon' :
+            "This weapon will coat targets in frost some of the time, lowering Dodge.",
+        'On_hit_mage_hunting' :
+            "This weapon is more likely to hit and will deal more damage to casters.",
+        'On_hit_stun' :
+            "This weapon has a chance to stun targets.",
+        'On_hit_suppressing_weapon' :
+            "This weapon has a chance to suppress targets, lowering accuracy and attack power.",
+        'Overall_damage_bonus' :
+            "This weapon will deal {magnitude}% bonus damage.",
+        'Overall_damage_penalty' :
+            "This weapon will deal {magnitude}% less damage.",
+        'Panther_style' :
+            "The Panther style has been enabled, granting offensive bonuses and giving access to Panther abilities.",
+        'Poison_tolerance_bonus' :
+            "Poison Tolerance has been increased {magnitude} points, increasing the chance to ignore poison effects.",
+        'Poison_tolerance_penalty' :
+            "Poison Tolerance has been decreased {magnitude} points, lowering the chance to ignore poison effects.",
+        'Potion_effect_bonus' :
+            "Potions will recover HP/MP an additional {magnitude}%.",
+        'Prepare_melee_dodge_counterattack' :
+            "The next melee attack dodged will be counter-attacked.",
+        'Ranged_accuracy_bonus' :
+            "Ranged accuracy has been raised, increasing the chance of hitting with Ranged attacks.",
+        'Ranged_accuracy_penalty' :
+            "Ranged accuracy has been lowered, decreasing the chance of hitting with Ranged attacks.",
+        'Ranged_critical_magnitude_bonus' :
+            "Bonus damage from ranged critical hits has been raised by {magnitude}%.",
+        'Ranged_dodge_bonus' :
+            "Dodge versus Ranged attacks has been increased by {magnitude} points, increasing the chance of Dodging Ranged attacks.",
+        'Ranged_dodge_penalty' :
+            "Dodge versus Ranged attacks has been decreased by {magnitude} points, decreasing the chance of Dodging Ranged attacks.",
+        'Ranged_force_bonus' :
+            "The Force of ranged attacks has been increased; Damage dealt with ranged attacks will be higher dependent on Might.",
+        'Recover_HP_percent' :
+            "{magnitude}% of HP will be recovered each turn.",
+        'Redirect_melee_attacks' :
+            "TODO",
+        'Reduced_stealth_AP_cost' :
+            "The AP Cost of entering stealth has been decreased.",
+        'Reduced_missile_range' :
+            "Ranged attacks have reduced range.",
+        'Refund_mana_on_resist' :
+            "If an outgoing spell is resisted, some MP will be refunded.",
+        'Send_empathy_damage_to_summon' :
+            "TODO",
+        'Set_maximum_stealth_break_chance' :
+            "Chance to break stealth of most attacks has been limited to at most {magnitude}%.",
+        'Set_movement_AP_cost' :
+            "The AP movement cost has been altered for your next move action.",
+        'Slashing_resist_penalty' :
+            "Incoming slashing physical damage will deal an additional {magnitude}% damage.",
+        'Snake_style' :
+            "The Snake style has been enabled, granting bonus melee accuracy, Piety, and giving access to Snake skills.",
+        'Sneak_bonus' :
+            "Sneak has been increased by {magnitude} points.  Chance to avoid detection while stealthed is higher.",
+        'Sneak_penalty' :
+            "Sneak has been decreased by {magnitude} points.  Chance to avoid detection wihle stealthed is lower.",
+        'Spellpower_bonus' :
+            "Spellpower has been increased by {magnitude} points.  Spells will be more effective overall.",
+        'Spellpower_penalty' :
+            "Spellpower has been decreased by {magnitude} points.  Spells will be less effective overall.",
+        'Spell_failure_chance' :
+            "Spells have a {magnitude}% chance to fail while being cast.",
+        'Stun_internal' :
+            "Character is stunned and will not be able to perform any actions.",
+        'Stunning_recovery_internal' :
+            "Character is recovering from a stun and will regain some HP.",
+        'Target_throat_internal' :
+            "Character is targeting the vitals of its targets.  Various offensive bonuses have been granted.",
+        'Tiger_style' :
+            "The Tiger style has been enabled granting bonus defenses as well as access to Tiger abilities.",
+        'Trap_evade_bonus' :
+            "Trap Evade has been increased by {magnitude} points.  The chance of evading a sprung trap is greater than usual.",
+        'Trap_evade_penalty' :
+            "Trap Evade has been decreased by {magnitude} points.  The chance of evading a sprung trap is lower than usual.",
+        'Vile_poison_internal' :
+            "A vile poison is coating this weapon.  Targets hit may suffer reduced attack power and a chance to fail when casting spells.",
+        'Weapon_damage_bonus' :
+            "Weapon damage has been augmented with the element of {element}.  Attacks will deal additional damage."
     }
 
 
