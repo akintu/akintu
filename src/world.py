@@ -32,10 +32,20 @@ class World(object):
         self.curr_pane = None
         
     def is_town(self, location):
-        if location in self._listTowns(location):
+        if isinstance(location, Location):
+            loc = location.pane
+        else:
+            loc = location
+        if loc in self._listTowns(loc):
             return True
         else:
             return False
+
+    def is_dungeon(self, location):
+        pass
+
+    def is_building(self, location):
+        pass
 
     def get_pane(self, location, is_server=False):
         surrounding_locations = Location(location, None).get_surrounding_panes()
@@ -70,9 +80,14 @@ class World(object):
     
     def _listTowns(self, location):
         '''
-        location is a tuple e.g (0, 0)
+        location is an object
         '''
-        
+        if isinstance(location, Location):
+            loc = location.pane
+        else:
+            loc = location
+        #TODO: We can do some deterministic, dynamic placement here
+        #but for now just return a static list of Towns
         return [(0, 0), (0, -2)]
         
 
