@@ -134,7 +134,7 @@ class WelcomeWindow(object):
         # Create the widgets
         backb = ttk.Button(frame, text='Back', command=self.mainmenu)
         nextb = ttk.Button(frame, text='Next', command=self.playtype)
-        savel = ttk.Label(frame, text='Load game:')
+        savel = ttk.Label(frame, text='Load Character:')
         savecombo = ttk.Combobox(frame,
                                  textvariable=self.charsave,
                                  values=CHARSAVES,
