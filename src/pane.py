@@ -439,11 +439,11 @@ class Town(Pane):
             building = Building("tree", bounds, self.location)#, (15, 6), Location(self.location, (start[0], start[1]+i*7)))
             self.buildings.append(building)
 
-        for i in range(2):
+        for i in range(1):
             loc = (random.randrange(0, PANE_X-8), random.randrange(0, PANE_Y-6))
             house = House(Location(self.location, loc))
             self.buildings.append(house)
-        for i in range(1):
+        for i in range(2):
             loc = (random.randrange(0, PANE_X-8), random.randrange(0, PANE_Y-6))
             dungeon = Dungeon(Location(self.location, loc))
             self.buildings.append(dungeon)
