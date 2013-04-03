@@ -498,7 +498,8 @@ class CharacterDialog(object):
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Experience:  ' + str(p.experience) + '/' + str(p.getExpForNextLevel())
+        l = ('Experience:  ' + str(p.experience) + '/' +
+             str(p.getExpForNextLevel()))
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
@@ -510,11 +511,13 @@ class CharacterDialog(object):
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'HP:  ' + str(int(p.HP)) + '/' + str(int(p.totalHP)) + ' (' + str(p.equipmentHP) + ')'
+        l = ('HP:  ' + str(int(p.HP)) + '/' + str(int(p.totalHP)) + ' (' +
+             str(p.equipmentHP) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'MP:  ' + str(int(p.MP)) + '/' + str(int(p.totalMP)) + ' (' + str(p.equipmentMP) + ')'
+        l = ('MP:  ' + str(int(p.MP)) + '/' + str(int(p.totalMP)) + ' (' +
+             str(p.equipmentMP) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
@@ -527,27 +530,33 @@ class CharacterDialog(object):
         f = hfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Strength:  ' + str(int(p.totalStrength)) + ' (' + str(p.equipmentStrength) + ')'
+        l = ('Strength:  ' + str(int(p.totalStrength)) + ' (' +
+             str(p.equipmentStrength) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Dexterity:  ' + str(int(p.totalDexterity)) + ' (' + str(p.equipmentDexterity) + ')'
+        l = ('Dexterity:  ' + str(int(p.totalDexterity)) + ' (' +
+             str(p.equipmentDexterity) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Cunning:  ' + str(int(p.totalCunning)) + ' (' + str(p.equipmentCunning) + ')'
+        l = ('Cunning:  ' + str(int(p.totalCunning)) + ' (' +
+             str(p.equipmentCunning) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Sorcery:  ' + str(int(p.totalSorcery)) + ' (' + str(p.equipmentSorcery) + ')'
+        l = ('Sorcery:  ' + str(int(p.totalSorcery)) + ' (' +
+             str(p.equipmentSorcery) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Piety:  ' + str(int(p.totalPiety)) + ' (' + str(p.equipmentPiety) + ')'
+        l = ('Piety:  ' + str(int(p.totalPiety)) + ' (' +
+             str(p.equipmentPiety) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Constitution:  ' + str(int(p.totalConstitution)) + ' (' + str(p.equipmentConstitution) + ')'
+        l = ('Constitution:  ' + str(int(p.totalConstitution)) + ' (' +
+             str(p.equipmentConstitution) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height * 2
@@ -561,11 +570,13 @@ class CharacterDialog(object):
         f = hfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Melee Accuracy:  ' + str(p.totalMeleeAccuracy) + ' (' + str(p.equipmentMeleeAccuracy) + ')'
+        l = ('Melee Accuracy:  ' + str(p.totalMeleeAccuracy) + ' (' +
+             str(p.equipmentMeleeAccuracy) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Ranged Accuracy:  ' + str(p.totalRangedAccuracy) + ' (' + str(p.equipmentRangedAccuracy) + ')'
+        l = ('Ranged Accuracy:  ' + str(p.totalRangedAccuracy) + ' (' +
+             str(p.equipmentRangedAccuracy) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
@@ -573,7 +584,8 @@ class CharacterDialog(object):
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Ranged Dodge:  ' + str(p.totalRangedDodge) + ' (' + str(p.equipmentRangedDodge) + ')'
+        l = ('Ranged Dodge:  ' + str(p.totalRangedDodge) + ' (' +
+             str(p.equipmentRangedDodge) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
@@ -581,43 +593,53 @@ class CharacterDialog(object):
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Melee Dodge:  ' + str(p.totalMeleeDodge) + ' (' + str(p.equipmentMeleeDodge) + ')'
+        l = ('Melee Dodge:  ' + str(p.totalMeleeDodge) + ' (' +
+             str(p.equipmentMeleeDodge) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Spellpower:  ' + str(p.totalSpellpower) + ' (' + str(p.equipmentSpellpower) + ')'
+        l = ('Spellpower:  ' + str(p.totalSpellpower) + ' (' +
+             str(p.equipmentSpellpower) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Magic Resist:  ' + str(p.totalMagicResist) + ' (' + str(p.equipmentMagicResist) + ')'
+        l = ('Magic Resist:  ' + str(p.totalMagicResist) + ' (' +
+             str(p.equipmentMagicResist) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Critical Chance:  ' + str(p.totalCriticalChance) + '% (' + str(int(p.equipmentCriticalChance)) + ')'
+        l = ('Critical Chance:  ' + str(p.totalCriticalChance) + '% (' +
+             str(int(p.equipmentCriticalChance)) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Critical Magnitude:  ' + str(p.totalCriticalMagnitude) + '% (' + str(p.equipmentCriticalMagnitude) + ')'
+        l = ('Critical Magnitude:  ' + str(p.totalCriticalMagnitude) + '% (' +
+             str(p.equipmentCriticalMagnitude) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Armor Penetration:  ' + str(p.totalArmorPenetration) + '% (' + str(p.equipmentArmorPenetration) + ')'
+        l = ('Armor Penetration:  ' + str(p.totalArmorPenetration) + '% (' +
+             str(p.equipmentArmorPenetration) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Damage Resistance:  ' + str(p.totalDR) + '% (' + str(p.equipmentDR) + ')'
+        l = ('Damage Resistance:  ' + str(p.totalDR) + '% (' +
+             str(p.equipmentDR) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Poison Tolerance:  ' + str(p.totalPoisonTolerance) + ' (' + str(p.equipmentPoisonTolerance) + ')'
+        l = ('Poison Tolerance:  ' + str(p.totalPoisonTolerance) + ' (' +
+             str(p.equipmentPoisonTolerance) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Poison Rating Bonus:  ' + str(p.totalPoisonRatingBonus) + ' (' + str(p.equipmentPoisonRatingBonus) + ')'
+        l = ('Poison Rating Bonus:  ' + str(p.totalPoisonRatingBonus) + ' (' +
+             str(p.equipmentPoisonRatingBonus) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Awareness:  ' + str(p.totalAwareness) + ' (' + str(p.equipmentAwareness) + ')'
+        l = ('Awareness:  ' + str(p.totalAwareness) + ' (' +
+             str(p.equipmentAwareness) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
@@ -625,15 +647,18 @@ class CharacterDialog(object):
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Trap Evade:  ' + str(p.totalTrapEvade) + ' (' + str(p.equipmentTrapEvade) + ')'
+        l = ('Trap Evade:  ' + str(p.totalTrapEvade) + ' (' +
+             str(p.equipmentTrapEvade) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Movement Tiles:  ' + str(p.totalMovementTiles) + ' (' + str(p.equipmentMovementTiles) + ')'
+        l = ('Movement Tiles:  ' + str(p.totalMovementTiles) + ' (' +
+             str(p.equipmentMovementTiles) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Intuition:  ' + str(p.totalIntuition) + ' (' + str(p.equipmentIntuition) + ')'
+        l = ('Intuition:  ' + str(p.totalIntuition) + ' (' +
+             str(p.equipmentIntuition) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height * 2
@@ -642,11 +667,13 @@ class CharacterDialog(object):
         f = hfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Shop Bonus:  ' + str(p.totalShopBonus) + '% (' + str(p.equipmentShopBonus) + ')'
+        l = ('Shop Bonus:  ' + str(p.totalShopBonus) + '% (' +
+             str(p.equipmentShopBonus) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Carrying Capacity:  ' + str(p.inventoryCapacity) + ' (' + str(p.equipmentCarryingCapacity) + ')'
+        l = ('Carrying Capacity:  ' + str(p.inventoryCapacity) + ' (' +
+             str(p.equipmentCarryingCapacity) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
@@ -666,7 +693,8 @@ class CharacterDialog(object):
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Trap Damage Reduction:  ' + str(p.totalTrapDamageReduction) + '% (' + str(p.equipmentIntuition) + ')'
+        l = ('Trap Damage Reduction:  ' + str(p.totalTrapDamageReduction) +
+             '% (' + str(p.equipmentIntuition) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
@@ -681,31 +709,38 @@ class CharacterDialog(object):
         f = hfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Arcane Resistance:  ' + str(p.totalArcaneResistance) + '% (' + str(p.equipmentArcaneResistance) + ')'
+        l = ('Arcane Resistance:  ' + str(p.totalArcaneResistance) + '% (' +
+             str(p.equipmentArcaneResistance) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Cold Resistance:  ' + str(p.totalColdResistance) + '% (' + str(p.equipmentColdResistance) + ')'
+        l = ('Cold Resistance:  ' + str(p.totalColdResistance) + '% (' +
+             str(p.equipmentColdResistance) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Divine Resistance:  ' + str(p.totalDivineResistance) + '% (' + str(p.equipmentDivineResistance) + ')'
+        l = ('Divine Resistance:  ' + str(p.totalDivineResistance) + '% (' +
+             str(p.equipmentDivineResistance) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Electric Resistance:  ' + str(p.totalElectricResistance) + '% (' + str(p.equipmentElectricResistance) + ')'
+        l = ('Electric Resistance:  ' + str(p.totalElectricResistance) +
+             '% (' + str(p.equipmentElectricResistance) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Fire Resistance:  ' + str(p.totalFireResistance) + '% (' + str(p.equipmentFireResistance) + ')'
+        l = ('Fire Resistance:  ' + str(p.totalFireResistance) + '% (' +
+             str(p.equipmentFireResistance) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Poison Resistance:  ' + str(p.totalPoisonResistance) + '% (' + str(p.equipmentPoisonResistance) + ')'
+        l = ('Poison Resistance:  ' + str(p.totalPoisonResistance) + '% (' +
+             str(p.equipmentPoisonResistance) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Shadow Resistance:  ' + str(p.totalShadowResistance) + '% (' + str(p.equipmentShadowResistance) + ')'
+        l = ('Shadow Resistance:  ' + str(p.totalShadowResistance) + '% (' +
+             str(p.equipmentShadowResistance) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height * 2
@@ -714,31 +749,38 @@ class CharacterDialog(object):
         f = hfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Arcane Damage Bonus:  ' + str(p.totalArcaneBonusDamage) + '% (' + str(p.equipmentArcaneBonusDamage) + ')'
+        l = ('Arcane Damage Bonus:  ' + str(p.totalArcaneBonusDamage) + '% (' +
+             str(p.equipmentArcaneBonusDamage) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Cold Damage Bonus:  ' + str(p.totalColdBonusDamage) + '% (' + str(p.equipmentColdBonusDamage) + ')'
+        l = ('Cold Damage Bonus:  ' + str(p.totalColdBonusDamage) + '% (' +
+             str(p.equipmentColdBonusDamage) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Divine Damage Bonus:  ' + str(p.totalDivineBonusDamage) + '% (' + str(p.equipmentDivineBonusDamage) + ')'
+        l = ('Divine Damage Bonus:  ' + str(p.totalDivineBonusDamage) + '% (' +
+             str(p.equipmentDivineBonusDamage) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Electric Damage Bonus:  ' + str(p.totalElectricBonusDamage) + '% (' + str(p.equipmentElectricBonusDamage) + ')'
+        l = ('Electric Damage Bonus:  ' + str(p.totalElectricBonusDamage) +
+             '% (' + str(p.equipmentElectricBonusDamage) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Fire Damage Bonus:  ' + str(p.totalFireBonusDamage) + '% (' + str(p.equipmentFireBonusDamage) + ')'
+        l = ('Fire Damage Bonus:  ' + str(p.totalFireBonusDamage) + '% (' +
+             str(p.equipmentFireBonusDamage) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Poison Damage Bonus:  ' + str(p.totalPoisonBonusDamage) + '% (' + str(p.equipmentPoisonBonusDamage) + ')'
+        l = ('Poison Damage Bonus:  ' + str(p.totalPoisonBonusDamage) + '% (' +
+             str(p.equipmentPoisonBonusDamage) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Shadow Damage Bonus:  ' + str(p.totalShadowBonusDamage) + '% (' + str(p.equipmentShadowBonusDamage) + ')'
+        l = ('Shadow Damage Bonus:  ' + str(p.totalShadowBonusDamage) + '% (' +
+             str(p.equipmentShadowBonusDamage) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height * 4
