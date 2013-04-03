@@ -470,14 +470,10 @@ class Game(object):
                     self.screen.scroll_down(1)
                 elif e == "SCROLLBOTTOM":
                     self.screen.scroll_down(1000)
-                elif e == "DIALOGUP":
-                    pass
 
                 ### Levelup Commands ###
-                if keystate.inputState == "LEVELUP":
-                    upgradedHero = False
-                    if event.key == K_SPACE or event.key == K_a:
-                        upgradedHero = self.levelup.advance()
+                elif e == "LEVELUPADVANCE":
+                    upgradedHero = self.levelup.advance()
                     if upgradedHero:
                         # Upgraded Hero is "False" until the levelup is finished. Then it is a dehydrated hero.
                         newHero = TheoryCraft.rehydratePlayer(upgradedHero)

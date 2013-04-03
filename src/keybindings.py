@@ -55,6 +55,7 @@ class Keystate():
             "SCROLLDOWN": (["page down", "-"], self.MOVEMENT),
             "SCROLLBOTTOM": (["SHIFT+page down", "SHIFT+-"], self.MOVEMENT),
 
+            "LEVELUPADVANCE": ([" ", "a"], "LEVELUP"),
 
             "TEST1": ("CTRL+SHIFT+o", self.MOVEMENT),
             "CHEAT CODE": ("[+]", self.MOVEMENT)
