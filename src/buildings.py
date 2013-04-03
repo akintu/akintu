@@ -145,7 +145,7 @@ class Dungeon(Building):
     Dungeon-hand has size (3, 4)
     '''
     def __init__(self, location):
-        super(Dungeon, self).__init__(boundary_type="bones", bounds=None, pane_loc=location.pane, size=(6, 7), location=location)
+        super(Dungeon, self).__init__(boundary_type="shrub", bounds=None, pane_loc=location.pane, size=(6, 7), location=location)
         
         
         dungeon_sheet = Sprites.get_sheet(random.choice(list(DUNGEONS.keys())))
