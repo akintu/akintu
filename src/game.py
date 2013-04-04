@@ -461,7 +461,11 @@ class Game(object):
                 elif keystate.direction("DIALOG"):
                     self.screen.move_dialog(keystate.direction("DIALOG"))
                 elif keystate.direction("TARGET"):
-                    pass # TODO Location targeting
+                    self.attempt_attack(targetingLocation=keystate.direction("TARGET"))
+                elif e == "TARGETCANCEL":
+                    self.screen.show_text("Cancelled trap placement.", color='white')
+                    keystate.inputState = "COMBAT"
+                    self.currentAbility = None
                 elif e == "SCROLLTOP":
                     self.screen.scroll_up(1000)
                 elif e == "SCROLLUP":
@@ -491,15 +495,15 @@ class Game(object):
                                                             'totalAP' : self.pane.person[self.id].totalAP,
                                                             'AP' : self.pane.person[self.id].AP})
 
-                elif keystate.inputState == "SHOP":
-                    hero = False
-                    if event.key == K_a:
-                        if self.screen.get_dialog_selection()[0] == 0:
-                            self.currentShop.sell(self.screen.get_dialog_selection()[1])
-                        else:
-                            self.currentShop.buy(self.screen.get_dialog_selection()[1])
-                    elif event.key == K_SPACE:
-                        hero = self.currentShop.close()
+                elif e == "SHOPOPEN":
+                    self.request_shop()
+                elif e == "SHOPTRANSACTION":
+                    if self.screen.get_dialog_selection()[0] == 0:
+                        self.currentShop.sell(self.screen.get_dialog_selection()[1])
+                    else:
+                        self.currentShop.buy(self.screen.get_dialog_selection()[1])
+                elif e == "SHOPCLOSE":
+                    hero = self.currentShop.close()
                     if hero:
                         # Hero is None until the shop phase is finished.  Then it is a dehydrated hero.
                         newHero = TheoryCraft.rehydratePlayer(hero)
@@ -518,20 +522,20 @@ class Game(object):
                                                             'AP' : self.pane.person[self.id].AP})
 
                 ### Inventory Management ###
-                elif keystate.inputState == "INVENTORY":
-                    newlyEquippedPlayer = None
-                    if event.key == K_e and self.screen.get_dialog_selection()[0] == 0:
-                        self.pane.person[self.id].equipMainHand(self.screen.get_dialog_selection()[1], self.screen)
-                    elif event.key == K_d and self.screen.get_dialog_selection()[0] == 0:
-                        self.pane.person[self.id].dropItem(self.screen.get_dialog_selection()[1], self.screen)
-                    elif event.key == K_u and self.screen.get_dialog_selection()[0] == 1:
-                        self.pane.person[self.id].unequipGear(self.screen.get_dialog_selection()[1], self.screen.get_dialog_selection()[2],
-                                                                self.screen)
-                    elif event.key == K_o and self.screen.get_dialog_selection()[0] == 0:
-                        self.pane.person[self.id].equipOffHand(self.screen.get_dialog_selection()[1], self.screen)
-                    elif event.key == K_SPACE or event.key == K_i:
-                        self.screen.hide_dialog()
-                        newlyEquippedPlayer = self.pane.person[self.id].dehydrate()
+                elif e == "INVENTORYOPEN":
+                    self.open_inventory()
+                elif e == "INVENTORYEQUIPMH" and self.screen.get_dialog_selection()[0] == 0:
+                    self.pane.person[self.id].equipMainHand(self.screen.get_dialog_selection()[1], self.screen)
+                elif e == "INVENTORYDROP" and self.screen.get_dialog_selection()[0] == 0:
+                    self.pane.person[self.id].dropItem(self.screen.get_dialog_selection()[1], self.screen)
+                elif e == "INVENTORYUNEQUIP" and self.screen.get_dialog_selection()[0] == 1:
+                    self.pane.person[self.id].unequipGear(self.screen.get_dialog_selection()[1], \
+                            self.screen.get_dialog_selection()[2], self.screen)
+                elif e == "INVENTORYEQUIPOH" and self.screen.get_dialog_selection()[0] == 0:
+                    self.pane.person[self.id].equipOffHand(self.screen.get_dialog_selection()[1], self.screen)
+                elif e == "INVENTORYCLOSE":
+                    self.screen.hide_dialog()
+                    newlyEquippedPlayer = self.pane.person[self.id].dehydrate()
                     if newlyEquippedPlayer:
                         self.CDF.send(Command("PERSON", "REPLACE", id=self.id, player=newlyEquippedPlayer))
                         keystate.inputState = "OVERWORLD"
@@ -545,106 +549,75 @@ class Game(object):
                                                             'AP' : self.pane.person[self.id].AP})
 
                 ## Consumable Use ###
-                elif keystate.inputState == "CONSUMABLE":
-                    if event.key == K_SPACE or event.key == K_a:
-                        self.currentItem = self.pane.person[self.id].inventory.allConsumables[self.screen.hide_dialog()[1]]
-                        self.select_self()
+                elif e == "CONSUMABLEOPEN":
+                    self.open_consumables()
+                elif e == "CONSUMABLEUSE":
+                    self.currentItem = self.pane.person[self.id].inventory.allConsumables[self.screen.hide_dialog()[1]]
+                    self.select_self()
                     keystate.inputState = "COMBAT"
 
                 ### Combat Only Commands ###
-                elif self.combat:
-
-                    #### Ability/Spell Selection ####
-                    if keystate.inputState == "ABILITIES" or keystate.inputState == "SPELLS":
-                        if event.key == K_SPACE or event.key == K_a:
-                            if keystate.inputState == "SPELLS":
-                                self.currentAbility = self.pane.person[self.id].spellList[self.screen.hide_dialog()]
-                                keystate.inputState = "COMBAT"
-                            elif keystate.inputState == "ABILITIES":
-                                self.currentAbility = self.pane.person[self.id].abilities[self.screen.hide_dialog()]
-                                if "Trap" in self.currentAbility.name:
-                                    keystate.inputState = "TARGET"
-                                else:
-                                    keystate.inputState = "COMBAT"
-                            if self.currentAbility.range == 0:
-                                self.select_self()
-                            else:
-                                self.show_range(True)
-
-                    ### Trap Placing ####
-                    elif keystate.inputState == "TARGET":
-                        # TODO: Check for out-of-bounds
-                        if event.key == K_KP8:
-                            # Select above
-                            self.attempt_attack(targetingLocation=8)
-                        elif event.key == K_KP9:
-                            # Select up-right
-                            self.attempt_attack(targetingLocation=9)
-                        elif event.key == K_KP6:
-                           # Select right
-                           self.attempt_attack(targetingLocation=6)
-                        elif event.key == K_KP3:
-                            # Select down-right
-                            self.attempt_attack(targetingLocation=3)
-                        elif event.key == K_KP2:
-                            # Select down
-                            self.attempt_attack(targetingLocation=2)
-                        elif event.key == K_KP1:
-                            # Select down-left
-                            self.attempt_attack(targetingLocation=1)
-                        elif event.key == K_KP4:
-                            # Select left
-                            self.attempt_attack(targetingLocation=4)
-                        elif event.key == K_KP7:
-                            # Select up-left
-                            self.attempt_attack(targetingLocation=7)
-                        elif event.key == K_KP5 or event.key == K_SPACE:
-                            # Cancel button
-                            self.screen.show_text("Cancelled trap placement.", color='white')
+                elif e == "ABILITIESOPEN":
+                    keystate.inputState = "ABILITIES"
+                    self.choose_ability()
+                elif e == "ABILITIESSELECT":
+                    self.currentAbility = self.pane.person[self.id].abilities[self.screen.hide_dialog()]
+                    if "Trap" in self.currentAbility.name:
+                        keystate.inputState = "TARGET"
+                    else:
                         keystate.inputState = "COMBAT"
-                        self.currentAbility = None
 
-                    elif event.key == K_e:
-                        self.cycle_targets()
-                    elif event.key == K_w:
-                        self.cycle_targets(reverse=True)
-                    elif event.key == K_a:
-                        if self.currentItem:
-                            self.use_item()
-                        else:
-                            self.attempt_attack()
-                    elif event.key == K_n:
-                        self.force_end_turn()
-                    elif event.key == K_s:
+                    if self.currentAbility.range == 0:
                         self.select_self()
-                    elif event.key == K_i:
-                        self.open_consumables()
-                    elif event.key == K_PERIOD:
-                        self.display_target_details()
-                    elif event.key == K_SPACE:
-                        keystate.inputState = "ABILITIES"
-                        self.choose_ability()
-                    elif event.key == K_b:
-                        keystate.inputState = "SPELLS"
-                        self.choose_spell()
+                    else:
+                        self.show_range(True)
+
+                elif e == "SPELLSOPEN":
+                    keystate.inputState = "SPELLS"
+                    self.choose_spell()
+                elif e == "SPELLSSELECT":
+                    self.currentAbility = self.pane.person[self.id].spellList[self.screen.hide_dialog()]
+                    keystate.inputState = "COMBAT"
+                    if self.currentAbility.range == 0:
+                        self.select_self()
+                    else:
+                        self.show_range(True)
+
+                elif e == "CYCLETARGETF":
+                    self.cycle_targets()
+                elif e == "CYCLETARGETB":
+                    self.cycle_targets(reverse=True)
+                elif e == "ACTIVATESELECTED":
+                    if self.currentItem:
+                        self.use_item()
+                    else:
+                        self.attempt_attack()
+                elif e == "ENDTURN":
+                    self.force_end_turn()
+                elif e == "SELECTSELF":
+                    self.select_self()
+                elif e == "ANALYZETARGET":
+                    self.display_target_details()
+
                 ### Strictly non-combat commands ###
-                if not self.combat:
-                    if event.key == K_g:
-                        self.get_item()
-                    elif event.key == K_b:
-                        #self.break_in() -- Will bash/pick-lock chests.  Will attempt a picklock first if
-                        # you are a thief primary class.  If that fails, all other attempts will be bashes.
-                        pass
-                    elif event.key == K_c:
-                        self.display_character_sheet()
-                    elif event.key == K_y:
-                        self.request_levelup(True)
-                    #elif event.key == K_r:
-                    #    self.respec()
-                    elif event.key == K_i:
-                        self.open_inventory()
-                    elif event.key == K_F2:
-                        self.request_shop()
+                elif e == "GETITEM":
+                    self.get_item()
+                elif e == "BASHCHEST":
+                    #self.break_in() -- Will bash/pick-lock chests.  Will attempt a picklock first if
+                    # you are a thief primary class.  If that fails, all other attempts will be bashes.
+                    pass
+                elif e == "SHOWCHARSHEET":
+                    self.display_character_sheet()
+                elif e == "STARTLEVELUP":
+                    self.request_levelup(True)
+                #elif e == "STARTRESPEC":
+                #    self.respec()
+                elif e == "HELPMENU":
+                    pass #TODO Implement help menu
+                elif e == "SHOWINPUTSTATE":
+                    print "Keyboard input state: %s" % keystate.inputState
+                elif e == "CHEAT CODE":
+                    print "You found the secret code!"
 
     def get_item(self):
         self.CDF.send(Command("PERSON", "OPEN", id=self.id))

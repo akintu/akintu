@@ -29,7 +29,6 @@ class Keystate():
         self.DIALOG = ["LEVELUP", "INVENTORY", "CONSUMABLE", "SHOP", "ABILITIES", "SPELLS"]
 
         self.bindings = {"QUIT": (["CTRL+q", "CTRL+x"], self.ALL),
-            "CLOSEMENU": ("escape", self.DIALOG),
 
             "UP": ([K_UP, K_KP8, "k"], self.MOVEMENT),
             "DOWN": ([K_DOWN, K_KP2, "j"], self.MOVEMENT),
@@ -49,14 +48,50 @@ class Keystate():
             "TARGETUPRIGHT": ([K_KP9, "u"], "TARGET"),
             "TARGETDOWNLEFT": ([K_KP1, "b"], "TARGET"),
             "TARGETDOWNRIGHT": ([K_KP3, "n"], "TARGET"),
+            "TARGETCANCEL": ([K_KP5, "space", "escape"], "TARGET"),
 
             "SCROLLTOP": (["SHIFT+page up", "SHIFT+="], self.MOVEMENT),
             "SCROLLUP": (["page up", "="], self.MOVEMENT),
             "SCROLLDOWN": (["page down", "-"], self.MOVEMENT),
             "SCROLLBOTTOM": (["SHIFT+page down", "SHIFT+-"], self.MOVEMENT),
 
-            "LEVELUPADVANCE": ([" ", "a"], "LEVELUP"),
+            "LEVELUPADVANCE": (["space", "a"], "LEVELUP"),
 
+            "SHOPOPEN": ("f2", "OVERWORLD"),
+            "SHOPTRANSACTION": ("a", "SHOP"),
+            "SHOPCLOSE": (["space", "escape"], "SHOP"),
+
+            "INVENTORYOPEN": ("i", "OVERWORLD"),
+            "INVENTORYEQUIPMH": ("e", "INVENTORY"),
+            "INVENTORYDROP": ("d", "INVENTORY"),
+            "INVENTORYUNEQUIP": ("u", "INVENTORY"),
+            "INVENTORYEQUIPOH": ("o", "INVENTORY"),
+            "INVENTORYCLOSE": (["space", "i", "escape"], "INVENTORY"),
+
+            "CONSUMABLEOPEN": ("i", "COMBAT"),
+            "CONSUMABLEUSE": (["space", "a"], "CONSUMABLE"),
+
+            "ABILITIESOPEN": ("space", "COMBAT"),
+            "ABILITIESSELECT": (["space", "a"], "ABILITIES"),
+
+            "SPELLSOPEN": ("b", "COMBAT"),
+            "SPELLSSELECT": (["space", "a"], "SPELLS"),
+
+            "CYCLETARGETF": ("e", "COMBAT"),
+            "CYCLETARGETB": ("w", "COMBAT"),
+            "ACTIVATESELECTED": ("a", "COMBAT"),
+            "ENDTURN": ("n", "COMBAT"),
+            "SELECTSELF": ("s", "COMBAT"),
+            "ANALYZETARGET": (".", "COMBAT"),
+
+            "GETITEM": ("g", "OVERWORLD"),
+            "BASHCHEST": ("b", "OVERWORLD"),
+            "SHOWCHARSHEET": ("c", "OVERWORLD"),
+            "STARTLEVELUP": ("y", "OVERWORLD"),
+            "STARTRESPEC": ("r", "OVERWORLD"),
+            "HELPMENU": ("f1", "OVERWORLD"),
+
+            "SHOWINPUTSTATE": ("backspace", "ALL"),
             "TEST1": ("CTRL+SHIFT+o", self.MOVEMENT),
             "CHEAT CODE": ("[+]", self.MOVEMENT)
             }
