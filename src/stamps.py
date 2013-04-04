@@ -13,23 +13,13 @@ class Stamp(object):
     LANDSCAPE = "landscape"
     TEXT = "text"
     loaded = False
-    
+
     def __init__(self, size, data):
         self.width = size[0]
         self.height = size[1]
         self.data = data
         self.region = Region()
-        self.region("ADD", "SQUARE", Location(0, 0), Location(self.width-1, self.height-1))
 
-        # for i in range(self.height):
-            # start = i*self.width
-            # end = start+self.width
-            # string = self.data[start:end]
-            # for j in range(self.width):
-                # if string[j] != " ":
-                    # self.region("SUB", "SQUARE", Location(j, i), Location(j, i))
-            # j = 0
-        
     def __repr__(self):
         string = "\n"
         for i in range(self.height):
@@ -37,9 +27,20 @@ class Stamp(object):
             end = start+self.width
             string += self.data[start:end] + "\n"
         return string
-        
+
     def __str__(self):
         return self.__repr__()
+
+    def createRegion(self):
+        self.region("ADD", "SQUARE", Location(0, 0), Location(self.width-1, self.height-1))
+        for i in range(self.height):
+            start = i*self.width
+            end = start+self.width
+            string = self.data[start:end]
+            for j in range(self.width):
+                if string[j] != " ":
+                    self.region("SUB", "SQUARE", Location(j, i), Location(j, i))
+                j = 0
 
     def join(self, arg, stamp, distance=0):
         new_string = ""
