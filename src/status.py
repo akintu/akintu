@@ -33,7 +33,7 @@ class Status(object):
         self.internalList = internalList
         for internal in internalList:
             if internal:
-                self.text += internal.staticText + "\n"
+                self.text += internal.staticText.format(ELE=self.element) + "\n"
 
     def applyMagnitude(self, magnitude):
         """If no magnitude is provided, use the value given from the data

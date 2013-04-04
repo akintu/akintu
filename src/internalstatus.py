@@ -56,7 +56,7 @@ class InternalStatus(object):
         self.duration = None # Not typically used or kept track of here.  Only for HP Buffers
                              # thus far.
         self.element = element
-        self.staticText = InternalStatus.textDict[name].format(magnitude="x", element=self.element)
+        self.staticText = InternalStatus.textDict[name].format(magnitude="x", element="{ELE}")
         self.text = InternalStatus.textDict[name]
         
     def cloneWithDetails(self, magnitude, element, parent):
