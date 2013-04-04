@@ -26,6 +26,8 @@ class Region:
         return item in self.locations
 
     def __str__(self):
+        if len(self.locations) == 0:
+            return ""
         left = right = top = bottom = self.locations.pop()
         self.locations.add(left)
         for loc in self.locations:

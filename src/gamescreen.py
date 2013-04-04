@@ -278,6 +278,21 @@ class GameScreen(object):
         tile.overlay = overlay
         i, j = location.tile
 
+        # Draw the tile background
+        if tile.image not in self.images:
+            self.images[tile.image] = \
+                pygame.image.load(tile.image).convert_alpha()
+        tileimage = self.images[tile.image]
+        self.background.blit(tileimage, (i*TILE_SIZE, j*TILE_SIZE))
+
+        # Draw all the entities
+        for ent in tile.entities:
+            if ent.image not in self.images:
+                self.images[ent.image] = \
+                    pygame.image.load(ent.image).convert_alpha()
+            entimage = self.images[ent.image]
+            self.background.blit(entimage, (i*TILE_SIZE, j*TILE_SIZE))
+
         if tile.overlay:
             self.background.blit(self.overlays[tile.overlay],
                                  (i*TILE_SIZE, j*TILE_SIZE))

@@ -31,7 +31,7 @@ class World(object):
         self.pane_chests = dict()
         self.curr_pane = None
         
-    def is_town(self, location):
+    def is_town_pane(self, location):
         if isinstance(location, Location):
             loc = location.pane
         else:
@@ -41,14 +41,14 @@ class World(object):
         else:
             return False
 
-    def is_dungeon(self, location):
-        pass
-
-    def is_building(self, location):
+    def is_dungeon_pane(self, location):
         pass
 
     def get_pane(self, location, is_server=False):
-        surrounding_locations = Location(location, None).get_surrounding_panes()
+        if isinstance(location, Location):
+            surrounding_locations = location.get_surrounding_panes()
+        else:
+            surrounding_locations = Location(location, None).get_surrounding_panes()
         for key, loc in surrounding_locations.iteritems():
             if not loc in self.panes:
                 if loc in self._listTowns(loc):

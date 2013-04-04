@@ -33,7 +33,7 @@ class AI():
             dirs = [2, 4, 6, 8]
             direction = random.choice(dirs)
             newloc = self.server.person[pid].location.move(direction, 1)
-            while not newloc in region or not self.server.tile_is_open(newloc) or self.server.world.is_town(newloc.pane):
+            while not newloc in region or not self.server.tile_is_open(newloc) or self.server.world.is_town_pane(newloc.pane):
                 dirs.remove(direction)
                 if len(dirs) == 0:
                     return False
