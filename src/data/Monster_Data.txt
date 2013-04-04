@@ -841,7 +841,7 @@
 [SIZE: Small]
 [SPECIAL ATTACK 1: Spell: Torrent]
 [SPECIAL ATTACK 2: Spell: Lightning Bolt]
-[SPECIAL ATTACK 3: Spell: None]
+[SPECIAL ATTACK 3: None]
 [SPECIAL PROPERTY: Knockback 2]
 [SPELLPOWER: 30+2]
 [STRENGTH: 7]

@@ -1394,6 +1394,9 @@ class Ability(object):
         if source.HP < source.totalHP * 0.2:
             return (False, "")
         # if in melee range of enemies, return False TODO
+        allTargets = Combat.getAOETargets(source.cPane, source.cLocation, radiu=1, selectMonsters=False)
+        if allTargets:
+            return (False, "") # At least one player in melee range.
         return (True, "")
 
     def _flamingRend(self, target):
@@ -1487,13 +1490,27 @@ class Ability(object):
     def _shadowBurst(self, target):
         ''' Deals a heavy amount of shadow damage to all targets in melee range (magical) '''
         source = self.owner
-        # Get all AOE targets within melee range -- TODO
+        allTargets = Combat.getAOETargets(source.cPane, source.cLocation, radius=1, selectMonsters=False)
         # Deal heavy shadow damage to each if they fail a magical resistance check
+        for tar in allTargets:
+            hit = Combat.calcHit(source, tar, "Magical")
+            if hit != "Miss" and hit != "Fully Resisted":
+                minDam = 8 * source.level
+                maxDam = 12 * source.level
+                element = "Shadow"
+                dam = Combat.calcDamage(source, tar, minDam, maxDam, element, hit)
+                Combat.lowerHP(tar, dam)
+        
         
     def _shadowBurstCheck(self, target):
         ''' Should only be used if HP < 30% of maximum OR 3+ players are in melee range '''
         source = self.owner
-        return (False, "") # TODO
+        allTargets = Combat.getAOETargets(source.cPane, source.cLocation, radius=1, selectMonsters=False)
+        if source.HP > source.totalHP * 0.3 and len(allTargets) < 3:
+            return (False, "")
+        if len(allTargets) == 0:
+            return (False, "")
+        return (True, "")
 
     def _sedate(self, target):
         ''' Inject a toxin into the target, dealing a small amount of piercing damage, 
