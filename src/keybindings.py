@@ -28,6 +28,31 @@ class Keystate():
         self.MOVEMENT = ["OVERWORLD", "COMBAT"]
         self.DIALOG = ["LEVELUP", "INVENTORY", "CONSUMABLE", "SHOP", "ABILITIES", "SPELLS"]
 
+        '''
+        The bindings data structure is a bit involved, so get your thinking cap on for this.
+
+        The key is the name of an event that is kicked off when the conditions are met.  This event
+        shuould be caught and handled in game.py handle_events().
+
+        The value is a duple.
+         - The first element of the duple can be either a list, or a singleton.
+            * The singleton, or all elements of the list must be pygame key constants
+              (http://www.pygame.org/docs/ref/key.html) or strings representing an entire key combo.
+            * Key combo strings use the names of the keyboard keys as listed under "Common Name" on the
+              previous website, and all keys that comprise a key combo are delimited by a '+' sign.
+            * If the element is a list with multiple key combos in it, then the event will be fired off
+              if and only if every key in one of the combos is pressed.
+            * No key combo will trigger its event if there are additional keyboard modifiers (CTRL,
+              SHIFT, ALT) pressed that are not part of the combo.  Thus, you can have both a
+              Ctrl+S, and a Ctrl+Shift+S, and the Ctrl+Shift+S will never generate a false positive for
+              the Ctrl+S binding.
+
+         - The second element of the duple can be either a list, or a singleton.
+            * The singleton or list elements represent input states.  These are changed by the game
+              depending on whether the player is in the overworld, combat, or various dialog boxes.
+              Only one of them needs to be the current input state for the event to fire.
+            * There are a few predefined sets of related states.  These are MOVEMENT, DIALOG, and ALL
+        '''
         self.bindings = {"QUIT": (["CTRL+q", "CTRL+x"], self.ALL),
 
             "UP": ([K_UP, K_KP8, "k"], self.MOVEMENT),
@@ -57,7 +82,7 @@ class Keystate():
 
             "LEVELUPADVANCE": (["space", "a"], "LEVELUP"),
 
-            "SHOPOPEN": ("f2", "OVERWORLD"),
+            "SHOPOPEN": ("F2", "OVERWORLD"),
             "SHOPTRANSACTION": ("a", "SHOP"),
             "SHOPCLOSE": (["space", "escape"], "SHOP"),
 
@@ -89,7 +114,7 @@ class Keystate():
             "SHOWCHARSHEET": ("c", "OVERWORLD"),
             "STARTLEVELUP": ("y", "OVERWORLD"),
             "STARTRESPEC": ("r", "OVERWORLD"),
-            "HELPMENU": ("f1", "OVERWORLD"),
+            "HELPMENU": ("F1", "OVERWORLD"),
 
             "SHOWINPUTSTATE": ("backspace", "ALL"),
             "TEST1": ("CTRL+SHIFT+o", self.MOVEMENT),
@@ -111,11 +136,11 @@ class Keystate():
     def __contains__(self, combolist):
         if not isinstance(combolist, list):
             combolist = [combolist]
-        return any(all(key in self.keystate or key in [pygame.key.name(k) for k in self.keystate] or \
-                (key in self.mod_keys and \
-                any(mod in self.keystate for mod in self.mod_keys[key])) and \
+        return any(all((key in self.keystate or str(key).lower() in \
+                [pygame.key.name(k) for k in self.keystate] or (key in self.mod_keys and \
+                any(mod in self.keystate for mod in self.mod_keys[key]))) and \
                 not any(key in self.keystate for k, v in self.mod_keys.iteritems() for key in v \
-                if k not in combo) \
+                if k not in (combo.split('+') if isinstance(combo, basestring) else [combo])) \
                 for key in (combo.split('+') if isinstance(combo, basestring) else [combo])) \
                 for combo in combolist)
 
