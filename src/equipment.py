@@ -35,6 +35,7 @@ class Equipment(e.Entity):
         self.details = "Uninitialized"
         self.prefix = ""
         self.suffix = ""
+        self.color = "black"
 
     def __eq__(self, other):
         if not isinstance(other, Equipment):

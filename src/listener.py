@@ -40,6 +40,9 @@ class Listener(object):
                 elif isinstance(bCast, broadcast.TrapBroadcast):
                     self.action(self.callObject, self.host, reverse=False, trap=bCast.trap)
                     return
+                elif isinstance(bCast, broadcast.TrapChaosBroadcast):
+                    self.action(self.callObject, self.host, reverse=False, other=bCast.other)
+                    return
         for string in self.offStringList:
             if string == bCast.message.strip():
                 if isinstance(bCast, broadcast.SpellBroadcast):
@@ -68,6 +71,9 @@ class Listener(object):
                     return
                 elif isinstance(bCast, broadcast.TrapBroadcast):
                     self.action(self.callObject, self.host, reverse=True, trap=bCast.trap)
+                    return
+                elif isinstance(bCast, broadcast.TrapChaosBroadcast):
+                    self.action(self.callObject, self.host, reverse=True, other=bCast.other)
                     return
                     
                     

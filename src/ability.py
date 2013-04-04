@@ -706,6 +706,20 @@ class Ability(object):
         Combat.gameServer.pane[source.cPane].addTrap(targetLocation, trap.Trap("Explosive Trap", player=source, location=targetLocation))
         source.record.recordTrapPlacement()
             
+    def _grabBag(self, target):
+        source = self.owner
+        allTargets = Combat.getAOETargets(source.cPane, source.cLocation, radius=1)
+        for tar in allTargets:
+            sizeFactor = 0
+            if tar.size == "Large":
+                sizeFactor = 0.25
+            if tar.size == "Huge":
+                sizeFactor = 0.50
+            minDam = int(2 * (1 + sizeFactor))
+            maxDam = int(17 * (1 + sizeFactor))
+            dam = Combat.calcDamage(source, tar, minDam, maxDam, "Piercing", "Normal Hit", scalesWith="Cunning", scaleFactor=0.01)
+            Combat.lowerHP(tar, dam)
+            
     # Marksman
     def _cuspOfEscape(self, target):
         source = self.owner
@@ -1380,6 +1394,9 @@ class Ability(object):
         if source.HP < source.totalHP * 0.2:
             return (False, "")
         # if in melee range of enemies, return False TODO
+        allTargets = Combat.getAOETargets(source.cPane, source.cLocation, radiu=1, selectMonsters=False)
+        if allTargets:
+            return (False, "") # At least one player in melee range.
         return (True, "")
 
     def _flamingRend(self, target):
@@ -1473,13 +1490,27 @@ class Ability(object):
     def _shadowBurst(self, target):
         ''' Deals a heavy amount of shadow damage to all targets in melee range (magical) '''
         source = self.owner
-        # Get all AOE targets within melee range -- TODO
+        allTargets = Combat.getAOETargets(source.cPane, source.cLocation, radius=1, selectMonsters=False)
         # Deal heavy shadow damage to each if they fail a magical resistance check
+        for tar in allTargets:
+            hit = Combat.calcHit(source, tar, "Magical")
+            if hit != "Miss" and hit != "Fully Resisted":
+                minDam = 8 * source.level
+                maxDam = 12 * source.level
+                element = "Shadow"
+                dam = Combat.calcDamage(source, tar, minDam, maxDam, element, hit)
+                Combat.lowerHP(tar, dam)
+        
         
     def _shadowBurstCheck(self, target):
         ''' Should only be used if HP < 30% of maximum OR 3+ players are in melee range '''
         source = self.owner
-        return (False, "") # TODO
+        allTargets = Combat.getAOETargets(source.cPane, source.cLocation, radius=1, selectMonsters=False)
+        if source.HP > source.totalHP * 0.3 and len(allTargets) < 3:
+            return (False, "")
+        if len(allTargets) == 0:
+            return (False, "")
+        return (True, "")
 
     def _sedate(self, target):
         ''' Inject a toxin into the target, dealing a small amount of piercing damage, 
@@ -2359,6 +2390,24 @@ class Ability(object):
         'text' : 'Lay down a trap that deals 5-10 + 1% Fire damage to the target that\n' + \
                 'triggers it and 75% of that to all foes within 1 tile (including the\n' + \
                 'original target again!) Trap rating = 25 + 1/4 Cunning'
+        },
+        'Grab Bag':
+        {
+        'level' : 5,
+        'class' : 'Anarchist',
+        'HPCost' : 0,
+        'APCost' : 10,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _grabBag,
+        'cooldown' : 2,
+        'checkFunction' : None,
+        'breakStealth' : 100,
+        'image' : ANARCHIST_SKILLS + 'grab-bag.png',
+        'text' : 'Throw random hazardous trap components at all adjacent enemies.\n' + \
+                'All enemies in melee range take 2-20 + 1% piercing damage\n' + \
+                'with no avoidance roll. Deals +25% damage to large targets.\n' + \
+                'Deals +50% damage to huge targets.'
         },
         
         #Marksman

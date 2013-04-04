@@ -297,7 +297,10 @@ class Game(object):
                             self.screen.update_person(command.id, {k: v, \
                                     'team': self.pane.person[command.id].team})
 
-
+            ###### Switch Gear #####
+            if command.type == "ABILITY" and command.action == "SWITCH_GEAR":
+                self.pane.person[command.id].switchGear()
+                                    
             ###### Character Progression ######
             if command.type == "PERSON" and command.action == "ADD_EXPERIENCE":
                 self.pane.person[command.id].addExperience(command.experience)
@@ -553,6 +556,8 @@ class Game(object):
                     self.open_inventory()
                 elif e == "INVENTORYEQUIPMH" and self.screen.get_dialog_selection()[0] == 0:
                     self.pane.person[self.id].equipMainHand(self.screen.get_dialog_selection()[1], self.screen)
+                elif e == "INVENTORYEQUIPMHALT" and self.screen.get_dialog_selection()[0] == 0:
+                    self.pane.person[self.id].equipMainHand(self.screen.get_dialog_selection()[1], self.screen, alternate=True)
                 elif e == "INVENTORYDROP" and self.screen.get_dialog_selection()[0] == 0:
                     self.pane.person[self.id].dropItem(self.screen.get_dialog_selection()[1], self.screen)
                 elif e == "INVENTORYUNEQUIP" and self.screen.get_dialog_selection()[0] == 1:
@@ -560,6 +565,8 @@ class Game(object):
                             self.screen.get_dialog_selection()[2], self.screen)
                 elif e == "INVENTORYEQUIPOH" and self.screen.get_dialog_selection()[0] == 0:
                     self.pane.person[self.id].equipOffHand(self.screen.get_dialog_selection()[1], self.screen)
+                elif e == "INVENTORYEQUIPOHALT" and self.screen.get_dialog_selection()[0] == 0:
+                    self.pane.person[self.id].equipOffHand(self.screen.get_dialog_selection()[1], self.screen, alternate=True)
                 elif e == "INVENTORYCLOSE":
                     self.screen.hide_dialog()
                     newlyEquippedPlayer = self.pane.person[self.id].dehydrate()
@@ -610,6 +617,8 @@ class Game(object):
                     else:
                         self.show_range(True)
 
+                elif e == "SWITCHGEAR":
+                    self.switch_gear()
                 elif e == "CYCLETARGETF":
                     self.cycle_targets()
                 elif e == "CYCLETARGETB":
@@ -845,6 +854,13 @@ class Game(object):
         self.CDF.send(Command("ITEM", "USE", id=self.id, itemName=self.currentItem.name))
         self.currentItem = None
 
+    def switch_gear(self):
+        player = self.pane.person[self.id]
+        if not player.equippedItems.alternateMainHand:
+            return
+        else:
+            self.CDF.send(Command("ABILITY", "SWITCH_GEAR", id=self.id))
+        
     def cycle_targets(self, reverse=False):
         # Cycles through the current persons in the current combat pane.
         if not self.combat:

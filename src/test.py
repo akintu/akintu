@@ -45,11 +45,17 @@ class Testy(object):
         print "Sample Output"
 
 if __name__ == "__main__":
-    theorycraft.TheoryCraft.loadAll()
+    dictA = {'A' : 2, 'B' : 3}
+    dictA2 = dictA
+    dictA2['A'] = 5
+    print dictA
+    print dictA2
+    
+    # theorycraft.TheoryCraft.loadAll()
 
-    for s in theorycraft.TheoryCraft.statuses:
-        print s.name
-        print s.text + "\n"
+    # for s in theorycraft.TheoryCraft.statuses:
+        # print s.name
+        # print s.text + "\n"
     
     # char = theorycraft.TheoryCraft.getNewPlayerCharacter("Orc", "Barbarian")
     # mon = theorycraft.TheoryCraft.getMonster(level=3)
