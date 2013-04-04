@@ -224,6 +224,9 @@ class PassiveAbility(object):
             Combat.addStatus(other, "Blades of Reduction", duration)
 
     # Anarchist
+    def applyHateCraft(self, target):
+        target.bonusTrapDamage += 20
+    
     def applyShockAndBurn(self, target):
         target.baseFireBonusDamage += 5
         target.baseElectricBonusDamage += 5
@@ -841,6 +844,15 @@ class PassiveAbility(object):
         },
 
         # Anarchist
+        'Hate Craft':
+        {
+        'class' : 'Anarchist',
+        'level' : 1,
+        'type' : 'static',
+        'action' : applyHateCraft,
+        'image' : ANARCHIST + 'hate-craft.png',
+        'text' : 'Anarchist traps are particularly deadly.  +20% All Trap Damage.'
+        },
         'Shock and Burn':
         {
         'class' : 'Anarchist',
