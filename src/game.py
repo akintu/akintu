@@ -405,16 +405,16 @@ class Game(object):
                 placer = self.pane.person[command.id]
                 thisTrap = trap.Trap(name=command.abilityName, player=placer, location=command.targetLoc)
                 self.pane.addTrap(command.targetLoc, thisTrap)
-                self.set_overlay(command.targetLoc)
+                self.screen.set_overlay(command.targetLoc, overlay='red')
 
             elif command.type == "TRAP" and command.action == "DISCOVER":
                 thisTrap = trap.Trap(name=command.trapName, level=command.trapLevel, location=command.targetLoc)
                 self.pane.addTrap(command.targetLoc, thisTrap)
-                self.set_overlay(command.targetLoc)
+                self.screen.set_overlay(command.targetLoc, overlay='red')
 
             elif command.type == "TRAP" and command.action == "REMOVE":
                 self.pane.removeTrap(command.location)
-                self.set_overlay(command.location)
+                self.screen.set_overlay(command.location, overlay=None)
 
             elif command.type == "CLIENT" and command.action == "QUIT":
                 self.save_and_quit()
@@ -442,6 +442,10 @@ class Game(object):
         reactor.stop()
 
     def handle_events(self):
+        if hasattr(self, 'pane') and hasattr(self.pane, 'person') and self.id in self.pane.person and \
+                not self.pane.person[self.id].anim and keystate.direction("MOVEMENT"):
+            self.move_person(keystate.direction("MOVEMENT"), 1)
+
         pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
         for event in pygame.event.get():
             #### General commands ####
@@ -794,7 +798,7 @@ class Game(object):
             if self.currentTargetId not in self.pane.person.keys():
                 self.currentTargetId = None
             else:
-                self.set_overlay(self.currentTargetId, None)
+                self.screen.set_overlay(self.pane.person[currentTargetId].location, None)
 
         resetNeeded = False
         for x in self.panePersonIdList:
@@ -818,18 +822,7 @@ class Game(object):
                 currentTargetPlace = self.panePersonIdList.index(self.currentTargetId)
                 self.currentTargetId = self.panePersonIdList[currentTargetPlace - 1]
 
-        self.set_overlay(self.currentTargetId, 'red')
-
-    def set_overlay(self, where, overlay=None):
-        loc = None
-        if isinstance(where, int): #Person id
-            loc = self.pane.person[where].location
-        elif isinstance(where, Location): #Location
-            loc = where
-        else: #Person object
-            loc = where.location
-        tile = self.pane.get_tile(loc.tile)
-        self.screen.update_tile(tile, loc, overlay=overlay)
+        self.screen.set_overlay(self.pane.person[currentTargetId].location, 'red')
 
     def show_range(self, show, loc=None):
         if not loc:
@@ -839,7 +832,10 @@ class Game(object):
         R("ADD", "DIAMOND", loc, self.currentAbility.range \
                 if self.currentAbility.range != -1 else self.pane.person[self.id].attackRange)
         for l in [x for x in R if x.pane == (0, 0)]:
-            self.set_overlay(l, 'blue' if show else None)
+#            self.set_overlay(l, 'blue' if show else None)
+            ovl = 'blue' if show else None
+
+            self.screen.set_overlay(l, overlay=ovl)
         self.screen.update()
 
     def select_self(self):
