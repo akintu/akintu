@@ -195,6 +195,9 @@ class GameScreen(object):
                     pygame.image.fromstring(data, size, mode).convert()
         self.pane = pane
 
+        for k, v in self.pane.tiles.iteritems():
+            v.overlay = None
+
         # Make sure we're not in a dialog
         if not self.dialog:
             self.draw_world()
@@ -223,6 +226,11 @@ class GameScreen(object):
                         pygame.image.load(ent.image).convert_alpha()
                 entimage = self.images[ent.image]
                 self.background.blit(entimage, (i*TILE_SIZE, j*TILE_SIZE))
+
+            if tile.overlay:
+                self.background.blit(self.overlays[tile.overlay],
+                                     (i*TILE_SIZE, j*TILE_SIZE))
+
         self.screen.blit(self.background, [0, 0])
         pygame.display.update()
 
@@ -230,9 +238,12 @@ class GameScreen(object):
         '''
         Update a specific tile in the current pane
 
-        Adds a transparent overlay of 'red' 'green' or 'blue' if the overlay
-        argument is specified
+        Ignores the overlay argument (deprecated)
         '''
+        if overlay:
+            print 'Warning:  use of overlay in update_tile deprecated.'
+
+        tile.overlay = self.pane.tiles[location.tile].overlay
         self.pane.tiles[location.tile] = tile
         i, j = location.tile
 
@@ -251,11 +262,33 @@ class GameScreen(object):
             entimage = self.images[ent.image]
             self.background.blit(entimage, (i*TILE_SIZE, j*TILE_SIZE))
 
-        if overlay:
-            self.background.blit(self.overlays[overlay],
+        if tile.overlay:
+            self.background.blit(self.overlays[tile.overlay],
                                  (i*TILE_SIZE, j*TILE_SIZE))
 
         self.tile_updated = True
+
+    def set_overlay(self, location, overlay=None):
+        '''
+        Set the overlay for a specific tile in the current pane
+
+        If overlay is a 'falsey' value, will remove overlay
+        '''
+        tile = self.pane.tiles[location.tile]
+        tile.overlay = overlay
+        i, j = location.tile
+
+        if tile.overlay:
+            self.background.blit(self.overlays[tile.overlay],
+                                 (i*TILE_SIZE, j*TILE_SIZE))
+
+        self.tile_updated = True
+
+    def get_overlay(self, location):
+        '''
+        Get the overlay status for a specific tile in the current pane
+        '''
+        return self.pane.tiles[location.tile].overlay
 
     def add_person(self, personid, statsdict):
         '''
