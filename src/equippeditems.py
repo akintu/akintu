@@ -79,7 +79,7 @@ class EquippedItems(object):
         handsUsed = newPiece.handsRequired
         
         gearDict = self._allGear
-        if alterante:
+        if alternate:
             newPiece.color = "blue"
             gearDict = self._alternateSet
         oldPieceOne = None
@@ -157,8 +157,8 @@ class EquippedItems(object):
           piece.)"""
         if not hand:
             hand = "Right"
-        if isinstance(newPiece, equipment.Weapon, alternate):
-            return self._equipWeapon(newPiece, hand)
+        if isinstance(newPiece, equipment.Weapon):
+            return self._equipWeapon(newPiece, hand, alternate)
         if newPiece.type == "Finger" or newPiece.type == "Fingers":
             return self._equipRing(newPiece, hand)
         if newPiece.type == "Shield":
