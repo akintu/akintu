@@ -284,9 +284,9 @@ class GameScreen(object):
             - 'level'
             - 'size'
             - 'stealth'
+            - 'statusList'
 
         To be supported in the future:
-            - 'statusList'
             - 'cooldownList'
             - time remaining
             - is it the players turn?
@@ -343,7 +343,8 @@ class GameScreen(object):
 
         for key in statsdict:
             if key in ['name', 'HP', 'MP', 'AP', 'buffedHP', 'totalHP', 'size',
-                       'totalMP', 'totalAP', 'restrictedAP', 'level']:
+                       'totalMP', 'totalAP', 'restrictedAP', 'level',
+                       'statusList']:
                 if statsdict['team'] == "Players":
                     self.playerframes[personid] = \
                         self._generateplayerframe(personid)
@@ -619,6 +620,30 @@ class GameScreen(object):
         left = 4 + 16 - (levelfont.get_rect().width // 2)
         frame.blit(levelfont, (left, 40))
 
+        if 'statusList' not in statsdict:
+            statsdict['statusList'] = []
+            # Test code -- 'unstring' to see statuses in action
+            '''
+            class Status(object):
+                def __init__(self):
+                    self.image = 'res/images/icons/monster_status/bleeding.png'
+                    self.turnsLeft = 5
+            statsdict['statusList'] = [Status(), Status(), Status(), Status(),
+                                       Status(), Status(), Status(), Status()]
+            '''
+
+        y = abary + 12
+        x = barx
+        font = pygame.font.SysFont('Arial', 10)
+        for status in statsdict['statusList']:
+            image = pygame.image.load(status.image).convert_alpha()
+            image = pygame.transform.smoothscale(image, (16, 16))
+            turns = font.render(str(status.turnsLeft), True, Color('black'))
+            frame.blit(image, (x, y))
+            x += image.get_rect().width + 1
+            frame.blit(turns, (x, y))
+            x += turns.get_rect().width + 2
+
         return frame
 
     def _generatemonsterframe(self, personid):
@@ -703,6 +728,30 @@ class GameScreen(object):
         font = pygame.font.SysFont("Arial", 9, bold=True)
         levelfont = font.render(size + ' ' + level, True, Color('black'))
         frame.blit(levelfont, (barlabelx, hbary + 12))
+
+        if 'statusList' not in statsdict:
+            statsdict['statusList'] = []
+            # Test code -- 'unstring' to see statuses in action
+            '''
+            class Status(object):
+                def __init__(self):
+                    self.image = 'res/images/icons/monster_status/bleeding.png'
+                    self.turnsLeft = 5
+            statsdict['statusList'] = [Status(), Status(), Status(), Status(),
+                                       Status(), Status(), Status(), Status()]
+            '''
+
+        y = mbary + 6
+        x = barx
+        font = pygame.font.SysFont('Arial', 10)
+        for status in statsdict['statusList']:
+            image = pygame.image.load(status.image).convert_alpha()
+            image = pygame.transform.smoothscale(image, (10, 10))
+            turns = font.render(str(status.turnsLeft), True, Color('black'))
+            frame.blit(image, (x, y))
+            x += image.get_rect().width + 1
+            frame.blit(turns, (x, y-1))
+            x += turns.get_rect().width + 1
 
         return frame
 
