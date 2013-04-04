@@ -119,7 +119,20 @@ class TrapBroadcast(Broadcast):
             self.trap = None
         self.message = self.victim + self.hitString + "Trap" + self.suffix
         
+class TrapChaosBroadcast(Broadcast):
+    def __init__(self, argDict):
+        Broadcast.__init__(self)
         
+        if "other" in argDict:
+            self.other = argDict['other']
+        else:
+            self.other = None
+        if "suffix" in argDict:
+            self.suffix = " " + argDict['suffix']
+        else:
+            self.suffix = ""
+            
+        self.message = "Trap Chaos" + self.suffix
         
         
 

@@ -230,6 +230,17 @@ class PassiveAbility(object):
         target.baseElectricResistance += 10
         target.baseArmorPenetration += 2
             
+    def applyRushedDelivery(self, target, reverse=False, other=None):
+        source = self.owner
+        if not reverse:
+            if source.record._currentTurnTilesMoved >= 3:
+                source.bonusTrapDamage += 50
+                source.bonusTrapRating += 2
+        else:
+            if source.record._currentTurnTilesMoved >= 3:
+                source.bonusTrapDamage -= 50
+                source.bonusTrapRating -= 2
+            
     # Marksman
     def applyExcellentVision(self, target):
         target._bonusRange += 2
@@ -839,6 +850,19 @@ class PassiveAbility(object):
         'image' : ANARCHIST + 'shock-and-burn.png',
         'text' : '+5% Fire and Electric Damage, +10% Electric resistance and\n' + \
                 '+2% Armor Penetration on all attacks.'
+        },
+        'Rushed Delivery':
+        {
+        'class' : 'Anarchist',
+        'level' : 5,
+        'type' : 'dynamic',
+        'action' : applyRushedDelivery,
+        'onStringList' : ['Trap Chaos'],
+        'offStringList' : ['Trap Chaos Complete'],
+        'image' : ANARCHIST + 'rushed-delivery.png',
+        'text' : 'If you have moved three or more tiles this turn, any trap you\n' + \
+                'use on an enemy will deal +50% Overall damage and have an\n' + \
+                'additional +2 Trap Rating.'
         },
         
         'Excellent Vision':
