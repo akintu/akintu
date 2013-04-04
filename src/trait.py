@@ -47,7 +47,9 @@ class Trait(object):
         if self.type == "dynamic and static":
             self.extraStaticAction = content['staticAction']
             self.extraStaticAction(self, self.owner)
-
+        self.text = "Rank I\n" + content['text']
+        self.image = content['image']
+        
     def advanceTier(self):
         # if self.rank == 4:
             # return
@@ -60,6 +62,14 @@ class Trait(object):
         self.rank += 1
         if self.type == "static":
             self.action(self, self.owner)
+        rankNum = "I"
+        if self.rank == 2:
+            rankNum = "II"
+        if self.rank == 3:
+            rankNum = "III"
+        if self.rank == 4:
+            rankNum = "IV"
+        self.text = "Rank " + rankNum + "\n" + Trait.allContentByName[self.name]['text']
             
     def registerListener(self):
         newListener = listener.Listener(self, self.owner, self.onStringList, self.action, self.offStringList)

@@ -24,15 +24,15 @@ class Keystate():
                         "DOWNLEFT": 1,
                         "DOWNRIGHT": 3}
 
-        self.ALL = ["OVERWORLD", "LEVELUP", "INVENTORY", "CONSUMABLE", "TARGET", "SHOP", "ABILITIES", "SPELLS", "COMBAT"]
+        self.ALL = ["OVERWORLD", "LEVELUP", "INVENTORY", "CONSUMABLE", "TARGET", "SHOP", "ABILITIES", "SPELLS", "COMBAT", "CHARSHEET"]
         self.MOVEMENT = ["OVERWORLD", "COMBAT"]
-        self.DIALOG = ["LEVELUP", "INVENTORY", "CONSUMABLE", "SHOP", "ABILITIES", "SPELLS"]
+        self.DIALOG = ["LEVELUP", "INVENTORY", "CONSUMABLE", "SHOP", "ABILITIES", "SPELLS", "CHARSHEET"]
 
         '''
         The bindings data structure is a bit involved, so get your thinking cap on for this.
 
         The key is the name of an event that is kicked off when the conditions are met.  This event
-        shuould be caught and handled in game.py handle_events().
+        should be caught and handled in game.py handle_events().
 
         The value is a duple.
          - The first element of the duple can be either a list, or a singleton.
@@ -93,6 +93,14 @@ class Keystate():
             "INVENTORYEQUIPOH": ("o", "INVENTORY"),
             "INVENTORYCLOSE": (["space", "i", "escape"], "INVENTORY"),
 
+            "CHARSHEETOPEN": ("c", "OVERWORLD"),
+            "CHARSHEETCLOSE": (["space", "escape"], "CHARSHEET"),
+            "CHARSHEETABILITIES": ("a", "CHARSHEET"),
+            "CHARSHEETSPELLS": ("s", "CHARSHEET"),
+            "CHARSHEETPASSIVES": ("p", "CHARSHEET"),
+            "CHARSHEETTRAITS": ("t", "CHARSHEET"),
+            "CHARSHEETMAIN": ("c", "CHARSHEET"),
+            
             "CONSUMABLEOPEN": ("i", "COMBAT"),
             "CONSUMABLEUSE": (["space", "a"], "CONSUMABLE"),
 
@@ -111,7 +119,6 @@ class Keystate():
 
             "GETITEM": ("g", "OVERWORLD"),
             "BASHCHEST": ("b", "OVERWORLD"),
-            "SHOWCHARSHEET": ("c", "OVERWORLD"),
             "STARTLEVELUP": ("y", "OVERWORLD"),
             "STARTRESPEC": ("r", "OVERWORLD"),
             "HELPMENU": ("F1", "OVERWORLD"),

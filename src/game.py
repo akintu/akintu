@@ -479,6 +479,29 @@ class Game(object):
                 elif e == "SCROLLBOTTOM":
                     self.screen.scroll_down(1000)
 
+                ### Character Sheet ###
+                elif e == "CHARSHEETOPEN":
+                    self.display_character_sheet()
+                    keystate.inputState = "CHARSHEET"
+                elif e == "CHARSHEETCLOSE":
+                    self.screen.hide_dialog()
+                    keystate.inputState = "OVERWORLD"
+                elif e == "CHARSHEETMAIN":
+                    self.screen.hide_dialog()
+                    self.display_character_sheet()
+                elif e == "CHARSHEETABILITIES":
+                    self.screen.hide_dialog()
+                    self.display_character_abilities()
+                elif e == "CHARSHEETSPELLS":
+                    self.screen.hide_dialog()
+                    self.display_character_spells()
+                elif e == "CHARSHEETPASSIVES":
+                    self.screen.hide_dialog()
+                    self.display_character_passives()
+                elif e == "CHARSHEETTRAITS":
+                    self.screen.hide_dialog()
+                    self.display_character_traits()
+                    
                 ### Levelup Commands ###
                 elif e == "LEVELUPADVANCE":
                     upgradedHero = self.levelup.advance()
@@ -610,8 +633,6 @@ class Game(object):
                     #self.break_in() -- Will bash/pick-lock chests.  Will attempt a picklock first if
                     # you are a thief primary class.  If that fails, all other attempts will be bashes.
                     pass
-                elif e == "SHOWCHARSHEET":
-                    self.display_character_sheet()
                 elif e == "STARTLEVELUP":
                     self.request_levelup(True)
                 #elif e == "STARTRESPEC":
@@ -757,8 +778,43 @@ class Game(object):
 
     def display_character_sheet(self):
         player = self.pane.person[self.id]
-        player.printCharacterSheet()
-
+        self.screen.show_character_dialog(player) # TODO: Custom menu keys here.
+        self.screen.show_character_dialog(player, abilitykey='A', spellkey='S',
+                                                  passivekey='P', traitkey='T')
+        
+    def display_character_abilities(self):
+        text = "Active Abilities (Press 'C' to return to main statistics)"
+        bgcolor = "cadetblue"
+        itemslist = self.pane.person[self.id].abilities
+        self.screen.show_tiling_dialog(text, itemslist, bgcolor=bgcolor)
+        
+    def display_character_passives(self):
+        text = "Passive Abilities (Press 'C' to return to main statistics)"
+        bgcolor = "cadetblue"
+        itemslist = self.pane.person[self.id].passiveAbilities
+        if not itemslist:
+            self.display_character_sheet()
+            return
+        self.screen.show_tiling_dialog(text, itemslist, bgcolor=bgcolor)
+        
+    def display_character_spells(self):
+        if self.pane.person[self.id].growthType == "Non-Caster":
+            self.display_character_sheet()
+            return
+        text = "Learned Spells (Press 'C' to return to main statistics)"
+        bgcolor = "cadetblue"
+        itemslist = self.pane.person[self.id].spellList
+        self.screen.show_tiling_dialog(text, itemslist, bgcolor=bgcolor)
+        
+    def display_character_traits(self):
+        if self.pane.person[self.id].level == 1:
+            self.display_character_sheet()
+            return
+        text = "Chosen Traits (Press 'C' to return to main statistics)"
+        bgcolor = "cadetblue"
+        itemslist = self.pane.person[self.id].traits
+        self.screen.show_tiling_dialog(text, itemslist, bgcolor=bgcolor)
+        
     def force_end_turn(self):
         ap = self.pane.person[self.id].AP
         movesLeft = self.pane.person[self.id].remainingMovementTiles
