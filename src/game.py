@@ -798,7 +798,7 @@ class Game(object):
             if self.currentTargetId not in self.pane.person.keys():
                 self.currentTargetId = None
             else:
-                self.screen.set_overlay(self.pane.person[currentTargetId].location, None)
+                self.screen.set_overlay(self.pane.person[self.currentTargetId].location, None)
 
         resetNeeded = False
         for x in self.panePersonIdList:
@@ -822,7 +822,7 @@ class Game(object):
                 currentTargetPlace = self.panePersonIdList.index(self.currentTargetId)
                 self.currentTargetId = self.panePersonIdList[currentTargetPlace - 1]
 
-        self.screen.set_overlay(self.pane.person[currentTargetId].location, 'red')
+        self.screen.set_overlay(self.pane.person[self.currentTargetId].location, 'red')
 
     def show_range(self, show, loc=None):
         if not loc:
@@ -832,10 +832,7 @@ class Game(object):
         R("ADD", "DIAMOND", loc, self.currentAbility.range \
                 if self.currentAbility.range != -1 else self.pane.person[self.id].attackRange)
         for l in [x for x in R if x.pane == (0, 0)]:
-#            self.set_overlay(l, 'blue' if show else None)
-            ovl = 'blue' if show else None
-
-            self.screen.set_overlay(l, overlay=ovl)
+            self.screen.set_overlay(l, overlay='blue' if show else None)
         self.screen.update()
 
     def select_self(self):
