@@ -108,6 +108,18 @@ class CombatServer():
             Combat.decrementMovementTiles(target, removeAll=True)
             self.check_turn_end(self.server.person[command.id].cPane)
 
+        #### Switch gear ####
+        elif command.type == "ABILITY" and command.action == "SWITCH_GEAR":
+            target = self.server.person[command.id]
+            switchGearAP = 7
+            if target.AP < switchGearAP:
+                Combat.sendCombatMessage("Not enough AP to switch weapons (" + `switchGearAP` + " needed.)", target, toAll=False)
+            else:
+                Combat.sendCombatMessage("Switched Weapon Sets; new main weapon is: " + target.equippedItems.alternateWeapon,
+                                            target, toAll=False)
+                target.switchGear()
+                self.server.broadcast(Command("ABILITY", "SWITCH_GEAR", id=target.id), pid=target.id)
+                # Gear swapping is performed on both server and client side (sadly).
 
         #### Using Items ####
         elif command.type == "ITEM" and command.action == "USE":

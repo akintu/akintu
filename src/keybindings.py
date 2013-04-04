@@ -88,9 +88,11 @@ class Keystate():
 
             "INVENTORYOPEN": ("i", "OVERWORLD"),
             "INVENTORYEQUIPMH": ("e", "INVENTORY"),
+            "INVENTORYEQUIPMHALT": (["K_LALT+e", "K_RALT+e"], "INVENTORY"),
             "INVENTORYDROP": ("d", "INVENTORY"),
             "INVENTORYUNEQUIP": ("u", "INVENTORY"),
             "INVENTORYEQUIPOH": ("o", "INVENTORY"),
+            "INVENTORYEQUIPOHALT": (["K_LALT+o", "K_RALT+o"], "INVENTORY"),
             "INVENTORYCLOSE": (["space", "i", "escape"], "INVENTORY"),
 
             "CHARSHEETOPEN": ("c", "OVERWORLD"),
@@ -110,6 +112,7 @@ class Keystate():
             "SPELLSOPEN": ("b", "COMBAT"),
             "SPELLSSELECT": (["space", "a"], "SPELLS"),
 
+            "SWITCHGEAR": ("o", "COMBAT"),
             "CYCLETARGETF": ("e", "COMBAT"),
             "CYCLETARGETB": ("w", "COMBAT"),
             "ACTIVATESELECTED": ("a", "COMBAT"),

@@ -35,7 +35,8 @@ class Consumable(entity.Entity):
             self.effect = Consumable.allPoisons[name]['effect']
             self.ip = Consumable.allPoisons[name]['ip']
             self.details = Consumable.allPoisons[name]['details']
-
+        self.color = "black" # Never changes
+            
     def canUse(self, user):
         if self.type in [x[0] for x in user.cooldownList]:
             durationLeft = [x[1] for x in user.cooldownList][0]

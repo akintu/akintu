@@ -959,7 +959,6 @@ class PlayerCharacter(p.Person):
             tdr = 60
         return int(tdr)
         
-        
     @property
     def totalIntuition(self):
         return int(self.totalPiety + self.equipmentIntuition + self.statusIntuition + self.baseIntuition)
@@ -1149,62 +1148,65 @@ class PlayerCharacter(p.Person):
                 return
                 # Need to return immediately to remove exactly one fx.
 
-    def equip(self, newPiece, hand="Right"):
+    def equip(self, newPiece, hand="Right", alternate=False):
         """Equips a piece of gear, and places any replaced gear in the inventory."""
         if newPiece not in self.inventory.allItems:
             print "Attempted to equip item not in inventory!"
             return
-        oldPieces = self.equippedItems.equip(newPiece, hand)
+        oldPieces = self.equippedItems.equip(newPiece, hand, alternate)
         oldPiece = oldPieces[0]
         oldPiece2 = None
         if oldPiece and len(oldPieces) > 1:
             oldPiece2 = oldPieces[1]
-
-        for prop in newPiece.propertyList:
-            prop.effect(prop, self)
-        if isinstance(newPiece, equipment.Armor):
-            self.equipmentDR += newPiece.DR
-            self.equipmentSneak += newPiece.stealthMod
-            self.equipmentDodge += newPiece.dodgeMod
-        elif isinstance(newPiece, equipment.Weapon):
-            pass
-            # Weapon stats are viewed on the weapon itself.
+        if not alternate:
+            for prop in newPiece.propertyList:
+                prop.effect(prop, self)
+            if isinstance(newPiece, equipment.Armor):
+                self.equipmentDR += newPiece.DR
+                self.equipmentSneak += newPiece.stealthMod
+                self.equipmentDodge += newPiece.dodgeMod
+            elif isinstance(newPiece, equipment.Weapon):
+                pass
+                # Weapon stats are viewed on the weapon itself.
         self.inventory.removeItem(newPiece)
 
         if oldPiece:
-            for prop in oldPiece.propertyList:
-                prop.effect(prop, self, reverse=True)
-            if isinstance(oldPiece, equipment.Armor):
-                self.equipmentDR -= oldPiece.DR
-                self.equipmentSneak -= oldPiece.stealthMod
-                self.equipmentDodge -= oldPiece.dodgeMod
-            elif isinstance(oldPiece, equipment.Weapon):
-                pass
+            if not alternate:
+                for prop in oldPiece.propertyList:
+                    prop.effect(prop, self, reverse=True)
+                if isinstance(oldPiece, equipment.Armor):
+                    self.equipmentDR -= oldPiece.DR
+                    self.equipmentSneak -= oldPiece.stealthMod
+                    self.equipmentDodge -= oldPiece.dodgeMod
+                elif isinstance(oldPiece, equipment.Weapon):
+                    pass
             self.inventory.allItems.append(oldPiece)
         if oldPiece2:
-            for prop in oldPiece2.propertyList:
-                prop.effect(prop, self, reverse=True)
-            if isinstance(oldPiece2, equipment.Armor):
-                self.equipmentDR -= oldPiece2.DR
-                self.equipmentSneak -= oldPiece2.stealthMod
-                self.equipmentDodge -= oldPiece2.dodgeMod
-            elif isinstance(oldPiece2, equipment.Weapon):
-                pass
+            if not alternate:
+                for prop in oldPiece2.propertyList:
+                    prop.effect(prop, self, reverse=True)
+                if isinstance(oldPiece2, equipment.Armor):
+                    self.equipmentDR -= oldPiece2.DR
+                    self.equipmentSneak -= oldPiece2.stealthMod
+                    self.equipmentDodge -= oldPiece2.dodgeMod
+                elif isinstance(oldPiece2, equipment.Weapon):
+                    pass
             self.inventory.allItems.append(oldPiece2)
         if self.AP > self.totalAP:
             self.AP = self.totalAP
 
-    def unequip(self, slot):
-        oldPieces = self.equippedItems.unequip(slot)
+    def unequip(self, slot, alternate=False):
+        oldPieces = self.equippedItems.unequip(slot, alternate)
         for item in oldPieces:
-            if isinstance(item, equipment.Armor):
-                self.equipmentDR -= item.DR
-                self.equipmentSneak -= item.stealthMod
-                self.equipmentDodge -= item.dodgeMod
-            for prop in item.propertyList:
-                prop.effect(prop, self, reverse=True)
+            if not alternate:
+                if isinstance(item, equipment.Armor):
+                    self.equipmentDR -= item.DR
+                    self.equipmentSneak -= item.stealthMod
+                    self.equipmentDodge -= item.dodgeMod
+                for prop in item.propertyList:
+                    prop.effect(prop, self, reverse=True)
             self.inventory.allItems.append(item)
-        
+        return oldPieces
             
     def shouldAutoEquip(self, armor):
         ''' Determines if a piece of equipment should be 
@@ -1244,15 +1246,17 @@ class PlayerCharacter(p.Person):
         else:
             return 25
             
-    def equipMainHand(self, index, screen):
+    def equipMainHand(self, index, screen, alternate=False):
         ''' INVENTORY MANAGMENET 
         Equip a selected item into the main hand slot.'''
         item = self.inventory.allItems[index]
         if isinstance(item, consumable.Consumable):
             return
-        self.equip(item)
+        self.equip(item, alternate=alternate)
         self.inventory.removeItem(item)
-        text = "Equipped: " + item.displayName                                                            
+        text = "Equipped: " + item.displayName
+        if alternate:
+            text += " (alternate set)"
         inv = self.inventory.allItems
         eq = self.equippedItems.allGear
         capacity = `self.inventoryWeight` + "/" + `self.inventoryCapacity`
@@ -1275,8 +1279,9 @@ class PlayerCharacter(p.Person):
     def unequipGear(self, index, type, screen):
         ''' INVENTORY MANAGEMENT
         Unequip a selected item.'''
+        wasAlternate = (selectionTuple[3] == "blue")
         type = selectionTuple[2]
-        self.unequip(type)
+        self.unequip(type, wasAlternate)
         text = "Unequipped an item"
         inv = self.inventory.allItems
         eq = self.equippedItems.allGear
@@ -1284,19 +1289,28 @@ class PlayerCharacter(p.Person):
         screen.update_item_dialog_text(text, capacity)
         screen.update_item_dialog_items(inv, eq)
 
-    def equipOffHand(self, index, screen):
+    def equipOffHand(self, index, screen, alternate=False):
         ''' INVENTORY MANAGEMENT
         Equip an item in the off-hand'''
         item = self.inventory.allItems[index]
         if (isinstance(item, equipment.Weapon) and item.handsRequired == "One-Handed") or \
            (isinstance(item, equipment.Armor) and (item.type == "Fingers" or item.type == "Finger")):
-            self.equip(item, "Left")
+            self.equip(item, "Left", alternate)
             text = "Equipped: " + item.displayName + " in the off-hand"
+            if alternate:
+                text += " (alternate set)"
             inv = self.inventory.allItems
             eq = self.equippedItems.allGear
             capacity = `self.inventoryWeight` + "/" + `self.inventoryCapacity`
             screen.update_item_dialog_text(text, capacity)
             screen.update_item_dialog_items(inv, eq)
+        
+    def switchGear(self):
+        '''Used in combat to change the alternate gear to be the
+        primary gear. Takes off the blues, puts on the blues.'''
+        altGear = self.unequip('Main Hand', True) # Only call on main hand; it'll unequip both.
+        for gear in altGear:
+            self.equip(gear, True)
         
     def printCharacterSheet(self):
         '''Method prints a mock-up of a character sheet to the console as

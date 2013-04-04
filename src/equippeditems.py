@@ -17,10 +17,11 @@ class EquippedItems(object):
                         'Main Hand' : None,
                         'Off Hand' : None}
         self._moreRecentFinger = 'Left'
-
+        self._alternateSet = {'Main Hand' : None, 'Off Hand' : None}
+        
     @property
     def allGear(self):
-        return [x for x in self._allGear.values() if x]
+        return [x for x in self._allGear.values() if x].extend([x for x in self._alternateSet.values() if x])
         
     def _equipArmor(self, newPiece):
         oldPiece = []
@@ -68,65 +69,80 @@ class EquippedItems(object):
             self._moreRecentFinger = 'Left'
         return [oldPiece]
 
-    def _equipWeapon(self, newPiece, hand="Right"):
+    def _equipWeapon(self, newPiece, hand="Right", alternate=False):
+        newPiece.color = "red"
         if hand == "Main" or not hand:
             hand = "Right"
         elif hand == "Off" or hand == "Off-Hand":
             hand = "Left"
 
         handsUsed = newPiece.handsRequired
-
+        
+        gearDict = self._allGear
+        if alterante:
+            newPiece.color = "blue"
+            gearDict = self._alternateSet
         oldPieceOne = None
         oldPieceTwo = None
         if handsUsed == "Two-Handed" or handsUsed == "One-Handed Exclusive":
             # Case 1&2: Main hand full or empty, Off-hand empty
-            if not self._allGear['Off Hand']:
-                oldPieceOne = self._allGear['Main Hand']
-                self._allGear['Main Hand'] = newPiece
+            if not gearDict['Off Hand']:
+                oldPieceOne = gearDict['Main Hand']
+                gearDict['Main Hand'] = newPiece
             # Case 3: Main hand empty, Off-hand full
-            elif not self._allGear['Main Hand'] and self._allGear['Off Hand']:
-                oldPieceOne = self._allGear['Off Hand']
-                self._allGear['Main Hand'] = newPiece
-                self._allGear['Off Hand'] = None
+            elif not gearDict['Main Hand'] and gearDict['Off Hand']:
+                oldPieceOne = gearDict['Off Hand']
+                gearDict['Main Hand'] = newPiece
+                gearDict['Off Hand'] = None
             # Case 4: Both hands full
-            elif self._allGear['Main Hand'] and self._allGear['Off Hand']:
+            elif gearDict['Main Hand'] and gearDict['Off Hand']:
                 # Case 4a : Off-hand is using a shield and this is One-Handed Exclusive
                 if self.equippedShield and handsUsed == "One-Handed Exclusive":
-                    oldPieceOne = self._allGear['Main Hand']
-                    self._allGear['Main Hand'] = newPiece
+                    oldPieceOne = gearDict['Main Hand']
+                    gearDict['Main Hand'] = newPiece
                 # Case 4b : Off-hand is using a weapon, or this is a Two-Handed weapon
                 else:
-                    oldPieceOne = self._allGear['Main Hand']
-                    oldPieceTwo = self._allGear['Off Hand']
-                    self._allGear['Main Hand'] = newPiece
-                    self._allGear['Off Hand'] = None
+                    oldPieceOne = gearDict['Main Hand']
+                    oldPieceTwo = gearDict['Off Hand']
+                    gearDict['Main Hand'] = newPiece
+                    gearDict['Off Hand'] = None
         elif handsUsed == "One-Handed" and hand == "Right":
-            oldPieceOne = self._allGear['Main Hand']
-            self._allGear['Main Hand'] = newPiece
+            oldPieceOne = gearDict['Main Hand']
+            gearDict['Main Hand'] = newPiece
         elif handsUsed == "One-Handed" and hand == "Left":
-            oldPieceOne = self._allGear['Off Hand']
-            self._allGear['Off Hand'] = newPiece
-            if self._allGear['Main Hand'] and (self._allGear['Main Hand'].handsRequired == "One-Handed Exclusive" \
-             or self._allGear['Main Hand'].handsRequired == "Two-Handed"):
-                oldPieceTwo = self._allGear['Main Hand']
-                self._allGear['Main Hand'] = None
+            oldPieceOne = gearDict['Off Hand']
+            gearDict['Off Hand'] = newPiece
+            if gearDict['Main Hand'] and (gearDict['Main Hand'].handsRequired == "One-Handed Exclusive" \
+             or gearDict['Main Hand'].handsRequired == "Two-Handed"):
+                oldPieceTwo = gearDict['Main Hand']
+                gearDict['Main Hand'] = None
+        if oldPieceOne:
+            oldPieceOne.color = "black"
         if oldPieceTwo:
+            oldPieceTwo.color = "black"
             return [oldPieceOne, oldPieceTwo]
         else:
             return [oldPieceOne]
 
-    def _equipShield(self, newPiece):
+    def _equipShield(self, newPiece, alternate=False):
+        newPiece.color = "red"
         oldPiece = None
-        mainHand = self._allGear['Main Hand']
+        gearDict = self._allGear
+        if alternate:
+            gearDict = self._alternateSet
+            newPiece.color = "blue"
+        mainHand = gearDict['Main Hand']
         if mainHand and mainHand.handsRequired == "Two-Handed":
             oldPiece = mainHand
-            self._allGear['Main Hand'] = None
+            gearDict['Main Hand'] = None
         else:
-            oldPiece = self._allGear['Off Hand']
-        self._allGear['Off Hand'] = newPiece
+            oldPiece = gearDict['Off Hand']
+        gearDict['Off Hand'] = newPiece
+        if oldPiece:
+            oldPiece.color = "black"
         return [oldPiece]
 
-    def equip(self, newPiece, hand=None):
+    def equip(self, newPiece, hand=None, alternate=False):
         """Equips the given 'newPiece' of Equipment.  If the new piece is
         either a ring or a one-handed weapon, specifying the 'hand' will
         determine which weapon/shield/ring it replaces.  Otherwise a default
@@ -141,16 +157,16 @@ class EquippedItems(object):
           piece.)"""
         if not hand:
             hand = "Right"
-        if isinstance(newPiece, equipment.Weapon):
+        if isinstance(newPiece, equipment.Weapon, alternate):
             return self._equipWeapon(newPiece, hand)
         if newPiece.type == "Finger" or newPiece.type == "Fingers":
             return self._equipRing(newPiece, hand)
         if newPiece.type == "Shield":
-            return self._equipShield(newPiece)
+            return self._equipShield(newPiece, alternate)
         else:
             return self._equipArmor(newPiece)
 
-    def unequip(self, slot):
+    def unequip(self, slot, alternate=False):
         '''Unequips an item from the given slot.  If the slot is not an armor
         slot (weapon/offhand/shield) or a ring slot it will unequip both hands 
         of equipment.
@@ -196,14 +212,30 @@ class EquippedItems(object):
         else:
             # Weapon/Shield slot
             old = []
-            if self._allGear['Off Hand']:
-                old.append(self._allGear['Off Hand'])
-                self._allGear['Off Hand'] = None
-            if self._allGear['Main Hand']:
-                old.append(self._allGear['Main Hand'])
-                self._allGear['Main Hand'] = None
+            gearDict = self._allGear
+            if alternate:
+                gearDict = self._alternateSet
+            if gearDict['Off Hand']:
+                old.append(gearDict['Off Hand'])
+                gearDict['Off Hand'] = None
+            if gearDict['Main Hand']:
+                old.append(gearDict['Main Hand'])
+                gearDict['Main Hand'] = None
+            for x in old:
+                x.color = "black"
             return old
             
+    def setAlternate(self, newPiece):
+        pass
+            
+            
+    @property
+    def alternateWeapon(self):
+        return self._alternateSet['Main Hand']
+        
+    @property
+    def alternateOffHand(self):
+        return self._alternateSet['Off Hand']
             
     @property
     def equippedOffHand(self):
@@ -292,6 +324,10 @@ class EquippedItems(object):
             totalWeight += int(self._allGear['Main Hand'].weight)
         if self._allGear['Off Hand']:
             totalWeight += int(self._allGear['Off Hand'].weight)
+        if self._alternateSet['Main Hand']:
+            totalWeight += int(self._alternateSet['Main Hand'].weight)
+        if self._alternateSet['Off Hand']:
+            totalWeight += int(self._alternateSet['Off Hand'].weight)
         return totalWeight
 
 
