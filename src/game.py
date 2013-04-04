@@ -455,8 +455,8 @@ class Game(object):
                 keystate(event)
             if event.type == KEYDOWN:
                 e = keystate(event)
-                if e:
-                    print "Keyboard Event: %s" % e
+#                if e:
+#                    print "Keyboard Event: %s" % e
                 if e == "QUIT":
                     #TODO: Open Menu Here
                     self.save_and_quit()
@@ -501,7 +501,7 @@ class Game(object):
                 elif e == "CHARSHEETTRAITS":
                     self.screen.hide_dialog()
                     self.display_character_traits()
-                    
+
                 ### Levelup Commands ###
                 elif e == "LEVELUPADVANCE":
                     upgradedHero = self.levelup.advance()
@@ -781,13 +781,13 @@ class Game(object):
         self.screen.show_character_dialog(player) # TODO: Custom menu keys here.
         self.screen.show_character_dialog(player, abilitykey='A', spellkey='S',
                                                   passivekey='P', traitkey='T')
-        
+
     def display_character_abilities(self):
         text = "Active Abilities (Press 'C' to return to main statistics)"
         bgcolor = "cadetblue"
         itemslist = self.pane.person[self.id].abilities
         self.screen.show_tiling_dialog(text, itemslist, bgcolor=bgcolor)
-        
+
     def display_character_passives(self):
         text = "Passive Abilities (Press 'C' to return to main statistics)"
         bgcolor = "cadetblue"
@@ -796,7 +796,7 @@ class Game(object):
             self.display_character_sheet()
             return
         self.screen.show_tiling_dialog(text, itemslist, bgcolor=bgcolor)
-        
+
     def display_character_spells(self):
         if self.pane.person[self.id].growthType == "Non-Caster":
             self.display_character_sheet()
@@ -805,7 +805,7 @@ class Game(object):
         bgcolor = "cadetblue"
         itemslist = self.pane.person[self.id].spellList
         self.screen.show_tiling_dialog(text, itemslist, bgcolor=bgcolor)
-        
+
     def display_character_traits(self):
         if self.pane.person[self.id].level == 1:
             self.display_character_sheet()
@@ -814,7 +814,7 @@ class Game(object):
         bgcolor = "cadetblue"
         itemslist = self.pane.person[self.id].traits
         self.screen.show_tiling_dialog(text, itemslist, bgcolor=bgcolor)
-        
+
     def force_end_turn(self):
         ap = self.pane.person[self.id].AP
         movesLeft = self.pane.person[self.id].remainingMovementTiles
