@@ -6,7 +6,7 @@ import random
 
 from const import*
 from sprites import*
-from buildings import*
+from building_overworld import*
 from entity import*
 from treasurechest import*
 from tile import Tile
@@ -32,8 +32,13 @@ class Pane(object):
     PaneEdges = {2:TILES_BOTTOM, 4:TILES_LEFT, 6:TILES_RIGHT, 8:TILES_TOP}
 
     def __init__(self, seed, location, is_server=False, load_entities=True, pane_state=None):
+        if isinstance(location, Location):
+            self.location = location.pane
+            self.z = location.z
+        else:
+            self.location = location
+            self.z = 0
         self.seed = seed
-        self.location = location
         self.is_server = is_server
         self.tmpFileName = "Pane_" + str(self.location[0]) + "_" + str(self.location[1])
         self.pane_state = pane_state
@@ -439,11 +444,11 @@ class Town(Pane):
             building = BuildingOverworld("tree", bounds, self.location)#, (15, 6), Location(self.location, (start[0], start[1]+i*7)))
             self.buildings.append(building)
 
-        for i in range(0):
+        for i in range(1):
             loc = (random.randrange(0, PANE_X-8), random.randrange(0, PANE_Y-6))
             house = HouseOverworld(Location(self.location, loc))
             self.buildings.append(house)
-        for i in range(3):
+        for i in range(1):
             loc = (random.randrange(0, PANE_X-8), random.randrange(0, PANE_Y-6))
             dungeon = DungeonOverworld(Location(self.location, loc))
             self.buildings.append(dungeon)

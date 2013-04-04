@@ -102,7 +102,7 @@ class HouseOverworld(BuildingOverworld):
                 if x == y and x == 1:
                     self.door = loc
                     passable = True
-                    self.entities[loc] = Portal(Location((0, -2), (17, 10)), location=loc, image=house_sheet.getimage((x, y)), passable=passable)
+                    self.entities[loc] = Portal(Location((0, -2), (17, 10), z=0, direction=8), location=loc, image=house_sheet.getimage((x, y)), passable=passable)
                 else:
                     passable = False
                     self.entities[loc] = Entity(location=loc, image=house_sheet.getimage((x, y)), passable=passable)
@@ -158,7 +158,7 @@ class DungeonOverworld(BuildingOverworld):
                 if x == 1 and y == 3:   #Door opening
                     self.door = loc
                     passable = True
-                    self.entities[loc] = Portal(Location((0, -3), (17, 10)), location=loc, image=dungeon_sheet.getimage((x, y)), passable=passable)
+                    self.entities[loc] = Portal(Location((0, -3), (17, 10), z=-1, direction=8), location=loc, image=dungeon_sheet.getimage((x, y)), passable=passable)
                 else:
                     passable = False
                     self.entities[loc] = Entity(location=loc, image=dungeon_sheet.getimage((x, y)), passable=passable)
