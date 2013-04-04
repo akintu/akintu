@@ -17,7 +17,7 @@ from entity import*
 from portal import Portal
 from theorycraft import TheoryCraft
 
-class Building(object):
+class BuildingOverworld(object):
     
     def __init__(self, boundary_type, bounds, pane_loc, size=None, location=None):
         '''
@@ -75,10 +75,10 @@ class Building(object):
         pass
 
     
-class Shop(Building):
+class ShopOverworld(BuildingOverworld):
     pass
     
-class House(Building):
+class HouseOverworld(BuildingOverworld):
     def __init__(self, location):
         '''
         House has size (4, 2)
@@ -90,7 +90,7 @@ class House(Building):
         '''
         #self.entities = dict() #IN SUPER CLASS BUILDING
         
-        super(House, self).__init__(boundary_type="tree", bounds=None, pane_loc=location.pane, size=(7, 5), location=location)
+        super(HouseOverworld, self).__init__(boundary_type="tree", bounds=None, pane_loc=location.pane, size=(7, 5), location=location)
         house_sheet = Sprites.get_sheet(HOUSE_KEY)
         
         
@@ -134,18 +134,18 @@ class House(Building):
         # self.npcs[id(person)] = person
         pass
 
-class Garden(Building):
+class GardenOverworld(BuildingOverworld):
     pass
     
-class Respec(Building):
+class RespecOverworld(BuildingOverworld):
     pass
     
-class Dungeon(Building):
+class DungeonOverworld(BuildingOverworld):
     '''
     Dungeon-hand has size (3, 4)
     '''
     def __init__(self, location):
-        super(Dungeon, self).__init__(boundary_type="shrub", bounds=None, pane_loc=location.pane, size=(6, 7), location=location)
+        super(DungeonOverworld, self).__init__(boundary_type="shrub", bounds=None, pane_loc=location.pane, size=(6, 7), location=location)
         
         
         dungeon_sheet = Sprites.get_sheet(random.choice(list(DUNGEONS.keys())))
