@@ -12,7 +12,7 @@ import consumable
 class TreasureChest(entity.Entity):
 
     GOLD_PER_IP = 25
-    CHANCE_OF_LOCK = 20
+    CHANCE_OF_LOCK = 99
 
     CHEST_TYPE = ["Small", "Large"]
     ANIM_DUR = .2
@@ -48,8 +48,9 @@ class TreasureChest(entity.Entity):
         self.locked = locked
         self.lockComplexity = 0
         if locked is None:
-            locked = Dice.rollBeneath(TreasureChest.CHANCE_OF_LOCK)
-        if locked:
+            self.locked = Dice.rollBeneath(TreasureChest.CHANCE_OF_LOCK)
+        if self.locked:
+            self.ip += 1 # Treasure from locked chests should be slightly better.
             if self.treasureLevel <= 10:
                 self.lockComplexity = 11 + self.treasureLevel * 3
             else:
@@ -190,25 +191,18 @@ class TreasureChest(entity.Entity):
 
     def pickLock(self, player):
         ''' Attempts to have the player unlock the chest via
-        lockpicking.  Will return True if the chest was already
-        unlocked or if successful, otherwise will return False. '''
+        lockpicking.  Will return True if successful, otherwise 
+        will return False. '''
         if not self.locked:
-            print "This chest is already unlocked."
-            return True
+            return False
         if player.lockpicking < self.lockComplexity:
             return False
-        print "Lock picking successful."
-        # TODO: Give experience?  Decide.
         return True
     
     def open(self, playerList):
         '''
-        Called by server, adds items to all inventories
-        Returns True if items were given, False if they weren't
-        due to the chest being locked.
+        Called by server.
         '''
-        # if self.locked:
-            # return False
         added_inventory = dict()
         for player in playerList:
             added_inventory[player] = self.generateTreasure(player)

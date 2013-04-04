@@ -167,7 +167,22 @@ class GameServer():
                 activePlayer = self.person[command.id]
                 currentPane = self.pane[activePlayer.location.pane]
                 chest, loc = currentPane.get_treasure_chest(activePlayer.location)
-                if chest:
+                if chest and chest.locked:
+                    picklockSuccess = chest.pickLock(activePlayer)
+                    if picklockSuccess:
+                        chest.locked = False
+                        text = activePlayer.name + " successfully unlocked a chest."
+                        action = Command("UPDATE", "TEXT", text=text, color='lightskyblue')
+                        self.broadcast(action, pid=-activePlayer.id)
+                    else:
+                        text = "The chest is locked"
+                        if activePlayer.lockpicking > 0:
+                            # This is a class that *could* unlock it with more Cunning.
+                            text += " and you lack the Cunning to unlock it."
+                        action = Command("UPDATE", "TEXT", text=text, color='red')
+                        self.broadcast(action, pid=-activePlayer.id)
+                    return
+                if chest and not chest.locked:
                     inventories = chest.open(self.get_nearby_players(command.id))
 
                     #Notify clients in the affected pane
