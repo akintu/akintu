@@ -31,16 +31,20 @@ class Stamp(object):
     def __str__(self):
         return self.__repr__()
 
-    def createRegion(self):
-        self.region("ADD", "SQUARE", Location(0, 0), Location(self.width-1, self.height-1))
+    def getRegion(self, location=Location((0, 0), (0, 0))):
+        self.region("ADD", "SQUARE", location, Location(location.pane, (self.width-1, self.height-1)))
+        loc = location
         for i in range(self.height):
+            tmp = loc.move(2, i)
             start = i*self.width
             end = start+self.width
             string = self.data[start:end]
             for j in range(self.width):
-                if string[j] != " ":
-                    self.region("SUB", "SQUARE", Location(j, i), Location(j, i))
+                tmp2 = tmp.move(6, j)
+                if string[j] == " ":
+                    self.region("SUB", "SQUARE", tmp2, tmp2)
                 j = 0
+        return self.region
 
     def join(self, arg, stamp, distance=0):
         new_string = ""
@@ -153,8 +157,11 @@ if __name__ == "__main__":
     Test Routines
     '''
     pass
-    stamps = Stamp.getStamps(Stamp.TEXT)
-    print Stamp.getStringStamp("hELLO WORLD!")
+    # stamps = Stamp.getStamps(Stamp.TEXT)
+    stamp = Stamp.getStringStamp("hELLO WORLD!")
+    print stamp
+    region = stamp.getRegion()
+    print region
     
         
 #4x2 house
