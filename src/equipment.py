@@ -180,6 +180,7 @@ class GambleItem(object):
         self.weight = 0
         self.displayName = self.name
         self.details = "Gambling Item! Buy to find out what it is!"
+        self.color = "black"
     
             
 class Armor(Equipment):

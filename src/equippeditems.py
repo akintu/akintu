@@ -21,7 +21,9 @@ class EquippedItems(object):
         
     @property
     def allGear(self):
-        return [x for x in self._allGear.values() if x].extend([x for x in self._alternateSet.values() if x])
+        list = [x for x in self._allGear.values() if x]
+        list.extend([x for x in self._alternateSet.values() if x])
+        return list
         
     def _equipArmor(self, newPiece):
         oldPiece = []

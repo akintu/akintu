@@ -89,11 +89,11 @@ class Keystate():
 
             "INVENTORYOPEN": ("i", "OVERWORLD"),
             "INVENTORYEQUIPMH": ("e", "INVENTORY"),
-            "INVENTORYEQUIPMHALT": (["K_LALT+e", "K_RALT+e"], "INVENTORY"),
+            "INVENTORYEQUIPMHALT": (["ALT+e", "ALT+e"], "INVENTORY"),
             "INVENTORYDROP": ("d", "INVENTORY"),
             "INVENTORYUNEQUIP": ("u", "INVENTORY"),
             "INVENTORYEQUIPOH": ("o", "INVENTORY"),
-            "INVENTORYEQUIPOHALT": (["K_LALT+o", "K_RALT+o"], "INVENTORY"),
+            "INVENTORYEQUIPOHALT": (["ALT+o", "ALT+o"], "INVENTORY"),
             "INVENTORYCLOSE": (["space", "i", "escape"], "INVENTORY"),
 
             "CHARSHEETOPEN": ("c", "OVERWORLD"),
