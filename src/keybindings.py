@@ -13,7 +13,8 @@ class Keystate():
 
         self.mod_keys = {"SHIFT": [K_LSHIFT, K_RSHIFT],
                         "CTRL": [K_LCTRL, K_RCTRL],
-                        "ALT": [K_LALT, K_RALT]}
+                        "ALT": [K_LALT, K_RALT],
+                        "META": [K_LMETA, K_RMETA]}
 
         self.move_keys = {"UP": 8,
                         "DOWN": 2,
@@ -53,7 +54,7 @@ class Keystate():
               Only one of them needs to be the current input state for the event to fire.
             * There are a few predefined sets of related states.  These are MOVEMENT, DIALOG, and ALL
         '''
-        self.bindings = {"QUIT": (["CTRL+q", "CTRL+x"], self.ALL),
+        self.bindings = {"QUIT": (["CTRL+q", "CTRL+x", "META+q", "META+x"], self.ALL),
 
             "UP": ([K_UP, K_KP8, "k"], self.MOVEMENT),
             "DOWN": ([K_DOWN, K_KP2, "j"], self.MOVEMENT),
@@ -102,7 +103,7 @@ class Keystate():
             "CHARSHEETPASSIVES": ("p", "CHARSHEET"),
             "CHARSHEETTRAITS": ("t", "CHARSHEET"),
             "CHARSHEETMAIN": ("c", "CHARSHEET"),
-            
+
             "CONSUMABLEOPEN": ("i", "COMBAT"),
             "CONSUMABLEUSE": (["space", "a"], "CONSUMABLE"),
 
