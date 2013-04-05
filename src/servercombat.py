@@ -427,6 +427,7 @@ class CombatServer():
                     break
         allCharIds = [charId for charId in self.server.pane[combatPane].person]
         for charId in allCharIds:
+            #What does this line do?
             char = self.server.person[charId]
         return
 
@@ -436,9 +437,8 @@ class CombatServer():
         state = self.combatStates[combatPane]
         if self.server.turnTime > 0 and state.turnTimer and state.turnTimer.active():
             state.turnTimer.cancel()
-        char = livingPlayers[0]
 
-        monsterLeader = self.server.get_monster_leader(char)
+        monsterLeader = self.server.get_monster_leader(combatPane)
         self.server.SDF.queue.put((None, Command("PERSON", "REMOVE", id=monsterLeader.id)))
 
         for player in livingPlayers:
