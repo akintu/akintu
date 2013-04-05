@@ -176,7 +176,8 @@ class ItemDialog(object):
                  bgcolor='gray',
                  capacity='',
                  gold='',
-                 discount=''):
+                 discount='',
+                 valuemod=(1.0, 1.0)):
         '''
         Initialize the class
         '''
@@ -192,9 +193,12 @@ class ItemDialog(object):
         self.capacity = capacity
         self.gold = gold
         self.discount = discount
+        self.valuemod = valuemod
 
-        self.leftitems = self._generateitems(self.items[0])
-        self.rightitems = self._generateitems(self.items[1], self.equipment)
+        self.leftitems = self._generateitems(self.items[0], self.valuemod[0])
+        self.rightitems = self._generateitems(self.items[1],
+                                              self.valuemod[1],
+                                              self.equipment)
 
         self._drawtoptext()
         self._drawitems()
@@ -229,8 +233,10 @@ class ItemDialog(object):
         self.surface.fill(Color(self.bgcolor), (10, 60, 470, 590))
         self.surface.fill(Color(self.bgcolor), (800, 60, 470, 590))
         self.items = [leftlist, rightlist]
-        self.leftitems = self._generateitems(self.items[0])
-        self.rightitems = self._generateitems(self.items[1], self.equipment)
+        self.leftitems = self._generateitems(self.items[0], self.valuemod[0])
+        self.rightitems = self._generateitems(self.items[1],
+                                              self.valuemod[1],
+                                              self.equipment)
         if len(self.leftitems) < 19:
             self.tops[0] = 0
         if len(self.rightitems) < 19:
@@ -365,7 +371,7 @@ class ItemDialog(object):
         pygame.draw.line(surface, Color('black'), (485, 45), (485, 640), 3)
         pygame.draw.line(surface, Color('black'), (795, 45), (795, 640), 3)
 
-    def _generateitems(self, items, equipment=False):
+    def _generateitems(self, items, valuemod, equipment=False):
         surfaces = []
 
         # Handle the equipment pane (if specified)
@@ -374,7 +380,7 @@ class ItemDialog(object):
                 surfaces.append(self._generateitempane(item.displayName,
                                                        item.type,
                                                        item.weight,
-                                                       item.value,
+                                                       item.value * valuemod,
                                                        item.color))
             for slot in ['Head', 'Legs', 'Feet', 'Chest', 'Hands', 'Neck']:
                 found = False
@@ -398,7 +404,7 @@ class ItemDialog(object):
             surfaces.append(self._generateitempane(item.displayName,
                                                    item.type,
                                                    item.weight,
-                                                   item.value,
+                                                   item.value * valuemod,
                                                    item.color))
         if len(surfaces) == 0:
             surfaces.append(self._generateemptyitempane())
@@ -416,7 +422,7 @@ class ItemDialog(object):
         bgcolor = Color(self.bgcolor)
 
         weightstr = str(weight) + 'lbs'
-        valuestr = str(value) + 'g'
+        valuestr = str(int(value)) + 'g'
 
         namefont = font.render(name, True, Color(color), bgcolor)
         typefont = sfont.render(itemtype, True, Color(color), bgcolor)
