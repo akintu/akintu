@@ -174,7 +174,8 @@ class ItemDialog(object):
                  rightlist,
                  equipment=False,
                  bgcolor='gray',
-                 capacity=''):
+                 capacity='',
+                 gold=''):
         '''
         Initialize the class
         '''
@@ -188,6 +189,7 @@ class ItemDialog(object):
         self.selection = (0, 0)
         self.tops = [0, 0]
         self.capacity = capacity
+        self.gold = gold
 
         self.leftitems = self._generateitems(self.items[0])
         self.rightitems = self._generateitems(self.items[1], self.equipment)
@@ -207,13 +209,15 @@ class ItemDialog(object):
                 self.items[pane][item].type,
                 self.items[pane][item].color)
 
-    def update_toptext(self, toptext, capacity=None):
+    def update_toptext(self, toptext, capacity=None, gold=None):
         '''
         Update the top text
         '''
         self.toptext = toptext
-        if capacity:
+        if capacity is not None:
             self.capacity = capacity
+        if gold is not None:
+            self.gold = gold
         self._drawtoptext()
 
     def set_items(self, leftlist, rightlist, toptext=None):
@@ -332,11 +336,14 @@ class ItemDialog(object):
         Draw the top text area
         '''
         textsurface = self._generatetext(self.toptext, height=30, width=1280)
-        righttextsurface = self._generatetext(self.capacity,
+        righttext = self.gold + '\n' + self.capacity
+        righttextsurface = self._generatetext(righttext,
                                               height=30,
-                                              width=100)
+                                              width=100,
+                                              size=14)
         self.surface.blit(textsurface, (20, 10))
-        self.surface.blit(righttextsurface, (1180, 10))
+        x = 1280 - righttextsurface.get_rect().width
+        self.surface.blit(righttextsurface, (x, 5))
 
     def _drawsidetext(self, text):
         '''
