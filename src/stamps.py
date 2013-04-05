@@ -46,24 +46,32 @@ class Stamp(object):
                 j = 0
         return self.region
 
-    def join(self, arg, stamp, distance=0):
+    def join(self, direction, stamp, distance=0):
         new_string = ""
         padding = ""
         for pad in range(distance):
             padding += " "
-        if arg == "HORIZONTAL":
-            width = self.width + stamp.width + distance
-            height = max(self.height, stamp.height)
+        if direction in [6, 4]:
+            if direction == 6: 
+                a = self
+                b = stamp
+            else:
+                a = stamp
+                b = self
+            
+            width = a.width + b.width + distance
+            height = max(a.height, b.height)
             # print(width, height)
-            #TODO: This will break when self.height is less than stamp.height
-            for i in range(self.height):
-                start_1 = i*self.width
-                start_2 = i*stamp.width
-                end_1 = start_1+self.width
-                end_2 = start_2+stamp.width
-                new_string += self.data[start_1:end_1] + padding + stamp.data[start_2:end_2]
+            #TODO: This will break when a.height is less than b.height
+            #Need to add padding to the string that has no more data to give
+            for i in range(a.height):
+                start_1 = i*a.width
+                start_2 = i*b.width
+                end_1 = start_1+a.width
+                end_2 = start_2+b.width
+                new_string += a.data[start_1:end_1] + padding + b.data[start_2:end_2]
                     
-        if arg == "VERTICAL":
+        if direction == 2:
             pass
 
         return Stamp((width, height), new_string)
@@ -116,7 +124,7 @@ class Stamp(object):
         tmp_stamp = Stamp.text[text[0]]
 
         for i in range(1,len(text)):
-            tmp_stamp = tmp_stamp.join("HORIZONTAL", Stamp.text[text[i]], distance=1)
+            tmp_stamp = tmp_stamp.join(6, Stamp.text[text[i]], distance=1)
 
         return tmp_stamp
 
