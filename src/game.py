@@ -340,6 +340,7 @@ class Game(object):
                     self.combatTurnStart = time.time()
                     keystate.inputState = "COMBAT"
                 else:
+                    self.screen.hide_dialog()
                     self.screen.set_turntime(0)
                     del self.combatTurnStart
                     for each in self.pane.person:
