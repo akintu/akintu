@@ -300,7 +300,7 @@ class Game(object):
             ###### Switch Gear #####
             if command.type == "ABILITY" and command.action == "SWITCH_GEAR":
                 self.pane.person[command.id].switchGear()
-                                    
+
             ###### Character Progression ######
             if command.type == "PERSON" and command.action == "ADD_EXPERIENCE":
                 self.pane.person[command.id].addExperience(command.experience)
@@ -408,12 +408,12 @@ class Game(object):
                 placer = self.pane.person[command.id]
                 thisTrap = trap.Trap(name=command.abilityName, player=placer, location=command.targetLoc)
                 self.pane.addTrap(command.targetLoc, thisTrap)
-                self.screen.set_overlay(command.targetLoc, overlay='red')
+                self.screen.set_overlay(command.targetLoc, overlay=['red'])
 
             elif command.type == "TRAP" and command.action == "DISCOVER":
                 thisTrap = trap.Trap(name=command.trapName, level=command.trapLevel, location=command.targetLoc)
                 self.pane.addTrap(command.targetLoc, thisTrap)
-                self.screen.set_overlay(command.targetLoc, overlay='red')
+                self.screen.set_overlay(command.targetLoc, overlay=['red'])
 
             elif command.type == "TRAP" and command.action == "REMOVE":
                 self.pane.removeTrap(command.location)
@@ -860,7 +860,7 @@ class Game(object):
             return
         else:
             self.CDF.send(Command("ABILITY", "SWITCH_GEAR", id=self.id))
-        
+
     def cycle_targets(self, reverse=False):
         # Cycles through the current persons in the current combat pane.
         if not self.combat:
@@ -894,7 +894,7 @@ class Game(object):
                 currentTargetPlace = self.panePersonIdList.index(self.currentTargetId)
                 self.currentTargetId = self.panePersonIdList[currentTargetPlace - 1]
 
-        self.screen.set_overlay(self.pane.person[self.currentTargetId].location, 'red')
+        self.screen.set_overlay(self.pane.person[self.currentTargetId].location, ['red'])
 
     def show_range(self, show, loc=None):
         if not loc:
@@ -904,7 +904,7 @@ class Game(object):
         R("ADD", "DIAMOND", loc, self.currentAbility.range \
                 if self.currentAbility.range != -1 else self.pane.person[self.id].attackRange)
         for l in [x for x in R if x.pane == (0, 0)]:
-            self.screen.set_overlay(l, overlay='blue' if show else None)
+            self.screen.set_overlay(l, overlay=['blue'] if show else None)
         self.screen.update()
 
     def select_self(self):
