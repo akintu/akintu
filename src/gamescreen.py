@@ -67,7 +67,10 @@ class GameScreen(object):
                          rightitems,
                          equipment=False,
                          bgcolor='gray',
-                         capacity=''):
+                         capacity='',
+                         gold='',
+                         discount='',
+                         valuemod=(1.0, 1.0)):
         '''
         Show an item dialog with the given parameters
         '''
@@ -76,7 +79,10 @@ class GameScreen(object):
                                              rightitems,
                                              equipment,
                                              bgcolor,
-                                             capacity)
+                                             capacity,
+                                             gold,
+                                             discount,
+                                             valuemod)
         self.screen.blit(self.dialog.surface, (0, 0))
         pygame.display.update()
         return self.dialog.get_selection()
@@ -110,13 +116,13 @@ class GameScreen(object):
         pygame.display.update()
         return self.dialog.get_selection()
 
-    def update_item_dialog_text(self, text, capacity=None):
+    def update_item_dialog_text(self, text, capacity=None, gold=None):
         '''
         Update the top text (and optionally capacity) of an item dialog
         '''
         if not self.dialog:
             return None
-        self.dialog.update_toptext(text, capacity)
+        self.dialog.update_toptext(text, capacity, gold)
         self.screen.blit(self.dialog.surface, (0, 0))
         pygame.display.update()
 
