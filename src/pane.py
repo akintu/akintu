@@ -14,6 +14,7 @@ from theorycraft import TheoryCraft
 from state import State
 from ai import AI
 from dice import *
+from stamps import *
 
 import trap
 
@@ -56,6 +57,12 @@ class Pane(object):
                     self.add_obstacle((i, j), RAND_ENTITIES)
 
         if load_entities:
+            #TEST STAMP IDEA
+            stamp = Stamp.getStringStamp("("+ str(self.location[0]) + ":" + str(self.location[1]) + ":" + str(self.z) + ")")
+            r = Region()
+            r("ADD", "SQUARE", Location(self.location, (0,0)), Location(self.location, (stamp.width-1, stamp.height-1)))
+            self.clear_region(r)
+            self.load_region(stamp.getRegion(), "tree")
             if self.pane_state:
                 self.load_state(self.pane_state)
             elif self.is_server:
