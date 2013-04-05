@@ -1264,7 +1264,7 @@ class PlayerCharacter(p.Person):
             text += " (alternate set)"
         inv = self.inventory.allItems
         eq = self.equippedItems.allGear
-        capacity = `self.inventoryWeight` + "/" + `self.inventoryCapacity`
+        capacity = `self.inventoryWeight` + "/" + `self.inventoryCapacity` + ' lbs'
         screen.update_item_dialog_text(text, capacity)
         screen.update_item_dialog_items(inv, eq)
         
@@ -1276,21 +1276,20 @@ class PlayerCharacter(p.Person):
         text = "Destroyed: " + item.displayName
         inv = self.inventory.allItems
         eq = self.equippedItems.allGear
-        capacity = `self.inventoryWeight` + "/" + `self.inventoryCapacity`
+        capacity = `self.inventoryWeight` + "/" + `self.inventoryCapacity` + ' lbs'
         screen.update_item_dialog_text(text, capacity)
         screen.update_item_dialog_items(inv, eq)
         self.AP = self.totalAP
         
-    def unequipGear(self, index, type, screen):
+    def unequipGear(self, index, type, screen, color):
         ''' INVENTORY MANAGEMENT
         Unequip a selected item.'''
-        wasAlternate = (selectionTuple[3] == "blue")
-        type = selectionTuple[2]
+        wasAlternate = (color == "blue")
         self.unequip(type, wasAlternate)
         text = "Unequipped an item"
         inv = self.inventory.allItems
         eq = self.equippedItems.allGear
-        capacity = `self.inventoryWeight` + "/" + `self.inventoryCapacity`
+        capacity = `self.inventoryWeight` + "/" + `self.inventoryCapacity` + ' lbs'
         screen.update_item_dialog_text(text, capacity)
         screen.update_item_dialog_items(inv, eq)
 
@@ -1306,7 +1305,7 @@ class PlayerCharacter(p.Person):
                 text += " (alternate set)"
             inv = self.inventory.allItems
             eq = self.equippedItems.allGear
-            capacity = `self.inventoryWeight` + "/" + `self.inventoryCapacity`
+            capacity = `self.inventoryWeight` + "/" + `self.inventoryCapacity` + ' lbs'
             screen.update_item_dialog_text(text, capacity)
             screen.update_item_dialog_items(inv, eq)
         

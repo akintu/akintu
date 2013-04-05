@@ -571,7 +571,7 @@ class Game(object):
                     self.pane.person[self.id].dropItem(self.screen.get_dialog_selection()[1], self.screen)
                 elif e == "INVENTORYUNEQUIP" and self.screen.get_dialog_selection()[0] == 1:
                     self.pane.person[self.id].unequipGear(self.screen.get_dialog_selection()[1], \
-                            self.screen.get_dialog_selection()[2], self.screen)
+                            self.screen.get_dialog_selection()[2], self.screen, color=self.screen.get_dialog_selection()[3])
                 elif e == "INVENTORYEQUIPOH" and self.screen.get_dialog_selection()[0] == 0:
                     self.pane.person[self.id].equipOffHand(self.screen.get_dialog_selection()[1], self.screen)
                 elif e == "INVENTORYEQUIPOHALT" and self.screen.get_dialog_selection()[0] == 0:
@@ -728,6 +728,7 @@ class Game(object):
         isEquipment = True
         text = "Looking in your bag..."
         eq = player.equippedItems.allGear
+        gold = `player.inventory.gold` + " gold"
         if not eq:
             eq = []
         inv = player.inventory.allItems
@@ -737,7 +738,7 @@ class Game(object):
         if not eq and not inv:
             keystate.inputState = "OVERWORLD"
             return
-        self.screen.show_item_dialog(text, inv, eq, isEquipment, bgcolor='tan', capacity=capacity)
+        self.screen.show_item_dialog(text, inv, eq, isEquipment, bgcolor='tan', capacity=capacity, gold=gold)
 
     def open_consumables(self):
         keystate.inputState = "CONSUMABLE"

@@ -274,13 +274,14 @@ class CombatServer():
         '''Applies all upkeep operations for this Person.  (Used during the combat
         phase: "Upkeep"'''
 
-        # This will break on summoned monsters (allied monsters)
         if target.team == "Players":
             target.record.nextTurn()
         if target.HPRegen > 0:
             Combat.healTarget(target, target, target.HPRegen)
         if target.MPRegen > 0:
             Combat.modifyResource(target, "MP", target.MPRegen)
+            
+        # Decrement status effects and cooldowns.
         for stat in target.statusList:
             stat.upkeepActivate(target)
             if stat.turnsLeft > 0:
@@ -296,16 +297,23 @@ class CombatServer():
         for removalStatus in toRemove:
             Combat.removeStatus(target, removalStatus.name)
         target.cooldownList[:] = [x for x in target.cooldownList if x[1] > 0]
+        
+        # Reset remaining movement tiles.
         if target.team == "Players":
             Combat.decrementMovementTiles(target, removeAll=True)
-        # Refill AP (performed in end_turn)
+        
+        # Decremenet the client's view of the statuses.
         action = Command("PERSON", "DECREMENT_STATUSES", id=target.id)
         self.server.broadcast(action, -target.id)
+        
+        # TODO: Remove the following Debugging Messages 
         for stat in target.statusList:
             if stat.turnsLeft == -1:
                 print target.name + " has status enabled: " + stat.name
             else:
                 print target.name + " has status: " + stat.name + " T=" + `int(stat.turnsLeft)`
+                
+        # Check to see if this player discovered any traps.
         if target.team == "Players":
             self.check_trap_discover(target)
 
