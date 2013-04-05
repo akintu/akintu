@@ -119,6 +119,8 @@ class CombatServer():
                                             target, toAll=False)
                 target.switchGear()
                 self.server.broadcast(Command("ABILITY", "SWITCH_GEAR", id=target.id), pid=target.id)
+                Combat.modifyResource(target, "AP", -target.AP)
+                self.check_turn_end(self.server.person[command.id].cPane)
                 # Gear swapping is performed on both server and client side (sadly).
 
         #### Using Items ####

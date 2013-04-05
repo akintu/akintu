@@ -717,7 +717,11 @@ class Game(object):
         isEquipment = True
         text = "Looking in your bag..."
         eq = player.equippedItems.allGear
+        if not eq:
+            eq = []
         inv = player.inventory.allItems
+        if not inv:
+            inv = []
         capacity = `player.inventoryWeight` + "/" + `player.inventoryCapacity`
         if not eq and not inv:
             keystate.inputState = "OVERWORLD"
@@ -856,7 +860,8 @@ class Game(object):
 
     def switch_gear(self):
         player = self.pane.person[self.id]
-        if not player.equippedItems.alternateMainHand:
+        if not player.equippedItems.alternateWeapon:
+            print "DEBUG: No weapon found"
             return
         else:
             self.CDF.send(Command("ABILITY", "SWITCH_GEAR", id=self.id))
