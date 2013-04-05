@@ -285,6 +285,7 @@ class CombatServer():
             stat.upkeepActivate(target)
             if stat.turnsLeft > 0:
                 stat.turnsLeft -= 1
+        target.decrementClientStatuses()
         for cooldown in target.cooldownList:
             cooldown[1] -= 1
         # Remove expired statuseffects and cooldowns
@@ -298,6 +299,8 @@ class CombatServer():
         if target.team == "Players":
             Combat.decrementMovementTiles(target, removeAll=True)
         # Refill AP (performed in end_turn)
+        action = Command("PERSON", "DECREMENT_STATUSES", id=target.id)
+        self.server.broadcast(action, -target.id)
         for stat in target.statusList:
             if stat.turnsLeft == -1:
                 print target.name + " has status enabled: " + stat.name

@@ -310,15 +310,24 @@ class Game(object):
                 #id, status, turns, image
                 self.pane.person[command.id].addClientStatus(command.status, command.image, \
                         command.turns)
-                statsdict = {'stealth': self.pane.person[command.id].inStealth(True)}
+                statsdict = {'team' : self.pane.person[command.id].team,
+                             'statusList' : self.pane.person[command.id].clientStatusView}
                 self.screen.update_person(command.id, statsdict)
 
             ###### Remove Person Status ######
             if command.type == "PERSON" and command.action == "REMOVESTATUS":
                 self.pane.person[command.id].removeClientStatus(command.status)
-                statsdict = {'stealth': self.pane.person[command.id].inStealth(True)}
+                statsdict = {'team' : self.pane.person[command.id].team,
+                             'statusList' : self.pane.person[command.id].clientStatusView}
                 self.screen.update_person(command.id, statsdict)
 
+            ###### Update Statuses ######
+            if command.type == "PERSON" and command.action == "DECREMENT_STATUSES":
+                self.pane.person[command.id].decrementClientStatuses()
+                statsdict = {'team' : self.pane.person[command.id].team,
+                             'statusList' : self.pane.person[command.id].clientStatusView}
+                self.screen.update_person(command.id, statsdict)
+                
             ###### Update Text #####
             elif command.type == "UPDATE" and command.action == "TEXT":
                 self.screen.show_text(command.text, color=command.color)

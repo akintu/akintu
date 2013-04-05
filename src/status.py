@@ -3,10 +3,13 @@
 import sys
 import internalstatus
 
+ROOT = "./res/images/icons/"
+    
 class Status(object):
 
     DEFAULT_IMAGE = "./res/icons/cubeforce.svg"
-
+    
+    
     def __init__(self):
         # Values loaded at startup time
         self.name = None
@@ -25,8 +28,11 @@ class Status(object):
         """Populates the fields of this status from the information gained
         through a parser from a txt file or a previously created displaystatus."""
         self.name = name
-        self.image = image
-        if image == "None":
+        if image.startswith(ROOT):
+            self.image = image
+        else:
+            self.image = ROOT + image
+        if image == ROOT + "None":
             self.image = Status.DEFAULT_IMAGE
         self.element = element
         self.categoryList = categoryList
