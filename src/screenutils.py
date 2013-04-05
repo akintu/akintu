@@ -5,7 +5,7 @@ import os
 
 import pygame
 from pygame.locals import *
-from pygame import Rect, Color
+from pygame import Color
 
 
 class TilingDialog(object):
