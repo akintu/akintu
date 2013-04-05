@@ -30,10 +30,9 @@ if os.path.exists(IPFILENAME):
         IP = ()
 else:
     IP = ()
-CLASSES = ('Assassin', 'Barbarian', 'Dragoon', 'Weapon Master', 'Spellsword',
-           'Marksman', 'Druid', 'Tactician', 'Ninja', 'Anarchist', 'Shadow',
-           'Nightblade', 'Battle Mage', 'Arcane Archer', 'Trickster',
-           'Sorcerer')
+CLASSES = ('Assassin', 'Barbarian', 'Dragoon', 'Spellsword', 'Marksman',
+           'Druid', 'Anarchist', 'Shadow', 'Nightblade', 'Battle Mage',
+           'Arcane Archer', 'Trickster')
 RACES = ('Human', 'Dwarf', 'Elf', 'Halfling', 'Orc')
 savesprefix = os.path.join('res', 'saves', 'characters')
 CHARSAVES = [path.lstrip(savesprefix).lstrip(os.path.sep) for path in
