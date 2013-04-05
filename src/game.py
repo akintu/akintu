@@ -534,6 +534,10 @@ class Game(object):
                     else:
                         self.currentShop.buy(self.screen.get_dialog_selection()[1])
                 elif e == "SHOPCLOSE":
+                    if self.pane.person[self.id].anim:
+                        self.pane.person[self.id].anim.stop()
+                        self.pane.person[self.id].anim = None
+                    self.screen.update_person(self.id, {'location': self.pane.person[self.id].location})
                     hero = self.currentShop.close()
                     if hero:
                         # Hero is None until the shop phase is finished.  Then it is a dehydrated hero.

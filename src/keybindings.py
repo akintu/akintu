@@ -56,10 +56,10 @@ class Keystate():
         '''
         self.bindings = {"QUIT": (["CTRL+q", "CTRL+x", "META+q", "META+x"], self.ALL),
 
-            "UP": ([K_UP, K_KP8, "k"], self.MOVEMENT),
-            "DOWN": ([K_DOWN, K_KP2, "j"], self.MOVEMENT),
-            "LEFT": ([K_LEFT, K_KP4, "h"], self.MOVEMENT),
-            "RIGHT": ([K_RIGHT, K_KP6, "l"], self.MOVEMENT),
+            "UP": ([K_UP, K_KP8, "k", "SHIFT+up", "SHIFT+keypad 8", "SHIFT+k"], self.MOVEMENT),
+            "DOWN": ([K_DOWN, K_KP2, "j", "SHIFT+down", "SHIFT+keypad 2", "SHIFT+j"], self.MOVEMENT),
+            "LEFT": ([K_LEFT, K_KP4, "h", "SHIFT+left", "SHIFT+keypad 4", "SHIFT+h"], self.MOVEMENT),
+            "RIGHT": ([K_RIGHT, K_KP6, "l", "SHIFT+right", "SHIFT+keypad 6", "SHIFT+l"], self.MOVEMENT),
 
             "DIALOGUP": ([K_UP, K_KP8, "k"], self.DIALOG),
             "DIALOGDOWN": ([K_DOWN, K_KP2, "j"], self.DIALOG),
