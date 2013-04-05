@@ -500,19 +500,14 @@ class Game(object):
                     self.screen.hide_dialog()
                     keystate.inputState = "OVERWORLD"
                 elif e == "CHARSHEETMAIN":
-                    self.screen.hide_dialog()
                     self.display_character_sheet()
                 elif e == "CHARSHEETABILITIES":
-                    self.screen.hide_dialog()
                     self.display_character_abilities()
                 elif e == "CHARSHEETSPELLS":
-                    self.screen.hide_dialog()
                     self.display_character_spells()
                 elif e == "CHARSHEETPASSIVES":
-                    self.screen.hide_dialog()
                     self.display_character_passives()
                 elif e == "CHARSHEETTRAITS":
-                    self.screen.hide_dialog()
                     self.display_character_traits()
 
                 ### Levelup Commands ###
