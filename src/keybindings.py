@@ -8,6 +8,9 @@ import pygame
 class Keystate():
     def __init__(self):
         self.keystate = []
+        self.typematicRate = 0.1
+        self.keyTime = 0
+
         self.inputState = "OVERWORLD" # "OVERWORLD", "LEVELUP", "INVENTORY", "CONSUMABLE", "TARGET", "SHOP",
                                      # "ABILITIES", "SPELLS", "COMBAT"
 

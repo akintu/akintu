@@ -25,38 +25,47 @@ class Shop(object):
         isEquipment = False
         text = "Welcome to my shop! (You have " + `self.player.inventory.gold` + " gold.)"
         inv = self.player.inventory.allItems
-        capacity = `self.player.inventoryWeight` + "/" + `self.player.inventoryCapacity`
-        self.screen.show_item_dialog(text, inv, self.stock, isEquipment, bgcolor='mistyrose', capacity=capacity)
+        capacity = `self.player.inventoryWeight` + "/" + `self.player.inventoryCapacity` + ' lbs'
+        gold = `self.player.inventory.gold` + " gold"
+        discount = `self.player.totalShopBonus` + "% discount"
+        valuemod = self._getPriceMods()
+        self.screen.show_item_dialog(text, inv, self.stock, isEquipment, bgcolor='mistyrose', capacity=capacity,
+                                        gold=gold, discount=discount, valuemod=valuemod)
         
     def buy(self, index):
         item = self.stock[index]
         if item.value > self.player.inventory.gold:
-            self.screen.update_item_dialog_text("You don't have enough money for that! (Gold = " + \
-                                                `self.player.inventory.gold` + ")",
-                                                capacity=`self.player.inventoryWeight` + "/" + `self.player.inventoryCapacity`)
+            capacity = `self.player.inventoryWeight` + "/" + `self.player.inventoryCapacity` + ' lbs'
+            gold = `self.player.inventory.gold` + " gold"
+            self.screen.update_item_dialog_text("You don't have enough money for that!", capacity=capacity, gold=gold)
         else:
             self.player.inventory.gold -= self._getBuyingPrice(item)
             if isinstance(item, GambleItem):
                 self.player.inventory.addItem(self._revealGambleItem(item))
             else:
                 self.player.inventory.addItem(item)
+            capacity = `self.player.inventoryWeight` + "/" + `self.player.inventoryCapacity` + ' lbs'
+            gold = `self.player.inventory.gold` + " gold"
             self.screen.update_item_dialog_items(self.player.inventory.allItems, self.stock)
-            self.screen.update_item_dialog_text("Thank you for your purchase! (Gold = " + \
-                                                `self.player.inventory.gold` + ")",
-                                                capacity=`self.player.inventoryWeight` + "/" + `self.player.inventoryCapacity`)
+            self.screen.update_item_dialog_text("Thank you for your purchase!", capacity=capacity, gold=gold)
                                                 
     def sell(self, index):
         item = self.player.inventory.allItems[index]
         self.player.inventory.gold += self._getSellingPrice(item)
         self.player.inventory.removeItem(item)
+        capacity = `self.player.inventoryWeight` + "/" + `self.player.inventoryCapacity` + ' lbs'
+        gold = `self.player.inventory.gold` + " gold"
         self.screen.update_item_dialog_items(self.player.inventory.allItems, self.stock)
-        self.screen.update_item_dialog_text("Thank you for your sale! (Gold = " + \
-                                                `self.player.inventory.gold` + ")",
-                                                capacity=`self.player.inventoryWeight` + "/" + `self.player.inventoryCapacity`)
+        self.screen.update_item_dialog_text("Thank you for your sale!", capacity=capacity, gold=gold)
             
     def close(self):
         self.screen.hide_dialog()
         return self.player.dehydrate()
+        
+    def _getPriceMods(self):
+        sellMod = 0.5 * (1 + self.player.totalShopBonus * 0.01)
+        buyMod = 1.5 * (1 - self.player.totalShopBonus * 0.01)
+        return (sellMod, buyMod)
         
     def _getBuyingPrice(self, item):
         '''Returns the price of buying or selling an 

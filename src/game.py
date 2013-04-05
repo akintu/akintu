@@ -157,6 +157,7 @@ class Game(object):
 
         self.check_queue()
         self.handle_events()
+        self.handle_non_events()
         self.play_music()
         self.screen.update()
 
@@ -454,11 +455,15 @@ class Game(object):
     def quit(self):
         reactor.stop()
 
-    def handle_events(self):
+    def handle_non_events(self):
         if hasattr(self, 'pane') and hasattr(self.pane, 'person') and self.id in self.pane.person and \
                 not self.pane.person[self.id].anim and keystate.direction("MOVEMENT"):
             self.move_person(keystate.direction("MOVEMENT"), 1)
+        if keystate.direction("DIALOG") and time.time() >= keystate.keyTime + keystate.typematicRate:
+            self.screen.move_dialog(keystate.direction("DIALOG"))
+            keystate.keyTime = time.time()
 
+    def handle_events(self):
         pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
         for event in pygame.event.get():
             #### General commands ####
@@ -477,6 +482,7 @@ class Game(object):
                     self.move_person(keystate.direction("MOVEMENT"), 1)
                 elif keystate.direction("DIALOG"):
                     self.screen.move_dialog(keystate.direction("DIALOG"))
+                    keystate.keyTime = time.time()
                 elif keystate.direction("TARGET"):
                     self.attempt_attack(targetingLocation=keystate.direction("TARGET"))
                 elif e == "TARGETCANCEL":
@@ -571,7 +577,7 @@ class Game(object):
                     self.pane.person[self.id].dropItem(self.screen.get_dialog_selection()[1], self.screen)
                 elif e == "INVENTORYUNEQUIP" and self.screen.get_dialog_selection()[0] == 1:
                     self.pane.person[self.id].unequipGear(self.screen.get_dialog_selection()[1], \
-                            self.screen.get_dialog_selection()[2], self.screen)
+                            self.screen.get_dialog_selection()[2], self.screen, color=self.screen.get_dialog_selection()[3])
                 elif e == "INVENTORYEQUIPOH" and self.screen.get_dialog_selection()[0] == 0:
                     self.pane.person[self.id].equipOffHand(self.screen.get_dialog_selection()[1], self.screen)
                 elif e == "INVENTORYEQUIPOHALT" and self.screen.get_dialog_selection()[0] == 0:
@@ -728,6 +734,7 @@ class Game(object):
         isEquipment = True
         text = "Looking in your bag..."
         eq = player.equippedItems.allGear
+        gold = `player.inventory.gold` + " gold"
         if not eq:
             eq = []
         inv = player.inventory.allItems
@@ -737,7 +744,7 @@ class Game(object):
         if not eq and not inv:
             keystate.inputState = "OVERWORLD"
             return
-        self.screen.show_item_dialog(text, inv, eq, isEquipment, bgcolor='tan', capacity=capacity)
+        self.screen.show_item_dialog(text, inv, eq, isEquipment, bgcolor='tan', capacity=capacity, gold=gold)
 
     def open_consumables(self):
         keystate.inputState = "CONSUMABLE"
