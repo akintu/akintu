@@ -644,9 +644,7 @@ class Game(object):
                 elif e == "GETITEM":
                     self.get_item()
                 elif e == "BASHCHEST":
-                    #self.break_in() -- Will bash/pick-lock chests.  Will attempt a picklock first if
-                    # you are a thief primary class.  If that fails, all other attempts will be bashes.
-                    pass
+                    self.break_in()
                 elif e == "STARTLEVELUP":
                     self.request_levelup(True)
                 #elif e == "STARTRESPEC":
@@ -661,11 +659,15 @@ class Game(object):
     def get_item(self):
         self.CDF.send(Command("PERSON", "OPEN", id=self.id))
         # If player is on an item, pick it up (the top item).
-        # If player is on a treasure chest, attempt to open it.
+        # If player is next to a treasure chest, attempt to open it.
         # If the chest is locked, send a message to the screen.
+        # If you are a thief, attempt to unlock it.
         # If the chest is unlocked, distribute treasure to this player
         #    and all others on this pane.
 
+    def break_in(self):
+        self.CDF.send(Command("PERSON", "BASHCHEST", id=self.id))
+        
     def request_levelup(self, debug=False):
         # Remove EXP code left for testing, TODO
         player = self.pane.person[self.id]

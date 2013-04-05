@@ -163,6 +163,26 @@ class GameServer():
                 self.broadcast(command, -command.id, exclude=True)
 
             ###### Get Item / Open Chest ######
+            if command.type == "PERSON" and command.action == "BASHCHEST":
+                activePlayer = self.person[command.id]
+                currentPane = self.pane[activePlayer.location.pane]
+                chest, loc = currentPane.get_treasure_chest(activePlayer.location)
+                if chest:
+                    if chest.locked:
+                        success = chest.bash(activePlayer)
+                        if success:
+                            chest.locked = False
+                            text = activePlayer.name + " successfully bashed open a chest."
+                            action = Command("UPDATE", "TEXT", text=text, color='lightskyblue')
+                            self.broadcast(action, pid=-activePlayer.id)
+                        else:
+                            text = activePlayer.name + " failed to bash open a chest."
+                            action = Command("UPDATE", "TEXT", text=text, color='red')
+                            self.broadcast(action, pid=-activePlayer.id)
+                    else:
+                        text = "No need to bash -- chest is unlocked."
+                        action = Command("UPDATE", "TEXT", text=text, color='white')
+                        self.broadcast(action, pid=activePlayer.id)
             if command.type == "PERSON" and command.action == "OPEN":
                 activePlayer = self.person[command.id]
                 currentPane = self.pane[activePlayer.location.pane]
