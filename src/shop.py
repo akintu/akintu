@@ -23,7 +23,7 @@ class Shop(object):
 
     def open(self):
         isEquipment = False
-        text = "Welcome to my shop! (You have " + `self.player.inventory.gold` + " gold.)"
+        text = "Welcome to my shop!"
         inv = self.player.inventory.allItems
         capacity = `self.player.inventoryWeight` + "/" + `self.player.inventoryCapacity` + ' lbs'
         gold = `self.player.inventory.gold` + " gold"
