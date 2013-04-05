@@ -202,7 +202,7 @@ class GameScreen(object):
         self.pane = pane
 
         for k, v in self.pane.tiles.iteritems():
-            v.overlay = None
+            v.overlay = []
 
         # Make sure we're not in a dialog
         if not self.dialog:
@@ -233,22 +233,17 @@ class GameScreen(object):
                 entimage = self.images[ent.image]
                 self.background.blit(entimage, (i*TILE_SIZE, j*TILE_SIZE))
 
-            if tile.overlay:
-                self.background.blit(self.overlays[tile.overlay],
+            for o in tile.overlay:
+                self.background.blit(self.overlays[o],
                                      (i*TILE_SIZE, j*TILE_SIZE))
 
         self.screen.blit(self.background, [0, 0])
         pygame.display.update()
 
-    def update_tile(self, tile, location, overlay=None):
+    def update_tile(self, tile, location):
         '''
         Update a specific tile in the current pane
-
-        Ignores the overlay argument (deprecated)
         '''
-        if overlay:
-            print 'Warning:  use of overlay in update_tile deprecated.'
-
         tile.overlay = self.pane.tiles[location.tile].overlay
         self.pane.tiles[location.tile] = tile
         i, j = location.tile
@@ -268,8 +263,8 @@ class GameScreen(object):
             entimage = self.images[ent.image]
             self.background.blit(entimage, (i*TILE_SIZE, j*TILE_SIZE))
 
-        if tile.overlay:
-            self.background.blit(self.overlays[tile.overlay],
+        for o in tile.overlay:
+            self.background.blit(self.overlays[o],
                                  (i*TILE_SIZE, j*TILE_SIZE))
 
         self.tile_updated = True
@@ -278,10 +273,13 @@ class GameScreen(object):
         '''
         Set the overlay for a specific tile in the current pane
 
-        If overlay is a 'falsey' value, will remove overlay
+        If overlay is an empty list, remove all overlays
         '''
         tile = self.pane.tiles[location.tile]
-        tile.overlay = overlay
+        if overlay is None:
+            tile.overlay = []
+        else:
+            tile.overlay = overlay
         i, j = location.tile
 
         # Draw the tile background
@@ -299,8 +297,8 @@ class GameScreen(object):
             entimage = self.images[ent.image]
             self.background.blit(entimage, (i*TILE_SIZE, j*TILE_SIZE))
 
-        if tile.overlay:
-            self.background.blit(self.overlays[tile.overlay],
+        for o in tile.overlay:
+            self.background.blit(self.overlays[o],
                                  (i*TILE_SIZE, j*TILE_SIZE))
 
         self.tile_updated = True
