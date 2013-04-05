@@ -251,8 +251,12 @@ class Pane(object):
         if tile in self.tiles:
             self.tiles[tile].clear_all_entities()
 
-    def remove_chest(self, tile):
-        self.tiles[tile].remove_chest()
+    def remove_chest(self, location):
+        if isinstance(location, Location):
+            loc = location.tile
+        elif isinstance(location, tuple):
+            loc = location
+        self.tiles[loc].remove_chest()
 
     def get_treasure_chest(self, location):
         '''
@@ -276,7 +280,6 @@ class Pane(object):
             chest = self.tiles[facing].get_chest()
             if chest:
                 #print "Found chest in front of you on tile " + str(facing)
-                self.tiles[facing].remove_chest()
                 return (chest, Location(self.location, facing))
 
         #If there was no chest, look on surrounding tiles
@@ -285,7 +288,7 @@ class Pane(object):
                 chest = self.tiles[tile].get_chest()
                 if chest:
                     #print "Found chest on tile " + str(tile)
-                    self.tiles[tile].remove_chest()
+                    #self.tiles[tile].remove_chest()
                     return (chest, Location(self.location, tile))
         return (None, None)
 

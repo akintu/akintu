@@ -184,6 +184,7 @@ class GameServer():
                     return
                 if chest and not chest.locked:
                     inventories = chest.open(self.get_nearby_players(command.id))
+                    currentPane.remove_chest(loc)
 
                     #Notify clients in the affected pane
                     for p, i in self.player.iteritems():    #Replace this with list of players on current pane
