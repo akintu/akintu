@@ -803,15 +803,19 @@ class CharacterDialog(object):
         y += f.get_rect().height
 
     def get_selection(self):
-        '''Compatability method to allow hide_dialog to
-        function normally.'''
+        '''
+        Compatability method to allow hide_dialog to function normally.
+        '''
         return None
-        
+
     def move_selection(self, direction):
-        '''Compatability method to allow button presses
-        to function normally.'''
+        '''
+        Compatability method to allow button presses
+        to function normally.
+        '''
         return None
-        
+
+
 class MenuDialog(object):
     '''
     Provides a generic menu dialog for text selections
