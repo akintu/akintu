@@ -202,7 +202,10 @@ class ItemDialog(object):
         Get the current selection
         '''
         pane, item = self.selection
-        return (pane, item, self.items[pane][item].type)
+        return (pane,
+                item,
+                self.items[pane][item].type,
+                self.items[pane][item].color)
 
     def update_toptext(self, toptext, capacity=None):
         '''
@@ -235,7 +238,10 @@ class ItemDialog(object):
         self._updateselection()
 
         pane, item = self.selection
-        return (pane, item, self.items[pane][item].type)
+        return (pane,
+                item,
+                self.items[pane][item].type,
+                self.items[pane][item].color)
 
     def move_selection(self, direction):
         '''
@@ -260,7 +266,10 @@ class ItemDialog(object):
         self._updateselection()
 
         pane, item = self.selection
-        return (pane, item, self.items[pane][item].type)
+        return (pane,
+                item,
+                self.items[pane][item].type,
+                self.items[pane][item].color)
 
     def _updateselection(self):
         '''
@@ -354,7 +363,8 @@ class ItemDialog(object):
                 surfaces.append(self._generateitempane(item.displayName,
                                                        item.type,
                                                        item.weight,
-                                                       item.value))
+                                                       item.value,
+                                                       item.color))
             for slot in ['Head', 'Legs', 'Feet', 'Chest', 'Hands', 'Neck']:
                 found = False
                 for item in items:
@@ -377,13 +387,14 @@ class ItemDialog(object):
             surfaces.append(self._generateitempane(item.displayName,
                                                    item.type,
                                                    item.weight,
-                                                   item.value))
+                                                   item.value,
+                                                   item.color))
         if len(surfaces) == 0:
             surfaces.append(self._generateemptyitempane())
 
         return surfaces
 
-    def _generateitempane(self, name, itemtype, weight, value):
+    def _generateitempane(self, name, itemtype, weight, value, color):
         '''
         Generate a given item pane
         '''
@@ -396,10 +407,10 @@ class ItemDialog(object):
         weightstr = str(weight) + 'lbs'
         valuestr = str(value) + 'g'
 
-        namefont = font.render(name, True, Color('black'), bgcolor)
-        typefont = sfont.render(itemtype, True, Color('black'), bgcolor)
-        weightfont = sfont.render(weightstr, True, Color('black'), bgcolor)
-        valuefont = sfont.render(valuestr, True, Color('black'), bgcolor)
+        namefont = font.render(name, True, Color(color), bgcolor)
+        typefont = sfont.render(itemtype, True, Color(color), bgcolor)
+        weightfont = sfont.render(weightstr, True, Color(color), bgcolor)
+        valuefont = sfont.render(valuestr, True, Color(color), bgcolor)
 
         surface.blit(namefont, (5, 4))
         surface.blit(typefont, (295, 4))
