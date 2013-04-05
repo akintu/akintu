@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+################################# This file is no longer in use! ###############################
+
 import sys
 import re
 from trap import TrapTemplate

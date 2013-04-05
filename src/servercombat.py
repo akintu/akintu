@@ -115,11 +115,11 @@ class CombatServer():
             if target.AP < switchGearAP:
                 Combat.sendCombatMessage("Not enough AP to switch weapons (" + `switchGearAP` + " needed.)", target, toAll=False)
             else:
-                Combat.sendCombatMessage("Switched Weapon Sets; new main weapon is: " + target.equippedItems.alternateWeapon,
+                Combat.sendCombatMessage("Switched Weapon Sets; new main weapon is: " + target.equippedItems.alternateWeapon.displayName,
                                             target, toAll=False)
                 target.switchGear()
                 self.server.broadcast(Command("ABILITY", "SWITCH_GEAR", id=target.id), pid=target.id)
-                Combat.modifyResource(target, "AP", -target.AP)
+                Combat.modifyResource(target, "AP", -switchGearAP)
                 self.check_turn_end(self.server.person[command.id].cPane)
                 # Gear swapping is performed on both server and client side (sadly).
 
@@ -285,6 +285,7 @@ class CombatServer():
             stat.upkeepActivate(target)
             if stat.turnsLeft > 0:
                 stat.turnsLeft -= 1
+        target.decrementClientStatuses()
         for cooldown in target.cooldownList:
             cooldown[1] -= 1
         # Remove expired statuseffects and cooldowns
@@ -298,6 +299,8 @@ class CombatServer():
         if target.team == "Players":
             Combat.decrementMovementTiles(target, removeAll=True)
         # Refill AP (performed in end_turn)
+        action = Command("PERSON", "DECREMENT_STATUSES", id=target.id)
+        self.server.broadcast(action, -target.id)
         for stat in target.statusList:
             if stat.turnsLeft == -1:
                 print target.name + " has status enabled: " + stat.name

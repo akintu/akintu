@@ -183,6 +183,7 @@ class TheoryCraft(object):
         inventoryNames = bigSplit[4].split("&")
         toEquip = bigSplit[5].split("&")
         traitNames = bigSplit[6].split("&")
+        alternateEquip = bigSplit[7].split("&")
         
         newChar = TheoryCraft.getNewPlayerCharacter(race, cls, name=name, new=False, hardcore=hardcore, ironman=ironman)
 
@@ -214,6 +215,17 @@ class TheoryCraft(object):
                 newChar.equip(item, "Left")
             else:
                 newChar.equip(item)
+            newChar.inventory.removeItem(item)
+        for itemName in alternateEquip:
+            if itemName == '':
+                continue
+            item = TheoryCraft.rehydrateEquipment(itemName)
+            newChar.inventory.addItem(item)
+            if isinstance(item, equipment.Weapon) and newChar.equippedItems._allGear['Main Hand']:
+                # Already has gear on the main hand.
+                newChar.equip(item, "Left", True)
+            else:
+                newChar.equip(item, alternate=True)
             newChar.inventory.removeItem(item)
         for passiveName in passiveNames:
             if passiveName == '':

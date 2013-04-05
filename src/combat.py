@@ -385,7 +385,7 @@ class Combat(object):
                         dStatus.activate(target)
 
         comm = command.Command("PERSON", "ADDSTATUS", id=target.id, status=dStatus.name, \
-                turns=dStatus.turnsLeft, image='cubeforce.png')
+                turns=dStatus.turnsLeft, image=dStatus.image)
         Combat.gameServer.broadcast(comm, -comm.id)
 
     @staticmethod

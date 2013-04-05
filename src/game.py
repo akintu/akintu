@@ -311,15 +311,24 @@ class Game(object):
                 #id, status, turns, image
                 self.pane.person[command.id].addClientStatus(command.status, command.image, \
                         command.turns)
-                statsdict = {'stealth': self.pane.person[command.id].inStealth(True)}
+                statsdict = {'team' : self.pane.person[command.id].team,
+                             'statusList' : self.pane.person[command.id].clientStatusView}
                 self.screen.update_person(command.id, statsdict)
 
             ###### Remove Person Status ######
             if command.type == "PERSON" and command.action == "REMOVESTATUS":
                 self.pane.person[command.id].removeClientStatus(command.status)
-                statsdict = {'stealth': self.pane.person[command.id].inStealth(True)}
+                statsdict = {'team' : self.pane.person[command.id].team,
+                             'statusList' : self.pane.person[command.id].clientStatusView}
                 self.screen.update_person(command.id, statsdict)
 
+            ###### Update Statuses ######
+            if command.type == "PERSON" and command.action == "DECREMENT_STATUSES":
+                self.pane.person[command.id].decrementClientStatuses()
+                statsdict = {'team' : self.pane.person[command.id].team,
+                             'statusList' : self.pane.person[command.id].clientStatusView}
+                self.screen.update_person(command.id, statsdict)
+                
             ###### Update Text #####
             elif command.type == "UPDATE" and command.action == "TEXT":
                 self.screen.show_text(command.text, color=command.color)
@@ -497,19 +506,14 @@ class Game(object):
                     self.screen.hide_dialog()
                     keystate.inputState = "OVERWORLD"
                 elif e == "CHARSHEETMAIN":
-                    self.screen.hide_dialog()
                     self.display_character_sheet()
                 elif e == "CHARSHEETABILITIES":
-                    self.screen.hide_dialog()
                     self.display_character_abilities()
                 elif e == "CHARSHEETSPELLS":
-                    self.screen.hide_dialog()
                     self.display_character_spells()
                 elif e == "CHARSHEETPASSIVES":
-                    self.screen.hide_dialog()
                     self.display_character_passives()
                 elif e == "CHARSHEETTRAITS":
-                    self.screen.hide_dialog()
                     self.display_character_traits()
 
                 ### Levelup Commands ###
@@ -650,9 +654,7 @@ class Game(object):
                 elif e == "GETITEM":
                     self.get_item()
                 elif e == "BASHCHEST":
-                    #self.break_in() -- Will bash/pick-lock chests.  Will attempt a picklock first if
-                    # you are a thief primary class.  If that fails, all other attempts will be bashes.
-                    pass
+                    self.break_in()
                 elif e == "STARTLEVELUP":
                     self.request_levelup(True)
                 #elif e == "STARTRESPEC":
@@ -667,11 +669,15 @@ class Game(object):
     def get_item(self):
         self.CDF.send(Command("PERSON", "OPEN", id=self.id))
         # If player is on an item, pick it up (the top item).
-        # If player is on a treasure chest, attempt to open it.
+        # If player is next to a treasure chest, attempt to open it.
         # If the chest is locked, send a message to the screen.
+        # If you are a thief, attempt to unlock it.
         # If the chest is unlocked, distribute treasure to this player
         #    and all others on this pane.
 
+    def break_in(self):
+        self.CDF.send(Command("PERSON", "BASHCHEST", id=self.id))
+        
     def request_levelup(self, debug=False):
         # Remove EXP code left for testing, TODO
         player = self.pane.person[self.id]
