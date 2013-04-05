@@ -24,7 +24,7 @@ class World(object):
         seed: the random seed for this world
     '''
 
-    def __init__(self, seed):
+    def __init__(self, seed, nearestTown=Location(0,0)):
         self.seed = seed
         self.panes = dict()
         self.pane_items = dict()

@@ -58,7 +58,7 @@ class Pane(object):
 
         if load_entities:
             #TEST STAMP IDEA
-            stamp = Stamp.getStringStamp("("+ str(self.location[0]) + ":" + str(self.location[1]) + ")")
+            stamp = Stamp.getStringStamp("("+ str(self.location[0]) + ":" + str(self.location[1]) + ":" + str(self.z) + ")")
             r = Region()
             r("ADD", "SQUARE", Location(self.location, (0,0)), Location(self.location, (stamp.width-1, stamp.height-1)))
             self.clear_region(r)
