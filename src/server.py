@@ -357,9 +357,7 @@ class GameServer():
                 self.person[personId].location.pane
         return [self.person[i] for i in self.player.values() if i in self.pane[pane].person]
 
-    def get_monster_leader(self, character):
-        if not character.cPane:
-            return None
+    def get_monster_leader(self, cPane):
         for i, p in self.person.iteritems():
-            if character.cPane == p.location:
+            if cPane == p.location:
                 return p
