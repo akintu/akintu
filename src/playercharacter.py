@@ -313,7 +313,11 @@ class PlayerCharacter(p.Person):
                 longText.append("&" + eq.identifier)
         longText.append("@")
         for tr in self.traits:
-            longText.append("&" + tr.name + `tr.rank`) 
+            longText.append("&" + tr.name + `tr.rank`)
+        longText.append("@")
+        for eq in self.equippedItems._alternateSet.values():
+            if eq:
+                longText.append("&" + eq.identifier)
         return ''.join(longText)
         
         
@@ -1194,7 +1198,8 @@ class PlayerCharacter(p.Person):
             self.inventory.allItems.append(oldPiece2)
         if self.AP > self.totalAP:
             self.AP = self.totalAP
-
+        return [oldPiece, oldPiece2]
+            
     def unequip(self, slot, alternate=False):
         oldPieces = self.equippedItems.unequip(slot, alternate)
         for item in oldPieces:
@@ -1309,8 +1314,14 @@ class PlayerCharacter(p.Person):
         '''Used in combat to change the alternate gear to be the
         primary gear. Takes off the blues, puts on the blues.'''
         altGear = self.unequip('Main Hand', True) # Only call on main hand; it'll unequip both.
+        oldGear = []
         for gear in altGear:
-            self.equip(gear, True)
+            oldGear.extend(self.equip(gear))
+        if oldGear[0]:
+            self.equip(oldGear[0], alternate=True)
+        if oldGear[1]:
+            self.equip(oldGear[1], "Left", alternate=True)
+                
         
     def printCharacterSheet(self):
         '''Method prints a mock-up of a character sheet to the console as

@@ -5,7 +5,6 @@ import equipment
 
 class EquippedItems(object):
     def __init__(self, startingGearDict):
-	    #TODO actually use startingGearDict
         self._allGear = {'Chest' : None,
                         'Head' : None,
                         'Hands' : None,
@@ -226,11 +225,7 @@ class EquippedItems(object):
             for x in old:
                 x.color = "black"
             return old
-            
-    def setAlternate(self, newPiece):
-        pass
-            
-            
+
     @property
     def alternateWeapon(self):
         return self._alternateSet['Main Hand']
