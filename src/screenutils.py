@@ -175,7 +175,8 @@ class ItemDialog(object):
                  equipment=False,
                  bgcolor='gray',
                  capacity='',
-                 gold=''):
+                 gold='',
+                 discount=''):
         '''
         Initialize the class
         '''
@@ -190,6 +191,7 @@ class ItemDialog(object):
         self.tops = [0, 0]
         self.capacity = capacity
         self.gold = gold
+        self.discount = discount
 
         self.leftitems = self._generateitems(self.items[0])
         self.rightitems = self._generateitems(self.items[1], self.equipment)
@@ -351,6 +353,8 @@ class ItemDialog(object):
         '''
         textsurface = self._generatetext(text, width=290, height=580, size=16)
         self.surface.blit(textsurface, (495, 60))
+        textsurface = self._generatetext(self.discount, width=290, height=30)
+        self.surface.blit(textsurface, (495, 610))
 
     def _drawborders(self):
         '''
