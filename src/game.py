@@ -157,6 +157,7 @@ class Game(object):
 
         self.check_queue()
         self.handle_events()
+        self.handle_non_events()
         self.play_music()
         self.screen.update()
 
@@ -454,11 +455,15 @@ class Game(object):
     def quit(self):
         reactor.stop()
 
-    def handle_events(self):
+    def handle_non_events(self):
         if hasattr(self, 'pane') and hasattr(self.pane, 'person') and self.id in self.pane.person and \
                 not self.pane.person[self.id].anim and keystate.direction("MOVEMENT"):
             self.move_person(keystate.direction("MOVEMENT"), 1)
+        if keystate.direction("DIALOG") and time.time() >= keystate.keyTime + keystate.typematicRate:
+            self.screen.move_dialog(keystate.direction("DIALOG"))
+            keystate.keyTime = time.time()
 
+    def handle_events(self):
         pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
         for event in pygame.event.get():
             #### General commands ####
@@ -477,6 +482,7 @@ class Game(object):
                     self.move_person(keystate.direction("MOVEMENT"), 1)
                 elif keystate.direction("DIALOG"):
                     self.screen.move_dialog(keystate.direction("DIALOG"))
+                    keystate.keyTime = time.time()
                 elif keystate.direction("TARGET"):
                     self.attempt_attack(targetingLocation=keystate.direction("TARGET"))
                 elif e == "TARGETCANCEL":
