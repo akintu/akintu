@@ -482,7 +482,7 @@ class Game(object):
                     self.move_person(keystate.direction("MOVEMENT"), 1)
                 elif keystate.direction("DIALOG"):
                     self.screen.move_dialog(keystate.direction("DIALOG"))
-                    keystate.keyTime = time.time()
+                    keystate.keyTime = time.time() + 2 * keystate.typematicRate
                 elif keystate.direction("TARGET"):
                     self.attempt_attack(targetingLocation=keystate.direction("TARGET"))
                 elif e == "TARGETCANCEL":
