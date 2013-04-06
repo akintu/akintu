@@ -1,17 +1,28 @@
 #	#10x6 Landscape Stamps
-# + signifies any obstacle (of 1 type)
-# m: monsters
-# t: tree
-# r: rock
-# s: shrub
-# g: grass (tuft)
 #
-+++++++++++
+ttggggl 
+ggwwwwgl
+gwwwwwwg
+gwwwwwgl
+gwwwwgl
+ggggl
+#
+#
+ dwwwwwww
+dwwwwwwwww
+dwwwwwwwww
+dwwwwwwwww 
+dwwwwwwww
+ddwwww
+#
+#
+++++++++++
 +
 +
 +
 +
-+++++++++++
+++++++++++
+#
 #
 ++++++++++
 +        +
@@ -20,6 +31,7 @@
 +      + +
 ++++++++ +
 #
+#
 ++++++++++
          +
 ++++++++ +
@@ -27,12 +39,14 @@
 +        +
 ++++++++++
 #
+#
 +  +  +  +
  +  +  +  
   +  +  + 
 +  +  +  +
  +  +  +  
   +  +  + 
+#
 #
   +  +  + 
 +  +  +  +
@@ -41,6 +55,7 @@
 +  +  +  +
  +  +  +  
 #
+#
  +  +  +  
   +  +  + 
 +  +  +  +
@@ -48,21 +63,27 @@
   +  +  + 
 +  +  +  +
 #
+#
 +  +  +  +
-
+ 
 +  +  +  +
-
+ 
 +  +  +  +
-
+ 
+#
 #
 + + + + +
-
+  
 + + + + +
-
+  
 + + + + +
+	 
+#
 #
 +   +   +
   +   +   
-    +   +
+	+   +
 	  +
-	    +
+		+
++ 
+ 

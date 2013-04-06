@@ -13,15 +13,16 @@ class Stamp(object):
     LANDSCAPE = "landscape"
     TEXT = "text"
     key_dict = {' ': None,
-                'p':'path',
+                'p':'walk',
                 'd':'dirt',
+                'l':'gravel',
                 '+':'obstacle',
                 'g':'grass',
                 'r':'rock',
                 's':'shrub',
                 't':'tree',
                 'w':'water',
-                't':'treasure',
+                'c':'chests',
                 'm':'monster',
                 'B':'building',
                 'G':'garden',
@@ -121,7 +122,7 @@ class Stamp(object):
         Stamp.garden = dict()
         Stamp.treasure = dict()
         Stamp.water = dict()
-        Stamp.landscape = dict()
+        Stamp.landscape = Stamp.parseStampFiles(os.path.join(STAMP_PATH, "landscape"))
         Stamp.text = Stamp.parseTextStamps(('+', 'd'))
 
     @staticmethod
@@ -160,6 +161,38 @@ class Stamp(object):
         return tmp_stamp
 
     @staticmethod
+    def parseStampFiles(path, rep=("\t", "     ")):
+        stamp_files = os.listdir(path)
+        stamp_dict = dict()
+
+        if stamp_files:
+            for filename in stamp_files:
+                # print filename
+                stamp_list = []
+                width, ext = filename.split("_")
+                width = int(width)
+                height = int(ext.split(".")[0])
+
+                #Open File and Read in lines
+                file = os.path.join(path, filename)
+                lines_in = open(file, 'r').readlines()
+                num_stamps = len(lines_in)/(height+2)
+
+                for i in range(num_stamps):
+                    tlines = lines_in[i*(height+2) : i*(height+2)+(height+2)]
+                    char_string = ""
+                    for j in range(height):
+                        tmp = tlines[j+2][:-1] + " "*width    #Strip newline and pad with spaces
+                        tmp = tmp.replace(rep[0], rep[1])
+                        tlines[j+2] = tmp[:width]
+                        char_string += tlines[j+2]
+                    stamp_list.append(Stamp(size=(width, height), data=char_string))
+                stamp_dict[(width, height)] = stamp_list
+
+        #print stamp_dict.keys()
+        return stamp_dict
+
+    @staticmethod
     def parseTextStamps(rep=('+', '+')):
         text_dict = dict()
         path = os.path.join(STAMP_PATH, "text", "font.txt")
@@ -173,7 +206,7 @@ class Stamp(object):
             tlines = lines_in[7*i : 7*i + 7]
 
             # get character  
-            tchar = tlines[0][:-1] # remove NL
+            tchar = tlines[0][:-1] # remove newline
 
             # get width of character
             width = int(tlines[1].strip())
@@ -183,13 +216,12 @@ class Stamp(object):
             # pad the end to make sure it fills the width
             char_string = ""
             for j in range(5):
-                tmp = tlines[j+2][:-1] + "     "
+                tmp = tlines[j+2][:-1] + " "*width
                 tmp = tmp.replace(rep[0], rep[1])
                 tlines[j+2] = tmp[:width]
                 char_string += tlines[j+2]
 
             text_dict[tchar] = Stamp(size=(width, 5), data=char_string)
-            #text_dict[tchar] = [(width, 5), char_string]
         return text_dict
 
 if __name__ == "__main__":

@@ -1,29 +1,34 @@
 #	#3x3 Landscape Stamps
 # + signifies any obstacle (of 1 type)
-#
  +
 +++
  +
 #
+#
 +++
 + +
 + +
+#
 #
 +++
   +
 +++
 #
+#
 + +
-
+ 
 + +
+#
 #
 + +
 + +
 + +
+#
 #
 + +
  +
 + +
+#
 #
 + +
  +

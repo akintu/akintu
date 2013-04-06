@@ -53,14 +53,21 @@ class Pane(object):
         for i in range(PANE_X):
             for j in range(PANE_Y):
                 self.tiles[(i, j)] = Tile(None, True)
-                if load_entities:
-                    self.add_obstacle((i, j), RAND_ENTITIES)
+                # if load_entities:
+                    # self.add_obstacle((i, j), RAND_ENTITIES)
 
         if load_entities:
             #TEST STAMP IDEA
             stamp = Stamp.getStringStamp("("+ str(self.location[0]) + ":" + str(self.location[1]) + ":" + str(self.z) + ")")
             stamp_loc = Location(self.location, (random.randrange(1, PANE_X-stamp.width), random.randrange(1, PANE_Y-stamp.height)))
             self.load_stamp(stamp, stamp_loc)
+
+            for i in range(2):
+                stamp_dict = Stamp.getStamps(Stamp.LANDSCAPE)
+                stamp = random.choice(list(stamp_dict[(10,6)]))
+                stamp_loc = Location(self.location, (random.randrange(1, PANE_X-stamp.width), random.randrange(1, PANE_Y-stamp.height)))
+                self.load_stamp(stamp, stamp_loc)
+            
             if self.pane_state:
                 self.load_state(self.pane_state)
             elif self.is_server:
