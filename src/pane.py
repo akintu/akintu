@@ -62,9 +62,9 @@ class Pane(object):
             stamp_loc = Location(self.location, (random.randrange(1, PANE_X-stamp.width), random.randrange(1, PANE_Y-stamp.height)))
             self.load_stamp(stamp, stamp_loc)
 
-            for i in range(2):
+            for i in range(1):
                 stamp_dict = Stamp.getStamps(Stamp.LANDSCAPE)
-                stamp = random.choice(list(stamp_dict[(10,6)]))
+                stamp = random.choice(random.choice(list(stamp_dict.values())))
                 stamp_loc = Location(self.location, (random.randrange(1, PANE_X-stamp.width), random.randrange(1, PANE_Y-stamp.height)))
                 self.load_stamp(stamp, stamp_loc)
             
@@ -125,18 +125,34 @@ class Pane(object):
                 self.person[id(person)] = person
         else:   #TODO: Make this better. We're creating monsters from scratch here
             random.seed(self.seed + str(self.location) + "load_monsters")
-            for i in range(3):
-                lvl = max(abs(self.location[0]), abs(self.location[1]))
+            for i in range(0):
+                self.add_monster()
+
+    def add_monster(self, level=None, tolerance=None, location=None, region=None, ai=None):
+        #Handle Default Objects
+        if not level:
+            level = max(abs(self.location[0]), abs(self.location[1]))
+        if not tolerance:
+            if level == 0:
+                tolerance = 0
+                level = 1
+            else:
                 tolerance = 1
-                if lvl == 0:
-                    lvl = 1
-                    tolerance = 0
-                person = TheoryCraft.getMonster(level=lvl, tolerance=tolerance)#TODO, pass in random here
-                person.location = Location(self.location, (random.randrange(PANE_X), random.randrange(PANE_Y)))
-                r = Region()
-                r("ADD", "CIRCLE", person.location, PANE_Y/4)
-                person.ai.add("wander", person.movementSpeed, pid=id(person), region=r, move_chance=1.0 / (person.movementSpeed))
-                self.person[id(person)] = person
+        if not location:
+            location = Location(self.location, (random.randrange(PANE_X), random.randrange(PANE_Y)))
+        
+        person = TheoryCraft.getMonster(level=level, tolerance=tolerance)
+        person.location = location
+        if not region:
+            region = Region()
+            region("ADD", "CIRCLE", person.location, PANE_Y/4)
+        if ai:
+            print "add_monster(ai) not implemented"
+
+        person.ai.add("wander", person.movementSpeed, pid=id(person), region=region, move_chance=1.0 / (person.movementSpeed))
+        self.person[id(person)] = person
+        
+        print location
 
     def save_items(self):
         '''
@@ -199,10 +215,14 @@ class Pane(object):
             for type, loc in loc_list:
                 self.add_chest(type, None, loc)
 
-    def add_chest(self, chest_type, level, tile):
+    def add_chest(self, chest_type=None, level=None, tile=None):
+        if not chest_type:
+            chest_type = TreasureChest.CHEST_TYPE[random.randrange(len(TreasureChest.CHEST_TYPE))]
         if not level:
             level = max(abs(self.location[0]), abs(self.location[1]))
             level = max(level, 1)
+        if not tile:
+            tile = (random.randrange(1, PANE_X-1), random.randrange(1, PANE_Y-1))
         self.tiles[tile].add_chest(TreasureChest(chest_type, level, tile))
         self.load_images()
 
@@ -340,8 +360,20 @@ class Pane(object):
         
         obst = random.choice(sorted(OBSTACLES))
         for loc, type in stamp.getEntityLocations(location).iteritems():
+            
+            #CONSUMABLES AND ITEMS (REMOVED AFTER USE)
+            if type in [CHEST_KEY, MONSTER_KEY, ITEM_KEY]:
+                if not self.pane_state and self.is_server:
+                    if type == CHEST_KEY:
+                        self.add_chest(tile=loc.tile)
+                    if type == MONSTER_KEY:
+                        self.add_monster(location=loc)
+                    if type == ITEM_KEY:
+                        self.add_item(tile=loc.tile)
+                continue
             if type == 'obstacle':
                 type = obst
+            #OBSTACLES AND PATHS
             if loc.pane == self.location and loc.z == self.z and type != None:
                 self.add_obstacle(loc.tile, 1, entity_type=type)
 
@@ -650,10 +682,18 @@ class CombatPane(Pane):
                 if not tile in self.tiles:
                     self.tiles[tile] = Tile(None, True)
                 self.objects[tile] = entity_key
-                #self.tiles[tile].passable = False
-                obstacle = Sprites.get_zoomed_image(entity_key, (di,dj))
-                self.tiles[tile].entities.append(Entity(tile, image=obstacle))
 
+                image = None
+                passable = False
+                #These are separated in case we split up the work in sprites.py
+                if entity_key in ZOOMED_OBSTACLES:
+                    image = Sprites.get_zoomed_image(entity_key, (di,dj))
+                elif entity_key in ZOOMED_PATHS:
+                    image = Sprites.get_zoomed_image(entity_key, (di,dj))
+                    passable = True
+                else:
+                    print "KEY NOT FOUND " + entity_key
+                self.tiles[tile].entities.append(Entity(tile, image=image, passable=passable))
 
     def load_background_images(self):
         self.images = Sprites.get_images_dict()
