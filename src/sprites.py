@@ -18,8 +18,39 @@ SHRUB = (OBSTACLES_IMAGES_PATH, "shrub.png", TILE_SIZE, None, TILE_SIZE)
 SHRUB_ZOOM = SHRUB
 GRASS = (OBSTACLES_IMAGES_PATH, "grass.png", TILE_SIZE, None, TILE_SIZE)
 GRASS_ZOOM = GRASS
+WATER = (OBSTACLES_IMAGES_PATH, "water.png", TILE_SIZE, None, TILE_SIZE)
+WATER_ZOOM = WATER
+
+OBSTACLES = {'tree': TREE, 'rock': ROCK, 'shrub': SHRUB, 'grass': GRASS, 'water': WATER}
+OBSTACLE_KEYS = sorted(OBSTACLES.keys())
+
+#DUNGEON OBSTACLES
 BONES = (OBSTACLES_IMAGES_PATH, "bones.png", TILE_SIZE, None, TILE_SIZE)
 BONES_ZOOM = BONES
+
+DUNGEON_OBSTACLES = {'bones': BONES}
+DUNGEON_OBSTACLE_KEYS = sorted(DUNGEON_OBSTACLES.keys())
+
+#PATHS
+GRAVEL = (OBSTACLES_IMAGES_PATH, "gravel.png", TILE_SIZE, None, TILE_SIZE)
+GRAVEL_ZOOM = GRAVEL
+DIRT = (OBSTACLES_IMAGES_PATH, "dirt.png", TILE_SIZE, None, TILE_SIZE)
+DIRT_ZOOM = DIRT
+WALK = (OBSTACLES_IMAGES_PATH, "walk.png", TILE_SIZE, None, TILE_SIZE)
+WALK_ZOOM = WALK
+
+PATHS = {'gravel': GRAVEL, 'dirt': DIRT, 'walk': WALK}
+PATH_KEYS = sorted(PATHS.keys())
+
+#ALL ENTITIES TOGETHER
+ENTITIES = dict(OBSTACLES.items() + PATHS.items() + DUNGEON_OBSTACLES.items())  #ADD MORE ITEMS HERE
+ENTITY_KEYS = sorted(ENTITIES.keys())
+ZOOMED_ENTITIES = {'rock_zoom': ROCK_ZOOM, 'tree_zoom': TREE_ZOOM,
+                    'shrub_zoom': SHRUB_ZOOM, 'grass_zoom': GRASS_ZOOM, 
+                    'bones_zoom': BONES_ZOOM, 'water_zoom': WATER_ZOOM,
+                    'gravel_zoom': GRAVEL_ZOOM, 'dirt_zoom': DIRT_ZOOM,
+                    'walk_zoom': WALK_ZOOM}
+
 
 #BACKGROUNDS
 GRASS1 = (BACKGROUND_IMAGES_PATH, "grass1.jpg", TILE_SIZE, None, None)
@@ -28,23 +59,21 @@ GRASS3 = (BACKGROUND_IMAGES_PATH, "grass3.jpg", TILE_SIZE, None, None)
 GRASS4 = (BACKGROUND_IMAGES_PATH, "grass4.jpg", TILE_SIZE, None, None)
 GRAVEL1 = (BACKGROUND_IMAGES_PATH, "gravel1.jpg", TILE_SIZE, None, None)
 
-OBSTACLES = {'tree': TREE, 'rock': ROCK, 'shrub': SHRUB, 'grass': GRASS}#, 'bones': BONES}
-ENTITIES = dict(OBSTACLES.items())  #ADD MORE ITEMS HERE
-ZOOMED_ENTITIES = {'rock_zoom': ROCK_ZOOM, 'tree_zoom': TREE_ZOOM, 'shrub_zoom': SHRUB_ZOOM, 'grass_zoom': GRASS_ZOOM, 'bones_zoom': BONES_ZOOM}
-BACKGROUNDS = {'summer': GRASS2, 'fall': GRASS3, 'desert': GRAVEL1}
-ENTITY_KEYS = sorted(ENTITIES.keys())
-OBSTACLE_KEYS = sorted(OBSTACLES.keys())
+BACKGROUNDS = {'summer': GRASS2, 'fall': GRASS3, 'desert': GRASS4}
+
+###################SPRITE SHEETS########################
 
 #ITEMS AND SUCH
 CHEST = (ITEMS_IMAGES_PATH, "treasure_chest.png", TILE_SIZE, None, None)
+
+#HOUSES AND DUNGEONS
 HOUSE = (ITEMS_IMAGES_PATH, "house.png", TILE_SIZE, None, None)
 DUNGEON_HAND = (ITEMS_IMAGES_PATH, "dungeon-hand.png", TILE_SIZE, None, None)
 DUNGEON_GRAVE = (ITEMS_IMAGES_PATH, "dungeon-grave.png", TILE_SIZE, None, None)
 DUNGEON_TEETH = (ITEMS_IMAGES_PATH, "dungeon-teeth.png", TILE_SIZE, None, None)
 
-PATHS = (BACKGROUND_IMAGES_PATH, "paths.png", TILE_SIZE, None, None)
+PATH_SHEET = (BACKGROUND_IMAGES_PATH, "paths.png", TILE_SIZE, None, None)
 
-#KEYS
 DUNGEON_HAND_KEY = "dungeon_hand"
 DUNGEON_GRAVE_KEY = "dungeon_grave"
 DUNGEON_TEETH_KEY = "dungeon_teeth"
@@ -52,7 +81,7 @@ HOUSE_KEY = "house"
 PATH_KEY = "path"
 
 DUNGEONS = {DUNGEON_HAND_KEY: DUNGEON_HAND, DUNGEON_GRAVE_KEY: DUNGEON_GRAVE, DUNGEON_TEETH_KEY: DUNGEON_TEETH}
-SHEETS = {CHEST_KEY: CHEST, HOUSE_KEY: HOUSE, PATH_KEY: PATHS}
+SHEETS = {CHEST_KEY: CHEST, HOUSE_KEY: HOUSE, PATH_KEY: PATH_SHEET}
 SHEETS = dict(SHEETS.items() + DUNGEONS.items())
 
 class Sprites(object):
@@ -60,7 +89,12 @@ class Sprites(object):
     hasLoaded = False
     background = dict()
     objects = dict()
+    
+    obstacles = dict()
+    dungeon_obstacles = dict()
+    paths = dict()
     zoomed_objects = dict()
+    
     images = dict()
     sheets = dict()
 
@@ -73,10 +107,28 @@ class Sprites(object):
             background = crop_helper(image)
             Sprites.background[key] = background
             Sprites.images.update(background.images.items())
+        #OBSTACLES
+        for key, image in OBSTACLES.iteritems():
+            spritesheet = SpriteSheet(image)
+            #Sprites.objects[key] = spritesheet
+            Sprites.obstacles[key] = spritesheet
+            Sprites.images.update(spritesheet.images.items())
+        #DUNGEON OBSTACLES
+        for key, image in DUNGEON_OBSTACLES.iteritems():
+            spritesheet = SpriteSheet(image)
+            Sprites.dungeon_obstacles[key] = spritesheet
+            Sprites.images.update(spritesheet.images.items())
+        #PATHS
+        for key, image in PATHS.iteritems():
+            spritesheet = SpriteSheet(image)
+            Sprites.paths[key] = spritesheet
+            Sprites.images.update(spritesheet.images.items())
+        #GENERIC - ALL ENTITIES
         for key, image in ENTITIES.iteritems():
             spritesheet = SpriteSheet(image)
             Sprites.objects[key] = spritesheet
             Sprites.images.update(spritesheet.images.items())
+        #ZOOMED ENTITIES
         for key, image in ZOOMED_ENTITIES.iteritems():
             spritesheet = SpriteSheet(image)
             Sprites.objects[key] = spritesheet
@@ -109,7 +161,15 @@ class Sprites(object):
     def get_obstacle(key, seed, pane, tile):
         # if not seed:
             # print "Seed is None in Sprites.get_obstacle"
-        return Sprites.objects[key].get_random_image(seed, pane, tile)
+        return Sprites.obstacles[key].get_random_image(seed, pane, tile)
+    
+    @staticmethod
+    def get_dungeon_obstacle(key, seed, pane, tile):
+        return Sprites.dungeon_obstacles[key].get_random_image(seed, pane, tile)
+
+    @staticmethod
+    def get_path(key, seed, pane, tile):
+        return Sprites.paths[key].get_random_image(seed, pane, tile)
 
     @staticmethod
     def get_zoomed_image(key, tile_loc):

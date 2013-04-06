@@ -12,6 +12,22 @@ class Stamp(object):
     WATER = "water"
     LANDSCAPE = "landscape"
     TEXT = "text"
+    key_dict = {' ': None,
+                'p':'path',
+                '+':'obstacle',
+                'g':'grass',
+                'r':'rock',
+                's':'shrub',
+                't':'tree',
+                'w':'water',
+                't':'treasure',
+                'm':'monster',
+                'B':'building',
+                'G':'garden',
+                'H':'house',
+                'R':'respec',
+                'S':'shop',
+                'P':'portal'}
     loaded = False
 
     def __init__(self, size, data):
@@ -32,7 +48,9 @@ class Stamp(object):
         return self.__repr__()
 
     def getRegion(self, location=Location((0, 0), (0, 0))):
-        self.region("ADD", "SQUARE", location, Location(location.pane, (self.width-1, self.height-1)))
+        right = location.tile[0]
+        bottom = location.tile[1]
+        self.region("ADD", "SQUARE", location, Location(location.pane, (right + self.width-1, bottom + self.height-1)))
         loc = location
         for i in range(self.height):
             tmp = loc.move(2, i)
@@ -43,8 +61,19 @@ class Stamp(object):
                 tmp2 = tmp.move(6, j)
                 if string[j] == " ":
                     self.region("SUB", "SQUARE", tmp2, tmp2)
-                j = 0
         return self.region
+        
+    def getEntityLocations(self, location):
+        entities_dict = dict()
+        for i in range(self.height):
+            tmp = location.move(2, i)
+            start = i*self.width
+            end = start+self.width
+            data_line = self.data[start:end]
+            for j in range(self.width):
+                tmp2 = tmp.move(6, j)
+                key = data_line[j]
+        return entities_dict
 
     def join(self, direction, stamp, distance=0):
         new_string = ""

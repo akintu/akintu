@@ -1,0 +1,20 @@
+#	#15x12 Treasure Stamps
+# + signifies any obstacle (of 1 type)
+# m: monsters
+# t: tree
+# r: rock
+# s: shrub
+# g: grass (tuft)
+#
+++++++++++
++t t++++  ++
++ ++++ ++   +++
++  m      +
++t++++++ +++++ 
++++ ++++ ++   +
++tm  ++     + +
++t++ ++ ++++  +
++  +       + +
++  ++++++++  +
++t +      m  +
++++  ++++++++
