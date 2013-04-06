@@ -12,6 +12,24 @@ class Stamp(object):
     WATER = "water"
     LANDSCAPE = "landscape"
     TEXT = "text"
+    key_dict = {' ': None,
+                'p':'walk',
+                'd':'dirt',
+                'l':'gravel',
+                '+':'obstacle',
+                'g':'grass',
+                'r':'rock',
+                's':'shrub',
+                't':'tree',
+                'w':'water',
+                'c':'chests',
+                'm':'monster',
+                'B':'building',
+                'G':'garden',
+                'H':'house',
+                'R':'respec',
+                'S':'shop',
+                'P':'portal'}
     loaded = False
 
     def __init__(self, size, data):
@@ -32,7 +50,9 @@ class Stamp(object):
         return self.__repr__()
 
     def getRegion(self, location=Location((0, 0), (0, 0))):
-        self.region("ADD", "SQUARE", location, Location(location.pane, (self.width-1, self.height-1)))
+        right = location.tile[0]
+        bottom = location.tile[1]
+        self.region("ADD", "SQUARE", location, Location(location.pane, (right + self.width-1, bottom + self.height-1)))
         loc = location
         for i in range(self.height):
             tmp = loc.move(2, i)
@@ -43,27 +63,47 @@ class Stamp(object):
                 tmp2 = tmp.move(6, j)
                 if string[j] == " ":
                     self.region("SUB", "SQUARE", tmp2, tmp2)
-                j = 0
         return self.region
+        
+    def getEntityLocations(self, location):
+        entities_dict = dict()
+        for i in range(self.height):
+            tmp = location.move(2, i)
+            start = i*self.width
+            end = start+self.width
+            data_line = self.data[start:end]
+            for j in range(self.width):
+                tmp2 = tmp.move(6, j)
+                key = data_line[j]
+                entities_dict[tmp2] = self.key_dict[key]
+        return entities_dict
 
-    def join(self, arg, stamp, distance=0):
+    def join(self, direction, stamp, distance=0):
         new_string = ""
         padding = ""
         for pad in range(distance):
             padding += " "
-        if arg == "HORIZONTAL":
-            width = self.width + stamp.width + distance
-            height = max(self.height, stamp.height)
+        if direction in [6, 4]:
+            if direction == 6: 
+                a = self
+                b = stamp
+            else:
+                a = stamp
+                b = self
+            
+            width = a.width + b.width + distance
+            height = max(a.height, b.height)
             # print(width, height)
-            #TODO: This will break when self.height is less than stamp.height
-            for i in range(self.height):
-                start_1 = i*self.width
-                start_2 = i*stamp.width
-                end_1 = start_1+self.width
-                end_2 = start_2+stamp.width
-                new_string += self.data[start_1:end_1] + padding + stamp.data[start_2:end_2]
+            #TODO: This will break when a.height is less than b.height
+            #Need to add padding to the string that has no more data to give
+            for i in range(a.height):
+                start_1 = i*a.width
+                start_2 = i*b.width
+                end_1 = start_1+a.width
+                end_2 = start_2+b.width
+                new_string += a.data[start_1:end_1] + padding + b.data[start_2:end_2]
                     
-        if arg == "VERTICAL":
+        if direction == 2:
             pass
 
         return Stamp((width, height), new_string)
@@ -76,14 +116,15 @@ class Stamp(object):
         Stamp.loaded = True
 
         #Open the stamp files and parse the information
-        Stamp.dungeon = dict()
-        Stamp.house = dict()
-        Stamp.shop = dict()
-        Stamp.garden = dict()
-        Stamp.treasure = dict()
-        Stamp.water = dict()
-        Stamp.landscape = dict()
-        Stamp.text = Stamp.parseTextStamps()
+        Stamp.dungeon = Stamp.parseStampFiles(os.path.join(STAMP_PATH, "dungeon"))
+        Stamp.house = Stamp.parseStampFiles(os.path.join(STAMP_PATH, "house"))
+        Stamp.shop = Stamp.parseStampFiles(os.path.join(STAMP_PATH, "shop"))
+        Stamp.garden = Stamp.parseStampFiles(os.path.join(STAMP_PATH, "garden"))
+        Stamp.treasure = Stamp.parseStampFiles(os.path.join(STAMP_PATH, "treasure"))
+        Stamp.water = Stamp.parseStampFiles(os.path.join(STAMP_PATH, "water"))
+        Stamp.landscape = Stamp.parseStampFiles(os.path.join(STAMP_PATH, "landscape"))
+        
+        Stamp.text = Stamp.parseTextStamps(('+', 'd'))
 
     @staticmethod
     def getStamps(key):
@@ -116,12 +157,47 @@ class Stamp(object):
         tmp_stamp = Stamp.text[text[0]]
 
         for i in range(1,len(text)):
-            tmp_stamp = tmp_stamp.join("HORIZONTAL", Stamp.text[text[i]], distance=1)
+            tmp_stamp = tmp_stamp.join(6, Stamp.text[text[i]], distance=1)
 
         return tmp_stamp
 
     @staticmethod
-    def parseTextStamps():
+    def parseStampFiles(path, rep=("+", "+")):
+        stamp_dict = dict()
+        stamp_files = None
+        if os.path.exists(path):
+            stamp_files = os.listdir(path)
+
+        if stamp_files:
+            for filename in stamp_files:
+                # print filename
+                stamp_list = []
+                width, ext = filename.split("_")
+                width = int(width)
+                height = int(ext.split(".")[0])
+
+                #Open File and Read in lines
+                file = os.path.join(path, filename)
+                lines_in = open(file, 'r').readlines()
+                num_stamps = len(lines_in)/(height+2)
+
+                for i in range(num_stamps):
+                    tlines = lines_in[i*(height+2) : i*(height+2)+(height+2)]
+                    char_string = ""
+                    for j in range(height):
+                        tmp = tlines[j+2][:-1] + " "*width    #Strip newline and pad with spaces
+                        tmp = tmp.replace(rep[0], rep[1])
+                        tmp = tmp.replace("\t", "    ")
+                        tlines[j+2] = tmp[:width]
+                        char_string += tlines[j+2]
+                    stamp_list.append(Stamp(size=(width, height), data=char_string))
+                stamp_dict[(width, height)] = stamp_list
+
+        #print stamp_dict.keys()
+        return stamp_dict
+
+    @staticmethod
+    def parseTextStamps(rep=('+', '+')):
         text_dict = dict()
         path = os.path.join(STAMP_PATH, "text", "font.txt")
         if not os.path.exists(path):
@@ -134,7 +210,7 @@ class Stamp(object):
             tlines = lines_in[7*i : 7*i + 7]
 
             # get character  
-            tchar = tlines[0][:-1] # remove NL
+            tchar = tlines[0][:-1] # remove newline
 
             # get width of character
             width = int(tlines[1].strip())
@@ -144,12 +220,12 @@ class Stamp(object):
             # pad the end to make sure it fills the width
             char_string = ""
             for j in range(5):
-                tmp = tlines[j+2][:-1] + "     "
+                tmp = tlines[j+2][:-1] + " "*width
+                tmp = tmp.replace(rep[0], rep[1])
                 tlines[j+2] = tmp[:width]
                 char_string += tlines[j+2]
 
             text_dict[tchar] = Stamp(size=(width, 5), data=char_string)
-            #text_dict[tchar] = [(width, 5), char_string]
         return text_dict
 
 if __name__ == "__main__":

@@ -328,7 +328,7 @@ class Game(object):
                 statsdict = {'team' : self.pane.person[command.id].team,
                              'statusList' : self.pane.person[command.id].clientStatusView}
                 self.screen.update_person(command.id, statsdict)
-                
+
             ###### Update Text #####
             elif command.type == "UPDATE" and command.action == "TEXT":
                 self.screen.show_text(command.text, color=command.color)
@@ -677,7 +677,7 @@ class Game(object):
 
     def break_in(self):
         self.CDF.send(Command("PERSON", "BASHCHEST", id=self.id))
-        
+
     def request_levelup(self, debug=False):
         # Remove EXP code left for testing, TODO
         player = self.pane.person[self.id]
@@ -806,12 +806,12 @@ class Game(object):
             self.CDF.send(Command("PERSON", "MOVE", id=self.id, \
                     location=self.pane.person[self.id].location))
 
-
     def display_character_sheet(self):
         player = self.pane.person[self.id]
-        self.screen.show_character_dialog(player) # TODO: Custom menu keys here.
-        self.screen.show_character_dialog(player, abilitykey='A', spellkey='S',
-                                                  passivekey='P', traitkey='T')
+        self.screen.show_character_dialog(player, abilitykey=keystate.get_key("CHARSHEETABILITIES"),
+                spellkey=keystate.get_key("CHARSHEETSPELLS"),
+                passivekey=keystate.get_key("CHARSHEETPASSIVES"),
+                traitkey=keystate.get_key("CHARSHEETTRAITS"))
 
     def display_character_abilities(self):
         text = "Active Abilities (Press 'C' to return to main statistics)"

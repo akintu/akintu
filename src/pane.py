@@ -53,16 +53,21 @@ class Pane(object):
         for i in range(PANE_X):
             for j in range(PANE_Y):
                 self.tiles[(i, j)] = Tile(None, True)
-                if load_entities:
-                    self.add_obstacle((i, j), RAND_ENTITIES)
+                # if load_entities:
+                    # self.add_obstacle((i, j), RAND_ENTITIES)
 
         if load_entities:
             #TEST STAMP IDEA
             stamp = Stamp.getStringStamp("("+ str(self.location[0]) + ":" + str(self.location[1]) + ":" + str(self.z) + ")")
-            r = Region()
-            r("ADD", "SQUARE", Location(self.location, (0,0)), Location(self.location, (stamp.width-1, stamp.height-1)))
-            self.clear_region(r)
-            self.load_region(stamp.getRegion(), "tree")
+            stamp_loc = Location(self.location, (random.randrange(1, PANE_X-stamp.width), random.randrange(1, PANE_Y-stamp.height)))
+            self.load_stamp(stamp, stamp_loc)
+
+            for i in range(2):
+                stamp_dict = Stamp.getStamps(Stamp.LANDSCAPE)
+                stamp = random.choice(list(stamp_dict[(10,6)]))
+                stamp_loc = Location(self.location, (random.randrange(1, PANE_X-stamp.width), random.randrange(1, PANE_Y-stamp.height)))
+                self.load_stamp(stamp, stamp_loc)
+            
             if self.pane_state:
                 self.load_state(self.pane_state)
             elif self.is_server:
@@ -207,8 +212,18 @@ class Pane(object):
             for j in range(PANE_Y):
                 self.tiles[(i, j)].set_image(Sprites.get_background_tile(self.background_key, (i, j)))
         for tile, entity_key in self.objects.iteritems():
-            obstacle = Sprites.get_obstacle(entity_key, self.seed, self.location, tile)
-            self.tiles[tile].entities.append(Entity(tile, image=obstacle))
+            passable = False
+            image = None
+            if entity_key in OBSTACLES:
+                image = Sprites.get_obstacle(entity_key, self.seed, self.location, tile)
+            elif entity_key in DUNGEON_OBSTACLES:
+                image = Sprites.get_dungeon_obstacle(entity_key, self.seed, self.location, tile)
+            elif entity_key in PATHS:
+                image = Sprites.get_path(entity_key, self.seed, self.location, tile)
+                passable = True
+            if not image:
+                print "Entity Key NOT FOUND: " + str(entity_key)
+            self.tiles[tile].entities.append(Entity(tile, image=image, passable=passable))
 
     def is_tile_passable(self, location, check_entity_keys=False):
         return self.tiles[location.tile].is_passable(check_entity_keys)
@@ -243,8 +258,8 @@ class Pane(object):
         if not entity_type:
             random.seed(str(self.seed) + str(self.location) + str(tile))
             if random.randrange(100) <= percentage*100:
-                index = random.randrange(len(ENTITY_KEYS))
-                self.objects[tile] = ENTITY_KEYS[index]
+                index = random.randrange(len(OBSTACLE_KEYS))
+                self.objects[tile] = OBSTACLE_KEYS[index]
                 self.tiles[tile].add_entity_key(self.objects[tile])
         else:
             self.objects[tile] = entity_type
@@ -316,13 +331,27 @@ class Pane(object):
     def get_item_list(self):
         pass
 
+    def load_stamp(self, stamp, location):
+        location2 = location.move(6, stamp.width-1).move(2, stamp.height-1)
+
+        clear = Region()
+        clear("ADD", "SQUARE", location, location2)
+        self.clear_region(clear)
+        
+        obst = random.choice(sorted(OBSTACLES))
+        for loc, type in stamp.getEntityLocations(location).iteritems():
+            if type == 'obstacle':
+                type = obst
+            if loc.pane == self.location and loc.z == self.z and type != None:
+                self.add_obstacle(loc.tile, 1, entity_type=type)
 
     def load_region(self, region, entity_type=None):
         if entity_type:
             for loc in region:
                 if not loc in self.tiles:
                     self.tiles[loc] = Tile(None, True)
-                self.add_obstacle(loc.tile, 1, entity_type)
+                if loc.pane == self.location and loc.z == self.z:
+                    self.add_obstacle(loc.tile, 1, entity_type)
 
     def clear_region(self, region):
         for loc in region:
