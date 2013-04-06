@@ -151,8 +151,6 @@ class Pane(object):
 
         person.ai.add("wander", person.movementSpeed, pid=id(person), region=region, move_chance=1.0 / (person.movementSpeed))
         self.person[id(person)] = person
-        
-        print location
 
     def save_items(self):
         '''
@@ -351,12 +349,13 @@ class Pane(object):
     def get_item_list(self):
         pass
 
-    def load_stamp(self, stamp, location):
+    def load_stamp(self, stamp, location, clear_region=False):
         location2 = location.move(6, stamp.width-1).move(2, stamp.height-1)
 
-        clear = Region()
-        clear("ADD", "SQUARE", location, location2)
-        self.clear_region(clear)
+        if clear_region:
+            clear = Region()
+            clear("ADD", "SQUARE", location, location2)
+            self.clear_region(clear)
         
         obst = random.choice(sorted(OBSTACLES))
         for loc, type in stamp.getEntityLocations(location).iteritems():
