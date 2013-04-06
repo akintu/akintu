@@ -209,9 +209,13 @@ class Monster(person.Person):
             if abil.targetType == "hostile":
                 players = self.getPlayersInRange(abil.range, server, combatPane, visiblePlayers)
                 for player in players:
-                    if abil.canUse(player)[0]:
+                    if abil.canUse(player)[0] and (not isinstance(abil, spell.Spell) or abil.shouldUse(player)):
                         usable.append((abil, player))
-            # If friendly...TODO
+            if abil.targetType == "friendly":
+                monsters = self.getMonstersInRange(abil.range, server, combatPane)
+                for mon in monsters:
+                    if abil.canUse(mon)[0] and abil.shouldUse(mon):
+                        usable.append((abil, mon))
         return usable
 
     def selectAction(self, server, combatPane):
@@ -254,6 +258,27 @@ class Monster(person.Person):
         messageObj = command.Command("PERSON", "MOVE", id=self.id, location=self.cLocation)
         self.globalServer.SDF.queue.put((None, messageObj))
        
+    def getMonstersInRange(self, range, server=None, combatPane=None):
+        '''Returns a list of monsters within a set range of this monster.  Will NOT
+        perform any form of sorting.'''
+        if not server:
+            server = Monster.globalServer
+        if not combatPane:
+            combatPane = self.currentCombatPane
+        
+        reg = region.Region()
+        if range == 1:
+            reg("ADD", "SQUARE", self.cLocation.move(7, 1), self.cLocation.move(3, 1))
+        else:
+            reg("ADD", "CIRCLE", self.cLocation, range)        
+        allMonsters = [server.person[x] for x in server.pane[combatPane].person if
+                        server.person[x].team == "Monsters"]
+        monsters = []
+        for mon in allMonsters:
+            if mon.cLocation in reg:
+                monsters.append(mon)
+        return monsters
+       
     def getPlayersInRange(self, range, server=None, combatPane=None, visiblePlayers="All"):
         """Returns a list of players within a set range of this monster.  Will sort them according
         to distance from this monster."""
@@ -273,7 +298,7 @@ class Monster(person.Person):
                         server.person[x].team == "Players"]
         else:
             allPlayers = visiblePlayers
-        # Will break when traps are introduced TODO
+        
         for player in allPlayers:
             if player.cLocation in reg and player.team == "Players":
                 players.append(player)

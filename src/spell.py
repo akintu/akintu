@@ -46,6 +46,10 @@ class Spell(object):
         self.targetType = info['target']
         self.action = info['action']
         self.cooldown = info['cooldown']
+        if 'condition' in info:
+            self.condition = info['condition']
+        else:
+            self.condition = None
         if 'image' in info:
             self.image = info['image']
         else:
@@ -61,6 +65,16 @@ class Spell(object):
             self.text = 'No description yet.'
         self.owner = owner
 
+    def shouldUse(self, target):
+        '''
+        Used by only monsters to determine if the
+        spell should be used.
+        '''
+        if self.condition is not None:
+            return self.condition(self, target)
+        else:
+            return True
+        
     def canUse(self, target):
         '''
         target: Person (later, Location?)
@@ -180,7 +194,7 @@ class Spell(object):
         
     def _arcaneWard(self, target):
         source = self.owner
-        duration = Dice.scale(source.totalSpellpower, 3, 0.1, cap=6)
+        duration = int(Dice.scale(source.totalSpellpower, 3, 0.1, cap=6))
         magnitude = Dice.scale(source.totalSpellpower, 5, 0.01)
         Combat.addStatus(target, self.name, duration, magnitude)
         return "Normal Hit"
@@ -198,12 +212,31 @@ class Spell(object):
         Combat.healTarget(source, target, magnitude)
         return "Normal Hit"
         
+    def _flickerOfLifeCheck(self, target):
+        ''' Monsters should only cast this if
+        HP is at or below 50%.  Should heal self
+        if at or below 67%'''
+        source = self.owner
+        if target == source and target.HP <= target.totalHP * 0.67:
+            return True
+        elif target.HP <= target.totalHP * 0.50:
+            return True
+        return False
+        
     def _stoneGuard(self, target):
         source = self.owner
-        duration = Dice.scale(source.totalSpellpower, 4, 0.05, cap=6)
+        duration = int(Dice.scale(source.totalSpellpower, 4, 0.05, cap=6))
         magnitude = Dice.scale(source.totalSpellpower, 12, 0.008)
         Combat.addStatus(target, self.name, duration, magnitude)
         return "Normal Hit"
+        
+    def _stoneGuardCheck(self, target):
+        '''Should only cast a buffing spell if the target doesn't
+        already have it.'''
+        source = self.owner
+        if target.hasStatus("Stone Guard"):
+            return False
+        return True
         
     def _singe(self, target):
         source = self.owner
@@ -253,13 +286,21 @@ class Spell(object):
     def _cloudVision(self, target):
         source = self.owner
         hitType = Combat.calcHit(source, target, "Magical")
-        duration = Dice.scale(source.totalSpellpower, 4, 0.025)
+        duration = int(Dice.scale(source.totalSpellpower, 4, 0.025))
         magnitude = Dice.scale(source.totalSpellpower, 10, 0.012)
         if hitType == "Partially Resisted":
             magnitude /= 2
         if hitType != "Miss" and hitType != "Fully Resisted":
             Combat.addStatus(target, self.name, duration, magnitude)
         return hitType
+        
+    def _cloudVisionCheck(self, target):
+        ''' Should only cast if target doesn't
+        already have the debuff. '''
+        source = self.owner
+        if target.hasStatus("Cloud Vision"):
+            return False
+        return True
             
     def _haunt(self, target):
         source = self.owner
@@ -268,7 +309,7 @@ class Spell(object):
                                    scalesWith="Spellpower", scaleFactor=0.01)
         Combat.lowerHP(target, damage)
         if hitType not in ["Partial Resist", "Partially Resisted", "Miss", "Fully Resisted", "Resisted"]:
-            duration = Dice.scale(source.totalSpellpower, 3, 0.02, cap=4)
+            duration = int(Dice.scale(source.totalSpellpower, 3, 0.02, cap=4))
             magnitude = round(Dice.roll(2,8) * (1 + source.totalSpellpower * 0.005))
             Combat.addStatus(target, self.name, duration, magnitude, hitValue=hitType)
         return hitType
@@ -297,7 +338,7 @@ class Spell(object):
         
     def _flamingWeapon(self, target):
         source = self.owner
-        duration = Dice.scale(source.totalSpellpower, 3, 0.03, cap=7)
+        duration = int(Dice.scale(source.totalSpellpower, 3, 0.03, cap=7))
         magnitude = round(Dice.roll(1,8) * (1 + source.totalSpellpower * 0.01))
         Combat.addStatus(target, self.name, duration, magnitude)
         return "Normal Hit"
@@ -451,7 +492,8 @@ class Spell(object):
         'action' : _flickerOfLife,
         'cooldown' : None,
         'image' : TIER1 + "flicker-of-life.png",
-        'text' : 'Restore 10-20 + 2% HP to yourself or an ally.'
+        'text' : 'Restore 10-20 + 2% HP to yourself or an ally.',
+        'condition' : _flickerOfLifeCheck
         },
 
         'Stone Guard':
@@ -467,7 +509,8 @@ class Spell(object):
         'image' : TIER1 + 'stone-guard.png',
         'text' : 'Grant a protective stone barrier increasing DR and poison tolerance.' + \
                 '\nLasts between 4 and 6 turns.  Starting values are +12% DR and\n' + \
-                '+12 Poison Tolerance.'
+                '+12 Poison Tolerance.',
+        'condition' : _stoneGuardCheck
         },
 
         'Singe':
@@ -556,7 +599,8 @@ class Spell(object):
         'image' : TIER1 + 'cloud-vision.png',
         'text' : 'Greatly lowers enemy accuracy.\n' + \
                 'Lasts 4 turns + 1 per 10 spellpower.\n' + \
-                'On Partial Resist: -50% accuracy penalty'
+                'On Partial Resist: -50% accuracy penalty',
+        'condition' : _cloudVisionCheck
         },
 
         'Haunt':
@@ -767,7 +811,7 @@ class Spell(object):
         if source.team == "Players" and target.team != "Players":
             direction = "Outgoing"
             hearer = source
-        elif source.team == "Monsters" and target.team == "Players":
+        elif source.team == "Monsters":
             direction = "Incoming"
             hearer = target
         elif source.team == "Players" and target.team == "Players":
@@ -791,7 +835,7 @@ class Spell(object):
         if source.team == "Players" and target.team != "Players":
             direction = "Outgoing"
             hearer = source
-        elif source.team == "Monsters" and target.team == "Players":
+        elif source.team == "Monsters":
             direction = "Incoming"
             hearer = target
         elif source.team == "Players" and target.team == "Players":
