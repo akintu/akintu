@@ -38,19 +38,21 @@ DIRT = (OBSTACLES_IMAGES_PATH, "dirt.png", TILE_SIZE, None, TILE_SIZE)
 DIRT_ZOOM = DIRT
 WALK = (OBSTACLES_IMAGES_PATH, "walk.png", TILE_SIZE, None, TILE_SIZE)
 WALK_ZOOM = WALK
+FLOWERS = (OBSTACLES_IMAGES_PATH, "flowers.png", TILE_SIZE, None, TILE_SIZE)
+FLOWERS_ZOOM = WALK
 
-PATHS = {'gravel': GRAVEL, 'dirt': DIRT, 'walk': WALK}
+PATHS = {'gravel': GRAVEL, 'dirt': DIRT, 'walk': WALK, 'flowers': FLOWERS}
 PATH_KEYS = sorted(PATHS.keys())
 
 #ALL ENTITIES TOGETHER
 ENTITIES = dict(OBSTACLES.items() + PATHS.items() + DUNGEON_OBSTACLES.items())  #ADD MORE ITEMS HERE
 ENTITY_KEYS = sorted(ENTITIES.keys())
-ZOOMED_ENTITIES = {'rock_zoom': ROCK_ZOOM, 'tree_zoom': TREE_ZOOM,
+ZOOMED_OBSTACLES = {'rock_zoom': ROCK_ZOOM, 'tree_zoom': TREE_ZOOM,
                     'shrub_zoom': SHRUB_ZOOM, 'grass_zoom': GRASS_ZOOM, 
-                    'bones_zoom': BONES_ZOOM, 'water_zoom': WATER_ZOOM,
-                    'gravel_zoom': GRAVEL_ZOOM, 'dirt_zoom': DIRT_ZOOM,
-                    'walk_zoom': WALK_ZOOM}
-
+                    'bones_zoom': BONES_ZOOM, 'water_zoom': WATER_ZOOM}
+ZOOMED_PATHS = {'gravel_zoom': GRAVEL_ZOOM, 'dirt_zoom': DIRT_ZOOM,
+                'walk_zoom': WALK_ZOOM, 'flowers_zoom': FLOWERS_ZOOM}
+ZOOMED_ENTITIES = dict(ZOOMED_OBSTACLES.items() + ZOOMED_PATHS.items())
 
 #BACKGROUNDS
 GRASS1 = (BACKGROUND_IMAGES_PATH, "grass1.jpg", TILE_SIZE, None, None)
@@ -110,7 +112,6 @@ class Sprites(object):
         #OBSTACLES
         for key, image in OBSTACLES.iteritems():
             spritesheet = SpriteSheet(image)
-            #Sprites.objects[key] = spritesheet
             Sprites.obstacles[key] = spritesheet
             Sprites.images.update(spritesheet.images.items())
         #DUNGEON OBSTACLES
