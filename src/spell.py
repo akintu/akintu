@@ -286,7 +286,7 @@ class Spell(object):
         
     def _weaponEnhance(self, target):
         source = self.owner
-        duration = Dice.scale(source.totalSpellpower, 3, 0.03, cap=7)
+        duration = int(Dice.scale(source.totalSpellpower, 3, 0.03, cap=7))
         magnitudeA = Dice.scale(source.totalSpellpower, 3, 0.07) # Accuracy/Penetration
         magnitudeB = Dice.scale(source.totalSpellpower, 5, 0.05) # Crit mag
         magnitudeC = Dice.scale(source.totalSpellpower, 1, 0.035) # Crit chance

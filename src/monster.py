@@ -251,7 +251,7 @@ class Monster(person.Person):
 
     def faceTarget(self, target):
         dir = self.cLocation.direction_to(target.cLocation)
-        if dir != self.cLocation.direction:
+        if dir != self.cLocation.direction and dir != 5:
             if dir == 7:
                 dir = 8
             elif dir == 1:
