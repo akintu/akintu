@@ -59,7 +59,8 @@ class Pane(object):
         if load_entities:
             #TEST STAMP IDEA
             stamp = Stamp.getStringStamp("("+ str(self.location[0]) + ":" + str(self.location[1]) + ":" + str(self.z) + ")")
-            self.load_stamp(stamp, (random.randrange(1, PANE_X-stamp.width), random.randrange(1, PANE_Y-stamp.height)))
+            stamp_loc = Location(self.location, (random.randrange(1, PANE_X-stamp.width), random.randrange(1, PANE_Y-stamp.height)))
+            self.load_stamp(stamp, stamp_loc)
             if self.pane_state:
                 self.load_state(self.pane_state)
             elif self.is_server:
@@ -205,13 +206,16 @@ class Pane(object):
                 self.tiles[(i, j)].set_image(Sprites.get_background_tile(self.background_key, (i, j)))
         for tile, entity_key in self.objects.iteritems():
             passable = False
+            image = None
             if entity_key in OBSTACLES:
                 image = Sprites.get_obstacle(entity_key, self.seed, self.location, tile)
-            if entity_key in DUNGEON_OBSTACLES:
+            elif entity_key in DUNGEON_OBSTACLES:
                 image = Sprites.get_dungeon_obstacle(entity_key, self.seed, self.location, tile)
-            if entity_key in PATHS:
+            elif entity_key in PATHS:
                 image = Sprites.get_path(entity_key, self.seed, self.location, tile)
                 passable = True
+            if not image:
+                print "Entity Key NOT FOUND: " + str(entity_key)
             self.tiles[tile].entities.append(Entity(tile, image=image, passable=passable))
 
     def is_tile_passable(self, location, check_entity_keys=False):
@@ -320,37 +324,26 @@ class Pane(object):
     def get_item_list(self):
         pass
 
-    def load_stamp(self, stamp, loc):
-        location = Location(self.location, loc)
-        left = loc[0]
-        top = loc[1]
-        right = left + stamp.width
-        bottom = top + stamp.height
-        r = Region()
-        r("ADD", "SQUARE", location, Location(self.location, (right-1, bottom-1)))
-        self.clear_region(r)
-        ent_dict = stamp.getEntityLocations(location)
-        for location in ent_dict.iteritems():
-            pass
-            #def add_obstacle(self, tile, percentage, entity_type=None):
-                # if not tile in self.tiles:
-                    # self.tiles[tile] = Tile(None, True)
-                # if not entity_type:
-                    # random.seed(str(self.seed) + str(self.location) + str(tile))
-                    # if random.randrange(100) <= percentage*100:
-                        # index = random.randrange(len(ENTITY_KEYS))
-                        # self.objects[tile] = ENTITY_KEYS[index]
-                        # self.tiles[tile].add_entity_key(self.objects[tile])
-        #COMMENT THIS OUT WHEN COMPLETE!!
-        print "LOAD STAMP CALLED BUT NOT COMPLETE"
-        self.load_region(stamp.getRegion(Location(self.location, (top, left))), "tree")
+    def load_stamp(self, stamp, location):
+        location2 = location.move(6, stamp.width-1).move(2, stamp.height-1)
+
+        clear = Region()
+        clear("ADD", "SQUARE", location, location2)
+        self.clear_region(clear)
+        
+        obst = random.choice(sorted(OBSTACLES))
+        for loc, type in stamp.getEntityLocations(location).iteritems():
+            if type == 'obstacle':
+                type = obst
+            if loc.pane == self.location and loc.z == self.z and type != None:
+                self.add_obstacle(loc.tile, 1, entity_type=type)
 
     def load_region(self, region, entity_type=None):
         if entity_type:
             for loc in region:
                 if not loc in self.tiles:
                     self.tiles[loc] = Tile(None, True)
-                if loc.pane == self.location:
+                if loc.pane == self.location and loc.z == self.z:
                     self.add_obstacle(loc.tile, 1, entity_type)
 
     def clear_region(self, region):

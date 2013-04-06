@@ -14,6 +14,7 @@ class Stamp(object):
     TEXT = "text"
     key_dict = {' ': None,
                 'p':'path',
+                'd':'dirt',
                 '+':'obstacle',
                 'g':'grass',
                 'r':'rock',
@@ -73,6 +74,7 @@ class Stamp(object):
             for j in range(self.width):
                 tmp2 = tmp.move(6, j)
                 key = data_line[j]
+                entities_dict[tmp2] = self.key_dict[key]
         return entities_dict
 
     def join(self, direction, stamp, distance=0):
@@ -120,7 +122,7 @@ class Stamp(object):
         Stamp.treasure = dict()
         Stamp.water = dict()
         Stamp.landscape = dict()
-        Stamp.text = Stamp.parseTextStamps()
+        Stamp.text = Stamp.parseTextStamps(('+', 'd'))
 
     @staticmethod
     def getStamps(key):
@@ -158,7 +160,7 @@ class Stamp(object):
         return tmp_stamp
 
     @staticmethod
-    def parseTextStamps():
+    def parseTextStamps(rep=('+', '+')):
         text_dict = dict()
         path = os.path.join(STAMP_PATH, "text", "font.txt")
         if not os.path.exists(path):
@@ -182,6 +184,7 @@ class Stamp(object):
             char_string = ""
             for j in range(5):
                 tmp = tlines[j+2][:-1] + "     "
+                tmp = tmp.replace(rep[0], rep[1])
                 tlines[j+2] = tmp[:width]
                 char_string += tlines[j+2]
 
