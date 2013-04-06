@@ -268,10 +268,14 @@ class Person(en.Entity):
             del self._clientStatusView[statusName]
 
     def decrementClientStatuses(self):
+        toRemove = []
         for x in self._clientStatusView:
             if self._clientStatusView[x]['turnsLeft'] > 0:
                 self._clientStatusView[x]['turnsLeft'] -= 1
-        
+            if self._clientStatusView[x]['turnsLeft'] == 0:
+                toRemove.append(x)
+        for x in toRemove:
+            self.removeClientStatus(x)
 
     @property
     def HPBufferList(self):

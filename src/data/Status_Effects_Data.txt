@@ -1495,7 +1495,7 @@
 
 [NAME: Preparation]
   [TYPE: Display]
-  [IMAGE: traits/ranger_traits/preparation.png]
+  [IMAGE: traits/fighter_traits/preparation.png]
   [ELEMENT: None]
   [INTERNAL: Melee_accuracy_bonus]
     [MAGNITUDE: 0]

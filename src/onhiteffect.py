@@ -8,7 +8,7 @@ class OnHitEffect(object):
     def __init__(self, count, function, elementalDamageType=None):
         self.count = count
         self.function = function
-        self.name = str(function).replace("apply", "")
+        self.name = function.__name__.replace("apply", "")
         if elementalDamageType:
             self.name += " " + elementalDamageType
         self.element = elementalDamageType
