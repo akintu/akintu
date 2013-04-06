@@ -173,5 +173,16 @@ class Keystate():
             return self.move_keys[dir[6:]]
         return False
 
+    def get_key(self, event, shortest=True):
+        if event not in self.bindings:
+            return False
+        combos = self.bindings[event][0]
+        if not isinstance(combos, list):
+            combos = [combos]
+
+        if not shortest:
+            return combos[0]
+        else:
+            return sorted(combos, key=lambda combo: len(combo.split('+')))[0].upper()
 
 keystate = Keystate()
