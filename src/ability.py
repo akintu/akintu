@@ -1394,7 +1394,7 @@ class Ability(object):
         if source.HP < source.totalHP * 0.2:
             return (False, "")
         # if in melee range of enemies, return False TODO
-        allTargets = Combat.getAOETargets(source.cPane, source.cLocation, radiu=1, selectMonsters=False)
+        allTargets = Combat.getAOETargets(source.cPane, source.cLocation, radius=1, selectMonsters=False)
         if allTargets:
             return (False, "") # At least one player in melee range.
         return (True, "")
