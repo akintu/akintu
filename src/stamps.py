@@ -116,13 +116,14 @@ class Stamp(object):
         Stamp.loaded = True
 
         #Open the stamp files and parse the information
-        Stamp.dungeon = dict()
-        Stamp.house = dict()
-        Stamp.shop = dict()
-        Stamp.garden = dict()
-        Stamp.treasure = dict()
-        Stamp.water = dict()
+        Stamp.dungeon = Stamp.parseStampFiles(os.path.join(STAMP_PATH, "dungeon"))
+        Stamp.house = Stamp.parseStampFiles(os.path.join(STAMP_PATH, "house"))
+        Stamp.shop = Stamp.parseStampFiles(os.path.join(STAMP_PATH, "shop"))
+        Stamp.garden = Stamp.parseStampFiles(os.path.join(STAMP_PATH, "garden"))
+        Stamp.treasure = Stamp.parseStampFiles(os.path.join(STAMP_PATH, "treasure"))
+        Stamp.water = Stamp.parseStampFiles(os.path.join(STAMP_PATH, "water"))
         Stamp.landscape = Stamp.parseStampFiles(os.path.join(STAMP_PATH, "landscape"))
+        
         Stamp.text = Stamp.parseTextStamps(('+', 'd'))
 
     @staticmethod
@@ -161,9 +162,11 @@ class Stamp(object):
         return tmp_stamp
 
     @staticmethod
-    def parseStampFiles(path, rep=("\t", "     ")):
-        stamp_files = os.listdir(path)
+    def parseStampFiles(path, rep=("+", "+")):
         stamp_dict = dict()
+        stamp_files = None
+        if os.path.exists(path):
+            stamp_files = os.listdir(path)
 
         if stamp_files:
             for filename in stamp_files:
@@ -184,6 +187,7 @@ class Stamp(object):
                     for j in range(height):
                         tmp = tlines[j+2][:-1] + " "*width    #Strip newline and pad with spaces
                         tmp = tmp.replace(rep[0], rep[1])
+                        tmp = tmp.replace("\t", "    ")
                         tlines[j+2] = tmp[:width]
                         char_string += tlines[j+2]
                     stamp_list.append(Stamp(size=(width, height), data=char_string))
