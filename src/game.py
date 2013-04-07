@@ -432,7 +432,12 @@ class Game(object):
 
             elif command.type == "CLIENT" and command.action == "QUIT":
                 self.save_and_quit()
-
+                
+            elif command.type == "SHOP" and command.action == "OPEN":
+                self.currentShop = shop.Shop(command.shopLevel, command.shopSeed)
+                keystate.inputState = "SHOP"
+                player = self.pane.person[self.id]
+                self.currentShop.open(player, self.screen)
     def save_player(self):
         '''
         Calls State.save_player with our client side player object
@@ -565,15 +570,15 @@ class Game(object):
                     self.request_shop()
                 elif e == "SHOPTRANSACTION":
                     if self.screen.get_dialog_selection()[0] == 0:
-                        self.currentShop.sell(self.screen.get_dialog_selection()[1])
+                        self.currentShop.sell(self.screen.get_dialog_selection()[1], self.pane.person[self.id], self.screen)
                     else:
-                        self.currentShop.buy(self.screen.get_dialog_selection()[1])
+                        self.currentShop.buy(self.screen.get_dialog_selection()[1], self.pane.person[self.id], self.screen)
                 elif e == "SHOPCLOSE":
                     if self.pane.person[self.id].anim:
                         self.pane.person[self.id].anim.stop()
                         self.pane.person[self.id].anim = None
                     self.screen.update_person(self.id, {'location': self.pane.person[self.id].location})
-                    hero = self.currentShop.close()
+                    hero = self.currentShop.close(self.pane.person[self.id], self.screen)
                     if hero:
                         # Hero is None until the shop phase is finished.  Then it is a dehydrated hero.
                         newHero = TheoryCraft.rehydratePlayer(hero)
@@ -746,12 +751,8 @@ class Game(object):
             self.pane.person[self.id].addExperience(remainderExp)
 
     def request_shop(self):
-        player = self.pane.person[self.id]
-        # if player is actually on a shop tile or whatever... TODO
-        if player.inventory.allItems:
-            keystate.inputState = "SHOP"
-            self.currentShop = shop.Shop(player, self.screen) # Using all default parameters at the moment TODO
-            self.currentShop.open()
+        action = Command("SHOP", "REQUESTSHOP", id=self.id)
+        self.CDF.send(action)
 
     def display_save_menu(self):
         menuItems = ['Save and Return', 'Save and Quit', 'Return without Saving']

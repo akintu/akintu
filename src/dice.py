@@ -6,18 +6,21 @@ import random
 class Dice(object):
     """A utility class used for purely chance events."""
 
+    useGivenSeed = False
     oldGenerator = None
 
     @staticmethod
     def stashGen():
         """Saves the old position in the RNG and loads a new position."""
-        Dice.oldGenerator = random.getstate()
-        random.seed()
+        if not Dice.useGivenSeed:
+            Dice.oldGenerator = random.getstate()
+            random.seed()
 
     @staticmethod
     def popGen():
         """Loads the old position in the RNG"""
-        random.setstate(Dice.oldGenerator)
+        if not Dice.useGivenSeed:
+            random.setstate(Dice.oldGenerator)
 
     @staticmethod
     def rollSuccess(chanceOfSuccess):

@@ -4,6 +4,7 @@ from theorycraft import TheoryCraft
 from playercharacter import *
 from servercombat import *
 from state import State
+import shop
 
 class GameServer():
     def __init__(self, world, port, turnTime):
@@ -18,6 +19,7 @@ class GameServer():
         self.player = {}  # {Port: PersonID} Dict of all players, pointing to their personid
         self.person = {} # {PersonID: Person} Dict of all persons
         self.pane = {}  # {location.Pane: Pane} Dict of actual pane objects
+        self.shops = {} # {Pane : Shop} Dict of Shop objects
 
     def server_loop(self):
         while not self.SDF.queue.empty():
@@ -162,6 +164,22 @@ class GameServer():
                 self.person[command.id] = newPerson
                 self.broadcast(command, -command.id, exclude=True)
 
+            #### Shop Creation ####
+            if command.type == "SHOP" and command.action == "REQUESTSHOP":
+                activePlayer = self.person[command.id]
+                requestedPane = self.pane[activePlayer.location.pane]
+                if self.world.is_town_pane(activePlayer.location):
+                    currentShop = None
+                    if requestedPane not in self.shops:
+                        level = requestedPane.paneLevel
+                        currentShop = shop.Shop(level=level)
+                        self.shops[requestedPane] = currentShop
+                    else:
+                        currentShop = self.shops[requestedPane]
+                    action = Command("SHOP", "OPEN", id=command.id, 
+                                     shopLevel=currentShop.level, shopSeed=currentShop.seed)
+                    self.broadcast(action, pid=command.id)
+                    
             ###### Get Item / Open Chest ######
             if command.type == "PERSON" and command.action == "BASHCHEST":
                 activePlayer = self.person[command.id]

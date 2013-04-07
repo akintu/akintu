@@ -60,8 +60,8 @@ class Keystate():
         '''
         self.bindings = {
             "QUIT": (["CTRL+q", "CTRL+x", "META+q", "META+x"], "OVERWORLD"),
-            "SAVEMENUACCEPT": ("a", "SAVEMENU"),
-            "SAVEMENUCANCEL": (["space", "escape"], "SAVEMENU"),
+            "SAVEMENUACCEPT": (["a", "space", "enter" "SAVEMENU"),
+            "SAVEMENUCANCEL": ("escape", "SAVEMENU"),
             
             "FORCEQUIT": (["CTRL+SHIFT+q", "CTRL+SHIFT+x", "META+q+x"], self.ALL),
 
@@ -117,10 +117,10 @@ class Keystate():
             "CONSUMABLEUSE": (["space", "a"], "CONSUMABLE"),
 
             "ABILITIESOPEN": ("space", "COMBAT"),
-            "ABILITIESSELECT": (["space", "a"], "ABILITIES"),
+            "ABILITIESSELECT": (["space", "a", "enter"], "ABILITIES"),
 
             "SPELLSOPEN": ("b", "COMBAT"),
-            "SPELLSSELECT": (["space", "a"], "SPELLS"),
+            "SPELLSSELECT": (["space", "a", "enter"], "SPELLS"),
 
             "SWITCHGEAR": ("o", "COMBAT"),
             "CYCLETARGETF": ("e", "COMBAT"),

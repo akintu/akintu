@@ -5,80 +5,77 @@ from dice import *
 from theorycraft import *
 from consumable import Consumable
 from equipment import GambleItem
+import random
 
 class Shop(object):
-    '''A seed may be used here to ensure deterministic shop content.
-    Additionally, the coordinates may swapped with a location or 
-    pane or somesuch.'''
-    def __init__(self, player, screen, seed=None, coords=(0,0), level=1):
-        self.player = player
-        self.screen = screen
-        self.seed = seed
+    '''Shops are created by the server.'''
+    def __init__(self, level=1, seed=None):
         self.level = level
+        self.stock = []
         if not seed:
             self.seed = Dice.roll(0, 200000)
-        self.coords = coords
-        self.stock = []
+        else:
+            self.seed = seed
         self._generateStock()
-
-    def open(self):
+        
+    def open(self, player, screen):
         isEquipment = False
         text = "Welcome to my shop!"
-        inv = self.player.inventory.allItems
-        capacity = `self.player.inventoryWeight` + "/" + `self.player.inventoryCapacity` + ' lbs'
-        gold = `self.player.inventory.gold` + " gold"
-        discount = `self.player.totalShopBonus` + "% discount"
-        valuemod = self._getPriceMods()
-        self.screen.show_item_dialog(text, inv, self.stock, isEquipment, bgcolor='mistyrose', capacity=capacity,
+        inv = player.inventory.allItems
+        capacity = `player.inventoryWeight` + "/" + `player.inventoryCapacity` + ' lbs'
+        gold = `player.inventory.gold` + " gold"
+        discount = `player.totalShopBonus` + "% discount"
+        valuemod = self._getPriceMods(player)
+        screen.show_item_dialog(text, inv, self.stock, isEquipment, bgcolor='mistyrose', capacity=capacity,
                                         gold=gold, discount=discount, valuemod=valuemod)
         
-    def buy(self, index):
+    def buy(self, index, player, screen):
         item = self.stock[index]
-        if item.value > self.player.inventory.gold:
-            capacity = `self.player.inventoryWeight` + "/" + `self.player.inventoryCapacity` + ' lbs'
-            gold = `self.player.inventory.gold` + " gold"
-            self.screen.update_item_dialog_text("You don't have enough money for that!", capacity=capacity, gold=gold)
+        if item.value > player.inventory.gold:
+            capacity = `player.inventoryWeight` + "/" + `player.inventoryCapacity` + ' lbs'
+            gold = `player.inventory.gold` + " gold"
+            screen.update_item_dialog_text("You don't have enough money for that!", capacity=capacity, gold=gold)
         else:
-            self.player.inventory.gold -= self._getBuyingPrice(item)
+            player.inventory.gold -= self._getBuyingPrice(item, player)
             if isinstance(item, GambleItem):
-                self.player.inventory.addItem(self._revealGambleItem(item))
+                player.inventory.addItem(self._revealGambleItem(item))
             else:
-                self.player.inventory.addItem(item)
-            capacity = `self.player.inventoryWeight` + "/" + `self.player.inventoryCapacity` + ' lbs'
-            gold = `self.player.inventory.gold` + " gold"
-            self.screen.update_item_dialog_items(self.player.inventory.allItems, self.stock)
-            self.screen.update_item_dialog_text("Thank you for your purchase!", capacity=capacity, gold=gold)
+                player.inventory.addItem(item)
+            capacity = `player.inventoryWeight` + "/" + `player.inventoryCapacity` + ' lbs'
+            gold = `player.inventory.gold` + " gold"
+            screen.update_item_dialog_items(player.inventory.allItems, self.stock)
+            screen.update_item_dialog_text("Thank you for your purchase!", capacity=capacity, gold=gold)
                                                 
-    def sell(self, index):
-        item = self.player.inventory.allItems[index]
-        self.player.inventory.gold += self._getSellingPrice(item)
-        self.player.inventory.removeItem(item)
-        capacity = `self.player.inventoryWeight` + "/" + `self.player.inventoryCapacity` + ' lbs'
-        gold = `self.player.inventory.gold` + " gold"
-        self.screen.update_item_dialog_items(self.player.inventory.allItems, self.stock)
-        self.screen.update_item_dialog_text("Thank you for your sale!", capacity=capacity, gold=gold)
+    def sell(self, index, player, screen):
+        item = player.inventory.allItems[index]
+        player.inventory.gold += self._getSellingPrice(item, player)
+        player.inventory.removeItem(item)
+        capacity = `player.inventoryWeight` + "/" + `player.inventoryCapacity` + ' lbs'
+        gold = `player.inventory.gold` + " gold"
+        screen.update_item_dialog_items(player.inventory.allItems, self.stock)
+        screen.update_item_dialog_text("Thank you for your sale!", capacity=capacity, gold=gold)
             
-    def close(self):
-        self.screen.hide_dialog()
-        return self.player.dehydrate()
+    def close(self, player, screen):
+        screen.hide_dialog()
+        return player.dehydrate()
         
-    def _getPriceMods(self):
-        sellMod = 0.5 * (1 + self.player.totalShopBonus * 0.01)
-        buyMod = 1.5 * (1 - self.player.totalShopBonus * 0.01)
+    def _getPriceMods(self, player):
+        sellMod = 0.5 * (1 + player.totalShopBonus * 0.01)
+        buyMod = 1.5 * (1 - player.totalShopBonus * 0.01)
         return (sellMod, buyMod)
         
-    def _getBuyingPrice(self, item):
+    def _getBuyingPrice(self, item, player):
         '''Returns the price of buying or selling an 
         item based on the player's shop discount.'''
         price = item.value
         price *= 1.50
-        price *= (1 - self.player.totalShopBonus * 0.01)
+        price *= (1 - player.totalShopBonus * 0.01)
         return int(price)
         
-    def _getSellingPrice(self, item):
+    def _getSellingPrice(self, item, player):
         price = item.value
         price *= 0.50
-        price *= (1 + self.player.totalShopBonus * 0.01)
+        price *= (1 + player.totalShopBonus * 0.01)
         return int(price)
         
     # For now we'll just generate a balanced list of goods.  This can be customized later.  TODO
@@ -94,10 +91,17 @@ class Shop(object):
         # Note this is worse than treasure chests for levels 19, 20 because that kind of gear 
         # should only be obtainable in a dungeon.
         
+        Dice.useGivenSeed = True
+        oldSeed = random.getstate()
+        random.seed(self.seed)
+        
         self.stock = self._generateAllStock(ip)
         self.stock.extend(self._generateAllStock(ip + 2))
         self.stock.extend(self._generateBasicConsumables())
         self.stock.extend(self._generateGambleItems(ip + 6))
+        
+        random.setstate(oldSeed)
+        Dice.useGivenSeed = False
         
     def _generateGambleItems(self, ip):
         '''Generate expensive mystery items that only become
