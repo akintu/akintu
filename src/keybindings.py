@@ -28,9 +28,10 @@ class Keystate():
                         "DOWNLEFT": 1,
                         "DOWNRIGHT": 3}
 
-        self.ALL = ["OVERWORLD", "LEVELUP", "INVENTORY", "CONSUMABLE", "TARGET", "SHOP", "ABILITIES", "SPELLS", "COMBAT", "CHARSHEET"]
+        self.ALL = ["OVERWORLD", "LEVELUP", "INVENTORY", "CONSUMABLE", "TARGET", "SHOP", "ABILITIES", "SPELLS", "COMBAT", "CHARSHEET",
+                    "SAVEMENU"]
         self.MOVEMENT = ["OVERWORLD", "COMBAT"]
-        self.DIALOG = ["LEVELUP", "INVENTORY", "CONSUMABLE", "SHOP", "ABILITIES", "SPELLS", "CHARSHEET"]
+        self.DIALOG = ["LEVELUP", "INVENTORY", "CONSUMABLE", "SHOP", "ABILITIES", "SPELLS", "CHARSHEET", "SAVEMENU"]
 
         '''
         The bindings data structure is a bit involved, so get your thinking cap on for this.
@@ -57,7 +58,12 @@ class Keystate():
               Only one of them needs to be the current input state for the event to fire.
             * There are a few predefined sets of related states.  These are MOVEMENT, DIALOG, and ALL
         '''
-        self.bindings = {"QUIT": (["CTRL+q", "CTRL+x", "META+q", "META+x"], self.ALL),
+        self.bindings = {
+            "QUIT": (["CTRL+q", "CTRL+x", "META+q", "META+x"], "OVERWORLD"),
+            "SAVEMENUACCEPT": ("a", "SAVEMENU"),
+            "SAVEMENUCANCEL": (["space", "escape"], "SAVEMENU"),
+            
+            "FORCEQUIT": (["CTRL+SHIFT+q", "CTRL+SHIFT+x", "META+q+x"], self.ALL),
 
             "UP": ([K_UP, K_KP8, "k", "SHIFT+up", "SHIFT+keypad 8", "SHIFT+k"], self.MOVEMENT),
             "DOWN": ([K_DOWN, K_KP2, "j", "SHIFT+down", "SHIFT+keypad 2", "SHIFT+j"], self.MOVEMENT),

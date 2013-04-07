@@ -452,6 +452,11 @@ class Game(object):
         self.save_player()#player_string)
         self.quit()
 
+    def save_no_quit(self):
+        if hasattr(self, 'gs'):
+            self.gs.save_all()
+        self.save_player()#player_string)
+        
     def quit(self):
         reactor.stop()
 
@@ -476,7 +481,8 @@ class Game(object):
 #                if e:
 #                    print "Keyboard Event: %s" % e
                 if e == "QUIT":
-                    #TODO: Open Menu Here
+                    self.display_save_menu()
+                if e == "FORCEQUIT":
                     self.save_and_quit()
                 elif keystate.direction("MOVEMENT"):
                     self.move_person(keystate.direction("MOVEMENT"), 1)
@@ -498,6 +504,25 @@ class Game(object):
                 elif e == "SCROLLBOTTOM":
                     self.screen.scroll_down(1000)
 
+                ### Save Menu ###
+                elif e == "SAVEMENUACCEPT":
+                    selection = self.screen.hide_dialog()
+                    # 0 -- 'Save and Return', 
+                    # 1 -- 'Save and Quit',
+                    # 2 -- 'Return without Saving'
+                    if selection == 0:
+                        self.save_no_quit()
+                        keystate.inputState = "OVERWORLD"
+                        self.screen.show_text("Game Saved.", color='white')
+                    elif selection == 1:
+                        self.save_and_quit()
+                    elif selection == 2:
+                        keystate.inputState = "OVERWORLD"
+                elif e == "SAVEMENUCANCEL":
+                    screen.hide_dialog()
+                    keystate.inputState = "OVERWORLD"
+                    self.screen.show_text("Save Aborted.", color='white')
+                    
                 ### Character Sheet ###
                 elif e == "CHARSHEETOPEN":
                     self.display_character_sheet()
@@ -728,6 +753,11 @@ class Game(object):
             self.currentShop = shop.Shop(player, self.screen) # Using all default parameters at the moment TODO
             self.currentShop.open()
 
+    def display_save_menu(self):
+        menuItems = ['Save and Return', 'Save and Quit', 'Return without Saving']
+        self.screen.show_menu_dialog(menuItems)
+        keystate.inputState = "SAVEMENU"
+            
     def open_inventory(self):
         keystate.inputState = "INVENTORY"
         player = self.pane.person[self.id]

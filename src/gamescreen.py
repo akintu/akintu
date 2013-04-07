@@ -107,11 +107,11 @@ class GameScreen(object):
         pygame.display.update()
         return None
 
-    def show_menu_dialog(self, items, bgcolor='gray', toptext='Game Paused'):
+    def show_menu_dialog(self, items, bgcolor='gray', toptext='Save your progress?'):
         '''
         Show the menu dialog
         '''
-        self.dialog = screenutils.CharacterDialog(items, bgcolor, toptext)
+        self.dialog = screenutils.MenuDialog(items, bgcolor, toptext)
         self.screen.blit(self.dialog.surface, (0, 0))
         pygame.display.update()
         return self.dialog.get_selection()
