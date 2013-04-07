@@ -91,7 +91,7 @@ class Ability(object):
             else:
                 self.APCost = owner.totalRangedAttackAPCost
             self.text = 'AP: ' + `self.APCost` + "\n" + "Basic Ranged Attack"
-        if 'specialTargeting' in self.info:
+        if 'specialTargeting' in info:
             self.specialTargeting = info['specialTargeting']
         else:
             self.specialTargeting = "DEFAULT"
