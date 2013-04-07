@@ -519,7 +519,7 @@ class Game(object):
                     elif selection == 2:
                         keystate.inputState = "OVERWORLD"
                 elif e == "SAVEMENUCANCEL":
-                    screen.hide_dialog()
+                    self.screen.hide_dialog()
                     keystate.inputState = "OVERWORLD"
                     self.screen.show_text("Save Aborted.", color='white')
                     

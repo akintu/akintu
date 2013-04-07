@@ -64,7 +64,11 @@ class Spell(object):
         else:
             self.text = 'No description yet.'
         self.owner = owner
-
+        if 'specialTargeting' in self.info:
+            self.specialTargeting = info['specialTargeting']
+        else:
+            self.specialTargeting = "DEFAULT"
+        
     def shouldUse(self, target):
         '''
         Used by only monsters to determine if the

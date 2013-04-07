@@ -91,7 +91,11 @@ class Ability(object):
             else:
                 self.APCost = owner.totalRangedAttackAPCost
             self.text = 'AP: ' + `self.APCost` + "\n" + "Basic Ranged Attack"
-
+        if 'specialTargeting' in self.info:
+            self.specialTargeting = info['specialTargeting']
+        else:
+            self.specialTargeting = "DEFAULT"
+            
     @staticmethod
     def convertAbilityName(aName):
         firstChar = aName[0].lower()
@@ -2426,7 +2430,8 @@ class Ability(object):
         'image' : MARKSMAN_SKILLS + 'cusp-of-escape.png',
         'text' : 'Ranged attack with +12 Accuracy and +12% Critical hit chance.\n' + \
                 'Only usable if the target is exactly on the edge of your weapon\'s\n' + \
-                'range.'
+                'range.',
+        'specialTargeting' : "BORDER"
         },
         'Hot Arrow':
         {
