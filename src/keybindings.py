@@ -60,7 +60,7 @@ class Keystate():
         '''
         self.bindings = {
             "QUIT": (["CTRL+q", "CTRL+x", "META+q", "META+x"], "OVERWORLD"),
-            "SAVEMENUACCEPT": (["a", "space", "enter" "SAVEMENU"),
+            "SAVEMENUACCEPT": (["a", "space", "enter"], "SAVEMENU"),
             "SAVEMENUCANCEL": ("escape", "SAVEMENU"),
             
             "FORCEQUIT": (["CTRL+SHIFT+q", "CTRL+SHIFT+x", "META+q+x"], self.ALL),
