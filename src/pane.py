@@ -68,7 +68,9 @@ class Pane(object):
 
             for i in range(1):
                 stamp_dict = Stamp.getStamps(Stamp.LANDSCAPE)
-                stamp = random.choice(random.choice(list(stamp_dict.values())))
+                #stamp_size_tuple = random.choice(list(stamp_dict.values()))
+                stamp_list = stamp_dict[(20,15)]
+                stamp = random.choice(stamp_list)
                 stamp_loc = Location(self.location, (random.randrange(1, PANE_X-stamp.width), random.randrange(1, PANE_Y-stamp.height)))
                 self.load_stamp(stamp, stamp_loc)
             
