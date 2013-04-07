@@ -36,16 +36,16 @@ ttttttrrrrrr
 #
       rrrrrrrr
   rrrrrrrrrrrrrrr
- rrrcmmmmmrrrrrrrr
+ rrrcm    rrrrrrrr
 rrrrrrrrr  rrrrrrrr
 rrrrrrrrrr rrrrrrrrr
 rrrrrrrrrr  rrrrrrrr
 rrrrrrrrrrr         
-rrcmmmmmmmm rrrrrrrr
+rrcm        rrrrrrrr
 rrrrrrrrrr rrrrrrrrr
 rrrrrrrrrr rrrrrrrrr
 rrrrrrrrr  rrrrrrrr
-rrrcc mmmmrrrrrrrr
+rrrcc m   rrrrrrrr
   rrrrrrrrrrrrrrr
      rrrrrrrrr
         rrr
@@ -68,3 +68,35 @@ wwwwwwwwwwwwwwwwwwww
 wwwwwwwwwwwwwwwwwwww
 #
 #
+wwdwwpt  r  twww +++
+wwdwwpt  r  twww +++
+wwdwwpt  r  twww +++
+wwdwwpt  r  twww +++
+wwdwwpt  r  twww +++
+wwdwwpt  r  twww +++
+wwdwwpt  r  twww +++
+wwdwwpt  r  twww +++
+wwdwwpt  r  twww +++
+wwdwwpt  r  twww +++
+wwdwwpt  r  twww +++
+wwdwwpt  r  twww +++
+wwdwwpt  r  twww +++
+wwdwwpt  r  twww +++
+wwdwwpt  r  twww +++
+#
+#
+tttttttttttttttttttt
+wwdwwpc    ppppppppp
+ttttttttttt tttt ttt
+wwcc        twww +++
+wwdwwpt  r  twww +++
+ttttttttttt tttt ttt
+tttttttttt  tttt ttt
+wcdwwpt  r ttwww +++
+w dwwpt  r   
+t tttpt  r  twww +++
+w   wtttttt twww +++
+wwd m    r  tttttt++
+ttttttt     twww +tt
+wwdwwpttttttttww +++
+wwdwwpt  r  twtttttt

@@ -32,7 +32,7 @@ class Pane(object):
     PaneCorners = {1:TILE_BOTTOM_LEFT, 3:TILE_BOTTOM_RIGHT, 7:TILE_TOP_LEFT, 9:TILE_TOP_RIGHT}
     PaneEdges = {2:TILES_BOTTOM, 4:TILES_LEFT, 6:TILES_RIGHT, 8:TILES_TOP}
 
-    def __init__(self, seed, location, is_server=False, load_entities=True, pane_state=None):
+    def __init__(self, seed, location, is_server=False, load_entities=True, pane_state=None, level=None):
         if isinstance(location, Location):
             self.location = location.pane
             self.z = location.z
@@ -48,7 +48,11 @@ class Pane(object):
         self.person = {}
         self.background_key = Sprites.get_background(self.seed + str(self.location))
         self.hostileTraps = []
-
+        
+        if not level:
+            self.paneLevel = max(abs(self.location[0]), abs(self.location[1]))
+        else:
+            self.paneLevel = level
 
         for i in range(PANE_X):
             for j in range(PANE_Y):
@@ -64,7 +68,9 @@ class Pane(object):
 
             for i in range(1):
                 stamp_dict = Stamp.getStamps(Stamp.LANDSCAPE)
-                stamp = random.choice(random.choice(list(stamp_dict.values())))
+                #stamp_size_tuple = random.choice(list(stamp_dict.values()))
+                stamp_list = stamp_dict[(20,15)]
+                stamp = random.choice(stamp_list)
                 stamp_loc = Location(self.location, (random.randrange(1, PANE_X-stamp.width), random.randrange(1, PANE_Y-stamp.height)))
                 self.load_stamp(stamp, stamp_loc)
             
@@ -131,7 +137,7 @@ class Pane(object):
     def add_monster(self, level=None, tolerance=None, location=None, region=None, ai=None):
         #Handle Default Objects
         if not level:
-            level = max(abs(self.location[0]), abs(self.location[1]))
+            level = self.paneLevel
         if not tolerance:
             if level == 0:
                 tolerance = 0
