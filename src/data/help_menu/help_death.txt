@@ -1,0 +1,9 @@
+# help_death.txt
+
+Death in Akintu is permanent if your created your character as "hardcore".
+All saved games using that character are deleted and you are forced to
+begin with a new character with none of your old gear or experience.
+
+If you are not playing a hardcore character, you are playing Akintu in
+"softcore" (the default) mode.  When you die, you will lose 10% of your
+gold and will be teleported to the home pane in the center of the world.

@@ -1,0 +1,29 @@
+# help_treasure_chests.txt
+
+Treasure Chests contain gold, equipment, items and sometimes nothing at
+all.  Higher level areas will have treasure chests with more valuable
+contents.  
+
+To open a treasure chest, press the G (GET) key while adjacent
+to it.  If the treasure chest is not locked, that will open the treasure
+chest for you and give treasure to every player currently on the pane.
+Every player is given his own "loot" independent of every other player.
+Thus, it is polite to wait for your friends to join you on your pane
+before opening up a chest.
+
+Sometimes chests are locked.  If you are a class with Lockpicking, you
+can attempt to unlock the chest with the same key you would use to open
+it normally, G (GET).  If your Cunning is high enough, you will be able
+to unlock it without damaging the contents.
+
+If you cannot unlock the chest, you may attempt to BASH the lock with B.
+Bashing a lock will always damage the contents, lowering the magical
+properties present on the items when you get them.  Bashing is not always
+successful on the first try.  Every attempt damages the contents further.
+If your Strength is high, you will be more likely to break the lock on
+your first try, limiting the damage to the contents.  
+
+Chests found in higher level areas will have locks that are more difficult
+to unlock or bash open.  In these situations it is wise to wait for your
+friends with higher Cunning (or at least Strength) to help you open these
+stubborn locks before you ruin the gear.
