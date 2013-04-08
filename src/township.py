@@ -6,32 +6,62 @@ TOWNSHIP:
     and will have at least 1 dungeon
 '''
 
+import random
+import pygame
 from const import *
 from region import *
 
 class Township(object):
-    def __init__(self, pane, seed):
+    def __init__(self, seed, township_loc, country_loc):
+        self.seed = seed + str(country_loc) + str(township_loc)
+        self.loc = (country_loc, township_loc)
         self.stampsLoaded = False
-        if isinstance(pane, Location):
-            pane = pane.pane
-        if not isinstance(pane, tuple):
-            pane = None
+        self.town = None
+        self.dungeons = []
         
-        self.x, self.y = Township.getTownshipLocation(pane)
-        self.topLeft = Township.getTownshipTopLeft(None, pane_loc=pane)
-        self.tile_width = PANE_X * TOWNSHIP_X
-        self.tile_height = PANE_Y * TOWNSHIP_Y
+        assert township_loc[0] < TOWNSHIP_X or \
+                township_loc[1] < TOWNSHIP_Y, \
+                str(township_loc) + " is outside of " + str((TOWNSHIP_X, TOWNSHIP_Y))
 
-        self.tile_region = Region()
-        self.tile_region("ADD", "SQUARE", Location((0,0), (0, 0)), Location((TOWNSHIP_X-1, TOWNSHIP_Y-1), (PANE_X-1,PANE_Y-1)))
+        self.topLeft = Township.getTownshipTopLeftPane(country_loc, township_loc)
+        self.center = ((self.topLeft[0] + TOWNSHIP_X/2), (self.topLeft[1]+TOWNSHIP_Y/2))
+
+        self.tile_width = (PANE_X-1) * TOWNSHIP_X
+        self.tile_height = (PANE_Y-1) * TOWNSHIP_Y
+
+        self.bounding_rect = pygame.Rect(0, 0, self.tile_width, self.tile_height)
+        self.rect_list = []
+
+    def addTown(self):
+        random.seed(self.seed + "TOWN")
+        #PICK OUR TOWN'S LOCATION
+        country_loc, township_loc = self.loc
+        if country_loc == (0, 0) and township_loc == (COUNTRY_X/2, COUNTRY_Y/2):
+            self.town = self.center
+        else:
+            #we do a smaller box so town isn't on edge of township
+            #if a Township is 5x5 panes, the town will be placed
+            #in a 3x3 box inset.
+            self.town = (random.randrange(1, TOWNSHIP_X-1)+self.topLeft[0], \
+                            random.randrange(1, TOWNSHIP_Y-1)+self.topLeft[1])
+
+    def addDungeons(self, number=2):
+        random.seed(self.seed + "DUNGEON")
+        #PICK OUR TOWN'S LOCATION
+        for i in range(number):
+            dungeon_loc = (random.randrange(0, TOWNSHIP_X) + self.topLeft[0], \
+                            random.randrange(0, TOWNSHIP_Y) + self.topLeft[1])
+            while dungeon_loc == self.town or dungeon_loc in self.dungeons:
+                dungeon_loc = (random.randrange(0, TOWNSHIP_X) + self.topLeft[0], \
+                                random.randrange(0, TOWNSHIP_Y) + self.topLeft[1])
+            self.dungeons.append(dungeon_loc)
 
     def loadStamps(self):
         if self.stampsLoaded:
             print "Township.loadStamps has already been called"
             return
         self.stampsLoaded = True
-        for pane, region in self.paneRegions:
-            pass
+        print "loadStamps not implemented yet"
 
     def getPaneRegion(self, pane):
         pass
@@ -44,8 +74,8 @@ class Township(object):
 
         For Example:
 
-            TOWNSHIP (0,0)          TOWNSHIP (1,0)          TOWNSHIP (2,0)
-            #   # (0,-2)#   #    (3,-2) #   #   #   #    (8,-2) #   #   #   #
+            TOWNSHIP (2,2)          TOWNSHIP (3,2)          TOWNSHIP (4,2)
+        (-2,-2) # (0,-2)#   #    (3,-2) #   #   #   #    (8,-2) #   #   #   #
             #   #   #   #   #       #   #   #   #   #       #   #   #   #   #
             #   # (0,0) #   #       #   # (5,0) #   #       #   #(10,0) #   #
             #   #   #   #   #       #   #   #   #   #       #   #   #   #   #
@@ -53,50 +83,42 @@ class Township(object):
 
         '''
 
-        loc_x = ((pane[0] + TOWNSHIP_X/2)/TOWNSHIP_X)
-        loc_y = ((pane[1] + TOWNSHIP_Y/2)/TOWNSHIP_Y)
-        return (loc_x, loc_y)
+        loc_x = ((pane[0] + TOWNSHIP_X/2)/TOWNSHIP_X) + TOWNSHIP_X/2
+        loc_y = ((pane[1] + TOWNSHIP_Y/2)/TOWNSHIP_Y) + TOWNSHIP_Y/2
+
+        country_x = loc_x/COUNTRY_X
+        country_y = loc_y/COUNTRY_Y
+
+        loc_x %= COUNTRY_X
+        loc_y %= COUNTRY_Y
+
+        return ((country_x, country_y),(loc_x, loc_y))
 
     @staticmethod
-    def getTownshipTopLeft(township_loc, pane_loc):
+    def getTownshipTopLeftPane(country_loc, township_loc):
         '''
-        Given a township location tuple or a pane location tuple
+        Given a country location tuple and a township location tuple
         returns the top left pane of that township
         
         For Example:
             township_loc((0,0))
         '''
-        if pane_loc:
-            tmp = Township.getTownshipLocation(pane_loc)
-            if township_loc:
-                assert township_loc == tmp,\
-                    "You supplied both a township_loc and pane_loc and they do not\n\
-                    correspond to the same township. Supply one or the other."
-            else:
-                township_loc = tmp
-        loc_x = TOWNSHIP_X*township_loc[0] - TOWNSHIP_X/2
-        loc_y = TOWNSHIP_Y*township_loc[1] - TOWNSHIP_Y/2
+        cx, cy = country_loc
+        tx, ty = township_loc
+
+        #Justify center
+        tx -= COUNTRY_X/2
+        ty -= COUNTRY_X/2
+
+        loc_x = (tx+TOWNSHIP_X*cx)*TOWNSHIP_X - TOWNSHIP_X/2
+        loc_y = (ty+TOWNSHIP_Y*cy)*TOWNSHIP_Y - TOWNSHIP_Y/2
+
         return (loc_x, loc_y)
 
-def test_parameters(pane, town, topLeft):
-    # topLeft = (TOWNSHIP_X*town[0]-TOWNSHIP_X/2, town[1]-TOWNSHIP_Y/2)
-    print "Testing pane " + str(pane) + " is in township " + str(town)
-    print "\tAnd top left is " + str(topLeft) + " from center"
-    t = Township(pane, "TEST SEED")
-    assert len(set(t.tile_region)) == PANE_X * PANE_Y * TOWNSHIP_X * TOWNSHIP_Y
-    assert t.x == town[0] and t.y == town[1], "township.x: " + str(t.x) + ", township.y: " + str(t.y)
-    assert t.topLeft == topLeft, "township.topLeft: " + str(t.topLeft) + " Supplied: " + str(topLeft)
-
 if __name__=="__main__":
-    r = Region()
-    print r
-    test_parameters((0,0), (0, 0), (-2,-2))
-    test_parameters((TOWNSHIP_X,0), (1, 0), (3, -2))
-    test_parameters((0,-TOWNSHIP_Y), (0, -1), (-2, -7))
-    test_parameters((-3,3), (-1, 1), (-7,3))
-    test_parameters((3,-3), (1, -1), (3,-7))
-    test_parameters((-2,2), (0, 0), (-2,-2))
-    test_parameters((TOWNSHIP_X*5,2), (5, 0), (23,-2))
-    test_parameters((-2,TOWNSHIP_Y*5), (0, 5), (-2,23))
-    test_parameters((TOWNSHIP_X*20,TOWNSHIP_Y*(-10)), (20, -10), (98,-52))
-    test_parameters((9,0), (2, 0), (8,-2))
+    t = Township("SOME_SEED", township_loc=(2,2), country_loc=(0,0))
+    t.addTown()
+    t.addDungeons(5)
+    
+    print "TOWN LOCATION: " + str(t.town)
+    print "  DUNGEON LOCATIONS: " + str(t.dungeons)

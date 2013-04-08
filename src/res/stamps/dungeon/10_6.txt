@@ -1,4 +1,4 @@
-#	#10x6 Treasure Stamps
+#	#10x6 Dungeon Stamps
 #
 ++++++++++
 +t++

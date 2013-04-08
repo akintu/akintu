@@ -1,5 +1,5 @@
-#	#3x3 Landscape Stamps
-# + signifies any obstacle (of 1 type)
+#	#3x3 Lands$ape Stamps
+# + signifies any obsta$le (of 1 type)
  +
 +++
  +

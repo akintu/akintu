@@ -23,7 +23,8 @@ class Stamp(object):
                 's':'shrub',
                 't':'tree',
                 'w':'water',
-                'c':CHEST_KEY,
+                'b':'bones',
+                '$':CHEST_KEY,
                 'm':MONSTER_KEY,
                 'B':'building',
                 'G':'garden',
@@ -115,39 +116,31 @@ class Stamp(object):
         if Stamp.loaded:
             return
         Stamp.loaded = True
+        Stamp.allSizes = dict()
+        Stamp.allTypes = dict()
+        Stamp.allStamps = dict()
 
-        #Open the stamp files and parse the information
-        Stamp.dungeon = Stamp.parseStampFiles(os.path.join(STAMP_PATH, "dungeon"))
-        Stamp.house = Stamp.parseStampFiles(os.path.join(STAMP_PATH, "house"))
-        Stamp.shop = Stamp.parseStampFiles(os.path.join(STAMP_PATH, "shop"))
-        Stamp.garden = Stamp.parseStampFiles(os.path.join(STAMP_PATH, "garden"))
-        Stamp.treasure = Stamp.parseStampFiles(os.path.join(STAMP_PATH, "treasure"))
-        Stamp.water = Stamp.parseStampFiles(os.path.join(STAMP_PATH, "water"))
-        Stamp.landscape = Stamp.parseStampFiles(os.path.join(STAMP_PATH, "landscape"))
-        
+        Stamp.keys = [Stamp.DUNGEON, Stamp.HOUSE, Stamp.SHOP, Stamp.GARDEN, Stamp.TREASURE, Stamp.WATER, Stamp.LANDSCAPE]
+        for key in Stamp.keys:
+            Stamp.allStamps[key] = Stamp.parseStampFiles(os.path.join(STAMP_PATH, key))
+
+        #This is not included in Stamp.allSizes, Stamp.allTypes, or 
         Stamp.text = Stamp.parseTextStamps(('+', 'd'))
+
+    @staticmethod
+    def getStamp(size):
+        if size in Stamp.allSizes:
+            pass
 
     @staticmethod
     def getStamps(key):
         if not Stamp.loaded:
             Stamp.load()
-        if key == Stamp.DUNGEON:
-            return Stamp.dungeon
-        if key == Stamp.HOUSE:
-            return Stamp.house
-        if key == Stamp.SHOP:
-            return Stamp.shop
-        if key == Stamp.GARDEN:
-            return Stamp.garden
-        if key == Stamp.TREASURE:
-            return Stamp.treasure
-        if key == Stamp.WATER:
-            return Stamp.water
-        if key == Stamp.LANDSCAPE:
-            return Stamp.landscape
-        if key == Stamp.TEXT:
-            return Stamp.text
-    
+        if key in Stamp.allStamps:
+            return Stamp.allStamps[key]
+        else:
+            print "Key " + str(key) + " not found"
+
     @staticmethod
     def getStringStamp(text):
         text = str(text).upper()
@@ -169,6 +162,9 @@ class Stamp(object):
         if os.path.exists(path):
             stamp_files = os.listdir(path)
 
+        head, tail = os.path.split(path)
+        Stamp.allTypes[tail] = []
+
         if stamp_files:
             for filename in stamp_files:
                 # print filename
@@ -177,6 +173,10 @@ class Stamp(object):
                 width = int(width)
                 height = int(ext.split(".")[0])
 
+                Stamp.allTypes[tail].append((width, height))
+                if not (width, height) in Stamp.allSizes:
+                    Stamp.allSizes[(width, height)] = []
+                Stamp.allSizes[(width, height)].append(tail)
                 #Open File and Read in lines
                 file = os.path.join(path, filename)
                 lines_in = open(file, 'r').readlines()
@@ -194,7 +194,6 @@ class Stamp(object):
                     stamp_list.append(Stamp(size=(width, height), data=char_string))
                 stamp_dict[(width, height)] = stamp_list
 
-        #print stamp_dict.keys()
         return stamp_dict
 
     @staticmethod
@@ -239,6 +238,9 @@ if __name__ == "__main__":
     print stamp
     region = stamp.getRegion()
     print region
+    
+    for key in Stamp.keys:
+        Stamp.getStamps(key)
     
         
 #4x2 house
