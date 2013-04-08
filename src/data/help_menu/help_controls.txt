@@ -1,0 +1,56 @@
+# help_controls.txt
+
+Overworld Controls
+
+  UP, DOWN, LEFT, RIGHT --> Movement (Hold to run)
+  B  --> (BASH) locked chest
+  C  --> Display Character Sheet
+  F2 --> Open Shop (Towns only) 
+  G  --> (GET) items from chest/Pick locks on chests
+  I  --> Open Inventory
+  CTRL-X or CTRL-Q --> Open Save Menu
+  ? --> Open help menu (This menu!) 
+  
+Combat
+
+  SPACE --> Open ability selection
+  .     --> Display strengths/weaknesses of target 
+  A     --> (ACCEPT) Use selected ability/spell/consumable
+  B     --> Select spells from spell-(BOOK)
+  E     --> Cycle targets
+  I     --> Open consumable selection
+  N     --> (END) turn
+  O     --> Switch to alternate weapon set
+  S     --> Select (SELF) as a target
+  W     --> Cycle targets in reverse
+  
+Inventory
+
+  SPACE  --> Close inventory
+  D      --> (DESTROY) an item from your inventory
+  E      --> (EQUIP) weapon/armor from your inventory
+  ALT-E  --> (EQUIP) weapon/shield in an (ALT)ernate slot
+  O      --> Equip weapon/ring in your (OFF)-hand
+  ALT-O  --> Equip weapon/ring in an (ALT)ernate (OFF)-hand slot
+  U      --> (UNEQUIP) equipment from your equipped gear
+  
+Shop
+
+  A     --> Buy/Sell item
+  SPACE --> Exit shop
+
+Scrolling (Combat and overworld)
+
+  = or PAGE UP   --> Scroll up
+  - or PAGE DOWN --> Scroll down
+  +              --> Scroll to top
+  _              --> Scroll to bottom
+  
+Other
+
+  A or SPACE --> Accept (most menus)
+  ESCAPE     --> Close (most menus)
+  Vim keys   --> Alternate movement options
+  Numpad     --> Alternate movement options
+  
+  
