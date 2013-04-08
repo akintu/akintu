@@ -1,12 +1,12 @@
-#	#20x15 Landscape Stamps
+#	#20x15 Lands$ape Stamps
 #
     ggggggggl 
  ggggwwwwwwwwwwwgl
 ggwwwwwww m wwwwwwww
 gwwwwwwwwpppwwwwwwww
  gwwwwwwwfpfggwwwwww
- ggggccllfpfggwwwww
-    ggggggpglwwwww
+ gggg$$l fpf gwwwwww
+    gggg  p  wwwwww
  ggggwwwwwpwwwwwwgl
  gwwwwwwwwpwwwwww
  wwwwwwwwwpwwwww
@@ -29,23 +29,23 @@ t t t t t t t t t t
 ttttttrrrrrrp
 tttttrrrrrrrp
 ttt  trrrrppp
-tttcpppppppr
+ttt$pppppppr
 ttt  trrrrrr
 ttttttrrrrrr
 #
 #
       rrrrrrrr
   rrrrrrrrrrrrrrr
- rrrcm    rrrrrrrr
-rrrrrrrrr  rrrrrrrr
-rrrrrrrrrr rrrrrrrrr
+ rrr$m    rrrrrrrr
+rrrr       rrrrrrrr
+rrrrrrrrr   rrrrrrrr
+rrrrrrrrrr   rrrrrrr
+rrr      rr         
+rr$m                
 rrrrrrrrrr  rrrrrrrr
-rrrrrrrrrrr         
-rrcm        rrrrrrrr
-rrrrrrrrrr rrrrrrrrr
-rrrrrrrrrr rrrrrrrrr
-rrrrrrrrr  rrrrrrrr
-rrrcc m   rrrrrrrr
+rrrrrrrrr  rrrrrrrrr
+rrrrr      rrrrrrrr
+rrr$$ m   rrrrrrrr
   rrrrrrrrrrrrrrr
      rrrrrrrrr
         rrr
@@ -86,13 +86,13 @@ wwdwwpt  r  twww +++
 #
 #
 tttttttttttttttttttt
-wwdwwpc    ppppppppp
+wwdwwp$    ppppppppp
 ttttttttttt tttt ttt
-wwcc        twww +++
+ww$$        twww +++
 wwdwwpt  r  twww +++
 ttttttttttt tttt ttt
 tttttttttt  tttt ttt
-wcdwwpt  r ttwww +++
+w$dwwpt  r ttwww +++
 w dwwpt  r   
 t tttpt  r  twww +++
 w   wtttttt twww +++
