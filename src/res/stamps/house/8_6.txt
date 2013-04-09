@@ -1,0 +1,8 @@
+#	8x6 HOUSE STAMPS
+#
+tttttttt
+t ffff t
+t HHHH t
+t HPHH t
+t  p   t
+tttp ttt

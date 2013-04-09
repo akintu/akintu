@@ -10,11 +10,13 @@ import random
 import pygame
 from const import *
 from region import *
+from pane import *
 
 class Township(object):
-    def __init__(self, seed, township_loc, country_loc):
+    def __init__(self, seed, township_loc, country_loc, is_server):
         self.seed = seed + str(country_loc) + str(township_loc)
         self.loc = (country_loc, township_loc)
+        self.is_server = is_server
         self.stampsLoaded = False
         self.town = None
         self.dungeons = []
@@ -38,14 +40,14 @@ class Township(object):
         country_loc, township_loc = self.loc
         if country_loc == (0, 0) and township_loc == (COUNTRY_X/2, COUNTRY_Y/2):
             town_x = town_y = 2
-            self.town = self.center
+            self.town_loc = self.center
         else:
             #we do a smaller box so town isn't on edge of township
             #if a Township is 5x5 panes, the town will be placed
             #in a 3x3 box inset.
             town_x = random.randrange(1, TOWNSHIP_X-1)
             town_y = random.randrange(1, TOWNSHIP_Y-1)
-            self.town = (town_x+self.topLeft[0], town_y+self.topLeft[1])
+            self.town_loc = (town_x+self.topLeft[0], town_y+self.topLeft[1])
         #Pad the town rect (to prevent stamps from creeping up on it)
         x = town_x + PANE_X + 2
         y = town_y + PANE_Y + 2
@@ -53,7 +55,7 @@ class Township(object):
         town_rect = pygame.Rect(town_x*(PANE_X-1)-1, town_y*(PANE_Y-1)-1, x, y)
         assert self.bounding_rect.contains(town_rect), "Bounding Rectangle doesn't contain the town"
         self.rect_list.append(town_rect)
-            
+        self.town = Town(self.seed, self.town_loc, self.is_server, True, None)
 
     def addDungeons(self, number=2):
         random.seed(self.seed + "DUNGEON")
@@ -126,9 +128,9 @@ class Township(object):
         return (loc_x, loc_y)
 
 if __name__=="__main__":
-    t = Township("SOME_SEED", township_loc=(2,2), country_loc=(0,0))
+    t = Township("SOME_SEED", township_loc=(2,2), country_loc=(0,0), is_server=True)
     t.addTown()
     t.addDungeons(5)
     
-    print "TOWN LOCATION: " + str(t.town)
+    print "TOWN LOCATION: " + str(t.town_loc)
     print "  DUNGEON LOCATIONS: " + str(t.dungeons)
