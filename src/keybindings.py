@@ -62,7 +62,7 @@ class Keystate():
             "QUIT": (["CTRL+q", "CTRL+x", "META+q", "META+x"], "OVERWORLD"),
             "SAVEMENUACCEPT": (["a", "space", "enter"], "SAVEMENU"),
             "SAVEMENUCANCEL": ("escape", "SAVEMENU"),
-            
+
             "FORCEQUIT": (["CTRL+SHIFT+q", "CTRL+SHIFT+x", "META+q+x"], self.ALL),
 
             "UP": ([K_UP, K_KP8, "k", "SHIFT+up", "SHIFT+keypad 8", "SHIFT+k"], self.MOVEMENT),
@@ -83,7 +83,8 @@ class Keystate():
             "TARGETUPRIGHT": ([K_KP9, "u"], "TARGET"),
             "TARGETDOWNLEFT": ([K_KP1, "b"], "TARGET"),
             "TARGETDOWNRIGHT": ([K_KP3, "n"], "TARGET"),
-            "TARGETCANCEL": ([K_KP5, "space", "escape"], "TARGET"),
+            "TARGETACCEPT": (["space", "return", "keypad enter"], "TARGET"),
+            "TARGETCANCEL": ([K_KP5, "escape"], "TARGET"),
 
             "SCROLLTOP": (["SHIFT+page up", "SHIFT+="], self.MOVEMENT),
             "SCROLLUP": (["page up", "="], self.MOVEMENT),
@@ -105,7 +106,7 @@ class Keystate():
             "INVENTORYEQUIPOHALT": (["ALT+o", "ALT+o"], "INVENTORY"),
             "INVENTORYCLOSE": (["space", "i", "escape"], "INVENTORY"),
 
-            "CHARSHEETOPEN": ("c", "OVERWORLD"),
+            "CHARSHEETOPEN": ("c", self.MOVEMENT),
             "CHARSHEETCLOSE": (["space", "escape"], "CHARSHEET"),
             "CHARSHEETABILITIES": ("a", "CHARSHEET"),
             "CHARSHEETSPELLS": ("s", "CHARSHEET"),
