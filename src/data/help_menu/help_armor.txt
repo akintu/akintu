@@ -1,0 +1,63 @@
+# help_armor.txt
+
+Armor in Akintu is broken up into pieces according to which part of the
+body they protect.  All armor has an amount of physical damage mitigated
+via Damage Reduction (DR).  Additionally, all armor has a type which 
+determines which classes can wear it without penalty (see Armor Tolerance
+for more details) and, like all items, a weight.  Armor also has an 
+innate modifier for your Dodge and Sneak ratings, with heavier armor
+penalizing them and lighter armor granting bonuses to them.
+
+Example:
+
+  Platemail Breastplate
+    -- Name of item; no prefix or suffix indicates it is non-magical. --
+  
+  Grade: Heavy
+    -- Determines Armor Tolerance penalities, if any --
+  Type: Chest
+    -- Part of body covered by armor --
+  Damage Reduction(DR): 17%
+    -- Amount of physical damage ignored while wearing this armor --
+  Dodge Modifier: 0
+    -- Bonus/Penalty to Dodge; this armor does not impact Dodge. --
+  Stealth Modifier: -30
+    -- Bonus/Penalty to Sneak; this armor virtually prohibits Stealth. --
+  Weight: 25 lbs.
+    -- How heavy this is in your inventory, contributes to Burden. --
+  Value: 225 gold
+    -- How much this is worth before any discount or markup --
+	
+Non-Magical Armor by Name:
+
+  (Heavy)
+  Platemail Breastplate
+  Platemail Helm
+  Platemail Greaves
+  Platemail Boots
+  Platemail Gauntlets
+  Heavy Shield
+  
+  (Medium)
+  Scalemail Breastplate
+  Scalemail Helm
+  Scalemail Greaves
+  Scalemail Boots
+  Scalemail Gauntlets
+  Medium Shield
+  
+  (Light)
+  Leather Breastplate
+  Leather Helm
+  Leather Pants
+  Leather Boots
+  Leather Gloves
+  
+  (Robes/Jewlery)
+  Robes
+  Cap
+  Leggings
+  Shoes
+  Cloth Bracer
+  Ring
+  Amulet
