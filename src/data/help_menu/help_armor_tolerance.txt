@@ -1,0 +1,40 @@
+# help_armor_tolerance.txt
+
+Armor tolerance (AT) determins how heavy (in terms of armor grade not
+weight) of armor you can equip without having suffering any penalty.
+If you equip armor beyond your tolerance, your maximum AP will be 
+decreased.  This effect stacks with any decreased AP from equipment
+burden (carrying around more stuff than you can carry.)
+
+Every piece of armor has an Armor Grade (AG).  When you AG is greater 
+than your AT, you lose AP.  See the wiki for details on this mechanic.
+
+Classes with Heavy Armor Tolerance (30 AT)
+  
+  Barbarian
+  Dragoon
+  Spellsword
+  Weapon Master*
+  
+Classes with Medium Armor Tolerance (20 AT)
+
+  Anarchist
+  Battle Mage
+  Druid
+  Tactician*
+  
+Classes with Light Armor Tolerance (8 AT)
+
+  Assassin
+  Marksman
+  Nightblade
+  Shadow
+  
+Classes with No/Robe Armor Tolerance (0 AT)
+
+  Arcane Archer
+  Ninja*
+  Sorcerer*
+  Trickster
+  
+*Coming Soon
