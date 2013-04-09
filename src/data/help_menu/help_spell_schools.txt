@@ -1,0 +1,41 @@
+# help_spell_schools.txt
+
+Spells in Akintu are categorized by which "school" of magic they belong to.
+Certain Wizard traits grant bonuses to spells from particular schools.
+Three of the schools are only available to specific classes; the remaining
+four are available to all casters.
+
+Common Spell Schools
+
+  Illusion
+    Spells are tactical in nature, often affecting specific tiles on the
+    pane rather than monsters or players.
+  
+  Mystical
+    Spells are either self-buffs that cannot be cast on anyone but yourself
+	or deal Arcane damage to enemies (an element that few enemies have
+	innate resistances to.)
+	
+  Natural
+    Spells include defensive buffs, healing spells, and poison or holy 
+	damage spells.
+	
+  Primal
+    Spells typically focus on dealing fire, cold, or electrical damage.
+	
+Restricted Spell Schools
+
+  Bane (Nightblade only)
+    Spells involve dealing Shadow damage or debuffs but frequently have
+	a few short range.
+	
+  Enchantment (Spellsword only)
+    Spells involve offensive buffs to yourself or allies as well as a few
+	debuffing spells used against enemies.
+	
+  Mental (Tactician only)*
+    Spells are primarily useful against enemy casters but this school also
+	contains some "crowd-control" spells used to keep weaker enemies
+	from overwhelming you while you deal with larger threats.
+	
+*Both the Tactician and Mental spell school are coming soon.
