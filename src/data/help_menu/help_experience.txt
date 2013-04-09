@@ -1,0 +1,14 @@
+# help_experience.txt
+
+The details for gaining experience from combat are listed in the Akintu
+wiki.  A general experience required to level up chart is listed below:
+
+Level 1  --> 2  : 30 XP
+Level 2  --> 3  : 120 XP
+Level 3  --> 4  : 420 XP
+Level 4  --> 5  : 820 XP
+Level 5  --> 6  : 1570 XP*
+
+Maximum Level is 20.
+
+* Level 6+ is coming soon.

@@ -1,0 +1,98 @@
+# help_weapons.txt
+
+Weapons in Akintu are categorized by how many hands are required to use
+them.  One-handed weapons may be used in either hand, which allows for 
+a player to use two such weapons at once.  Two-handed weapons require
+the use of both hands, but benefit doubly from many magical effects 
+and are rougly twice as powerful as a one-handed weapon.
+
+One-handed exclusive weapons may only be used in the main hand, and
+do not allow you to use a one-handed weapon in your other hand.  They
+do, however, allow you to use a shield in the other hand.  One-handed
+exlusive weapons tend to have attack power between one-handed and two-
+handed weapons but do not benefit doubly from any magical properties.
+
+Example Weapon:
+
+  Battle Axe
+    -- Name; no prefix or suffix indicates non-magical weapon --
+	
+  Type: Axe
+    -- Some special attacks are only possible with specific "types" --
+  Hands: One-Handed Exclusive
+    -- How many hands it requires, and whether you can dual-wield it --
+  Base Damage: 1-9
+    -- Minimum and Maximum damage dealt with no bonuses or penalties --
+  Damage Type: Slashing
+    -- One of three physical "elements"; some monsters are stronger --
+	-- or weaker to some types of physical attacks. --
+  Force: 120%
+    -- Benefits from Might 120% of the normal amount.  A might of --
+	-- 10 would thus become 12 while using this weapon. --
+  Critical Multiplier: 150%
+    -- Deals 150% damage if it critically hits --
+  Range: Melee
+    -- Can only attack one tile away and diagonals --
+  Weight: 5 lbs.
+    -- Determines how much it weighs in your inventory --
+  Value: 130 gold
+    -- The value of this weapon before any discount or markups --
+	
+Weapon Types
+
+  Sword
+    Balanced weapon type with moderate force and a good critical
+	multiplier.
+	
+  Axe
+    Weapon type that favors strong characters as it has a high
+	Force value, augmenting already strong warriors more than
+	weaker warriors.  Lower critical multiplier than most
+	weapons.
+	
+  Knife
+    Weapon type with low base damage and poor Force but has
+	the highest of critical multipliers.  Katanas belong to
+	this category, but have an innate accuracy penalty if the
+	wielder is not a Ninja.
+	
+  Polearm
+    Weapon type with very high base damage but only mediocre
+	Force and the lowest critical multipliers.  A good weapon
+	for beginning characters and Dragoons.  Contains an
+	innate accuracy penalty for classes without Fighter as their
+	primary base class.
+	
+  Club
+    Weapon type with excellent Force, but lower base damage and
+	low critical multipliers.  Even better than Axes if your 
+	strength is high enough.  Clubs deal bludgeoning damage
+	which fewer monsters resist than Piercing or Slashing.
+	
+  Wizard
+    Inexpensive weapon type that is prone to having magical
+	properties when found in treasure chests.  Generally
+	less powerful than other weapons if not magical.
+	
+  Bow
+    Long range weapons with excellent critical multipliers
+	and decent Force.  Has only moderate base damage.
+	Longbows have an inherent accuracy penalty unless the
+	wielder is a Ranger-derived class.
+	
+  Crossbow
+    Medium range weapon that has 0% Force.  This means it deals
+	no bonus damage based on Strength/Might.  However, it has
+	exceptional base damage, making it an excellent choice for
+	low strength attackers.
+	
+  Sling
+    Medium range weapon that deals weak damage but is prone
+	to magical properties and is the only ranged weapon to deal
+	bludgeoning damage.
+	
+  Shuriken
+    Medium range weapon that deals slashing damage and has a
+	chance of piercing enemies in a straight line to harm those
+	behind them.
+	

@@ -215,6 +215,8 @@ class Combat(object):
             offense = source.totalMeleeAccuracy + modifier
             if source.usingWeapon("Katana") and not source.characterClass == "Ninja":
                 offense = int(round(offense * 0.9))
+            if source.usingWeapon("Polearm") and not source.baseClass == "Fighter":
+                offense = int(round(offense * 0.9))
             hitDuple = Combat.calcPhysicalHitChance(offense, defense)
         chanceToHit = hitDuple[0]
         accuracyCritMod = hitDuple[1]

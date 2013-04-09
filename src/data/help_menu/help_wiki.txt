@@ -1,0 +1,7 @@
+# help_wiki.txt
+
+The wiki for Akintu detailing game rules and mechanics may be found at:
+  https://github.com/basepi/akintu-pub/wiki
+  
+The Akintu homepage may be found at:
+  www.akintu.net

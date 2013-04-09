@@ -1,15 +1,18 @@
 # help_controls.txt
 
+The Default Controls for Akintu are listed here.  If you have changed the
+keybindings, these may no longer be accurate.
+
 Overworld Controls
 
   UP, DOWN, LEFT, RIGHT --> Movement (Hold to run)
   B  --> (BASH) locked chest
   C  --> Display Character Sheet
+  F1 or ? --> Open help menu (This menu!)
   F2 --> Open Shop (Towns only) 
   G  --> (GET) items from chest/Pick locks on chests
   I  --> Open Inventory
   CTRL-X or CTRL-Q --> Open Save Menu
-  ? --> Open help menu (This menu!) 
   
 Combat
 

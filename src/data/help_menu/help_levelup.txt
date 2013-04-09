@@ -1,0 +1,67 @@
+# help_levelup.txt
+
+When you earn enough experience, you will "level up" to a new character
+level.  This will give you improved attributes as well as new abilities
+and/or spells.  The particular benefits of each level up depend on which
+level you are advancing to, and which character class you are playing as.
+The levelup process is split into five phases:
+
+I.
+The first stage of a level up is Trait selection.  You may select a new
+Trait, or upgrade an existing Trait.  If a Trait you wish to upgrade is not
+displayed in this screen, it indicates that you are not a high enough level
+to further upgrade that Trait this level.  Check the wiki for move details
+on Traits.  
+
+II.
+The second phase is Ability selection.  The abilities to choose from are
+dependent on your two base classes.  Characters with a redundant base class
+such as the Barbarian (Fighter/Fighter) will have fewer abilities to choose
+from.  More abiliites will become available as you progress to higher
+levels.
+
+The Ability selection screen will only appear on specific levelups.
+
+If you are a Wizard-primary class you get to select a new ability on these
+levels: 4, 8, 12, 16, 20.
+
+If you are a Wizard-secondary class you get to select a new ability on
+these levels: 3, 6, 9, 12, 15, 18, 20.
+
+If you are not in either of the above groups (you cannot cast spells) you
+select a new ability on these levels: 2, 4, 6, 8, 10, 12, 14, 16, 18, 20.
+
+III.
+The third phase is Spell selection.  Only classes with Wizard as one (or
+both) of their base classes are able to learn spells.  You may only select
+from spells within your current Spell Tier. Every four levels has access to
+a specific Tier of spells.  Each tier contains spells that are often
+more powerful than the last.
+
+Levels 1-4   : Tier I spells
+Levels 5-8   : Tier II spells
+Levels 9-12  : Tier III spells
+Levels 13-16 : Tier IV spells
+Levels 17-20 : Tier V spells
+
+Wizard-primary classes select from either 1 or 2 spells each level.
+Every odd level allows these classes to select 2 spells instead of one.
+Wizard-secondary classes always select 1 spell each level.
+
+IV.
+The fourth phase is unique or combination ability display.  No selections
+are made in this phase; rather, a notification of new abilities is 
+displayed.  These abilities are both active abilities that can be selected
+in combat, as well as passive abilities that are always active or become
+activated automatically when certain conditions are met.  These abilities
+are dependent on your particular character class, and are unique to your
+class.  You will earn at least one ability in this phase every level.
+
+V.
+The fifth and final phase is a summary page listing everything that you
+earned from the earlier phases as well as a listing of the attributes you
+automatically gained.
+
+
+For more details on the levelup process, see the online wiki.
+

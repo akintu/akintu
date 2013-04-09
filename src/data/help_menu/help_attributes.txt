@@ -1,0 +1,190 @@
+# help_attributes.txt
+
+Akintu has many attributes associated with a character.  The vast majority
+of these can be viewed by opening your character sheet (C) while in the 
+overworld.  Numbers in parenthesis indicate bonuses granted from equipment
+currently equipped.  (Note that equipment equipped in the blue "alternate"
+slots does not affect your statistics.)
+
+For the most in-depth explanation of the character attributes, see the
+online wiki.  A brief overview of the statistics is included here.
+
+Primary attributes are increased on levelup.  Secondary and Tertiary
+attributes are increased by the primary attributes and/or by magical
+equipment.
+
+
+Primary Attributes
+
+  Strength
+    Increases physical damage with most weapons (dependent on Force %)
+	Moderately increases chance to hit with melee attacks
+	Increases the amount of equipment you can carry before being burdened.
+	Aids in bashing open locks with fewer attempts
+	
+  Dexterity
+    Increases chance to hit with ranged attacks
+	Moderately increases chance to hit with melee attacks
+	Moderately increases chance to evade traps
+	Increases chance to dodge physical attacks
+	
+  Sorcery
+    Increases the power of all magical spells
+	Increases the benefit you receive from imbibing HP and MP potions
+	Slightly increases the duration of buffing potions (if very high)
+	Improves the quality of amulets and rings discovered in treasure chests
+	
+  Cunning
+    Increases the chance of landing critical hits
+	Increases the chance of detecting traps (via Awareness)
+	Moderately increases chance to evade traps
+	Slightly increases armor penetration
+	Increases the chance of avoiding detection in stealth
+	Increases your shop discount and selling markup
+	Increases the effectiveness of many Thief abilities
+	Increases the effectiveness of Ranger traps
+	
+  Piety
+    Increases available mana (Max MP)
+	Increases magic resistance
+	Increases the chance of detecting traps (via Intuition)
+	Decreases the amount of damage received from traps
+	
+  Constitution
+    Increases health (Max HP)
+	Increases the chance of ignoring poison effects
+	
+Secondary Attributes
+
+  Ability Points (AP)
+    Determines how many actions you can take in a turn
+	Is typically 20 but can be decreased by burden or using excessive armor
+	Can be maximized up to a total of 25 only through rare magic gear
+
+  Armor Penetration
+	How much Damage Resistance (DR) your physical attacks will ignore
+
+  Armor Tolerance (AT)
+    How heavy of Armor you can wear without lowering your maximum AP  
+	
+  Awareness
+    Used to detect traps and stealthed creatures
+	
+  Critical Chance
+    Determines how often your physical attacks will result in Critical Hits
+	
+  Critical Magnitude
+    Combines with the Critical Bonus of your equipped weapon to determine
+	  how much extra damage your critical hits deal
+	
+  Damage Resistance (DR)
+    Reduces the amount of damage you receive from physical attacks
+	Is mitigated by Armor Penetration
+	Is primarily granted by armor
+	
+  Dodge
+    Helps determine whether a physical attack against you will be
+	successful or will miss
+	
+  Hit Points (HP)
+    Your life pool; when it reaches 0, you die.
+	
+  Intuition
+    An alternate way to detect traps (independent from Awareness)
+	Used to detect traps only if higher than Awareness
+	Also reduces damage from traps
+	
+  Magic Resist
+    Helps determine whether hostile spells will affect you
+	Very high Magic Resist can cause spells to be completely ignored.
+	Very low Magic Resist can allow spells to critically hit you, often
+	  having a greater effect against you.
+
+  Mana Points (MP)
+	Your mana pool; it is consumed when casting spells.
+	In combat, it can be recovered through potions and certain passive 
+	  abilities.
+	
+  Melee Accuracy
+    Helps determine whether your melee attacks will hit their target
+	
+  Melee Dodge
+    Combines with Dodge when an incoming melee attack is being considered
+	
+  Might
+    Is used along with weapon Force to determine how much bonus damage
+	  your physical attacks will deal
+	
+  Movement Tiles
+    How many tiles you can move before incurring another Movement AP Cost
+	
+  Poison Rating Bonus
+    Is used to determine if your poison effects will affect your targets
+	
+  Poison Tolerance
+    Is used to determine if incoming poison effects will affect you
+	
+  Ranged Accuracy
+    Helps determine whether your ranged attacks will hit thier targets
+	
+  Ranged Dodge
+    Combines with Dodge when  an incoming ranged attack is being considered
+	
+  Spellpower
+    Determines how powerful your spells are
+	Also determines whether your spells will be resisted or ignored
+	
+  Sneak
+    Helps determine if you can escape notice while in stealth
+	
+  Trap Evade
+    Helps determine if you can ignore the effects of a sprung trap
+	
+Tertiary Attributes
+
+  Carrying Capacity
+    How much you can carry without being Burdened (and lowering max AP)
+	
+  Gold Find
+    How much bonus gold you earn after combat and from treasure chests
+	
+  Jewlery Bonus
+    How much more powerful rings and amulets you find in treasure chests 
+	  will be
+	  
+  Potion Bonus Effect
+    How much more powerful healing and mana potions will be when used
+	
+  Shop Bonus
+    Improves the selling price of your items and the discount of your
+	  purchases in shops
+	  
+  Trap Damage Bonus
+    Used to increase the amount of damage all of your traps deal
+	
+  Trap Damage Reduction
+    Used to mitigate the amount of damage you incur from triggering traps
+	
+  Trap Rating Bonus
+    Used to make your traps harder to evade
+  
+Elemental Resistances
+
+  Each elemental resistance decreases incoming damage from a particular
+  source.  You cannot resist damage above 80% but resistances above 80%
+  server as a buffer against effects that decrease your resistances.  
+  Players cannot have slashing, piercing, or bashing resistances but some
+  monsters will.
+  
+Elemental Power
+
+  Each elemental power increases the amount of damage you deal with a
+  particular element, whether that be from the use of an ability, spell,
+  item, or magical property on your weapon(s).  Elemental Power is not
+  capped at any amount.
+  
+  
+  
+  
+	
+	
