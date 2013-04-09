@@ -188,6 +188,15 @@ class Region:
         else:
             return Region(R).locations
 
+    def get_outside_corners(self):
+        corners = set()
+        reqs = [[4, 7, 8], [8, 9, 6], [6, 3, 2], [2, 1, 4]]
+        for l in self.locations:
+            for reqset in reqs:
+                if all(l.move(dir) not in self.locations for dir in reqset):
+                    corners.add(l.move(reqset[1]))
+        return corners
+
 if __name__ == "__main__":
     R = Region()
 
@@ -219,6 +228,12 @@ if __name__ == "__main__":
     R ^= Region("SQUARE", Location(0, 0), Location(31, 19))
     assert l1 in R
     print R
+
+    c = R.get_outside_corners()
+    C = Region()
+    for l in c:
+        C("ADD", "CIRCLE", l, 0)
+    #print C
 
     assert l1.move(6, 2) not in R
     for l2 in R:
