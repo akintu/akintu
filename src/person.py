@@ -537,7 +537,7 @@ class Person(en.Entity):
         return self._baseElectricResistance
 
     @baseElectricResistance.setter
-    def baseElectricReistance(self, value):
+    def baseElectricResistance(self, value):
         self._baseElectricResistance = value
 
     @property
