@@ -24,6 +24,7 @@ Combination Classes
     You are a powerful melee attacker whose abilities are tied to your
 	HP level.  Beware magic, as your defenses against it are particularly
 	low.
+	- Wears Heavy Armor
 	- Example Ability: Berserker Rage
 	    Gain bonus Might and Critical Magnitude when your HP is under
 		75%.
@@ -34,6 +35,7 @@ Combination Classes
     with your Jump Attack and dealing group damage in melee.  Beware
     Traps as your focus on the sky leaves you little Awareness for 
     hidden traps below.
+	- Wears Heavy Armor
     - Example Ability: Jump Attack
         Jump to your target and deal massive damage on landing.  Nearby
         foes are harmed by the impact of your impact.
@@ -44,6 +46,7 @@ Combination Classes
     spellpower is the most limited of all the magical classes, you make up
     for it with your heavy armor and the highest HP of any class able to
     cast spells.
+	- Wears Heavy Armor
     - Example Spell: Enhance Weapon
         Your target's weapon gains bonus critical magnitude, armor
         penetration, critical hit chance and accuracy.
@@ -54,6 +57,7 @@ Combination Classes
     to be the most powerful of any trap-laying class.  Be warned that your
     standard melee and ranged attacks consume more AP than most other
     classes.
+	- Wears Medium Armor
     - Example Ability: Explosive Trap
         Lay a trap down that will deal fire damage to the monster that
         triggers it as well as all monsters adjacent to it.
@@ -64,6 +68,7 @@ Combination Classes
     of your ranged attacks, allowing you to pick apart targets before they
     can reach you.  Beware foes that manage to reach you in melee.  Both
     your movement and your melee attack AP costs are high.
+	- Wears Light Armor
     - Example Ability: Cusp of Escape
         Attack a target on the edge of your range with an incredible
         bonus to accuracy and critical hit chance.
@@ -74,6 +79,7 @@ Combination Classes
     them slowly over a period of time.  Beware foes with high poison 
     resistance or tolerance as they will be difficult for you to weaken
     with most of your abilities.
+	- Wears Medium Armor
     - Example Ability: Painful Shot
         Attack with a ranged weapon dealing bonus critical damage
         and occasionally lowering enemy attack power.
@@ -84,6 +90,7 @@ Combination Classes
 	stealth.  Beware agile and observent enemies as they will be able
 	to detect you and close the distance to reach you where your ranged
 	attacks will be less effective.
+	- Wears Light Armor
 	- Example Ability: Ranged Backstab
 	    Perform a Thief backstab with a bow or crossbow with a huge
 		bonus to critical hit chance, dealing massive damage if it 
@@ -97,6 +104,7 @@ Combination Classes
 	enemies that use area-of-effect attacks because your conventional
 	abilities are limited and your survivability relies almost completely
 	on non-detection.
+	- Wears Light Armor
 	- Example Ability: Hide in Peril
 	    When harmed by anything that deals at least 30% of your 
 		maximum HP, immediately enter stealth if you aren't in stealth
@@ -110,6 +118,7 @@ Combination Classes
 	access to several abilites to defeat your enemies through vampirism
 	and shrouds of darkness when your physical and magical might fails
 	you.
+	- Wears Light Armor
 	- Example Ability: Shroud
 	    Deal shadow damage to all adjacent enemies and gain a 
 		protective cover of darkness that gives a 20% chance to avoid
@@ -122,6 +131,7 @@ Combination Classes
 	combatant, you have many options to boost your defenses through spells
 	and the ability to regenerate mana when landing melee attacks to keep
 	those spells going.
+	- Wears Medium Armor
     - Example Ability: Close-Ranged Magic
         Gain +6 Spellpower on all spells with a range of 3 or less.
 	
@@ -132,6 +142,7 @@ Combination Classes
 	to arcane damage, which few monsters are resistant to.  Beware
 	foes that reach you in melee as you are very frail and your movement
 	costs too much AP for you to successfully flee from their attacks.
+	- Wears Robes
 	- Example Ability: Arcane-Threading
 	    Your ranged attacks with bows and crossbows deal bonus arcane
 		damage.  This benefit lasts an entire battle.
@@ -144,5 +155,6 @@ Combination Classes
 	your magic defense is substantial, if any spells are able to break 
 	through it, your high dodge will not be able to protect your meagre
 	HP pool.
+	- Wears Robes
 	- Example Ability: Glee
 	    Regain 18 + 2 per level MP every time you dodge an attack.
