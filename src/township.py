@@ -11,15 +11,16 @@ import pygame
 from const import *
 from region import *
 from pane import *
+from location import Location
 
 class Township(object):
-    def __init__(self, seed, township_loc, country_loc, is_server):
+    def __init__(self, seed, township_loc, country_loc):
         self.seed = seed + str(country_loc) + str(township_loc)
         self.loc = (country_loc, township_loc)
-        self.is_server = is_server
         self.stampsLoaded = False
         self.town = None
         self.dungeons = []
+        self.stamps = dict()
         
         assert township_loc[0] < TOWNSHIP_X and \
                 township_loc[1] < TOWNSHIP_Y, \
@@ -28,10 +29,10 @@ class Township(object):
         self.topLeft = Township.getTownshipTopLeftPane(country_loc, township_loc)
         self.center = ((self.topLeft[0] + TOWNSHIP_X/2), (self.topLeft[1]+TOWNSHIP_Y/2))
 
-        self.tile_width = (PANE_X-1) * TOWNSHIP_X
-        self.tile_height = (PANE_Y-1) * TOWNSHIP_Y
+        self.width_tiles = (PANE_X-1) * TOWNSHIP_X
+        self.height_tiles = (PANE_Y-1) * TOWNSHIP_Y
 
-        self.bounding_rect = pygame.Rect(0, 0, self.tile_width, self.tile_height)
+        self.bounding_rect = pygame.Rect(0, 0, self.width_tiles, self.height_tiles)
         self.rect_list = []
 
     def addTown(self):
@@ -52,10 +53,35 @@ class Township(object):
         x = town_x + PANE_X + 2
         y = town_y + PANE_Y + 2
         #Account for padding when we place the rect
-        town_rect = pygame.Rect(town_x*(PANE_X-1)-1, town_y*(PANE_Y-1)-1, x, y)
-        assert self.bounding_rect.contains(town_rect), "Bounding Rectangle doesn't contain the town"
-        self.rect_list.append(town_rect)
-        self.town = Town(self.seed, self.town_loc, self.is_server, True, None)
+        self.town_rect = pygame.Rect(town_x*(PANE_X-1)-1, town_y*(PANE_Y-1)-1, x, y)
+        assert self.bounding_rect.contains(self.town_rect), "Bounding Rectangle doesn't contain the town"
+        self.rect_list.append(self.town_rect)
+        self.placeTownStamps()
+
+    def placeTownStamps(self):
+        stamps_rect = [pygame.Rect(0,0,1,1)]
+        stamps = dict()
+        for key in [Stamp.SHOP, Stamp.RESPEC, Stamp.HOUSE, Stamp.GARDEN, Stamp.HOUSE, Stamp.GARDEN, Stamp.HOUSE]:
+            stamp_dict = Stamp.getStamps(key)
+            size = random.choice(list(stamp_dict.keys()))
+            stamp = random.choice(stamp_dict[size])
+
+            #Pick some threshhold to prevent an infinite loop
+            i = 0
+            threshhold = 20
+            while i < threshhold:
+                #Choose a point 
+                loc_x = random.randrange(0, PANE_X-6)
+                loc_y = random.randrange(0, PANE_Y-6)
+
+                #Check if the rectangle will collide with any others
+                candidate = pygame.Rect(loc_x, loc_y, size[0]+1, size[1]+1)
+                if candidate.collidelist(stamps_rect) == -1:
+                    stamps_rect.append(candidate)
+                    stamps[(loc_x, loc_y)] = stamp
+                    self.stamps[Location(self.town_loc, (loc_x, loc_y))] = stamp
+                    break
+                i += 1
 
     def addDungeons(self, number=2):
         random.seed(self.seed + "DUNGEON")
@@ -128,7 +154,7 @@ class Township(object):
         return (loc_x, loc_y)
 
 if __name__=="__main__":
-    t = Township("SOME_SEED", township_loc=(2,2), country_loc=(0,0), is_server=True)
+    t = Township("SOME_SEED", township_loc=(2,2), country_loc=(0,0))
     t.addTown()
     t.addDungeons(5)
     

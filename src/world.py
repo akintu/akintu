@@ -14,6 +14,8 @@ from theorycraft import TheoryCraft
 from region import *
 from ai import AI
 from treasurechest import *
+from township import *
+from country import *
 
 
 class World(object):
@@ -24,12 +26,14 @@ class World(object):
         seed: the random seed for this world
     '''
 
-    def __init__(self, seed, nearestTown=Location(0,0)):
+    def __init__(self, seed, pane=Location(0,0)):
         self.seed = seed
         self.panes = dict()
         self.pane_items = dict()
         self.pane_chests = dict()
         self.curr_pane = None
+        self.countries = dict()
+        self._generate_world(pane)
         
     def is_town_pane(self, location):
         if isinstance(location, Location):
@@ -64,13 +68,27 @@ class World(object):
             self.panes[location] = Pane(self.seed, location, is_server=is_server, load_entities=True, pane_state=state)
         else:
             self.panes[location] = self._getTown(location, is_server, True, state)
+    
+        self.loadStamps(location)
             
         self._merge_tiles(surrounding_locations)
         self.panes[location].load_images()
         if not is_server:
             self.panes[location].person = {}
         return self.panes[location]
-            
+
+    def loadStamps(self, location):
+        if isinstance(location, Location):
+            loc = location.pane
+        else:
+            loc = location
+        country_loc, township_loc = Township.getTownshipLocation(loc)
+        if not country_loc in self.countries:
+            self._generate_world(country_loc)
+        stamps = self.countries[country_loc].stamps
+        if loc in stamps:
+            self.panes[location].load_stamps(stamps[loc], True)
+
     def _getTown(self, location, is_server, load_entities, pane_state):
         town = Town(self.seed, location, is_server, load_entities, pane_state)
         
@@ -86,13 +104,18 @@ class World(object):
             loc = location.pane
         else:
             loc = location
-        #TODO: We can do some deterministic, dynamic placement here
-        #but for now just return a static list of Towns
-        return [(0, 0), (0, -2)]
+        country_loc, township_loc = Township.getTownshipLocation(loc)
+        if not country_loc in self.countries:
+            self._generate_world(country_loc)
+        return self.countries[country_loc].towns
         
 
-    def _generate_world(self):
-        pass
+    def _generate_world(self, pane=(0, 0)):
+        if isinstance(pane, Location):
+            pane = pane.pane
+        country_loc, township_loc = Township.getTownshipLocation(pane)
+        c = Country(self.seed, country_loc)
+        self.countries[country_loc] = c 
 
     def _verify_path(self, start_location, end_location):
         pass

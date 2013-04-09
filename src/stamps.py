@@ -6,6 +6,7 @@ class Stamp(object):
     DUNGEON = "dungeon"
     HOUSE = "house"
     SHOP = "shop"
+    RESPEC = "respec"
     GARDEN = "garden"
     TREASURE = "treasure"
     MAZE = "maze"
@@ -120,7 +121,7 @@ class Stamp(object):
         Stamp.allTypes = dict()
         Stamp.allStamps = dict()
 
-        Stamp.keys = [Stamp.DUNGEON, Stamp.HOUSE, Stamp.SHOP, Stamp.GARDEN, Stamp.TREASURE, Stamp.WATER, Stamp.LANDSCAPE]
+        Stamp.keys = [Stamp.DUNGEON, Stamp.HOUSE, Stamp.SHOP, Stamp.RESPEC, Stamp.GARDEN, Stamp.TREASURE, Stamp.WATER, Stamp.LANDSCAPE]
         for key in Stamp.keys:
             Stamp.allStamps[key] = Stamp.parseStampFiles(os.path.join(STAMP_PATH, key))
 

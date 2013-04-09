@@ -2,7 +2,7 @@
 #
 tttttttt
 t ffff t
-t HHHH t
-t HPHH t
+t dddd t
+t dddd t
 t  p   t
 tttp ttt

@@ -18,10 +18,16 @@ class Country(object):
         self.loc = loc
 
         self.townships = dict()
+        self.towns = []
+        self.stamps = dict()
         for x in range(COUNTRY_X):
             for y in range(COUNTRY_Y):
-                township = Township(self.seed, country_loc=loc, township_loc=(x,y))
-                self.townships[(x, y)] = township
+                t = Township(self.seed, country_loc=loc, township_loc=(x,y))
+                t.addTown()
+                t.addDungeons(5)
+                self.townships[(x, y)] = t
+                self.towns.append(t.town_loc)
+                self.stamps[t.town_loc] = t.stamps
 
 
 if __name__ == "__main__":
@@ -35,6 +41,8 @@ if __name__ == "__main__":
             print "_"*40
             print "COUNTRY: " + str((x, y))
             for loc, township in c.townships.iteritems():
-                print "   Township: " + str(township.loc)
+                
+                print "   Township: " + str(township.loc[1])
                 print "\tTopLeft Pane: " + str(township.topLeft)
                 print "\tCenter Pane: " + str(township.center)
+                print township.stamps
