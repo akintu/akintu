@@ -1,0 +1,20 @@
+# help_poison_mechanics.txt
+
+In Akintu, most poison effects have a chance to be "tolerated", or in other
+words, ignored.  This is dependent on the victim's Poison Tolerance 
+attribute which is primarily increased via Constitution.  Most poison
+damage as well as (harmful) poison status effects can be tolerated.
+
+The attacker's poison has a specific Poison Rating which is dependent on
+the ability in use and any Poison Rating bonuses specified.  
+
+The exact mechanics for this computation is listed in the wiki, but it 
+suffices to say that if the Poison Tolerance and Poison Rating are equal,
+there is a 50% chance that a poison will be tolerated.  If the defender's
+Poison Tolerance is at least double the Poison Rating, it will always be 
+tolerated.
+
+Note that Poison Resistance and Poison Tolerance are independent and
+unrelated.  Poison Resistance is used to mitigate the amount of damage from
+"successful" poison sources, and does not factor into the above computation
+at all.
