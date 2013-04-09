@@ -587,6 +587,22 @@ class CharacterDialog(object):
              str(p.equipmentConstitution) + ')')
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = ''
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = ('Armor Tolerance:  ' + p.armorTolerance)
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = ('Melee Attack AP Cost:  ' + str(p.totalMeleeAttackAPCost))
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = ('Ranged Attack AP Cost:  ' + str(p.totalRangedAttackAPCost))
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
         y += f.get_rect().height * 2
         y = 40
         x += 320
