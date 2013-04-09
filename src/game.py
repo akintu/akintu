@@ -459,7 +459,7 @@ class Game(object):
 
     def save_no_quit(self):
         if hasattr(self, 'gs'):
-            self.gs.save_all()
+            self.gs.save_all(shutdown=False)
         self.save_player()#player_string)
         
     def quit(self):
