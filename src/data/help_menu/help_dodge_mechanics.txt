@@ -1,0 +1,23 @@
+# help_dodge_mechanics.txt
+
+In Akintu, physical attacks all have a chance to be Dodged.  If the attack
+is Dodged, it will be listed as a "miss".  (Avoidance is separate and is
+not typically in play unless a player is in stealth.)
+
+Successfully landing blows require good Accuracy.  Melee attacks rely on
+Melee Accuracy.  Ranged attacks rely on Ranged Accuracy.  
+
+Successfully dodging attacks require good Dodge.  Melee Dodge and Ranged
+Dodge contribute to the chance to dodge for their respective incoming
+attacks.  
+
+The exact mechanics of physical hits are listed in the wiki.  Some details
+are listed here as well.
+
+If Accuracy is exactly equal to Dodge: Chance to hit = 80%
+Maximum chance to hit = 100%
+Minimum chance to hit = 5%
+Chance to hit above 100% contribute a small amount of critical hit chance*.
+Chance to hit below 5% detracts significantly from critical hit chance*.
+
+*Note that monsters cannot perform physical critical hits ever.
