@@ -1,0 +1,8 @@
+#	8x6 RESPEC STAMPS
+#
+tttttttt
+tddddddt
+td____dt
+td____dt
+tddddddt
+ttt  ttt

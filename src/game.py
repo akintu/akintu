@@ -73,13 +73,17 @@ class Game(object):
 
         # Selection state
         #Ability.targetType can be "friendly", "hostile", "self", "location"
-        self.currentTargetId = None
+        self.currentTarget = None
         self.panePersonIdList = []
         self.currentAbility = None
         self.abilityList = []
         self.currentItem = None
         self.itemList = []
         self.playerSaveFile = None
+
+        self.rangeRegion = Region()
+        self.targetRegion = Region()
+        self.trapRegions = []
 
         self.turnTime = kwargs.get('turnlength')
 
@@ -197,6 +201,10 @@ class Game(object):
                 p = self.pane.person[command.id]
                 p.location = command.location
 
+                if command.id == self.id and self.combat:
+                    self.currentAbility = self.pane.person[self.id].abilities[0]
+                    self.update_regions()
+
                 imagepath = os.path.join(SPRITES_IMAGES_PATH, p.image)
                 sizeAbbr = "M"
                 if self.pane.person[command.id].team == "Monsters":
@@ -220,9 +228,7 @@ class Game(object):
 
             ###### MovePerson ######
             if command.type == "PERSON" and command.action == "MOVE":
-                if command.id == self.id and self.currentAbility:
-                    self.show_range(False)
-                if 'details' in command.__dict__:
+                if hasattr(command, 'details'):
                     if self.pane.person[command.id].anim:
                         self.pane.person[command.id].anim.stop()
                         self.pane.person[command.id].anim = None
@@ -232,8 +238,11 @@ class Game(object):
                             1.0 / self.pane.person[command.id].movementSpeed)
 
                 self.pane.person[command.id].location = command.location
-                if command.id == self.id and self.currentAbility:
-                    self.show_range(True)
+                if self.combat and not self.valid_target():
+                    self.cycle_targets()
+                if hasattr(command, 'details'):
+                    self.update_regions()
+
 
             ###### RemovePerson ######
             if command.type == "PERSON" and command.action == "REMOVE":
@@ -247,14 +256,14 @@ class Game(object):
                     if self.pane.person[command.id].anim:
                         self.pane.person[command.id].anim.stop()
 
-                    if self.currentTargetId == command.id:
+                    if self.currentTarget == command.id:
                         loc = self.pane.person[command.id].location
                         tile = self.pane.get_tile(loc.tile)
                         self.screen.update_tile(tile, loc)
 
                     self.screen.remove_person(command.id)
-                    if command.id == self.currentTargetId:
-                        self.currentTargetId = None
+                    if command.id == self.currentTarget:
+                        self.currentTarget = None
                     del self.pane.person[command.id]
 
             ###### StopRunning ######
@@ -357,9 +366,10 @@ class Game(object):
                         each._clientStatusView = []
                     self.play_music("overworld", True)
                     keystate.inputState = "OVERWORLD"
-                    self.currentTargetId = None
-                    self.panePersonIdList = []
+                    self.currentTarget = None
                     self.currentAbility = None
+                    self.update_regions()
+                    self.panePersonIdList = []
                     self.abilityList = []
                     self.currentItem = None
                     self.itemList = []
@@ -432,7 +442,7 @@ class Game(object):
 
             elif command.type == "CLIENT" and command.action == "QUIT":
                 self.save_and_quit()
-                
+
             elif command.type == "SHOP" and command.action == "OPEN":
                 self.currentShop = shop.Shop(command.shopLevel, command.shopSeed)
                 keystate.inputState = "SHOP"
@@ -459,9 +469,9 @@ class Game(object):
 
     def save_no_quit(self):
         if hasattr(self, 'gs'):
-            self.gs.save_all()
+            self.gs.save_all(shutdown=False)
         self.save_player()#player_string)
-        
+
     def quit(self):
         reactor.stop()
 
@@ -495,11 +505,15 @@ class Game(object):
                     self.screen.move_dialog(keystate.direction("DIALOG"))
                     keystate.keyTime = time.time() + 2 * keystate.typematicRate
                 elif keystate.direction("TARGET"):
-                    self.attempt_attack(targetingLocation=keystate.direction("TARGET"))
+                    newloc = self.currentTarget.move(keystate.direction("TARGET"))
+                    if newloc.pane == self.currentTarget.pane:
+                        self.currentTarget = newloc
+                elif e == "TARGETACCEPT":
+                    keystate.inputState = "COMBAT"
                 elif e == "TARGETCANCEL":
-                    self.screen.show_text("Cancelled trap placement.", color='white')
                     keystate.inputState = "COMBAT"
                     self.currentAbility = None
+                    self.update_regions()
                 elif e == "SCROLLTOP":
                     self.screen.scroll_up(1000)
                 elif e == "SCROLLUP":
@@ -512,7 +526,7 @@ class Game(object):
                 ### Save Menu ###
                 elif e == "SAVEMENUACCEPT":
                     selection = self.screen.hide_dialog()
-                    # 0 -- 'Save and Return', 
+                    # 0 -- 'Save and Return',
                     # 1 -- 'Save and Quit',
                     # 2 -- 'Return without Saving'
                     if selection == 0:
@@ -527,7 +541,7 @@ class Game(object):
                     self.screen.hide_dialog()
                     keystate.inputState = "OVERWORLD"
                     self.screen.show_text("Save Aborted.", color='white')
-                    
+
                 ### Character Sheet ###
                 elif e == "CHARSHEETOPEN":
                     self.display_character_sheet()
@@ -639,28 +653,25 @@ class Game(object):
                 elif e == "ABILITIESOPEN":
                     keystate.inputState = "ABILITIES"
                     self.choose_ability()
-                elif e == "ABILITIESSELECT":
-                    self.currentAbility = self.pane.person[self.id].abilities[self.screen.hide_dialog()]
-                    if "Trap" in self.currentAbility.name:
-                        keystate.inputState = "TARGET"
-                    else:
-                        keystate.inputState = "COMBAT"
-
-                    if self.currentAbility.range == 0:
-                        self.select_self()
-                    else:
-                        self.show_range(True)
-
                 elif e == "SPELLSOPEN":
                     keystate.inputState = "SPELLS"
                     self.choose_spell()
-                elif e == "SPELLSSELECT":
-                    self.currentAbility = self.pane.person[self.id].spellList[self.screen.hide_dialog()]
-                    keystate.inputState = "COMBAT"
+                elif e in ["ABILITIESSELECT", "SPELLSSELECT"]:
+                    if e == "ABILITIESSELECT":
+                        self.currentAbility = self.pane.person[self.id].abilities[self.screen.hide_dialog()]
+                    elif e == "SPELLSSELECT":
+                        self.currentAbility = self.pane.person[self.id].spellList[self.screen.hide_dialog()]
+
+                    if self.currentAbility.targetType == "location":
+                        keystate.inputState = "TARGET"
+                        self.currentTarget = self.pane.person[self.id].location
+                    else:
+                        keystate.inputState = "COMBAT"
                     if self.currentAbility.range == 0:
                         self.select_self()
-                    else:
-                        self.show_range(True)
+                    self.update_regions()
+                    if not self.valid_target():
+                        self.cycle_targets()
 
                 elif e == "SWITCHGEAR":
                     self.switch_gear()
@@ -672,7 +683,10 @@ class Game(object):
                     if self.currentItem:
                         self.use_item()
                     else:
-                        self.attempt_attack()
+                        if isinstance(self.currentTarget, Location):
+                            self.attempt_attack(targetingLocation=self.currentTarget)
+                        else:
+                            self.attempt_attack()
                 elif e == "ENDTURN":
                     self.force_end_turn()
                 elif e == "SELECTSELF":
@@ -758,7 +772,7 @@ class Game(object):
         menuItems = ['Save and Return', 'Save and Quit', 'Return without Saving']
         self.screen.show_menu_dialog(menuItems)
         keystate.inputState = "SAVEMENU"
-            
+
     def open_inventory(self):
         keystate.inputState = "INVENTORY"
         player = self.pane.person[self.id]
@@ -799,7 +813,7 @@ class Game(object):
         bgcolor = "lightblue"
         itemslist = self.pane.person[self.id].spellList
         if not itemslist:
-            keystate.inputState = "OVERWORLD"
+            keystate.inputState = "COMBAT"
             return
         self.screen.show_tiling_dialog(text, itemslist, bgcolor=bgcolor)
 
@@ -811,7 +825,7 @@ class Game(object):
         newloc = self.pane.person[self.id].location.move(direction, distance)
         if self.combat and newloc.pane != (0, 0):
             return False
-        if not self.pane.person[self.id].anim and ((self.pane.person[self.id].location.pane == \
+        if (not self.pane.person[self.id].anim) and ((self.pane.person[self.id].location.pane == \
                 newloc.pane and self.pane.is_tile_passable(newloc) and \
                 newloc.tile not in [x.location.tile for x in self.pane.person.values()]) or \
                 self.pane.person[self.id].location.pane != newloc.pane):
@@ -827,7 +841,8 @@ class Game(object):
                     self.animate(self.id, self.pane.person[self.id].location, newloc, \
                             1.0 / self.pane.person[self.id].movementSpeed)
                     self.pane.person[self.id].location = newloc
-        elif self.pane.person[self.id].location.direction != direction:
+        elif self.pane.person[self.id].location.direction != direction \
+                and self.pane.is_tile_passable(self.pane.person[self.id].location):
             self.pane.person[self.id].location.direction = direction
 
             statsdict = {}
@@ -885,14 +900,14 @@ class Game(object):
             self.CDF.send(action)
 
     def attempt_attack(self, targetingLocation=None):
-        if not self.currentTargetId and not targetingLocation:
+        if not self.currentTarget and not targetingLocation:
             print "No target selected."
             return
         if not self.currentAbility:
             print "No ability selected."
             return
         if not targetingLocation:
-            self.CDF.send(Command("ABILITY", "ATTACK", id=self.id, targetId=self.currentTargetId,
+            self.CDF.send(Command("ABILITY", "ATTACK", id=self.id, targetId=self.currentTarget,
                 abilityName=self.currentAbility.name))
         else:
             self.CDF.send(Command("ABILITY", "PLACE_TRAP", id=self.id, \
@@ -920,45 +935,96 @@ class Game(object):
         if not self.combat:
             return
 
-        if self.currentTargetId:
-            if self.currentTargetId not in self.pane.person.keys():
-                self.currentTargetId = None
-            else:
-                self.screen.set_overlay(self.pane.person[self.currentTargetId].location, None)
+        if self.currentTarget:
+            if self.currentTarget not in self.pane.person:
+                self.currentTarget = None
 
-        resetNeeded = False
-        for x in self.panePersonIdList:
-            if x not in self.pane.person:
-                resetNeeded = True
-        if not self.panePersonIdList or not self.currentTargetId \
-           or self.currentTargetId not in self.pane.person or \
-           resetNeeded:
-            self.panePersonIdList = [x for x in self.pane.person]
-            self.currentTargetId = self.panePersonIdList[0]
-        elif not reverse:
-            if self.currentTargetId == self.panePersonIdList[-1]:
-                self.currentTargetId = self.panePersonIdList[0]
-            else:
-                currentTargetPlace = self.panePersonIdList.index(self.currentTargetId)
-                self.currentTargetId = self.panePersonIdList[currentTargetPlace + 1]
+        if not self.panePersonIdList or not self.currentTarget \
+                or self.currentTarget not in self.pane.person or \
+                any(x not in self.pane.person for x in self.panePersonIdList):
+            self.panePersonIdList = self.pane.person.keys()
+            self.currentTarget = self.panePersonIdList[0]
+
+        dir = -1 if reverse else 1
+        persons = len(self.panePersonIdList)
+        for _ in range(persons):
+            currentTargetPlace = self.panePersonIdList.index(self.currentTarget)
+            self.currentTarget = self.panePersonIdList[(currentTargetPlace + dir) % persons]
+            if self.valid_target():
+                break
+
+        if not self.valid_target():
+            self.currentTarget = None
+        self.update_regions()
+
+    def valid_target(self):
+        if not self.currentTarget:
+            return False
+        if isinstance(self.currentTarget, Location):
+            if self.currentTarget not in self.rangeRegion:
+                return False
         else:
-            if self.currentTargetId == self.panePersonIdList[0]:
-                self.currentTargetId = self.panePersonIdList[-1]
+            if self.pane.person[self.currentTarget].location not in self.rangeRegion:
+                return False
+            if self.currentAbility.targetType == "hostile" and self.pane.person[self.currentTarget].team != "Monsters":
+                return False
+            if self.currentAbility.targetType == "friendly" and self.pane.person[self.currentTarget].team != "Players":
+                return False
+            if self.currentAbility.targetType == "self" and self.currentTarget != self.id:
+                return False
+        return True
+
+    def update_regions(self):
+        dirty = Region()
+
+        if self.id > 0:
+            dirty("ADD", "CIRCLE", self.pane.person[self.id].location, 0)
+
+        if self.currentTarget:
+            if isinstance(self.currentTarget, Location):
+                dirty("ADD", "CIRCLE", self.currentTarget, 0)
             else:
-                currentTargetPlace = self.panePersonIdList.index(self.currentTargetId)
-                self.currentTargetId = self.panePersonIdList[currentTargetPlace - 1]
+                dirty("ADD", "CIRCLE", self.pane.person[self.currentTarget].location, 0)
 
-        self.screen.set_overlay(self.pane.person[self.currentTargetId].location, ['red'])
+        for l in self.rangeRegion + self.targetRegion:
+            ovl = self.screen.get_overlay(l)
+            if ovl != list(set(ovl)):
+                dirty("ADD", "CIRCLE", l, 0)
 
-    def show_range(self, show, loc=None):
-        if not loc:
-            loc = self.pane.person[self.id].location
-        R = Region()
+        range = Region()
+        if self.currentAbility:
+            r = self.currentAbility.range if self.currentAbility.range != -1 else \
+                    self.pane.person[self.id].attackRange
+            if self.currentAbility.specialTargeting == "DEFAULT":
+                range("ADD", "DIAMOND" if r != 1 else "CIRCLE", self.pane.person[self.id].location, r)
+            if self.currentAbility.specialTargeting == "BORDER":
+                range("ADD", "DIAMOND", self.pane.person[self.id].location, r)
+                range("SUB", "DIAMOND", self.pane.person[self.id].location, r - 1)
+        dirty += self.rangeRegion ^ range
+        self.rangeRegion = range
 
-        R("ADD", "DIAMOND", loc, self.currentAbility.range \
-                if self.currentAbility.range != -1 else self.pane.person[self.id].attackRange)
-        for l in [x for x in R if x.pane == (0, 0)]:
-            self.screen.set_overlay(l, overlay=['blue'] if show else None)
+        target = Region()
+        if self.currentAbility and self.currentTarget:
+            r = 0 #TODO Get radius if ability explodes
+            if isinstance(self.currentTarget, Location):
+                target("ADD", "CIRCLE", self.currentTarget, r)
+            else:
+                target("ADD", "CIRCLE", self.pane.person[self.currentTarget].location, r)
+        dirty += self.targetRegion ^ target
+        self.targetRegion = target
+
+        for l in (l for l in dirty if l.pane == (0, 0)):
+            overlay = []
+            if l == self.pane.person[self.id].location:
+                overlay.append('blue')
+            if l in self.rangeRegion:
+                overlay.append('blue')
+            if l in self.targetRegion:
+                overlay.append('red')
+            if l == self.currentTarget or \
+                    (self.currentTarget and l == self.pane.person[self.currentTarget].location):
+                overlay.append('red')
+            self.screen.set_overlay(l, overlay)
         self.screen.update()
 
     def select_self(self):
@@ -967,13 +1033,13 @@ class Game(object):
         if not self.panePersonIdList:
             self.panePersonIdList = [x for x in self.pane.person]
         selfIndex = self.panePersonIdList.index(self.id)
-        self.currentTargetId = self.panePersonIdList[selfIndex]
-        self.screen.show_text("Targeting: yourself", color='lightblue')
+        self.currentTarget = self.panePersonIdList[selfIndex]
+#        self.screen.show_text("Targeting: yourself", color='lightblue')
 
     def display_target_details(self):
-        if not self.currentTargetId or self.currentTargetId not in self.pane.person:
+        if not self.currentTarget or self.currentTarget not in self.pane.person:
             return
-        target = self.pane.person[self.currentTargetId]
+        target = self.pane.person[self.currentTarget]
         self.screen.show_text("Details of " + target.name + ":", color='greenyellow')
         allElements = ['Arcane', 'Bludgeoning', 'Cold', 'Divine', 'Electric', 'Fire', 'Piercing',
                         'Poison', 'Shadow', 'Slashing', 'Physical']
@@ -1018,10 +1084,8 @@ class Game(object):
                 self.pane.person[id].anim.stop()
             self.pane.person[id].anim = None
             self.pane.person[id].anim_start = 0
-
-            if id == self.id and self.currentAbility:
-                self.show_range(False, source)
-                self.show_range(True)
+            if self.combat:
+                self.update_regions()
         self.screen.update_person(id, statsdict)
 
     def animate_entity(self, location):

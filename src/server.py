@@ -371,8 +371,24 @@ class GameServer():
                 self.pane[pane].save_state()
                 del self.pane[pane]
 
-    def save_all(self):
-        self.unload_panes(True)
+    def save_all(self, shutdown=True):
+        if shutdown:
+            self.unload_panes(True)
+        else:
+            for pane in self.pane.keys():
+                #Save ID list of pane
+                tmp_people_list = self.pane[pane].person
+                if pane in self.pane:
+                    people = {}
+                    for i in self.pane[pane].person:
+                        #self.person[i].ai.shutdown()
+                        if i not in self.player.values():
+                            people[i] = self.person[i]
+                    self.pane[pane].person = people
+                    self.pane[pane].save_state()
+                    #Restore ID list of pane 
+                    self.pane[pane].person = tmp_people_list
+
         State.save_world()
 
     def getAllCombatPorts(self, character):
