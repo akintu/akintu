@@ -195,8 +195,11 @@ class MagicalProperty(object):
                     print prop[0] + " " + str(prop[1]['weight']) + " " + str(1 + float(tAmount) / 100)
                     prop[1]['weight'] = round(prop[1]['weight'] * (1 + float(tAmount) / 100))
         return subList
+        
 
-
+    def _doNothing(self, *args, **kwargs):
+        pass
+        
     def _AP(self, owner, reverse=False):
         APIncrease = min(self.max, self.counts)
         if not reverse:
@@ -847,7 +850,7 @@ class MagicalProperty(object):
             },
         'Damage':
             {
-            'weight' : 150,
+            'weight' : 110,
             'cost' : 'Varies',
             'effect' : _damage,
             'max' : None,
@@ -860,7 +863,7 @@ class MagicalProperty(object):
             },
         'DR':
             {
-            'weight' : 150,
+            'weight' : 110,
             'cost' : 'Varies',
             'effect' : _DR,
             'max' : None,
