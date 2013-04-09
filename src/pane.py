@@ -61,10 +61,10 @@ class Pane(object):
                     # self.add_obstacle((i, j), RAND_ENTITIES)
 
         if load_entities:
-            #TEST STAMP IDEA
+            #TEST STAMP TEXT
             stamp = Stamp.getStringStamp("("+ str(self.location[0]) + ":" + str(self.location[1]) + ":" + str(self.z) + ")")
             stamp_loc = Location(self.location, (random.randrange(1, PANE_X-stamp.width), random.randrange(1, PANE_Y-stamp.height)))
-            self.load_stamp(stamp, stamp_loc)
+            self.load_stamps({stamp_loc:stamp})
 
             for i in range(1):
                 stamp_dict = Stamp.getStamps(Stamp.LANDSCAPE)
@@ -72,7 +72,7 @@ class Pane(object):
                 stamp_list = stamp_dict[(20,15)]
                 stamp = random.choice(stamp_list)
                 stamp_loc = Location(self.location, (random.randrange(1, PANE_X-stamp.width), random.randrange(1, PANE_Y-stamp.height)))
-                self.load_stamp(stamp, stamp_loc)
+                self.load_stamps({stamp_loc:stamp})
             
             if self.pane_state:
                 self.load_state(self.pane_state)
@@ -245,6 +245,14 @@ class Pane(object):
             elif entity_key in PATHS:
                 image = Sprites.get_path(entity_key, self.seed, self.location, tile)
                 passable = True
+            elif entity_key == 'house':
+                house = HouseOverworld(Location(self.location, tile))
+                self.add_entities(house.entities)
+                continue
+            elif entity_key == 'shop':
+                house = HouseOverworld(Location(self.location, tile))
+                self.add_entities(house.entities)
+                continue
             if not image:
                 print "Entity Key NOT FOUND: " + str(entity_key)
             self.tiles[tile].entities.append(Entity(tile, image=image, passable=passable))
@@ -355,32 +363,33 @@ class Pane(object):
     def get_item_list(self):
         pass
 
-    def load_stamp(self, stamp, location, clear_region=False):
-        location2 = location.move(6, stamp.width-1).move(2, stamp.height-1)
+    def load_stamps(self, loc_stamp_dict, clear_region=False):
+        for location, stamp in loc_stamp_dict.iteritems():
+            location2 = location.move(6, stamp.width-1).move(2, stamp.height-1)
 
-        if clear_region:
-            clear = Region()
-            clear("ADD", "SQUARE", location, location2)
-            self.clear_region(clear)
-        
-        obst = random.choice(sorted(OBSTACLES))
-        for loc, type in stamp.getEntityLocations(location).iteritems():
+            if clear_region:
+                clear = Region()
+                clear("ADD", "SQUARE", location, location2)
+                self.clear_region(clear)
             
-            #CONSUMABLES AND ITEMS (REMOVED AFTER USE)
-            if type in [CHEST_KEY, MONSTER_KEY, ITEM_KEY]:
-                if not self.pane_state and self.is_server:
-                    if type == CHEST_KEY:
-                        self.add_chest(tile=loc.tile)
-                    if type == MONSTER_KEY:
-                        self.add_monster(location=loc)
-                    if type == ITEM_KEY:
-                        self.add_item(tile=loc.tile)
-                continue
-            if type == 'obstacle':
-                type = obst
-            #OBSTACLES AND PATHS
-            if loc.pane == self.location and loc.z == self.z and type != None:
-                self.add_obstacle(loc.tile, 1, entity_type=type)
+            obst = random.choice(sorted(OBSTACLES))
+            for loc, type in stamp.getEntityLocations(location).iteritems():
+                
+                #CONSUMABLES AND ITEMS (REMOVED AFTER USE)
+                if type in [CHEST_KEY, MONSTER_KEY, ITEM_KEY]:
+                    if not self.pane_state and self.is_server:
+                        if type == CHEST_KEY:
+                            self.add_chest(tile=loc.tile)
+                        if type == MONSTER_KEY:
+                            self.add_monster(location=loc)
+                        if type == ITEM_KEY:
+                            self.add_item(tile=loc.tile)
+                    continue
+                if type == 'obstacle':
+                    type = obst
+                #OBSTACLES AND PATHS
+                if loc.pane == self.location and loc.z == self.z and type != None:
+                    self.add_obstacle(loc.tile, 1, entity_type=type)
 
     def load_region(self, region, entity_type=None):
         if entity_type:
@@ -498,6 +507,8 @@ class Pane(object):
 
 
 class Town(Pane):
+
+
     def __init__(self, seed, location, is_server=False, load_entities=False, pane_state=None):
         super(Town, self).__init__(seed, location, is_server, False, pane_state)
         self.buildings = []
@@ -516,27 +527,27 @@ class Town(Pane):
 
         bounds = (7, 14, 5, 9)
 
-        for i in range(2):
-            building = BuildingOverworld("tree", bounds, self.location)#, (15, 6), Location(self.location, (start[0], start[1]+i*7)))
-            self.buildings.append(building)
+        # for i in range(2):
+            # building = BuildingOverworld("tree", bounds, self.location)#, (15, 6), Location(self.location, (start[0], start[1]+i*7)))
+            # self.buildings.append(building)
 
-        for i in range(1):
-            loc = (random.randrange(0, PANE_X-8), random.randrange(0, PANE_Y-6))
-            house = HouseOverworld(Location(self.location, loc))
-            self.buildings.append(house)
-        for i in range(1):
-            loc = (random.randrange(0, PANE_X-8), random.randrange(0, PANE_Y-6))
-            dungeon = DungeonOverworld(Location(self.location, loc))
-            self.buildings.append(dungeon)
+        # for i in range(1):
+            # loc = (random.randrange(0, PANE_X-8), random.randrange(0, PANE_Y-6))
+            # house = HouseOverworld(Location(self.location, loc))
+            # self.buildings.append(house)
+        # for i in range(1):
+            # loc = (random.randrange(0, PANE_X-8), random.randrange(0, PANE_Y-6))
+            # dungeon = DungeonOverworld(Location(self.location, loc))
+            # self.buildings.append(dungeon)
 
-        for building in self.buildings:
-            super(Town, self).load_region(building.boundary, building.boundary_type)
+        # for building in self.buildings:
+            # super(Town, self).load_region(building.boundary, building.boundary_type)
 
-        for building in self.buildings:
-            super(Town, self).clear_region(building.clear)
-            super(Town, self).clear_region(building.path)
-        for building in self.buildings:
-            super(Town, self).add_entities(building.entities)
+        # for building in self.buildings:
+            # super(Town, self).clear_region(building.clear)
+            # super(Town, self).clear_region(building.path)
+        # for building in self.buildings:
+            # super(Town, self).add_entities(building.entities)
 
     def add_npcs(self):
         for building in self.buildings:
