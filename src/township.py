@@ -71,7 +71,7 @@ class Township(object):
             threshhold = 20
             while i < threshhold:
                 #Choose a point 
-                loc_x = random.randrange(0, PANE_X-6)
+                loc_x = random.randrange(0, PANE_X-6)#TODO, Compensating for the shrunken size of rectangle
                 loc_y = random.randrange(0, PANE_Y-6)
 
                 #Check if the rectangle will collide with any others

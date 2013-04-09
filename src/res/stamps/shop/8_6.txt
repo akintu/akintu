@@ -1,8 +1,8 @@
 #	8x6 SHOP STAMPS
 #
 tttttttt
-t    gwt
-t ffffwt
-t ffffwt
-t  pppwt
-tttp ttt
+t ppppwt
+t S___wt
+t ____wt
+t  _  wt
+ttt_ ttt

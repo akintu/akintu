@@ -245,6 +245,14 @@ class Pane(object):
             elif entity_key in PATHS:
                 image = Sprites.get_path(entity_key, self.seed, self.location, tile)
                 passable = True
+            elif entity_key == 'house':
+                house = HouseOverworld(Location(self.location, tile))
+                self.add_entities(house.entities)
+                continue
+            elif entity_key == 'shop':
+                house = HouseOverworld(Location(self.location, tile))
+                self.add_entities(house.entities)
+                continue
             if not image:
                 print "Entity Key NOT FOUND: " + str(entity_key)
             self.tiles[tile].entities.append(Entity(tile, image=image, passable=passable))

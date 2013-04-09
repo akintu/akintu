@@ -14,6 +14,7 @@ class Stamp(object):
     LANDSCAPE = "landscape"
     TEXT = "text"
     key_dict = {' ': None,
+                '_': None,
                 'p':'walk',
                 'd':'dirt',
                 'l':'gravel',
