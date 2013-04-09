@@ -19,7 +19,7 @@ class Township(object):
         self.town = None
         self.dungeons = []
         
-        assert township_loc[0] < TOWNSHIP_X or \
+        assert township_loc[0] < TOWNSHIP_X and \
                 township_loc[1] < TOWNSHIP_Y, \
                 str(township_loc) + " is outside of " + str((TOWNSHIP_X, TOWNSHIP_Y))
 
@@ -37,13 +37,23 @@ class Township(object):
         #PICK OUR TOWN'S LOCATION
         country_loc, township_loc = self.loc
         if country_loc == (0, 0) and township_loc == (COUNTRY_X/2, COUNTRY_Y/2):
+            town_x = town_y = 2
             self.town = self.center
         else:
             #we do a smaller box so town isn't on edge of township
             #if a Township is 5x5 panes, the town will be placed
             #in a 3x3 box inset.
-            self.town = (random.randrange(1, TOWNSHIP_X-1)+self.topLeft[0], \
-                            random.randrange(1, TOWNSHIP_Y-1)+self.topLeft[1])
+            town_x = random.randrange(1, TOWNSHIP_X-1)
+            town_y = random.randrange(1, TOWNSHIP_Y-1)
+            self.town = (town_x+self.topLeft[0], town_y+self.topLeft[1])
+        #Pad the town rect (to prevent stamps from creeping up on it)
+        x = town_x + PANE_X + 2
+        y = town_y + PANE_Y + 2
+        #Account for padding when we place the rect
+        town_rect = pygame.Rect(town_x*(PANE_X-1)-1, town_y*(PANE_Y-1)-1, x, y)
+        assert self.bounding_rect.contains(town_rect), "Bounding Rectangle doesn't contain the town"
+        self.rect_list.append(town_rect)
+            
 
     def addDungeons(self, number=2):
         random.seed(self.seed + "DUNGEON")
