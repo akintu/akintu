@@ -6,3 +6,12 @@ t H___ t
 t ____ t
 t  _   t
 ttt_ ttt
+#
+#
+tttttttt
+tH___ddd
+t____d t
+tg_ddd t
+tg     t
+tt ttttt
+
