@@ -30,16 +30,14 @@ class PlayerCharacter(p.Person):
             self.name = "Awesome Dude"
         elif name == "jabelch" or name == "JAB":
             self.name = "Flagrant Noob"
-        elif name == "Jzar":
-            self.name = "Prolific Troll"
         elif name == "yourself":
             self.name = "Ugly Grue"
-            
+
         self.level = 1
         self._experience = 0
         self.ironman=ironman
         self.hardcore=hardcore
-        
+
         self.goldFind = p.Person.setFrom(argDict, 'startingGoldFind', 0)
 
         self._baseOverallDamageBonus = p.Person.setFrom(argDict, 'startingOverallDamageBonus', 0)
@@ -247,13 +245,13 @@ class PlayerCharacter(p.Person):
                     break
         else:
             self.inventory = inventory.Inventory()
-        
+
         if new and self.name == "xkcd":
             self.inventory.addItem(10000) # Gold
-        
+
         self.record = playercombatrecord.PlayerCombatRecord()
         self.remainingMovementTiles = 0
-        
+
         #### Used for dual wielding mechanics ####
         self.lastUsedRating = None
         self.lastUsedCritMod = None
@@ -319,8 +317,8 @@ class PlayerCharacter(p.Person):
             if eq:
                 longText.append("&" + eq.identifier)
         return ''.join(longText)
-        
-        
+
+
     def applyBonusDamage(self, dieRoll, element):
         if element == "Fire":
             dieRoll *= 1 + (float(self.totalFireBonusDamage) / 100)
@@ -340,47 +338,47 @@ class PlayerCharacter(p.Person):
 
 
     def getLevelupStats(self):
-        '''Used to perform a levelup on a characters stats and return the 
+        '''Used to perform a levelup on a characters stats and return the
         summary TileObject to be used in a tile display.'''
         roundUpStrength = sumRollsOver(self._baseStrength, self.levelupStrength)
         self._baseStrength += self.levelupStrength
         displayStrengthGain = int(math.floor(self.levelupStrength))
         if roundUpStrength:
             displayStrengthGain += 1
-        
+
         roundUpDexterity = sumRollsOver(self._baseDexterity, self.levelupDexterity)
         self._baseDexterity += self.levelupDexterity
         displayDexterityGain = int(math.floor(self.levelupDexterity))
         if roundUpDexterity:
             displayDexterityGain += 1
-        
+
         roundUpCunning = sumRollsOver(self._baseCunning, self.levelupCunning)
         self._baseCunning += self.levelupCunning
         displayCunningGain = int(math.floor(self.levelupCunning))
         if roundUpCunning:
             displayCunningGain += 1
-        
+
         roundUpSorcery = sumRollsOver(self._baseSorcery, self.levelupSorcery)
         self._baseSorcery += self.levelupSorcery
         displaySorceryGain = int(math.floor(self.levelupSorcery))
         if roundUpSorcery:
             displaySorceryGain += 1
-        
+
         roundUpPiety = sumRollsOver(self._basePiety, self.levelupPiety)
         self._basePiety += self.levelupPiety
         displayPietyGain = int(math.floor(self.levelupPiety))
         if roundUpPiety:
             displayPietyGain += 1
-        
+
         roundUpConstitution = sumRollsOver(self._baseConstitution, self.levelupConstitution)
         self._baseConstitution += self.levelupConstitution
         displayConstitutionGain = int(math.floor(self.levelupConstitution))
         if roundUpConstitution:
             displayConstitutionGain += 1
-        
+
         self._baseHP += self.levelupHP
         self._baseMP += self.levelupMP
-        
+
         statsName = "Gained Statistics"
         statsImage = "./res/images/icons/stats.png"
         statsText = "Gained the following statistics:\n" + \
@@ -392,14 +390,14 @@ class PlayerCharacter(p.Person):
                     "Constitution + " + `displayConstitutionGain` + "\n" + \
                     "HP + " + `int(self.levelupHP)` + "    MP + " + `int(self.levelupMP)`
         statsTile = TileObject(statsName, statsImage, statsText)
-        
+
         self.HP = self.totalHP
         self.MP = self.totalMP
         return statsTile
-        
-        
+
+
     def gainLevelUp(self, statsOnly=True):
-        """Start the levelup process for acquiring a new level.  Only used 
+        """Start the levelup process for acquiring a new level.  Only used
         for automatic levelups.
         Inputs:
             None
@@ -411,43 +409,43 @@ class PlayerCharacter(p.Person):
         displayStrengthGain = int(math.floor(self.levelupStrength))
         if roundUpStrength:
             displayStrengthGain += 1
-        
+
         roundUpDexterity = sumRollsOver(self._baseDexterity, self.levelupDexterity)
         self._baseDexterity += self.levelupDexterity
         displayDexterityGain = int(math.floor(self.levelupDexterity))
         if roundUpDexterity:
             displayDexterityGain += 1
-        
+
         roundUpCunning = sumRollsOver(self._baseCunning, self.levelupCunning)
         self._baseCunning += self.levelupCunning
         displayCunningGain = int(math.floor(self.levelupCunning))
         if roundUpCunning:
             displayCunningGain += 1
-        
+
         roundUpSorcery = sumRollsOver(self._baseSorcery, self.levelupSorcery)
         self._baseSorcery += self.levelupSorcery
         displaySorceryGain = int(math.floor(self.levelupSorcery))
         if roundUpSorcery:
             displaySorceryGain += 1
-        
+
         roundUpPiety = sumRollsOver(self._basePiety, self.levelupPiety)
         self._basePiety += self.levelupPiety
         displayPietyGain = int(math.floor(self.levelupPiety))
         if roundUpPiety:
             displayPietyGain += 1
-        
+
         roundUpConstitution = sumRollsOver(self._baseConstitution, self.levelupConstitution)
         self._baseConstitution += self.levelupConstitution
         displayConstitutionGain = int(math.floor(self.levelupConstitution))
         if roundUpConstitution:
             displayConstitutionGain += 1
-        
+
         self._baseHP += self.levelupHP
         self._baseMP += self.levelupMP
-        
+
         self.HP = self.totalHP
         self.MP = self.totalMP
-        
+
     def getLevelupSkillOptions(self):
         '''Returns a list of all of the skills this character
         may choose from upon earning its current level. Will return
@@ -460,16 +458,16 @@ class PlayerCharacter(p.Person):
                     ability.Ability.allAbilities[x]['class'] == self.secondaryClass or
                     (ability.Ability.allAbilities[x]['class'] == 'Ranger*' and self.baseClass == 'Ranger' and self.characterClass != 'Anarchist') or
                     (ability.Ability.allAbilities[x]['class'] == 'Thief*' and self.baseClass == 'Thief')) and
-                    ability.Ability.allAbilities[x]['level'] <= self.level and 
+                    ability.Ability.allAbilities[x]['level'] <= self.level and
                     ability.Ability.allAbilities[x]['level'] != 1 and
                     x not in [y.name for y in self.abilities]]
-                    
+
         activeStubs = []
         for active in actives:
-            activeStubs.append(ability.AbilityStub(active))          
-                        
+            activeStubs.append(ability.AbilityStub(active))
+
         return activeStubs
-        
+
     def getLevelupTraitOptions(self):
         '''Returns a list of all the traits this character may
         either upgrade or select for the first time.'''
@@ -478,7 +476,7 @@ class PlayerCharacter(p.Person):
         # Get list of traits he/she doesn't already have.
         newTraitNames = [x for x in trait.Trait.allContentByName.keys()
                         if x not in [y.name for y in self.traits] and
-                        (trait.Trait.allContentByName[x]['class'] == self.baseClass or 
+                        (trait.Trait.allContentByName[x]['class'] == self.baseClass or
                         trait.Trait.allContentByName[x]['class'] == self.secondaryClass)]
         rankAllowed = 0
         if self.level < 3:
@@ -490,41 +488,41 @@ class PlayerCharacter(p.Person):
         elif self.level >= 7:
             rankAllowed = 3
         upgradeTraitNames = [x.name for x in self.traits if x.rank <= rankAllowed]
-        
+
         allTraitNames = upgradeTraitNames
         if len(self.traits) < 5:
             allTraitNames.extend(newTraitNames)
-        
+
         traitStubs = []
         for tName in allTraitNames:
-            traitStubs.append(trait.TraitStub(tName))    
+            traitStubs.append(trait.TraitStub(tName))
         return traitStubs
 
-                
+
     def getLevelupCombos(self):
         '''Returns a list of all the passive Abilities and combination abilities
         that this character gets upon this levelup.'''
-        
+
         passiveNames = [x for x in passiveability.PassiveAbility.allContentByName.keys()]
-        passives = [x for x in passiveNames 
+        passives = [x for x in passiveNames
                     if passiveability.PassiveAbility.allContentByName[x]['class'] == self.characterClass and
                     passiveability.PassiveAbility.allContentByName[x]['level'] == self.level]
-                    
+
         passiveStubs = []
         for passive in passives:
             passiveStubs.append(passiveability.PassiveAbilityStub(passive))
-                    
+
         activeNames = [x for x in ability.Ability.allAbilities.keys()]
         actives = [x for x in activeNames if ability.Ability.allAbilities[x]['class'] == self.characterClass and
                     ability.Ability.allAbilities[x]['level'] == self.level]
-                    
+
         activeStubs = []
         for active in actives:
             activeStubs.append(ability.AbilityStub(active))
-                    
+
         passiveStubs.extend(activeStubs)
         return passiveStubs
-        
+
     def getLevelupSpellOptions(self):
         '''Returns a list of available spells to learn during this levelup.  Returns
         an empty list if this character does not learn spells.'''
@@ -537,7 +535,7 @@ class PlayerCharacter(p.Person):
             allowedSchools.append('Mental')
         elif self.characterClass == 'Spellsword':
             allowedSchools.append('Enchantment')
-            
+
         allowedTier = 1
         if 5 <= self.level and self.level <= 8:
             allowedTier = 2
@@ -547,18 +545,18 @@ class PlayerCharacter(p.Person):
             allowedTier = 4
         elif 17 <= self.level and self.level <= 20:
             allowedTier = 5
-            
+
         spellNames = [x for x in spell.Spell.allSpells.keys()
-                    if spell.Spell.allSpells[x]['tier'] == allowedTier and 
+                    if spell.Spell.allSpells[x]['tier'] == allowedTier and
                     spell.Spell.allSpells[x]['school'] in allowedSchools and
                     x not in [y.name for y in self.spellList]]
-                
+
         spellsToSelect = []
         for spellName in spellNames:
             spellsToSelect.append(spell.SpellStub(spellName))
-        
+
         return spellsToSelect
-                
+
     @property
     def experience(self):
         return self._experience
@@ -568,7 +566,7 @@ class PlayerCharacter(p.Person):
             return 0
         else:
             return PlayerCharacter.expRequiredForLevel[self.level]
-        
+
     def addExperience(self, amount):
         """" Adds the given amount of experience to the character.
         If the character is at the max level, this will not increase the
@@ -601,7 +599,7 @@ class PlayerCharacter(p.Person):
                 #self.level += 1
             return self.level
         #TODO: Demo mode
-        
+
     @property
     def totalOverallDamageBonus(self):
         """ Should be 0 for 0% by default.
@@ -962,7 +960,7 @@ class PlayerCharacter(p.Person):
         else:
             tdr = 60
         return int(tdr)
-        
+
     @property
     def totalIntuition(self):
         return int(self.totalPiety + self.equipmentIntuition + self.statusIntuition + self.baseIntuition)
@@ -986,11 +984,11 @@ class PlayerCharacter(p.Person):
     @property
     def baseIntuition(self):
         return int(self._baseIntuition)
-        
+
     @baseIntuition.setter
     def baseIntuition(self, value):
         self._baseIntuition = value
-        
+
     @property
     def lockpicking(self):
         if self.baseClass == "Thief":
@@ -1086,11 +1084,11 @@ class PlayerCharacter(p.Person):
     @property
     def baseInventoryCapacity(self):
         return int(self._baseInventoryCapacity)
-        
+
     @baseInventoryCapacity.setter
     def baseInventoryCapacity(self, value):
         self._baseInventoryCapacity = value
-            
+
     @property
     def equipmentCarryingCapacity(self):
         return self._equipmentCarryingCapacity
@@ -1144,7 +1142,7 @@ class PlayerCharacter(p.Person):
     def movementSpeed(self):
         '''The overworld movement speed.  Overrides from Person.'''
         return max(1.0, 5.0 - min(4.0, self.burdenAP / 8.0) - min(4.0, self.restrictionAP / 8.0))
-            
+
     def removeOnHitEffect(self, name, count, element=None):
         for fx in self.onHitEffects:
             if fx.name.lower() == name.lower() and fx.count == count:
@@ -1199,7 +1197,7 @@ class PlayerCharacter(p.Person):
         if self.AP > self.totalAP:
             self.AP = self.totalAP
         return [oldPiece, oldPiece2]
-            
+
     def unequip(self, slot, alternate=False):
         oldPieces = self.equippedItems.unequip(slot, alternate)
         for item in oldPieces:
@@ -1212,9 +1210,9 @@ class PlayerCharacter(p.Person):
                     prop.effect(prop, self, reverse=True)
             self.inventory.allItems.append(item)
         return oldPieces
-            
+
     def shouldAutoEquip(self, armor):
-        ''' Determines if a piece of equipment should be 
+        ''' Determines if a piece of equipment should be
         auto-equipped upon acquisition. '''
         if not isinstance(armor, equipment.Armor):
             return False
@@ -1234,7 +1232,7 @@ class PlayerCharacter(p.Person):
             elif armor.type == "Feet" and not self.equippedItems.equippedFeetArmor:
                 return True
         return False
-        
+
     def calcBurden(self):
         if self.inventoryCapacity >= self.inventoryWeight:
             return 0
@@ -1250,9 +1248,9 @@ class PlayerCharacter(p.Person):
             return 20
         else:
             return 25
-            
+
     def equipMainHand(self, index, screen, alternate=False):
-        ''' INVENTORY MANAGMENET 
+        ''' INVENTORY MANAGMENET
         Equip a selected item into the main hand slot.'''
         item = self.inventory.allItems[index]
         if isinstance(item, consumable.Consumable):
@@ -1267,7 +1265,7 @@ class PlayerCharacter(p.Person):
         capacity = `self.inventoryWeight` + "/" + `self.inventoryCapacity` + ' lbs'
         screen.update_item_dialog_text(text, capacity)
         screen.update_item_dialog_items(inv, eq)
-        
+
     def dropItem(self, index, screen):
         ''' INVENTORY MANAGEMENT
         Drop (destroy) a selected item.'''
@@ -1280,7 +1278,7 @@ class PlayerCharacter(p.Person):
         screen.update_item_dialog_text(text, capacity)
         screen.update_item_dialog_items(inv, eq)
         self.AP = self.totalAP
-        
+
     def unequipGear(self, index, type, screen, color):
         ''' INVENTORY MANAGEMENT
         Unequip a selected item.'''
@@ -1308,7 +1306,7 @@ class PlayerCharacter(p.Person):
             capacity = `self.inventoryWeight` + "/" + `self.inventoryCapacity` + ' lbs'
             screen.update_item_dialog_text(text, capacity)
             screen.update_item_dialog_items(inv, eq)
-        
+
     def switchGear(self):
         '''Used in combat to change the alternate gear to be the
         primary gear. Takes off the blues, puts on the blues.'''
@@ -1320,8 +1318,8 @@ class PlayerCharacter(p.Person):
             self.equip(oldGear[0], alternate=True)
         if oldGear[1]:
             self.equip(oldGear[1], "Left", alternate=True)
-                
-        
+
+
     def printCharacterSheet(self):
         '''Method prints a mock-up of a character sheet to the console as
         a placeholder until a real UI character sheet exists.'''
@@ -1342,14 +1340,14 @@ class PlayerCharacter(p.Person):
         cs.append("| Spellpower:        " + `self.totalSpellpower` + " (" + `self.equipmentSpellpower` + ")  Magic Resist: " + `self.totalMagicResist` + " (" + `self.equipmentMagicResist` + ")\n")
         cs.append("| Critical Chance:   " + `self.totalCriticalChance` + "% (" + `int(self.equipmentCriticalChance)` + ")  Critical Magnitude: " + `self.totalCriticalMagnitude` + "% (" + `self.equipmentCriticalMagnitude` + ")\n")
         cs.append("| Armor Penetration: " + `self.totalArmorPenetration` + "% (" + `self.equipmentArmorPenetration` + ")  Damage Resistance: " + `self.totalDR` + "% (" + `self.equipmentDR` + ")\n")
-        cs.append("| Poison Tolerance:  " + `self.totalPoisonTolerance` + " (" + `self.equipmentPoisonTolerance` + ")  Poison Rating Bonus: " + `self.totalPoisonRatingBonus` + " (" + `self.equipmentPoisonRatingBonus` + ")\n")  
+        cs.append("| Poison Tolerance:  " + `self.totalPoisonTolerance` + " (" + `self.equipmentPoisonTolerance` + ")  Poison Rating Bonus: " + `self.totalPoisonRatingBonus` + " (" + `self.equipmentPoisonRatingBonus` + ")\n")
         cs.append("| Awareness:         " + `self.totalAwareness` + " (" + `self.equipmentAwareness` + ")  Sneak: " + `self.totalSneak` + " (" + `self.equipmentSneak` + ")\n")
         cs.append("| Trap Evade:        " + `self.totalTrapEvade` + " (" + `self.equipmentTrapEvade` + ")  Movement Tiles: " + `self.totalMovementTiles` + " (" + `self.equipmentMovementTiles` + ")\n")
         cs.append("| Intuition:         " + `self.totalIntuition` + " (" + `self.equipmentIntuition` + ")\n")
         cs.append("| ----------->>> Tertiary Statistics <<<----------------\n")
         cs.append("| Shop Bonus:            " + `self.totalShopBonus` + "% (" + `self.equipmentShopBonus` + "%)  Carrying Capacity: " + `self.inventoryCapacity` + " (" + `self.equipmentCarryingCapacity` + ")\n")
         cs.append("| Trap Rating Bonus:     " + `self.bonusTrapRating` + "      Trap Damage Bonus: " + `self.bonusTrapDamage` + "%\n")
-        cs.append("| Jewlery Bonus:        +" + `self.totalJewleryBonus` + "     Potion Bonus Effect: " + `self.totalPotionEffect` + "%\n") 
+        cs.append("| Jewlery Bonus:        +" + `self.totalJewleryBonus` + "     Potion Bonus Effect: " + `self.totalPotionEffect` + "%\n")
         cs.append("| Trap Damage Reduction: " + `self.totalTrapDamageReduction` + "% (" + `self.equipmentIntuition` + ")  Gold Find: +" + `self.goldFind` + "%\n")
         cs.append("| ----------->>> Elemental Resistances <<<--------------\n")
         cs.append("| Arcane Resistance:   " + `self.totalArcaneResistance` + "% (" + `self.equipmentArcaneResistance` + ")\n")
@@ -1390,12 +1388,12 @@ class PlayerCharacter(p.Person):
         cs = ''.join(cs)
         print cs
 
-    
+
 def sumRollsOver(a, b):
-    '''Determines if the sum of two numbers' remainders cause 
+    '''Determines if the sum of two numbers' remainders cause
     overflow into a whole number.  Works for two floats, a and b.
     Not particularly accurate; do not use when accuracy is needed.
-    
+
     Returns True if the two numbers' remainders sum to at least 1.
     '''
     a_int = int(a)
