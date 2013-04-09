@@ -60,8 +60,8 @@ Weapon Types
     Weapon type with very high base damage but only mediocre
 	Force and the lowest critical multipliers.  A good weapon
 	for beginning characters and Dragoons.  Contains an
-	innate accuracy penalty for classes without Fighter as one
-	of their base classes.
+	innate accuracy penalty for classes without Fighter as their
+	primary base class.
 	
   Club
     Weapon type with excellent Force, but lower base damage and
