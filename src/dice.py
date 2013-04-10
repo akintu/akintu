@@ -125,17 +125,23 @@ class Dice(object):
             return False
 
     @staticmethod
-    def rollTrapHit(trap, target):
+    def rollTrapHit(trap, target, trapChaos=False):
         """Determines if the target is hit by the trap, or if he evades it.
         Inputs:
-          trap -- Trap; the trap that is being triggered
+          trap -- Trap; the trap that is being triggered (or just a rating)
           target -- Person; the victim of the trap
+          trapChaos -- boolean; whether or not the first parameter is a trap
+                       or is just the trapRating from trapChaos use.
         Outputs:
           False -- The trap failed to harm the target.
           True -- The trap successfully hit the target."""
         Dice.stashGen()
         adjustedEva = round(target.totalTrapEvade * random.uniform(0.5, 1.0))
-        adjustedRating = round(trap.trapRating * random.uniform(0.5, 1.0))
+        adjustedRating = 0
+        if trapChaos:
+            adjustedRating = round(trap * random.uniform(0.5, 1.0))
+        else:
+            adjustedRating = round(trap.trapRating * random.uniform(0.5, 1.0))
         Dice.popGen()
         if adjustedEva >= adjustedRating:
             return False

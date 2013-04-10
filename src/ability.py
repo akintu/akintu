@@ -5,6 +5,7 @@ from dice import *
 import listener
 from combat import *
 import trap
+import location
 
 ROOT_FOLDER = "./res/images/icons/skills/"
 
@@ -401,22 +402,96 @@ class Ability(object):
         if contentString == "Nothing" or contentString == "Trap-Friendly":
             return (True, "")
         if contentString == "Trap-Hostile":
-            return (False, "TODO: Enemy trap here.")
+            return (False, "Something prevents you from placing your trap...")
         if contentString == "Obstacle":
             return (False, "Cannot place a trap on an obstacle.")
         return (False, "TODO: Failed to catch a case...")
         #if contentString == "Monster":
             #return (False, "Cannot place a trap on a monster.")
+            # Handled in game.py
+        
+    def _shrapnelTrapAnarchist(self, target):
+        source = self.owner
+        source.record.recordTrapPlacement()
+        if isinstance(target, location.Location):
+            Combat.gameServer.pane[source.cPane].addTrap(target, trap.Trap("Shrapnel Trap", player=source, location=target))
+        else:
+            source.record.recordTrapChaos()
+            trapChaosBonusRating = 5 + source.totalCunning / 10
+            trapRating = int(16 * (1 + 0.015 * source.totalCunning) + source.bonusTrapRating + trapChaosBonusRating)
+            didHit = Dice.rollTrapHit(trapRating, target)
+            if didHit:
+                minDamage = int(5 * (1 + source.totalCunning * 0.017) * (1 + source.bonusTrapDamage * 0.01))
+                maxDamage = int(12 * (1 + source.totalCunning * 0.017) * (1 + source.bonusTrapDamage * 0.01))
+                element = "Piercing"
+                damage = Combat.calcDamage(source, target, minDamage, maxDamage, element, "Normal Hit")
+                Combat.lowerHP(target, damage)
+                source.record.recordTrapSuccess()
+            else:
+                source.record.recordTrapFailure()
+                Combat.sendCombatMessage(target.name + " evaded. (" + 
+                                        `trapRating` + " vs. " + `target.totalTrapEvade` + ")",
+                                        source, color='orange')
+            source.record.recordTrapRemoval()
         
     def _stickyTrap(self, targetLocation):
         source = self.owner
         Combat.gameServer.pane[source.cPane].addTrap(targetLocation, trap.Trap("Sticky Trap", player=source, location=targetLocation))
         source.record.recordTrapPlacement()
         
+    def _stickyTrapAnarchist(self, target):
+        source = self.owner
+        source.record.recordTrapPlacement()
+        if isinstance(target, location.Location):
+            Combat.gameServer.pane[source.cPane].addTrap(target, trap.Trap("Sticky Trap", player=source, location=target))
+        else:
+            source.record.recordTrapChaos()
+            trapChaosBonusRating = 5 + source.totalCunning / 10
+            trapRating = int(24 * (1 + 0.007 * source.totalCunning) + source.bonusTrapRating + trapChaosBonusRating)
+            didHit = Dice.rollTrapHit(trapRating, target)
+            if didHit:
+                duration = 6
+                Combat.addStatus(target, "Sticky Trap", duration)
+                Combat.sendCombatMessage("Lowered monster movement speed.", self.owner, color="orange")
+                source.record.recordTrapSuccess()
+            else:
+                source.record.recordTrapFailure()
+                Combat.sendCombatMessage(target.name + " evaded. (" + 
+                                        `trapRating` + " vs. " + `target.totalTrapEvade` + ")",
+                                        source, color='orange')
+            source.record.recordTrapRemoval()
+        
     def _boulderPitTrap(self, targetLocation):
         source = self.owner
         Combat.gameServer.pane[source.cPane].addTrap(targetLocation, trap.Trap("Boulder Pit Trap", player=source, location=targetLocation))
         source.record.recordTrapPlacement()
+        
+    def _boulderPitTrapAnarchist(self, target):
+        source = self.owner
+        source.record.recordTrapPlacement()
+        if isinstance(target, location.Location):
+            Combat.gameServer.pane[source.cPane].addTrap(target, trap.Trap("Boulder Pit Trap", player=source, location=target))
+        else:
+            source.record.recordTrapChaos()
+            trapChaosBonusRating = 5 + source.totalCunning / 10
+            trapRating = int(30 * (1 + 0.007 * source.totalCunning) + source.bonusTrapRating + trapChaosBonusRating)
+            didHit = Dice.rollTrapHit(trapRating, target)
+            if didHit:
+                minDamage = int(3 * (1 + source.totalCunning * 0.02) * (1 + source.bonusTrapDamage * 0.01))
+                maxDamage = int(8 * (1 + source.totalCunning * 0.02) * (1 + source.bonusTrapDamage * 0.01))
+                element = "Bludgeoning"
+                damage = Combat.calcDamage(source, target, minDamage, maxDamage, element, "Normal Hit")
+                Combat.lowerHP(target, damage)
+                if (target.size == "Small" or target.size == "Medium") and Dice.rollBeneath(20):
+                    Combat.addStatus(target, "Stun", duration=2)
+                    Combat.sendCombatMessage("Stunned " + target.name, source, color="orange")
+                source.record.recordTrapSuccess()
+            else:
+                source.record.recordTrapFailure()
+                Combat.sendCombatMessage(target.name + " evaded. (" + 
+                                        `trapRating` + " vs. " + `target.totalTrapEvade` + ")",
+                                         source, color='orange')
+            source.record.recordTrapRemoval()
         
     def _magicGuard(self, target):
         source = self.owner
@@ -710,10 +785,36 @@ class Ability(object):
         else:
             Combat.sendCombatMessage("Failed. (" + `successChance` + ")", source, color="darkorange", toAll=False)
             
-    def _explosiveTrap(self, targetLocation):
+    def _explosiveTrap(self, target):
         source = self.owner
-        Combat.gameServer.pane[source.cPane].addTrap(targetLocation, trap.Trap("Explosive Trap", player=source, location=targetLocation))
         source.record.recordTrapPlacement()
+        if isinstance(target, location.Location):
+            Combat.gameServer.pane[source.cPane].addTrap(target, trap.Trap("Explosive Trap", player=source, location=target))
+        else:
+            source.record.recordTrapChaos()
+            trapChaosBonusRating = 5 + source.totalCunning / 10
+            trapRating = int(25 * (1 + 0.01 * source.totalCunning) + source.bonusTrapRating + trapChaosBonusRating)
+            didHit = Dice.rollTrapHit(trapRating, target)
+            if didHit:
+                minDamage = int(5 * (1 + source.totalCunning * 0.01) * (1 + source.bonusTrapDamage * 0.01))
+                maxDamage = int(10 * (1 + source.totalCunning * 0.01) * (1 + source.bonusTrapDamage * 0.01))
+                element = "Fire"
+                damage = Combat.calcDamage(source, target, minDamage, maxDamage, element, "Normal Hit")
+                Combat.lowerHP(target, damage)
+                source.record.recordTrapSuccess()
+                splashMin = int(minDamage * 0.75 * (1 + source.bonusTrapDamage * 0.01))
+                splashMax = int(maxDamage * 0.75 * (1 + source.bonusTrapDamage * 0.01))
+                targetGroup = Combat.getAOETargets(target.cPane, target.cLocation, radius=1)
+                for tar in targetGroup:
+                    dam = Combat.calcDamage(source, tar, splashMin, splashMax, element, "Normal Hit")
+                    Combat.lowerHP(tar, dam)
+            else:
+                source.record.recordTrapFailure()
+                Combat.sendCombatMessage(target.name + " evaded. (" + 
+                                        `trapRating` + " vs. " + `target.totalTrapEvade` + ")",
+                                         source, color='orange')
+                source.record.recordTrapRemoval()
+            
             
     def _grabBag(self, target):
         source = self.owner
@@ -2321,6 +2422,57 @@ class Ability(object):
         },
 
         #Anarchist
+        'Shrapnel Trap++':
+        {
+        'level' : 1,
+        'class' : 'Anarchist',
+        'HPCost' : 0,
+        'APCost' : 5,
+        'range' : 1,
+        'target' : 'trap',
+        'action' : _shrapnelTrapAnarchist,
+        'cooldown' : 1,
+        'checkFunction' : _shrapnelTrapCheck,
+        'breakStealth' : 0,
+        'image' : RANGER_SKILLS + 'shrapnel-trap.png',
+        'text' : 'Lay a trap down that will deal 5-12 + 1.4% Piercing damage\n' + \
+                'to any one enemy that steps on it.  Rating = 16 + 1/5 Cunning.'
+        },
+        'Sticky Trap++':
+        {
+        'level' : 2,
+        'class' : 'Anarchist',
+        'HPCost' : 0,
+        'APCost' : 3,
+        'range' : 1,
+        'target' : 'trap',
+        'action' : _stickyTrapAnarchist,
+        'cooldown' : 1,
+        'checkFunction' : _shrapnelTrapCheck,
+        'breakStealth' : 0,
+        'image' : RANGER_SKILLS + 'sticky-trap.png',
+        'text' : 'Lay a trap that will reduce enemy movement speed by\n' + \
+                'one tile per move action for three turns.  Has two\n' + \
+                'charges.  Debuff lasts 3 turns.  Rating = 24 + 1/6\n' + \
+                'Cunning.'
+        },
+        'Boulder Pit Trap++':
+        {
+        'level' : 4,
+        'class' : 'Anarchist',
+        'HPCost' : 0,
+        'APCost' : 5,
+        'range' : 1,
+        'target' : 'trap',
+        'action' : _boulderPitTrapAnarchist,
+        'cooldown' : 1,
+        'checkFunction' : _shrapnelTrapCheck,
+        'breakStealth' : 0,
+        'image' : RANGER_SKILLS + 'boulder-pit-trap.png', 
+        'text' : 'Lay a trap that deals 3-8 + 2% bludgeoning damage and has a\n' + \
+                '20% chance to stun small and medium enemies.  Rating = 30 +\n' + \
+                '1/6 Cunning.'
+        },
         'Follow Up':
         {
         'level' : 1,
