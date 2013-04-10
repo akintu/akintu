@@ -272,7 +272,7 @@ class Game(object):
                     self.running = False
 
             ###### Levelup Player ######
-            if command.type == "PERSON" and command.action == "REPLACE" and command.id != self.id:
+            if command.type == "PERSON" and command.action == "REPLACE":
                 newPerson = TheoryCraft.rehydratePlayer(command.player)
                 newPerson.location = self.pane.person[command.id].location
                 newPerson.id = command.id
@@ -702,8 +702,8 @@ class Game(object):
                     self.break_in()
                 elif e == "STARTLEVELUP":
                     self.request_levelup(True)
-                #elif e == "STARTRESPEC":
-                #    self.respec()
+                elif e == "STARTRESPEC":
+                    self.request_respec()
                 elif e == "HELPMENU":
                     pass #TODO Implement help menu
                 elif e == "SHOWINPUTSTATE":
@@ -739,32 +739,10 @@ class Game(object):
             pass
             #print "DEBUG: " + `player.experience` + " exp " + `player.getExpForNextLevel()` + " needed " + `player.level` + " level "
 
-
-    def respec(self):
-        player = self.pane.person[self.id]
-        if player.ironman:
-            self.screen.show_text("You are an ironman, and are thus too cool to respec!", color='magenta')
-        elif player.level > 1:
-            oldLevel = player.level
-            oldExp = player._experience
-            player.level -= 1
-            remainderExp = oldExp - player.getExpForNextLevel()
-            player._experience = 0
-
-            newHero = TheoryCraft.resetPlayerLevel(player)
-            newHero.location = self.pane.person[self.id].location
-            newHero.id = self.id
-            self.pane.person[self.id] = newHero
-
-            for _ in range(oldLevel - 1):
-                keystate.inputState = "LEVELUP"
-                self.pane.person[self.id]._experience = self.pane.person[self.id].getExpForNextLevel()
-                self.pane.person[self.id].level += 1
-                self.levelup = lvl.Levelup(self.pane.person[self.id], self.screen)
-                self.levelup.next()
-
-            self.pane.person[self.id].addExperience(remainderExp)
-
+    def request_respec(self):
+        action = Command("RESPEC", "REQUESTRESPEC", id=self.id)
+        self.CDF.send(action)
+        
     def request_shop(self):
         action = Command("SHOP", "REQUESTSHOP", id=self.id)
         self.CDF.send(action)
