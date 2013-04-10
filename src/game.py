@@ -670,7 +670,7 @@ class Game(object):
                     elif e == "SPELLSSELECT":
                         self.currentAbility = self.pane.person[self.id].spellList[self.screen.hide_dialog()]
 
-                    if self.currentAbility.targetType == "location":
+                    if self.currentAbility.targetType in ["location", "trap"]:
                         keystate.inputState = "TARGET"
                         self.currentTarget = self.pane.person[self.id].location
                     else:
@@ -892,7 +892,7 @@ class Game(object):
         if not self.currentAbility:
             print "No ability selected."
             return
-        if isinstance(self.currentTarget, Location):
+        if self.currentAbility.targetType == "trap":
             self.CDF.send(Command("ABILITY", "PLACE_TRAP", id=self.id, \
                     targetLoc=self.currentTarget, \
                     abilityName=self.currentAbility.name))
@@ -949,7 +949,7 @@ class Game(object):
         if isinstance(self.currentTarget, Location):
             if self.currentTarget not in self.rangeRegion:
                 return False
-            if self.currentAbility.targetType != "location":
+            if self.currentAbility.targetType not in ["location", "trap"]:
                 return False
         else:
             if self.pane.person[self.currentTarget].location not in self.rangeRegion:
