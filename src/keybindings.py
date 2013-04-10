@@ -91,10 +91,10 @@ class Keystate():
             "SCROLLDOWN": (["page down", "-"], self.MOVEMENT),
             "SCROLLBOTTOM": (["SHIFT+page down", "SHIFT+-"], self.MOVEMENT),
 
-            "LEVELUPADVANCE": (["space", "a"], "LEVELUP"),
+            "LEVELUPADVANCE": (["space", "a", "enter", "keypad enter"], "LEVELUP"),
 
             "SHOPOPEN": ("F2", "OVERWORLD"),
-            "SHOPTRANSACTION": ("a", "SHOP"),
+            "SHOPTRANSACTION": (["a", "enter", "keypad enter"], "SHOP"),
             "SHOPCLOSE": (["space", "escape"], "SHOP"),
 
             "INVENTORYOPEN": ("i", "OVERWORLD"),
@@ -118,10 +118,10 @@ class Keystate():
             "CONSUMABLEUSE": (["space", "a"], "CONSUMABLE"),
 
             "ABILITIESOPEN": ("space", "COMBAT"),
-            "ABILITIESSELECT": (["space", "a", "enter"], "ABILITIES"),
+            "ABILITIESSELECT": (["space", "a", "enter", "keypad enter"], "ABILITIES"),
 
             "SPELLSOPEN": ("b", "COMBAT"),
-            "SPELLSSELECT": (["space", "a", "enter"], "SPELLS"),
+            "SPELLSSELECT": (["space", "a", "enter", "keypad enter"], "SPELLS"),
 
             "SWITCHGEAR": ("o", "COMBAT"),
             "CYCLETARGETF": ("e", "COMBAT"),
@@ -136,10 +136,10 @@ class Keystate():
             "STARTLEVELUP": ("y", "OVERWORLD"),
             "STARTRESPEC": ("r", "OVERWORLD"),
             "HELPMENU": ("F1", "OVERWORLD"),
+            "CHEAT CODE": ("[+]", self.MOVEMENT),
 
-            "SHOWINPUTSTATE": ("backspace", "ALL"),
-            "TEST1": ("CTRL+SHIFT+o", self.MOVEMENT),
-            "CHEAT CODE": ("[+]", self.MOVEMENT)
+            "SHOWINPUTSTATE": ("CTRL+SHIFT+k", self.MOVEMENT),
+            "SHOWPANEPIDS": ("CTRL+SHIFT+p", self.MOVEMENT),
             }
 
     def __call__(self, e=None):
