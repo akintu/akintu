@@ -83,7 +83,7 @@ class Keystate():
             "TARGETUPRIGHT": ([K_KP9, "u"], "TARGET"),
             "TARGETDOWNLEFT": ([K_KP1, "b"], "TARGET"),
             "TARGETDOWNRIGHT": ([K_KP3, "n"], "TARGET"),
-            "TARGETACCEPT": (["space", "return", "keypad enter"], "TARGET"),
+            "TARGETACCEPT": (["a", "space", "return", "keypad enter"], "TARGET"),
             "TARGETCANCEL": ([K_KP5, "escape"], "TARGET"),
 
             "SCROLLTOP": (["SHIFT+page up", "SHIFT+="], self.MOVEMENT),
