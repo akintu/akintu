@@ -23,11 +23,25 @@ class Country(object):
         for x in range(COUNTRY_X):
             for y in range(COUNTRY_Y):
                 t = Township(self.seed, country_loc=loc, township_loc=(x,y))
-                t.addTown()
-                t.addDungeons(5)
+                # t.addTown()
+                # t.addDungeons(5)
+                t.loadStamps(5)
                 self.townships[(x, y)] = t
                 self.towns.append(t.town_loc)
-                self.stamps[t.town_loc] = t.stamps
+                self.stamps = dict(self.stamps.items() + t.stamps.items())
+
+    def getStamps(self, pane):
+        if pane in self.stamps:
+            # print self.stamps[pane]
+            return self.stamps[pane]
+        # print str(pane) + " not found in country stamp dictionary"
+        # print self.stamps.keys()
+        country_loc, township_loc = Township.getTownshipLocation(pane)
+        if township_loc in self.townships:
+            t = self.townships[township_loc]
+            if pane in t.stamps:
+                return t.stamps[pane]
+        return None
 
 
 if __name__ == "__main__":

@@ -1,0 +1,30 @@
+#	#11x8 Dungeon Stamps
+#
++++++++++++ 
++           
++  dD__d  + 
++  d___d  +  
++  d___d  + 
++  d___d  + 
++    _    + 
+bbbbbbbbbbb 
+#
+#
++ +++++++++ 
++   D__ d$+ 
++   ___ d + 
++   ___ dm+ 
++   ___ d + 
++  bb_bbd++ 
+ddddddddddd 
++++++++++++ 
+#
+#
+  rrrrrrr    
+ r $D__$ r   
+rr b___b rr  
+rr b___b rr  
+rr  ___  rr  
+ rr  _  rr   
+  r     r    
+  

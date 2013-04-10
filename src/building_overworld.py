@@ -102,7 +102,7 @@ class HouseOverworld(BuildingOverworld):
                 if x == y and x == 1:
                     self.door = loc
                     passable = True
-                    self.entities[loc] = Portal(Location((0, -2), (17, 10), z=0, direction=8), location=loc, image=house_sheet.getimage((x, y)), passable=passable)
+                    self.entities[loc] = Portal(Location((-5, 0), (31, 10), z=0, direction=8), location=loc, image=house_sheet.getimage((x, y)), passable=passable)
                 else:
                     passable = False
                     self.entities[loc] = Entity(location=loc, image=house_sheet.getimage((x, y)), passable=passable)
@@ -150,7 +150,7 @@ class DungeonOverworld(BuildingOverworld):
         
         dungeon_sheet = Sprites.get_sheet(random.choice(list(DUNGEONS.keys())))
 
-        house_loc = (location.tile[0] + 2, location.tile[1] + 2)
+        house_loc = (location.tile[0], location.tile[1])
         
         for x in range(3):
             for y in range(4):
@@ -158,15 +158,15 @@ class DungeonOverworld(BuildingOverworld):
                 if x == 1 and y == 3:   #Door opening
                     self.door = loc
                     passable = True
-                    self.entities[loc] = Portal(Location((0, -3), (17, 10), z=-1, direction=8), location=loc, image=dungeon_sheet.getimage((x, y)), passable=passable)
+                    self.entities[loc] = Portal(Location((0, -3), (17, 10), z=0, direction=8), location=loc, image=dungeon_sheet.getimage((x, y)), passable=passable)
                 else:
                     passable = False
                     self.entities[loc] = Entity(location=loc, image=dungeon_sheet.getimage((x, y)), passable=passable)
             y = 0
             
-        self.opening = (self.door[0], self.door[1]+4)
+        self.opening = (self.door[0], self.door[1])
         self.path = Region()
-        self.path("ADD", "LINE", Location(location.pane, (self.door[0], self.door[1]+1)), Location(location.pane, self.opening), 1)
+        # self.path("ADD", "LINE", Location(location.pane, (self.door[0], self.door[1]+1)), Location(location.pane, self.opening), 1)
         self.boundary("SUB", "LINE", Location(location.pane, (self.door[0], self.door[1]+1)), Location(location.pane, self.opening), 1)
         
         #Choose the type of path that we want, probably from rows 0 to 2 (from self.path_sheet)
