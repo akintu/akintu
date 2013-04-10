@@ -1,0 +1,167 @@
+# help_monster_listing.txt
+
+Petty Brignand
+  Melee Attacker
+  High Cunning makes him resistant to Thief abilities.
+  Has a strong bleeding attack: "Draw Blood".
+  Has low Magic Resist.
+  
+Common Thug
+  Melee Attacker
+  Has an armor piercing "Smash" attack.
+  Has low Magic Resist
+  
+Hired Goon
+  Weak Melee Attacker
+  Will "Panic" when low on HP and attacked in melee.
+  This will raise his Dexterity, making him harder to hit and more accurate
+  
+Rookie Gladiator
+  Heavy Melee Attacker
+  Heavily Armored
+  Is able to "Deflect Missiles" making him strong vs. ranged physical
+    attacks.
+  Will occasionally "Quaff Potion", restoring a portion of his HP.
+  Will never run out of potions.
+  
+Vile Apprentice
+  Ranged Attacker/Magic User
+  Can cast "Singe" and "Chill" on players.
+  Can cast "Flicker of Life" on herself or allied monsters.
+  Has high Magic Resist.
+  
+Gray Wolf
+  Melee Attacker
+  Can "Howl", hitting a broad area around it with Shadow damage and
+    reducing the Might of players for a time.
+	
+Poisonous Rat
+  Weak Melee Attacker
+  High Cunning makes it resistant to Thief Abilities.
+  Very high Dexterity, making it hard to hit and accurate.
+  Very resistant to Poison damage and Poison effects.
+  Able to move very quickly.
+  
+Undead Pillager
+  Melee Attacker
+  Like all undead, it is very weak to Divine and strong against Shadow.
+  Able to cast "Haunt", dealing Shadow damage over time to a player.
+  Very slow moving.
+  
+Red Dragonling
+  Heavy Melee Attacker
+  Is considered a form of Dragon and thus Dragoons gain bonuses against it.
+  Deals a large amount of Fire damage.
+  Very strong against Fire damage.
+  Is able to lower armor with "Flaming Rend".
+  Gains magic resist and additional fire elemental resistance via "Draconic
+    Guard".
+  
+Blue Draonling
+  Heavy Melee Attacker/Caster
+  Is considered a form of Dragon and thus Dragoons gain bonuses against it.
+  Deals a large amount of Cold damage.
+  Strong against Cold and Fire damage.
+  Is able to slow movement speed via "Frigid Slash".
+  Gains magic resist and additional fire elemental resistance via "Draconic
+    Guard".
+  Can cast "Chill" which tends to be weaker than its melee attacks.
+  
+Mole Man
+  Ranged Attacker/Caster
+  Can cast "Stone Guard" to boost the defenses of himself or an ally.
+  
+Blue Ghost
+  Melee Attacker/Caster
+  Very difficult to harm with physical attacks.
+  Has no shadow resistance, unlike most undead.
+  Can cast "Cloud Vision" and "Shock".
+  Not very strong vs. Magic.
+  
+Faded Wizard
+  Ranged Attacker/Caster
+  Like most undead, is very weak to Divine damage but strong to Shadow.
+  Very strong vs. Magic.
+  Can cast "Singe" and "Haunt".
+  Can also cast a monster-specific spell "Shadow Field" which deals a large
+    amount of Shadow damage over a broad region.
+  Ranged attacks deal Shadow damage but aren't very accurate.
+  
+Guard Dog
+  Heavey Melee Attacker
+  Extremely low Cunning, making it vulnerable to Thief abilities.
+  Is able to "Draw Blood", causing significant bleeding.
+  Is able to "Endure Beating", increasing its physical defenses.
+  Has "Growing Boldness", making it more powerful with each melee attack
+    it performs.
+  Very weak to magic.
+  
+Winged Terror
+  Heavy Melee Attacker
+  Has high Cunning, making it resistant to Thief abilities.
+  Is vulnerable to Piercing damage specifically.
+  Is very fast moving.
+  Can perform a "Stunning Cut", which has a small chance to stun.
+  Is extremely difficult to hit with a very high Dodge rating.
+  
+Green Lizard
+  Melee Attacker
+  Very tolerant to Poison effects but has little Poison elemental
+    resistance.
+  Can use "Toxic Spit" which will make players more vulnerable to poison
+    damage, lower their accuracy, and give a chance to fail when casting
+	spells.
+  Regenerates health each turn it is alive.
+  
+Fade Beast
+  Ranged Attacker
+  Like most undead, is very weak to Divine damage, and strong vs. Shadow.
+  Is able to use "Phantom Stare" making melee attacks less accurate and
+    giving a chance to fail to cast spells.
+  Will use "Shadow Burst" when surrounded or when very low on HP dealing
+    massive shadow damage to nearby targets.
+  Very strong vs. magic.
+  
+Soldier
+  Heavy Melee Attacker
+  Is heavily armored
+  Weak vs. Magic
+  Is able to "Quaff Potions" indefinitely, restoring HP.
+  Has "Deflect Missiles" making him strong against ranged physical attacks.
+  Can use "Military Valor" making him more accurate and deal more damage
+    but also more vulnerable to Shadow damage.
+	
+Grasper
+  Melee Attacker
+  Deals Poison damage
+  Is weak vs. Divine and strong vs. Shadow, like most undead.
+  Is resistant to magic.
+  Has high poison tolerance and resistance.
+  Is able to "Sedate" players, making them less able to Dodge and move more
+    slowly.
+  Has other poison based attacks as well.
+  
+Witch
+  Ranged Attacker/Caster
+  Deals Electric damage
+  Is very strong against magic.
+  Can cast "Torrent" and "Lightning Bolt".
+  Will knockback players with her ranged attack.
+  
+Monk
+  Melee Attacker
+  Moves slowly but attacks very quickly if he gets in range.
+  Can use "Smash" and "Stunning Cut".
+  Is very vulnerable to Poison damage and effects.
+  Has high Cunning, making him resistant to Thief abilities.
+
+
+
+
+
+
+
+  
+  
+  
+  
