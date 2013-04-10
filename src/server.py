@@ -183,24 +183,25 @@ class GameServer():
             #### Respec ####
             if command.type == "RESPEC" and command.action == "REQUESTRESPEC":
                 activePlayer = self.person[command.id]
-                if activePlayer.ironman:
-                    text = "You are an ironman, and are thus too cool to respec!"
-                    action = Command("UPDATE", "TEXT", text=text, color='white')
-                    self.broadcast(action, pid=activePlayer.id)
-                elif activePlayer.level > 1:
-                    oldExp = activePlayer._experience
-                    newHero = TheoryCraft.resetPlayerLevel(activePlayer)
-                    newHero.location = self.person[command.id].location
-                    newHero.id = command.id
-                    newHero.ai.startup(self)
-                    newHero._experience = oldExp
-                    self.person[command.id].ai.shutdown()
-                    self.person[command.id] = newHero
-                    jerky = newHero.dehydrate()
-                    
-                    # Send the newHero to the client.
-                    action = Command("PERSON", "REPLACE", id=command.id, player=jerky)
-                    self.broadcast(action, pid=-command.id)
+                if self.world.is_town_pane(activePlayer.location):
+                    if activePlayer.ironman:
+                        text = "You are on Ironman mode, and are thus too cool to respec!"
+                        action = Command("UPDATE", "TEXT", text=text, color='white')
+                        self.broadcast(action, pid=activePlayer.id)
+                    elif activePlayer.level > 1:
+                        oldExp = activePlayer._experience
+                        newHero = TheoryCraft.resetPlayerLevel(activePlayer)
+                        newHero.location = self.person[command.id].location
+                        newHero.id = command.id
+                        newHero.ai.startup(self)
+                        newHero._experience = oldExp
+                        self.person[command.id].ai.shutdown()
+                        self.person[command.id] = newHero
+                        jerky = newHero.dehydrate()
+                        
+                        # Send the newHero to the client.
+                        action = Command("PERSON", "REPLACE", id=command.id, player=jerky)
+                        self.broadcast(action, pid=-command.id)
 
             ###### Get Item / Open Chest ######
             if command.type == "PERSON" and command.action == "BASHCHEST":
