@@ -271,6 +271,9 @@ class Game(object):
 
             ###### Levelup Player ######
             if command.type == "PERSON" and command.action == "REPLACE":
+                if self.pane.person[command.id].anim:
+                    self.pane.person[command.id].anim.stop()
+                    self.pane.person[command.id].anim = None
                 newPerson = TheoryCraft.rehydratePlayer(command.player)
                 newPerson.location = self.pane.person[command.id].location
                 newPerson.id = command.id

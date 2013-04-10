@@ -249,7 +249,8 @@ class Monster(person.Person):
             abil = actionDuple[0]
             target = actionDuple[1]
             abil.use(target)
-            self.faceTarget(target)
+            if self != target:
+                self.faceTarget(target)
             return abil.name
         return "Failure"
 
