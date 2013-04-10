@@ -482,17 +482,24 @@ class Game(object):
             keystate.keyTime = time.time()
 
     def handle_events(self):
-        pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
+        #pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
         for event in pygame.event.get():
+#            print "Event: ", event
             #### General commands ####
             if event.type == QUIT:
                 self.save_and_quit()
+            if event.type == MOUSEBUTTONDOWN and event.button == 3 and keystate.inputState == "TARGET":
+                self.currentTarget = Location(event.pos[0] / TILE_SIZE, event.pos[1] / TILE_SIZE)
+                self.attempt_attack()
+                keystate.inputState = "COMBAT"
+                self.currentAbility = self.pane.person[self.id].abilities[0]
+                self.update_regions()
+                if not self.valid_target():
+                    self.cycle_targets()
             if event.type == KEYUP:
                 keystate(event)
             if event.type == KEYDOWN:
                 e = keystate(event)
-#                if e:
-#                    print "Keyboard Event: %s" % e
                 if e == "QUIT":
                     self.display_save_menu()
                 if e == "FORCEQUIT":
