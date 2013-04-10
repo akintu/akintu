@@ -226,15 +226,10 @@ class State(object):
 
         #Reconcile tmp_world_data with world_data
         #tmp_world_data takes precidence.
-
         data = dict(State.world_data.items() + State.tmp_world_data.items())
         for key, value in data.iteritems():
             if isinstance(value, dict):
-                # print "PANE: " + str(key)
                 monsters = value[MONSTER_KEY]
-                # for monster in monsters:
-                    # print "\tMonster loc: " + str(monster[1])
-                
         State.save(WORLD_SAVE_PATH, State.world_file, data)
         
         

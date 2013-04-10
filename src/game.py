@@ -83,7 +83,7 @@ class Game(object):
 
         self.rangeRegion = Region()
         self.targetRegion = Region()
-        self.trapRegions = []
+        self.trapsRegion = Region()
 
         self.turnTime = kwargs.get('turnlength')
 
@@ -238,11 +238,9 @@ class Game(object):
                             1.0 / self.pane.person[command.id].movementSpeed)
 
                 self.pane.person[command.id].location = command.location
+                self.update_regions()
                 if self.combat and not self.valid_target():
                     self.cycle_targets()
-                if hasattr(command, 'details'):
-                    self.update_regions()
-
 
             ###### RemovePerson ######
             if command.type == "PERSON" and command.action == "REMOVE":
@@ -429,16 +427,16 @@ class Game(object):
                 placer = self.pane.person[command.id]
                 thisTrap = trap.Trap(name=command.abilityName, player=placer, location=command.targetLoc)
                 self.pane.addTrap(command.targetLoc, thisTrap)
-                self.screen.set_overlay(command.targetLoc, overlay=['red'])
+                self.screen.set_overlay(command.targetLoc, overlay=self.screen.get_overlay(command.targetLoc))
 
             elif command.type == "TRAP" and command.action == "DISCOVER":
                 thisTrap = trap.Trap(name=command.trapName, level=command.trapLevel, location=command.targetLoc)
                 self.pane.addTrap(command.targetLoc, thisTrap)
-                self.screen.set_overlay(command.targetLoc, overlay=['red'])
+                self.screen.set_overlay(command.targetLoc, overlay=self.screen.get_overlay(command.targetLoc))
 
             elif command.type == "TRAP" and command.action == "REMOVE":
                 self.pane.removeTrap(command.location)
-                self.screen.set_overlay(command.location, overlay=None)
+                self.screen.set_overlay(command.targetLoc, overlay=self.screen.get_overlay(command.targetLoc))
 
             elif command.type == "CLIENT" and command.action == "QUIT":
                 self.save_and_quit()
@@ -484,17 +482,24 @@ class Game(object):
             keystate.keyTime = time.time()
 
     def handle_events(self):
-        pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
+        #pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
         for event in pygame.event.get():
+#            print "Event: ", event
             #### General commands ####
             if event.type == QUIT:
                 self.save_and_quit()
+            if event.type == MOUSEBUTTONDOWN and event.button == 3 and keystate.inputState == "TARGET":
+                self.currentTarget = Location(event.pos[0] / TILE_SIZE, event.pos[1] / TILE_SIZE)
+                self.attempt_attack()
+                keystate.inputState = "COMBAT"
+                self.currentAbility = self.pane.person[self.id].abilities[0]
+                self.update_regions()
+                if not self.valid_target():
+                    self.cycle_targets()
             if event.type == KEYUP:
                 keystate(event)
             if event.type == KEYDOWN:
                 e = keystate(event)
-#                if e:
-#                    print "Keyboard Event: %s" % e
                 if e == "QUIT":
                     self.display_save_menu()
                 if e == "FORCEQUIT":
@@ -509,12 +514,14 @@ class Game(object):
                     if newloc.pane == self.currentTarget.pane and newloc in self.rangeRegion:
                         self.currentTarget = newloc
                         self.update_regions()
-                elif e == "TARGETACCEPT":
+                elif e in ["TARGETACCEPT", "TARGETCANCEL"]:
+                    if e == "TARGETACCEPT":
+                        self.attempt_attack()
                     keystate.inputState = "COMBAT"
-                elif e == "TARGETCANCEL":
-                    keystate.inputState = "COMBAT"
-                    self.currentAbility = None
+                    self.currentAbility = self.pane.person[self.id].abilities[0]
                     self.update_regions()
+                    if not self.valid_target():
+                        self.cycle_targets()
                 elif e == "SCROLLTOP":
                     self.screen.scroll_up(1000)
                 elif e == "SCROLLUP":
@@ -668,8 +675,6 @@ class Game(object):
                         self.currentTarget = self.pane.person[self.id].location
                     else:
                         keystate.inputState = "COMBAT"
-                    if self.currentAbility.range == 0:
-                        self.select_self()
                     self.update_regions()
                     if not self.valid_target():
                         self.cycle_targets()
@@ -684,10 +689,7 @@ class Game(object):
                     if self.currentItem:
                         self.use_item()
                     else:
-                        if isinstance(self.currentTarget, Location):
-                            self.attempt_attack(targetingLocation=self.currentTarget)
-                        else:
-                            self.attempt_attack()
+                        self.attempt_attack()
                 elif e == "ENDTURN":
                     self.force_end_turn()
                 elif e == "SELECTSELF":
@@ -742,7 +744,7 @@ class Game(object):
     def request_respec(self):
         action = Command("RESPEC", "REQUESTRESPEC", id=self.id)
         self.CDF.send(action)
-        
+
     def request_shop(self):
         action = Command("SHOP", "REQUESTSHOP", id=self.id)
         self.CDF.send(action)
@@ -831,6 +833,11 @@ class Game(object):
             self.CDF.send(Command("PERSON", "MOVE", id=self.id, \
                     location=self.pane.person[self.id].location))
 
+        if self.combat:
+            self.update_regions()
+            if not self.valid_target():
+                self.cycle_targets()
+
     def display_character_sheet(self):
         player = self.pane.person[self.id]
         self.screen.show_character_dialog(player, abilitykey=keystate.get_key("CHARSHEETABILITIES"),
@@ -878,20 +885,20 @@ class Game(object):
             action = Command("ABILITY", "END_TURN", id=self.id)
             self.CDF.send(action)
 
-    def attempt_attack(self, targetingLocation=None):
-        if not self.currentTarget and not targetingLocation:
+    def attempt_attack(self):
+        if not self.currentTarget:
             print "No target selected."
             return
         if not self.currentAbility:
             print "No ability selected."
             return
-        if not targetingLocation:
+        if isinstance(self.currentTarget, Location):
+            self.CDF.send(Command("ABILITY", "PLACE_TRAP", id=self.id, \
+                    targetLoc=self.currentTarget, \
+                    abilityName=self.currentAbility.name))
+        else:
             self.CDF.send(Command("ABILITY", "ATTACK", id=self.id, targetId=self.currentTarget,
                 abilityName=self.currentAbility.name))
-        else:
-            self.CDF.send(Command("ABILITY", "PLACE_TRAP", id=self.id, \
-                    targetLoc=self.pane.person[self.id].location.move(targetingLocation), \
-                    abilityName=self.currentAbility.name))
 
     def use_item(self):
         if not self.currentItem or \
@@ -942,6 +949,8 @@ class Game(object):
         if isinstance(self.currentTarget, Location):
             if self.currentTarget not in self.rangeRegion:
                 return False
+            if self.currentAbility.targetType != "location":
+                return False
         else:
             if self.pane.person[self.currentTarget].location not in self.rangeRegion:
                 return False
@@ -960,19 +969,6 @@ class Game(object):
         dirty = Region()
         dirty("ADD", "CIRCLE", self.pane.person[self.id].location, 0)
 
-        if self.currentTarget:
-            if isinstance(self.currentTarget, Location):
-                dirty("ADD", "CIRCLE", self.currentTarget, 0)
-                if not self.valid_target():
-                    self.currentTarget = None
-            else:
-                dirty("ADD", "CIRCLE", self.pane.person[self.currentTarget].location, 0)
-
-        for l in self.rangeRegion + self.targetRegion:
-            ovl = self.screen.get_overlay(l)
-            if ovl != list(set(ovl)):
-                dirty("ADD", "CIRCLE", l, 0)
-
         range = Region()
         if self.currentAbility:
             r = self.currentAbility.range if self.currentAbility.range != -1 else \
@@ -986,6 +982,19 @@ class Game(object):
         self.rangeRegion = range
 
         target = Region()
+        if self.currentTarget:
+            if isinstance(self.currentTarget, Location):
+                dirty("ADD", "CIRCLE", self.currentTarget, 0)
+                if not self.valid_target():
+                    self.currentTarget = None
+            else:
+                dirty("ADD", "CIRCLE", self.pane.person[self.currentTarget].location, 0)
+
+        for l in self.rangeRegion + self.targetRegion:
+            ovl = self.screen.get_overlay(l)
+            if ovl != list(set(ovl)) or ('red' in ovl and not self.currentTarget):
+                dirty("ADD", "CIRCLE", l, 0)
+
         if self.currentAbility and self.currentTarget:
             r = 0 #TODO Get radius if ability explodes
             if isinstance(self.currentTarget, Location):
@@ -994,6 +1003,14 @@ class Game(object):
                 target("ADD", "CIRCLE", self.pane.person[self.currentTarget].location, r)
         dirty += self.targetRegion ^ target
         self.targetRegion = target
+
+        traps = Region()
+        trapList = [l for l in Region("SQUARE", Location(0, 0), Location(PANE_X - 1, PANE_Y - 1)) if \
+                self.pane.tiles[l.tile].trap]
+        for l in trapList:
+            traps("ADD", "CIRCLE", l, 0)
+        dirty += self.trapsRegion ^ traps
+        self.trapsRegion = traps
 
         for l in (l for l in dirty if l.pane == (0, 0)):
             overlay = []
@@ -1006,16 +1023,16 @@ class Game(object):
             if l == self.currentTarget or (self.currentTarget in self.pane.person \
                     and l == self.pane.person[self.currentTarget].location):
                 overlay.append('red')
-            self.screen.set_overlay(l, overlay)
+            if self.pane.tiles[l.tile].trap:
+                overlay.append('red' if self.pane.tiles[l.tile].trap.team == "Monsters" else 'green')
+            if self.screen.get_overlay(l) != overlay:
+                self.screen.set_overlay(l, overlay)
         self.screen.update()
 
     def select_self(self):
-        if not self.combat or self.id not in self.pane.person:
+        if not self.combat or self.id < 0:
             return
-        if not self.panePersonIdList:
-            self.panePersonIdList = [x for x in self.pane.person]
-        selfIndex = self.panePersonIdList.index(self.id)
-        self.currentTarget = self.panePersonIdList[selfIndex]
+        self.currentTarget = self.id
 #        self.screen.show_text("Targeting: yourself", color='lightblue')
 
     def display_target_details(self):
@@ -1066,8 +1083,6 @@ class Game(object):
                 self.pane.person[id].anim.stop()
             self.pane.person[id].anim = None
             self.pane.person[id].anim_start = 0
-            if self.combat:
-                self.update_regions()
         self.screen.update_person(id, statsdict)
 
     def animate_entity(self, location):

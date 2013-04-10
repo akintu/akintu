@@ -52,37 +52,37 @@ rrr$$ m   rrrrrrrr
 #
 #
 wwwwwwwwwwwwwwwwwwww
-wwwwwwwwwwwwwwwwwwww
-wwwwwwwwwwwwwwwwwwww
-wwwwwwwwwwwwwwwwwwww
-wwwwwwwwwwwwwwwwwwww
-wwwwwwwwwwwwwwwwwwww
-wwwwwwwwwwwwwwwwwwww
-wwwwwwwwwwwwwwwwwwww
-wwwwwwwwwwwwwwwwwwww
-wwwwwwwwwwwwwwwwwwww
-wwwwwwwwwwwwwwwwwwww
-wwwwwwwwwwwwwwwwwwww
-wwwwwwwwwwwwwwwwwwww
-wwwwwwwwwwwwwwwwwwww
+wwwppppppwpppwpppwpp
+wwwpppwwpwpwpwpwpwpw
+wwpp$ppwpwpwpwpwpwpw
+wwp$$$pwpwpwpwpwpwpw
+wppp$ppwpwpwpwpwpwpw
+wpwpppwwpwpwpwpwpwpw
+wpwwwwwwpwpwpwpwpwpw
+wppppppwpwpwpwpwpwpw
+wwwwwwpwpwpwpwpwpwpw
+wppppppwpwpwpwpwpwpw
+wpwwwwwwpwpwpwpwpwpw
+wppp$$$wpwpwpwpwpwpw
+wwwppppwpppwpppwpppw
 wwwwwwwwwwwwwwwwwwww
 #
 #
-wwdwwpt  r  twww +++
-wwdwwpt  r  twww +++
-wwdwwpt  r  twww +++
-wwdwwpt  r  twww +++
-wwdwwpt  r  twww +++
-wwdwwpt  r  twww +++
-wwdwwpt  r  twww +++
-wwdwwpt  r  twww +++
-wwdwwpt  r  twww +++
-wwdwwpt  r  twww +++
-wwdwwpt  r  twww +++
-wwdwwpt  r  twww +++
-wwdwwpt  r  twww +++
-wwdwwpt  r  twww +++
-wwdwwpt  r  twww +++
+    wwwwwwwwww      
+  wwwwwwwwwwwwrrrr  
+ wwwwwwwwwwwrrrrrrr 
+gwwwwwwrrrrrrrwwwwrr
+gwwwwrrr    twwwwwwr
+ggrrrrr     twwwwwwr
+ggrwwpt     twww +++
+ggrwwpt     twww +++
+ rrwwpt     twww +++
+ rrwwpt     twww +++
+  dwwpt     twww +++
+  dwwpt     twww +++
+  dwwpt     twww +++
+  dwwpt     twww +++
+  dwwpt     twww +++
 #
 #
 tttttttttttttttttttt
