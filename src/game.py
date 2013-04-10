@@ -712,10 +712,14 @@ class Game(object):
                     self.request_respec()
                 elif e == "HELPMENU":
                     pass #TODO Implement help menu
-                elif e == "SHOWINPUTSTATE":
-                    print "Keyboard input state: %s" % keystate.inputState
                 elif e == "CHEAT CODE":
                     print "You found the secret code!"
+
+                ### Debug codes ###
+                elif e == "SHOWINPUTSTATE":
+                    print "Keyboard input state: %s" % keystate.inputState
+                elif e == "SHOWPANEPIDS":
+                    print "Person IDs on pane: %s" % str(self.pane.person.keys())
 
     def get_item(self):
         self.CDF.send(Command("PERSON", "OPEN", id=self.id))
@@ -1022,7 +1026,7 @@ class Game(object):
 
         for l in (l for l in dirty if l.pane == (0, 0)):
             overlay = []
-            if l == self.pane.person[self.id].location:
+            if l == self.pane.person[self.id].location and self.combat:
                 overlay.append('blue')
             if l in self.rangeRegion:
                 overlay.append('blue')
