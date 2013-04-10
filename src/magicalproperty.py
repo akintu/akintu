@@ -217,7 +217,7 @@ class MagicalProperty(object):
             owner.equipmentRangedAccuracy -= bonus
 
     def _armorPenetration(self, owner, reverse=False):
-        bonus = 0.5 * self.counts
+        bonus = 0.75 * self.counts
         if not reverse:
             owner.equipmentArmorPenetration += bonus
         else:
@@ -252,7 +252,7 @@ class MagicalProperty(object):
             owner.equipmentCriticalChance -= bonus
 
     def _criticalHitMagnitude(self, owner, reverse=False):
-        bonus = self.counts
+        bonus = self.counts * 2
         if not reverse:
             owner.equipmentCriticalMagnitude += bonus
         else:
@@ -555,7 +555,7 @@ class MagicalProperty(object):
             owner.MPRegen -= bonus
 
     def _shopkeeperBonus(self, owner, reverse=False):
-        bonus = self.counts / 2
+        bonus = self.counts * 0.5
         if not reverse:
             owner.equipmentShopBonus += bonus
         else:
@@ -818,7 +818,7 @@ class MagicalProperty(object):
             'doubled' : True,
             'exclusion' : None,
             'categories' : ['Thief', 'Critical'],
-            'goldMod' : 15,
+            'goldMod' : 16,
             'prefix' : 'Exact',
             'suffix' : 'of Eviscerating'
             },
@@ -831,7 +831,7 @@ class MagicalProperty(object):
             'doubled' : True,
             'exclusion' : None,
             'categories' : ['Critical'],
-            'goldMod' : 15,
+            'goldMod' : 14,
             'prefix' : 'Deadly',
             'suffix' : 'of Death'
             },

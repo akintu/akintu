@@ -1,0 +1,75 @@
+# help_magical_equipment.txt
+
+As you enter higher level areas in Akintu, the shops and treasure chests
+will contain better items.  These better items will contain magical 
+properties of various strengths that will make them more powerful in some
+aspect.  
+
+There are many different kinds of magical properties and up to
+five different properties can exist on a piece of equipment.  Furthermore,
+every magical property has a magnitude, or number of "stacks" of its
+effect.  For instance, two stacks of Constitution bonus grant 2 points of
+Constitution, wheras one stack only grants +1.  The exact effect of a
+magical property is not always clear from its description, but should be
+more obvious once it is equipped on your character.
+
+Example:
+
+  Snakeskin
+  Platemail Greaves
+  of Mastery
+  -- Name has a prefix and a suffix, indicating at least two different
+     magical properties. --
+	 
+  Grade: Heavy
+  Type: Legs
+  Damage Reduction (DR): 9%
+  Dodge Modifier: -2
+  Stealth Modifier: -9
+  Weight: 11 lbs.
+  Value: 382 gold
+  >> Elemental Resistance: Poison x 3
+  >> DR x 1
+  -- Magical properties are listed at the bottom of the item.  In this 
+  example, these greaves have 3 stacks of elemental resistance to poison
+  and one stack of bonus damage resistance (DR). --
+  -- Typically, platemailgreaves only grant 7% DR, but these are listed as 
+  9%.  Every stack of DR bonus on this piece of equipment counts as 2% DR. 
+  On other gear, the DR granted from a DR bonus might be higher or lower 
+  than 2% per stack.  (Heavy armor and weapons tend to benefit more from
+  +Damage and +DR than lighter pieces of gear.) --
+  -- These greaves also grant +3% Poison Resistance from their three stacks
+  of elemental resistance to poison. --
+  
+In addition to DR bonuses on gear, Damage bonuses also vary from each piece
+of equipment to another.  While every katana will gain the same benefit
+from one stack of Damage to another, a katana will gain a different bonus
+than say, a halberd.
+
+A few other things to keep in mind about magical equipment:
+
+1. More powerful weapons and armor are harder to find powerful magical
+bonuses on than weaker weapons and armor such as staves and robes.
+
+2. Weapon weapons and armor will not have bonus Damage or DR as frequently
+as heavier weapons and armor.  In fact, most robe-type armor will never
+have any DR bonuses at all.
+
+3. Two-handed weapons will often be found with double the number of stacks
+of their magical properties than single-handed weapons found in the same
+area.  This is to compensate for the two sets of properties you can benefit
+from by dual-wielding or using a weapon and a shield.
+
+4. The magical rings and amulets you find in treasure chests will be 
+more powerful if you have a high Sorcery attribute.  They will not increase
+in power when you put them on, but rather, when you find them, they will
+have more properties than if you had a lower Sorcery.
+
+
+
+
+
+
+
+    
+  
