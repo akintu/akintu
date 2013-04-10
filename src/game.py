@@ -892,13 +892,16 @@ class Game(object):
         if not self.currentAbility:
             print "No ability selected."
             return
-        if self.currentAbility.targetType == "trap":
+        tempTarget = [pid for pid, p in self.pane.person.iteritems() if p.location == self.currentTarget]
+        tempTarget = tempTarget[0] if len(tempTarget) > 0 else None
+        anarchistTrap = self.pane.person[self.id].characterClass == "Anarchist" and tempTarget
+        if self.currentAbility.targetType == "trap" and not anarchistTrap:
             self.CDF.send(Command("ABILITY", "PLACE_TRAP", id=self.id, \
                     targetLoc=self.currentTarget, \
                     abilityName=self.currentAbility.name))
         else:
-            self.CDF.send(Command("ABILITY", "ATTACK", id=self.id, targetId=self.currentTarget,
-                abilityName=self.currentAbility.name))
+            self.CDF.send(Command("ABILITY", "ATTACK", id=self.id, targetId=self.currentTarget \
+                    if not anarchistTrap else tempTarget, abilityName=self.currentAbility.name))
 
     def use_item(self):
         if not self.currentItem or \
