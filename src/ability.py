@@ -410,6 +410,20 @@ class Ability(object):
             #return (False, "Cannot place a trap on a monster.")
             # Handled in game.py
         
+    def _trapChaosCheck(self, target):
+        source = self.owner
+        if isinstance(target, location.Location):
+            contentString = Combat.gameServer.pane[source.cPane].getTileContents(target)
+            if contentString == "Nothing" or contentString == "Trap-Friendly":
+                return (True, "")
+            if contentString == "Trap-Hostile":
+                return (False, "Something prevents you from placing your trap...")
+            if contentString == "Obstacle":
+                return (False, "Cannot place a trap on an obstacle.")
+            return (False, "TODO: Failed to catch a case...")
+        else:
+            return (True, "")
+        
     def _shrapnelTrapAnarchist(self, target):
         source = self.owner
         source.record.recordTrapPlacement()
@@ -419,7 +433,7 @@ class Ability(object):
             source.record.recordTrapChaos()
             trapChaosBonusRating = 5 + source.totalCunning / 10
             trapRating = int(16 * (1 + 0.015 * source.totalCunning) + source.bonusTrapRating + trapChaosBonusRating)
-            didHit = Dice.rollTrapHit(trapRating, target)
+            didHit = Dice.rollTrapHit(trapRating, target, True)
             if didHit:
                 minDamage = int(5 * (1 + source.totalCunning * 0.017) * (1 + source.bonusTrapDamage * 0.01))
                 maxDamage = int(12 * (1 + source.totalCunning * 0.017) * (1 + source.bonusTrapDamage * 0.01))
@@ -448,7 +462,7 @@ class Ability(object):
             source.record.recordTrapChaos()
             trapChaosBonusRating = 5 + source.totalCunning / 10
             trapRating = int(24 * (1 + 0.007 * source.totalCunning) + source.bonusTrapRating + trapChaosBonusRating)
-            didHit = Dice.rollTrapHit(trapRating, target)
+            didHit = Dice.rollTrapHit(trapRating, target, True)
             if didHit:
                 duration = 6
                 Combat.addStatus(target, "Sticky Trap", duration)
@@ -475,7 +489,7 @@ class Ability(object):
             source.record.recordTrapChaos()
             trapChaosBonusRating = 5 + source.totalCunning / 10
             trapRating = int(30 * (1 + 0.007 * source.totalCunning) + source.bonusTrapRating + trapChaosBonusRating)
-            didHit = Dice.rollTrapHit(trapRating, target)
+            didHit = Dice.rollTrapHit(trapRating, target, True)
             if didHit:
                 minDamage = int(3 * (1 + source.totalCunning * 0.02) * (1 + source.bonusTrapDamage * 0.01))
                 maxDamage = int(8 * (1 + source.totalCunning * 0.02) * (1 + source.bonusTrapDamage * 0.01))
@@ -794,7 +808,7 @@ class Ability(object):
             source.record.recordTrapChaos()
             trapChaosBonusRating = 5 + source.totalCunning / 10
             trapRating = int(25 * (1 + 0.01 * source.totalCunning) + source.bonusTrapRating + trapChaosBonusRating)
-            didHit = Dice.rollTrapHit(trapRating, target)
+            didHit = Dice.rollTrapHit(trapRating, target, True)
             if didHit:
                 minDamage = int(5 * (1 + source.totalCunning * 0.01) * (1 + source.bonusTrapDamage * 0.01))
                 maxDamage = int(10 * (1 + source.totalCunning * 0.01) * (1 + source.bonusTrapDamage * 0.01))
@@ -2432,7 +2446,7 @@ class Ability(object):
         'target' : 'trap',
         'action' : _shrapnelTrapAnarchist,
         'cooldown' : 1,
-        'checkFunction' : _shrapnelTrapCheck,
+        'checkFunction' : _trapChaosCheck,
         'breakStealth' : 0,
         'image' : RANGER_SKILLS + 'shrapnel-trap.png',
         'text' : 'Lay a trap down that will deal 5-12 + 1.4% Piercing damage\n' + \
@@ -2448,7 +2462,7 @@ class Ability(object):
         'target' : 'trap',
         'action' : _stickyTrapAnarchist,
         'cooldown' : 1,
-        'checkFunction' : _shrapnelTrapCheck,
+        'checkFunction' : _trapChaosCheck,
         'breakStealth' : 0,
         'image' : RANGER_SKILLS + 'sticky-trap.png',
         'text' : 'Lay a trap that will reduce enemy movement speed by\n' + \
@@ -2466,7 +2480,7 @@ class Ability(object):
         'target' : 'trap',
         'action' : _boulderPitTrapAnarchist,
         'cooldown' : 1,
-        'checkFunction' : _shrapnelTrapCheck,
+        'checkFunction' : _trapChaosCheck,
         'breakStealth' : 0,
         'image' : RANGER_SKILLS + 'boulder-pit-trap.png', 
         'text' : 'Lay a trap that deals 3-8 + 2% bludgeoning damage and has a\n' + \
@@ -2552,7 +2566,7 @@ class Ability(object):
         'target' : 'trap',
         'action' : _explosiveTrap,
         'cooldown' : 2,
-        'checkFunction' : _shrapnelTrapCheck,
+        'checkFunction' : _trapChaosCheck,
         'breakStealth' : 0,
         'image' : ANARCHIST_SKILLS + 'explosive-trap.png',
         'text' : 'Lay down a trap that deals 5-10 + 1% Fire damage to the target that\n' + \
