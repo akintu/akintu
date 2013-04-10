@@ -68,7 +68,11 @@ class Spell(object):
             self.specialTargeting = info['specialTargeting']
         else:
             self.specialTargeting = "DEFAULT"
-        
+        if 'radius' in info:
+            self.radius = info['radius']
+        else:
+            self.radius = 0
+            
     def shouldUse(self, target):
         '''
         Used by only monsters to determine if the
@@ -637,7 +641,8 @@ class Spell(object):
         'image' : TIER1 + 'zone-of-silence.png',
         'text' : 'Creates a 3x3 area within which Stealth requires\n' + \
                 'less AP to activate and sneak is increaesd by 10.\n' + \
-                'Lasts between 3 and 6 turns'
+                'Lasts between 3 and 6 turns',
+        'radius' : 1
         },
 
         'Blurry':

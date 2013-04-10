@@ -996,7 +996,7 @@ class Game(object):
                 dirty("ADD", "CIRCLE", l, 0)
 
         if self.currentAbility and self.currentTarget:
-            r = 0 #TODO Get radius if ability explodes
+            r = self.currentAbility.radius
             if isinstance(self.currentTarget, Location):
                 target("ADD", "CIRCLE", self.currentTarget, r)
             else:

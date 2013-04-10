@@ -95,6 +95,11 @@ class Ability(object):
             self.specialTargeting = info['specialTargeting']
         else:
             self.specialTargeting = "DEFAULT"
+        if 'radius' in info:
+            self.radius = info['radius']
+        else:
+            self.radius = 0
+            
             
     @staticmethod
     def convertAbilityName(aName):
@@ -1779,7 +1784,8 @@ class Ability(object):
         'breakStealth' : 0,
         'image' : THIEF_SKILLS + 'disarm-traps.png',
         'text' : 'Attempt to disarm all detected traps in melee range.  Success is\n' + \
-                'dependent on level and Cunning.'
+                'dependent on level and Cunning.',
+        'radius' : 1
         },
         'Agile Position':
         {
@@ -1870,7 +1876,7 @@ class Ability(object):
         'HPCost' : 0,
         'APCost' : 5,
         'range' : 1,
-        'target' : 'location',
+        'target' : 'trap',
         'action' : _shrapnelTrap,
         'cooldown' : 1,
         'checkFunction' : _shrapnelTrapCheck,
@@ -1886,7 +1892,7 @@ class Ability(object):
         'HPCost' : 0,
         'APCost' : 3,
         'range' : 1,
-        'target' : 'location',
+        'target' : 'trap',
         'action' : _stickyTrap,
         'cooldown' : 1,
         'checkFunction' : _shrapnelTrapCheck,
@@ -1964,7 +1970,7 @@ class Ability(object):
         'HPCost' : 0,
         'APCost' : 5,
         'range' : 1,
-        'target' : 'location',
+        'target' : 'trap',
         'action' : _boulderPitTrap,
         'cooldown' : 1,
         'checkFunction' : _shrapnelTrapCheck,
@@ -2146,7 +2152,8 @@ class Ability(object):
         'text' : 'Jump from your current location to immediately next to a selected enemy.\n' + \
                 'You will land on a random adjacent tile to the target dealing 175% damage if you hit.\n ' + \
                 'Additionally, you will deal 25% of weapon damage to all targets adjacent to\n' + \
-                'your landing location (including the primary target) as bludgeoning damage.'
+                'your landing location (including the primary target) as bludgeoning damage.',
+        'radius' : 1
         },
         'Faster Jump Attack':
         {
@@ -2164,7 +2171,8 @@ class Ability(object):
         'text' : 'Jump from your current location to immediately next to a selected enemy.\n' + \
                 'You will land on a random adjacent tile to the target dealing 175% damage if you hit.\n ' + \
                 'Additionally, you will deal 25% of weapon damage to all targets adjacent to\n' + \
-                'your landing location (including the primary target) as bludgeoning damage.'
+                'your landing location (including the primary target) as bludgeoning damage.',
+        'radius' : 1
         },
         'Diagonal Thrusts':
         {
@@ -2180,7 +2188,8 @@ class Ability(object):
         'breakStealth' : 100,
         'image' : DRAGOON_SKILLS + 'diagonal-thrusts.png',
         'text' : 'Strike foes in all diagonal directions.  Attack with Force x 1.20 and +5% critical magnitude\n' + \
-                'on each strike.  Must have a polearm equipped.'
+                'on each strike.  Must have a polearm equipped.',
+        'radius' : -1
         },
         'Faster Jump Attack++':
         {
@@ -2199,7 +2208,8 @@ class Ability(object):
                 'You will land on a random adjacent tile to the target dealing 175% damage if you hit.\n ' + \
                 'Additionally, you will deal 25% of weapon damage to all targets adjacent to\n' + \
                 'your landing location (including the primary target) as bludgeoning damage.\n' + \
-                'Now has a reduced cooldown.'
+                'Now has a reduced cooldown.',
+        'radius' : 1
         },
         'Long Reach':
         {
@@ -2234,7 +2244,8 @@ class Ability(object):
                 'You will land on a random adjacent tile to the target dealing 200% damage if you hit.\n ' + \
                 'Additionally, you will deal 30% of weapon damage to all targets adjacent to\n' + \
                 'your landing location (including the primary target) as bludgeoning damage.\n' + \
-                'Has a rare chance to stun the target if it is not Huge.'
+                'Has a rare chance to stun the target if it is not Huge.',
+        'radius' : 1
         },
         'Spear-Pierce':
         {
@@ -2288,7 +2299,8 @@ class Ability(object):
         'text' : 'Melee Attack that blasts targets adjacent to your primary target with\n' + \
                 'elemental damage according to the most recent enchantment\'s element on\n' + \
                 'your weapon.  If that enchantment has no element, the element will be\n' + \
-                'arcane.  Requires an enchantment on your weapon.'
+                'arcane.  Requires an enchantment on your weapon.',
+        'radius' : 1
         },
         'Rebound':
         {
@@ -2385,7 +2397,7 @@ class Ability(object):
         'HPCost' : 0,
         'APCost' : 5,
         'range' : 1,
-        'target' : 'location',
+        'target' : 'trap',
         'action' : _explosiveTrap,
         'cooldown' : 2,
         'checkFunction' : _shrapnelTrapCheck,
@@ -2411,7 +2423,8 @@ class Ability(object):
         'text' : 'Throw random hazardous trap components at all adjacent enemies.\n' + \
                 'All enemies in melee range take 2-20 + 1% piercing damage\n' + \
                 'with no avoidance roll. Deals +25% damage to large targets.\n' + \
-                'Deals +50% damage to huge targets.'
+                'Deals +50% damage to huge targets.',
+        'radius' : 1
         },
         
         #Marksman
@@ -2581,7 +2594,7 @@ class Ability(object):
         'HPCost' : 0,
         'APCost' : 5,
         'range' : 1,
-        'target' : 'location',
+        'target' : 'trap',
         'action' : _poisonThornTrap,
         'cooldown' : 1,
         'checkFunction' : _shrapnelTrapCheck,
@@ -2618,7 +2631,7 @@ class Ability(object):
         'HPCost' : 0,
         'APCost' : 5,
         'range' : 1,
-        'target' : 'location',
+        'target' : 'trap',
         'action' : _accuracyFavor,
         'cooldown' : 1,
         'checkFunction' : None,
@@ -2631,7 +2644,7 @@ class Ability(object):
         'HPCost' : 0,
         'APCost' : 5,
         'range' : 1,
-        'target' : 'location',
+        'target' : 'trap',
         'action' : _manaFavor,
         'cooldown' : 2,
         'checkFunction' : None,
@@ -2644,7 +2657,7 @@ class Ability(object):
         'HPCost' : 0,
         'APCost' : 5,
         'range' : 1,
-        'target' : 'location',
+        'target' : 'trap',
         'action' : _magicalDampeningTrap,
         'cooldown' : 0,
         'checkFunction' : None,
@@ -2657,7 +2670,7 @@ class Ability(object):
         'HPCost' : 0,
         'APCost' : 5,
         'range' : 1,
-        'target' : 'location',
+        'target' : 'trap',
         'action' : _nearsightedTrap,
         'cooldown' : 2,
         'checkFunction' : None,
@@ -2934,7 +2947,8 @@ class Ability(object):
         'image' : NIGHTBLADE_SKILLS + 'shroud.png',
         'text' : 'Deal 4-12 +3% Shadow damage to all foes in melee range.\n' + \
                 'Also activates a protective shroud for the next 2 turns that\n' + \
-                'gives +20% Avoidance chance.'
+                'gives +20% Avoidance chance.',
+        'radius' : 1
         },
         'Hex':
         {
