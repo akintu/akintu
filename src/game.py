@@ -425,6 +425,7 @@ class Game(object):
 
             elif command.type == "ABILITY" and command.action == "PLACE_TRAP":
                 placer = self.pane.person[command.id]
+                command.abilityName = command.abilityName.replace("+", "")
                 thisTrap = trap.Trap(name=command.abilityName, player=placer, location=command.targetLoc)
                 self.pane.addTrap(command.targetLoc, thisTrap)
                 self.update_regions()
