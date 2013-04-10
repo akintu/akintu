@@ -71,7 +71,7 @@ class World(object):
         else:
             self.panes[location] = self._getTown(location, is_server, True, state)
     
-        self.loadStamps(location)
+        self._loadStamps(location)
             
         self._merge_tiles(surrounding_locations)
         self.panes[location].load_images()
@@ -79,7 +79,7 @@ class World(object):
             self.panes[location].person = {}
         return self.panes[location]
 
-    def loadStamps(self, location):
+    def _loadStamps(self, location):
         if isinstance(location, Location):
             pane = location.pane
         else:

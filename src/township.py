@@ -114,13 +114,22 @@ class Township(object):
         stamp_dict = Stamp.getStamps(Stamp.DUNGEON)
         size = random.choice(list(stamp_dict.keys()))
         stamp = random.choice(stamp_dict[size])
-        #Choose a point 
-        loc_x = random.randrange(1, (PANE_X-1)-size[0])
-        loc_y = random.randrange(1, (PANE_Y-1)-size[1])
 
-        candidate = pygame.Rect(loc_x*(PANE_X-1)-1, loc_y*(PANE_Y-1)-1, size[0]+1, size[1]+1)
-        self.rect_list.append(candidate)
-        location = Location(dungeon_pane, (loc_x, loc_y))
+        #Pick some threshhold to prevent an infinite loop
+        i = 0
+        threshhold = 100
+        while i < threshhold:
+        
+            #Choose a point 
+            loc_x = random.randrange(1, (PANE_X-1)-size[0])
+            loc_y = random.randrange(1, (PANE_Y-1)-size[1])
+
+            candidate = pygame.Rect(loc_x*(PANE_X-1)-1, loc_y*(PANE_Y-1)-1, size[0]+1, size[1]+1)
+            if candidate.collidelist(self.rect_list) == -1:
+                    self.rect_list.append(candidate)
+                    self.stamps[Location(self.town_loc, (loc_x, loc_y))] = stamp
+                    location = Location(dungeon_pane, (loc_x, loc_y))
+                    break
         return (location, stamp)#self.stamps[location] = stamp
 
     def addLandscape(self, coverage):
