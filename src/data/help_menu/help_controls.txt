@@ -6,7 +6,7 @@ keybindings, these may no longer be accurate.
 Overworld Controls
 
   UP, DOWN, LEFT, RIGHT --> Movement (Hold to run)
-  B  --> (BASH) locked chest
+  $BASHCHEST$  --> Bash locked chest
   C  --> Display Character Sheet
   F1 or ? --> Open help menu (This menu!)
   F2 --> Open Shop (Towns only) 

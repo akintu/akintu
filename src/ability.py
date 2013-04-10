@@ -138,7 +138,7 @@ class Ability(object):
         if self.targetType == "friendly" and source.team != target.team:
             return (False, "Cannot target hostile with beneficial ability.")
         # TODO: Modify inRange to accept a location object as well.
-        if not self.targetType == 'location' and not source.inRange(target, self.range):
+        if not self.targetType == 'location' and not self.targetType == 'trap' and not source.inRange(target, self.range):
             return (False, "Target is out of range.")
         if source.onCooldown(self.name):
             return (False, self.name + " is on Cooldown " + source.getCooldownTurns(self.name) +

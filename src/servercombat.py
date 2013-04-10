@@ -97,9 +97,9 @@ class CombatServer():
                                              color='orange')
                     abilToUse.use(command.targetLoc)
                     self.server.broadcast(command, -command.id)
-            else:
-                Combat.sendCombatMessage(useDuple[1], source, toAll=False)
-            self.check_turn_end(self.server.person[command.id].cPane)
+                else:
+                    Combat.sendCombatMessage(useDuple[1], source, toAll=False)
+                self.check_turn_end(self.server.person[command.id].cPane)
 
         #### End turn command "N" ####
         elif command.type == "ABILITY" and command.action == "END_TURN":
