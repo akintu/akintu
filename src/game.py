@@ -506,8 +506,9 @@ class Game(object):
                     keystate.keyTime = time.time() + 2 * keystate.typematicRate
                 elif keystate.direction("TARGET"):
                     newloc = self.currentTarget.move(keystate.direction("TARGET"))
-                    if newloc.pane == self.currentTarget.pane:
+                    if newloc.pane == self.currentTarget.pane and newloc in self.rangeRegion:
                         self.currentTarget = newloc
+                        self.update_regions()
                 elif e == "TARGETACCEPT":
                     keystate.inputState = "COMBAT"
                 elif e == "TARGETCANCEL":
@@ -975,14 +976,17 @@ class Game(object):
         return True
 
     def update_regions(self):
-        dirty = Region()
+        if self.id < 0:
+            return
 
-        if self.id > 0:
-            dirty("ADD", "CIRCLE", self.pane.person[self.id].location, 0)
+        dirty = Region()
+        dirty("ADD", "CIRCLE", self.pane.person[self.id].location, 0)
 
         if self.currentTarget:
             if isinstance(self.currentTarget, Location):
                 dirty("ADD", "CIRCLE", self.currentTarget, 0)
+                if not self.valid_target():
+                    self.currentTarget = None
             else:
                 dirty("ADD", "CIRCLE", self.pane.person[self.currentTarget].location, 0)
 
@@ -1021,8 +1025,8 @@ class Game(object):
                 overlay.append('blue')
             if l in self.targetRegion:
                 overlay.append('red')
-            if l == self.currentTarget or \
-                    (self.currentTarget and l == self.pane.person[self.currentTarget].location):
+            if l == self.currentTarget or (self.currentTarget in self.pane.person \
+                    and l == self.pane.person[self.currentTarget].location):
                 overlay.append('red')
             self.screen.set_overlay(l, overlay)
         self.screen.update()

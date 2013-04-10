@@ -603,6 +603,10 @@ class CharacterDialog(object):
         l = ('Ranged Attack AP Cost:  ' + str(p.totalRangedAttackAPCost))
         f = pfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = ('Movement Action AP Cost:  ' + str(p.totalMovementAPCost))
+        f = pfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
         y += f.get_rect().height * 2
         y = 40
         x += 320

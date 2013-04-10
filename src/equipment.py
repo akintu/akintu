@@ -81,15 +81,18 @@ class Equipment(e.Entity):
             property.item = newCopy
             if property.name == "Damage":
                 property.effect(property, None) # No 'Owner' needed, thus None is passed.
+                property.effect = property._doNothing
             elif property.name == "DR":
                 property.effect(property, None) # No 'Owner' needed, thus None is passed.
-        newPropertyList = [x for x in propertyList if x.name != "Damage" and x.name != "DR"]
+                property.effect = property._doNothing
+        newPropertyList = [x for x in propertyList]
         newCopy.propertyList = newPropertyList
         newCopy.assignDisplayName()
         newCopy.assignIdentifier()
         newCopy.assignText()
         return newCopy
 
+        
     def assignIdentifier(self):
         longName = []
         longName.append(self.name)
