@@ -893,7 +893,8 @@ class Game(object):
         if not self.currentAbility:
             print "No ability selected."
             return
-        tempTarget = [pid for pid, p in self.pane.person.iteritems() if p.location == self.currentTarget]
+        tempTarget = [pid for pid, p in self.pane.person.iteritems() \
+                if p.location == self.currentTarget and p.team == "Monsters"]
         tempTarget = tempTarget[0] if len(tempTarget) > 0 else None
         anarchistTrap = self.pane.person[self.id].characterClass == "Anarchist" and tempTarget
         if self.currentAbility.targetType == "trap" and not anarchistTrap:
