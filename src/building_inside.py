@@ -6,4 +6,6 @@ def Building(pane):
 	'''
 	Generic inside of a building or dungeon
 	'''
-	pass
+
+    def __init__(self):
+        pass
