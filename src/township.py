@@ -68,7 +68,7 @@ class Township(object):
         self._placeTownStamps()
 
     def _placeTownStamps(self):
-        stamps_rect = [pygame.Rect(0,0,1,1)]
+        stamps_rect = []
         stamps = dict()
         for key in [Stamp.SHOP, Stamp.RESPEC, Stamp.HOUSE, Stamp.GARDEN, Stamp.HOUSE, Stamp.GARDEN, Stamp.HOUSE]:
             stamp_dict = Stamp.getStamps(key)
@@ -77,7 +77,7 @@ class Township(object):
 
             #Pick some threshhold to prevent an infinite loop
             i = 0
-            threshhold = 20
+            threshhold = 100
             while i < threshhold:
                 #Choose a point 
                 loc_x = random.randrange(1, (PANE_X-1)-size[0])
