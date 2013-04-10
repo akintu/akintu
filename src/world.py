@@ -34,7 +34,8 @@ class World(object):
         self.curr_pane = None
         self.countries = dict()
         self._generate_world(pane)
-        print self._listTowns((0,0))
+        #print sorted(self._listTowns((0,0)))
+        # print self.countries[(0,0)].townships[(2,2)].stamps
         
     def is_town_pane(self, location):
         if isinstance(location, Location):
@@ -80,15 +81,16 @@ class World(object):
 
     def loadStamps(self, location):
         if isinstance(location, Location):
-            loc = location.pane
+            pane = location.pane
         else:
-            loc = location
-        country_loc, township_loc = Township.getTownshipLocation(loc)
+            pane = location
+
+        country_loc, township_loc = Township.getTownshipLocation(pane)
         if not country_loc in self.countries:
             self._generate_world(country_loc)
-        stamps = self.countries[country_loc].stamps
-        if loc in stamps:
-            self.panes[location].load_stamps(stamps[loc], True)
+        stamps = self.countries[country_loc].getStamps(pane)
+        if stamps:
+            self.panes[location].load_stamps(stamps, True)
 
     def _getTown(self, location, is_server, load_entities, pane_state):
         town = Town(self.seed, location, is_server, load_entities, pane_state)

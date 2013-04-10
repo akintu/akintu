@@ -61,18 +61,18 @@ class Pane(object):
                     # self.add_obstacle((i, j), RAND_ENTITIES)
 
         if load_entities:
-            #TEST STAMP TEXT
-            stamp = Stamp.getStringStamp("("+ str(self.location[0]) + ":" + str(self.location[1]) + ":" + str(self.z) + ")")
-            stamp_loc = Location(self.location, (random.randrange(1, PANE_X-stamp.width), random.randrange(1, PANE_Y-stamp.height)))
-            self.load_stamps({stamp_loc:stamp})
+            ##TEST STAMP TEXT
+            # stamp = Stamp.getStringStamp("("+ str(self.location[0]) + ":" + str(self.location[1]) + ":" + str(self.z) + ")")
+            # stamp_loc = Location(self.location, (random.randrange(1, PANE_X-stamp.width), random.randrange(1, PANE_Y-stamp.height)))
+            # self.load_stamps({stamp_loc:stamp})
 
-            for i in range(1):
-                stamp_dict = Stamp.getStamps(Stamp.LANDSCAPE)
-                #stamp_size_tuple = random.choice(list(stamp_dict.values()))
-                stamp_list = stamp_dict[(20,15)]
-                stamp = random.choice(stamp_list)
-                stamp_loc = Location(self.location, (random.randrange(1, PANE_X-stamp.width), random.randrange(1, PANE_Y-stamp.height)))
-                self.load_stamps({stamp_loc:stamp})
+            # for i in range(1):
+                # stamp_dict = Stamp.getStamps(Stamp.LANDSCAPE)
+                ##stamp_size_tuple = random.choice(list(stamp_dict.values()))
+                # stamp_list = stamp_dict[(20,15)]
+                # stamp = random.choice(stamp_list)
+                # stamp_loc = Location(self.location, (random.randrange(1, PANE_X-stamp.width), random.randrange(1, PANE_Y-stamp.height)))
+                # self.load_stamps({stamp_loc:stamp})
             
             if self.pane_state:
                 self.load_state(self.pane_state)
@@ -130,9 +130,10 @@ class Pane(object):
                 person.location = monster[1]
                 self.person[id(person)] = person
         else:   #TODO: Make this better. We're creating monsters from scratch here
-            random.seed(self.seed + str(self.location) + "load_monsters")
-            for i in range(3):
-                self.add_monster()
+            pass
+            # random.seed(self.seed + str(self.location) + "load_monsters")
+            # for i in range(3):
+                # self.add_monster()
 
     def add_monster(self, level=None, tolerance=None, location=None, region=None, ai=None):
         #Handle Default Objects
@@ -146,7 +147,7 @@ class Pane(object):
                 tolerance = 1
         if not location:
             location = Location(self.location, (random.randrange(PANE_X), random.randrange(PANE_Y)))
-        
+
         person = TheoryCraft.getMonster(level=level, tolerance=tolerance)
         person.location = location
         if not region:
@@ -252,6 +253,10 @@ class Pane(object):
             elif entity_key == 'shop':
                 house = HouseOverworld(Location(self.location, tile))
                 self.add_entities(house.entities)
+                continue
+            elif entity_key == 'dungeon':
+                dungeon = DungeonOverworld(Location(self.location, tile))
+                self.add_entities(dungeon.entities)
                 continue
             if not image:
                 print "Entity Key NOT FOUND: " + str(entity_key)
@@ -363,8 +368,14 @@ class Pane(object):
     def get_item_list(self):
         pass
 
-    def load_stamps(self, loc_stamp_dict, clear_region=False):
+    def load_stamps(self, loc_stamp_dict, clear_region=True):
         for location, stamp in loc_stamp_dict.iteritems():
+            if location.pane != self.location:
+                print "Location.pane=" + str(location.pane)
+                print "Self.location=" + str(self.location)
+                return
+            if not isinstance(location, Location):
+                print "location not a Location " + str(location)
             location2 = location.move(6, stamp.width-1).move(2, stamp.height-1)
 
             if clear_region:
@@ -380,8 +391,8 @@ class Pane(object):
                     if not self.pane_state and self.is_server:
                         if type == CHEST_KEY:
                             self.add_chest(tile=loc.tile)
-                        if type == MONSTER_KEY:
-                            self.add_monster(location=loc)
+                        if type == MONSTER_KEY and loc.pane == location.pane:
+                                self.add_monster(location=loc)
                         if type == ITEM_KEY:
                             self.add_item(tile=loc.tile)
                     continue

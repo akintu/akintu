@@ -33,6 +33,7 @@ class Stamp(object):
                 'H':'house',
                 'R':'respec',
                 'S':'shop',
+                'D':'dungeon',
                 'P':'portal'}
     loaded = False
 
