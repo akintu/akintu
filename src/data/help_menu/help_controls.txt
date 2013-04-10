@@ -12,7 +12,9 @@ Overworld Controls
   F2 --> Open Shop (Towns only) 
   G  --> (GET) items from chest/Pick locks on chests
   I  --> Open Inventory
+  R  --> (RESPEC) character (set at level 1, use Y to regain levels)
   CTRL-X or CTRL-Q --> Open Save Menu
+  Y  --> Manual levelup (only used if you have respecc'd your character)
   
 Combat
 
