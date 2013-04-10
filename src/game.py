@@ -427,16 +427,16 @@ class Game(object):
                 placer = self.pane.person[command.id]
                 thisTrap = trap.Trap(name=command.abilityName, player=placer, location=command.targetLoc)
                 self.pane.addTrap(command.targetLoc, thisTrap)
-                self.screen.set_overlay(command.targetLoc, overlay=self.screen.get_overlay(command.targetLoc))
+                self.update_regions()
 
             elif command.type == "TRAP" and command.action == "DISCOVER":
                 thisTrap = trap.Trap(name=command.trapName, level=command.trapLevel, location=command.targetLoc)
                 self.pane.addTrap(command.targetLoc, thisTrap)
-                self.screen.set_overlay(command.targetLoc, overlay=self.screen.get_overlay(command.targetLoc))
+                self.update_regions()
 
             elif command.type == "TRAP" and command.action == "REMOVE":
                 self.pane.removeTrap(command.location)
-                self.screen.set_overlay(command.targetLoc, overlay=self.screen.get_overlay(command.targetLoc))
+                self.update_regions()
 
             elif command.type == "CLIENT" and command.action == "QUIT":
                 self.save_and_quit()
