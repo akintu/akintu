@@ -186,12 +186,13 @@ class Game(object):
 
             ###### CreatePerson ######
             if command.type == "PERSON" and (command.action == "CREATE" or command.action == "LOAD"):
+                portal = command.portal if hasattr(command, "portal") else None
                 if self.id == -1:  # Need to setup the pane
                     self.id = command.id
                     if self.combat:
-                        self.switch_panes(command.cPane, self.combat)
+                        self.switch_panes(command.cPane, combat=self.combat)
                     else:
-                        self.switch_panes(command.location)
+                        self.switch_panes(command.location, portal=portal)
 
                 if command.action == "LOAD":
                     self.pane.person[command.id] = TheoryCraft.rehydratePlayer(command.details)
@@ -712,10 +713,14 @@ class Game(object):
                     self.request_respec()
                 elif e == "HELPMENU":
                     pass #TODO Implement help menu
-                elif e == "SHOWINPUTSTATE":
-                    print "Keyboard input state: %s" % keystate.inputState
                 elif e == "CHEAT CODE":
                     print "You found the secret code!"
+
+                ### Debug codes ###
+                elif e == "SHOWINPUTSTATE":
+                    print "Keyboard input state: %s" % keystate.inputState
+                elif e == "SHOWPANEPIDS":
+                    print "Person IDs on pane: %s" % str(self.pane.person.keys())
 
     def get_item(self):
         self.CDF.send(Command("PERSON", "OPEN", id=self.id))
@@ -1022,7 +1027,7 @@ class Game(object):
 
         for l in (l for l in dirty if l.pane == (0, 0)):
             overlay = []
-            if l == self.pane.person[self.id].location:
+            if l == self.pane.person[self.id].location and self.combat:
                 overlay.append('blue')
             if l in self.rangeRegion:
                 overlay.append('blue')
@@ -1133,11 +1138,14 @@ class Game(object):
         #TODO: make this delayed. (maybe use DelayedCall?)
         self.pane.remove_entities(location.tile)
 
-    def switch_panes(self, location, combat=False):
+    def switch_panes(self, location, combat=False, portal=None):
         #TODO we can add transitions here.
         if combat:
             self.pane = self.pane.get_combat_pane(location)
         else:
-            self.pane = self.world.get_pane(location.pane)
+            if not portal:
+                self.pane = self.world.get_pane(location.pane)
+            else:
+                self.pane = self.world.get_pane(location, portal=portal)
         self.screen.set_pane(self.pane)
 

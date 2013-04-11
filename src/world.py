@@ -16,6 +16,7 @@ from ai import AI
 from treasurechest import *
 from township import *
 from country import *
+from building_inside import *
 
 
 class World(object):
@@ -50,34 +51,43 @@ class World(object):
     def is_dungeon_pane(self, location):
         pass
 
-    def get_pane(self, location, is_server=False):
-        if isinstance(location, Location):
-            surrounding_locations = location.get_surrounding_panes()
+    def get_pane(self, location, is_server=False, portal=None):
+        print portal
+        if portal == Portal.HOUSE:
+            #Check State For Pane
+            state = None
+            if is_server:
+                state = State.load_pane(location)
+            self.panes[location] = House(self.seed, location, is_server=is_server, pane_state=state)
+            return self.panes[location]
         else:
-            surrounding_locations = Location(location, None).get_surrounding_panes()
-        for key, loc in surrounding_locations.iteritems():
-            if not loc in self.panes:
-                if loc in self._listTowns(loc):
-                    self.panes[loc] = self._getTown(loc, False, False, None)
-                else:
-                    self.panes[loc] = Pane(self.seed, loc)
-        #Check State For Pane
-        state = None
-        if is_server:
-            state = State.load_pane(location)
-            
-        if not location in self._listTowns(location):
-            self.panes[location] = Pane(self.seed, location, is_server=is_server, load_entities=True, pane_state=state)
-        else:
-            self.panes[location] = self._getTown(location, is_server, True, state)
-    
-        self._loadStamps(location)
-            
-        self._merge_tiles(surrounding_locations)
-        self.panes[location].load_images()
-        if not is_server:
-            self.panes[location].person = {}
-        return self.panes[location]
+            if isinstance(location, Location):
+                surrounding_locations = location.get_surrounding_panes()
+            else:
+                surrounding_locations = Location(location, None).get_surrounding_panes()
+            for key, loc in surrounding_locations.iteritems():
+                if not loc in self.panes:
+                    if loc in self._listTowns(loc):
+                        self.panes[loc] = self._getTown(loc, False, False, None)
+                    else:
+                        self.panes[loc] = Pane(self.seed, loc)
+            #Check State For Pane
+            state = None
+            if is_server:
+                state = State.load_pane(location)
+                
+            if not location in self._listTowns(location):
+                self.panes[location] = Pane(self.seed, location, is_server=is_server, load_entities=True, pane_state=state)
+            else:
+                self.panes[location] = self._getTown(location, is_server, True, state)
+        
+            self._loadStamps(location)
+                
+            self._merge_tiles(surrounding_locations)
+            self.panes[location].load_images()
+            if not is_server:
+                self.panes[location].person = {}
+            return self.panes[location]
 
     def _loadStamps(self, location):
         if isinstance(location, Location):
