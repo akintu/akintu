@@ -366,7 +366,8 @@ class Spell(object):
                                            scaleFactor=0.01)
                 Combat.lowerHP(centerTarget, damage)
         allTargetsList = Combat.getAOETargets(source.cPane, target, radius=4)
-        for tar in allTargetsList:
+        allTargetsSorted = sorted(allTargetsList, key=lambda x: x.cLocation.distance(target), reverse=True)
+        for tar in allTargetsSorted:
             hitType = Combat.calcHit(source, tar, "Magical")
             if hitType != "Miss" and hitType != "Fully Resisted":
                 damage = Combat.calcDamage(source, tar, 5, 6, "Arcane", 
@@ -449,6 +450,13 @@ class Spell(object):
                                         scalesWith="Spellpower", scaleFactor=0.005)
                 Combat.lowerHP(t, dam)
         return hitType
+            
+    def _frostWeapon(self, target):
+        source = self.owner
+        duration = min(7, 3 + source.totalSpellpower / 10)
+        magnitude = Dice.roll(2, 5) + source.totalSpellpower / 15
+        Combat.addStatus(target, "Frost Weapon", duration, magnitude)
+        return "Normal Hit"
             
     monsterSpells = {
         'Shadow Field':
@@ -847,6 +855,22 @@ class Spell(object):
         'text' : 'Zap a series of targets between you and your specified target for 5-33 + 0.5% Electric damage.\n' + \
                 'On partial resist: -50% damage\n' + \
                 'On critical: +30% damage'
+        },
+        'Frost Weapon':
+        {
+        'tier' : 2,
+        'school' : 'Enchantment',
+        'MPCost' : 12,
+        'APCost' : 8,
+        'range' : 3,
+        'target' : 'friendly',
+        'action' : _frostWeapon,
+        'cooldown' : 0,
+        'image' : TIER2 + 'frost-weapon.png',
+        'text' : 'Enhance the effect of your, or your ally\'s, weapon to deal 2-5 + 2% Cold damage and\n' + \
+                'have an unlikely chance on hit to reduce movement speed by 1 tile/move and lower\n' + \
+                'Dodge by 4 points for 3 turns.  The enchantment itself lasts 3 Turns + 1 per 10 spellpower\n' + \
+                'up to a maximum of 7 turns.'
         }
     }
 
