@@ -38,12 +38,13 @@ class GameScreen(object):
         self.sidetext = []
         self.dialog = None
         self.overlays = {}
-        self.overlays['blue'] = generate_overlay(TILE_SIZE, TILE_SIZE,
-                                                 (0, 0, 200, 50))
-        self.overlays['green'] = generate_overlay(TILE_SIZE, TILE_SIZE,
-                                                  (0, 200, 0, 50))
-        self.overlays['red'] = generate_overlay(TILE_SIZE, TILE_SIZE,
-                                                (200, 0, 0, 50))
+
+        overlay_colors = ['blue', 'green', 'red', 'cyan', 'orange', 'black']
+        for c in overlay_colors:
+            color = Color(c)
+            color.a = 50
+            self.overlays[c] = generate_overlay(TILE_SIZE, TILE_SIZE, color)
+
         pygame.display.flip()
         self.turntime = 0
         self.tile_updated = False

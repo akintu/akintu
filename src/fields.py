@@ -4,13 +4,13 @@ class Fields:
     def __init__(self):
         self.fields = []
 
-    def add(self, name, loc, r, duration):
-        self.fields.append([name, Region("CIRCLE", loc, r), duration])
+    def add_field(self, name, loc, radius, duration):
+        self.fields.append([name, Region("CIRCLE", loc, radius), duration])
 
     def get_fields(self, loc):
-        return [field[0] for field in self.fields if loc in field[1]]
+        return [f[0] for f in self.fields if loc in f[1]]
 
-    def decrement_duration(self):
+    def turn(self):
         for field in self.fields:
             field[2] -= 1
 
