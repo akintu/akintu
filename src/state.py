@@ -7,6 +7,7 @@ import pickle
 import datetime
 
 from const import *
+from location import Location
 
 class State(object):
     
@@ -261,7 +262,7 @@ class State(object):
         '''
         
         assert isinstance(data, dict), "Pane data should be a dictionary"
-        assert isinstance(pane_loc, tuple), "Pane location should be a tuple"
+        assert isinstance(pane_loc, tuple) or isinstance(pane_loc, Location), "Pane location should be a tuple"
         #print "Saving pane " + str(pane_loc)+ " with data " + str(data)
         State.tmp_world_data[pane_loc] = data
         

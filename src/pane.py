@@ -35,10 +35,8 @@ class Pane(object):
     def __init__(self, seed, location, is_server=False, load_entities=True, pane_state=None, level=None):
         if isinstance(location, Location):
             self.location = location.pane
-            self.z = location.z
         else:
             self.location = location
-            self.z = 0
         self.seed = seed
         self.is_server = is_server
         self.tmpFileName = "Pane_" + str(self.location[0]) + "_" + str(self.location[1])
@@ -403,7 +401,7 @@ class Pane(object):
                 if type == 'obstacle':
                     type = obst
                 #OBSTACLES AND PATHS
-                if loc.pane == self.location and loc.z == self.z and type != None:
+                if loc.pane == self.location and type != None:
                     self.add_obstacle(loc.tile, 1, entity_type=type)
 
     def load_region(self, region, entity_type=None):
@@ -411,7 +409,7 @@ class Pane(object):
             for loc in region:
                 if not loc in self.tiles:
                     self.tiles[loc] = Tile(None, True)
-                if loc.pane == self.location and loc.z == self.z:
+                if loc.pane == self.location:
                     self.add_obstacle(loc.tile, 1, entity_type)
 
     def clear_region(self, region):
