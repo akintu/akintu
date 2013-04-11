@@ -101,7 +101,7 @@ class Spell(object):
         if self.targetType == "friendly" and source.team != target.team:
             return (False, "Cannot target hostile with beneficial spell.")
         # Do we need any check for AoE spells?
-        if not source.inRange(target, self.range):
+        if not self.targetType == "location" and not source.inRange(target, self.range):
             return (False, "Target is out of range.")
         if source.onCooldown(self.name) :
             return (False, self.name + " is on Cooldown.")
@@ -352,6 +352,28 @@ class Spell(object):
         return "Normal Hit"
         
     # TIER 2
+    
+    def _burst(self, target):
+        source = self.owner
+        # target is a Location
+        centerTargetList = Combat.getAOETargets(source.cPane, target, radius=0)
+        if centerTargetList:
+            centerTarget = centerTargetList[0]
+            hitType = Combat.calcHit(source, centerTarget, "Magical")
+            if hitType != "Miss" and hitType != "Fully Resisted":
+                damage = Combat.calcDamage(source, centerTarget, 10, 12, "Arcane", 
+                                           hitValue=hitType, scalesWith="Spellpower", 
+                                           scaleFactor=0.01)
+                Combat.lowerHP(centerTarget, damage)
+        allTargetsList = Combat.getAOETargets(source.cPane, target, radius=4)
+        for tar in allTargetsList:
+            hitType = Combat.calcHit(source, tar, "Magical")
+            if hitType != "Miss" and hitType != "Fully Resisted":
+                damage = Combat.calcDamage(source, tar, 5, 6, "Arcane", 
+                                           hitValue=hitType, scalesWith="Spellpower", 
+                                           scaleFactor=0.01)
+                Combat.lowerHP(tar, damage)
+                Combat.knockback(tar, target, distance=1)
     
     def _identification(self, target):
         source = self.owner
@@ -694,7 +716,23 @@ class Spell(object):
         },
 
         # Tier 2
-        # Burst
+        'Burst':
+        {
+        'tier' : 2,
+        'school' : 'Mystic',
+        'MPCost' : 16,
+        'APCost' : 11,
+        'range' : 8,
+        'target' : 'location',
+        'action' : _burst,
+        'cooldown' : 1,
+        'image' : TIER2 + 'burst.png',
+        'text' : 'Deal 10-12 + 1% arcane damage to any target at the center\n' + \
+                'of your chosen location and half that damage to every hostile\n' + \
+                'target within four tiles of it.  All secondary targets will\n' + \
+                'be knocked 1 tile away from the center.',
+        'radius' : 4
+        },
         'Identification':
         {
         'tier' : 2,
@@ -817,7 +855,7 @@ class Spell(object):
         direction = None
         double = None
         hearer = None
-        if source.team == "Players" and target.team != "Players":
+        if self.targetType == 'location' or (source.team == "Players" and target.team != "Players"):
             direction = "Outgoing"
             hearer = source
         elif source.team == "Monsters":
@@ -841,7 +879,7 @@ class Spell(object):
         direction = None
         double = None
         hearer = None
-        if source.team == "Players" and target.team != "Players":
+        if self.targetType == 'location' or (source.team == "Players" and target.team != "Players"):
             direction = "Outgoing"
             hearer = source
         elif source.team == "Monsters":
