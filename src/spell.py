@@ -3,7 +3,7 @@
 import sys
 from combat import *
 import dice
-import fields
+import command
 
 ROOT_FOLDER = "./res/images/icons/"
 TIER1 = ROOT_FOLDER + "tier1_spells/"
@@ -202,7 +202,7 @@ class Spell(object):
         '''Applys bonus dodge but lowers fire resistance to either team'''
         duration = 2 # Immediately decremeneted
         Combat.addStatus(target, "Smoke Screen", duration)
-            
+        
             
     # Monster Only Spells
 
@@ -355,8 +355,10 @@ class Spell(object):
         source = self.owner
         duration = min(7, 4 + source.totalSpellpower / 30)
         radius = 1
-        Combat.gameServer.pane[source.cPane].add_field("Zone of Silence", target, radius, duration)
-
+        Combat.gameServer.pane[source.cPane].fields.add_field("Zone of Silence", target, radius, duration)
+        action = command.Command("FIELD", "ADD", name="Pit", location=target, radius=radius, duration=duration)
+        Combat.gameServer.broadcast(action, -source.id)
+        
     def _blurry(self, target):
         source = self.owner
         duration = 1
@@ -483,12 +485,22 @@ class Spell(object):
         return hitType
             
     def _smokeScreen(self, target):
-        pass
-        # TODO
-        
+        # Target is a location.
+        source = self.owner
+        duration = min(7, 3 + source.totalSpellpower / 15)
+        radius = 4
+        Combat.gameServer.pane[source.cPane].fields.add_field("Smoke Screen", target, radius, duration)
+        action = command.Command("FIELD", "ADD", name="Smoke Screen", location=target, radius=radius, duration=duration)
+        Combat.gameServer.broadcast(action, -source.id)
+            
     def _pit(self, target):
-        pass
-        # TODO
+        # Target is a location.
+        source = self.owner
+        duration = 4
+        radius = 0
+        Combat.gameServer.pane[source.cPane].fields.add_field("Pit", target, radius, duration)
+        action = command.Command("FIELD", "ADD", name="Pit", location=target, radius=radius, duration=duration)
+        Combat.gameServer.broadcast(action, -source.id)
             
     def _shrink(self, target):
         source = self.owner
@@ -722,7 +734,7 @@ class Spell(object):
         'MPCost' : 10,
         'APCost' : 5,
         'range' : 6,
-        'target' : 'terrain',
+        'target' : 'location',
         'action' : _zoneOfSilence,
         'cooldown' : None,
         'image' : TIER1 + 'zone-of-silence.png',
