@@ -447,8 +447,9 @@ class Game(object):
                 self.update_regions()
 
             elif command.type == "FIELD" and command.action == "ADD":
-                self.pane.fields.add(command.name, command.location, command.radius, command.duration)
-
+                self.pane.fields.add_field(command.name, command.location, command.radius, command.duration)
+                self.update_regions()
+                
             elif command.type == "CLIENT" and command.action == "QUIT":
                 self.save_and_quit()
 

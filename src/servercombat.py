@@ -7,7 +7,7 @@ import theorycraft
 import math
 import region
 import monster
-
+import spell
 
 class CombatServer():
     def __init__(self, server):
@@ -36,6 +36,7 @@ class CombatServer():
                 self.server.broadcast(command, -command.id, exclude=True)
                 if activePlayer.team == "Players":
                     self.check_trap_trigger(activePlayer, activePlayer.cLocation)
+                    self.check_field_trigger(activePlayer, activePlayer.cLocation)
                     self.check_turn_end(activePlayer.cPane)
 
         ###### RemovePerson ######
@@ -192,6 +193,15 @@ class CombatServer():
                 self.server.broadcast(Command("TRAP", "REMOVE", location=location), \
                         -actor.id)
 
+    def check_field_trigger(self, actor, location):
+        '''Checks to see if a monster or player just stepped on a status
+        field.  If it did, it applies the effect(s) of the status field(s)
+        to the actor.'''
+        triggerFieldNames = self.server.pane[actor.cPane].fields.get_fields(location)
+        for fName in triggerFieldNames:
+            effect = spell.fieldEffects[fName]
+            effect(actor)
+                        
     def shout_turn_start(self, player, turn="Player"):
         '''Shouts to the Player that this particular turn is starting.
         Defaults to "Player"; "Monster" is the other valid value.'''
@@ -264,6 +274,7 @@ class CombatServer():
                 monster.cLocation = desiredLocation
                 tilesLeft -= 1
                 self.check_trap_trigger(monster, desiredLocation)
+                self.check_field_trigger(monster, desiredLocation)
             elif tilesLeft == monster.totalMovementTiles:
                 # Monster couldn't move at all.
                 return "Failed"
@@ -318,9 +329,10 @@ class CombatServer():
                 print target.name + " has status: " + stat.name + " T=" + `int(stat.turnsLeft)`
                 
         # Check to see if this player discovered any traps.
+        # Apply field effects as well.
         if target.team == "Players":
             self.check_trap_discover(target)
-
+            self.check_field_trigger(target, target.cLocation)
 
     def startCombat(self, playerId, monsterId):
         '''Initiates combat for the first player to enter combat.
@@ -422,6 +434,7 @@ class CombatServer():
         monsters = [x for x in chars if x.team == "Monsters" and x not in
                     self.combatStates[combatPane].deadMonsterSet]
         for mon in monsters:
+            self.check_field_trigger(mon, mon.cLocation)
             visiblePlayers = []
             for player in players:
                 if not player.inStealth() or player.hasStatus("Conceal"):

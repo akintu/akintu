@@ -100,7 +100,10 @@ class Ability(object):
             self.radius = info['radius']
         else:
             self.radius = 0
-            
+        if 'placesField' in info:
+            self.placesField = info['placesField']
+        else:
+            self.placesField = False
             
     @staticmethod
     def convertAbilityName(aName):

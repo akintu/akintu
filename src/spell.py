@@ -3,6 +3,7 @@
 import sys
 from combat import *
 import dice
+import command
 
 ROOT_FOLDER = "./res/images/icons/"
 TIER1 = ROOT_FOLDER + "tier1_spells/"
@@ -72,6 +73,10 @@ class Spell(object):
             self.radius = info['radius']
         else:
             self.radius = 0
+        if 'placesField' in info:
+            self.placesField = info['placesField']
+        else:
+            self.placesField = False
             
     def shouldUse(self, target):
         '''
@@ -176,6 +181,29 @@ class Spell(object):
         elif self.school == "Natural":
             target.statusMagicResist -= target.naturalResist
 
+    # Status Fields
+            
+    @staticmethod
+    def _applyZoneOfSilence(target):
+        ''' Applys a bonus critical chance and sneak to players only '''
+        if target.team == "Players":
+            duration = 2 # Immediately decremented
+            Combat.addStatus(target, "Zone of Silence", duration)
+            
+    @staticmethod
+    def _applyPit(target):
+        ''' If a player steps on it, it should be removed.'''
+        if target.team == "Players":
+            # Remove Pit TODO
+            pass
+        
+    @staticmethod
+    def _applySmokeScreen(target):
+        '''Applys bonus dodge but lowers fire resistance to either team'''
+        duration = 2 # Immediately decremeneted
+        Combat.addStatus(target, "Smoke Screen", duration)
+        
+            
     # Monster Only Spells
 
     def _shadowField(self, target):
@@ -323,9 +351,14 @@ class Spell(object):
         return hitType
             
     def _zoneOfSilence(self, target):
-        pass
-        # TODO!!
-
+        # Target is a location.
+        source = self.owner
+        duration = min(7, 4 + source.totalSpellpower / 30)
+        radius = 1
+        Combat.gameServer.pane[source.cPane].fields.add_field("Zone of Silence", target, radius, duration)
+        action = command.Command("FIELD", "ADD", name="Pit", location=target, radius=radius, duration=duration)
+        Combat.gameServer.broadcast(action, -source.id)
+        
     def _blurry(self, target):
         source = self.owner
         duration = 1
@@ -451,6 +484,24 @@ class Spell(object):
                 Combat.lowerHP(t, dam)
         return hitType
             
+    def _smokeScreen(self, target):
+        # Target is a location.
+        source = self.owner
+        duration = min(7, 3 + source.totalSpellpower / 15)
+        radius = 4
+        Combat.gameServer.pane[source.cPane].fields.add_field("Smoke Screen", target, radius, duration)
+        action = command.Command("FIELD", "ADD", name="Smoke Screen", location=target, radius=radius, duration=duration)
+        Combat.gameServer.broadcast(action, -source.id)
+            
+    def _pit(self, target):
+        # Target is a location.
+        source = self.owner
+        duration = 4
+        radius = 0
+        Combat.gameServer.pane[source.cPane].fields.add_field("Pit", target, radius, duration)
+        action = command.Command("FIELD", "ADD", name="Pit", location=target, radius=radius, duration=duration)
+        Combat.gameServer.broadcast(action, -source.id)
+            
     def _shrink(self, target):
         source = self.owner
         targetList = Combat.getAOETargets(target.cPane, target.cLocation, radius=1)
@@ -473,6 +524,8 @@ class Spell(object):
         magnitude = Dice.roll(2, 5) + source.totalSpellpower / 15
         Combat.addStatus(target, "Frost Weapon", duration, magnitude)
         return "Normal Hit"
+            
+
             
     monsterSpells = {
         'Shadow Field':
@@ -681,14 +734,15 @@ class Spell(object):
         'MPCost' : 10,
         'APCost' : 5,
         'range' : 6,
-        'target' : 'terrain',
+        'target' : 'location',
         'action' : _zoneOfSilence,
         'cooldown' : None,
         'image' : TIER1 + 'zone-of-silence.png',
-        'text' : 'Creates a 3x3 area within which Stealth requires\n' + \
-                'less AP to activate and sneak is increaesd by 10.\n' + \
-                'Lasts between 3 and 6 turns',
-        'radius' : 1
+        'text' : 'Creates a 3x3 area allowing Players that move through\n' + \
+                'the Zone have their sneak increased by 10 and gain +10%\n' + \
+                'critical hit chance for their next turn.',
+        'radius' : 1,
+        'placesField' : True
         },
 
         'Blurry':
@@ -872,6 +926,39 @@ class Spell(object):
                 'On partial resist: -50% damage\n' + \
                 'On critical: +30% damage'
         },
+        'Pit' : 
+        {
+        'tier' : 2,
+        'school' : 'Illusion',
+        'MPCost' : 5,
+        'APCost' : 2,
+        'range' : 5,
+        'target' : 'location',
+        'action' : _pit,
+        'cooldown' : None,
+        'image' : TIER2 + 'pit.png',
+        'text' : 'Cause all enemies to believe a bottomless pit exist on a tile.\n' + \
+                'Monsters will take less direct paths, trying to move around that\n' + \
+                'tile and will not be able to move onto it.  If a player walks over\n' + \
+                'the tile, the effect is dispelled.',
+        'placesField' : True
+        },
+        'Smoke Screen':
+        {
+        'tier' : 2,
+        'school' : 'Illusion',
+        'MPCost' : 18,
+        'APCost' : 6,
+        'range' : 4,
+        'target' : 'location',
+        'action' : _smokeScreen,
+        'cooldown' : 3,
+        'image' : TIER2 + 'smoke-screen.png',
+        'text' : 'Cover an area with smoke, causing players and monsters that enter it\n' + \
+                'to have +10 dodge but -35% fire resistance for a turn.',
+        'radius' : 4,
+        'placesField' : True
+        },
         'Shrink':
         {
         'tier' : 2,
@@ -959,3 +1046,9 @@ class Spell(object):
             return
         bc = broadcast.SpellResistBroadcast({spell : self})
         bc.shout(self.owner)
+        
+fieldEffects = {
+    'Pit' : Spell._applyPit,
+    'Smoke Screen' : Spell._applySmokeScreen,
+    'Zone of Silence' : Spell._applyZoneOfSilence
+}
