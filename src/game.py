@@ -450,6 +450,10 @@ class Game(object):
                 self.pane.fields.add_field(command.name, command.location, command.radius, command.duration)
                 self.update_regions()
                 
+            elif command.type == "FIELD" and command.action == "REMOVE":
+                self.pane.fields.remove_field(command.name, command.location, command.all)
+                self.update_regions()
+                
             elif command.type == "CLIENT" and command.action == "QUIT":
                 self.save_and_quit()
 
@@ -1169,4 +1173,5 @@ class Game(object):
             else:
                 self.pane = self.world.get_pane(location, portal=portal)
         self.screen.set_pane(self.pane)
-
+        if not combat:
+            self.screen.show_text('Entering ' + str(location.pane))

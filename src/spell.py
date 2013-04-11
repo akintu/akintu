@@ -194,9 +194,10 @@ class Spell(object):
     def _applyPit(target):
         ''' If a player steps on it, it should be removed.'''
         if target.team == "Players":
-            # Remove Pit TODO
-            pass
-        
+            Combat.gameServer.pane[target.cPane].fields.remove_field("Pit", target.cLocation, all=True)
+            action = command.Command("FIELD", "REMOVE", name="Pit", location=target.cLocation, all=True)
+            Combat.gameServer.broadcast(action, -target.id)
+            
     @staticmethod
     def _applySmokeScreen(target):
         '''Applys bonus dodge but lowers fire resistance to either team'''
@@ -356,8 +357,9 @@ class Spell(object):
         duration = min(7, 4 + source.totalSpellpower / 30)
         radius = 1
         Combat.gameServer.pane[source.cPane].fields.add_field("Zone of Silence", target, radius, duration)
-        action = command.Command("FIELD", "ADD", name="Pit", location=target, radius=radius, duration=duration)
+        action = command.Command("FIELD", "ADD", name="Zone of Silence", location=target, radius=radius, duration=duration)
         Combat.gameServer.broadcast(action, -source.id)
+        
         
     def _blurry(self, target):
         source = self.owner

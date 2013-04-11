@@ -59,7 +59,7 @@ class Keystate():
             * There are a few predefined sets of related states.  These are MOVEMENT, DIALOG, and ALL
         '''
         self.bindings = {
-            "QUIT": (["CTRL+q", "CTRL+x", "META+q", "META+x"], "OVERWORLD"),
+            "QUIT": (["escape", "CTRL+q", "CTRL+x", "META+q", "META+x"], "OVERWORLD"),
             "SAVEMENUACCEPT": (["a", "space", "enter"], "SAVEMENU"),
             "SAVEMENUCANCEL": ("escape", "SAVEMENU"),
 
