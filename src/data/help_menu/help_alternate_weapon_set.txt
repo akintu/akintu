@@ -1,0 +1,21 @@
+# help_alternate_weapon_set
+
+In Akintu, when you equip your weapon(s)/shield on your character they 
+become red in the equipment screen. You gain all benefits associated with 
+these weapons.
+
+If you equip your weapon/armor via the alternate equipment keys (DEFAULT:
+hold down ALT while equipping), you will equip them in an alternate weapon 
+slot. This will make them blue in color and have no direct impact on your 
+characteristics. However, when you are in combat, if you press the key to 
+swap weapons (DEFAULT key: O) it will consume 7 AP and you will then be 
+using your previously alternate weapons (your "red" and "blue" equipment 
+will be swapped.)
+
+This can be useful for switching between ranged and melee weapons according
+to the position of your enemy as well as switching between a two-handed 
+weapon to a weapon/shield combo as you need to rely more on defense in some
+situations.
+
+Unequipping alternate weapons is performed identically to unequipping 
+primary weapons.
