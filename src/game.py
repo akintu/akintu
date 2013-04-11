@@ -451,6 +451,7 @@ class Game(object):
                 keystate.inputState = "SHOP"
                 player = self.pane.person[self.id]
                 self.currentShop.open(player, self.screen)
+
     def save_player(self):
         '''
         Calls State.save_player with our client side player object
