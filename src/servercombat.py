@@ -329,9 +329,10 @@ class CombatServer():
                 print target.name + " has status: " + stat.name + " T=" + `int(stat.turnsLeft)`
                 
         # Check to see if this player discovered any traps.
+        # Apply field effects as well.
         if target.team == "Players":
             self.check_trap_discover(target)
-
+            self.check_field_trigger(target, target.cLocation)
 
     def startCombat(self, playerId, monsterId):
         '''Initiates combat for the first player to enter combat.
@@ -433,6 +434,7 @@ class CombatServer():
         monsters = [x for x in chars if x.team == "Monsters" and x not in
                     self.combatStates[combatPane].deadMonsterSet]
         for mon in monsters:
+            self.check_field_trigger(mon, mon.cLocation)
             visiblePlayers = []
             for player in players:
                 if not player.inStealth() or player.hasStatus("Conceal"):
