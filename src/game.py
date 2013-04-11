@@ -449,11 +449,11 @@ class Game(object):
             elif command.type == "FIELD" and command.action == "ADD":
                 self.pane.fields.add_field(command.name, command.location, command.radius, command.duration)
                 self.update_regions()
-                
+
             elif command.type == "FIELD" and command.action == "REMOVE":
                 self.pane.fields.remove_field(command.name, command.location, command.all)
                 self.update_regions()
-                
+
             elif command.type == "CLIENT" and command.action == "QUIT":
                 self.save_and_quit()
 
@@ -1165,13 +1165,18 @@ class Game(object):
 
     def switch_panes(self, location, combat=False, portal=None):
         #TODO we can add transitions here.
+
+        self.rangeRegion = Region()
+        self.targetRegion = Region()
+        self.trapsRegion = Region()
+        self.fieldsRegion = Region()
+
         if combat:
             self.pane = self.pane.get_combat_pane(location)
         else:
+            self.screen.show_text('Entering ' + str(location.pane))
             if not portal:
                 self.pane = self.world.get_pane(location.pane)
             else:
                 self.pane = self.world.get_pane(location, portal=portal)
         self.screen.set_pane(self.pane)
-        if not combat:
-            self.screen.show_text('Entering ' + str(location.pane))
