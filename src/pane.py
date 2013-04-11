@@ -15,6 +15,7 @@ from state import State
 from ai import AI
 from dice import *
 from stamps import *
+from fields import Fields
 
 import trap
 
@@ -44,9 +45,10 @@ class Pane(object):
         self.tiles = dict()
         self.objects = dict()
         self.person = {}
+        self.fields = Fields()
         self.background_key = Sprites.get_background(self.seed + str(self.location))
         self.hostileTraps = []
-        
+
         if not level:
             self.paneLevel = max(abs(self.location[0]), abs(self.location[1]))
         else:
@@ -71,7 +73,7 @@ class Pane(object):
                 stamp = random.choice(stamp_list)
                 stamp_loc = Location(self.location, (random.randrange(1, PANE_X-stamp.width), random.randrange(1, PANE_Y-stamp.height)))
                 self.load_stamps({stamp_loc:stamp})
-            
+
             if self.pane_state:
                 self.load_state(self.pane_state)
             elif self.is_server:
@@ -384,10 +386,10 @@ class Pane(object):
                 clear = Region()
                 clear("ADD", "SQUARE", location, location2)
                 self.clear_region(clear)
-            
+
             obst = random.choice(sorted(OBSTACLES))
             for loc, type in stamp.getEntityLocations(location).iteritems():
-                
+
                 #CONSUMABLES AND ITEMS (REMOVED AFTER USE)
                 if type in [CHEST_KEY, MONSTER_KEY, ITEM_KEY]:
                     if not self.pane_state and self.is_server:

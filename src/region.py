@@ -12,6 +12,9 @@ class Region:
             if isinstance(args[0], Region):
                 self.history = args[0].history[:]
                 self.locations = args[0].locations.copy()
+            elif isinstance(args[0], list):
+                for l in args[0]:
+                    self.__call__("ADD", "CIRCLE", l, 0)
             else:
                 self.history = zlib.decompress(args[0]).split("\r\n")
                 self.rehydrate()

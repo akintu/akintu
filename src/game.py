@@ -84,6 +84,7 @@ class Game(object):
         self.rangeRegion = Region()
         self.targetRegion = Region()
         self.trapsRegion = Region()
+        self.fieldsRegion = Region()
 
         self.turnTime = kwargs.get('turnlength')
 
@@ -350,6 +351,8 @@ class Game(object):
                     self.turnTime = command.turnTime
                 else:
                     self.combatTurnStart = time.time()
+                    self.pane.fields.turn()
+                    self.update_regions()
 
             ###### Initiate Combat ######
             elif command.type == "UPDATE" and command.action == "COMBAT":
@@ -443,6 +446,9 @@ class Game(object):
                 self.pane.removeTrap(command.location)
                 self.update_regions()
 
+            elif command.type == "FIELD" and command.action == "ADD":
+                self.pane.fields.add(command.name, command.location, command.radius, command.duration)
+
             elif command.type == "CLIENT" and command.action == "QUIT":
                 self.save_and_quit()
 
@@ -451,6 +457,7 @@ class Game(object):
                 keystate.inputState = "SHOP"
                 player = self.pane.person[self.id]
                 self.currentShop.open(player, self.screen)
+
     def save_player(self):
         '''
         Calls State.save_player with our client side player object
@@ -1017,13 +1024,16 @@ class Game(object):
         dirty += self.targetRegion ^ target
         self.targetRegion = target
 
-        traps = Region()
         trapList = [l for l in Region("SQUARE", Location(0, 0), Location(PANE_X - 1, PANE_Y - 1)) if \
                 self.pane.tiles[l.tile].trap]
-        for l in trapList:
-            traps("ADD", "CIRCLE", l, 0)
+        traps = Region(trapList)
         dirty += self.trapsRegion ^ traps
         self.trapsRegion = traps
+
+        fields = self.pane.fields.get_region()
+        dirty += self.fieldsRegion ^ fields
+        self.fieldsRegion = fields
+
 
         for l in (l for l in dirty if l.pane == (0, 0)):
             overlay = []
@@ -1038,6 +1048,12 @@ class Game(object):
                 overlay.append('red')
             if self.pane.tiles[l.tile].trap:
                 overlay.append('red' if self.pane.tiles[l.tile].trap.team == "Monsters" else 'green')
+            if l in self.fieldsRegion and "Pit" in self.pane.fields.get_fields(l):
+                overlay.append('black')
+            if l in self.fieldsRegion and "Zone of Silence" in self.pane.fields.get_fields(l):
+                overlay.append('cyan')
+            if l in self.fieldsRegion and "Smoke Screen" in self.pane.fields.get_fields(l):
+                overlay.append('orange')
             if self.screen.get_overlay(l) != overlay:
                 self.screen.set_overlay(l, overlay)
         self.screen.update()
