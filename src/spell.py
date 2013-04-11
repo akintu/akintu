@@ -451,6 +451,22 @@ class Spell(object):
                 Combat.lowerHP(t, dam)
         return hitType
             
+    def _shrink(self, target):
+        source = self.owner
+        targetList = Combat.getAOETargets(target.cPane, target.cLocation, radius=1)
+        wasResisted = False
+        for tar in targetList:
+            hitType = Combat.calcHit(source, tar, "Magical")
+            if hitType != "Miss" and hitType != "Fully Resisted" and hitType != "Partially Resisted":
+                duration = min(5, 2 + source.totalSpellpower / 20)
+                Combat.addStatus(tar, "Shrink", duration)
+            else:
+                wasResisted = True
+        if wasResisted:
+            return "Fully Resisted"
+        else:
+            return "Normal Hit"
+            
     def _frostWeapon(self, target):
         source = self.owner
         duration = min(7, 3 + source.totalSpellpower / 10)
@@ -855,6 +871,22 @@ class Spell(object):
         'text' : 'Zap a series of targets between you and your specified target for 5-33 + 0.5% Electric damage.\n' + \
                 'On partial resist: -50% damage\n' + \
                 'On critical: +30% damage'
+        },
+        'Shrink':
+        {
+        'tier' : 2,
+        'school' : 'Enchantment',
+        'MPCost' : 10,
+        'APCost' : 9,
+        'range' : 4,
+        'target' : 'hostile',
+        'action' : _shrink,
+        'cooldown' : 2,
+        'image' : TIER2 + 'shrink.png',
+        'text' : 'Shrinks a target and its adjacent allies such that their attack power and\n' + \
+                'DR are both reduced by 10% for 2 turns (up to 5 turns with 60 spellpower).\n' + \
+                'Monsters that partially resist ignore all effects; small creatures are immune.',
+        'radius' : 1
         },
         'Frost Weapon':
         {
