@@ -609,9 +609,9 @@
   [IMAGE: tier2_spells/shrink.png]
   [ELEMENT: Divine]
   [INTERNAL: Attack_power_penalty]
-    [MAGNITUDE: 10]
+    [MAGNITUDE: 12]
   [INTERNAL: DR_penalty]
-    [MAGNITUDE: 10]
+    [MAGNITUDE: 12]
   [CATEGORY: Debuff]
 
 [NAME: Frost Weapon]

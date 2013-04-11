@@ -884,7 +884,7 @@ class Spell(object):
         'cooldown' : 2,
         'image' : TIER2 + 'shrink.png',
         'text' : 'Shrinks a target and its adjacent allies such that their attack power and\n' + \
-                'DR are both reduced by 10% for 2 turns (up to 5 turns with 60 spellpower).\n' + \
+                'DR are both reduced by 12% for 2 turns (up to 5 turns with 60 spellpower).\n' + \
                 'Monsters that partially resist ignore all effects; small creatures are immune.',
         'radius' : 1
         },
