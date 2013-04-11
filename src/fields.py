@@ -4,8 +4,8 @@ class Fields:
     def __init__(self):
         self.fields = []
 
-    def add_field(self, name, loc, radius, duration):
-        self.fields.append([name, Region("CIRCLE", loc, radius), duration])
+    def add_field(self, name, loc, radius=0, duration=-1):
+        self.fields.append([name, loc if isinstance(loc, Region) else Region("CIRCLE", loc, radius), duration])
 
     def get_fields(self, loc):
         return [f[0] for f in self.fields if loc in f[1]]
@@ -14,7 +14,7 @@ class Fields:
         for field in self.fields:
             field[2] -= 1
 
-        self.fields = [f for f in self.fields if f[2] > 0]
+        self.fields = [f for f in self.fields if f[2] != 0]
 
     def get_region(self):
         R = Region()
