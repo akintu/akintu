@@ -1,57 +1,54 @@
 # help_controls.txt
 
-The Default Controls for Akintu are listed here.  If you have changed the
-keybindings, these may no longer be accurate.
-
 Overworld Controls
 
-  UP, DOWN, LEFT, RIGHT --> Movement (Hold to run)
+  UP, DOWN, LEFT, RIGHT  --> Movement (Hold to run)
   $BASHCHEST$  --> Bash locked chest
-  C  --> Display Character Sheet
-  F1 or ? --> Open help menu (This menu!)
-  F2 --> Open Shop (Towns only) 
-  G  --> (GET) items from chest/Pick locks on chests
-  I  --> Open Inventory
-  R  --> (RESPEC) character (set at level 1, use Y to regain levels)
-  CTRL-X or CTRL-Q --> Open Save Menu
-  Y  --> Manual levelup (only used if you have respecc'd your character)
+  $CHARSHEETOPEN$  --> Display Character Sheet
+  $HELPMENUOPEN$  --> Open help menu (This menu!)
+  $SHOPOPEN$  --> Open Shop (Towns only) 
+  $GETITEM$  --> Get items from chest/Pick locks on chests
+  $INVENTORYOPEN$  --> Open Inventory
+  $STARTRESPEC$  --> Respec character (set at level 1, use $STARTLEVELUP$ to regain levels)
+  $QUIT$  --> Open Save Menu
+  $STARTLEVELUP$  --> Manual levelup (only used if you have respecc'd your character)
   
 Combat
 
-  SPACE --> Open ability selection
-  .     --> Display strengths/weaknesses of target 
-  A     --> (ACCEPT) Use selected ability/spell/consumable
-  B     --> Select spells from spell-(BOOK)
-  E     --> Cycle targets
-  I     --> Open consumable selection
-  N     --> (END) turn
-  O     --> Switch to alternate weapon set
-  S     --> Select (SELF) as a target
-  W     --> Cycle targets in reverse
+  $ABILITIESOPEN$  --> Open ability selection
+  $ANALYZETARGET$  --> Display strengths/weaknesses of target 
+  $ACTIVATESELECTED$  --> Use selected ability/spell/consumable
+  $SPELLSOPEN$  --> Select spells from spellbook
+  $CYCLETARGETF$  --> Cycle targets
+  $CONSUMABLEOPEN$  --> Open consumable selection
+  $ENDTURN$  --> End turn
+  $SWITCHGEAR$  --> Switch to alternate weapon set
+  $SELECTSELF$  --> Select self as a target
+  $CYCLETARGETB$  --> Cycle targets in reverse
   
 Inventory
 
-  SPACE  --> Close inventory
-  D      --> (DESTROY) an item from your inventory
-  E      --> (EQUIP) weapon/armor from your inventory
-  ALT-E  --> (EQUIP) weapon/shield in an (ALT)ernate slot
-  O      --> Equip weapon/ring in your (OFF)-hand
-  ALT-O  --> Equip weapon/ring in an (ALT)ernate (OFF)-hand slot
-  U      --> (UNEQUIP) equipment from your equipped gear
+  $INVENTORYCLOSE$  --> Close inventory
+  $INVENTORYDROP$  --> Destroy an item from your inventory
+  $INVENTORYEQUIPMH$  --> Equip weapon/armor from your inventory
+  $INVENTORYEQUIPMHALT$  --> Equip weapon/shield in an alternate slot
+  $INVENTORYEQUIPOH$  --> Equip weapon/ring in your off-hand
+  $INVENTORYEQUIPOHALT$  --> Equip weapon/ring in an alternate off-hand slot
+  $INVENTORYUNEQUIP$  --> Unequip equipment from your equipped gear
   
 Shop
 
-  A     --> Buy/Sell item
-  SPACE --> Exit shop
+  $SHOPTRANSACTION$  --> Buy/Sell item
+  $SHOPCLOSE$  --> Exit shop
 
 Scrolling (Combat and overworld)
 
-  = or PAGE UP   --> Scroll up
-  - or PAGE DOWN --> Scroll down
-  +              --> Scroll to top
-  _              --> Scroll to bottom
+  $SCROLLUP$  --> Scroll up
+  $SCROLLDOWN$  --> Scroll down
+  $SCROLLTOP$  --> Scroll to top
+  $SCROLLBOTTOM$  --> Scroll to bottom
   
-Other
+Other (Defaults only)
 
   A or SPACE --> Accept (most menus)
   ESCAPE     --> Close (most menus)

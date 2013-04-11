@@ -29,9 +29,9 @@ class Keystate():
                         "DOWNRIGHT": 3}
 
         self.ALL = ["OVERWORLD", "LEVELUP", "INVENTORY", "CONSUMABLE", "TARGET", "SHOP", "ABILITIES", "SPELLS", "COMBAT", "CHARSHEET",
-                    "SAVEMENU"]
+                    "SAVEMENU", "HELPMENU"]
         self.MOVEMENT = ["OVERWORLD", "COMBAT"]
-        self.DIALOG = ["LEVELUP", "INVENTORY", "CONSUMABLE", "SHOP", "ABILITIES", "SPELLS", "CHARSHEET", "SAVEMENU"]
+        self.DIALOG = ["LEVELUP", "INVENTORY", "CONSUMABLE", "SHOP", "ABILITIES", "SPELLS", "CHARSHEET", "SAVEMENU", "HELPMENU"]
 
         '''
         The bindings data structure is a bit involved, so get your thinking cap on for this.
@@ -114,6 +114,8 @@ class Keystate():
             "CHARSHEETTRAITS": ("t", "CHARSHEET"),
             "CHARSHEETMAIN": ("c", "CHARSHEET"),
 
+            "HELPMENUOPEN" : (["F1", "SHIFT+/"], "OVERWORLD"),
+            
             "CONSUMABLEOPEN": ("i", "COMBAT"),
             "CONSUMABLEUSE": (["space", "a"], "CONSUMABLE"),
 
