@@ -1173,4 +1173,5 @@ class Game(object):
             else:
                 self.pane = self.world.get_pane(location, portal=portal)
         self.screen.set_pane(self.pane)
-
+        if not combat:
+            self.screen.show_text('Entering ' + str(location.pane))

@@ -691,7 +691,10 @@ class GameScreen(object):
         for status in statsdict['statusList']:
             image = pygame.image.load(statsdict['statusList'][status]['image']).convert_alpha()
             image = pygame.transform.smoothscale(image, (16, 16))
-            turns = font.render(str(statsdict['statusList'][status]['turnsLeft']), True, Color('black'))
+            turns_to_display = statsdict['statusList'][status]['turnsLeft']
+            if turns_to_display == -1:
+                turns_to_display = ""
+            turns = font.render(str(turns_to_display), True, Color('black'))
             frame.blit(image, (x, y))
             x += image.get_rect().width + 1
             frame.blit(turns, (x, y))
