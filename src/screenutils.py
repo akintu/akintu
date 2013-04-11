@@ -921,7 +921,9 @@ class MenuDialog(object):
         self._drawitems()
 
         font = pygame.font.SysFont('Arial', 20)
-        selected = font.render(self.items[self.selection], True, Color('black'))
+        selected = font.render(self.items[self.selection],
+                               True,
+                               Color('black'))
 
         rect = selected.get_rect()
 

@@ -108,7 +108,10 @@ class GameScreen(object):
         pygame.display.update()
         return None
 
-    def show_menu_dialog(self, items, bgcolor='gray', toptext='Save your progress?'):
+    def show_menu_dialog(self,
+                         items,
+                         bgcolor='gray',
+                         toptext='Save your progress?'):
         '''
         Show the menu dialog
         '''
@@ -689,9 +692,13 @@ class GameScreen(object):
         x = barx
         font = pygame.font.SysFont('Arial', 10)
         for status in statsdict['statusList']:
-            image = pygame.image.load(statsdict['statusList'][status]['image']).convert_alpha()
+            image = pygame.image.load(
+                    statsdict['statusList'][status]['image']).convert_alpha()
             image = pygame.transform.smoothscale(image, (16, 16))
-            turns = font.render(str(statsdict['statusList'][status]['turnsLeft']), True, Color('black'))
+            turns = font.render(
+                    str(statsdict['statusList'][status]['turnsLeft']),
+                    True,
+                    Color('black'))
             frame.blit(image, (x, y))
             x += image.get_rect().width + 1
             frame.blit(turns, (x, y))
@@ -798,9 +805,13 @@ class GameScreen(object):
         x = barx
         font = pygame.font.SysFont('Arial', 10)
         for status in statsdict['statusList']:
-            image = pygame.image.load(statsdict['statusList'][status]['image']).convert_alpha()
+            image = pygame.image.load(
+                    statsdict['statusList'][status]['image']).convert_alpha()
             image = pygame.transform.smoothscale(image, (10, 10))
-            turns = font.render(str(statsdict['statusList'][status]['turnsLeft']), True, Color('black'))
+            turns = font.render(
+                    str(statsdict['statusList'][status]['turnsLeft']),
+                    True,
+                    Color('black'))
             frame.blit(image, (x, y))
             x += image.get_rect().width + 1
             frame.blit(turns, (x, y-1))
