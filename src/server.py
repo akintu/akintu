@@ -1,5 +1,7 @@
 from network import *
 from location import *
+from region import Region
+from Queue import Queue
 from theorycraft import TheoryCraft
 from playercharacter import *
 from servercombat import *
@@ -475,4 +477,47 @@ class GameServer():
                 return p
 
     def find_path(self, loc1, loc2):
-        return loc1.line_to(loc2)
+        if loc1.distance(loc2) == 0:
+            return []
+
+        path = loc1.line_to(loc2, False)
+        if not self.tile_is_open(loc1):
+            path = path[1:]
+        if not self.tile_is_open(loc2):
+            path = path[:-1]
+
+        blocks = [l for l in path if not self.tile_is_open(l)]
+        if len(blocks) == 0:
+            return path
+
+        obstacle = self.explore_obstacle(blocks[0])
+        paths = [loc1.line_to(p, False) for p in obstacle.get_outside_corners()]
+        border = Region("SQUARE", Location(-1, -1), Location(PANE_X, PANE_Y)) - \
+                Region("SQUARE", Location(0, 0), Location(PANE_X - 1, PANE_Y - 1))
+        first_half = [path for path in paths if all(self.tile_is_open(l) for l in path)]
+        for path in first_half:
+            print border + Region(path)
+        second_half = [self.find_path(path[-1], loc2) for path in first_half]
+        print "LENGTH OF 2ND HALF:", len(second_half)
+        for i in range(len(first_half)):
+            print border + Region(first_half[i].extend(second_half[i]))
+        dist = [len(first_half[i]) - 1 + len(second_half[i]) for i in range(len(first_half))]
+        print dist
+        decision = dist.index(min(dist))
+
+        return first_half[decision][:-1].extend(second_half[decision])
+
+    def explore_obstacle(self, loc):
+        points = [loc]
+        obstacle = Region([loc])
+
+        while len(points) > 0:
+            p = points[0]
+            for dir in range(1, 10):
+                newloc = p.move(dir)
+                if not self.tile_is_open(newloc) and newloc not in obstacle and newloc not in points:
+                    obstacle("ADD", "CIRCLE", newloc, 0)
+                    points.append(newloc)
+            del points[0]
+
+        return obstacle

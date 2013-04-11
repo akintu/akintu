@@ -232,11 +232,8 @@ if __name__ == "__main__":
     assert l1 in R
     print R
 
-    c = R.get_outside_corners()
-    C = Region()
-    for l in c:
-        C("ADD", "CIRCLE", l, 0)
-    #print C
+    print ("Outside corners:")
+    print Region(list(R.get_outside_corners()))
 
     assert l1.move(6, 2) not in R
     for l2 in R:
