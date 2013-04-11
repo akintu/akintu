@@ -500,6 +500,9 @@ class Combat(object):
             return
 
         newloc = target.cLocation.move(sourceOfImpact.direction_to(target.cLocation), distance)
+        if newloc == target.cLocation:
+            return
+            
         line = target.cLocation.line_to(newloc)
         for i, loc in enumerate(line):
             if not Combat.gameServer.tile_is_open(loc, target.id) or loc.pane != (0, 0):

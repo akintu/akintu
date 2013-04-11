@@ -1,0 +1,33 @@
+# help_how_to_play_overworld.txt
+
+Akintu is a game of exploration, combat, and treasure.  When you begin
+Akintu, your character will be placed in the starting town.  Towns are safe
+areas that monsters cannot enter and you can safely make purchases in shops
+and not have to worry about entering combat.
+
+When you leave your home town by walking off of the edge of the screen, you
+will notice monsters and bandits walking around the screen.  These monsters
+indicate entire groups of monsters -- only the leader of these groups are
+displayed.  If you get close to these monster groups, you will enter combat
+with them.
+
+The "Overworld" is the world of Akintu outside of combat.  This land is
+filled with treasure chests.  Treasure you find in areas nearby your
+starting town will be poor in quality; you will mostly find non-magical
+weapons and armor and some weak potions.  Some chests might even be empty.
+As you progress to more distant areas, you will find better and better
+treasure.  However, powerful monsters are also attracted to powerful gear;
+to be safe, you should stay nearby your starting town until you are
+powerful enough to venture further.  (You can tell the level of the monster
+groups by the text next to their leader's icon in the bottom right of the
+screen.)
+
+By fighting and defeating monsters in combat, you will gain experience.  
+When enough experience is gained, you will progress to a new character
+level.  This is referred to as "leveling up."  Each level grants new powers
+and strengthens existing ones.
+
+Equipment found in chests and purchased in towns will not do you any good
+until you equip it.  (See the Inventory help page for more details.)  It is
+important to have powerful gear that suits your particular strategies to 
+succeed in Akintu.

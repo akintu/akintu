@@ -210,7 +210,7 @@ class OnHitEffect(object):
         return None
 
     def applyMageHunting(self, magnitude, source, target):
-        success = Dice.rollPreset(source, target, "Frequent")
+        success = Dice.rollPresetChance(source, target, "Frequent")
         if success and target.MP > 0:
             duration = 3
             Combat.addStatus(target, "Hunted", duration, magnitude)
@@ -225,7 +225,12 @@ class OnHitEffect(object):
                 magnitude = 0
         return [self.element, magnitude]
 
-
+    def applyFrostWeapon(self, magnitude, source, target):
+        success = Dice.rollPresetChance(source, target, "Unlikely")
+        if success:
+            duration = 3
+            Combat.addStatus(target, "Frost Weapon Chill", duration)
+        return ["Cold", magnitude]
 
 
 

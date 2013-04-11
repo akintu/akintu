@@ -436,7 +436,7 @@ class Ability(object):
             didHit = Dice.rollTrapHit(trapRating, target, True)
             if didHit:
                 minDamage = int(5 * (1 + source.totalCunning * 0.017) * (1 + source.bonusTrapDamage * 0.01))
-                maxDamage = int(12 * (1 + source.totalCunning * 0.017) * (1 + source.bonusTrapDamage * 0.01))
+                maxDamage = int(14 * (1 + source.totalCunning * 0.017) * (1 + source.bonusTrapDamage * 0.01))
                 element = "Piercing"
                 damage = Combat.calcDamage(source, target, minDamage, maxDamage, element, "Normal Hit")
                 Combat.lowerHP(target, damage)
@@ -491,12 +491,12 @@ class Ability(object):
             trapRating = int(30 * (1 + 0.007 * source.totalCunning) + source.bonusTrapRating + trapChaosBonusRating)
             didHit = Dice.rollTrapHit(trapRating, target, True)
             if didHit:
-                minDamage = int(3 * (1 + source.totalCunning * 0.02) * (1 + source.bonusTrapDamage * 0.01))
-                maxDamage = int(8 * (1 + source.totalCunning * 0.02) * (1 + source.bonusTrapDamage * 0.01))
+                minDamage = int(4 * (1 + source.totalCunning * 0.02) * (1 + source.bonusTrapDamage * 0.01))
+                maxDamage = int(11 * (1 + source.totalCunning * 0.02) * (1 + source.bonusTrapDamage * 0.01))
                 element = "Bludgeoning"
                 damage = Combat.calcDamage(source, target, minDamage, maxDamage, element, "Normal Hit")
                 Combat.lowerHP(target, damage)
-                if (target.size == "Small" or target.size == "Medium") and Dice.rollBeneath(20):
+                if (target.size == "Small" or target.size == "Medium") and Dice.rollBeneath(30):
                     Combat.addStatus(target, "Stun", duration=2)
                     Combat.sendCombatMessage("Stunned " + target.name, source, color="orange")
                 source.record.recordTrapSuccess()
@@ -810,8 +810,8 @@ class Ability(object):
             trapRating = int(25 * (1 + 0.01 * source.totalCunning) + source.bonusTrapRating + trapChaosBonusRating)
             didHit = Dice.rollTrapHit(trapRating, target, True)
             if didHit:
-                minDamage = int(5 * (1 + source.totalCunning * 0.01) * (1 + source.bonusTrapDamage * 0.01))
-                maxDamage = int(10 * (1 + source.totalCunning * 0.01) * (1 + source.bonusTrapDamage * 0.01))
+                minDamage = int(10 * (1 + source.totalCunning * 0.01) * (1 + source.bonusTrapDamage * 0.01))
+                maxDamage = int(20 * (1 + source.totalCunning * 0.01) * (1 + source.bonusTrapDamage * 0.01))
                 element = "Fire"
                 damage = Combat.calcDamage(source, target, minDamage, maxDamage, element, "Normal Hit")
                 Combat.lowerHP(target, damage)
@@ -1997,7 +1997,7 @@ class Ability(object):
         'checkFunction' : _shrapnelTrapCheck,
         'breakStealth' : 0,
         'image' : RANGER_SKILLS + 'shrapnel-trap.png',
-        'text' : 'Lay a trap down that will deal 5-12 + 1.4% Piercing damage\n' + \
+        'text' : 'Lay a trap down that will deal 5-14 + 1.4% Piercing damage\n' + \
                 'to any one enemy that steps on it.  Rating = 16 + 1/5 Cunning.'
         },
         'Sticky Trap':
@@ -2091,8 +2091,8 @@ class Ability(object):
         'checkFunction' : _shrapnelTrapCheck,
         'breakStealth' : 0,
         'image' : RANGER_SKILLS + 'boulder-pit-trap.png', 
-        'text' : 'Lay a trap that deals 3-8 + 2% bludgeoning damage and has a\n' + \
-                '20% chance to stun small and medium enemies.  Rating = 30 +\n' + \
+        'text' : 'Lay a trap that deals 4-11 + 2% bludgeoning damage and has a\n' + \
+                '30% chance to stun small and medium enemies.  Rating = 30 +\n' + \
                 '1/6 Cunning.'
         },
 
@@ -2449,7 +2449,7 @@ class Ability(object):
         'checkFunction' : _trapChaosCheck,
         'breakStealth' : 0,
         'image' : RANGER_SKILLS + 'shrapnel-trap.png',
-        'text' : 'Lay a trap down that will deal 5-12 + 1.4% Piercing damage\n' + \
+        'text' : 'Lay a trap down that will deal 5-14 + 1.4% Piercing damage\n' + \
                 'to any one enemy that steps on it.  Rating = 16 + 1/5 Cunning.'
         },
         'Sticky Trap++':
@@ -2483,8 +2483,8 @@ class Ability(object):
         'checkFunction' : _trapChaosCheck,
         'breakStealth' : 0,
         'image' : RANGER_SKILLS + 'boulder-pit-trap.png', 
-        'text' : 'Lay a trap that deals 3-8 + 2% bludgeoning damage and has a\n' + \
-                '20% chance to stun small and medium enemies.  Rating = 30 +\n' + \
+        'text' : 'Lay a trap that deals 4-11 + 2% bludgeoning damage and has a\n' + \
+                '30% chance to stun small and medium enemies.  Rating = 30 +\n' + \
                 '1/6 Cunning.'
         },
         'Follow Up':
@@ -2569,7 +2569,7 @@ class Ability(object):
         'checkFunction' : _trapChaosCheck,
         'breakStealth' : 0,
         'image' : ANARCHIST_SKILLS + 'explosive-trap.png',
-        'text' : 'Lay down a trap that deals 5-10 + 1% Fire damage to the target that\n' + \
+        'text' : 'Lay down a trap that deals 10-20 + 1% Fire damage to the target that\n' + \
                 'triggers it and 75% of that to all foes within 1 tile (including the\n' + \
                 'original target again!) Trap rating = 25 + 1/4 Cunning'
         },
@@ -2766,7 +2766,7 @@ class Ability(object):
         'checkFunction' : _shrapnelTrapCheck,
         'breakStealth' : 0,
         'image' : DRUID_SKILLS + 'poison-thorn-trap.png',
-        'text' : 'Lay a trap that deals 5-10 poison damage when triggered and\n' + \
+        'text' : 'Lay a trap that deals 6-12 poison damage when triggered and\n' + \
                 'deals 3-6 + 1/4 Cunning poison damage each turn afterward.\n' + \
                 'Trap rating = 23 + 1/5 Cunning; Poison Rating = 22 + 1/level.\n' + \
                 'Lasts at least 3 turns.'

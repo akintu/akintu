@@ -57,7 +57,11 @@ class CombatServer():
         #### Attack Target ####
         elif command.type == "ABILITY" and command.action == "ATTACK":
             source = self.server.person[command.id]
-            target = self.server.person[command.targetId]
+            target = None
+            if isinstance(command.targetId, Location):
+                target = command.targetId
+            else:
+                target = self.server.person[command.targetId]
             abilToUse = None
             for abil in source.abilities:
                 if abil.name == command.abilityName:
@@ -72,7 +76,7 @@ class CombatServer():
                 color = 'orange'
                 if abilToUse.targetType == 'friendly' or abilToUse.targetType == 'self':
                     color = 'green'
-                if abilToUse.targetType != 'self':
+                if abilToUse.targetType != 'self' and abilToUse.targetType != 'location':
                     Combat.sendCombatMessage(source.name + " is using " + abilToUse.name + " on " + target.name,
                                              source, color=color)
                 else:

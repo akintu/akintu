@@ -101,7 +101,7 @@ class Spell(object):
         if self.targetType == "friendly" and source.team != target.team:
             return (False, "Cannot target hostile with beneficial spell.")
         # Do we need any check for AoE spells?
-        if not source.inRange(target, self.range):
+        if not self.targetType == "location" and not source.inRange(target, self.range):
             return (False, "Target is out of range.")
         if source.onCooldown(self.name) :
             return (False, self.name + " is on Cooldown.")
@@ -353,6 +353,29 @@ class Spell(object):
         
     # TIER 2
     
+    def _burst(self, target):
+        source = self.owner
+        # target is a Location
+        centerTargetList = Combat.getAOETargets(source.cPane, target, radius=0)
+        if centerTargetList:
+            centerTarget = centerTargetList[0]
+            hitType = Combat.calcHit(source, centerTarget, "Magical")
+            if hitType != "Miss" and hitType != "Fully Resisted":
+                damage = Combat.calcDamage(source, centerTarget, 10, 12, "Arcane", 
+                                           hitValue=hitType, scalesWith="Spellpower", 
+                                           scaleFactor=0.01)
+                Combat.lowerHP(centerTarget, damage)
+        allTargetsList = Combat.getAOETargets(source.cPane, target, radius=4)
+        allTargetsSorted = sorted(allTargetsList, key=lambda x: x.cLocation.distance(target), reverse=True)
+        for tar in allTargetsSorted:
+            hitType = Combat.calcHit(source, tar, "Magical")
+            if hitType != "Miss" and hitType != "Fully Resisted":
+                damage = Combat.calcDamage(source, tar, 5, 6, "Arcane", 
+                                           hitValue=hitType, scalesWith="Spellpower", 
+                                           scaleFactor=0.01)
+                Combat.lowerHP(tar, damage)
+                Combat.knockback(tar, target, distance=1)
+    
     def _identification(self, target):
         source = self.owner
         duration = 3
@@ -427,6 +450,29 @@ class Spell(object):
                                         scalesWith="Spellpower", scaleFactor=0.005)
                 Combat.lowerHP(t, dam)
         return hitType
+            
+    def _shrink(self, target):
+        source = self.owner
+        targetList = Combat.getAOETargets(target.cPane, target.cLocation, radius=1)
+        wasResisted = False
+        for tar in targetList:
+            hitType = Combat.calcHit(source, tar, "Magical")
+            if hitType != "Miss" and hitType != "Fully Resisted" and hitType != "Partially Resisted":
+                duration = min(5, 2 + source.totalSpellpower / 20)
+                Combat.addStatus(tar, "Shrink", duration)
+            else:
+                wasResisted = True
+        if wasResisted:
+            return "Fully Resisted"
+        else:
+            return "Normal Hit"
+            
+    def _frostWeapon(self, target):
+        source = self.owner
+        duration = min(7, 3 + source.totalSpellpower / 10)
+        magnitude = Dice.roll(2, 5) + source.totalSpellpower / 15
+        Combat.addStatus(target, "Frost Weapon", duration, magnitude)
+        return "Normal Hit"
             
     monsterSpells = {
         'Shadow Field':
@@ -694,7 +740,23 @@ class Spell(object):
         },
 
         # Tier 2
-        # Burst
+        'Burst':
+        {
+        'tier' : 2,
+        'school' : 'Mystic',
+        'MPCost' : 16,
+        'APCost' : 11,
+        'range' : 8,
+        'target' : 'location',
+        'action' : _burst,
+        'cooldown' : 1,
+        'image' : TIER2 + 'burst.png',
+        'text' : 'Deal 10-12 + 1% arcane damage to any target at the center\n' + \
+                'of your chosen location and half that damage to every hostile\n' + \
+                'target within four tiles of it.  All secondary targets will\n' + \
+                'be knocked 1 tile away from the center.',
+        'radius' : 4
+        },
         'Identification':
         {
         'tier' : 2,
@@ -809,6 +871,38 @@ class Spell(object):
         'text' : 'Zap a series of targets between you and your specified target for 5-33 + 0.5% Electric damage.\n' + \
                 'On partial resist: -50% damage\n' + \
                 'On critical: +30% damage'
+        },
+        'Shrink':
+        {
+        'tier' : 2,
+        'school' : 'Enchantment',
+        'MPCost' : 10,
+        'APCost' : 9,
+        'range' : 4,
+        'target' : 'hostile',
+        'action' : _shrink,
+        'cooldown' : 2,
+        'image' : TIER2 + 'shrink.png',
+        'text' : 'Shrinks a target and its adjacent allies such that their attack power and\n' + \
+                'DR are both reduced by 12% for 2 turns (up to 5 turns with 60 spellpower).\n' + \
+                'Monsters that partially resist ignore all effects; small creatures are immune.',
+        'radius' : 1
+        },
+        'Frost Weapon':
+        {
+        'tier' : 2,
+        'school' : 'Enchantment',
+        'MPCost' : 12,
+        'APCost' : 8,
+        'range' : 3,
+        'target' : 'friendly',
+        'action' : _frostWeapon,
+        'cooldown' : 0,
+        'image' : TIER2 + 'frost-weapon.png',
+        'text' : 'Enhance the effect of your, or your ally\'s, weapon to deal 2-5 + 2% Cold damage and\n' + \
+                'have an unlikely chance on hit to reduce movement speed by 1 tile/move and lower\n' + \
+                'Dodge by 4 points for 3 turns.  The enchantment itself lasts 3 Turns + 1 per 10 spellpower\n' + \
+                'up to a maximum of 7 turns.'
         }
     }
 
@@ -817,7 +911,7 @@ class Spell(object):
         direction = None
         double = None
         hearer = None
-        if source.team == "Players" and target.team != "Players":
+        if self.targetType == 'location' or (source.team == "Players" and target.team != "Players"):
             direction = "Outgoing"
             hearer = source
         elif source.team == "Monsters":
@@ -841,7 +935,7 @@ class Spell(object):
         direction = None
         double = None
         hearer = None
-        if source.team == "Players" and target.team != "Players":
+        if self.targetType == 'location' or (source.team == "Players" and target.team != "Players"):
             direction = "Outgoing"
             hearer = source
         elif source.team == "Monsters":

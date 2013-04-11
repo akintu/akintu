@@ -1,0 +1,50 @@
+# help_how_to_play_combat.txt
+
+Akintu is a game of exploration, combat, and treasure. This page is
+dedicated to explaining the basics of combat.  Please consult the Controls
+help page for details on which buttons to use to perform actions.
+
+When you get close enough to monster groups on the overworld, the game will
+zoom in on that section of the Overworld and will enter combat.  In combat
+your AP (Ability Points) will determine how many actions you can take
+before your turn will end.  (If you have a turn timer active, the green bar
+on the right edge of the screen will end your turn early if it expires.)
+
+AP is consumed by moving, using abilities, or hitting the END TURN button*.
+When you press a button to move, you begin a "Move Action".  By default you
+can move two tiles per move action.  This means that you pay your movement
+AP cost at the start of each move action, and then can move your second
+tile for free.  You can split up your move actions with abilities, and may
+choose to end your turn rather than finishing any move action.
+
+To use a spell or ability, you will need to open your spellbook, or ability
+list.  (See the Controls page for help.)  This will bring up your spells
+or abilities that you have learned.  Each ability/spell has its own AP cost
+as well as a range indicating from how far away you can use it.
+Additionally, many spells and abilities have a "Cooldown" indicating that 
+you must wait a certain number of turns before you will be able to use it
+again.  
+
+Once you have an ability selected you need to select a target.  Some
+abilities target allies, some only target yourself, and many target
+enemies.  Each of these abilities will allow you to cycle through valid
+targets that are in range.  There are some abilities that target locations
+in the combat arena.  These abilities can be placed anywhere in range, but
+they might not have a useful effect unelss there is a valid target in their
+area of effect.  (Refer to the individual ability's description for more
+details.)
+
+In the upper-right corner you, and your allies' health, mana, and AP are
+displayed.  If your health (often referred to as HP) reaches 0, you will
+die and be removed from combat.  In the bottom-right corner, a listing of 
+the monsters is displayed with their health, mana, and size.  If a
+monster's HP reaches 0, it is defeated and will be removed from combat.
+When all monsters have been defeated, you (and your allies) will be removed
+from combat, returned to the overworld, and given experience and gold for
+defeating the monsters.  
+
+
+*Note: If your turn will not expire because you don't have enough AP to 
+perform any actions (or only have enough for an action or move you don't 
+wish to perform), the END TURN button will help combat progress.
+

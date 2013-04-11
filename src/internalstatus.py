@@ -217,8 +217,8 @@ class InternalStatus(object):
     def On_hit_cripple_weapon_method(target, chance, conditional, magnitude):
         target.applyOnHitMod('On_hit_cripple_weapon', conditional, chance, magnitude)
 
-    def On_hit_frost_weapon_method(target, chance, conditional, magnitude1, magnitude2):
-        target.applyOnHitMod('On_hit_frost_weapon', conditional, chance, magnitude1, 'Movement_speed_penalty', magnitude2, 'Dodge_penalty')
+    def On_hit_frost_weapon_method(self, target, magnitude):
+        target.onHitEffects.append(onhiteffect.OnHitEffect(magnitude, onhiteffect.OnHitEffect.applyFrostWeapon))
 
     def On_hit_mage_hunting_method(self, target, magnitude):
         target.onHitEffects.append(onhiteffect.OnHitEffect(magnitude, onhiteffect.OnHitEffect.applyMageHunting))
@@ -475,7 +475,7 @@ class InternalStatus(object):
         target.removeOnHitMod('On_hit_cripple_weapon')
 
     def On_hit_frost_weapon_method_reverse(self, target, magnitude):
-        target.removeOnHitMod('On_hit_frost_weapon')
+        target.removeOnHitEffect("FrostWeapon", magnitude)
 
     def On_hit_mage_hunting_method_reverse(self, target, magnitude):
         target.removeOnHitEffect("MageHunting", magnitude)
