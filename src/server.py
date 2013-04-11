@@ -221,10 +221,10 @@ class GameServer():
                         self.shops[requestedPane] = currentShop
                     else:
                         currentShop = self.shops[requestedPane]
-                    action = Command("SHOP", "OPEN", id=command.id, 
+                    action = Command("SHOP", "OPEN", id=command.id,
                                      shopLevel=currentShop.level, shopSeed=currentShop.seed)
                     self.broadcast(action, pid=command.id)
-                    
+
             #### Respec ####
             if command.type == "RESPEC" and command.action == "REQUESTRESPEC":
                 activePlayer = self.person[command.id]
@@ -243,7 +243,7 @@ class GameServer():
                         self.person[command.id].ai.shutdown()
                         self.person[command.id] = newHero
                         jerky = newHero.dehydrate()
-                        
+
                         # Send the newHero to the client.
                         action = Command("PERSON", "REPLACE", id=command.id, player=jerky)
                         self.broadcast(action, pid=-command.id)
@@ -459,25 +459,10 @@ class GameServer():
                             people[i] = self.person[i]
                     self.pane[pane].person = people
                     self.pane[pane].save_state()
-                    #Restore ID list of pane 
+                    #Restore ID list of pane
                     self.pane[pane].person = tmp_people_list
 
         State.save_world()
-
-    def getAllCombatPorts(self, character):
-        '''Get all ports in the same combat instance as this playerCharacter.'''
-        if isinstance(character, int):
-            return [p for p, i in self.player.iteritems() \
-                    if self.person[i].cPane == self.person[character].cPane]
-        else:
-            return [p for p, i in self.player.iteritems() if self.person[i].cPane == character.cPane]
-
-    def getPlayerPort(self, character):
-        ''' Assumes "character" is a PlayerCharacter '''
-        if isinstance(character, int):
-            return [p for p, i in self.player.iteritems() if i == character][0]
-        else:
-            return [p for p, i in self.player.iteritems() if i == character.id][0]
 
     def get_nearby_players(self, personId):
         pane = self.person[personId].cPane if self.person[personId].cPane else \
@@ -485,6 +470,9 @@ class GameServer():
         return [self.person[i] for i in self.player.values() if i in self.pane[pane].person]
 
     def get_monster_leader(self, cPane):
-        for i, p in self.person.iteritems():
+        for p in self.person.values():
             if cPane == p.location:
                 return p
+
+    def find_path(self, loc1, loc2):
+        return loc1.line_to(loc2)

@@ -115,7 +115,7 @@ class Keystate():
             "CHARSHEETMAIN": ("c", "CHARSHEET"),
 
             "HELPMENUOPEN" : (["F1", "SHIFT+/"], "OVERWORLD"),
-            
+
             "CONSUMABLEOPEN": ("i", "COMBAT"),
             "CONSUMABLEUSE": (["space", "a"], "CONSUMABLE"),
 
@@ -142,6 +142,7 @@ class Keystate():
 
             "SHOWINPUTSTATE": ("CTRL+SHIFT+k", self.MOVEMENT),
             "SHOWPANEPIDS": ("CTRL+SHIFT+p", self.MOVEMENT),
+            "SHOWPATHS": ("CTRL+SHIFT+\\", self.MOVEMENT),
             }
 
     def __call__(self, e=None):

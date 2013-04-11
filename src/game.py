@@ -728,6 +728,10 @@ class Game(object):
                     print "Keyboard input state: %s" % keystate.inputState
                 elif e == "SHOWPANEPIDS":
                     print "Person IDs on pane: %s" % str(self.pane.person.keys())
+                elif e == "SHOWPATHS":
+                    self.pane.fields.add_field("Smoke Screen", \
+                            Region(self.gs.find_path(Location(0, 0), Location(PANE_X - 1, PANE_Y - 1))))
+                    self.update_regions()
 
     def get_item(self):
         self.CDF.send(Command("PERSON", "OPEN", id=self.id))
