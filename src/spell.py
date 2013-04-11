@@ -211,13 +211,14 @@ class Spell(object):
         '''Deals massive shadow damage to a 3x3 area centered on a player.
         Partial Resistance = 33% Damage Dealt.'''
         source = self.owner
-        hitType = Combat.calcHit(source, target, "Magical")
-        damageBase = 11
-        damage = Combat.calcDamage(source, target, damageBase, damageBase * 4, "Shadow", hitValue=hitType,
+        targets = Combat.getAOETargets(source.cPane, target.cLocation, radius=1, selectMonsters=False)
+        for tar in targets:
+            hitType = Combat.calcHit(source, tar, "Magical")
+            damageBase = 11
+            damage = Combat.calcDamage(source, tar, damageBase, damageBase * 4, "Shadow", hitValue=hitType,
                                    partial=0.33, scalesWith="Spellpower", scaleFactor=0.02)
-        #TODO: This hits a 3x3 area.  Include all targets!
-        Combat.lowerHP(target, damage)
-        return hitType
+            Combat.lowerHP(tar, damage)
+        return "Normal Hit" # Return value doesn't matter for monsters.
 
     # Player & Monster Spells
 
