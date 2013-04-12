@@ -20,6 +20,7 @@ from world import *
 from region import Region
 import trap
 import shop
+import random
 from keybindings import keystate
 
 import levelup as lvl
@@ -447,7 +448,12 @@ class Game(object):
                 self.update_regions()
 
             elif command.type == "FIELD" and command.action == "ADD":
-                self.pane.fields.add(command.name, command.location, command.radius, command.duration)
+                self.pane.fields.add_field(command.name, command.location, command.radius, command.duration)
+                self.update_regions()
+
+            elif command.type == "FIELD" and command.action == "REMOVE":
+                self.pane.fields.remove_field(command.location, command.name, command.all)
+                self.update_regions()
 
             elif command.type == "CLIENT" and command.action == "QUIT":
                 self.save_and_quit()
@@ -729,8 +735,15 @@ class Game(object):
                 elif e == "SHOWPANEPIDS":
                     print "Person IDs on pane: %s" % str(self.pane.person.keys())
                 elif e == "SHOWPATHS":
-                    self.pane.fields.add_field("Smoke Screen", \
-                            Region(self.gs.find_path(Location(0, 0), Location(PANE_X - 1, PANE_Y - 1))))
+                    if len(self.fieldsRegion):
+                        self.pane.fields.remove_field(self.fieldsRegion[0])
+                        self.update_regions()
+                    spell = random.choice(["Smoke Screen", "Zone of Silence", "Pit"])
+                    loc1 = Location(random.randint(0, PANE_X - 1), random.randint(0, PANE_Y - 1))
+                    loc2 = Location(random.randint(0, PANE_X - 1), random.randint(0, PANE_Y - 1))
+#                    loc1 = Location(0, 0)
+#                    loc2 = Location(PANE_X - 1, PANE_Y - 1)
+                    self.pane.fields.add_field(spell, Region(self.gs.find_path(loc1, loc2)))
                     self.update_regions()
 
     def get_item(self):
@@ -759,8 +772,7 @@ class Game(object):
                 self.screen.show_text("LEVEL UP!" , color='magenta')
         else:
             pass
-            #print "DEBUG: " + `player.experience` + " exp " + `player.getExpForNextLevel()` + " needed " + `player.level` + " level "
-
+            
     def request_respec(self):
         action = Command("RESPEC", "REQUESTRESPEC", id=self.id)
         self.CDF.send(action)
@@ -1160,12 +1172,18 @@ class Game(object):
 
     def switch_panes(self, location, combat=False, portal=None):
         #TODO we can add transitions here.
+
+        self.rangeRegion = Region()
+        self.targetRegion = Region()
+        self.trapsRegion = Region()
+        self.fieldsRegion = Region()
+
         if combat:
             self.pane = self.pane.get_combat_pane(location)
         else:
+            self.screen.show_text('Entering ' + str(location.pane))
             if not portal:
                 self.pane = self.world.get_pane(location.pane)
             else:
                 self.pane = self.world.get_pane(location, portal=portal)
         self.screen.set_pane(self.pane)
-

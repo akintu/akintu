@@ -2639,18 +2639,6 @@ class Person(en.Entity):
         Outputs:
           True or False"""
         pass
-        #xCoord = self.location.x
-        #yCoord = self.location.y
-        #adjacentCoords = ([[xCoord + 1, yCoord], [xCoord + 1, yCoord + 1]
-        #                   [xCoord + 1, yCoord - 1], [xCoord, yCoord + 1]
-        #                   [xCoord - 1, yCoord - 1], [xCoord - 1, yCoord]
-        #                   [xCoord, yCoord - 1], [xCoord - 1, yCoord + 1]])
-        #
-        #for coords in adjacentCoords:
-        #    if Terrain.getTile(coords[0], coords[1]).isWalkable:
-        #        return True
-        #return False
-        # TODO Ask for such a method...
 
     def hasWeaponEnchant(self):
         """Returns True if any wepaon enchantment cast by a spellsword is

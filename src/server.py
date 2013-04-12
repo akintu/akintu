@@ -1,5 +1,7 @@
 from network import *
 from location import *
+from region import Region
+from Queue import PriorityQueue
 from theorycraft import TheoryCraft
 from playercharacter import *
 from servercombat import *
@@ -475,4 +477,38 @@ class GameServer():
                 return p
 
     def find_path(self, loc1, loc2):
-        return loc1.line_to(loc2)
+        Q = Region("SQUARE", Location(0, 0), Location(PANE_X - 1, PANE_Y - 1)).locations
+        dist = {}
+        prev = {}
+        q = PriorityQueue()
+        for v in Q:
+            dist[v] = float('inf')
+            prev[v] = None
+
+        dist[loc1] = 0
+        q.put((0, loc1))
+
+        while not q.empty():
+            u = q.get()[1]
+            if u == loc2 or dist[u] == float('inf'):
+                break
+
+            neighbors = [u.move(dir) for dir in [2, 4, 6, 8]]
+            neighbors = [v for v in neighbors if v in Q and self.tile_is_open(v)]
+            for v in neighbors:
+                Q.remove(v)
+#                print Region(list(Q))
+                alt = dist[u] + u.distance(v)
+                if alt < dist[v]:
+                    dist[v] = alt
+                    prev[v] = u
+                    q.put((dist[v], v))
+
+        path = []
+        u = loc2
+        while prev[u]:
+            path.append(u)
+            u = prev[u]
+
+        path.reverse()
+        return path

@@ -221,7 +221,7 @@ class TheoryCraft(object):
                 continue
             item = TheoryCraft.rehydrateEquipment(itemName)
             newChar.inventory.addItem(item)
-            if isinstance(item, equipment.Weapon) and newChar.equippedItems._allGear['Main Hand']:
+            if isinstance(item, equipment.Weapon) and newChar.equippedItems._alternateSet['Main Hand']:
                 # Already has gear on the main hand.
                 newChar.equip(item, "Left", True)
             else:

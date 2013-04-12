@@ -1,0 +1,47 @@
+# help_elements.txt
+
+Akintu has 7 magical elements and 3 physical elements.  These elements are 
+used to deal damage and sometimes apply status effects.  Monsters and
+players can acquire resistances to elemental damage and gain bonuses to the
+elemental damage they deal of particular types.  
+
+In general, if a monster is strong against a particular element, it will be
+weak to its opposite element.  This is not always true, but it is a general
+tendency.  Also, monsters that deal damage of a particular element will 
+frequently be strong against that element.  See the controls page for the
+button to use to ANALYZE your current target to see their elemental and
+physical strengths and weaknesses.  
+
+The elements (listed in pairs of opposites) are:
+
+  Fire and Cold
+  Poison* and Electric
+  Divine and Shadow
+  Arcane**
+  
+The physical elements are:
+
+  Bludgeoning
+  Piercing
+  Slashing
+  
+Only monsters can possess elemental resistances to the physical elements.  
+However, such resistances are rare and usually not very strong.
+
+Elemental Resistance to Fire of 40% reduces damage by that amount.
+Elemental Power of Fire (players only) of 40% will increase outgoing fire
+damage by 40%.  These influences are multiplicative, not additive like
+DR and Armor Penetration.  Example:
+
+  Player's fire spell deals 100 damage normally.  
+  + 40% Fire Power bonus = 140 damage.
+  Monster's Fire resistance is 40% so:
+  - 40% Damage = 140 - 56 = 84 damage
+  
+Reistances above 80% are treated as 80% but will serve as a buffer against
+statuses that lower elemental resistance.
+
+*Poison Elemental Resistance is separate from Poison Tolerance.
+
+**Arcane has no opposite; monsters rarely have a resistance to Arcane
+  damage.

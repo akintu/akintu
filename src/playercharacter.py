@@ -1310,16 +1310,24 @@ class PlayerCharacter(p.Person):
     def switchGear(self):
         '''Used in combat to change the alternate gear to be the
         primary gear. Takes off the blues, puts on the blues.'''
-        altGear = self.unequip('Main Hand', True) # Only call on main hand; it'll unequip both.
+        altGear = self.unequip('Main Hand', True)
+        offHand = self.unequip('Off Hand', True)
+        if offHand:
+            altGear.append(offHand)
         oldGear = []
-        for gear in altGear:
-            oldGear.extend(self.equip(gear))
-        if oldGear[0]:
+        if len(altGear) > 0 and altGear[0]:
+            print "Alt Gear 0: " + altGear[0].name 
+            oldGear.extend(self.equip(altGear[0]))
+        if len(altGear) > 1 and altGear[1]:
+            print "Alt Gear 1: " + altGear[1].name
+            oldGear.extend(self.equip(altGear[1]))
+        if len(oldGear) > 0 and oldGear[0]:
+            print "Old Gear 0: " + oldGear[0].name
             self.equip(oldGear[0], alternate=True)
-        if oldGear[1]:
+        if len(oldGear) > 1 and oldGear[1]:
+            print "Old Gear 1: " + oldGear[1].name
             self.equip(oldGear[1], "Left", alternate=True)
-
-
+            
     def printCharacterSheet(self):
         '''Method prints a mock-up of a character sheet to the console as
         a placeholder until a real UI character sheet exists.'''

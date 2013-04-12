@@ -83,12 +83,6 @@ class Inventory(object):
     @property
     def allConsumables(self):
         return [x for x in self._allItems if isinstance(x, consumable.Consumable)]
-        
-    #def depositGold(self, goldAmount):
-        # if isinstance(goldObject, wealth.Wealth) and goldObject.name == "Gold":
-            # self.gold += goldObject.goldValue
-        # else:
-            # print "Warning: Attempted to deposit non-gold object to inventory!"
 
     def addItem(self, item):
         if isinstance(item, int):

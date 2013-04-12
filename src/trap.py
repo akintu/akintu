@@ -61,6 +61,11 @@ class Trap(e.Entity):
 
     def _stickyTrap(self, target):
         duration = 3
+        if target.hasStatus("Sticky Trap"):
+            sticky = [x for x in target._statusList if x.name == "Sticky Trap"][0]
+            stickyDuration = sticky.turnsLeft
+            if stickyDuration > 3:
+                return
         Combat.addStatus(target, "Sticky Trap", duration)
         Combat.sendCombatMessage("Trap lowered movement speed.", self.owner, color="yellow")
         

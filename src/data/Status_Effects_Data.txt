@@ -483,8 +483,8 @@
   [ELEMENT: None]
   [INTERNAL: Sneak_bonus]
     [MAGNITUDE: 10]
-  [INTERNAL: Reduced_stealth_AP_cost]
-    [MAGNITUDE: 5]
+  [INTERNAL: Critical_chance_bonus]
+    [MAGNITUDE: 10]
 	
 [NAME: Blurry]
   [TYPE: Display]
@@ -602,7 +602,7 @@
   [INTERNAL: Dodge_bonus]
     [MAGNITUDE: 10]
   [INTERNAL: Elemental_vulnerability]
-    [MAGNITUDE: 10] 
+    [MAGNITUDE: 35] 
 	
 [NAME: Shrink]
   [TYPE: Display]

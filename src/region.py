@@ -50,7 +50,7 @@ class Region:
         for y in Location(left.abs_x, top.abs_y).line_to(Location(left.abs_x, bottom.abs_y)):
             for x in Location(left.abs_x, top.abs_y).line_to(Location(right.abs_x, top.abs_y)):
                 strrep += "@ " if Location((x.pane[0], y.pane[1]), (x.tile[0], y.tile[1])) in \
-                        self.locations else "  "
+                        self.locations else ". "
             strrep += os.linesep
         return strrep
 
@@ -118,6 +118,14 @@ class Region:
         self.locations = set()
         self.history = zlib.decompress(state).split("\r\n")
         self.rehydrate()
+
+    def __len__(self):
+        return len(self.locations)
+
+    def __getitem__(self, key):
+        if len(self.locations) == 0:
+            return None
+        return list(self.locations)[key]
 
     def rehydrate(self):
         for line in self.history:
@@ -232,11 +240,8 @@ if __name__ == "__main__":
     assert l1 in R
     print R
 
-    c = R.get_outside_corners()
-    C = Region()
-    for l in c:
-        C("ADD", "CIRCLE", l, 0)
-    #print C
+    print ("Outside corners:")
+    print Region(list(R.get_outside_corners()))
 
     assert l1.move(6, 2) not in R
     for l2 in R:

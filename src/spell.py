@@ -3,6 +3,7 @@
 import sys
 from combat import *
 import dice
+import command
 
 ROOT_FOLDER = "./res/images/icons/"
 TIER1 = ROOT_FOLDER + "tier1_spells/"
@@ -23,11 +24,11 @@ class SpellStub(object):
             info = Spell.allSpells[name]
             if 'text' in info:
                 self.text = 'AP: ' + `info['APCost']` + '  MP: ' + `info['MPCost']` + '  Cooldown: ' + cooldownText + '  Range: ' + rangeText + \
-                        '  School: ' + self.school + "\n" + info['text'] 
+                        '  School: ' + self.school + "\n" + info['text']
             if 'image' in info:
                 self.image = info['image']
-                
-        
+
+
 class Spell(object):
 
     def __init__(self, name, owner):
@@ -37,7 +38,7 @@ class Spell(object):
             info = Spell.allSpells[name]
         elif name in Spell.monsterSpells:
             info = Spell.monsterSpells[name]
-        
+
         self.tier = info['tier']
         self.school = info['school']
         self.MPCost = info['MPCost']
@@ -60,7 +61,7 @@ class Spell(object):
             cooldownText = str(self.cooldown)
         if 'text' in info:
             self.text = 'AP: ' + `self.APCost` + '  MP: ' + `self.MPCost` + '  Cooldown: ' + cooldownText + '  Range: ' + rangeText + \
-                        '  School: ' + self.school + "\n" + info['text'] 
+                        '  School: ' + self.school + "\n" + info['text']
         else:
             self.text = 'No description yet.'
         self.owner = owner
@@ -72,7 +73,11 @@ class Spell(object):
             self.radius = info['radius']
         else:
             self.radius = 0
-            
+        if 'placesField' in info:
+            self.placesField = info['placesField']
+        else:
+            self.placesField = False
+
     def shouldUse(self, target):
         '''
         Used by only monsters to determine if the
@@ -82,7 +87,7 @@ class Spell(object):
             return self.condition(self, target)
         else:
             return True
-        
+
     def canUse(self, target):
         '''
         target: Person (later, Location?)
@@ -134,12 +139,12 @@ class Spell(object):
                 self._shoutSpellCastComplete(self.owner, target)
                 if self.targetType != "friendly" and self.targetType != "self":
                     Combat.removeStealth(self.owner)
-                
+
             else:
                 Combat.sendCombatMessage("Spell Casting Failed! (" + str(self.owner.spellFailureChance) +
                                          "%)", self.owner)
                 return
-                
+
         else:
             print "Caught an unusable spell late!"
             return
@@ -176,19 +181,44 @@ class Spell(object):
         elif self.school == "Natural":
             target.statusMagicResist -= target.naturalResist
 
+    # Status Fields
+
+    @staticmethod
+    def _applyZoneOfSilence(target):
+        ''' Applys a bonus critical chance and sneak to players only '''
+        if target.team == "Players":
+            duration = 2 # Immediately decremented
+            Combat.addStatus(target, "Zone of Silence", duration)
+
+    @staticmethod
+    def _applyPit(target):
+        ''' If a player steps on it, it should be removed.'''
+        if target.team == "Players":
+            Combat.gameServer.pane[target.cPane].fields.remove_field(target.cLocation, "Pit", all=True)
+            action = command.Command("FIELD", "REMOVE", name="Pit", location=target.cLocation, all=True)
+            Combat.gameServer.broadcast(action, -target.id)
+
+    @staticmethod
+    def _applySmokeScreen(target):
+        '''Applys bonus dodge but lowers fire resistance to either team'''
+        duration = 2 # Immediately decremeneted
+        Combat.addStatus(target, "Smoke Screen", duration)
+
+
     # Monster Only Spells
 
     def _shadowField(self, target):
         '''Deals massive shadow damage to a 3x3 area centered on a player.
         Partial Resistance = 33% Damage Dealt.'''
         source = self.owner
-        hitType = Combat.calcHit(source, target, "Magical")
-        damageBase = 11
-        damage = Combat.calcDamage(source, target, damageBase, damageBase * 4, "Shadow", hitValue=hitType,
+        targets = Combat.getAOETargets(source.cPane, target.cLocation, radius=1, selectMonsters=False)
+        for tar in targets:
+            hitType = Combat.calcHit(source, tar, "Magical")
+            damageBase = 11
+            damage = Combat.calcDamage(source, tar, damageBase, damageBase * 4, "Shadow", hitValue=hitType,
                                    partial=0.33, scalesWith="Spellpower", scaleFactor=0.02)
-        #TODO: This hits a 3x3 area.  Include all targets!
-        Combat.lowerHP(target, damage)
-        return hitType
+            Combat.lowerHP(tar, damage)
+        return "Normal Hit" # Return value doesn't matter for monsters.
 
     # Player & Monster Spells
 
@@ -199,27 +229,27 @@ class Spell(object):
                                     hitValue=hitType, critical=1.25, scalesWith="Spellpower", scaleFactor=0.03))
         Combat.lowerHP(target, damage)
         return hitType
-        
+
     def _arcaneWard(self, target):
         source = self.owner
         duration = int(Dice.scale(source.totalSpellpower, 3, 0.1, cap=6))
         magnitude = Dice.scale(source.totalSpellpower, 5, 0.01)
         Combat.addStatus(target, self.name, duration, magnitude)
         return "Normal Hit"
-        
+
     def _mysticShield(self, target):
         source = self.owner
         duration = 5
         magnitude = Dice.scale(source.totalSpellpower, 7, 0.06)
         Combat.addStatus(target, self.name, duration, magnitude)
         return "Normal Hit"
-        
+
     def _flickerOfLife(self, target):
         source = self.owner
         magnitude = Dice.scale(source.totalSpellpower, Dice.roll(10,20), 0.02)
         Combat.healTarget(source, target, magnitude)
         return "Normal Hit"
-        
+
     def _flickerOfLifeCheck(self, target):
         ''' Monsters should only cast this if
         HP is at or below 50%.  Should heal self
@@ -230,14 +260,14 @@ class Spell(object):
         elif target.HP <= target.totalHP * 0.50:
             return True
         return False
-        
+
     def _stoneGuard(self, target):
         source = self.owner
         duration = int(Dice.scale(source.totalSpellpower, 4, 0.05, cap=6))
         magnitude = Dice.scale(source.totalSpellpower, 12, 0.008)
         Combat.addStatus(target, self.name, duration, magnitude)
         return "Normal Hit"
-        
+
     def _stoneGuardCheck(self, target):
         '''Should only cast a buffing spell if the target doesn't
         already have it.'''
@@ -245,7 +275,7 @@ class Spell(object):
         if target.hasStatus("Stone Guard"):
             return False
         return True
-        
+
     def _singe(self, target):
         source = self.owner
         hitType = Combat.calcHit(source, target, "Magical")
@@ -254,7 +284,7 @@ class Spell(object):
                                     scalesWith="Spellpower", scaleFactor=0.05))
         Combat.lowerHP(target, damage)
         return hitType
-        
+
     def _chill(self, target):
         source = self.owner
         hitType = Combat.calcHit(source, target, "Magical")
@@ -267,7 +297,7 @@ class Spell(object):
         Combat.addStatus(target, self.name, duration, magnitude, hitValue=hitType, chance=chance)
         Combat.lowerHP(target, damage)
         return hitType
-        
+
     def _shock(self, target):
         source = self.owner
         hitType = Combat.calcHit(source, target, "Magical")
@@ -275,13 +305,13 @@ class Spell(object):
                                    scalesWith="Spellpower", scaleFactor=0.014, partial=0.5)
         Combat.lowerHP(target, damage)
         return hitType
-        
+
     def _suggestLaziness(self, target):
         source = self.owner
         hitType = Combat.calcHit(source, target, "Magical")
         # TODO: this status requires AI -- we don't have that yet.
         return hitType
-        
+
     def _stutter(self, target):
         source = self.owner
         hitType = Combat.calcHit(source, target, "Magical")
@@ -290,7 +320,7 @@ class Spell(object):
         if hitType != "Miss" and hitType != "Fully Resisted":
             Combat.addStatus(target, self.name, duration, magnitude)
         return hitType
-            
+
     def _cloudVision(self, target):
         source = self.owner
         hitType = Combat.calcHit(source, target, "Magical")
@@ -301,7 +331,7 @@ class Spell(object):
         if hitType != "Miss" and hitType != "Fully Resisted":
             Combat.addStatus(target, self.name, duration, magnitude)
         return hitType
-        
+
     def _cloudVisionCheck(self, target):
         ''' Should only cast if target doesn't
         already have the debuff. '''
@@ -309,7 +339,7 @@ class Spell(object):
         if target.hasStatus("Cloud Vision"):
             return False
         return True
-            
+
     def _haunt(self, target):
         source = self.owner
         hitType = Combat.calcHit(source, target, "Magical")
@@ -321,10 +351,16 @@ class Spell(object):
             magnitude = round(Dice.roll(2,8) * (1 + source.totalSpellpower * 0.005))
             Combat.addStatus(target, self.name, duration, magnitude, hitValue=hitType)
         return hitType
-            
+
     def _zoneOfSilence(self, target):
-        pass
-        # TODO!!
+        # Target is a location.
+        source = self.owner
+        duration = min(7, 4 + source.totalSpellpower / 30)
+        radius = 1
+        Combat.gameServer.pane[source.cPane].fields.add_field("Zone of Silence", target, radius, duration)
+        action = command.Command("FIELD", "ADD", name="Zone of Silence", location=target, radius=radius, duration=duration)
+        Combat.gameServer.broadcast(action, -source.id)
+
 
     def _blurry(self, target):
         source = self.owner
@@ -332,7 +368,7 @@ class Spell(object):
         magnitude = Dice.scale(source.totalSpellpower, 5, 0.02)
         Combat.addStatus(target, self.name, duration, magnitude)
         return "Normal Hit"
-        
+
     def _weaponEnhance(self, target):
         source = self.owner
         duration = int(Dice.scale(source.totalSpellpower, 3, 0.03, cap=7))
@@ -343,16 +379,16 @@ class Spell(object):
         Combat.addStatus(target, "Weapon Enhance Punishing", duration, magnitudeB)
         Combat.addStatus(target, "Weapon Enhance Precision", duration, magnitudeC)
         return "Normal Hit"
-        
+
     def _flamingWeapon(self, target):
         source = self.owner
         duration = int(Dice.scale(source.totalSpellpower, 3, 0.03, cap=7))
         magnitude = round(Dice.roll(1,8) * (1 + source.totalSpellpower * 0.01))
         Combat.addStatus(target, self.name, duration, magnitude)
         return "Normal Hit"
-        
+
     # TIER 2
-    
+
     def _burst(self, target):
         source = self.owner
         # target is a Location
@@ -361,8 +397,8 @@ class Spell(object):
             centerTarget = centerTargetList[0]
             hitType = Combat.calcHit(source, centerTarget, "Magical")
             if hitType != "Miss" and hitType != "Fully Resisted":
-                damage = Combat.calcDamage(source, centerTarget, 10, 12, "Arcane", 
-                                           hitValue=hitType, scalesWith="Spellpower", 
+                damage = Combat.calcDamage(source, centerTarget, 10, 12, "Arcane",
+                                           hitValue=hitType, scalesWith="Spellpower",
                                            scaleFactor=0.01)
                 Combat.lowerHP(centerTarget, damage)
         allTargetsList = Combat.getAOETargets(source.cPane, target, radius=4)
@@ -370,25 +406,25 @@ class Spell(object):
         for tar in allTargetsSorted:
             hitType = Combat.calcHit(source, tar, "Magical")
             if hitType != "Miss" and hitType != "Fully Resisted":
-                damage = Combat.calcDamage(source, tar, 5, 6, "Arcane", 
-                                           hitValue=hitType, scalesWith="Spellpower", 
+                damage = Combat.calcDamage(source, tar, 5, 6, "Arcane",
+                                           hitValue=hitType, scalesWith="Spellpower",
                                            scaleFactor=0.01)
                 Combat.lowerHP(tar, damage)
                 Combat.knockback(tar, target, distance=1)
-    
+
     def _identification(self, target):
         source = self.owner
         duration = 3
         Combat.addStatus(source, self.name, duration)
         return "Normal Hit"
-        
+
     def _hoveringShield(self, target):
         source = self.owner
         duration = 5
         magnitude = 12 + source.totalSpellpower / 10
         Combat.addStatus(target, self.name, duration, magnitude)
         return "Normal Hit"
-        
+
     def _fright(self, target):
         source = self.owner
         duration = 4
@@ -396,7 +432,7 @@ class Spell(object):
         if hitType != "Miss":
             Combat.addStatus(target, self.name, duration)
         return hitType
-        
+
     def _infection(self, target):
         source = self.owner
         minDam = int(7 * (1 + source.totalSpellpower * 0.03) *
@@ -410,20 +446,20 @@ class Spell(object):
         if hitType != "Miss" and hitType != "Fully Resisted":
             Combat.addStatus(target, "Infection", duration, dieRoll)
         return hitType
-            
+
     def _handsOfHealing(self, target):
         source = self.owner
         value = int(Dice.roll(20, 40) * (1 + 0.02 * source.totalSpellpower))
         Combat.healTarget(source, target, value)
         return "Normal Hit"
-            
+
     def _elementalBoon(self, target):
         source = self.owner
         magnitude = 15 + source.totalSpellpower / 10
         duration = max(7, 6 + source.totalSpellpower / 50)
         Combat.addStatus(target, "Elemental Boon", duration, magnitude)
         return "Normal Hit"
-            
+
     def _torrent(self, target):
         source = self.owner
         lower = 10
@@ -437,7 +473,7 @@ class Spell(object):
             if hitType == "Normal Hit" or hitType == "Critical Hit":
                 Combat.knockback(newTar, source.cLocation, knockbackDistance)
         return hitType
-        
+
     def _lightningBolt(self, target):
         source = self.owner
         lower = 5
@@ -450,7 +486,25 @@ class Spell(object):
                                         scalesWith="Spellpower", scaleFactor=0.005)
                 Combat.lowerHP(t, dam)
         return hitType
-            
+
+    def _smokeScreen(self, target):
+        # Target is a location.
+        source = self.owner
+        duration = min(7, 3 + source.totalSpellpower / 15)
+        radius = 4
+        Combat.gameServer.pane[source.cPane].fields.add_field("Smoke Screen", target, radius, duration)
+        action = command.Command("FIELD", "ADD", name="Smoke Screen", location=target, radius=radius, duration=duration)
+        Combat.gameServer.broadcast(action, -source.id)
+
+    def _pit(self, target):
+        # Target is a location.
+        source = self.owner
+        duration = 4
+        radius = 0
+        Combat.gameServer.pane[source.cPane].fields.add_field("Pit", target, radius, duration)
+        action = command.Command("FIELD", "ADD", name="Pit", location=target, radius=radius, duration=duration)
+        Combat.gameServer.broadcast(action, -source.id)
+
     def _shrink(self, target):
         source = self.owner
         targetList = Combat.getAOETargets(target.cPane, target.cLocation, radius=1)
@@ -466,14 +520,16 @@ class Spell(object):
             return "Fully Resisted"
         else:
             return "Normal Hit"
-            
+
     def _frostWeapon(self, target):
         source = self.owner
         duration = min(7, 3 + source.totalSpellpower / 10)
         magnitude = Dice.roll(2, 5) + source.totalSpellpower / 15
         Combat.addStatus(target, "Frost Weapon", duration, magnitude)
         return "Normal Hit"
-            
+
+
+
     monsterSpells = {
         'Shadow Field':
         {
@@ -681,14 +737,15 @@ class Spell(object):
         'MPCost' : 10,
         'APCost' : 5,
         'range' : 6,
-        'target' : 'terrain',
+        'target' : 'location',
         'action' : _zoneOfSilence,
         'cooldown' : None,
         'image' : TIER1 + 'zone-of-silence.png',
-        'text' : 'Creates a 3x3 area within which Stealth requires\n' + \
-                'less AP to activate and sneak is increaesd by 10.\n' + \
-                'Lasts between 3 and 6 turns',
-        'radius' : 1
+        'text' : 'Creates a 3x3 area allowing Players that move through\n' + \
+                'the Zone have their sneak increased by 10 and gain +10%\n' + \
+                'critical hit chance for their next turn.',
+        'radius' : 1,
+        'placesField' : True
         },
 
         'Blurry':
@@ -872,6 +929,39 @@ class Spell(object):
                 'On partial resist: -50% damage\n' + \
                 'On critical: +30% damage'
         },
+        'Pit' :
+        {
+        'tier' : 2,
+        'school' : 'Illusion',
+        'MPCost' : 5,
+        'APCost' : 2,
+        'range' : 5,
+        'target' : 'location',
+        'action' : _pit,
+        'cooldown' : None,
+        'image' : TIER2 + 'pit.png',
+        'text' : 'Cause all enemies to believe a bottomless pit exist on a tile.\n' + \
+                'Monsters will take less direct paths, trying to move around that\n' + \
+                'tile and will not be able to move onto it.  If a player walks over\n' + \
+                'the tile, the effect is dispelled.',
+        'placesField' : True
+        },
+        'Smoke Screen':
+        {
+        'tier' : 2,
+        'school' : 'Illusion',
+        'MPCost' : 18,
+        'APCost' : 6,
+        'range' : 4,
+        'target' : 'location',
+        'action' : _smokeScreen,
+        'cooldown' : 3,
+        'image' : TIER2 + 'smoke-screen.png',
+        'text' : 'Cover an area with smoke, causing players and monsters that enter it\n' + \
+                'to have +10 dodge but -35% fire resistance for a turn.',
+        'radius' : 4,
+        'placesField' : True
+        },
         'Shrink':
         {
         'tier' : 2,
@@ -959,3 +1049,9 @@ class Spell(object):
             return
         bc = broadcast.SpellResistBroadcast({spell : self})
         bc.shout(self.owner)
+
+fieldEffects = {
+    'Pit' : Spell._applyPit,
+    'Smoke Screen' : Spell._applySmokeScreen,
+    'Zone of Silence' : Spell._applyZoneOfSilence
+}
