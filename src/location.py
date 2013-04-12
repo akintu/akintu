@@ -174,7 +174,7 @@ class Location(object):
         return {((-dy + 1) * 3) + dx + 2: \
             (self.tile[0] + dx, self.tile[1] + dy) for dx in range(-1, 2) for dy in range(1, -2, -1)}
 
-    def line_to(self, dest):
+    def line_to(self, dest, diags=True):
         if self == dest:
             return [self]
 
@@ -185,6 +185,13 @@ class Location(object):
         for x in range(dist + 1):
             locs.append(Location(self.abs_x + int(round(float(x) / dist * distx)),
                     self.abs_y + int(round(float(x) / dist * disty)), self.z))
+
+        if not diags:
+            for i, l in enumerate(locs):
+                if i < len(locs) - 1:
+                    if l.direction_to(locs[i+1]) % 2:
+                        locs.insert(i + 1, Location(locs[i+1].abs_x, l.abs_y))
+                        
         return locs
 
     def direction_to(self, dest):
