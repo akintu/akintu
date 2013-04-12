@@ -1,7 +1,7 @@
 from network import *
 from location import *
 from region import Region
-from Queue import Queue
+from Queue import PriorityQueue
 from theorycraft import TheoryCraft
 from playercharacter import *
 from servercombat import *
@@ -476,74 +476,39 @@ class GameServer():
             if cPane == p.location:
                 return p
 
-    def find_path(self, loc1, loc2, visited=None):
-#        print "Finding path between %s and %s" % (loc1, loc2)
-        if loc1.distance(loc2) == 0:
-            return []
-        if not visited:
-            visited = []
-        visited.append(loc1)
+    def find_path(self, loc1, loc2):
+        Q = Region("SQUARE", Location(0, 0), Location(PANE_X - 1, PANE_Y - 1)).locations
+        dist = {}
+        prev = {}
+        q = PriorityQueue()
+        for v in Q:
+            dist[v] = float('inf')
+            prev[v] = None
 
-        path = loc1.line_to(loc2, False)
-        if not self.tile_is_open(loc1):
-            path = path[1:]
-        if not self.tile_is_open(loc2):
-            path = path[:-1]
+        dist[loc1] = 0
+        q.put((0, loc1))
 
-        blocks = [l for l in path if not self.tile_is_open(l)]
-        if len(blocks) == 0:
-            return path
+        while not q.empty():
+            u = q.get()[1]
+            if u == loc2 or dist[u] == float('inf'):
+                break
 
-        obstacle = self.explore_obstacle(blocks[0])
-        corners = obstacle.get_outside_corners()
-        corners.add(path[path.index(blocks[0]) - 1])
-        corners -= set(visited)
-#        corners.discard(loc1)
-        paths = [loc1.line_to(p, False) for p in corners]
-#        border = Region("SQUARE", Location(-1, -1), Location(PANE_X, PANE_Y)) - \
-#                Region("SQUARE", Location(0, 0), Location(PANE_X - 1, PANE_Y - 1))
-#        first_half = [self.find_path(loc1, path[-1]) for path in paths]
-        first_half = [path for path in paths if all(self.tile_is_open(l) for l in path)]
-        if len(first_half) == 0:
-            return []
-#        print "LENGTH OF 1st HALF:", len(first_half)
-#        if not first_half:
-#            print border + Region(path) + obstacle
-#        for path in first_half:
-#            print border + Region(path)
-        second_half = [self.find_path(path[-1], loc2, visited) for path in first_half]
-#        print "LENGTH OF 2ND HALF:", len(second_half)
-#        for i in range(len(first_half)):
-#            print border + Region(first_half[i].extend(second_half[i]))
-#        print "FIRST HALF:", first_half
-#        print "SECOND HALF:", second_half
-        dist = [(len(first_half[i]) - 1 + len(second_half[i])) if (len(first_half[i]) != 0 and \
-                len(second_half[i]) != 0) else float('inf') for i in range(len(first_half))]
-#        print "DIST:", dist
-        decision = dist.index(min(dist))
-#        print "DECISION:", decision
-        if dist[decision] == float('inf'):
-            return []
+            neighbors = [u.move(dir) for dir in [2, 4, 6, 8]]
+            neighbors = [v for v in neighbors if v in Q and self.tile_is_open(v)]
+            for v in neighbors:
+                Q.remove(v)
+#                print Region(list(Q))
+                alt = dist[u] + u.distance(v)
+                if alt < dist[v]:
+                    dist[v] = alt
+                    prev[v] = u
+                    q.put((dist[v], v))
 
-        fh = first_half[decision][:-1]
-        sh = second_half[decision]
-#        print "FH:", len(fh)
-#        print "SH:", len(sh)
-        retval = first_half[decision][:-1] + second_half[decision]
-#        print "RETVAL:", len(retval)
-        return retval
+        path = []
+        u = loc2
+        while prev[u]:
+            path.append(u)
+            u = prev[u]
 
-    def explore_obstacle(self, loc):
-        points = [loc]
-        obstacle = Region([loc])
-
-        while len(points) > 0:
-            p = points[0]
-            for dir in range(1, 10):
-                newloc = p.move(dir)
-                if not self.tile_is_open(newloc) and newloc not in obstacle and newloc not in points:
-                    obstacle("ADD", "CIRCLE", newloc, 0)
-                    points.append(newloc)
-            del points[0]
-
-        return obstacle
+        path.reverse()
+        return path

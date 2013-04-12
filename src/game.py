@@ -20,6 +20,7 @@ from world import *
 from region import Region
 import trap
 import shop
+import random
 from keybindings import keystate
 
 import levelup as lvl
@@ -734,8 +735,12 @@ class Game(object):
                 elif e == "SHOWPANEPIDS":
                     print "Person IDs on pane: %s" % str(self.pane.person.keys())
                 elif e == "SHOWPATHS":
-                    self.pane.fields.add_field("Smoke Screen", \
-                            Region(self.gs.find_path(Location(0, 0), Location(PANE_X - 1, PANE_Y - 1))))
+                    self.fieldsRegion = Region()
+                    self.update_regions()
+                    spell = random.choice(["Smoke Screen", "Zone of Silence", "Pit"])
+                    loc1 = Location(random.randint(0, PANE_X - 1), random.randint(0, PANE_Y - 1))
+                    loc2 = Location(random.randint(0, PANE_X - 1), random.randint(0, PANE_Y - 1))
+                    self.pane.fields.add_field(spell, Region(self.gs.find_path(loc1, loc2)))
                     self.update_regions()
 
     def get_item(self):
