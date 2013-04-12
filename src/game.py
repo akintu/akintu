@@ -772,8 +772,7 @@ class Game(object):
                 self.screen.show_text("LEVEL UP!" , color='magenta')
         else:
             pass
-            #print "DEBUG: " + `player.experience` + " exp " + `player.getExpForNextLevel()` + " needed " + `player.level` + " level "
-
+            
     def request_respec(self):
         action = Command("RESPEC", "REQUESTRESPEC", id=self.id)
         self.CDF.send(action)
