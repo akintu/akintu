@@ -1,0 +1,39 @@
+# help_spellpower_and_magic_resist.txt
+
+In Akintu, all hostile spells must overcome a character's magic resist in
+order to take effect.  The higher the magic resist is compared to the
+caster's spellpower, the greater the chance that the spell will be ignored.
+
+The result of casting such a hostile spell can be broken down into four
+categories:
+
+Normal Hit
+  Spell has normal effect; Magic Resist and Spellpower are rougly equal.
+  
+Critical Hit
+  Some spells gain a benefit from critical hits, enhancing their effects.
+  Magic resist is very low compared to the Spellpower.  Critical hits are
+  often no different than "Normal Hits"; it depends on the individual spell
+  cast whether or not an additional bonus is granted.
+  
+Partial Resist
+  Some spells are diminished by partial resists, but most spells have the
+  same effect as a Normal Hit in this circumstance.  Again, it depends on
+  the individual spell being cast.  This indicated that the Magic resist
+  is probably a little higher than the Spellpower.
+  
+Full Resist
+  All spells have no effect when fully resisted.  The magic resist must be
+  massively higher than the spellpower for this to happen.
+  
+Overall, spells are more reliable than physical attacks because only in the
+case of full resists are most spells affected by the defenses of the
+victim.  Keep in mind that elemental resistances will usually play a role
+in the end result of the spell as well; they are analogous to DR for 
+physical attacks.
+
+For more details on the specifics of Spellpower vs. Magic Resist, visit the
+online wiki.
+  
+
+  

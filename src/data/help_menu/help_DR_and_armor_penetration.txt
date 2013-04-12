@@ -1,0 +1,30 @@
+# help_DR_and_armor_penetration.txt
+
+In Akintu, most armor grants Damage Reduction (DR) which reduces the damage
+received by physical attacks by a certain percent.  For example, a DR of 35 
+reduces incoming physical damage by 35%.  
+
+Attackers sometimes have weapons or abilities that ignore a set amount of
+DR.  The property of being able to ignore some DR is called "Armor 
+Penetration."  An Armor Penetration of 10 against a DR of 35 leaves 25% of
+the incoming attack to be reduced.  
+
+Armor Penetration will treat DR as
+being below 0% if it is greater than the DR, however, a negative value of 
+DR acts as 0%.  It will never augment the damage dealt.  
+
+Similarly, a DR value greater than 80% is always treated as 80% reduction.    
+If DR is above 80%, the excess DR will serve to reduce the effect that
+Armor Penetration will have against the defender.  For example, a DR of
+95% against Armor Penetration of 20 will reduce damage by 75% (not by 60%).
+
+Successful physical attacks typically deal their damage as a physical
+element.  Those elements are "Piercing", "Bludgeoning", and "Slashing".  
+A few monsters have some resistances specific to one or more of those
+elements; players do not ever have physical-elemental resistances.  
+
+Physical elemental resistances "stack" with DR multiplicatively.  
+
+Such resistances are uncomon, but amongst them, Slashing resistance is the
+most common, then Piercing, and then Bludgeoning.  This makes bludgeoning
+weapons a little more desireable in a few circumstances.
