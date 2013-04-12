@@ -452,7 +452,7 @@ class Game(object):
                 self.update_regions()
 
             elif command.type == "FIELD" and command.action == "REMOVE":
-                self.pane.fields.remove_field(command.name, command.location, command.all)
+                self.pane.fields.remove_field(command.location, command.name, command.all)
                 self.update_regions()
 
             elif command.type == "CLIENT" and command.action == "QUIT":
@@ -735,11 +735,14 @@ class Game(object):
                 elif e == "SHOWPANEPIDS":
                     print "Person IDs on pane: %s" % str(self.pane.person.keys())
                 elif e == "SHOWPATHS":
-                    self.fieldsRegion = Region()
-                    self.update_regions()
+                    if len(self.fieldsRegion):
+                        self.pane.fields.remove_field(self.fieldsRegion[0])
+                        self.update_regions()
                     spell = random.choice(["Smoke Screen", "Zone of Silence", "Pit"])
                     loc1 = Location(random.randint(0, PANE_X - 1), random.randint(0, PANE_Y - 1))
                     loc2 = Location(random.randint(0, PANE_X - 1), random.randint(0, PANE_Y - 1))
+#                    loc1 = Location(0, 0)
+#                    loc2 = Location(PANE_X - 1, PANE_Y - 1)
                     self.pane.fields.add_field(spell, Region(self.gs.find_path(loc1, loc2)))
                     self.update_regions()
 

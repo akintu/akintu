@@ -119,6 +119,14 @@ class Region:
         self.history = zlib.decompress(state).split("\r\n")
         self.rehydrate()
 
+    def __len__(self):
+        return len(self.locations)
+
+    def __getitem__(self, key):
+        if len(self.locations) == 0:
+            return None
+        return list(self.locations)[key]
+
     def rehydrate(self):
         for line in self.history:
             parts = line.split("|||")

@@ -7,8 +7,8 @@ class Fields:
     def add_field(self, name, loc, radius=0, duration=-1):
         self.fields.append([name, loc if isinstance(loc, Region) else Region("CIRCLE", loc, radius), duration])
 
-    def remove_field(self, name, loc, all=False):
-        fields = sorted([f for f in self.fields if f[0] == name and loc in f[1]], key=lambda f: f[2])
+    def remove_field(self, loc, name=None, all=False):
+        fields = sorted([f for f in self.fields if f[0] == (name if name else f[0]) and loc in f[1]], key=lambda f: f[2])
         if len(fields) > 0:
             if all:
                 self.fields = [x for x in self.fields if x not in fields]
