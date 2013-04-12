@@ -50,7 +50,7 @@ class Region:
         for y in Location(left.abs_x, top.abs_y).line_to(Location(left.abs_x, bottom.abs_y)):
             for x in Location(left.abs_x, top.abs_y).line_to(Location(right.abs_x, top.abs_y)):
                 strrep += "@ " if Location((x.pane[0], y.pane[1]), (x.tile[0], y.tile[1])) in \
-                        self.locations else "  "
+                        self.locations else ". "
             strrep += os.linesep
         return strrep
 
