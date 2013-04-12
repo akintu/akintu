@@ -8,6 +8,7 @@ import math
 import region
 import monster
 import spell
+import time
 
 class CombatServer():
     def __init__(self, server):
@@ -153,6 +154,9 @@ class CombatServer():
         if command.id in self.server.person:
             self.update_dead_people(self.server.person[command.id].cPane)
 
+        # This method calls update_dead_people internally.
+        elif command.type == "COMBAT" and command.action == "CONTINUE":
+            self.monster_phase(command.cPane)
 
     ### Utility Methods ###
 
@@ -216,18 +220,28 @@ class CombatServer():
         if not combatPane:
             return
 
+        allMonsters = [self.server.person[x] for x in self.server.pane[combatPane].person 
+                            if self.server.person[x].team == "Monsters"]
         toUpdateList = []
         for char in [self.server.person[x] for x in self.server.pane[combatPane].person]:
             if char.HP <= 0:
                 if char.team == "Monsters":
                     toUpdateList.append(char)
-                elif char.team == "Players" and not char.hardcore:
-                    Combat.sendCombatMessage(char.name + " has Fallen!", color='darkred', character=char)
-                    self.softcoreDeath(char)
-                elif char.team == "Players" and char.hardcore:
-                    Combat.sendCombatMessage(char.name + " has Perished!", color='darkred', character=char)
-                    self.hardcoreDeath(char)
-
+                elif char.team == "Players":
+                    if not char.hardcore:
+                        Combat.sendCombatMessage(char.name + " has Fallen!", color='darkred', character=char)
+                        self.softcoreDeath(char)
+                    else:
+                        Combat.sendCombatMessage(char.name + " has Perished!", color='darkred', character=char)
+                        self.hardcoreDeath(char)
+                    for id in self.server.pane[combatPane].person:
+                        if self.server.person[id].team == "Monsters":
+                            try:
+                                self.server.personp[id].detectedPlayers.remove(char)
+                            except:
+                                # If the monster isn't in the list, this throws an error normally.
+                                pass
+                                
         for char in toUpdateList:
             self.combatStates[combatPane].deadMonsterSet.add(char)
             Combat.sendCombatMessage(message=char.name + " Died!", color='magenta', character=char)
@@ -251,38 +265,33 @@ class CombatServer():
             self.victory_phase(livingPlayers, combatPane)
         return rValue
 
-    def monsterMove(self, monster, visiblePlayers):
-        tilesLeft = monster.totalMovementTiles
-        while tilesLeft > 0:
-            player = monster.getNearestPlayer(visiblePlayers)
-            if not player:
-                return "Failed"
-            direction = monster.cLocation.direction_to(player.cLocation)
-            # Monsters cannot move in diagonal directions.
-            if direction == 7:
-                direction = Dice.choose([4,8])
-            elif direction == 1:
-                direction = Dice.choose([2,4])
-            elif direction == 9:
-                direction = Dice.choose([6,8])
-            elif direction == 3:
-                direction = Dice.choose([2,6])
-            desiredLocation = monster.cLocation.move(direction, 1)
-            if self.server.tile_is_open(desiredLocation, monster.id):
-                action = Command("PERSON", "MOVE", id=monster.id, location=desiredLocation)
-                self.server.broadcast(action, -monster.id)
-                monster.cLocation = desiredLocation
-                tilesLeft -= 1
-                self.check_trap_trigger(monster, desiredLocation)
-                self.check_field_trigger(monster, desiredLocation)
-            elif tilesLeft == monster.totalMovementTiles:
-                # Monster couldn't move at all.
-                return "Failed"
-            else:
-                break
-        monster.AP -= monster.totalMovementAPCost
-        return "Moved"
-
+    def monsterMove(self, monster):
+        player = monster.getNearestPlayer(monster.detectedPlayers)
+        if not player:
+            return "NO_MOVE"
+        else:
+            src = monster.cLocation
+            dest = player.cLocation
+            path = self.server.find_path(src, dest)
+            if len(path) <= 2:
+                return "NO_MOVE"
+            desiredLocation = path[1] # Src is included in path.
+            self.combatStates[monster.cPane].monsterStatusDict[monster] = "MOVING"
+            action = Command("PERSON", "MOVE", id=monster.id, location=desiredLocation)
+            self.server.broadcast(action, -monster.id)
+            self.check_field_trigger(monster, desiredLocation)
+            self.check_trap_trigger(monster, desiredLocation)
+            # Monsters can die from traps.
+            if monster.HP <= 0:
+                return "DEAD"
+            delay = monster.movementTime
+            reactor.callLater(delay, self.monsterFinishedMoving, monster)
+            return "MOVED"
+            
+    def monsterFinishedMoving(self, monster):
+        combatPane = monster.cPane
+        self.combatStates[combatPane].monsterStatusDict[monster] = "READY"
+            
     ### Combat Phase Logic Methods ###
 
     def upkeep(self, target):
@@ -375,7 +384,12 @@ class CombatServer():
                 self.server.broadcast(Command("PERSON", "CREATE", id=id,
                         location=self.server.person[id].cLocation,
                         details=self.server.person[id].dehydrate()), playerId)
-
+        
+        monsters = [self.server.person[x] for x in self.server.pane[combatPane].person 
+                    if self.server.person[x].team == "Monsters"]         
+        for mon in monsters:
+            self.combatStates[combatPane].monsterStatusDict[mon] = "TURN_OVER"
+            
         self.shout_turn_start(self.server.person[playerId], turn="Player")
 
     def check_turn_end(self, combatPane, timeExpired=False):
@@ -402,7 +416,7 @@ class CombatServer():
         if self.update_dead_people(combatPane) == "CONTINUE_COMBAT":
             for character in [self.server.person[x] for x in self.server.pane[combatPane].person]:
                 self.shout_turn_start(character, turn="Monster")
-            self.monster_phase(combatPane)
+            self.monster_phase(combatPane, initial=True)
             for character in [self.server.person[x] for x in self.server.pane[combatPane].person]:
                 self.upkeep(character)
             # New Turn here
@@ -428,38 +442,88 @@ class CombatServer():
             if skipPlayerTurn:
                 self.check_turn_end(combatPane)
 
-    def monster_phase(self, combatPane):
+    def monster_turn_over(self, combatPane):
+        ''' Returns True if all monsters are done with their turns. '''
         chars = [self.server.person[x] for x in self.server.pane[combatPane].person]
-        players = [x for x in chars if x.team == "Players"]
         monsters = [x for x in chars if x.team == "Monsters" and x not in
                     self.combatStates[combatPane].deadMonsterSet]
         for mon in monsters:
-            self.check_field_trigger(mon, mon.cLocation)
-            visiblePlayers = []
-            for player in players:
-                if not player.inStealth() or player.hasStatus("Conceal"):
-                    visiblePlayers.append(player)
-                elif mon.detectStealth(player):
-                    visiblePlayers.append(player)
-                    Combat.sendCombatMessage("Detected " + player.name + "! (" +
-                                 str(mon.totalAwareness) + " vs " + str(player.totalSneak) + ")",
-                                player, color='red')
-            while( True ):
-                if not mon.getUsableAbilities(self.server, combatPane, visiblePlayers) and \
-                       mon.AP >= mon.totalMovementAPCost:
-                    moveResult = self.monsterMove(mon, visiblePlayers)
-                    if moveResult == "Failed":
-                        break
+            if self.combatStates[combatPane].monsterStatusDict[mon] != "TURN_OVER":
+                return False
+        return True
+                
+    def monster_phase(self, combatPane, initial=False):
+        start = time.clock()
+        
+        chars = [self.server.person[x] for x in self.server.pane[combatPane].person]
+        players = [x for x in chars if x.team == "Players"]
+        initMonsters = [x for x in chars if x.team == "Monsters" and x not in
+                    self.combatStates[combatPane].deadMonsterSet]
+                    
+        # Initialize Monster State
+        if initial:
+            for mon in initMonsters:
+                self.combatStates[combatPane].monsterStatusDict[mon] = "TURN_START"
+        monsters = [x for x in initMonsters if 
+                    self.combatStates[combatPane].monsterStatusDict[x] == "READY" or
+                    self.combatStates[combatPane].monsterStatusDict[x] == "TURN_START"]
+        if self.monster_turn_over(combatPane):
+            end = time.clock()
+            print str(end-start) + " turn over"
+            return
+        for mon in monsters:  
+            if self.combatStates[combatPane].monsterStatusDict[mon] == "TURN_START":
+                mon.detectedPlayers = []
+                self.check_field_trigger(mon, mon.cLocation)
+                for player in players:
+                    if not player.inStealth() or player.hasStatus("Conceal"):
+                        mon.detectedPlayers.append(player)
+                    elif mon.detectStealth(player):
+                        mon.detectedPlayers.append(player)
+                        Combat.sendCombatMessage("Detected " + player.name + "! (" +
+                                     str(mon.totalAwareness) + " vs " + str(player.totalSneak) + ")",
+                                    player, color='red')
+                self.combatStates[combatPane].monsterStatusDict[mon] = "READY"
+                
+            if self.combatStates[combatPane].monsterStatusDict[mon] == "READY":
+                # Try to use an ability.
+                if mon.getUsableAbilities(self.server, combatPane, mon.detectedPlayers):
+                    actionResult = mon.performAction(self.server, combatPane)
+                    if actionResult == "Failure":
+                        self.combatStates[combatPane].monsterStatusDict[mon] == "TURN_OVER"
+                    else:
+                        self.update_dead_people(combatPane)
+                    continue
+                # Try to move closer; does the monster have enough AP or movement tiles?
+                else: 
+                    #print "Considering Movement"
+                    if mon.remainingMovementTiles > 0:
+                        #print mon.name + " has movement tiles left: " + `mon.remainingMovementTiles`
+                        mon.remainingMovementTiles -= 1
+                    elif mon.AP >= mon.totalMovementAPCost:
+                        #print mon.name + " has AP left: " + `mon.AP`
+                        mon.AP -= mon.totalMovementAPCost
+                        mon.remainingMovementTiles = mon.totalMovementTiles - 1
+                    else:
+                        #print mon.name + " should be ending his turn."
+                        self.combatStates[combatPane].monsterStatusDict[mon] = "TURN_OVER"
+                        continue
+                    moveResult = self.monsterMove(mon)
+                    #print "Move Result: " + moveResult
+                    if moveResult == "NO_MOVE":
+                        self.combatStates[combatPane].monsterStatusDict[mon] = "TURN_OVER"
+                    elif moveResult == "DEAD":
+                        self.update_dead_people(combatPane)
+                        self.combatStates[combatPane].monsterStatusDict[mon] = "TURN_OVER"
                     else:
                         continue
-                message = mon.performAction(self.server, combatPane)
-                if message == "Failure":
-                    break
-        allCharIds = [charId for charId in self.server.pane[combatPane].person]
-        for charId in allCharIds:
-            #What does this line do?
-            char = self.server.person[charId]
-        return
+                        # The monster is currently moving.
+        end = time.clock()
+        print str(end-start) + " seconds to execute monster_phase()"
+        reactor.callLater(0.09, self.nextMonsterTick, combatPane)
+        
+    def nextMonsterTick(self, combatPane):
+        self.server.SDF.queue.put((None, Command("COMBAT", "CONTINUE", id=-1, cPane=combatPane)))
 
     def victory_phase(self, livingPlayers, combatPane):
         '''Cleans up arena, gives experience/gold to players,
@@ -610,3 +674,12 @@ class CombatState(object):
     def __init__(self):
         self.turnTimer = None
         self.deadMonsterSet = set([])
+        self.monsterStatusDict = {}
+        # Has form: Monster : 'READY'
+        # or Monster : 'MOVING'
+        # or Monster : 'TURN_START'
+        # or Monster : 'TURN_OVER'
+        
+        
+        
+        

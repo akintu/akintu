@@ -32,7 +32,8 @@ class GameServer():
             if command.type == "PERSON" and command.action == "REMOVE" and port \
                     and not hasattr(command, 'id'):
                 command.id = self.player[port]
-            if hasattr(command, 'id') and command.id in self.person and self.person[command.id].cPane:
+            if hasattr(command, 'id') and (command.id in self.person and self.person[command.id].cPane) or \
+                command.id == -1:
                 self.CS.handle(port, command)
                 continue
 
