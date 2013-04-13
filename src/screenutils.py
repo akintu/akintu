@@ -852,13 +852,13 @@ class CharacterDialog(object):
 
     def get_selection(self):
         '''
-        Compatability method to allow hide_dialog to function normally.
+        Compatibility method to allow hide_dialog to function normally.
         '''
         return None
 
     def move_selection(self, direction):
         '''
-        Compatability method to allow button presses
+        Compatibility method to allow button presses
         to function normally.
         '''
         return None
