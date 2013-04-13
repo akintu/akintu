@@ -514,7 +514,7 @@ class GameServer():
 
         if pid:
             minDist = (dist[u], u)
-            for loc in [l for l in Region("DIAMOND", u, self.person[pid].attackRange) if l.pane == loc1.pane]:
+            for loc in [l for l in Region("DIAMOND", u, self.person[pid].attackRange - 1) if l.pane == loc1.pane]:
                 if prev[loc] and dist[loc] < minDist[0]:
                     minDist = (dist[loc], loc)
             u = minDist[1]
