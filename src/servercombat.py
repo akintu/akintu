@@ -154,9 +154,12 @@ class CombatServer():
         if command.id in self.server.person:
             self.update_dead_people(self.server.person[command.id].cPane)
 
-        # This method calls update_dead_people internally.
+        # These method calls update_dead_people internally.
         elif command.type == "COMBAT" and command.action == "CONTINUE":
             self.monster_phase(command.cPane)
+            
+        elif command.type == "COMBAT" and command.action == "PLAYER_TURN":
+            self.prepare_player_turn(command.cPane)
 
     ### Utility Methods ###
 
@@ -417,31 +420,34 @@ class CombatServer():
                 self.shout_turn_start(character, turn="Monster")
             print "Starting monster turn."
             self.monster_phase(combatPane, initial=True)
-            for character in [self.server.person[x] for x in self.server.pane[combatPane].person]:
-                self.upkeep(character)
-            # New Turn here
-            for character in [self.server.person[x] for x in self.server.pane[combatPane].person]:
-                character.AP = character.totalAP
-                self.server.broadcast(Command("PERSON", "UPDATE", id=character.id, AP=character.AP),
-                        pane=combatPane)
-                if character.hasStatus("Stun") and character.team == "Players":
-                    Combat.modifyResource(character, "AP", -character.AP)
-            self.server.broadcast(Command("UPDATE", "TURNTIME"), pane=combatPane)
-            for character in [self.server.person[x] for x in self.server.pane[combatPane].person]:
-                self.shout_turn_start(character, turn="Player")
-            if self.server.turnTime > 0:
-                if self.combatStates[combatPane].turnTimer.active():
-                    self.combatStates[combatPane].turnTimer.cancel()
-                self.combatStates[combatPane].turnTimer = reactor.callLater(self.server.turnTime, self.check_turn_end,
-                        combatPane, True)
-            skipPlayerTurn = True
-            for character in [self.server.person[x] for x in self.server.pane[combatPane].person if self.server.person[x].team == "Players"]:
-                if character.AP > 0:
-                    skipPlayerTurn = False
-                    break
-            if skipPlayerTurn:
-                self.check_turn_end(combatPane)
-            print "Starting player turn."
+            
+    def prepare_player_turn(self, combatPane):
+        for character in [self.server.person[x] for x in self.server.pane[combatPane].person]:
+            self.upkeep(character)
+        # New Turn here
+        for character in [self.server.person[x] for x in self.server.pane[combatPane].person
+                            if self.server.person[x].team == "Players"]:
+            character.AP = character.totalAP
+            self.server.broadcast(Command("PERSON", "UPDATE", id=character.id, AP=character.AP),
+                    pane=combatPane)
+            if character.hasStatus("Stun"):
+                Combat.modifyResource(character, "AP", -character.AP)
+        self.server.broadcast(Command("UPDATE", "TURNTIME"), pane=combatPane)
+        for character in [self.server.person[x] for x in self.server.pane[combatPane].person]:
+            self.shout_turn_start(character, turn="Player")
+        if self.server.turnTime > 0:
+            if self.combatStates[combatPane].turnTimer.active():
+                self.combatStates[combatPane].turnTimer.cancel()
+            self.combatStates[combatPane].turnTimer = reactor.callLater(self.server.turnTime, self.check_turn_end,
+                    combatPane, True)
+        skipPlayerTurn = True
+        for character in [self.server.person[x] for x in self.server.pane[combatPane].person if self.server.person[x].team == "Players"]:
+            if character.AP > 0:
+                skipPlayerTurn = False
+                break
+        if skipPlayerTurn:
+            self.check_turn_end(combatPane)
+        print "Starting player turn."
                 
                 
     def monster_turn_over(self, combatPane):
@@ -478,6 +484,7 @@ class CombatServer():
         if self.monster_turn_over(combatPane):
             #end = time.clock()
             #print str(end-start) + " turn over"
+            self.server.SDF.queue.put((None, Command("COMBAT", "PLAYER_TURN", id=-1, cPane=combatPane)))
             return
         for mon in monsters:
             if self.combatStates[combatPane].monsterStatusDict[mon] == "TURN_START":
