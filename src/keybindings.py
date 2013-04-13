@@ -60,7 +60,7 @@ class Keystate():
         '''
         self.bindings = {
             "QUIT": (["escape", "CTRL+q", "CTRL+x", "META+q", "META+x"], "OVERWORLD"),
-            "SAVEMENUACCEPT": (["a", "space", "enter"], "SAVEMENU"),
+            "SAVEMENUACCEPT": (["a", "space", "return", "keypad enter"], "SAVEMENU"),
             "SAVEMENUCANCEL": ("escape", "SAVEMENU"),
 
             "FORCEQUIT": (["CTRL+SHIFT+q", "CTRL+SHIFT+x", "META+q+x"], self.ALL),
@@ -91,10 +91,10 @@ class Keystate():
             "SCROLLDOWN": (["page down", "-"], self.MOVEMENT),
             "SCROLLBOTTOM": (["SHIFT+page down", "SHIFT+-"], self.MOVEMENT),
 
-            "LEVELUPADVANCE": (["space", "a", "enter", "keypad enter"], "LEVELUP"),
+            "LEVELUPADVANCE": (["space", "a", "return", "keypad enter"], "LEVELUP"),
 
             "SHOPOPEN": ("F2", "OVERWORLD"),
-            "SHOPTRANSACTION": (["a", "enter", "keypad enter"], "SHOP"),
+            "SHOPTRANSACTION": (["a", "return", "keypad enter"], "SHOP"),
             "SHOPCLOSE": (["space", "escape"], "SHOP"),
 
             "INVENTORYOPEN": ("i", "OVERWORLD"),
@@ -117,13 +117,13 @@ class Keystate():
             "HELPMENUOPEN" : (["F1", "SHIFT+/"], "OVERWORLD"),
 
             "CONSUMABLEOPEN": ("i", "COMBAT"),
-            "CONSUMABLEUSE": (["space", "a"], "CONSUMABLE"),
+            "CONSUMABLEUSE": (["space", "a", "return", "keypad enter"], "CONSUMABLE"),
 
             "ABILITIESOPEN": ("space", "COMBAT"),
-            "ABILITIESSELECT": (["space", "a", "enter", "keypad enter"], "ABILITIES"),
+            "ABILITIESSELECT": (["space", "a", "return", "keypad enter"], "ABILITIES"),
 
             "SPELLSOPEN": ("b", "COMBAT"),
-            "SPELLSSELECT": (["space", "a", "enter", "keypad enter"], "SPELLS"),
+            "SPELLSSELECT": (["space", "a", "return", "keypad enter"], "SPELLS"),
 
             "SWITCHGEAR": ("o", "COMBAT"),
             "CYCLETARGETF": ("e", "COMBAT"),
