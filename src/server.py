@@ -512,10 +512,16 @@ class GameServer():
         path = []
         u = loc2
 
+        if pid:
+            minDist = (dist[u], u)
+            for loc in [l for l in Region("DIAMOND", u, self.person[pid].attackRange) if l.pane == loc1.pane]:
+                if prev[loc] and dist[loc] < minDist[0]:
+                    minDist = (dist[loc], loc)
+
         radius = 1
         while not prev[u]:
             R = Region("SQUARE", loc2, radius) - Region("SQUARE", loc2, radius - 1)
-            for loc in [l for l in R if l.pane == loc2.pane]:
+            for loc in [l for l in R if l.pane == loc1.pane]:
                 if prev[loc]:
                     u = loc
                     break
