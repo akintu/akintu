@@ -1039,18 +1039,343 @@ class TextDialog(object):
         '''
         return None
 
+
+class DualPaneDialog(object):
+    '''
+    Provides a two-paned, text-based dialog for use with keybindings
+    '''
+    def __init__(self,
+                 toptext,
+                 leftlist,
+                 rightlist,
+                 bgcolor='gray'):
+        '''
+        Initialize the class
+        '''
+        self.DEF_RECT = pygame.Rect(1, 1, 468, 28)
+        self.bgcolor = bgcolor
+        self.toptext = toptext
+        self.items = [leftlist, rightlist]
+        self.surface = pygame.Surface((1280, 640))
+        self.surface.fill(Color(self.bgcolor))
+        self.selection = (0, 0)
+        self.tops = [0, 0]
+        self.prevlocation = [0, 0]
+
+        self.leftitems = self._generateitems(self.items[0])
+        self.rightitems = self._generateitems(self.items[1])
+
+        self._drawtoptext()
+        self._drawitems()
+        self._updateselection()
+        self._drawborders()
+
+    def get_selection(self):
+        '''
+        Get the current selection
+        '''
+        return self.selection
+
+    def update_toptext(self, toptext):
+        '''
+        Update the top text
+        '''
+        self.toptext = toptext
+        self._drawtoptext()
+
+    def set_items(self, leftlist, rightlist, toptext=None):
+        '''
+        Set the items lists (and optionally the top text), redraw the dialog
+        '''
+        self.surface.fill(Color(self.bgcolor), (10, 60, 470, 590))
+        self.surface.fill(Color(self.bgcolor), (800, 60, 470, 590))
+        self.items = [leftlist, rightlist]
+        self.leftitems = self._generateitems(self.items[0])
+        self.rightitems = self._generateitems(self.items[1])
+
+        if len(self.leftitems) < 19:
+            self.tops[0] = 0
+        if len(self.rightitems) < 19:
+            self.tops[1] = 0
+        if toptext:
+            self.toptext = toptext
+            _drawtoptext()
+        self._drawitems()
+        # Recalculate the current position
+        self.move_selection(-1)
+        self._updateselection()
+
+        return self.selection
+
+    def move_selection(self, direction):
+        '''
+        Move the current selection (based on num pad directions, 2 4 6 8)
+        '''
+        selection = list(self.selection)
+        if direction == 2:
+            selection[1] += 1
+        elif direction == 4 or direction == 6:
+            self.prevlocation[selection[0]] = selection[1]
+            selection[0] = (selection[0] + 1) % 2
+            selection[1] = self.prevlocation[selection[0]]
+        elif direction == 8:
+            selection[1] -= 1
+        elif direction == -1:
+            pass
+        else:
+            raise Exception('Invalid direction passed to '
+                            'ItemDialog.move_selection')
+        selection[1] = min(selection[1], len(self.items[selection[0]]) - 1)
+        selection[1] = max(selection[1], 0)
+        if self.selection != selection:
+            self.selection = tuple(selection)
+        self._updateselection()
+
+        return self.selection
+
+    def _updateselection(self):
+        '''
+        Draw a rectangle around current selection, removing from previous
+
+        Also error-checks the current selection (in case of out of bounds or
+        empty lists)
+        '''
+        if not self.selection:
+            return
+
+        # Error-checking
+        if len(self.items[self.selection[0]]) == 0:
+            self.selection = ((self.selection[0] + 1) % 2, 0)
+        if len(self.items[self.selection[0]]) == 0:
+            self.selection = None
+            return
+
+        # Calculate new tops
+        pane, item = self.selection
+        top = self.tops[pane]
+        if item < top:
+            top = item
+        elif item >= top + 19:
+            top = item - 18
+        self.tops[pane] = top
+
+        self._drawitems()
+
+        drawindex = item - top
+
+        x = 10 + pane * 790
+        y = 60 + 30 * drawindex
+        pygame.draw.rect(self.surface,
+                         Color('yellow'),
+                         self.DEF_RECT.move(x, y),
+                         3)
+        text = self.items[pane][item].details
+        self._drawsidetext(text)
+
+    def _drawitems(self):
+        '''
+        Draw the two lists
+        '''
+        y = 60
+        x = 10
+        for i in range(self.tops[0],
+                       min(self.tops[0] + 19, len(self.leftitems))):
+            self.surface.blit(self.leftitems[i], (x, y))
+            y += 30
+        y = 60
+        x = 800
+        for i in range(self.tops[1],
+                       min(self.tops[1] + 19, len(self.rightitems))):
+            self.surface.blit(self.rightitems[i], (x, y))
+            y += 30
+
+    def _drawtoptext(self):
+        '''
+        Draw the top text area
+        '''
+        textsurface = self._generatetext(self.toptext, height=30, width=1280)
+        self.surface.blit(textsurface, (20, 10))
+
+    def _drawsidetext(self, text):
+        '''
+        Draw the side text area with the given text
+        '''
+        textsurface = self._generatetext(text, width=290, height=580, size=16)
+        self.surface.blit(textsurface, (495, 60))
+
+    def _drawborders(self):
+        '''
+        Draw the borders around the panes
+        '''
+        surface = self.surface
+        pygame.draw.line(surface, Color('black'), (0, 45), (1280, 45), 3)
+        pygame.draw.line(surface, Color('black'), (485, 45), (485, 640), 3)
+        pygame.draw.line(surface, Color('black'), (795, 45), (795, 640), 3)
+
+    def _generateitems(self, items):
+        surfaces = []
+
+        for item in items:
+            surfaces.append(self._generateitempane(item.displayName,
+                                                   item.color))
+        if len(surfaces) == 0:
+            surfaces.append(self._generateemptyitempane())
+
+        return surfaces
+
+    def _generateitempane(self, name, color):
+        '''
+        Generate a given item pane
+        '''
+        surface = pygame.Surface((470, 30))
+        surface.fill(Color(self.bgcolor))
+        font = pygame.font.SysFont('Arial', 18)
+        bgcolor = Color(self.bgcolor)
+
+        namefont = font.render(name, True, Color(color), bgcolor)
+        surface.blit(namefont, (5, 4))
+
+        return surface
+
+    def _generateemptyitempane(self):
+        '''
+        Generate en empty item
+        '''
+        surface = pygame.Surface((470, 30))
+        surface.fill(Color(self.bgcolor))
+        font = pygame.font.SysFont('Arial', 18)
+        curfont = font.render('Empty', True, Color('black'))
+        surface.blit(curfont, (5, 4))
+        return surface
+
+    def _generatetext(self,
+                      text,
+                      height=590,
+                      width=360,
+                      color='black',
+                      size=18):
+        '''
+        Generate a text surface of given height and width with the given text
+
+        Splits on newlines, does not wrap otherwise
+        '''
+        surface = pygame.Surface((width, height))
+        surface.fill(Color(self.bgcolor))
+        lines = text.split('\n')
+        y = 0
+        font = pygame.font.SysFont('Arial', size)
+        for line in lines:
+            curfont = font.render(line, True, Color(color))
+            surface.blit(curfont, (0, y))
+            y += curfont.get_rect().height
+        return surface
+
+
 if __name__ == '__main__':
+    import time
     pygame.init()
 
-    text = ''.join(['This is some text of reasonable length blah blah blah\n'
-                    '        Improves the quality of amulets and rings'
-                    ' discovered in treasure chests\n']*300)
-    title = 'Help screen of awesome!'
+    class TestItem(object):
+        def __init__(self, name, details, color):
+            self.displayName = name
+            self.color = color
+            self.details = details
 
     screen = pygame.display.set_mode((1280, 640))
-    dialog = TextDialog(text, title, bgcolor='gray')
+    litems = []
+    for i in range(25):
+        litems.append(TestItem('Item Number ' + str(i),
+                               'Some text for the middle pane\n',
+                               'black'))
+    ritems = []
+    for i in range(25):
+        ritems.append(TestItem('Item Number ' + str(i),
+                               'Some text for the middle pane\n',
+                               'black'))
+    dialog = DualPaneDialog('Keybindings',
+                            litems,
+                            ritems,
+                            bgcolor='lightblue')
     screen.blit(dialog.surface, (0, 0))
-    pygame.display.flip()
-
-    while(True):
+    while True:
+        for i in range(26):
+            time.sleep(.5)
+            dialog.move_selection(2)
+            print dialog.get_selection()
+            screen.blit(dialog.surface, (0, 0))
+            pygame.event.clear()
+            pygame.display.flip()
+        for i in range(22):
+            time.sleep(.5)
+            dialog.move_selection(8)
+            print dialog.get_selection()
+            screen.blit(dialog.surface, (0, 0))
+            pygame.event.clear()
+            pygame.display.flip()
+        time.sleep(1)
+        dialog.move_selection(6)
+        print dialog.get_selection()
+        screen.blit(dialog.surface, (0, 0))
         pygame.event.clear()
+        pygame.display.flip()
+        time.sleep(1)
+        dialog.move_selection(2)
+        print dialog.get_selection()
+        screen.blit(dialog.surface, (0, 0))
+        pygame.event.clear()
+        pygame.display.flip()
+        time.sleep(1)
+        dialog.move_selection(2)
+        print dialog.get_selection()
+        screen.blit(dialog.surface, (0, 0))
+        pygame.event.clear()
+        pygame.display.flip()
+        time.sleep(1)
+        dialog.move_selection(8)
+        print dialog.get_selection()
+        screen.blit(dialog.surface, (0, 0))
+        pygame.event.clear()
+        pygame.display.flip()
+        time.sleep(1)
+        dialog.move_selection(8)
+        print dialog.get_selection()
+        screen.blit(dialog.surface, (0, 0))
+        pygame.event.clear()
+        pygame.display.flip()
+        time.sleep(1)
+        dialog.move_selection(6)
+        print dialog.get_selection()
+        screen.blit(dialog.surface, (0, 0))
+        pygame.event.clear()
+        pygame.display.flip()
+        time.sleep(1)
+        dialog.move_selection(4)
+        print dialog.get_selection()
+        screen.blit(dialog.surface, (0, 0))
+        pygame.event.clear()
+        pygame.display.flip()
+        time.sleep(1)
+        dialog.move_selection(4)
+        print dialog.get_selection()
+        screen.blit(dialog.surface, (0, 0))
+        pygame.event.clear()
+        pygame.display.flip()
+        for i in range(22):
+            time.sleep(.5)
+            dialog.move_selection(2)
+            print dialog.get_selection()
+            screen.blit(dialog.surface, (0, 0))
+            pygame.event.clear()
+            pygame.display.flip()
+        time.sleep(1)
+        dialog.move_selection(4)
+        print dialog.get_selection()
+        screen.blit(dialog.surface, (0, 0))
+        pygame.event.clear()
+        pygame.display.flip()
+        time.sleep(1)
+        dialog.move_selection(4)
+        print dialog.get_selection()
+        screen.blit(dialog.surface, (0, 0))
+        pygame.event.clear()
+        pygame.display.flip()
