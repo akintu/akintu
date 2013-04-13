@@ -986,14 +986,15 @@ class TextDialog(object):
 
     def _draw_status(self):
         '''
-        Draw the actual status screen
+        Draw the actual text screen
         '''
         lines = self.text.splitlines()
         s = self.surface
 
-        pfont = pygame.font.Font('/tmp/Inconsolata.otf', 14)
-        hfont = pygame.font.Font('/tmp/Inconsolata.otf', 20)
-        nfont = pygame.font.Font('/tmp/Inconsolata.otf', 24)
+        fontpath = os.path.join('res', 'Inconsolata.otf')
+        pfont = pygame.font.Font(fontpath, 14)
+        hfont = pygame.font.Font(fontpath, 20)
+        nfont = pygame.font.Font(fontpath, 24)
 
         x = 10
         y = 5
@@ -1031,8 +1032,7 @@ class TextDialog(object):
 
     def move_selection(self, direction):
         '''
-        Compatibility method to allow button presses
-        to function normally.
+        Compatibility method to allow button presses to function normally.
         '''
         return None
 
