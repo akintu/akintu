@@ -959,9 +959,84 @@ class MenuDialog(object):
         self.surface.blit(textsurface, (x, y))
 
 
-if __name__ == '__main__':
-    import time
+class TextDialog(object):
+    '''
+    Provides a dialog for viewing arbitrary text.  Used for the help screens.
+    '''
+    def __init__(self,
+                 text,
+                 title,
+                 bgcolor='gray',
+                 nextkey='H',
+                 backkey='J',
+                 exitkey='K'):
+        '''
+        Initialize the class
+        '''
+        self.text = text
+        self.title = title
+        self.bgcolor = bgcolor
+        self.nkey = nextkey
+        self.bkey = backkey
+        self.ekey = exitkey
+        self.surface = pygame.Surface((1280, 640))
+        self.surface.fill(Color(self.bgcolor))
 
+        self._draw_status()
+
+    def _draw_status(self):
+        '''
+        Draw the actual status screen
+        '''
+        lines = self.text.splitlines()
+        s = self.surface
+
+        pfont = pygame.font.Font('/tmp/Inconsolata.otf', 14)
+        hfont = pygame.font.Font('/tmp/Inconsolata.otf', 20)
+        nfont = pygame.font.Font('/tmp/Inconsolata.otf', 24)
+
+        x = 10
+        y = 5
+
+        l = 'Press ' + self.bkey + ' to go back.'
+        f = hfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Press ' + self.nkey + ' for the next page.'
+        f = hfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+        l = 'Press ' + self.nkey + ' to exit.'
+        f = hfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height + 20
+        l = self.title
+        f = nfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height
+
+        for l in lines:
+            f = pfont.render(l, True, Color('black'))
+            s.blit(f, (x, y))
+            y += f.get_rect().height
+            if y + f.get_rect().height + 5 > 640:
+                y = 5
+                x += 640
+
+    def get_selection(self):
+        '''
+        Compatibility method to allow hide_dialog to function normally.
+        '''
+        return None
+
+    def move_selection(self, direction):
+        '''
+        Compatibility method to allow button presses
+        to function normally.
+        '''
+        return None
+
+if __name__ == '__main__':
     pygame.init()
 
     items = ['Save Game', 'Load Game', 'Quit Game', 'Party']
