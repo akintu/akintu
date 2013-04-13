@@ -451,16 +451,16 @@ class CombatServer():
                     self.combatStates[combatPane].deadMonsterSet]
         monFree = 0
         for mon in monsters:
-            print mon.name + " AP: " + str(mon.AP)
+            #print mon.name + " AP: " + str(mon.AP)
             if self.combatStates[combatPane].monsterStatusDict[mon] != "TURN_OVER":
                 monFree += 1
-        print str(monFree)
+        #print str(monFree)
         if monFree == 0:
             return True
         return False
 
     def monster_phase(self, combatPane, initial=False):
-        start = time.clock()
+        #start = time.clock()
 
         chars = [self.server.person[x] for x in self.server.pane[combatPane].person]
         players = [x for x in chars if x.team == "Players"]
@@ -476,8 +476,8 @@ class CombatServer():
                     self.combatStates[combatPane].monsterStatusDict[x] == "READY" or
                     self.combatStates[combatPane].monsterStatusDict[x] == "TURN_START"]
         if self.monster_turn_over(combatPane):
-            end = time.clock()
-            print str(end-start) + " turn over"
+            #end = time.clock()
+            #print str(end-start) + " turn over"
             return
         for mon in monsters:
             if self.combatStates[combatPane].monsterStatusDict[mon] == "TURN_START":
@@ -526,8 +526,8 @@ class CombatServer():
                     else:
                         continue
                         # The monster is currently moving.
-        end = time.clock()
-        print str(end-start) + " seconds to execute monster_phase()"
+        #end = time.clock()
+        #print str(end-start) + " seconds to execute monster_phase()"
         reactor.callLater(0.09, self.nextMonsterTick, combatPane)
 
     def nextMonsterTick(self, combatPane):
