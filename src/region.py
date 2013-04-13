@@ -150,6 +150,12 @@ class Region:
 
     def square(self, loc1, loc2):
         locations = set()
+
+        if not isinstance(loc2, Location):
+            d = loc2
+            loc2 = loc1.move(3, d)
+            loc1 = loc1.move(7, d)
+
         for y in loc1.line_to(Location(loc1.abs_x, loc2.abs_y)):
             for x in loc1.line_to(Location(loc2.abs_x, loc1.abs_y)):
                 locations |= {Location(x.abs_x, y.abs_y)}
