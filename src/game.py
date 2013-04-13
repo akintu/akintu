@@ -742,7 +742,6 @@ class Game(object):
                     p = self.pane.person[self.id].location.pane
                     loc1 = Location(p, (random.randint(0, PANE_X - 1), random.randint(0, PANE_Y - 1)))
                     loc2 = Location(p, (random.randint(0, PANE_X - 1), random.randint(0, PANE_Y - 1)))
-                    print loc1, loc2
 #                    loc1 = Location(0, 0)
 #                    loc2 = Location(PANE_X - 1, PANE_Y - 1)
                     path = Region(self.gs.find_path(loc1, loc2, self.id if self.combat else None))

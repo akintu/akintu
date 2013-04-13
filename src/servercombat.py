@@ -278,7 +278,7 @@ class CombatServer():
             desiredLocation = path[1] # Src is included in path.
             self.combatStates[monster.cPane].monsterStatusDict[monster] = "MOVING"
             action = Command("PERSON", "MOVE", id=monster.id, location=desiredLocation)
-            self.server.broadcast(action, -monster.id)
+            self.server.SDF.queue.put((None, action))
             self.check_field_trigger(monster, desiredLocation)
             self.check_trap_trigger(monster, desiredLocation)
             # Monsters can die from traps.

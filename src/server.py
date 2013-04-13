@@ -495,10 +495,9 @@ class GameServer():
                 break
 
             neighbors = [u.move(dir) for dir in [2, 4, 6, 8]]
-            neighbors = [v for v in neighbors if v in Q and self.tile_is_open(v, pid, cPane)]
+            neighbors = [v for v in neighbors if v in Q and (self.tile_is_open(v, pid, cPane) or v == loc2)]
             for v in neighbors:
                 Q.remove(v)
-#                print Region(list(Q))
                 alt = dist[u] + u.distance(v)
                 if alt < dist[v]:
                     dist[v] = alt
