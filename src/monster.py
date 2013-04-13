@@ -103,12 +103,13 @@ class Monster(person.Person):
         # self.levelupPoisonTolerance = Monster.setFrom(argDict, 'levelupPoisonTolerance')
         # self.levelupSpellpower = Monster.setFrom(argDict, 'levelupSpellpower')
         # self.levelupStrength = Monster.setFrom(argDict, 'levelupStrength')
-        self.remainingMovementTiles = 0 # Dummy stat used to avoid type checking -- what a lame hack.
+        self.remainingMovementTiles = 0
                 
         self.registerBasicAttacks()
 
         self.levelSet = False
         self.currentCombatPane = None
+        self.detectedPlayers = []
 
     def registerBasicAttacks(self):
         self.abilityList.append(ability.Ability("Melee Attack", self))

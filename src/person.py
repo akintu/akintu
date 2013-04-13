@@ -2348,6 +2348,10 @@ class Person(en.Entity):
         '''The overworld movement speed.'''
         return 5 * float(self.totalMovementTiles) / float(self.totalMovementAPCost)
 
+    @property
+    def movementTime(self):
+        return (1.0 / self.movementSpeed)
+        
     def resource(self, type, quantity):
         """Returns True if the Person has at least 'quantity' of the resource.
         Inputs:
