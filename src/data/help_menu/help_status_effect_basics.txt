@@ -1,0 +1,25 @@
+# help_status_effects_basics.txt
+
+Status Effects are altered states of being for a character or monster.
+These include beneficial statuses (sometimes called "buffs") as well as
+detrimental statuses (sometimes called "debuffs").  Most statuses have a 
+duration, of number of turns remaining, associated with them.  When the 
+duration expires, the status effect is removed.
+
+Status icons representing the status, and a number of turns until removal
+are displayed on every character and monster's unit frames on the right
+side of the screen.
+
+Some statuses do not expire in a standard way.  These are usually statuses
+like "Stealth" that have alternate ways to expire (such as via attacking.)
+Such statuses will not have a duration displayed alongside it on the
+screen.
+
+Some statuses have elements that indicate which kind of potion should be
+used to remove it.  For instance, a Cold elemental monster might apply a 
+cold-based status effect on you.  In that case, you could use the
+appropriate potion to relieve the status: a "thawing potion."
+
+Some area-of-effect spells such as Smoke Screen and Zone of Silence apply
+a buff or debuff to characters and monsters simply by walking through the
+affected area they cover.
