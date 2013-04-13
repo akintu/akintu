@@ -120,6 +120,26 @@ class GameScreen(object):
         pygame.display.update()
         return self.dialog.get_selection()
 
+    def show_text_dialog(self,
+                         text,
+                         title,
+                         bgcolor='gray',
+                         nextkey='N',
+                         backkey='B',
+                         exitkey='Q'):
+        '''
+        Show a text dialog
+        '''
+        self.dialog = screenutils.TextDialog(text,
+                                             title,
+                                             bgcolor,
+                                             nextkey,
+                                             backkey,
+                                             exitkey)
+        self.screen.blit(self.dialog.surface, (0, 0))
+        pygame.display.update()
+        return None
+
     def update_item_dialog_text(self, text, capacity=None, gold=None):
         '''
         Update the top text (and optionally capacity) of an item dialog
