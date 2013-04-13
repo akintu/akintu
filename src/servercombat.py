@@ -157,7 +157,7 @@ class CombatServer():
         # These method calls update_dead_people internally.
         elif command.type == "COMBAT" and command.action == "CONTINUE":
             self.monster_phase(command.cPane)
-            
+
         elif command.type == "COMBAT" and command.action == "PLAYER_TURN":
             self.prepare_player_turn(command.cPane)
 
@@ -278,7 +278,7 @@ class CombatServer():
             path = self.server.find_path(src, dest, monster.id)
             if len(path) <= 1:
                 return "NO_MOVE"
-            desiredLocation = path[1] # Src is included in path.
+            desiredLocation = path[0] # Src is not included in path.
             self.combatStates[monster.cPane].monsterStatusDict[monster] = "MOVING"
             action = Command("PERSON", "MOVE", id=monster.id, location=desiredLocation)
             self.server.SDF.queue.put((None, action))
@@ -420,7 +420,7 @@ class CombatServer():
                 self.shout_turn_start(character, turn="Monster")
             print "Starting monster turn."
             self.monster_phase(combatPane, initial=True)
-            
+
     def prepare_player_turn(self, combatPane):
         for character in [self.server.person[x] for x in self.server.pane[combatPane].person]:
             self.upkeep(character)
@@ -448,8 +448,8 @@ class CombatServer():
         if skipPlayerTurn:
             self.check_turn_end(combatPane)
         print "Starting player turn."
-                
-                
+
+
     def monster_turn_over(self, combatPane):
         ''' Returns True if all monsters are done with their turns. '''
         chars = [self.server.person[x] for x in self.server.pane[combatPane].person]

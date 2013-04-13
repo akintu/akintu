@@ -478,6 +478,11 @@ class GameServer():
                 return p
 
     def find_path(self, loc1, loc2, pid=None, cPane=None):
+        if loc1 == loc2:
+            return []
+        if loc1.distance(loc2) == 1:
+            return [loc2]
+
         Q = Region("SQUARE", Location(loc1.pane, (0, 0)), Location(loc1.pane, (PANE_X - 1, PANE_Y - 1))).locations
         dist = {}
         prev = {}
