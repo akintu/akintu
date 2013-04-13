@@ -398,7 +398,6 @@ class GameScreen(object):
             - 'restrictedAP'
             - 'level'
             - 'size'
-            - 'stealth'
             - 'statusList'
 
         To be supported in the future:
@@ -412,7 +411,7 @@ class GameScreen(object):
            'location' not in statsdict or \
            'team' not in statsdict:
             raise Exception('Image, location, or team not defined')
-        for attr in ['xoffset', 'yoffset', 'foot', 'stealth']:
+        for attr in ['xoffset', 'yoffset', 'foot']:
             if attr not in statsdict:
                 statsdict[attr] = 0
 
@@ -961,7 +960,10 @@ class PersonSprite(pygame.sprite.DirtySprite):
         foot = self.statsdict['foot']
         xoff = self.statsdict['xoffset']
         yoff = self.statsdict['yoffset']
-        stealth = self.statsdict['stealth']
+        stealth = 0
+        for status in ['Stealth', 'Shadow Walk', 'Conceal']:
+            if status in self.statsdict.get('statusList', []):
+                stealth = 1
         self.image = self.images[foot + (2 * stealth)][loc.direction]
         self.rect = self.image.get_rect()
         self.current_coord = loc
@@ -977,7 +979,10 @@ class PersonSprite(pygame.sprite.DirtySprite):
         foot = self.statsdict['foot']
         xoff = self.statsdict['xoffset']
         yoff = self.statsdict['yoffset']
-        stealth = self.statsdict['stealth']
+        stealth = 0
+        for status in ['Stealth', 'Shadow Walk', 'Conceal']:
+            if status in self.statsdict.get('statusList', []):
+                stealth = 1
         loc = self.current_coord
         self.rect.topleft = (loc.tile[0] * TILE_SIZE + xoff,
                              loc.tile[1] * TILE_SIZE + yoff)
