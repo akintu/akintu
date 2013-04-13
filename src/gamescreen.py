@@ -142,6 +142,43 @@ class GameScreen(object):
         pygame.display.update()
         return None
 
+    def show_dual_pane_dialog(self,
+                              text,
+                              leftitems,
+                              rightitems,
+                              bgcolor='gray'):
+        '''
+        Show a dual pane dialog with the given parameters
+        '''
+        self.dialog = screenutils.ItemDialog(text,
+                                             leftitems,
+                                             rightitems,
+                                             bgcolor)
+        self.screen.blit(self.dialog.surface, (0, 0))
+        pygame.display.update()
+        return self.dialog.get_selection()
+
+    def update_dual_pane_dialog_text(self, text):
+        '''
+        Update the top text of a dual pane dialog
+        '''
+        if not self.dialog:
+            return None
+        self.dialog.update_toptext(text)
+        self.screen.blit(self.dialog.surface, (0, 0))
+        pygame.display.update()
+
+    def update_dual_pane_dialog_items(self, leftitems, rightitems):
+        '''
+        Update the item lists in the item dialog
+        '''
+        if not self.dialog:
+            return None
+        ret = self.dialog.set_items(leftitems, rightitems)
+        self.screen.blit(self.dialog.surface, (0, 0))
+        pygame.display.update()
+        return ret
+
     def update_item_dialog_text(self, text, capacity=None, gold=None):
         '''
         Update the top text (and optionally capacity) of an item dialog
