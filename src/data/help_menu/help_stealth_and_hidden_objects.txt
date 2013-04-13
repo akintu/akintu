@@ -1,0 +1,29 @@
+# help_stealth_and_hidden_objects.txt
+
+Detecting Traps
+
+The attributes Awareness and Intuition are both used to detect hidden
+traps. Whichever of those two attributes is higher will be used to detect 
+hidden traps -- they do not add together.  Every hidden trap in combat will
+be silently checked to see if any players can see it.  The better your
+Awarness/Intuition you have, the greater the chance of detection.  
+
+As soon as one player can see a trap, he will automatically mark that trap
+for all other players to see.  Traps can still be triggered by stepping on
+them, however.  Traps that are visible are capable of being disarmed by 
+adjacent players with the Disarm Trap skill.
+
+When a trap is more than 4 tiles away from a player, she will have a lower
+chance of detecting it than usual.  The chance decreases the further away
+the player is from the hidden trap.  Players cannot detect traps more than
+10 tiles away.
+
+
+Stealth
+
+When you enter stealth, your Sneak attributed is compared against the
+Awareness attribute of every monster in combat with you.  Every turn, each
+monster will try to detect you.  If it succeeds, it will treat you as any
+other non-stealthed player for that turn.  Each turn, every monster has to
+make that check to detect you.  Monsters with high Cunning have high
+Awareness.
