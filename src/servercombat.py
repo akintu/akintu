@@ -276,7 +276,7 @@ class CombatServer():
             src = monster.cLocation
             dest = player.cLocation
             path = self.server.find_path(src, dest, monster.id)
-            if len(path) <= 2:
+            if len(path) <= 1:
                 return "NO_MOVE"
             desiredLocation = path[1] # Src is included in path.
             self.combatStates[monster.cPane].monsterStatusDict[monster] = "MOVING"
