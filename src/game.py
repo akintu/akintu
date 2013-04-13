@@ -574,7 +574,7 @@ class Game(object):
                     keystate.inputState = "CHARSHEET"
                 elif e == "CHARSHEETCLOSE":
                     self.screen.hide_dialog()
-                    keystate.inputState = "OVERWORLD"
+                    keystate.inputState = "OVERWORLD" if not self.combat else "COMBAT"
                 elif e == "CHARSHEETMAIN":
                     self.display_character_sheet()
                 elif e == "CHARSHEETABILITIES":
