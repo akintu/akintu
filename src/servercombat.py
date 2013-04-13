@@ -323,8 +323,7 @@ class CombatServer():
         target.cooldownList[:] = [x for x in target.cooldownList if x[1] > 0]
 
         # Reset remaining movement tiles.
-        if target.team == "Players":
-            Combat.decrementMovementTiles(target, removeAll=True)
+        Combat.decrementMovementTiles(target, removeAll=True)
 
         # Decremenet the client's view of the statuses.
         action = Command("PERSON", "DECREMENT_STATUSES", id=target.id)
@@ -416,6 +415,7 @@ class CombatServer():
         if self.update_dead_people(combatPane) == "CONTINUE_COMBAT":
             for character in [self.server.person[x] for x in self.server.pane[combatPane].person]:
                 self.shout_turn_start(character, turn="Monster")
+            print "Starting monster turn."
             self.monster_phase(combatPane, initial=True)
             for character in [self.server.person[x] for x in self.server.pane[combatPane].person]:
                 self.upkeep(character)
@@ -441,16 +441,23 @@ class CombatServer():
                     break
             if skipPlayerTurn:
                 self.check_turn_end(combatPane)
-
+            print "Starting player turn."
+                
+                
     def monster_turn_over(self, combatPane):
         ''' Returns True if all monsters are done with their turns. '''
         chars = [self.server.person[x] for x in self.server.pane[combatPane].person]
         monsters = [x for x in chars if x.team == "Monsters" and x not in
                     self.combatStates[combatPane].deadMonsterSet]
+        monFree = 0
         for mon in monsters:
+            print mon.name + " AP: " + str(mon.AP)
             if self.combatStates[combatPane].monsterStatusDict[mon] != "TURN_OVER":
-                return False
-        return True
+                monFree += 1
+        print str(monFree)
+        if monFree == 0:
+            return True
+        return False
 
     def monster_phase(self, combatPane, initial=False):
         start = time.clock()
@@ -464,6 +471,7 @@ class CombatServer():
         if initial:
             for mon in initMonsters:
                 self.combatStates[combatPane].monsterStatusDict[mon] = "TURN_START"
+                mon.AP = mon.totalAP
         monsters = [x for x in initMonsters if
                     self.combatStates[combatPane].monsterStatusDict[x] == "READY" or
                     self.combatStates[combatPane].monsterStatusDict[x] == "TURN_START"]

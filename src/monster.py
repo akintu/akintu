@@ -323,6 +323,12 @@ class Monster(person.Person):
         closestDistance = 999
         closestPlayer = None
         for player in visiblePlayers:
+            if player.cPane != self.cPane:
+                try:
+                    self.detectedPlayers.remove(player)
+                except:
+                    pass
+                continue
             thisDistance = self.cLocation.distance(player.cLocation)
             if thisDistance < closestDistance:
                 closestDistance = thisDistance
