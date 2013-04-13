@@ -194,6 +194,7 @@ class ItemDialog(object):
         self.gold = gold
         self.discount = discount
         self.valuemod = valuemod
+        self.prevlocation = [0, 0]
 
         self.leftitems = self._generateitems(self.items[0], self.valuemod[0])
         self.rightitems = self._generateitems(self.items[1],
@@ -263,7 +264,9 @@ class ItemDialog(object):
         if direction == 2:
             selection[1] += 1
         elif direction == 4 or direction == 6:
+            self.prevlocation[selection[0]] = selection[1]
             selection[0] = (selection[0] + 1) % 2
+            selection[1] = self.prevlocation[selection[0]]
         elif direction == 8:
             selection[1] -= 1
         elif direction == -1:
