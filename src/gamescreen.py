@@ -126,7 +126,8 @@ class GameScreen(object):
                          bgcolor='gray',
                          nextkey='N',
                          backkey='B',
-                         exitkey='Q'):
+                         exitkey='Q',
+                         topkey='T'):
         '''
         Show a text dialog
         '''
@@ -135,7 +136,8 @@ class GameScreen(object):
                                              bgcolor,
                                              nextkey,
                                              backkey,
-                                             exitkey)
+                                             exitkey,
+                                             topkey)
         self.screen.blit(self.dialog.surface, (0, 0))
         pygame.display.update()
         return None

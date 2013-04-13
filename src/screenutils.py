@@ -972,7 +972,8 @@ class TextDialog(object):
                  bgcolor='gray',
                  nextkey='H',
                  backkey='J',
-                 exitkey='K'):
+                 exitkey='K',
+                 topkey='T'):
         '''
         Initialize the class
         '''
@@ -982,6 +983,7 @@ class TextDialog(object):
         self.nkey = nextkey
         self.bkey = backkey
         self.ekey = exitkey
+        selt.tkey = topkey
         self.surface = pygame.Surface((1280, 640))
         self.surface.fill(Color(self.bgcolor))
 
@@ -1011,6 +1013,10 @@ class TextDialog(object):
         s.blit(f, (x, y))
         y += f.get_rect().height
         l = 'Press ' + self.nkey + ' to exit.'
+        f = hfont.render(l, True, Color('black'))
+        s.blit(f, (x, y))
+        y += f.get_rect().height + 20
+        l = 'Press ' + self.tkey + ' to go to the top.'
         f = hfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height + 20
