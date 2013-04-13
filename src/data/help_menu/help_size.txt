@@ -1,0 +1,18 @@
+# help_size.txt
+
+Size is an attribute that only monsters have.  It is represented by a small
+character to the left of their level, displayed on their unit frames.  For
+example, the text: "S L3" indicates that the monster is small and is level 
+3.  
+
+Size plays a role in specific abiliites.  Usually, larger monsters are
+resistant to abiliites that are sensitive to size.  However, there are a 
+few exceptions (such as the spell "Shrink") that work less effectively 
+against smaller monsters.  
+
+The possible sizes are:
+
+SMALL  -- S
+MEDIUM -- M
+LARGE  -- L
+HUGE   -- H
