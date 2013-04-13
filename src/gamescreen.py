@@ -1042,3 +1042,16 @@ def generate_overlay(width, height, rgba):
         for y in range(height):
             surface.set_at((x, y), rgba)
     return surface
+
+
+class Item(object):
+    '''
+    Generic item, for use in the DualPaneDialog
+    '''
+    def __init__(self, name, details, color):
+        '''
+        Initialize the item
+        '''
+        self.displayName = name
+        self.color = color
+        self.details = details
