@@ -4,6 +4,7 @@ Insides of buildings
 
 from pane import *
 from sprites import *
+from fields import *
 
 class Building(Pane):
     '''
@@ -24,6 +25,7 @@ class Building(Pane):
         self.objects = dict()
         self.person = {}
         self.hostileTraps = []
+        self.fields = Fields()
         self.path_sheet = Sprites.get_sheet(PATH_KEY)   
         random.seed(self.seed + str(self.location))
         self.floor_image = self.path_sheet.getimage((random.randrange(0, 4), 3))
