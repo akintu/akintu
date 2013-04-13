@@ -477,8 +477,8 @@ class GameServer():
             if cPane == p.location:
                 return p
 
-    def find_path(self, loc1, loc2):
-        Q = Region("SQUARE", Location(0, 0), Location(PANE_X - 1, PANE_Y - 1)).locations
+    def find_path(self, loc1, loc2, pid=None, cPane=None):
+        Q = Region("SQUARE", Location(loc1.pane, (0, 0)), Location(loc1.pane, (PANE_X - 1, PANE_Y - 1))).locations
         dist = {}
         prev = {}
         q = PriorityQueue()
@@ -495,7 +495,7 @@ class GameServer():
                 break
 
             neighbors = [u.move(dir) for dir in [2, 4, 6, 8]]
-            neighbors = [v for v in neighbors if v in Q and self.tile_is_open(v)]
+            neighbors = [v for v in neighbors if v in Q and self.tile_is_open(v, pid, cPane)]
             for v in neighbors:
                 Q.remove(v)
 #                print Region(list(Q))

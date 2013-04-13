@@ -739,11 +739,14 @@ class Game(object):
                         self.pane.fields.remove_field(self.fieldsRegion[0])
                         self.update_regions()
                     spell = random.choice(["Smoke Screen", "Zone of Silence", "Pit"])
-                    loc1 = Location(random.randint(0, PANE_X - 1), random.randint(0, PANE_Y - 1))
-                    loc2 = Location(random.randint(0, PANE_X - 1), random.randint(0, PANE_Y - 1))
+                    p = self.pane.person[self.id].location.pane
+                    loc1 = Location(p, (random.randint(0, PANE_X - 1), random.randint(0, PANE_Y - 1)))
+                    loc2 = Location(p, (random.randint(0, PANE_X - 1), random.randint(0, PANE_Y - 1)))
+                    print loc1, loc2
 #                    loc1 = Location(0, 0)
 #                    loc2 = Location(PANE_X - 1, PANE_Y - 1)
-                    self.pane.fields.add_field(spell, Region(self.gs.find_path(loc1, loc2)))
+                    path = Region(self.gs.find_path(loc1, loc2, self.id if self.combat else None))
+                    self.pane.fields.add_field(spell, path)
                     self.update_regions()
 
     def get_item(self):
@@ -772,7 +775,7 @@ class Game(object):
                 self.screen.show_text("LEVEL UP!" , color='magenta')
         else:
             pass
-            
+
     def request_respec(self):
         action = Command("RESPEC", "REQUESTRESPEC", id=self.id)
         self.CDF.send(action)
@@ -1040,8 +1043,8 @@ class Game(object):
         dirty += self.targetRegion ^ target
         self.targetRegion = target
 
-        trapList = [l for l in Region("SQUARE", Location(0, 0), Location(PANE_X - 1, PANE_Y - 1)) if \
-                self.pane.tiles[l.tile].trap]
+        trapList = [l for l in Region("SQUARE", Location(self.pane.person[self.id].location.pane, \
+                (0, 0)), Location(PANE_X - 1, PANE_Y - 1)) if self.pane.tiles[l.tile].trap]
         traps = Region(trapList)
         dirty += self.trapsRegion ^ traps
         self.trapsRegion = traps
@@ -1051,7 +1054,7 @@ class Game(object):
         self.fieldsRegion = fields
 
 
-        for l in (l for l in dirty if l.pane == (0, 0)):
+        for l in (l for l in dirty if l.pane == self.pane.person[self.id].location.pane):
             overlay = []
             if l == self.pane.person[self.id].location and self.combat:
                 overlay.append('blue')
