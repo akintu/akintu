@@ -506,6 +506,15 @@ class GameServer():
 
         path = []
         u = loc2
+
+        radius = 1
+        while not prev[u]:
+            R = Region("SQUARE", loc2.move(7, radius), loc2.move(3, radius))
+            for loc in [l for l in R if l.pane == loc2.pane]:
+                if prev[loc]:
+                    u = loc
+                    break
+
         while prev[u]:
             path.append(u)
             u = prev[u]
