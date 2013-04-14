@@ -38,6 +38,7 @@ class Stamp(object):
     loaded = False
 
     def __init__(self, size, data):
+        self.size = size
         self.width = size[0]
         self.height = size[1]
         self.data = data

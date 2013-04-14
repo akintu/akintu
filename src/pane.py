@@ -132,7 +132,7 @@ class Pane(object):
         else:   #TODO: Make this better. We're creating monsters from scratch here
             pass
             random.seed(self.seed + str(self.location) + "load_monsters")
-            for i in range(3):
+            for i in range(0):
                 self.add_monster()
 
     def add_monster(self, level=None, tolerance=None, location=None, region=None, ai=None):
