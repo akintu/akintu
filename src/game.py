@@ -272,6 +272,13 @@ class Game(object):
                 if command.id == self.id:
                     self.running = False
 
+            ###### Hardcore Death Screen #####
+            if command.type == "CLIENT" and command.action == "DEATH":
+                if command.id == self.id:
+                    keystate.inputState = "DEATH"
+                    self.screen.show_menu_dialog(["Aw, shucks."], 'red', "You have died -- restart a new character.")
+                    
+                    
             ###### Levelup Player ######
             if command.type == "PERSON" and command.action == "REPLACE":
                 if self.pane.person[command.id].anim:
@@ -549,6 +556,11 @@ class Game(object):
                 elif e == "SCROLLBOTTOM":
                     self.screen.scroll_down(1000)
 
+                elif e == "DEATHCONTINUE":
+                    self.screen.hide_dialog()
+                    keystate.inputState = "OVERWORLD"
+                    self.screen.show_text("You have begun anew, at level 1.")
+                    
                 ### Save Menu ###
                 elif e == "SAVEMENUACCEPT":
                     selection = self.screen.hide_dialog()

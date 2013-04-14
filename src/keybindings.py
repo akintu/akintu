@@ -29,9 +29,9 @@ class Keystate():
                         "DOWNRIGHT": 3}
 
         self.ALL = ["OVERWORLD", "LEVELUP", "INVENTORY", "CONSUMABLE", "TARGET", "SHOP", "ABILITIES", "SPELLS", "COMBAT", "CHARSHEET",
-                    "SAVEMENU", "HELPMENU"]
+                    "SAVEMENU", "HELPMENU", "DEATH"]
         self.MOVEMENT = ["OVERWORLD", "COMBAT"]
-        self.DIALOG = ["LEVELUP", "INVENTORY", "CONSUMABLE", "SHOP", "ABILITIES", "SPELLS", "CHARSHEET", "SAVEMENU", "HELPMENU"]
+        self.DIALOG = ["LEVELUP", "INVENTORY", "CONSUMABLE", "SHOP", "ABILITIES", "SPELLS", "CHARSHEET", "SAVEMENU", "HELPMENU", "DEATH"]
 
         '''
         The bindings data structure is a bit involved, so get your thinking cap on for this.
@@ -62,6 +62,8 @@ class Keystate():
             "QUIT": (["escape", "CTRL+q", "CTRL+x", "META+q", "META+x"], "OVERWORLD"),
             "SAVEMENUACCEPT": (["a", "space", "return", "keypad enter"], "SAVEMENU"),
             "SAVEMENUCANCEL": ("escape", "SAVEMENU"),
+            
+            "DEATHCONTINUE": (["a", "space", "return", "keypad enter", "escape"], "DEATH"),
 
             "FORCEQUIT": (["CTRL+SHIFT+q", "CTRL+SHIFT+x", "META+q+x"], self.ALL),
 
