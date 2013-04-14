@@ -173,7 +173,8 @@ class CombatServer():
         detectedTraps = []
         for trap in hostileTraps:
             if not trap.visible:
-                if Dice.rollTrapDetect(trap, player):
+                difference = player.cLocation.distance(trap.location)
+                if Dice.rollTrapDetect(trap, player, difference):
                     detectedTraps.append(trap)
 
         # Actually discover the trap.

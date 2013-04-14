@@ -149,12 +149,16 @@ class Dice(object):
             return True
 
     @staticmethod
-    def rollTrapDetect(trap, player):
+    def rollTrapDetect(trap, player, distance=1):
         '''Determines if the player detects the trap this turn.
         Returns True or False.'''
         Dice.stashGen()
-        adjustedDifficulty = round((trap.level * 3 + 13) * random.uniform(0.75, 1.0))
+        adjustedDifficulty = round((trap.level * 3 + 12) * random.uniform(0.75, 1.0))
         adjustedDetection = round(max(player.totalAwareness, player.totalIntuition) * random.uniform(0.75, 1.0))
+        if 4 < distance <= 10:
+            adjustedDetection *= (1 - (distance - 4) * 0.1)
+        elif 10 < distance:
+            adjustedDetection = 0
         wasDetected = False
         if adjustedDetection >= adjustedDifficulty:
             wasDetected = True
