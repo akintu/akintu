@@ -129,10 +129,11 @@ class Township(object):
 
     def addMonsters(self, monster):
         for i in range(int(monster*TOWNSHIP_X*TOWNSHIP_Y)):
-            self._placeStamp(Stamp((1, 1), "m"), threshhold=100)
+            self._placeStamp(Stamp((1, 1), "m"))
 
     def addTreasure(self, treasure):
-        pass
+        for i in range(int(treasure*TOWNSHIP_X*TOWNSHIP_Y)):
+            self._placeStamp(Stamp((1, 1), "$"))
 
     def _placeStamp(self, stamp, threshhold=100, pane=None):
         size = stamp.size
@@ -168,6 +169,12 @@ class Township(object):
         width = stamp.width
         height = stamp.height
 
+        #Replace all "+" with an obstacle other than water
+        obst_key = "water"
+        while obst_key == "water":
+            obst_key = random.choice(sorted(OBSTACLES))
+        char = Stamp.obst_dict[obst_key] if obst_key in Stamp.obst_dict or obst_key == "water" else "+"
+
         i = 0
         for y in range(loc[1], loc[1]+height):
             # Get our start/end points of the stamp string
@@ -177,7 +184,7 @@ class Township(object):
             j = 0
             for x in range(loc[0], loc[0]+width):
                 # Replace character in stamp_array with character from string
-                self.stamp_array[y][x] = string[j]
+                self.stamp_array[y][x] = string[j].replace("+", char)
                 j += 1
             i += 1
 

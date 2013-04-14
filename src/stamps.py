@@ -35,6 +35,7 @@ class Stamp(object):
                 'S':'shop',
                 'D':'dungeon',
                 'P':'portal'}
+    obst_dict = dict((v,k) for k,v in key_dict.iteritems())
     loaded = False
 
     def __init__(self, size, data):

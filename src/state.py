@@ -24,15 +24,19 @@ class State(object):
         path_to_file = os.path.join(path, filename)
         try:
             if os.path.exists(path_to_file):
-                print "Attempting to open " + path_to_file
-                data = pickle.load( open( path_to_file, "rb" ) )
-                # file = open(path_to_file, "rb")
-                # for line in file:
-                    # pass
-                # last = line
-                # file.close()
-                # print "Unpickled Data: "
-                # print data
+                #print "Attempting to open " + path_to_file
+                if pickled:
+                    data = pickle.load( open( path_to_file, "rb" ) )
+                else:
+                    print "Use of State.load(pickled=False) not supported"
+                    # try:
+                        # file = open(path_to_file, "rb")
+                        # for line in file:
+                            # pass
+                        # last = line
+                        # file.close()
+                        # print "Unpickled Data: "
+                        # print data
                 return data
             else:
                 return None#print "File doesn't exist " + path_to_file
@@ -57,10 +61,15 @@ class State(object):
             att = "ab"  #append, byte format (to keep line endings consistent)
         
         path_to_file = os.path.join(path, filename)
-        # try:
-        pickle.dump( data, open(path_to_file, att))
-        # except:
-            # print "Problem saving" + str(data) + "to " + filename
+        if pickled:
+            pickle.dump( data, open(path_to_file, att))
+        else:
+            try:
+                file = open(path_to_file, att)
+                file.write("\n" + data)
+                file.close()
+            except:
+                print "Problem saving unpickled data to " + filename
         # file = open(path_to_file, att) 
         # file.write("\n" + data)
         # file.close()

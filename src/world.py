@@ -103,11 +103,7 @@ class World(object):
             self.panes[location].load_stamps(stamps, True)
 
     def _getTown(self, location, is_server, load_entities, pane_state):
-        town = Town(self.seed, location, is_server, load_entities, pane_state)
-        
-        # for tile in town.tiles:
-            # town.remove_chest(tile):
-        return town
+        return Town(self.seed, location, is_server, load_entities, pane_state)
     
     def _listTowns(self, location):
         '''
