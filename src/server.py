@@ -387,14 +387,16 @@ class GameServer():
             return False
         if not cPane and pid and self.person[pid] and self.person[pid].cPane:
             cPane = self.person[pid].cPane
-        if cPane:
-            return self.pane[cPane].is_tile_passable(location) and \
-                    location.tile not in [self.person[i].cLocation.tile \
-                    for i in self.pane[cPane].person if i != pid]
-        else:
-            return self.pane[location.pane].is_tile_passable(location) and \
-                    location.tile not in [self.person[i].location.tile \
-                    for i in self.pane[location.pane].person if i != pid]
+        loc = 'cLocation' if cPane else 'location'
+        p = cPane if cPane else location.pane
+
+        if not self.pane[p].is_tile_passable(location):
+            return False
+        if location.tile in [getattr(self.person[i], loc).tile for i in self.pane[p].person if i != pid]:
+            return False
+        if "Pit" in self.pane[p].fields.get_fields(location):
+            return False
+        return True
 
     def load_pane(self, pane, pid=None, portal=None):
         if portal:
