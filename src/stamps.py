@@ -35,9 +35,11 @@ class Stamp(object):
                 'S':'shop',
                 'D':'dungeon',
                 'P':'portal'}
+    obst_dict = dict((v,k) for k,v in key_dict.iteritems())
     loaded = False
 
     def __init__(self, size, data):
+        self.size = size
         self.width = size[0]
         self.height = size[1]
         self.data = data
@@ -244,35 +246,3 @@ if __name__ == "__main__":
     
     for key in Stamp.keys:
         Stamp.getStamps(key)
-    
-        
-#4x2 house
-HOUSE_STAMPS = {(8, 5):["\
- TTTTTTT\
- TfHHHH \
- TfHPHH \
- Tffpppp\
-    pTTT"],\
-(7, 6):["\
-T    TT\
-T HHHHT\
-T HPHHT\
-T  pTTT\
-ppppppp\
-SSSS   "]}
-
-
-#3x4 dungeon opening
-DUNGEON_STAMPS = {(6, 6):["\
- RRRRR\
- RDDDR\
- mDDD \
-  DDD \
-  DPDm\
-pppppp"],\
-(8, 5):["\
-R RDDDRT\
-R mDDD T\
-R  DDD T\
-R  DPDm \
-Rpppppp"]}

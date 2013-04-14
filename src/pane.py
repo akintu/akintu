@@ -57,8 +57,8 @@ class Pane(object):
         for i in range(PANE_X):
             for j in range(PANE_Y):
                 self.tiles[(i, j)] = Tile(None, True)
-                if load_entities:
-                    self.add_obstacle((i, j), RAND_ENTITIES)
+                # if load_entities:
+                    # self.add_obstacle((i, j), RAND_ENTITIES)
 
         if load_entities:
             ##TEST STAMP TEXT
@@ -66,13 +66,13 @@ class Pane(object):
             # stamp_loc = Location(self.location, (random.randrange(1, PANE_X-stamp.width), random.randrange(1, PANE_Y-stamp.height)))
             # self.load_stamps({stamp_loc:stamp})
 
-            for i in range(1):
-                stamp_dict = Stamp.getStamps(Stamp.LANDSCAPE)
-                #stamp_size_tuple = random.choice(list(stamp_dict.values()))
-                stamp_list = stamp_dict[(20,15)]
-                stamp = random.choice(stamp_list)
-                stamp_loc = Location(self.location, (random.randrange(1, PANE_X-stamp.width), random.randrange(1, PANE_Y-stamp.height)))
-                self.load_stamps({stamp_loc:stamp})
+            # for i in range(1):
+                # stamp_dict = Stamp.getStamps(Stamp.LANDSCAPE)
+                # #stamp_size_tuple = random.choice(list(stamp_dict.values()))
+                # stamp_list = stamp_dict[(20,15)]
+                # stamp = random.choice(stamp_list)
+                # stamp_loc = Location(self.location, (random.randrange(1, PANE_X-stamp.width), random.randrange(1, PANE_Y-stamp.height)))
+                # self.load_stamps({stamp_loc:stamp})
 
             if self.pane_state:
                 self.load_state(self.pane_state)
@@ -132,7 +132,7 @@ class Pane(object):
         else:   #TODO: Make this better. We're creating monsters from scratch here
             pass
             random.seed(self.seed + str(self.location) + "load_monsters")
-            for i in range(3):
+            for i in range(0):
                 self.add_monster()
 
     def add_monster(self, level=None, tolerance=None, location=None, region=None, ai=None):

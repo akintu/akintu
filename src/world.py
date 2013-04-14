@@ -52,7 +52,7 @@ class World(object):
         pass
 
     def get_pane(self, location, is_server=False, portal=None):
-        print portal
+        #print portal
         if portal == Portal.HOUSE:
             #Check State For Pane
             state = None
@@ -61,29 +61,29 @@ class World(object):
             self.panes[location] = House(self.seed, location, is_server=is_server, pane_state=state)
             return self.panes[location]
         else:
-            if isinstance(location, Location):
-                surrounding_locations = location.get_surrounding_panes()
-            else:
-                surrounding_locations = Location(location, None).get_surrounding_panes()
-            for key, loc in surrounding_locations.iteritems():
-                if not loc in self.panes:
-                    if loc in self._listTowns(loc):
-                        self.panes[loc] = self._getTown(loc, False, False, None)
-                    else:
-                        self.panes[loc] = Pane(self.seed, loc)
+            # if isinstance(location, Location):
+                # surrounding_locations = location.get_surrounding_panes()
+            # else:
+                # surrounding_locations = Location(location, None).get_surrounding_panes()
+            # for key, loc in surrounding_locations.iteritems():
+                # if not loc in self.panes:
+                    # if loc in self._listTowns(loc):
+                        # self.panes[loc] = self._getTown(loc, False, False, None)
+                    # else:
+                        # self.panes[loc] = Pane(self.seed, loc)
             #Check State For Pane
             state = None
             if is_server:
                 state = State.load_pane(location)
-                
+
             if not location in self._listTowns(location):
                 self.panes[location] = Pane(self.seed, location, is_server=is_server, load_entities=True, pane_state=state)
             else:
                 self.panes[location] = self._getTown(location, is_server, True, state)
-        
+
             self._loadStamps(location)
-                
-            self._merge_tiles(surrounding_locations)
+
+            # self._merge_tiles(surrounding_locations)
             self.panes[location].load_images()
             if not is_server:
                 self.panes[location].person = {}
@@ -97,17 +97,13 @@ class World(object):
 
         country_loc, township_loc = Township.getTownshipLocation(pane)
         if not country_loc in self.countries:
-            self._generate_world(country_loc)
+            self._generate_world(pane)
         stamps = self.countries[country_loc].getStamps(pane)
         if stamps:
             self.panes[location].load_stamps(stamps, True)
 
     def _getTown(self, location, is_server, load_entities, pane_state):
-        town = Town(self.seed, location, is_server, load_entities, pane_state)
-        
-        # for tile in town.tiles:
-            # town.remove_chest(tile):
-        return town
+        return Town(self.seed, location, is_server, load_entities, pane_state)
     
     def _listTowns(self, location):
         '''
@@ -119,7 +115,7 @@ class World(object):
             loc = location
         country_loc, township_loc = Township.getTownshipLocation(loc)
         if not country_loc in self.countries:
-            self._generate_world(country_loc)
+            self._generate_world(loc)
         return self.countries[country_loc].towns
         
 

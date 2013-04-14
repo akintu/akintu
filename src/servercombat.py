@@ -154,13 +154,6 @@ class CombatServer():
         if command.id in self.server.person:
             self.update_dead_people(self.server.person[command.id].cPane)
 
-        # These method calls update_dead_people internally.
-        elif command.type == "COMBAT" and command.action == "CONTINUE":
-            self.monster_phase(command.cPane)
-
-        elif command.type == "COMBAT" and command.action == "PLAYER_TURN":
-            self.prepare_player_turn(command.cPane)
-
     ### Utility Methods ###
 
     def check_trap_discover(self, player):
@@ -485,7 +478,7 @@ class CombatServer():
         if self.monster_turn_over(combatPane):
             #end = time.clock()
             #print str(end-start) + " turn over"
-            self.server.SDF.queue.put((None, Command("COMBAT", "PLAYER_TURN", id=-1, cPane=combatPane)))
+            self.prepare_player_turn(combatPane)
             return
         for mon in monsters:
             if self.combatStates[combatPane].monsterStatusDict[mon] == "TURN_START":
@@ -536,10 +529,9 @@ class CombatServer():
                         # The monster is currently moving.
         #end = time.clock()
         #print str(end-start) + " seconds to execute monster_phase()"
-        reactor.callLater(0.09, self.nextMonsterTick, combatPane)
-
-    def nextMonsterTick(self, combatPane):
-        self.server.SDF.queue.put((None, Command("COMBAT", "CONTINUE", id=-1, cPane=combatPane)))
+        if len([self.server.person[x] for x in self.server.pane[combatPane].person \
+                if self.server.person[x].team == "Players"]) > 0:
+            reactor.callLater(0.09, self.monster_phase, combatPane)
 
     def victory_phase(self, livingPlayers, combatPane):
         '''Cleans up arena, gives experience/gold to players,
