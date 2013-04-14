@@ -675,6 +675,7 @@ class CombatServer():
         self.server.person[player.id] = new_char
 
         self.death(new_char)
+        self.server.broadcast(Command("CLIENT", "DEATH", id=new_char.id), new_char.id)
 
     def softcoreDeath(self, player):
         '''Kicks player out of combat, back to Pane 0,0 and subtracts 10% of gold.
