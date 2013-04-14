@@ -244,35 +244,3 @@ if __name__ == "__main__":
     
     for key in Stamp.keys:
         Stamp.getStamps(key)
-    
-        
-#4x2 house
-HOUSE_STAMPS = {(8, 5):["\
- TTTTTTT\
- TfHHHH \
- TfHPHH \
- Tffpppp\
-    pTTT"],\
-(7, 6):["\
-T    TT\
-T HHHHT\
-T HPHHT\
-T  pTTT\
-ppppppp\
-SSSS   "]}
-
-
-#3x4 dungeon opening
-DUNGEON_STAMPS = {(6, 6):["\
- RRRRR\
- RDDDR\
- mDDD \
-  DDD \
-  DPDm\
-pppppp"],\
-(8, 5):["\
-R RDDDRT\
-R mDDD T\
-R  DDD T\
-R  DPDm \
-Rpppppp"]}
