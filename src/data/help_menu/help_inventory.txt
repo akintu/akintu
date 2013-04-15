@@ -1,0 +1,53 @@
+# help_inventory.txt
+
+This help page assumes default keybindings are in use.  If you have altered
+your keybindings, this page may not reflect the keys you need to use in
+the inventory screen.
+
+Akintu is a game with a rich variety of magical equipment.  Every
+character has 8 places to equip armor: Head, Chest, Legs, Hands, Feet,
+2 Fingers, and Neck.  Additionally there are two slots for equipping
+weapons and/or shields: Main-Hand and Off-Hand.  For the weapon/shield
+slots, there are also alternate equipment slots so you can switch between
+two different weapons or sets of weapons in combat (details are covered
+in the Alternate Equipment Slot help page.)
+
+Equipping Weapons/Armor
+
+  To equip an item, select the item on the left-hand side of the screen,
+  and press E.  This will automatically fit the item to the appropriate
+  slot.  If you wish to equip something in an off-hand slot or the second
+  ring slot, press O instead.  Weapons and shields equipped will be red in
+  color (unless equipped in an alternate slot in the which case it will be
+  blue.)
+  
+  Immediately upon equipping a piece of gear, your attributes will be
+  adjusted to reflect the gear (unless it is in an alternate slot.)
+  
+Unequipping Weapons/Armor
+
+  To unequip an item, you can either equip a replacement piece of gear,
+  which will automatically unequip it for you or you can select the item
+  on the right hand side of your inventory (where the equipped items are)
+  and press U.
+  
+Auto-equip
+
+  If you have no armor on in a particular armor slot and you receive a
+  piece of gear that both fits that slot, and is the ideal armor grade for
+  your character class, it will automatically be equipped when you recieve
+  it.
+  
+Burden
+
+  Your carrying capacity is shown in the upper-right hand corner.  Both
+  items equipped and items in your inventory will count toward your
+  "burden."  If your burden exceeds your capacity, you will move more 
+  slowly in the overworld and will have less AP to use in combat!  
+  
+Destroying Gear
+
+  While it is better to sell unnecessary items, you can also destroy gear
+  permanently from the left-hand side of your inventory (unequipped side.)
+  To do this, select the item and press D.  Remember, this is not an action
+  you can reverse!
