@@ -204,7 +204,7 @@ class Game(object):
 
                 if command.id == self.id and self.combat:
                     self.currentAbility = self.pane.person[self.id].abilities[0]
-                    self.update_regions()
+                self.update_regions()
 
                 imagepath = os.path.join(SPRITES_IMAGES_PATH, p.image)
                 sizeAbbr = "M"
@@ -264,6 +264,9 @@ class Game(object):
                     if command.id == self.currentTarget:
                         self.currentTarget = None
                     del self.pane.person[command.id]
+                self.update_regions()
+                if self.combat and not self.valid_target():
+                    self.cycle_targets()
 
             ###### StopRunning ######
             if command.type == "PERSON" and command.action == "STOP":
@@ -688,7 +691,7 @@ class Game(object):
                     self.screen.hide_dialog()
                     self.screen.show_text("Item use cancelled.")
                     keystate.inputState = "COMBAT"
-                    
+
                 ### Combat Only Commands ###
                 elif e == "ABILITIESOPEN":
                     keystate.inputState = "ABILITIES"
