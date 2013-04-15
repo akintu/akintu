@@ -3,6 +3,7 @@ Keybindings utility module
 '''
 
 from pygame.locals import *
+import collections
 import pygame
 
 class Keystate():
@@ -11,8 +12,7 @@ class Keystate():
         self.typematicRate = 0.1
         self.keyTime = 0
 
-        self.inputState = "OVERWORLD" # "OVERWORLD", "LEVELUP", "INVENTORY", "CONSUMABLE", "TARGET", "SHOP",
-                                     # "ABILITIES", "SPELLS", "COMBAT"
+        self.inputState = "OVERWORLD"
 
         self.mod_keys = {"SHIFT": [K_LSHIFT, K_RSHIFT],
                         "CTRL": [K_LCTRL, K_RCTRL],
@@ -28,10 +28,11 @@ class Keystate():
                         "DOWNLEFT": 1,
                         "DOWNRIGHT": 3}
 
-        self.ALL = ["OVERWORLD", "LEVELUP", "INVENTORY", "CONSUMABLE", "TARGET", "SHOP", "ABILITIES", "SPELLS", "COMBAT", "CHARSHEET",
-                    "SAVEMENU", "HELPMENU", "DEATH"]
+        self.ALL = ["OVERWORLD", "LEVELUP", "INVENTORY", "CONSUMABLE", "TARGET", "SHOP", "ABILITIES", \
+                "SPELLS", "COMBAT", "CHARSHEET", "SAVEMENU", "HELPMENU", "DEATH", "BINDINGS"]
         self.MOVEMENT = ["OVERWORLD", "COMBAT"]
-        self.DIALOG = ["LEVELUP", "INVENTORY", "CONSUMABLE", "SHOP", "ABILITIES", "SPELLS", "CHARSHEET", "SAVEMENU", "HELPMENU", "DEATH"]
+        self.DIALOG = ["LEVELUP", "INVENTORY", "CONSUMABLE", "SHOP", "ABILITIES", "SPELLS", \
+                "CHARSHEET", "SAVEMENU", "HELPMENU", "DEATH", "BINDINGS"]
 
         '''
         The bindings data structure is a bit involved, so get your thinking cap on for this.
@@ -58,94 +59,100 @@ class Keystate():
               Only one of them needs to be the current input state for the event to fire.
             * There are a few predefined sets of related states.  These are MOVEMENT, DIALOG, and ALL
         '''
-        self.bindings = {
-            "QUIT": (["escape", "CTRL+q", "CTRL+x", "META+q", "META+x"], "OVERWORLD"),
-            "SAVEMENUACCEPT": (["a", "space", "return", "keypad enter"], "SAVEMENU"),
-            "SAVEMENUCANCEL": ("escape", "SAVEMENU"),
-            
-            "DEATHCONTINUE": (["a", "space", "return", "keypad enter", "escape"], "DEATH"),
+        b = collections.OrderedDict()
+        self.bindings = b
 
-            "FORCEQUIT": (["CTRL+SHIFT+q", "CTRL+SHIFT+x", "META+q+x"], self.ALL),
+        b["QUIT"] = (["escape", "CTRL+q", "CTRL+x", "META+q", "META+x"], "OVERWORLD")
+        b["SAVEMENUACCEPT"] = (["a", "space", "return", "keypad enter"], "SAVEMENU")
+        b["SAVEMENUCANCEL"] = ("escape", "SAVEMENU")
 
-            "UP": ([K_UP, K_KP8, "k", "SHIFT+up", "SHIFT+keypad 8", "SHIFT+k"], self.MOVEMENT),
-            "DOWN": ([K_DOWN, K_KP2, "j", "SHIFT+down", "SHIFT+keypad 2", "SHIFT+j"], self.MOVEMENT),
-            "LEFT": ([K_LEFT, K_KP4, "h", "SHIFT+left", "SHIFT+keypad 4", "SHIFT+h"], self.MOVEMENT),
-            "RIGHT": ([K_RIGHT, K_KP6, "l", "SHIFT+right", "SHIFT+keypad 6", "SHIFT+l"], self.MOVEMENT),
+        b["DEATHCONTINUE"] = (["a", "space", "return", "keypad enter", "escape"], "DEATH")
 
-            "DIALOGUP": ([K_UP, K_KP8, "k"], self.DIALOG),
-            "DIALOGDOWN": ([K_DOWN, K_KP2, "j"], self.DIALOG),
-            "DIALOGLEFT": ([K_LEFT, K_KP4, "h"], self.DIALOG),
-            "DIALOGRIGHT": ([K_RIGHT, K_KP6, "l"], self.DIALOG),
+        b["FORCEQUIT"] = (["CTRL+SHIFT+q", "CTRL+SHIFT+x", "META+q+x"], self.ALL)
 
-            "TARGETUP": ([K_UP, K_KP8, "k"], "TARGET"),
-            "TARGETDOWN": ([K_DOWN, K_KP2, "j"], "TARGET"),
-            "TARGETLEFT": ([K_LEFT, K_KP4, "h"], "TARGET"),
-            "TARGETRIGHT": ([K_RIGHT, K_KP6, "l"], "TARGET"),
-            "TARGETUPLEFT": ([K_KP7, "y"], "TARGET"),
-            "TARGETUPRIGHT": ([K_KP9, "u"], "TARGET"),
-            "TARGETDOWNLEFT": ([K_KP1, "b"], "TARGET"),
-            "TARGETDOWNRIGHT": ([K_KP3, "n"], "TARGET"),
-            "TARGETACCEPT": (["a", "space", "return", "keypad enter"], "TARGET"),
-            "TARGETCANCEL": ([K_KP5, "escape"], "TARGET"),
+        b["UP"] = ([K_UP, K_KP8, "k", "SHIFT+up", "SHIFT+keypad 8", "SHIFT+k"], self.MOVEMENT)
+        b["DOWN"] = ([K_DOWN, K_KP2, "j", "SHIFT+down", "SHIFT+keypad 2", "SHIFT+j"], self.MOVEMENT)
+        b["LEFT"] = ([K_LEFT, K_KP4, "h", "SHIFT+left", "SHIFT+keypad 4", "SHIFT+h"], self.MOVEMENT)
+        b["RIGHT"] = ([K_RIGHT, K_KP6, "l", "SHIFT+right", "SHIFT+keypad 6", "SHIFT+l"], self.MOVEMENT)
 
-            "SCROLLTOP": (["SHIFT+page up", "SHIFT+="], self.MOVEMENT),
-            "SCROLLUP": (["page up", "="], self.MOVEMENT),
-            "SCROLLDOWN": (["page down", "-"], self.MOVEMENT),
-            "SCROLLBOTTOM": (["SHIFT+page down", "SHIFT+-"], self.MOVEMENT),
+        b["DIALOGUP"] = ([K_UP, K_KP8, "k"], self.DIALOG)
+        b["DIALOGDOWN"] = ([K_DOWN, K_KP2, "j"], self.DIALOG)
+        b["DIALOGLEFT"] = ([K_LEFT, K_KP4, "h"], self.DIALOG)
+        b["DIALOGRIGHT"] = ([K_RIGHT, K_KP6, "l"], self.DIALOG)
 
-            "LEVELUPADVANCE": (["space", "a", "return", "keypad enter"], "LEVELUP"),
+        b["TARGETUP"] = ([K_UP, K_KP8, "k"], "TARGET")
+        b["TARGETDOWN"] = ([K_DOWN, K_KP2, "j"], "TARGET")
+        b["TARGETLEFT"] = ([K_LEFT, K_KP4, "h"], "TARGET")
+        b["TARGETRIGHT"] = ([K_RIGHT, K_KP6, "l"], "TARGET")
+        b["TARGETUPLEFT"] = ([K_KP7, "y"], "TARGET")
+        b["TARGETUPRIGHT"] = ([K_KP9, "u"], "TARGET")
+        b["TARGETDOWNLEFT"] = ([K_KP1, "b"], "TARGET")
+        b["TARGETDOWNRIGHT"] = ([K_KP3, "n"], "TARGET")
+        b["TARGETACCEPT"] = (["a", "space", "return", "keypad enter"], "TARGET")
+        b["TARGETCANCEL"] = ([K_KP5, "escape"], "TARGET")
 
-            "SHOPOPEN": ("F2", "OVERWORLD"),
-            "SHOPTRANSACTION": (["a", "return", "keypad enter"], "SHOP"),
-            "SHOPCLOSE": (["space", "escape"], "SHOP"),
+        b["SCROLLTOP"] = (["SHIFT+page up", "SHIFT+="], self.MOVEMENT)
+        b["SCROLLUP"] = (["page up", "="], self.MOVEMENT)
+        b["SCROLLDOWN"] = (["page down", "-"], self.MOVEMENT)
+        b["SCROLLBOTTOM"] = (["SHIFT+page down", "SHIFT+-"], self.MOVEMENT)
 
-            "INVENTORYOPEN": ("i", "OVERWORLD"),
-            "INVENTORYEQUIPMH": ("e", "INVENTORY"),
-            "INVENTORYEQUIPMHALT": (["ALT+e", "ALT+e"], "INVENTORY"),
-            "INVENTORYDROP": ("d", "INVENTORY"),
-            "INVENTORYUNEQUIP": ("u", "INVENTORY"),
-            "INVENTORYEQUIPOH": ("o", "INVENTORY"),
-            "INVENTORYEQUIPOHALT": (["ALT+o", "ALT+o"], "INVENTORY"),
-            "INVENTORYCLOSE": (["space", "i", "escape"], "INVENTORY"),
+        b["LEVELUPADVANCE"] = (["space", "a", "return", "keypad enter"], "LEVELUP")
 
-            "CHARSHEETOPEN": ("c", self.MOVEMENT),
-            "CHARSHEETCLOSE": (["space", "escape"], "CHARSHEET"),
-            "CHARSHEETABILITIES": ("a", "CHARSHEET"),
-            "CHARSHEETSPELLS": ("s", "CHARSHEET"),
-            "CHARSHEETPASSIVES": ("p", "CHARSHEET"),
-            "CHARSHEETTRAITS": ("t", "CHARSHEET"),
-            "CHARSHEETMAIN": ("c", "CHARSHEET"),
+        b["SHOPOPEN"] = ("F2", "OVERWORLD")
+        b["SHOPTRANSACTION"] = (["a", "return", "keypad enter"], "SHOP")
+        b["SHOPCLOSE"] = (["space", "escape"], "SHOP")
 
-            "HELPMENUOPEN" : (["F1", "SHIFT+/"], "OVERWORLD"),
+        b["INVENTORYOPEN"] = ("i", "OVERWORLD")
+        b["INVENTORYEQUIPMH"] = ("e", "INVENTORY")
+        b["INVENTORYEQUIPMHALT"] = (["ALT+e", "ALT+e"], "INVENTORY")
+        b["INVENTORYDROP"] = ("d", "INVENTORY")
+        b["INVENTORYUNEQUIP"] = ("u", "INVENTORY")
+        b["INVENTORYEQUIPOH"] = ("o", "INVENTORY")
+        b["INVENTORYEQUIPOHALT"] = (["ALT+o", "ALT+o"], "INVENTORY")
+        b["INVENTORYCLOSE"] = (["space", "i", "escape"], "INVENTORY")
 
-            "CONSUMABLEOPEN": ("i", "COMBAT"),
-            "CONSUMABLEUSE": (["space", "a", "return", "keypad enter"], "CONSUMABLE"),
+        b["CHARSHEETOPEN"] = ("c", self.MOVEMENT)
+        b["CHARSHEETCLOSE"] = (["space", "escape"], "CHARSHEET")
+        b["CHARSHEETABILITIES"] = ("a", "CHARSHEET")
+        b["CHARSHEETSPELLS"] = ("s", "CHARSHEET")
+        b["CHARSHEETPASSIVES"] = ("p", "CHARSHEET")
+        b["CHARSHEETTRAITS"] = ("t", "CHARSHEET")
+        b["CHARSHEETMAIN"] = ("c", "CHARSHEET")
 
-            "ABILITIESOPEN": ("space", "COMBAT"),
-            "ABILITIESSELECT": (["space", "a", "return", "keypad enter"], "ABILITIES"),
+        b["BINDINGSOPEN"] = ("CTRL+k", self.MOVEMENT)
+        b["BINDINGSCLOSE"] = (["space", "escape"], "BINDINGS")
+        b["BINDINGSADD"] = (["a", "insert"], "BINDINGS")
+        b["BINDINGSDELETE"] = (["d", "delete"], "BINDINGS")
 
-            "SPELLSOPEN": ("b", "COMBAT"),
-            "SPELLSSELECT": (["space", "a", "return", "keypad enter"], "SPELLS"),
+        b["HELPMENUOPEN"] = (["F1", "SHIFT+/"], self.MOVEMENT)
 
-            "SWITCHGEAR": ("o", "COMBAT"),
-            "CYCLETARGETF": ("e", "COMBAT"),
-            "CYCLETARGETB": ("w", "COMBAT"),
-            "ACTIVATESELECTED": ("a", "COMBAT"),
-            "ENDTURN": ("n", "COMBAT"),
-            "SELECTSELF": ("s", "COMBAT"),
-            "ANALYZETARGET": (".", "COMBAT"),
+        b["CONSUMABLEOPEN"] = ("i", "COMBAT")
+        b["CONSUMABLEUSE"] = (["space", "a", "return", "keypad enter"], "CONSUMABLE")
 
-            "GETITEM": ("g", "OVERWORLD"),
-            "BASHCHEST": ("b", "OVERWORLD"),
-            "STARTLEVELUP": ("y", "OVERWORLD"),
-            "STARTRESPEC": ("r", "OVERWORLD"),
-            "HELPMENU": ("F1", "OVERWORLD"),
-            "CHEAT CODE": ("[+]", self.MOVEMENT),
+        b["ABILITIESOPEN"] = ("space", "COMBAT")
+        b["ABILITIESSELECT"] = (["space", "a", "return", "keypad enter"], "ABILITIES")
 
-            "SHOWINPUTSTATE": ("CTRL+SHIFT+k", self.MOVEMENT),
-            "SHOWPANEPIDS": ("CTRL+SHIFT+p", self.MOVEMENT),
-            "SHOWPATHS": ("CTRL+SHIFT+\\", self.MOVEMENT),
-            }
+        b["SPELLSOPEN"] = ("b", "COMBAT")
+        b["SPELLSSELECT"] = (["space", "a", "return", "keypad enter"], "SPELLS")
+
+        b["SWITCHGEAR"] = ("o", "COMBAT")
+        b["CYCLETARGETF"] = ("e", "COMBAT")
+        b["CYCLETARGETB"] = ("w", "COMBAT")
+        b["ACTIVATESELECTED"] = ("a", "COMBAT")
+        b["ENDTURN"] = ("n", "COMBAT")
+        b["SELECTSELF"] = ("s", "COMBAT")
+        b["ANALYZETARGET"] = (".", "COMBAT")
+
+        b["GETITEM"] = ("g", "OVERWORLD")
+        b["BASHCHEST"] = ("b", "OVERWORLD")
+        b["STARTLEVELUP"] = ("y", "OVERWORLD")
+        b["STARTRESPEC"] = ("r", "OVERWORLD")
+        b["HELPMENU"] = ("F1", "OVERWORLD")
+        b["CHEAT CODE"] = ("[+]", self.MOVEMENT)
+
+        b["SHOWINPUTSTATE"] = ("CTRL+SHIFT+k", self.MOVEMENT)
+        b["SHOWPANEPIDS"] = ("CTRL+SHIFT+p", self.MOVEMENT)
+        b["SHOWPATHS"] = ("CTRL+SHIFT+\\", self.MOVEMENT)
 
     def __call__(self, e=None):
         if e:
@@ -185,16 +192,24 @@ class Keystate():
             return self.move_keys[dir[6:]]
         return False
 
-    def get_key(self, event, shortest=True):
+    def get_key(self, event, shortest=True, all=False):
         if event not in self.bindings:
             return False
         combos = self.bindings[event][0]
         if not isinstance(combos, list):
             combos = [combos]
+        combos = map(str.upper, combos)
 
-        if not shortest:
-            return combos[0]
+        if shortest:
+            combos = sorted(combos, key=lambda combo: len(combo.split('+')) * 100 + len(combo))
+
+        if all:
+            return combos
         else:
-            return sorted(combos, key=lambda combo: len(combo.split('+')))[0].upper()
+            return combos[0]
+
+    def get_states(self, event):
+        return self.bindings[event][1] if isinstance(self.bindings[event][1], list) else \
+                [self.bindings[event][1]]
 
 keystate = Keystate()

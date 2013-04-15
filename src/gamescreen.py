@@ -1053,7 +1053,7 @@ class Item(object):
     '''
     Generic item, for use in the DualPaneDialog
     '''
-    def __init__(self, name, details, color):
+    def __init__(self, name, details, color='black'):
         '''
         Initialize the item
         '''

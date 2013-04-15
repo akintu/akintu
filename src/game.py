@@ -8,13 +8,12 @@ from pygame.locals import *
 import os
 import time
 
-from combat import *
 from command import *
 from location import *
 from network import *
 from server import *
 from const import *
-from gamescreen import GameScreen
+from gamescreen import *
 from theorycraft import TheoryCraft
 from world import *
 from region import Region
@@ -96,7 +95,6 @@ class Game(object):
         else:
             self.serverip = "localhost"
             self.gs = GameServer(self.world, self.port, self.turnTime)
-            Combat.gameServer = self.gs
 
         self.CDF = ClientDataFactory()
         reactor.connectTCP(self.serverip, self.port, self.CDF)
@@ -277,8 +275,8 @@ class Game(object):
                 if command.id == self.id:
                     keystate.inputState = "DEATH"
                     self.screen.show_menu_dialog(["Aw, shucks."], 'red', "You have died -- restart a new character.")
-                    
-                    
+
+
             ###### Levelup Player ######
             if command.type == "PERSON" and command.action == "REPLACE":
                 if self.pane.person[command.id].anim:
@@ -507,7 +505,7 @@ class Game(object):
             keystate.keyTime = time.time()
 
     def handle_events(self):
-        #pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
+        pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
         for event in pygame.event.get():
 #            print "Event: ", event
             #### General commands ####
@@ -560,7 +558,7 @@ class Game(object):
                     self.screen.hide_dialog()
                     keystate.inputState = "OVERWORLD"
                     self.screen.show_text("You have begun anew, at level 1.")
-                    
+
                 ### Save Menu ###
                 elif e == "SAVEMENUACCEPT":
                     selection = self.screen.hide_dialog()
@@ -726,6 +724,16 @@ class Game(object):
                     self.select_self()
                 elif e == "ANALYZETARGET":
                     self.display_target_details()
+
+                ### Keybinding dialog ###
+                elif e == "BINDINGSOPEN":
+                    keystate.inputState = "BINDINGS"
+                    text = "Hi!  You can change your keybindings here!"
+                    left = [Item(e, b[1] if isinstance(b[1], list) else "\r\n".join([b[1]])) \
+                            for e, b in keystate.bindings.iteritems()]
+                    e = keystate.bindings.keys()[0]
+                    right = [Item(b, "\r\n".join(keystate.get_states(e))) for b in keystate.get_key(e, all=True)]
+                    self.screen.show_dual_pane_dialog(text, left, right, 'gray')
 
                 ### Strictly non-combat commands ###
                 elif e == "GETITEM":
