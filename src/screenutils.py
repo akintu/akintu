@@ -1002,7 +1002,7 @@ class TextDialog(object):
         x = 10
         y = 5
 
-        l = 'Press ' + self.bkey + ' to return.'
+        l = 'Press ' + self.ekey + ' to return.'
         f = hfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
@@ -1010,7 +1010,7 @@ class TextDialog(object):
         f = hfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height
-        l = 'Go BACK a page: ' + self.nkey
+        l = 'Go BACK a page: ' + self.bkey
         f = hfont.render(l, True, Color('black'))
         s.blit(f, (x, y))
         y += f.get_rect().height + 20

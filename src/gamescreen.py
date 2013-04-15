@@ -126,7 +126,7 @@ class GameScreen(object):
                          bgcolor='lightblue',
                          nextkey='N',
                          backkey='B',
-                         exitkey='Q'):
+                         exitkey='ESC'):
         '''
         Show a text dialog
         '''
