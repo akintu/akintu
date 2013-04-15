@@ -34,6 +34,13 @@ class Location(object):
             self.z = z
             self.direction = direction
 
+        if self.pane:
+            self.abs_x = self.pane[0] * PANE_X + self.tile[0]
+            self.abs_y = self.pane[1] * PANE_Y + self.tile[1]
+        else:
+            self.abs_x = self.tile[0]
+            self.abs_y = self.tile[1]
+
     # So it turns out __repr__ is like toString()
     def __repr__(self):
         return "(%s, %s, %d, %d)" % (self.pane, self.tile, self.z, self.direction)
@@ -69,20 +76,6 @@ class Location(object):
         return int(strrep)
 #        str = "%d0%d0%d" % (self.abs_x, self.abs_y, self.z)
 #        return int(str.replace("-", "9"))
-
-    @property
-    def abs_x(self):
-        if self.pane:
-            return self.pane[0] * PANE_X + self.tile[0]
-        else:
-            return self.tile[0]
-
-    @property
-    def abs_y(self):
-        if self.pane:
-            return self.pane[1] * PANE_Y + self.tile[1]
-        else:
-            return self.tile[1]
 
     @property
     def abs_pos(self):
