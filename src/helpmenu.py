@@ -109,7 +109,8 @@ topPages = {
              'Poison Tolerance\Rating',
              'Size',
              'Sneak and Awareness',
-             'Spell Schools'],
+             'Spell Schools',
+             'Wiki'],
             'color' : HELP_COLOR
             }
     }
@@ -146,7 +147,8 @@ contentPaths = {
     'Poison Tolerance\Rating' : os.path.join(HELP_PATH, 'help_poison_mechanics.txt'),
     'Size' : os.path.join(HELP_PATH, 'help_size.txt'),
     'Sneak and Awareness' : os.path.join(HELP_PATH, 'help_stealth_and_hidden_objects.txt'),
-    'Spell Schools' : os.path.join(HELP_PATH, 'help_spell_schools.txt')
+    'Spell Schools' : os.path.join(HELP_PATH, 'help_spell_schools.txt'),
+    'Wiki' : os.path.join(HELP_PATH, 'help_wiki.txt')
     }
     
             
