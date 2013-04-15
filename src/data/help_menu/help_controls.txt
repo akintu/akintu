@@ -5,7 +5,6 @@ Overworld Controls
   UP, DOWN, LEFT, RIGHT  --> Movement (Hold to run)
   $BASHCHEST$  --> Bash locked chest
   $CHARSHEETOPEN$  --> Display Character Sheet
-  $HELPMENUOPEN$  --> Open help menu (This menu!)
   $SHOPOPEN$  --> Open Shop (Towns only) 
   $GETITEM$  --> Get items from chest/Pick locks on chests
   $INVENTORYOPEN$  --> Open Inventory

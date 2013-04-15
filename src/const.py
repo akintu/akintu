@@ -67,6 +67,9 @@ SPRITES_IMAGES_PATH = os.path.join(IMAGES_PATH, "sprites")
 ITEMS_IMAGES_PATH = os.path.join(IMAGES_PATH, "items")
 TRAPS_IMAGES_PATH = os.path.join(ITEMS_IMAGES_PATH, "traps")
 
+#        ======================MISC=================
+HELP_PATH = os.path.join("data", "help_menu")
+
 #======================SAVE/LOAD KEYS==========================
 SEED_KEY = "seed"
 MONSTER_KEY = "monsters"
