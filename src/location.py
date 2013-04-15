@@ -61,8 +61,14 @@ class Location(object):
         return Location(self.abs_x + other[0], self.abs_y + other[1])
 
     def __hash__(self):
-        str = "%d0%d0%d" % (self.abs_x, self.abs_y, self.z)
-        return int(str.replace("-", "9"))
+        x = self.abs_x
+        y = self.abs_y
+        strrep = ("9" if x < 0 else "") + str(abs(x)) + "0" + \
+                ("9" if y < 0 else "") + str(abs(y)) + "0" + \
+                ("9" if self.z < 0 else "") + str(abs(self.z))
+        return int(strrep)
+#        str = "%d0%d0%d" % (self.abs_x, self.abs_y, self.z)
+#        return int(str.replace("-", "9"))
 
     @property
     def abs_x(self):
@@ -191,7 +197,7 @@ class Location(object):
                 if i < len(locs) - 1:
                     if l.direction_to(locs[i+1]) % 2:
                         locs.insert(i + 1, Location(locs[i+1].abs_x, l.abs_y))
-                        
+
         return locs
 
     def direction_to(self, dest):
