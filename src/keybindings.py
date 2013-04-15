@@ -59,6 +59,7 @@ class Keystate():
               Only one of them needs to be the current input state for the event to fire.
             * There are a few predefined sets of related states.  These are MOVEMENT, DIALOG, and ALL
         '''
+
         b = collections.OrderedDict()
         self.bindings = b
 
@@ -104,11 +105,11 @@ class Keystate():
 
         b["INVENTORYOPEN"] = ("i", "OVERWORLD")
         b["INVENTORYEQUIPMH"] = ("e", "INVENTORY")
-        b["INVENTORYEQUIPMHALT"] = (["ALT+e", "ALT+e"], "INVENTORY")
+        b["INVENTORYEQUIPMHALT"] = ("ALT+e", "INVENTORY")
         b["INVENTORYDROP"] = ("d", "INVENTORY")
         b["INVENTORYUNEQUIP"] = ("u", "INVENTORY")
         b["INVENTORYEQUIPOH"] = ("o", "INVENTORY")
-        b["INVENTORYEQUIPOHALT"] = (["ALT+o", "ALT+o"], "INVENTORY")
+        b["INVENTORYEQUIPOHALT"] = ("ALT+o", "INVENTORY")
         b["INVENTORYCLOSE"] = (["space", "i", "escape"], "INVENTORY")
 
         b["CHARSHEETOPEN"] = ("c", self.MOVEMENT)
@@ -128,6 +129,7 @@ class Keystate():
 
         b["CONSUMABLEOPEN"] = ("i", "COMBAT")
         b["CONSUMABLEUSE"] = (["space", "a", "return", "keypad enter"], "CONSUMABLE")
+        b["CONSUMABLECANCEL"] = ("escape", "CONSUMABLE")
 
         b["ABILITIESOPEN"] = ("space", "COMBAT")
         b["ABILITIESSELECT"] = (["space", "a", "return", "keypad enter"], "ABILITIES")

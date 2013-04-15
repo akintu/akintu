@@ -1,0 +1,31 @@
+# help_basic_tactics.txt
+
+This page addresses some very simple combat tips to help you get started
+in combat with Akintu.
+
+Melee Combat
+
+Monsters can hit hard and frequently in melee. It is easy to get 
+overwhelmed. Every class has a different approach to melee combat, but one
+tip that is very common is to avoid ending your turn adjacent to a monster 
+with melee attacks. If they have to move at least one tile to reach you, 
+they must spend some of their AP for that turn, which can result in 
+sometimes only being attacked half as many times. Also, if you find 
+yourself ending your turn with a few AP to spare, check to see if your 
+class has an ability like Brace or Magic Guard. Those kinds of abilities 
+will end your turn but also grant a small defensive bonus that can help 
+reduce incoming damage.
+
+Ranged Combat
+
+Different weapons have different ranges. In single-player, ranged combat 
+can be tough against melee enemies because they will only be in range for a
+short time before closing to melee. Once in melee, using a ranged weapon 
+will have a 20% chance to be "jammed" where you won't have a chance to 
+attack but it will still deduct the AP. It might be worth moving back a 
+couple of tiles and then attacking at that point. Spells cannot be jammed. 
+The trick in solo is thus to quickly eliminate your enemies before they 
+reach melee range and then consider if it is worth 7 AP to switch weapon
+sets to a melee weapon. Most classes with spells have enough mana (MP) to 
+cast just about whatever they'd like in single player without running out 
+of mana. Remember, HP and MP are restored to 100% after combat.
