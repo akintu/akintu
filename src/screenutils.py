@@ -983,7 +983,7 @@ class TextDialog(object):
         self.nkey = nextkey
         self.bkey = backkey
         self.ekey = exitkey
-        selt.tkey = topkey
+        self.tkey = topkey
         self.surface = pygame.Surface((1280, 640))
         self.surface.fill(Color(self.bgcolor))
 

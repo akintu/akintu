@@ -23,6 +23,7 @@ import random
 from keybindings import keystate
 
 import levelup as lvl
+import helpmenu
 
 clock = pygame.time.Clock()
 
@@ -68,6 +69,9 @@ class Game(object):
         # Levelup state
         self.levelup = None
 
+        # Help menu state
+        self.helpTitle = None
+        
         # Shop state
         self.currentShop = None
 
@@ -568,6 +572,7 @@ class Game(object):
                     # 0 -- 'Save and Return',
                     # 1 -- 'Save and Quit',
                     # 2 -- 'Return without Saving'
+                    # 3 -- 'Help Menu'
                     if selection == 0:
                         self.save_no_quit()
                         keystate.inputState = "OVERWORLD"
@@ -576,11 +581,51 @@ class Game(object):
                         self.save_and_quit()
                     elif selection == 2:
                         keystate.inputState = "OVERWORLD"
+                    elif selection == 3:
+                        keystate.inputState = "HELPMENU"
+                        topPage = helpmenu.topPages['Akintu Help Menu']
+                        self.helpTitle = topPage['title']
+                        self.screen.show_menu_dialog(topPage['options'], topPage['color'], topPage['title'])
                 elif e == "SAVEMENUCANCEL":
                     self.screen.hide_dialog()
                     keystate.inputState = "OVERWORLD"
                     self.screen.show_text("Save Aborted.", color='white')
 
+                elif e == "HELPMENUACCEPT":
+                    selectionNum = self.screen.get_dialog_selection()
+                    selection = None
+                    if selectionNum is not None:
+                        resultDuple = helpmenu.navigateDownPage(self.helpTitle, selectionNum)
+                        if resultDuple[1] == "Dict":
+                            currentPage = resultDuple[0]
+                            self.helpTitle = currentPage['title']
+                            self.screen.show_menu_dialog(currentPage['options'], currentPage['color'], currentPage['title'])
+                        elif resultDuple[1] == "Path":
+                            self.helpTitle = resultDuple[2]
+                            path = resultDuple[0]
+                            f = open(path, 'r')
+                            text = f.read()
+                            f.close()
+                            # The first line is a comment.
+                            displayText = text.partition("\n")[2]
+                            # The second line is just whitespace.
+                            displayText = displayText.lstrip()
+                            self.screen.show_text_dialog(displayText, self.helpTitle)
+                        else:
+                            pass
+                            
+                elif e == "HELPMENUTOP":
+                    pageDict = helpmenu.navigateUpPage(self.helpTitle)
+                    if not pageDict:
+                        menuItems = ['Save and Return', 'Save and Quit', 'Return without Saving', 'In-Game Help']
+                        self.screen.show_menu_dialog(menuItems)
+                        keystate.inputState = "SAVEMENU"
+                    else:
+                        self.helpTitle = pageDict['title']
+                        self.screen.show_menu_dialog(pageDict['options'], pageDict['color'], pageDict['title'])
+                    
+                
+                    
                 ### Character Sheet ###
                 elif e == "CHARSHEETOPEN":
                     self.display_character_sheet()
@@ -808,7 +853,7 @@ class Game(object):
         self.CDF.send(action)
 
     def display_save_menu(self):
-        menuItems = ['Save and Return', 'Save and Quit', 'Return without Saving']
+        menuItems = ['Save and Return', 'Save and Quit', 'Return without Saving', 'In-Game Help']
         self.screen.show_menu_dialog(menuItems)
         keystate.inputState = "SAVEMENU"
 
