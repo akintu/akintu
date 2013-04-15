@@ -47,16 +47,19 @@ class Testy(object):
 if __name__ == "__main__":  
     theorycraft.TheoryCraft.loadAll()
 
-    x = None
-    char = theorycraft.TheoryCraft.getNewPlayerCharacter("Orc", "Barbarian")
-    for i in range(150):
-        tc = treasurechest.TreasureChest("Large", 20, None)
-        tc.generateTreasure(char)
-        for item in char.inventory.allItems:
-            print item.displayName
-            x = item
-        print `i`
-    print x.details
+    for i in range(32):
+        print theorycraft.TheoryCraft.statuses[i].image
+    
+    # x = None
+    # char = theorycraft.TheoryCraft.getNewPlayerCharacter("Orc", "Barbarian")
+    # for i in range(150):
+        # tc = treasurechest.TreasureChest("Large", 20, None)
+        # tc.generateTreasure(char)
+        # for item in char.inventory.allItems:
+            # print item.displayName
+            # x = item
+        # print `i`
+    # print x.details
     # saved = char.dehydrate()
     # with open('./data/testSaveFile.txt', 'wb') as f:
         # f.write(saved)

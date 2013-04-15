@@ -608,7 +608,11 @@ class Game(object):
                             self.helpPageIndex = 0
                             self.screen.show_text_dialog(self.helpPageList[self.helpPageIndex], self.helpTitle)
                         else:
-                            pass
+                            self.helpTitle = "Status Effect Listing"
+                            self.helpPageList = resultDuple[0]
+                            self.helpPageIndex = 0
+                            text = "All Status Effects; press B for back or N for next."
+                            self.screen.show_tiling_dialog(text, self.helpPageList[self.helpPageIndex], bgcolor='lightblue')
                             
                 elif e == "HELPMENUTOP":
                     self.helpPageList = []
@@ -627,7 +631,11 @@ class Game(object):
                             self.helpPageIndex += 1
                         else:
                             self.helpPageIndex = 0
-                        self.screen.show_text_dialog(self.helpPageList[self.helpPageIndex], self.helpTitle)
+                        if self.helpTitle == "Status Effect Listing":
+                            text = "All Status Effects; press B for back or N for next."
+                            self.screen.show_tiling_dialog(text, self.helpPageList[self.helpPageIndex], bgcolor='lightblue')
+                        else:
+                            self.screen.show_text_dialog(self.helpPageList[self.helpPageIndex], self.helpTitle)
                 
                 elif e == "HELPMENUPREVIOUS":
                     if self.helpPageList:
@@ -635,7 +643,11 @@ class Game(object):
                             self.helpPageIndex -= 1
                         else:
                             self.helpPageIndex = len(self.helpPageList) - 1
-                        self.screen.show_text_dialog(self.helpPageList[self.helpPageIndex], self.helpTitle)
+                        if self.helpTitle == "Status Effect Listing":
+                            text = "All Status Effects; press B for back or N for next."
+                            self.screen.show_tiling_dialog(text, self.helpPageList[self.helpPageIndex], bgcolor='lightblue')
+                        else:
+                            self.screen.show_text_dialog(self.helpPageList[self.helpPageIndex], self.helpTitle)
                     
                 ### Character Sheet ###
                 elif e == "CHARSHEETOPEN":
