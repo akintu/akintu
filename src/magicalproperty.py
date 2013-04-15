@@ -180,7 +180,7 @@ class MagicalProperty(object):
                     currentProperty.counts += 1
                     position = Dice.roll(0, len(chosenList) - 1)
                     #print currentProperty.name + " counts " + str(currentProperty.counts)
-        print ">>>>>>>>>>>> ip = " + `givenIp` + " <<<<<<<<<<<<<<<<<<<"
+        #print ">>>>>>>>>>>> ip = " + `givenIp` + " <<<<<<<<<<<<<<<<<<<"
         return chosenList
 
 
