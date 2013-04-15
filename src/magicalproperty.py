@@ -67,9 +67,36 @@ class MagicalProperty(object):
         #subList = MagicalProperty.adjustWeights(subList, item)
         totalWeight = MagicalProperty.getTotalWeight(subList)
         maxProperties = MagicalProperty.getMaxProperties(ip)
-
+        #rounded = MagicalProperty.roundIp(ip)
+        
         return MagicalProperty.rollProperties(subList, maxProperties, ip, totalWeight, item)
 
+    @staticmethod
+    def roundIp(ip):
+        rounded = ip
+        factor = 1
+        if 9 <= rounded <= 29:
+            factor = 2
+            if rounded % 2 == 1:
+                rounded -= 1
+        elif 30 <= rounded <= 89:
+            factor = 3
+            if rounded % 3 == 1:
+                rounded -= 1
+            elif rounded % 3 == 2:
+                rounded += 1
+        elif 90 <= rounded:
+            factor = 5
+            if rounded % 5 == 1:
+                rounded -= 1
+            elif rounded % 5 == 2:
+                rounded -= 2
+            elif rounded % 5 == 3:
+                rounded += 2
+            elif rounded % 5 == 4:
+                rounded += 1
+        return (rounded, factor)
+        
     @staticmethod
     def getMaxProperties(ip):
         if ip <= 4:
@@ -82,15 +109,30 @@ class MagicalProperty(object):
             return 4
         elif ip > 25:
             return 5
-
+            
+    @staticmethod
+    def setErrorThreshold(ip):
+        if ip < 30:
+            return 3
+        elif ip < 70:
+            return 4
+        else:
+            return 5
+            
     @staticmethod
     def rollProperties(subList, maxListSize, givenIp, totalWeight, item):
+        errorThreshold = MagicalProperty.setErrorThreshold(givenIp)
         chosenList = []
         position = 0
         attempts = 0
         ip = givenIp
+        #ip = givenIpTuple[0]
+        #factor = givenIpTuple[1]
         while( ip > 0 ):
             if attempts > 20:
+                # if givenIp - ip <= errorThreshold:
+                    # print ">>>>>>>> Giving up on exact item creation; difference = " + str(givenIp - ip) + " <<<<<<<<<<<<<<<"
+                    # break
                 ip = givenIp
                 chosenList = []
                 position = 0
@@ -138,6 +180,7 @@ class MagicalProperty(object):
                     currentProperty.counts += 1
                     position = Dice.roll(0, len(chosenList) - 1)
                     #print currentProperty.name + " counts " + str(currentProperty.counts)
+        print ">>>>>>>>>>>> ip = " + `givenIp` + " <<<<<<<<<<<<<<<<<<<"
         return chosenList
 
 
