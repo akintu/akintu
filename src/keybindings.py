@@ -120,6 +120,7 @@ class Keystate():
 
             "CONSUMABLEOPEN": ("i", "COMBAT"),
             "CONSUMABLEUSE": (["space", "a", "return", "keypad enter"], "CONSUMABLE"),
+            "CONSUMABLECANCEL": ("escape", "CONSUMABLE"),
 
             "ABILITIESOPEN": ("space", "COMBAT"),
             "ABILITIESSELECT": (["space", "a", "return", "keypad enter"], "ABILITIES"),

@@ -684,9 +684,13 @@ class Game(object):
                     self.open_consumables()
                 elif e == "CONSUMABLEUSE":
                     self.currentItem = self.pane.person[self.id].inventory.allConsumables[self.screen.hide_dialog()[1]]
-                    self.select_self()
+                    self.use_item()
                     keystate.inputState = "COMBAT"
-
+                elif e == "CONSUMABLECANCEL":
+                    self.screen.hide_dialog()
+                    self.screen.show_text("Item use cancelled.")
+                    keystate.inputState = "COMBAT"
+                    
                 ### Combat Only Commands ###
                 elif e == "ABILITIESOPEN":
                     keystate.inputState = "ABILITIES"
@@ -716,10 +720,7 @@ class Game(object):
                 elif e == "CYCLETARGETB":
                     self.cycle_targets(reverse=True)
                 elif e == "ACTIVATESELECTED":
-                    if self.currentItem:
-                        self.use_item()
-                    else:
-                        self.attempt_attack()
+                    self.attempt_attack()
                 elif e == "ENDTURN":
                     self.force_end_turn()
                 elif e == "SELECTSELF":
