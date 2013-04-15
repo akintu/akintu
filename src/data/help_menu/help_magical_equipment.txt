@@ -64,12 +64,3 @@ from by dual-wielding or using a weapon and a shield.
 more powerful if you have a high Sorcery attribute.  They will not increase
 in power when you put them on, but rather, when you find them, they will
 have more properties than if you had a lower Sorcery.
-
-
-
-
-
-
-
-    
-  

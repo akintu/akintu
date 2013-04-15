@@ -83,6 +83,8 @@ class Keystate():
 
         b["HELPMENUACCEPT"] = (["a", "space", "return", "keypad enter"], "HELPMENU")
         b["HELPMENUTOP"] = ("escape", "HELPMENU")
+        b["HELPMENUNEXT"] = ("n", "HELPMENU")
+        b["HELPMENUPREVIOUS"] = ("b", "HELPMENU")
         
         b["TARGETUP"] = ([K_UP, K_KP8, "k"], "TARGET")
         b["TARGETDOWN"] = ([K_DOWN, K_KP2, "j"], "TARGET")

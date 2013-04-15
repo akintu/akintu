@@ -5,6 +5,7 @@ import os
 from const import *
 
 HELP_COLOR = 'lightblue'
+HELP_MAX_LINES = 70
 
 def navigateUpPage(title):
     '''Returns the dictionary of the page that is 
@@ -45,8 +46,35 @@ def navigateDownPage(currentTitle, position):
     elif contentPaths[pageName] == "RESERVED_STATUS_EFFECTS":
         return (contentPaths[pageName], "String")
     else:
-        return (contentPaths[pageName], "Path", pageName)
-    
+        path = contentPaths[pageName]
+        f = open(path, 'r')
+        text = f.read()
+        f.close()
+        # The first line is a comment.
+        text = text.partition("\n")[2]
+        # The second line is just whitespace.
+        text = text.lstrip()
+        textArray = text.splitlines()
+        lines = text.count("\n")
+        gluedPages = []
+        if len(textArray) <= HELP_MAX_LINES:
+            gluedPages = [text]
+        else:
+            textPages = []
+            finalPosition = 0
+            for i in range(len(textArray) / HELP_MAX_LINES):
+                textPages.append(textArray[HELP_MAX_LINES * i:HELP_MAX_LINES * (i+1)])
+                finalPosition = i + 1
+            textPages.append(textArray[HELP_MAX_LINES * finalPosition:])
+            # Now glue them together
+            for page in textPages:
+                gluedPage = ""
+                for line in page:
+                    gluedPage += "\n"
+                    gluedPage += line
+                gluedPages.append(gluedPage)
+        return (gluedPages, "Path", pageName)
+
     
     
 topPages = {
