@@ -123,7 +123,7 @@ class GameScreen(object):
     def show_text_dialog(self,
                          text,
                          title,
-                         bgcolor='gray',
+                         bgcolor='lightblue',
                          nextkey='N',
                          backkey='B',
                          exitkey='Q',
