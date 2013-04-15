@@ -150,10 +150,10 @@ class GameScreen(object):
         '''
         Show a dual pane dialog with the given parameters
         '''
-        self.dialog = screenutils.ItemDialog(text,
-                                             leftitems,
-                                             rightitems,
-                                             bgcolor)
+        self.dialog = screenutils.DualPaneDialog(text,
+                                                 leftitems,
+                                                 rightitems,
+                                                 bgcolor)
         self.screen.blit(self.dialog.surface, (0, 0))
         pygame.display.update()
         return self.dialog.get_selection()
