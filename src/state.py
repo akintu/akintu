@@ -255,8 +255,7 @@ class State(object):
             data = State.tmp_world_data[pane_loc]
         elif pane_loc in State.world_data:
             data = State.world_data[pane_loc]
-        
-        #print "Loading pane " + str(pane_loc) + " with data " + str(data)
+
         if data:
             # print "PANE: " + str(pane_loc)
             monsters = data[MONSTER_KEY]

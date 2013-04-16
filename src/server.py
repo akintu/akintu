@@ -82,20 +82,33 @@ class GameServer():
                 self.load_pane(command.location.pane)
 
                 portal=command.portal if hasattr(command, "portal") else None
-                # If this is a legal move request
-                if self.tile_is_open(command.location, pid=command.id, portal=portal):
+                iLoc = command.iLocation if hasattr(command, "iLocation") else None
+                if command.id in self.person:
+                    if iLoc:
+                        self.person[command.id].iLocation = iLoc
+                    else:
+                        iLoc = self.person[command.id].iLocation
 
-                    # ---JAB---
-                    #Check for entities that have a trigger() attribute
-                    if command.location.pane in self.pane:
-                        ent_list = self.pane[command.location.pane].get_trigger_entities(command.location)
+                # If this is a legal move request
+                if self.tile_is_open(command.location, pid=command.id, portal=portal, iLoc=iLoc):
+                    if not portal:
+                        # ---JAB---
+                        #Check for entities that have a trigger() attribute
+                        p = iLoc if iLoc in self.pane else command.location.pane if command.location.pane in self.pane else None
+                        if command.location.pane in self.pane and not iLoc:
+                            ent_list = self.pane[command.location.pane].get_trigger_entities(command.location)
+                        elif iLoc in self.pane:
+                            ent_list = self.pane[iLoc].get_trigger_entities(iLoc)
                         for entity in ent_list:
-                            new_loc = entity.trigger(command.id)
-                            self.SDF.queue.put((port, Command("PERSON", "MOVE", id=command.id, portal=entity, location=new_loc)))
+                            portal_loc, new_loc = entity.trigger(command.id)
+                            print "PORTAL LOCATION: " + str(portal_loc)
+                            self.SDF.queue.put((port, Command("PERSON", "MOVE", id=command.id, portal=entity, iLocation=portal_loc, location=new_loc)))
 
                     # Portals always treats it as a separate pane
                     portal_type = portal.portal_type if portal != None else None
                     if portal_type == None or portal_type == Portal.OVERWORLD:
+                        if portal_type == Portal.OVERWORLD:
+                            print "server portal type is OVERWORLD"
                         # If the origin and destination are in the same pane
                         if self.person[command.id].location.pane == command.location.pane and not portal:
                             # Update location and broadcast
@@ -129,20 +142,28 @@ class GameServer():
 
                             self.unload_panes()
                     else:
-                        self.load_pane(command.location, portal=portal_type)
+                        #print "ilocation = " + str(command.iLocation)
                         #HANDLE ALL THINGS PORTAL HERE
                         # Remove person from players' person tables, and pane's person list
-                        key = self.person[command.id].location
+                        key = self.person[command.id].iLocation
+                        if not key:
+                            loc = self.person[command.id].location
+                            key = loc
                         if not key in self.pane:
                             key = key.pane
-                        self.pane[key].person.remove(command.id)
+
+                        self.load_pane(command.iLocation, portal=portal_type)
+                        # self.pane[key].person.remove(command.id)
+                        print "Trying to remove person from pane " + str(key)
+                        self.pane[self.person[command.id].location.pane].person.remove(command.id)
                         self.broadcast(Command("PERSON", "REMOVE", id=command.id), -command.id)
 
                         # Update location in server memory
+                        self.person[command.id].iLocation = command.iLocation
                         self.person[command.id].location = command.location
 
                         # Add player to new pane lists and send to clients in the affected pane
-                        self.pane[command.location].person.append(command.id)
+                        self.pane[command.iLocation].person.append(command.id)
                         command.action = "CREATE"
                         command.portal = portal_type
                         command.details = self.person[command.id].dehydrate()
@@ -340,7 +361,8 @@ class GameServer():
     ###### Utility Methods ######
 
     def broadcast(self, command, pid=None, port=None, pane=None, exclude=False):
-        """Broadcast a given command to a player or all players in a pane.
+        '''
+        Broadcast a given command to a player or all players in a pane.
         Accepts one of a port, a person id (pid), or a pane.  (Do not pass in more than one!)
         If exclude is True, then command will be sent to all players in affected pane except
                 for the player indicated by pid or port.
@@ -348,7 +370,8 @@ class GameServer():
         If a port or id is given and is a negative value, the command will be broadcast
                 to all players in the same pane as the player indicated.
         If a port or id is given and is a positive value, the command will be broadcast
-                only to that player."""
+                only to that player.
+        '''
         sendToAll = True
         if port:
             sendToAll = True if port < 0 else False
@@ -382,7 +405,7 @@ class GameServer():
                 self.broadcast(cmd, p)
         # TODO: ITEMS
 
-    def tile_is_open(self, location, pid=None, cPane=None, portal=False):
+    def tile_is_open(self, location, pid=None, cPane=None, iLoc=None, portal=False):
         if portal:  #Ensures we can take the portal, even if a player is on the other end
             return True
         if location.pane not in self.pane and not pid and not cPane:
@@ -390,7 +413,7 @@ class GameServer():
         if not cPane and pid and self.person[pid] and self.person[pid].cPane:
             cPane = self.person[pid].cPane
         loc = 'cLocation' if cPane else 'location'
-        p = cPane if cPane else location.pane
+        p = cPane if cPane else iLoc if iLoc else location.pane
 
         if not self.pane[p].is_tile_passable(location):
             return False
@@ -402,7 +425,7 @@ class GameServer():
 
     def load_pane(self, pane, pid=None, portal=None):
         if portal:
-            print "YAY A PORTAL WAS PASSED INTO server.load_pane"
+            print "server.load_pane(portal=TRUE)"
         if pane not in self.pane:
             print("Loading pane " + str(pane))
             if pid:
@@ -413,6 +436,7 @@ class GameServer():
                     p.location = None
                     p.cPane = pane
             else:
+                print "world.get_pane with portal=" + str(portal)
                 self.pane[pane] = self.world.get_pane(pane, True, portal=portal)
 
             # Add all people in pane to global person table, then replace pane's person list with

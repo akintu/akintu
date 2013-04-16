@@ -199,7 +199,11 @@ class Game(object):
                     if self.combat:
                         self.switch_panes(command.cPane, combat=self.combat)
                     else:
-                        self.switch_panes(command.location, portal=portal)
+                        if hasattr(command, 'iLocation'):
+                            pane_loc = command.iLocation
+                        else:
+                            pane_loc = command.location
+                        self.switch_panes(pane_loc, portal=portal)
 
                 if command.action == "LOAD":
                     self.pane.person[command.id] = TheoryCraft.rehydratePlayer(command.details)

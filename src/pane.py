@@ -406,6 +406,8 @@ class Pane(object):
     def get_combat_pane(self, focus_tile, monster = None, num_players=1):
         return CombatPane(self, focus_tile, monster, num_players)
 
+    def get_inside(self, portal_location, portal_type):
+        return Inside.getInside(portal_type)
 
     def save_state(self):
         '''
@@ -470,9 +472,11 @@ class Pane(object):
             self.tiles[loc].removeTrap()
 
     def get_trigger_entities(self, location):
-        loc = location.tile
-        if loc in self.tiles:
-            return self.tiles[loc].get_trigger_entities()
+        if isinstance(location, Location):
+            loc = location.tile
+        else:
+            loc = location
+        return self.tiles[loc].get_trigger_entities()
 
     def getTileContents(self, location, monsters=None):
         '''
@@ -526,28 +530,6 @@ class Town(Pane):
         #Generate a rectangle region within bounds
 
         bounds = (7, 14, 5, 9)
-
-        # for i in range(2):
-            # building = BuildingOverworld("tree", bounds, self.location)#, (15, 6), Location(self.location, (start[0], start[1]+i*7)))
-            # self.buildings.append(building)
-
-        # for i in range(1):
-            # loc = (random.randrange(0, PANE_X-8), random.randrange(0, PANE_Y-6))
-            # house = HouseOverworld(Location(self.location, loc))
-            # self.buildings.append(house)
-        # for i in range(1):
-            # loc = (random.randrange(0, PANE_X-8), random.randrange(0, PANE_Y-6))
-            # dungeon = DungeonOverworld(Location(self.location, loc))
-            # self.buildings.append(dungeon)
-
-        # for building in self.buildings:
-            # super(Town, self).load_region(building.boundary, building.boundary_type)
-
-        # for building in self.buildings:
-            # super(Town, self).clear_region(building.clear)
-            # super(Town, self).clear_region(building.path)
-        # for building in self.buildings:
-            # super(Town, self).add_entities(building.entities)
 
     def add_npcs(self):
         for building in self.buildings:

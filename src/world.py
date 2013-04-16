@@ -35,6 +35,7 @@ class World(object):
         self.curr_pane = None
         self.countries = dict()
         self._generate_world(pane)
+        print self._listTowns(pane)
         
     def is_town_pane(self, location):
         if isinstance(location, Location):
@@ -46,19 +47,20 @@ class World(object):
         else:
             return False
 
-    def is_dungeon_pane(self, location):
-        pass
-
     def get_pane(self, location, is_server=False, portal=None):
         #print portal
-        if portal == Portal.HOUSE:
+        inside = None
+        if portal != Portal.OVERWORLD:# == Portal.HOUSE:
             #Check State For Pane
             state = None
             if is_server:
                 state = State.load_pane(location)
-            self.panes[location] = House(self.seed, location, is_server=is_server, pane_state=state)
-            return self.panes[location]
-        else:
+            # self.panes[location] = House(self.seed, location, is_server=is_server, pane_state=state)
+            print "world.get_pane(" + str(location) + " portal=" +str(portal) + " IS SERVER: " + str(is_server)
+            inside = Inside.getInside(portal, self.seed, location, is_server=is_server, pane_state=state)
+            self.panes[location] = inside
+
+        if not inside:
             # if isinstance(location, Location):
                 # surrounding_locations = location.get_surrounding_panes()
             # else:
@@ -81,11 +83,10 @@ class World(object):
 
             self._loadStamps(location)
 
-            # self._merge_tiles(surrounding_locations)
             self.panes[location].load_images()
-            if not is_server:
-                self.panes[location].person = {}
-            return self.panes[location]
+        if not is_server:
+            self.panes[location].person = {}
+        return self.panes[location]
 
     def _loadStamps(self, location):
         if isinstance(location, Location):
@@ -117,7 +118,7 @@ class World(object):
         return self.countries[country_loc].towns
         
 
-    def _generate_world(self, pane=(0, 0)):
+    def _generate_world(self, pane):
         if isinstance(pane, Location):
             pane = pane.pane
         country_loc, township_loc = Township.getTownshipLocation(pane)
