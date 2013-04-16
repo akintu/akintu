@@ -1,6 +1,7 @@
 from location import Location
 from const import *
 import zlib
+import cPickle
 import os
 import re
 
@@ -16,8 +17,7 @@ class Region:
                 for l in args[0]:
                     self.__call__("ADD", "CIRCLE", l, 0)
             else:
-                self.history = zlib.decompress(args[0]).split("\r\n")
-                self.rehydrate()
+                self.rehydrate(args[0])
         elif len(args) > 1:
             self.__call__("ADD", *args)
 
@@ -55,9 +55,9 @@ class Region:
         return strrep
 
     def __repr__(self):
-        return zlib.compress("\r\n".join(self.history), 9)
+        return zlib.compress(cPickle.dumps(self.history), 9)
 
-    def __call__(self, method, shape, *details, **opts):
+    def __call__(self, method, shape, *details):
         if method.upper() == "SHIFT":
             temp = set()
             for l in self.locations:
@@ -73,16 +73,18 @@ class Region:
             elif method.upper() == "XOR":
                 self.locations ^= getattr(self, shape.lower())(*details)
 
-        if 'append' not in opts or opts['append'] == True:
-            self.history.append(method + "|||" + str(shape) + "|||" + \
-                    "|||".join([x.__repr__() for x in details]))
+        hist = {}
+        hist['method'] = method
+        hist['shape'] = shape
+        hist['details'] = details
+        self.history.append(hist)
 
     def __eq__(self, other):
         return all(x in other for x in self) and all (x in self for x in other)
 
     def __add__(self, other):
         R = Region(self)
-        R("ADD", "REGION", other, append=False)
+        R("ADD", "REGION", other)
         return R
 
     def __or__(self, other):
@@ -116,8 +118,8 @@ class Region:
 
     def __setstate__(self, state):
         self.locations = set()
-        self.history = zlib.decompress(state).split("\r\n")
-        self.rehydrate()
+        self.history = []
+        self.rehydrate(state)
 
     def __len__(self):
         return len(self.locations)
@@ -127,26 +129,11 @@ class Region:
             return None
         return list(self.locations)[key]
 
-    def rehydrate(self):
-        for line in self.history:
-            parts = line.split("|||")
-            for i, p in enumerate(parts):
-                try:
-                    parts[i] = int(p)
-                except ValueError:
-                    try:
-                        parts[i] = Location(p)
-                    except AttributeError:
-                        try:
-                            r = re.match(r'\((?P<x>\d*), (?P<y>\d*)\)', p)
-                            parts[i] = (int(r.group('x')), int(r.group('y')))
-                        except AttributeError:
-                            try:
-                                parts[i] = Region(p)
-                            except:
-                                pass
-
-            self.__call__(*parts, append=False)
+    def rehydrate(self, history):
+        if not isinstance(history, list):
+            history = cPickle.loads(zlib.decompress(history))
+        for line in history:
+            self(line['method'], line['shape'], *line['details'])
 
     def square(self, loc1, loc2):
         locations = set()
