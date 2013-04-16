@@ -12,7 +12,7 @@ class Inside(object):
         if type == Portal.HOUSE:
             return House(seed, location, is_server, load_entities, pane_state, level)
         if type == Portal.DUNGEON:
-            return Dungeon(seed, location, is_server, load_entites, pane_state, level)
+            return Dungeon(seed, location, is_server, load_entities, pane_state, level)
         if type == Portal.SHOP:
             return Shop(seed, location, is_server, load_entities, pane_state, level)
         return None
@@ -31,7 +31,7 @@ class Building(Pane):
 
         super(Building, self).__init__(seed, location, is_server, load_entities, pane_state, level)
 
-        print "INSIDE OF BUILDING: LOCATION = " + str(location)
+        # print "INSIDE OF BUILDING: LOCATION = " + str(location)
         random.seed(self.seed + str(self.location) + "INSIDE")
 
         if not hasattr(self, "path_sheet"):
@@ -44,6 +44,18 @@ class Building(Pane):
             self.door_sheet = Sprites.get_sheet(DOOR_KEY)
 
         self.load_background()
+
+        #Add Door With Exit
+        loc = (PANE_X/2, PANE_Y-2)
+        door_image = self.door_sheet.getimage((3,0))
+        iLocation = Location(location.pane, location.tile, z=0, direction=location.direction)
+        # location.z = 0
+        # location.move(1, 2)
+        self.door_portal = Portal(iLocation, portal_type=Portal.OVERWORLD, new_location=location , image=door_image, passable=True)
+        # print "added door_portal to loc: " + str(loc)
+        self.tiles[loc] = Tile(None, True)
+        self.tiles[loc].set_image(door_image)
+        self.add_entities({loc:self.door_portal})#[loc] = self.door_portal
 
     def is_tile_passable(self, location, check_entity_keys=False):
         passable = self.tiles[location.tile].is_passable(check_entity_keys)
@@ -69,37 +81,28 @@ class House(Building):
 
         super(House, self).__init__(seed, location, is_server, load_entities, pane_state, level)
 
-        #Add Door With Exit
-        loc = (PANE_X/2, PANE_Y-2)
-        door_image = self.door_sheet.getimage((3,0))
-        iLocation = Location(location.pane, location.tile, z=-1, direction=location.direction)
-        location.z = 0
-        location.move(1, 2)
-        door_portal = Portal(iLocation, portal_type=Portal.OVERWORLD, new_location=location , image=door_image, passable=True)
-        self.tiles[loc] = Tile(None, True)
-        self.tiles[loc].set_image(door_image)
-        self.tiles[loc].add_entity = door_portal
+
 
 class Dungeon(Building):
     def __init__(self, seed, location, is_server=False, load_entities=True, pane_state=None, level=None):
         print "Dungeon call"
         super(Dungeon, self).__init__(seed, location, is_server, load_entities, pane_state, level)
         #Add Door With Exit
-        loc = (PANE_X/2, PANE_Y-2)
-        door_image = self.door_sheet.getimage((3,0))
-        door_portal = Portal(location, portal_type=Portal.OVERWORLD, location=loc, image=door_image, passable=True)
-        self.tiles[loc] = Tile(None, True)
-        self.tiles[loc].set_image(door_image)
-        self.tiles[loc].add_entity = door_portal
+        # loc = (PANE_X/2, PANE_Y-2)
+        # door_image = self.door_sheet.getimage((3,0))
+        # door_portal = Portal(location, portal_type=Portal.OVERWORLD, location=loc, image=door_image, passable=True)
+        # self.tiles[loc] = Tile(None, True)
+        # self.tiles[loc].set_image(door_image)
+        # self.entities[loc] = door_portal
         
 class Shop(Building):
     def __init__(self, seed, location, is_server=False, load_entities=True, pane_state=None, level=None):
         print "Shop call"
         super(Shop, self).__init__(seed, location, is_server, load_entities, pane_state, level)
         #Add Door With Exit
-        loc = (PANE_X/2, PANE_Y-2)
-        door_image = self.door_sheet.getimage((3,0))
-        door_portal = Portal(location, portal_type=Portal.OVERWORLD, location=loc, image=door_image, passable=True)
-        self.tiles[loc] = Tile(None, True)
-        self.tiles[loc].set_image(door_image)
-        self.tiles[loc].add_entity = door_portal
+        # loc = (PANE_X/2, PANE_Y-2)
+        # door_image = self.door_sheet.getimage((3,0))
+        # door_portal = Portal(location, portal_type=Portal.OVERWORLD, location=loc, image=door_image, passable=True)
+        # self.tiles[loc] = Tile(None, True)
+        # self.tiles[loc].set_image(door_image)
+        # self.entities[loc] = door_portal
