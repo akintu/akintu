@@ -1,4 +1,16 @@
-# 
+# 15x10 Composite towns
+#
+ssssssssffsssss
+s___ S___H___ s
+s___ ________ s
+s___  _ pp_   s
+s___pppppH___ s
+s_rwff_pp____ s
+s_www___pp_   s
+s_swr____p____s
+s_____________s
+s_____________s
+#
 #
 ddddddddddddddd
 d   S___      d
@@ -10,7 +22,7 @@ rwwwww dddddddd
 rwwwpppppH___ r
 rwwwww  d____gr
 rrrrrrrrdd_rrrr
-# 15x10 Composite towns
+#
 #
 ttttttttttttttt
 gH___ S___ wwwt
