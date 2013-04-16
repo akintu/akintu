@@ -5,6 +5,7 @@ Keybindings utility module
 from pygame.locals import *
 import collections
 import pygame
+import os
 
 class Keystate():
     def __init__(self):
@@ -160,6 +161,8 @@ class Keystate():
         b["SHOWPANEPIDS"] = ("CTRL+SHIFT+p", self.MOVEMENT)
         b["SHOWPATHS"] = ("CTRL+SHIFT+\\", self.MOVEMENT)
 
+        self.load_keys()
+
     def __call__(self, e=None):
         if e:
 #            if hasattr(e, 'unicode'):
@@ -173,7 +176,7 @@ class Keystate():
             if self.inputState == "BINDINGSADD" and \
                     any(all(key not in keylist for keylist in self.mod_keys.values()) \
                     for key in self.keystate):
-                self.newBinding = self.keystate
+                self.newBinding = self.keystate[:]
                 return "BINDINGSADDED"
 
         events = [k for k, v in self.bindings.iteritems() if v[0] in self and \
@@ -230,15 +233,23 @@ class Keystate():
         keys = self.get_key(event, all=True)
         for i, key in enumerate(self.newBinding):
             if any(key in keylist for keylist in self.mod_keys.values()):
-                print self.keystate
                 self.newBinding[i] = [k for k, v in self.mod_keys.iteritems() if key in v][0]
         keys.append("+".join([pygame.key.name(key) if isinstance(key, int) else key for key in self.newBinding]))
         self.newBinding = None
         self.bindings[event] = (keys, self.bindings[event][1])
+        self.save_keys()
 
     def delete_binding(self, event, combo):
         keys = self.get_key(event, all=True)
         del keys[combo]
         self.bindings[event] = (keys, self.bindings[event][1])
+        self.save_keys()
+
+    def save_keys(self):
+        file = os.path.join('res', 'keybindings.txt')
+        pass
+
+    def load_keys(self):
+        pass
 
 keystate = Keystate()
