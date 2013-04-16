@@ -1114,6 +1114,8 @@ class Game(object):
                     p.team == "Monsters"):
                 return False
         else:
+            if self.currentTarget not in self.pane.person:
+                return False
             if self.pane.person[self.currentTarget].location not in self.rangeRegion:
                 return False
             if self.currentAbility.targetType == "hostile" and self.pane.person[self.currentTarget].team != "Monsters":

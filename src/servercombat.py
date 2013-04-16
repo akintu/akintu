@@ -462,6 +462,9 @@ class CombatServer():
     def monster_phase(self, combatPane, initial=False):
         #start = time.clock()
 
+        if combatPane not in self.server.pane:
+            return
+
         chars = [self.server.person[x] for x in self.server.pane[combatPane].person]
         players = [x for x in chars if x.team == "Players"]
         initMonsters = [x for x in chars if x.team == "Monsters" and x not in
@@ -530,9 +533,7 @@ class CombatServer():
         #end = time.clock()
         #print str(end-start) + " seconds to execute monster_phase()"
         if len([self.server.person[x] for x in self.server.pane[combatPane].person \
-                if self.server.person[x].team == "Players"]) > 0 and
-                len([self.server.person[x] for x in self.server.pane[combatPane].person \
-                if self.server.person[x].team == "Monsters"]) > 0:
+                if self.server.person[x].team == "Players"]) > 0:
             reactor.callLater(0.09, self.monster_phase, combatPane)
 
     def victory_phase(self, livingPlayers, combatPane):
