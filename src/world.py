@@ -56,7 +56,6 @@ class World(object):
             if is_server:
                 state = State.load_pane(location)
             # self.panes[location] = House(self.seed, location, is_server=is_server, pane_state=state)
-            print "world.get_pane(" + str(location) + " portal=" +str(portal) + " IS SERVER: " + str(is_server)
             inside = Inside.getInside(portal, self.seed, location, is_server=is_server, pane_state=state)
             self.panes[location] = inside
 

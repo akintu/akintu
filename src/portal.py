@@ -15,7 +15,7 @@ class Portal(Entity):
         self.iLocation = iLocation
         self.portal_type = portal_type
         
-    def trigger(self, target):
+    def trigger(self):
         #print "Portal.trigger() called"
         return (self.iLocation, self.new_location)
         
