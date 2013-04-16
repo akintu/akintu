@@ -71,7 +71,7 @@ class Game(object):
 
         # Help menu state
         self.helpTitle = None
-        
+
         # Shop state
         self.currentShop = None
 
@@ -539,6 +539,14 @@ class Game(object):
                 elif keystate.direction("DIALOG"):
                     self.screen.move_dialog(keystate.direction("DIALOG"))
                     keystate.keyTime = time.time() + 2 * keystate.typematicRate
+                    if keystate.inputState == "BINDINGS":
+                        sel = self.screen.get_dialog_selection()
+                        if sel[0] == 0 and keystate.direction("DIALOG") in [2, 8]:
+                            left = [Item(e, "\n".join(b[1]) if isinstance(b[1], list) else b[1]) \
+                                    for e, b in keystate.bindings.iteritems()]
+                            e = keystate.bindings.keys()[sel[1]]
+                            right = [Item(b, "\n".join(keystate.get_states(e))) for b in keystate.get_key(e, all=True)]
+                            self.screen.update_dual_pane_dialog_items(left, right)
                 elif keystate.direction("TARGET"):
                     newloc = self.currentTarget.move(keystate.direction("TARGET"))
                     if newloc.pane == self.currentTarget.pane and newloc in self.rangeRegion:
@@ -613,7 +621,7 @@ class Game(object):
                             self.screen.show_text_dialog(displayText, self.helpTitle)
                         else:
                             pass
-                            
+
                 elif e == "HELPMENUTOP":
                     pageDict = helpmenu.navigateUpPage(self.helpTitle)
                     if not pageDict:
@@ -623,9 +631,9 @@ class Game(object):
                     else:
                         self.helpTitle = pageDict['title']
                         self.screen.show_menu_dialog(pageDict['options'], pageDict['color'], pageDict['title'])
-                    
-                
-                    
+
+
+
                 ### Character Sheet ###
                 elif e == "CHARSHEETOPEN":
                     self.display_character_sheet()
@@ -778,11 +786,18 @@ class Game(object):
                 elif e == "BINDINGSOPEN":
                     keystate.inputState = "BINDINGS"
                     text = "Hi!  You can change your keybindings here!"
-                    left = [Item(e, b[1] if isinstance(b[1], list) else "\r\n".join([b[1]])) \
+                    left = [Item(e, "\n".join(b[1]) if isinstance(b[1], list) else b[1]) \
                             for e, b in keystate.bindings.iteritems()]
                     e = keystate.bindings.keys()[0]
-                    right = [Item(b, "\r\n".join(keystate.get_states(e))) for b in keystate.get_key(e, all=True)]
+                    right = [Item(b, "\n".join(keystate.get_states(e))) for b in keystate.get_key(e, all=True)]
                     self.screen.show_dual_pane_dialog(text, left, right, 'gray')
+                elif e == "BINDINGSCLOSE":
+                    keystate.inputState = "COMBAT" if self.combat else "OVERWORLD"
+                    self.screen.hide_dialog()
+                elif e == "BINDINGSADD":
+                    pass
+                elif e == "BINDINGSDELETE":
+                    pass
 
                 ### Strictly non-combat commands ###
                 elif e == "GETITEM":
@@ -1025,7 +1040,7 @@ class Game(object):
 
     def cycle_targets(self, reverse=False):
         # Cycles through the current persons in the current combat pane.
-        if not self.combat:
+        if not self.combat or not self.pane.person:
             return
 
         if self.currentTarget:
