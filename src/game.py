@@ -1124,6 +1124,10 @@ class Game(object):
             if self.currentAbility.specialTargeting == "BORDER":
                 range("ADD", "DIAMOND", self.pane.person[self.id].location, r)
                 range("SUB", "DIAMOND", self.pane.person[self.id].location, r - 1)
+            if self.currentAbility.targetType == "trap" and \
+                    self.pane.person[self.id].characterClass != "Anarchist":
+                for p in [x for x in self.pane.person.values() if x.location in range]:
+                    range("SUB", "CIRCLE", p.location, 0)
         dirty += self.rangeRegion ^ range
         self.rangeRegion = range
 
@@ -1159,7 +1163,6 @@ class Game(object):
         fields = self.pane.fields.get_region()
         dirty += self.fieldsRegion ^ fields
         self.fieldsRegion = fields
-
 
         for l in (l for l in dirty if l.pane == self.pane.person[self.id].location.pane):
             overlay = []
@@ -1273,8 +1276,6 @@ class Game(object):
             return
         tile.image = images[i]
         self.screen.update_tile(tile, location)
-
-
 
     def remove_entities(self, location):
         #TODO: make this delayed. (maybe use DelayedCall?)
