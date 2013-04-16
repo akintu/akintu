@@ -820,6 +820,7 @@ class Game(object):
                     self.update_bindings()
                 elif e == "BINDINGSCLOSE":
                     keystate.inputState = "COMBAT" if self.combat else "OVERWORLD"
+                    self.dialog_selection = 0
                     self.screen.hide_dialog()
                 elif e == "BINDINGSADD":
                     self.screen.update_dual_pane_dialog_text("Please enter new key combination")
@@ -1319,5 +1320,5 @@ class Game(object):
         left = [Item(e, "\n".join(b[1]) if isinstance(b[1], list) else b[1]) \
                 for e, b in keystate.bindings.iteritems()]
         e = keystate.bindings.keys()[self.dialog_selection]
-        right = [Item(b, "\n".join(keystate.get_states(e))) for b in keystate.get_key(e, all=True)]
+        right = [Item(b.upper(), "\n".join(keystate.get_states(e))) for b in keystate.get_key(e, all=True)]
         self.screen.update_dual_pane_dialog_items(left, right)

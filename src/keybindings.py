@@ -213,7 +213,6 @@ class Keystate():
         if not isinstance(combos, list):
             combos = [combos]
         combos = [pygame.key.name(k) if isinstance(k, int) else k for k in combos]
-        combos = map(str.upper, combos)
 
         if shortest:
             combos = sorted(combos, key=lambda combo: len(combo.split('+')) * 100 + len(combo))
