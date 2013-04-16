@@ -74,7 +74,7 @@ class Game(object):
         self.helpTitle = None
         self.helpPageList = []
         self.helpPageIndex = 0
-        
+
         # Shop state
         self.currentShop = None
 
@@ -546,6 +546,14 @@ class Game(object):
                 elif keystate.direction("DIALOG"):
                     self.screen.move_dialog(keystate.direction("DIALOG"))
                     keystate.keyTime = time.time() + 2 * keystate.typematicRate
+                    if keystate.inputState == "BINDINGS":
+                        sel = self.screen.get_dialog_selection()
+                        if sel[0] == 0 and keystate.direction("DIALOG") in [2, 8]:
+                            left = [Item(e, "\n".join(b[1]) if isinstance(b[1], list) else b[1]) \
+                                    for e, b in keystate.bindings.iteritems()]
+                            e = keystate.bindings.keys()[sel[1]]
+                            right = [Item(b, "\n".join(keystate.get_states(e))) for b in keystate.get_key(e, all=True)]
+                            self.screen.update_dual_pane_dialog_items(left, right)
                 elif keystate.direction("TARGET"):
                     newloc = self.currentTarget.move(keystate.direction("TARGET"))
                     if newloc.pane == self.currentTarget.pane and newloc in self.rangeRegion:
@@ -618,7 +626,7 @@ class Game(object):
                             self.helpPageIndex = 0
                             text = "All Status Effects; press B for back or N for next."
                             self.screen.show_tiling_dialog(text, self.helpPageList[self.helpPageIndex], bgcolor='lightblue')
-                            
+
                 elif e == "HELPMENUTOP":
                     self.helpPageList = []
                     pageDict = helpmenu.navigateUpPage(self.helpTitle)
@@ -629,7 +637,7 @@ class Game(object):
                     else:
                         self.helpTitle = pageDict['title']
                         self.screen.show_menu_dialog(pageDict['options'], pageDict['color'], pageDict['title'])
-                    
+
                 elif e == "HELPMENUNEXT":
                     if self.helpPageList:
                         if self.helpPageIndex + 1 < len(self.helpPageList):
@@ -641,7 +649,7 @@ class Game(object):
                             self.screen.show_tiling_dialog(text, self.helpPageList[self.helpPageIndex], bgcolor='lightblue')
                         else:
                             self.screen.show_text_dialog(self.helpPageList[self.helpPageIndex], self.helpTitle)
-                
+
                 elif e == "HELPMENUPREVIOUS":
                     if self.helpPageList:
                         if self.helpPageIndex - 1 >= 0:
@@ -653,7 +661,7 @@ class Game(object):
                             self.screen.show_tiling_dialog(text, self.helpPageList[self.helpPageIndex], bgcolor='lightblue')
                         else:
                             self.screen.show_text_dialog(self.helpPageList[self.helpPageIndex], self.helpTitle)
-                    
+
                 ### Character Sheet ###
                 elif e == "CHARSHEETOPEN":
                     self.display_character_sheet()
@@ -806,11 +814,18 @@ class Game(object):
                 elif e == "BINDINGSOPEN":
                     keystate.inputState = "BINDINGS"
                     text = "Hi!  You can change your keybindings here!"
-                    left = [Item(e, b[1] if isinstance(b[1], list) else "\r\n".join([b[1]])) \
+                    left = [Item(e, "\n".join(b[1]) if isinstance(b[1], list) else b[1]) \
                             for e, b in keystate.bindings.iteritems()]
                     e = keystate.bindings.keys()[0]
-                    right = [Item(b, "\r\n".join(keystate.get_states(e))) for b in keystate.get_key(e, all=True)]
+                    right = [Item(b, "\n".join(keystate.get_states(e))) for b in keystate.get_key(e, all=True)]
                     self.screen.show_dual_pane_dialog(text, left, right, 'gray')
+                elif e == "BINDINGSCLOSE":
+                    keystate.inputState = "COMBAT" if self.combat else "OVERWORLD"
+                    self.screen.hide_dialog()
+                elif e == "BINDINGSADD":
+                    pass
+                elif e == "BINDINGSDELETE":
+                    pass
 
                 ### Strictly non-combat commands ###
                 elif e == "GETITEM":
@@ -821,12 +836,10 @@ class Game(object):
                     self.request_levelup(True)
                 elif e == "STARTRESPEC":
                     self.request_respec()
-                elif e == "HELPMENU":
-                    pass #TODO Implement help menu
-                elif e == "CHEAT CODE":
-                    print "You found the secret code!"
 
                 ### Debug codes ###
+                elif e == "CHEAT CODE":
+                    print "You found the secret code!"
                 elif e == "SHOWINPUTSTATE":
                     print "Keyboard input state: %s" % keystate.inputState
                 elif e == "SHOWPANEPIDS":
@@ -1053,12 +1066,11 @@ class Game(object):
 
     def cycle_targets(self, reverse=False):
         # Cycles through the current persons in the current combat pane.
-        if not self.combat:
+        if not self.combat or not self.pane.person:
             return
 
-        if self.currentTarget:
-            if self.currentTarget not in self.pane.person:
-                self.currentTarget = None
+        if not self.valid_target():
+            self.currentTarget = None
 
         if not self.panePersonIdList or not self.currentTarget \
                 or self.currentTarget not in self.pane.person or \
@@ -1085,6 +1097,11 @@ class Game(object):
             if self.currentTarget not in self.rangeRegion:
                 return False
             if self.currentAbility.targetType not in ["location", "trap"]:
+                return False
+            if self.currentAbility.targetType == "trap" and \
+                    self.pane.person[self.id].characterClass != "Anarchist" and \
+                    any(self.currentTarget == p.location for p in self.pane.person.values() if \
+                    p.team == "Monsters"):
                 return False
         else:
             if self.pane.person[self.currentTarget].location not in self.rangeRegion:
@@ -1113,6 +1130,11 @@ class Game(object):
             if self.currentAbility.specialTargeting == "BORDER":
                 range("ADD", "DIAMOND", self.pane.person[self.id].location, r)
                 range("SUB", "DIAMOND", self.pane.person[self.id].location, r - 1)
+            if self.currentAbility.targetType == "trap" and \
+                    self.pane.person[self.id].characterClass != "Anarchist":
+                for p in [x for x in self.pane.person.values() \
+                        if x.team == "Monsters" and x.location in range]:
+                    range("SUB", "CIRCLE", p.location, 0)
         dirty += self.rangeRegion ^ range
         self.rangeRegion = range
 
@@ -1148,7 +1170,6 @@ class Game(object):
         fields = self.pane.fields.get_region()
         dirty += self.fieldsRegion ^ fields
         self.fieldsRegion = fields
-
 
         for l in (l for l in dirty if l.pane == self.pane.person[self.id].location.pane):
             overlay = []
@@ -1262,8 +1283,6 @@ class Game(object):
             return
         tile.image = images[i]
         self.screen.update_tile(tile, location)
-
-
 
     def remove_entities(self, location):
         #TODO: make this delayed. (maybe use DelayedCall?)

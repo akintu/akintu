@@ -71,21 +71,22 @@ class Keystate():
 
         b["FORCEQUIT"] = (["CTRL+SHIFT+q", "CTRL+SHIFT+x", "META+q+x"], self.ALL)
 
-        b["UP"] = ([K_UP, K_KP8, "k", "SHIFT+up", "SHIFT+keypad 8", "SHIFT+k"], self.MOVEMENT)
-        b["DOWN"] = ([K_DOWN, K_KP2, "j", "SHIFT+down", "SHIFT+keypad 2", "SHIFT+j"], self.MOVEMENT)
-        b["LEFT"] = ([K_LEFT, K_KP4, "h", "SHIFT+left", "SHIFT+keypad 4", "SHIFT+h"], self.MOVEMENT)
-        b["RIGHT"] = ([K_RIGHT, K_KP6, "l", "SHIFT+right", "SHIFT+keypad 6", "SHIFT+l"], self.MOVEMENT)
+        b["UP"] = ([K_UP, K_KP8, "k", "SHIFT+up", "SHIFT+[8]", "SHIFT+k"], self.MOVEMENT)
+        b["DOWN"] = ([K_DOWN, K_KP2, "j", "SHIFT+down", "SHIFT+[2]", "SHIFT+j"], self.MOVEMENT)
+        b["LEFT"] = ([K_LEFT, K_KP4, "h", "SHIFT+left", "SHIFT+[4]", "SHIFT+h"], self.MOVEMENT)
+        b["RIGHT"] = ([K_RIGHT, K_KP6, "l", "SHIFT+right", "SHIFT+[6]", "SHIFT+l"], self.MOVEMENT)
 
         b["DIALOGUP"] = ([K_UP, K_KP8, "k"], self.DIALOG)
         b["DIALOGDOWN"] = ([K_DOWN, K_KP2, "j"], self.DIALOG)
         b["DIALOGLEFT"] = ([K_LEFT, K_KP4, "h"], self.DIALOG)
         b["DIALOGRIGHT"] = ([K_RIGHT, K_KP6, "l"], self.DIALOG)
 
+        b["HELPMENUOPEN"] = (["F1", "SHIFT+/"], self.MOVEMENT)
         b["HELPMENUACCEPT"] = (["a", "space", "return", "keypad enter"], "HELPMENU")
         b["HELPMENUTOP"] = ("escape", "HELPMENU")
         b["HELPMENUNEXT"] = ("n", "HELPMENU")
         b["HELPMENUPREVIOUS"] = ("b", "HELPMENU")
-        
+
         b["TARGETUP"] = ([K_UP, K_KP8, "k"], "TARGET")
         b["TARGETDOWN"] = ([K_DOWN, K_KP2, "j"], "TARGET")
         b["TARGETLEFT"] = ([K_LEFT, K_KP4, "h"], "TARGET")
@@ -130,8 +131,6 @@ class Keystate():
         b["BINDINGSADD"] = (["a", "insert"], "BINDINGS")
         b["BINDINGSDELETE"] = (["d", "delete"], "BINDINGS")
 
-        b["HELPMENUOPEN"] = (["F1", "SHIFT+/"], self.MOVEMENT)
-
         b["CONSUMABLEOPEN"] = ("i", "COMBAT")
         b["CONSUMABLEUSE"] = (["space", "a", "return", "keypad enter"], "CONSUMABLE")
         b["CONSUMABLECANCEL"] = ("escape", "CONSUMABLE")
@@ -154,7 +153,6 @@ class Keystate():
         b["BASHCHEST"] = ("b", "OVERWORLD")
         b["STARTLEVELUP"] = ("y", "OVERWORLD")
         b["STARTRESPEC"] = ("r", "OVERWORLD")
-        b["HELPMENU"] = ("F1", "OVERWORLD")
         b["CHEAT CODE"] = ("[+]", self.MOVEMENT)
 
         b["SHOWINPUTSTATE"] = ("CTRL+SHIFT+k", self.MOVEMENT)
@@ -163,6 +161,8 @@ class Keystate():
 
     def __call__(self, e=None):
         if e:
+#            if hasattr(e, 'unicode'):
+#                print "UNICODE: ", e.unicode
             if e.type == KEYUP and e.key in self.keystate:
                 self.keystate.remove(e.key)
             if e.type == KEYDOWN and e.key not in self.keystate:
@@ -205,6 +205,7 @@ class Keystate():
         combos = self.bindings[event][0]
         if not isinstance(combos, list):
             combos = [combos]
+        combos = [pygame.key.name(k) if isinstance(k, int) else k for k in combos]
         combos = map(str.upper, combos)
 
         if shortest:
