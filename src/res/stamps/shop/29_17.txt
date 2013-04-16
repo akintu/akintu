@@ -1,0 +1,38 @@
+# 29x17 TOWN STAMP
+#
+ppppppppppppppppppppppppppppp
+p gH___ ggff H___  ffwwwwwwwp
+pg ____  fg  ____ gg llwwwwwp
+p g _  f g g g _   g  lwwwggp
+p   ppppll  g p g  l   wwwggp
+p f g gpg fg gp g  gg lwwwggp
+pg   g pg gwwppwwwwwwwwwwl  p
+p g ll pppppppppppl H___g   p
+pfflwwl   lwppwl p  ____  ggp
+p gwwwwwwwwwppwl pppp_   gg p
+p  gwwlfffpppp  gg g gg g f p
+pg  g   g     g f  g gg g g p
+p  g  l     g  g  g  gg fg  p
+p g g  ll    g  g  f_ggg gggp
+pg S___g    gH_____gggg  gggp
+pg ____fg  gf ____fggg gg ggp
+p ff_fffg  gff_fffggggggggggp
+# 
+#
+ppppptlltpptggggtttttgggtlglr
+pdddfdddfpff H___  ff dwwwwwl
+pddfddfdfp   ____ gg lldwwwwt
+pdfddddfdp g   _   g  l dwwwt
+pgddddgddpppppp g  l    ldwwt
+t H____p  fg gp g   f l l dwg
+tg_____p  g   p l  g  g  l  t
+t t_pppppppppppppp  H___g   t
+t t  tl   l    l p  ____  ggp
+pppppppp  tttd   pppp__  gg p
+pwwwwwp  dttt     pppppppppll
+pwwwpp  g ttt d   p g   g g t
+pwwpg H____   f   p  S___ g t
+pppg _____  f  f  pf ____g  t
+tl t___pppppppppppp   ___  gt
+g gd t fl     tpppppppgfdtggt
+tgfglftgl     tggttgtgtggggtt

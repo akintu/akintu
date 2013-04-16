@@ -64,6 +64,7 @@ class Game(object):
         self.keystate = []
         self.running = False
         self.combat = False
+        self.inside = False
         self.musicState = "overworld"
 
         # Levelup state
@@ -71,6 +72,8 @@ class Game(object):
 
         # Help menu state
         self.helpTitle = None
+        self.helpPageList = []
+        self.helpPageIndex = 0
 
         # Shop state
         self.currentShop = None
@@ -610,19 +613,18 @@ class Game(object):
                             self.screen.show_menu_dialog(currentPage['options'], currentPage['color'], currentPage['title'])
                         elif resultDuple[1] == "Path":
                             self.helpTitle = resultDuple[2]
-                            path = resultDuple[0]
-                            f = open(path, 'r')
-                            text = f.read()
-                            f.close()
-                            # The first line is a comment.
-                            displayText = text.partition("\n")[2]
-                            # The second line is just whitespace.
-                            displayText = displayText.lstrip()
-                            self.screen.show_text_dialog(displayText, self.helpTitle)
+                            self.helpPageList = resultDuple[0]
+                            self.helpPageIndex = 0
+                            self.screen.show_text_dialog(self.helpPageList[self.helpPageIndex], self.helpTitle)
                         else:
-                            pass
+                            self.helpTitle = "Status Effect Listing"
+                            self.helpPageList = resultDuple[0]
+                            self.helpPageIndex = 0
+                            text = "All Status Effects; press B for back or N for next."
+                            self.screen.show_tiling_dialog(text, self.helpPageList[self.helpPageIndex], bgcolor='lightblue')
 
                 elif e == "HELPMENUTOP":
+                    self.helpPageList = []
                     pageDict = helpmenu.navigateUpPage(self.helpTitle)
                     if not pageDict:
                         menuItems = ['Save and Return', 'Save and Quit', 'Return without Saving', 'In-Game Help']
@@ -632,7 +634,29 @@ class Game(object):
                         self.helpTitle = pageDict['title']
                         self.screen.show_menu_dialog(pageDict['options'], pageDict['color'], pageDict['title'])
 
+                elif e == "HELPMENUNEXT":
+                    if self.helpPageList:
+                        if self.helpPageIndex + 1 < len(self.helpPageList):
+                            self.helpPageIndex += 1
+                        else:
+                            self.helpPageIndex = 0
+                        if self.helpTitle == "Status Effect Listing":
+                            text = "All Status Effects; press B for back or N for next."
+                            self.screen.show_tiling_dialog(text, self.helpPageList[self.helpPageIndex], bgcolor='lightblue')
+                        else:
+                            self.screen.show_text_dialog(self.helpPageList[self.helpPageIndex], self.helpTitle)
 
+                elif e == "HELPMENUPREVIOUS":
+                    if self.helpPageList:
+                        if self.helpPageIndex - 1 >= 0:
+                            self.helpPageIndex -= 1
+                        else:
+                            self.helpPageIndex = len(self.helpPageList) - 1
+                        if self.helpTitle == "Status Effect Listing":
+                            text = "All Status Effects; press B for back or N for next."
+                            self.screen.show_tiling_dialog(text, self.helpPageList[self.helpPageIndex], bgcolor='lightblue')
+                        else:
+                            self.screen.show_text_dialog(self.helpPageList[self.helpPageIndex], self.helpTitle)
 
                 ### Character Sheet ###
                 elif e == "CHARSHEETOPEN":

@@ -108,7 +108,7 @@ class HouseOverworld(BuildingOverworld):
                     self.entities[loc] = Entity(location=loc, image=house_sheet.getimage((x, y)), passable=passable)
             y = 0
             
-        self.opening = (self.door[0], self.door[1]+2)
+        self.opening = (self.door[0], self.door[1]+1)
         self.path = Region()
         self.path("ADD", "LINE", Location(location.pane, (self.door[0], self.door[1]+1)), Location(location.pane, self.opening), 1)
         self.boundary("SUB", "LINE", Location(location.pane, (self.door[0], self.door[1]+1)), Location(location.pane, self.opening), 1)

@@ -2,9 +2,12 @@
 
 import sys
 import os
+import theorycraft
 from const import *
 
 HELP_COLOR = 'lightblue'
+HELP_MAX_LINES = 70
+ICONS_PER_PAGE = 48
 
 def navigateUpPage(title):
     '''Returns the dictionary of the page that is 
@@ -43,10 +46,46 @@ def navigateDownPage(currentTitle, position):
     if currentTitle == "Akintu Help Menu":
         return (topPages[pageName], "Dict")
     elif contentPaths[pageName] == "RESERVED_STATUS_EFFECTS":
-        return (contentPaths[pageName], "String")
+        allStatuses = sorted(theorycraft.TheoryCraft.statuses, cmp=lambda x,y: cmp(x.name, y.name))
+        statusesSplit = []
+        finalPosition = 0
+        for i in range(len(allStatuses) / ICONS_PER_PAGE):
+            statusesSplit.append(allStatuses[i * ICONS_PER_PAGE:(i+1) * ICONS_PER_PAGE])
+            finalPosition = i + 1
+        if len(statusesSplit) % ICONS_PER_PAGE != 0:
+            statusesSplit.append(allStatuses[ICONS_PER_PAGE * finalPosition:])
+        return (statusesSplit, "StatusList")
     else:
-        return (contentPaths[pageName], "Path", pageName)
-    
+        path = contentPaths[pageName]
+        f = open(path, 'r')
+        text = f.read()
+        f.close()
+        # The first line is a comment.
+        text = text.partition("\n")[2]
+        # The second line is just whitespace.
+        text = text.lstrip()
+        textArray = text.splitlines()
+        lines = text.count("\n")
+        gluedPages = []
+        if len(textArray) <= HELP_MAX_LINES:
+            gluedPages = [text]
+        else:
+            textPages = []
+            finalPosition = 0
+            for i in range(len(textArray) / HELP_MAX_LINES):
+                textPages.append(textArray[HELP_MAX_LINES * i:HELP_MAX_LINES * (i+1)])
+                finalPosition = i + 1
+            if len(textArray) % HELP_MAX_LINES != 0:
+                textPages.append(textArray[HELP_MAX_LINES * finalPosition:])
+            # Now glue them together
+            for page in textPages:
+                gluedPage = ""
+                for line in page:
+                    gluedPage += "\n"
+                    gluedPage += line
+                gluedPages.append(gluedPage)
+        return (gluedPages, "Path", pageName)
+
     
     
 topPages = {
@@ -109,7 +148,8 @@ topPages = {
              'Poison Tolerance\Rating',
              'Size',
              'Sneak and Awareness',
-             'Spell Schools'],
+             'Spell Schools',
+             'Wiki'],
             'color' : HELP_COLOR
             }
     }
@@ -146,7 +186,8 @@ contentPaths = {
     'Poison Tolerance\Rating' : os.path.join(HELP_PATH, 'help_poison_mechanics.txt'),
     'Size' : os.path.join(HELP_PATH, 'help_size.txt'),
     'Sneak and Awareness' : os.path.join(HELP_PATH, 'help_stealth_and_hidden_objects.txt'),
-    'Spell Schools' : os.path.join(HELP_PATH, 'help_spell_schools.txt')
+    'Spell Schools' : os.path.join(HELP_PATH, 'help_spell_schools.txt'),
+    'Wiki' : os.path.join(HELP_PATH, 'help_wiki.txt')
     }
     
             

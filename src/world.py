@@ -35,8 +35,6 @@ class World(object):
         self.curr_pane = None
         self.countries = dict()
         self._generate_world(pane)
-        #print sorted(self._listTowns((0,0)))
-        # print self.countries[(0,0)].townships[(2,2)].stamps
         
     def is_town_pane(self, location):
         if isinstance(location, Location):
