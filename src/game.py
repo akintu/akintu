@@ -832,12 +832,10 @@ class Game(object):
                     self.request_levelup(True)
                 elif e == "STARTRESPEC":
                     self.request_respec()
-                elif e == "HELPMENU":
-                    pass #TODO Implement help menu
-                elif e == "CHEAT CODE":
-                    print "You found the secret code!"
 
                 ### Debug codes ###
+                elif e == "CHEAT CODE":
+                    print "You found the secret code!"
                 elif e == "SHOWINPUTSTATE":
                     print "Keyboard input state: %s" % keystate.inputState
                 elif e == "SHOWPANEPIDS":
@@ -1067,9 +1065,8 @@ class Game(object):
         if not self.combat or not self.pane.person:
             return
 
-        if self.currentTarget:
-            if self.currentTarget not in self.pane.person:
-                self.currentTarget = None
+        if not self.valid_target():
+            self.currentTarget = None
 
         if not self.panePersonIdList or not self.currentTarget \
                 or self.currentTarget not in self.pane.person or \
@@ -1096,6 +1093,11 @@ class Game(object):
             if self.currentTarget not in self.rangeRegion:
                 return False
             if self.currentAbility.targetType not in ["location", "trap"]:
+                return False
+            if self.currentAbility.targetType == "trap" and \
+                    self.pane.person[self.id].characterClass != "Anarchist" and \
+                    any(self.currentTarget == p.location for p in self.pane.person.values() if \
+                    p.team == "Monsters"):
                 return False
         else:
             if self.pane.person[self.currentTarget].location not in self.rangeRegion:
@@ -1126,7 +1128,8 @@ class Game(object):
                 range("SUB", "DIAMOND", self.pane.person[self.id].location, r - 1)
             if self.currentAbility.targetType == "trap" and \
                     self.pane.person[self.id].characterClass != "Anarchist":
-                for p in [x for x in self.pane.person.values() if x.location in range]:
+                for p in [x for x in self.pane.person.values() \
+                        if x.team == "Monsters" and x.location in range]:
                     range("SUB", "CIRCLE", p.location, 0)
         dirty += self.rangeRegion ^ range
         self.rangeRegion = range

@@ -81,6 +81,7 @@ class Keystate():
         b["DIALOGLEFT"] = ([K_LEFT, K_KP4, "h"], self.DIALOG)
         b["DIALOGRIGHT"] = ([K_RIGHT, K_KP6, "l"], self.DIALOG)
 
+        b["HELPMENUOPEN"] = (["F1", "SHIFT+/"], self.MOVEMENT)
         b["HELPMENUACCEPT"] = (["a", "space", "return", "keypad enter"], "HELPMENU")
         b["HELPMENUTOP"] = ("escape", "HELPMENU")
         b["HELPMENUNEXT"] = ("n", "HELPMENU")
@@ -130,8 +131,6 @@ class Keystate():
         b["BINDINGSADD"] = (["a", "insert"], "BINDINGS")
         b["BINDINGSDELETE"] = (["d", "delete"], "BINDINGS")
 
-        b["HELPMENUOPEN"] = (["F1", "SHIFT+/"], self.MOVEMENT)
-
         b["CONSUMABLEOPEN"] = ("i", "COMBAT")
         b["CONSUMABLEUSE"] = (["space", "a", "return", "keypad enter"], "CONSUMABLE")
         b["CONSUMABLECANCEL"] = ("escape", "CONSUMABLE")
@@ -154,7 +153,6 @@ class Keystate():
         b["BASHCHEST"] = ("b", "OVERWORLD")
         b["STARTLEVELUP"] = ("y", "OVERWORLD")
         b["STARTRESPEC"] = ("r", "OVERWORLD")
-        b["HELPMENU"] = ("F1", "OVERWORLD")
         b["CHEAT CODE"] = ("[+]", self.MOVEMENT)
 
         b["SHOWINPUTSTATE"] = ("CTRL+SHIFT+k", self.MOVEMENT)
