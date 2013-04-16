@@ -586,6 +586,12 @@ class Game(object):
                     self.screen.show_text("You have begun anew, at level 1.")
 
                 ### Save Menu ###
+                elif e == "HELPMENUOPEN":
+                    keystate.inputState = "HELPMENU"
+                    topPage = helpmenu.topPages['Akintu Help Menu']
+                    self.helpTitle = topPage['title']
+                    self.screen.show_menu_dialog(topPage['options'], topPage['color'], topPage['title'])
+                
                 elif e == "SAVEMENUACCEPT":
                     selection = self.screen.hide_dialog()
                     # 0 -- 'Save and Return',
@@ -635,9 +641,13 @@ class Game(object):
                     self.helpPageList = []
                     pageDict = helpmenu.navigateUpPage(self.helpTitle)
                     if not pageDict:
-                        menuItems = ['Save and Return', 'Save and Quit', 'Return without Saving', 'In-Game Help']
-                        self.screen.show_menu_dialog(menuItems)
-                        keystate.inputState = "SAVEMENU"
+                        if self.combat:
+                            self.screen.hide_dialog()
+                            keystate.inputState = "COMBAT"
+                        else:
+                            menuItems = ['Save and Return', 'Save and Quit', 'Return without Saving', 'In-Game Help']
+                            self.screen.show_menu_dialog(menuItems)
+                            keystate.inputState = "SAVEMENU"
                     else:
                         self.helpTitle = pageDict['title']
                         self.screen.show_menu_dialog(pageDict['options'], pageDict['color'], pageDict['title'])
