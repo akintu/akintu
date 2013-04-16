@@ -29,6 +29,7 @@ class TreasureChest(entity.Entity):
         self.animationImages = sheet.get_column(column)
         
         entity.Entity.__init__(self, location, image=self.animationImages[0], passable=False)
+        #entity.Entity.__init__(self, location, image=None, passable=False)
         if type.capitalize() not in ["Small", "Large", "Gilded"]:
             raise TypeError("Invalid Chest Type: " + type + ".")
         
@@ -38,11 +39,11 @@ class TreasureChest(entity.Entity):
         if not ip:
             self.ip = (treasureLevel - 1) * 2
             if treasureLevel > 5:
-                self.ip = round(self.ip * 1.5)
+                self.ip = int(self.ip * 1.5)
             if treasureLevel > 10:
-                self.ip = round(self.ip * 1.5)
+                self.ip = int(self.ip * 1.5)
             if treasureLevel > 18:
-                self.ip = round(self.ip * 1.5)
+                self.ip = int(self.ip * 1.5)
         else:
             self.ip = ip
         self.locked = locked
@@ -71,7 +72,7 @@ class TreasureChest(entity.Entity):
             #valuables = self._generateGildedTreasure(player.characterClass, player.totalSorcery)
         for v in valuables:
             if isinstance(v, int):
-                v = int(round(v + v * player.goldFind * 0.01))
+                v = int(int(v + v * player.goldFind * 0.01))
             player.inventory.addItem(v)
         return valuables
             
@@ -141,7 +142,7 @@ class TreasureChest(entity.Entity):
     @staticmethod
     def _selectGold(givenIp):
         modifier = Dice.rollFloat(0.6, 1.4)
-        gold = int(round(givenIp * modifier * TreasureChest.GOLD_PER_IP))
+        gold = int(int(givenIp * modifier * TreasureChest.GOLD_PER_IP))
         if gold < 5:
             gold = 5
         return gold
@@ -156,8 +157,8 @@ class TreasureChest(entity.Entity):
             gValue = self.ip * 2 / 10
             if gValue <= 0:
                 gValue = 1
-            return [TreasureChest._selectGear(round(self.ip * 0.4), sorcery),
-                    TreasureChest._selectGear(round(self.ip * 0.4), sorcery),
+            return [TreasureChest._selectGear(int(self.ip * 0.4), sorcery),
+                    TreasureChest._selectGear(int(self.ip * 0.4), sorcery),
                     TreasureChest._selectGold(gValue)]
         else:
             # One piece of gear ip=100

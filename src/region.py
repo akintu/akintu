@@ -157,28 +157,26 @@ class Region:
             loc1 = loc1.move(7, d)
 
         for y in loc1.line_to(Location(loc1.abs_x, loc2.abs_y)):
-            for x in loc1.line_to(Location(loc2.abs_x, loc1.abs_y)):
-                locations |= {Location(x.abs_x, y.abs_y)}
+            for x in y.line_to(Location(loc2.abs_x, y.abs_y)):
+                locations |= {x}
         return locations
 
     def diamond(self, loc, dist):
         locations = set()
 
-        for x in loc.move(7, dist).line_to(loc.move(6, dist)):
-            for y in loc.move(7, dist).line_to(loc.move(2, dist)):
-                tile = Location(x.abs_x, y.abs_y)
-                if loc.distance(tile) <= dist:
-                    locations |= {tile}
+        for x in loc.move(7, dist).line_to(loc.move(9, dist)):
+            for y in x.line_to(x.move(2, dist * 2)):
+                if loc.distance(y) <= dist:
+                    locations |= {y}
         return locations
 
     def circle(self, loc, rad):
         locations = set()
 
-        for x in loc.move(7, rad).line_to(loc.move(6, rad)):
-            for y in loc.move(7, rad).line_to(loc.move(2, rad)):
-                tile = Location(x.abs_x, y.abs_y)
-                if round(loc.true_distance(tile)) <= rad:
-                    locations |= {tile}
+        for x in loc.move(7, rad).line_to(loc.move(9, rad)):
+            for y in x.line_to(x.move(2, rad * 2)):
+                if round(loc.true_distance(y)) <= rad:
+                    locations |= {y}
         return locations
 
     def line(self, loc1, loc2, width=1):
@@ -204,15 +202,6 @@ class Region:
             return R.locations
         else:
             return Region(R).locations
-
-    def get_outside_corners(self):
-        corners = set()
-        reqs = [[4, 7, 8], [8, 9, 6], [6, 3, 2], [2, 1, 4]]
-        for l in self.locations:
-            for reqset in reqs:
-                if all(l.move(dir) not in self.locations for dir in reqset):
-                    corners.add(l.move(reqset[1]))
-        return corners
 
 if __name__ == "__main__":
     R = Region()
@@ -245,9 +234,6 @@ if __name__ == "__main__":
     R ^= Region("SQUARE", Location(0, 0), Location(31, 19))
     assert l1 in R
     print R
-
-    print ("Outside corners:")
-    print Region(list(R.get_outside_corners()))
 
     assert l1.move(6, 2) not in R
     for l2 in R:

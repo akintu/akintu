@@ -81,6 +81,11 @@ class Keystate():
         b["DIALOGLEFT"] = ([K_LEFT, K_KP4, "h"], self.DIALOG)
         b["DIALOGRIGHT"] = ([K_RIGHT, K_KP6, "l"], self.DIALOG)
 
+        b["HELPMENUACCEPT"] = (["a", "space", "return", "keypad enter"], "HELPMENU")
+        b["HELPMENUTOP"] = ("escape", "HELPMENU")
+        b["HELPMENUNEXT"] = ("n", "HELPMENU")
+        b["HELPMENUPREVIOUS"] = ("b", "HELPMENU")
+        
         b["TARGETUP"] = ([K_UP, K_KP8, "k"], "TARGET")
         b["TARGETDOWN"] = ([K_DOWN, K_KP2, "j"], "TARGET")
         b["TARGETLEFT"] = ([K_LEFT, K_KP4, "h"], "TARGET")
