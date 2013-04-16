@@ -586,6 +586,12 @@ class Game(object):
                     self.screen.show_text("You have begun anew, at level 1.")
 
                 ### Save Menu ###
+                elif e == "SAVEMENUOPEN":
+                    keystate.inputState = "HELPMENU"
+                    topPage = helpmenu.topPages['Akintu Help Menu']
+                    self.helpTitle = topPage['title']
+                    self.screen.show_menu_dialog(topPage['options'], topPage['color'], topPage['title'])
+                
                 elif e == "SAVEMENUACCEPT":
                     selection = self.screen.hide_dialog()
                     # 0 -- 'Save and Return',
