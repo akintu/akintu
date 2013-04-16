@@ -37,6 +37,7 @@ class Person(en.Entity):
         self.id = None
 
         self.ai = AI()
+        self.iLocation = None
         self.anim = None
         self.anim_start = 0
 

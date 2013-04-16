@@ -28,9 +28,9 @@ ttttttttttttttt
 gH___ S___ wwwt
 g____ ____ wwwt
 g _    _ H___lt
-dd_dddd_ ____lt
+dddddddd ____lt
 rrrrrr d  _   t
-rpppppdddd_dddd
+rppppp dddddddd
 rpfffp        r
 rppppp       gr
 rrrrrrrrrrrrrrr

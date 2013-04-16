@@ -102,7 +102,7 @@ class HouseOverworld(BuildingOverworld):
                 if x == y and x == 1:
                     self.door = loc
                     passable = True
-                    self.entities[loc] = Portal(Location((0, 0), (PANE_X/2, PANE_Y-3), z=-1, direction=8), portal_type=Portal.HOUSE, location=loc, image=house_sheet.getimage((x, y)), passable=passable)
+                    self.entities[loc] = Portal(Location(location.pane, loc, z=-1, direction=8), portal_type=Portal.HOUSE, new_location=Location((0, 0), (PANE_X/2, PANE_Y-3), z=-1, direction=8), image=house_sheet.getimage((x, y)), passable=passable)
                 else:
                     passable = False
                     self.entities[loc] = Entity(location=loc, image=house_sheet.getimage((x, y)), passable=passable)
