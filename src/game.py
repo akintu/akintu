@@ -524,13 +524,13 @@ class Game(object):
                     self.update_bindings()
 
     def handle_events(self):
-        pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
+#        pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
         for event in pygame.event.get():
 #            print "Event: ", event
             #### General commands ####
             if event.type == QUIT:
                 self.save_and_quit()
-            if event.type == MOUSEBUTTONDOWN and event.button == 3 and keystate.inputState == "TARGET":
+            elif event.type == MOUSEBUTTONDOWN and event.button == 3 and keystate.inputState == "TARGET":
                 self.currentTarget = Location(event.pos[0] / TILE_SIZE, event.pos[1] / TILE_SIZE)
                 self.attempt_attack()
                 keystate.inputState = "COMBAT"
@@ -538,9 +538,9 @@ class Game(object):
                 self.update_regions()
                 if not self.valid_target():
                     self.cycle_targets()
-            if event.type == KEYUP:
+            elif event.type == KEYUP:
                 keystate(event)
-            if event.type == KEYDOWN:
+            elif event.type == KEYDOWN:
                 e = keystate(event)
                 if e == "QUIT":
                     self.display_save_menu()

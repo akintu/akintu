@@ -230,6 +230,7 @@ class Keystate():
         keys = self.get_key(event, all=True)
         for i, key in enumerate(self.newBinding):
             if any(key in keylist for keylist in self.mod_keys.values()):
+                print self.keystate
                 self.newBinding[i] = [k for k, v in self.mod_keys.iteritems() if key in v][0]
         keys.append("+".join([pygame.key.name(key) if isinstance(key, int) else key for key in self.newBinding]))
         self.newBinding = None
