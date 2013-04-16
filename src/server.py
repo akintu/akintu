@@ -156,7 +156,7 @@ class GameServer():
                         self.person[command.id].iLocation = command.iLocation
                         # print "command.iLocation=" + str(command.iLocation)
                         self.person[command.id].location = command.location
-                        
+
                         if portal_type == Portal.OVERWORLD:
                             pane = command.iLocation.pane
                             self.load_pane(pane)
@@ -207,9 +207,6 @@ class GameServer():
                         command.location = self.person[command.id].location
                         command.details = True
                         self.broadcast(command, port=port)
-                    elif command.id in self.player.values():
-                        self.person[command.id].ai.remove("run")
-                        self.broadcast(Command("PERSON", "STOP", id=command.id), command.id)
 
             ###### RemovePerson ######
             if command.type == "PERSON" and command.action == "REMOVE":
@@ -223,23 +220,11 @@ class GameServer():
                     del self.person[command.id]
                     self.unload_panes()
 
-            ###### RunPerson ######
-            if command.type == "PERSON" and command.action == "RUN":
-                self.person[command.id].ai.add("run", self.person[command.id].movementSpeed, \
-                        pid=command.id, direction=command.direction)
-                self.person[command.id].ai.start("run")
-
-            ###### StopPerson ######
-            if command.type == "PERSON" and command.action == "STOP":
-                self.person[command.id].ai.remove("run")
-
             ###### Levelup Player ######
             if command.type == "PERSON" and command.action == "REPLACE":
                 newPerson = TheoryCraft.rehydratePlayer(command.player)
                 newPerson.location = self.person[command.id].location
                 newPerson.id = command.id
-                newPerson.ai.startup(self)
-                self.person[command.id].ai.shutdown()
                 self.person[command.id] = newPerson
                 self.broadcast(command, -command.id, exclude=True)
 
@@ -272,9 +257,7 @@ class GameServer():
                         newHero = TheoryCraft.resetPlayerLevel(activePlayer)
                         newHero.location = self.person[command.id].location
                         newHero.id = command.id
-                        newHero.ai.startup(self)
                         newHero._experience = oldExp
-                        self.person[command.id].ai.shutdown()
                         self.person[command.id] = newHero
                         jerky = newHero.dehydrate()
 

@@ -511,6 +511,8 @@ class Game(object):
         reactor.stop()
 
     def handle_non_events(self):
+        if self.running:
+            self.move_person()
         if hasattr(self, 'pane') and hasattr(self.pane, 'person') and self.id in self.pane.person and \
                 not self.pane.person[self.id].anim and keystate.direction("MOVEMENT"):
             self.move_person(keystate.direction("MOVEMENT"), 1)
@@ -547,7 +549,7 @@ class Game(object):
                 if e == "FORCEQUIT":
                     self.save_and_quit()
                 elif keystate.direction("MOVEMENT"):
-                    self.move_person(keystate.direction("MOVEMENT"), 1)
+                    self.move_person(keystate.direction("MOVEMENT"))
                 elif keystate.direction("DIALOG"):
                     self.screen.move_dialog(keystate.direction("DIALOG"))
                     keystate.keyTime = time.time() + 2 * keystate.typematicRate
@@ -952,10 +954,16 @@ class Game(object):
             return
         self.screen.show_tiling_dialog(text, itemslist, bgcolor=bgcolor)
 
-    def move_person(self, direction, distance):
+    def move_person(self, direction=0, distance=1):
         if self.running:
-            self.CDF.send(Command("PERSON", "STOP", id=self.id))
-            self.running = False
+            if direction:
+                print "STOP RUNNING", self.running, keystate.direction("MOVEMENT")
+                self.running = 0
+            else:
+                direction = self.running
+
+        if self.pane.person[self.id].anim:
+            return False
 
         newloc = self.pane.person[self.id].location.move(direction, distance)
         if self.combat and newloc.pane != (0, 0):
@@ -966,10 +974,9 @@ class Game(object):
                 self.pane.person[self.id].location.pane != newloc.pane):
 
             if "SHIFT" in keystate and not self.combat:
-                self.CDF.send(Command("PERSON", "RUN", id=self.id, direction=direction))
-                self.running = True
+                self.running = direction
 
-            elif not self.combat or (self.pane.person[self.id].remainingMovementTiles > 0 or \
+            if not self.combat or (self.pane.person[self.id].remainingMovementTiles > 0 or \
                     self.pane.person[self.id].AP >= self.pane.person[self.id].totalMovementAPCost):
                 self.CDF.send(Command("PERSON", "MOVE", id=self.id, location=newloc))
                 if self.pane.person[self.id].location.pane == newloc.pane:

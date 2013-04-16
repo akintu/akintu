@@ -21,11 +21,6 @@ class AI():
             self.start(name)
 
     ###### AI BEHAVIORS ######
-    def run(self, pid=None, direction=None):
-        newloc = self.server.person[pid].location.move(direction, 1)
-        self.server.SDF.queue.put((None, Command("PERSON", "MOVE", id=pid, location=newloc)))
-        return True
-
     def wander(self, pid=None, region=None, move_chance=0):
         if time() < self.behavior['wander']['time']:
             return False
