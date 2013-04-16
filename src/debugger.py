@@ -11,7 +11,7 @@ if not os.path.exists(path):
     os.makedirs(path)
 
 filename = os.path.join(path, str("cprofile_" + str(now.strftime("%d_%H%M")) + ".txt"))
-# cProfile.run("akintu.main()", filename)
+cProfile.run("akintu.main()", filename)
 
 #!!!IF YOU DON'T WANT TO JOIN EVERY PROFILE IN THE DIRECTORY, INVERT THIS SECTION!!!
 # p = pstats.Stats(filename) 
