@@ -27,7 +27,7 @@ class Location(object):
                 self.pane = (pane // PANE_X, tile // PANE_Y)
 
             if isinstance(tile, tuple) or tile is None:
-                self.tile = tile
+                self.tile = tile if tile else (0, 0)
             else:
                 self.tile = (pane % PANE_X, tile % PANE_Y)
 
@@ -294,3 +294,10 @@ if __name__ == "__main__":
 
     n = Location(b.__str__())
     assert n == b
+
+    o = Location((1, 2), (3, 4), 3, 6)
+    p = o.move(4)
+    q = str(p)
+    r = Location(q)
+    s = r.move(6)
+    assert s == o

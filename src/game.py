@@ -77,9 +77,9 @@ class Game(object):
 
         # Shop state
         self.currentShop = None
+        self.dialog_selection = 0
 
         # Selection state
-        #Ability.targetType can be "friendly", "hostile", "self", "location"
         self.currentTarget = None
         self.panePersonIdList = []
         self.currentAbility = None
@@ -513,6 +513,11 @@ class Game(object):
         if keystate.direction("DIALOG") and time.time() >= keystate.keyTime + keystate.typematicRate:
             self.screen.move_dialog(keystate.direction("DIALOG"))
             keystate.keyTime = time.time()
+            if keystate.inputState == "BINDINGS":
+                sel = self.screen.get_dialog_selection()
+                if sel[0] == 0 and keystate.direction("DIALOG") in [2, 8]:
+                    self.dialog_selection = sel[1]
+                    self.update_bindings()
 
     def handle_events(self):
         pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
@@ -545,11 +550,8 @@ class Game(object):
                     if keystate.inputState == "BINDINGS":
                         sel = self.screen.get_dialog_selection()
                         if sel[0] == 0 and keystate.direction("DIALOG") in [2, 8]:
-                            left = [Item(e, "\n".join(b[1]) if isinstance(b[1], list) else b[1]) \
-                                    for e, b in keystate.bindings.iteritems()]
-                            e = keystate.bindings.keys()[sel[1]]
-                            right = [Item(b, "\n".join(keystate.get_states(e))) for b in keystate.get_key(e, all=True)]
-                            self.screen.update_dual_pane_dialog_items(left, right)
+                            self.dialog_selection = sel[1]
+                            self.update_bindings()
                 elif keystate.direction("TARGET"):
                     newloc = self.currentTarget.move(keystate.direction("TARGET"))
                     if newloc.pane == self.currentTarget.pane and newloc in self.rangeRegion:
@@ -809,19 +811,26 @@ class Game(object):
                 ### Keybinding dialog ###
                 elif e == "BINDINGSOPEN":
                     keystate.inputState = "BINDINGS"
-                    text = "Hi!  You can change your keybindings here!"
-                    left = [Item(e, "\n".join(b[1]) if isinstance(b[1], list) else b[1]) \
-                            for e, b in keystate.bindings.iteritems()]
-                    e = keystate.bindings.keys()[0]
-                    right = [Item(b, "\n".join(keystate.get_states(e))) for b in keystate.get_key(e, all=True)]
-                    self.screen.show_dual_pane_dialog(text, left, right, 'gray')
+                    text = "Select an event, then press Insert or Delete to modify key bindings"
+                    self.screen.show_dual_pane_dialog(text, [Item("", "")], [Item("", "")], 'gray')
+                    self.update_bindings()
                 elif e == "BINDINGSCLOSE":
                     keystate.inputState = "COMBAT" if self.combat else "OVERWORLD"
                     self.screen.hide_dialog()
                 elif e == "BINDINGSADD":
-                    pass
+                    self.screen.update_dual_pane_dialog_text("Please enter new key combination")
+                    keystate.inputState = "BINDINGSADD"
+                elif e == "BINDINGSADDED":
+                    text = "Select an event, then press Insert or Delete to modify key bindings"
+                    self.screen.update_dual_pane_dialog_text(text)
+                    keystate.inputState = "BINDINGS"
+                    keystate.add_binding(keystate.bindings.keys()[self.dialog_selection])
+                    self.update_bindings()
                 elif e == "BINDINGSDELETE":
-                    pass
+                    sel = self.screen.get_dialog_selection()
+                    if sel[0] == 1:
+                        keystate.delete_binding(keystate.bindings.keys()[self.dialog_selection], sel[1])
+                        self.update_bindings()
 
                 ### Strictly non-combat commands ###
                 elif e == "GETITEM":
@@ -1301,3 +1310,10 @@ class Game(object):
             else:
                 self.pane = self.world.get_pane(location, portal=portal)
         self.screen.set_pane(self.pane)
+
+    def update_bindings(self):
+        left = [Item(e, "\n".join(b[1]) if isinstance(b[1], list) else b[1]) \
+                for e, b in keystate.bindings.iteritems()]
+        e = keystate.bindings.keys()[self.dialog_selection]
+        right = [Item(b, "\n".join(keystate.get_states(e))) for b in keystate.get_key(e, all=True)]
+        self.screen.update_dual_pane_dialog_items(left, right)

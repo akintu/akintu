@@ -11,6 +11,7 @@ class Keystate():
         self.keystate = []
         self.typematicRate = 0.1
         self.keyTime = 0
+        self.newBinding = None
 
         self.inputState = "OVERWORLD"
 
@@ -169,6 +170,12 @@ class Keystate():
                 self.keystate.append(e.key)
 #            print self.keystate
 
+            if self.inputState == "BINDINGSADD" and \
+                    any(all(key not in keylist for keylist in self.mod_keys.values()) \
+                    for key in self.keystate):
+                self.newBinding = self.keystate
+                return "BINDINGSADDED"
+
         events = [k for k, v in self.bindings.iteritems() if v[0] in self and \
                 (self.inputState == v[1] or self.inputState in v[1] or v[1] == "ALL")]
         return events[0] if events else None
@@ -219,5 +226,19 @@ class Keystate():
     def get_states(self, event):
         return self.bindings[event][1] if isinstance(self.bindings[event][1], list) else \
                 [self.bindings[event][1]]
+
+    def add_binding(self, event):
+        keys = self.get_key(event, all=True)
+        for i, key in enumerate(self.newBinding):
+            if any(key in keylist for keylist in self.mod_keys.values()):
+                self.newBinding[i] = [k for k, v in self.mod_keys.iteritems() if key in v][0]
+        keys.append("+".join([pygame.key.name(key) if isinstance(key, int) else key for key in self.newBinding]))
+        self.newBinding = None
+        self.bindings[event] = (keys, self.bindings[event][1])
+
+    def delete_binding(self, event, combo):
+        keys = self.get_key(event, all=True)
+        del keys[combo]
+        self.bindings[event] = (keys, self.bindings[event][1])
 
 keystate = Keystate()
