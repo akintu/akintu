@@ -20,10 +20,10 @@ class Country(object):
         self.townships = dict()
         self.towns = []
         self.stamps = dict()
-        # for x in range(COUNTRY_X):
-            # for y in range(COUNTRY_Y):
-        for x in range(2, 3):
-            for y in range(2, 3):
+        for x in range(COUNTRY_X):
+            for y in range(COUNTRY_Y):
+        # for x in range(2, 3):
+            # for y in range(2, 3):
                 t = Township(self.seed, country_loc=loc, township_loc=(x,y))
                 # t.addTown()
                 # t.addDungeons(5)

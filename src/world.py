@@ -35,7 +35,7 @@ class World(object):
         self.curr_pane = None
         self.countries = dict()
         self._generate_world(pane)
-        print self._listTowns(pane)
+        # print self._listTowns(pane)
         
     def is_town_pane(self, location):
         if isinstance(location, Location):
