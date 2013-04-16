@@ -20,6 +20,11 @@ class Location(object):
 
             self.z = int(r.group('z'))
             self.direction = int(r.group('d'))
+        elif isinstance(pane, Location):
+            self.pane = pane.pane
+            self.tile = pane.tile
+            self.z = pane.z
+            self.direction = pane.direction
         else:
             if isinstance(pane, tuple) or pane is None:
                 self.pane = pane
@@ -65,7 +70,7 @@ class Location(object):
         return self < other or self == other
 
     def __add__(self, other):
-        return Location(self.abs_x + other[0], self.abs_y + other[1])
+        return Location(self.abs_x + other[0], self.abs_y + other[1], self.z)
 
     def __hash__(self):
         x = self.abs_x
@@ -189,7 +194,7 @@ class Location(object):
             for i, l in enumerate(locs):
                 if i < len(locs) - 1:
                     if l.direction_to(locs[i+1]) % 2:
-                        locs.insert(i + 1, Location(locs[i+1].abs_x, l.abs_y))
+                        locs.insert(i + 1, Location(locs[i+1].abs_x, l.abs_y, self.z))
 
         return locs
 
@@ -295,7 +300,7 @@ if __name__ == "__main__":
     n = Location(b.__str__())
     assert n == b
 
-    o = Location((1, 2), (3, 4), 3, 6)
+    o = Location((1, 2), (3, 4), -1, 6)
     p = o.move(4)
     q = str(p)
     r = Location(q)

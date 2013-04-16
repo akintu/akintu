@@ -102,7 +102,7 @@ class GameServer():
                         for entity in ent_list:
                             portal_loc, new_loc = entity.trigger(command.id)
                             print "PORTAL LOCATION: " + str(portal_loc)
-                            self.SDF.queue.put((port, Command("PERSON", "MOVE", id=command.id, portal=entity, iLocation=portal_loc, location=new_loc)))
+                            self.SDF.queue.put((None, Command("PERSON", "MOVE", id=command.id, portal=entity, iLocation=portal_loc, location=new_loc)))
 
                     # Portals always treats it as a separate pane
                     portal_type = portal.portal_type if portal != None else None
@@ -142,7 +142,7 @@ class GameServer():
 
                             self.unload_panes()
                     else:
-                        #print "ilocation = " + str(command.iLocation)
+#                        print "ilocation = " + str(command.iLocation)
                         #HANDLE ALL THINGS PORTAL HERE
                         # Remove person from players' person tables, and pane's person list
                         key = self.person[command.id].iLocation
@@ -437,7 +437,7 @@ class GameServer():
                     p.cPane = pane
             else:
                 print "world.get_pane with portal=" + str(portal)
-                self.pane[pane] = self.world.get_pane(pane, True, portal=portal)
+                self.pane[pane] = self.world.get_pane(Location(pane), True, portal=portal)
 
             # Add all people in pane to global person table, then replace pane's person list with
             # a list of personIDs
