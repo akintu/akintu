@@ -64,6 +64,7 @@ class Game(object):
         self.keystate = []
         self.running = False
         self.combat = False
+        self.inside = False
         self.musicState = "overworld"
 
         # Levelup state

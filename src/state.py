@@ -82,7 +82,7 @@ class State(object):
         Member Variables:
             file_name:  Can be 1 of three things:
                 1. The full path to a players save file
-                2. The filename of thesave file (Looking in CHAR_SAVE_PATH)
+                2. The filename of the save file (Looking in CHAR_SAVE_PATH)
                 3. The 3 digit number at the beginning of the filename (Looking in CHAR_SAVE_PATH)
         
         '''
