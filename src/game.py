@@ -8,13 +8,12 @@ from pygame.locals import *
 import os
 import time
 
-from combat import *
 from command import *
 from location import *
 from network import *
 from server import *
 from const import *
-from gamescreen import GameScreen
+from gamescreen import *
 from theorycraft import TheoryCraft
 from world import *
 from region import Region
@@ -24,6 +23,7 @@ import random
 from keybindings import keystate
 
 import levelup as lvl
+import helpmenu
 
 clock = pygame.time.Clock()
 
@@ -64,11 +64,17 @@ class Game(object):
         self.keystate = []
         self.running = False
         self.combat = False
+        self.inside = False
         self.musicState = "overworld"
 
         # Levelup state
         self.levelup = None
 
+        # Help menu state
+        self.helpTitle = None
+        self.helpPageList = []
+        self.helpPageIndex = 0
+        
         # Shop state
         self.currentShop = None
 
@@ -96,7 +102,6 @@ class Game(object):
         else:
             self.serverip = "localhost"
             self.gs = GameServer(self.world, self.port, self.turnTime)
-            Combat.gameServer = self.gs
 
         self.CDF = ClientDataFactory()
         reactor.connectTCP(self.serverip, self.port, self.CDF)
@@ -206,7 +211,7 @@ class Game(object):
 
                 if command.id == self.id and self.combat:
                     self.currentAbility = self.pane.person[self.id].abilities[0]
-                    self.update_regions()
+                self.update_regions()
 
                 imagepath = os.path.join(SPRITES_IMAGES_PATH, p.image)
                 sizeAbbr = "M"
@@ -266,6 +271,9 @@ class Game(object):
                     if command.id == self.currentTarget:
                         self.currentTarget = None
                     del self.pane.person[command.id]
+                self.update_regions()
+                if self.combat and not self.valid_target():
+                    self.cycle_targets()
 
             ###### StopRunning ######
             if command.type == "PERSON" and command.action == "STOP":
@@ -277,8 +285,8 @@ class Game(object):
                 if command.id == self.id:
                     keystate.inputState = "DEATH"
                     self.screen.show_menu_dialog(["Aw, shucks."], 'red', "You have died -- restart a new character.")
-                    
-                    
+
+
             ###### Levelup Player ######
             if command.type == "PERSON" and command.action == "REPLACE":
                 if self.pane.person[command.id].anim:
@@ -507,7 +515,7 @@ class Game(object):
             keystate.keyTime = time.time()
 
     def handle_events(self):
-        #pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
+        pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
         for event in pygame.event.get():
 #            print "Event: ", event
             #### General commands ####
@@ -560,13 +568,14 @@ class Game(object):
                     self.screen.hide_dialog()
                     keystate.inputState = "OVERWORLD"
                     self.screen.show_text("You have begun anew, at level 1.")
-                    
+
                 ### Save Menu ###
                 elif e == "SAVEMENUACCEPT":
                     selection = self.screen.hide_dialog()
                     # 0 -- 'Save and Return',
                     # 1 -- 'Save and Quit',
                     # 2 -- 'Return without Saving'
+                    # 3 -- 'Help Menu'
                     if selection == 0:
                         self.save_no_quit()
                         keystate.inputState = "OVERWORLD"
@@ -575,11 +584,72 @@ class Game(object):
                         self.save_and_quit()
                     elif selection == 2:
                         keystate.inputState = "OVERWORLD"
+                    elif selection == 3:
+                        keystate.inputState = "HELPMENU"
+                        topPage = helpmenu.topPages['Akintu Help Menu']
+                        self.helpTitle = topPage['title']
+                        self.screen.show_menu_dialog(topPage['options'], topPage['color'], topPage['title'])
                 elif e == "SAVEMENUCANCEL":
                     self.screen.hide_dialog()
                     keystate.inputState = "OVERWORLD"
                     self.screen.show_text("Save Aborted.", color='white')
 
+                elif e == "HELPMENUACCEPT":
+                    selectionNum = self.screen.get_dialog_selection()
+                    selection = None
+                    if selectionNum is not None:
+                        resultDuple = helpmenu.navigateDownPage(self.helpTitle, selectionNum)
+                        if resultDuple[1] == "Dict":
+                            currentPage = resultDuple[0]
+                            self.helpTitle = currentPage['title']
+                            self.screen.show_menu_dialog(currentPage['options'], currentPage['color'], currentPage['title'])
+                        elif resultDuple[1] == "Path":
+                            self.helpTitle = resultDuple[2]
+                            self.helpPageList = resultDuple[0]
+                            self.helpPageIndex = 0
+                            self.screen.show_text_dialog(self.helpPageList[self.helpPageIndex], self.helpTitle)
+                        else:
+                            self.helpTitle = "Status Effect Listing"
+                            self.helpPageList = resultDuple[0]
+                            self.helpPageIndex = 0
+                            text = "All Status Effects; press B for back or N for next."
+                            self.screen.show_tiling_dialog(text, self.helpPageList[self.helpPageIndex], bgcolor='lightblue')
+                            
+                elif e == "HELPMENUTOP":
+                    self.helpPageList = []
+                    pageDict = helpmenu.navigateUpPage(self.helpTitle)
+                    if not pageDict:
+                        menuItems = ['Save and Return', 'Save and Quit', 'Return without Saving', 'In-Game Help']
+                        self.screen.show_menu_dialog(menuItems)
+                        keystate.inputState = "SAVEMENU"
+                    else:
+                        self.helpTitle = pageDict['title']
+                        self.screen.show_menu_dialog(pageDict['options'], pageDict['color'], pageDict['title'])
+                    
+                elif e == "HELPMENUNEXT":
+                    if self.helpPageList:
+                        if self.helpPageIndex + 1 < len(self.helpPageList):
+                            self.helpPageIndex += 1
+                        else:
+                            self.helpPageIndex = 0
+                        if self.helpTitle == "Status Effect Listing":
+                            text = "All Status Effects; press B for back or N for next."
+                            self.screen.show_tiling_dialog(text, self.helpPageList[self.helpPageIndex], bgcolor='lightblue')
+                        else:
+                            self.screen.show_text_dialog(self.helpPageList[self.helpPageIndex], self.helpTitle)
+                
+                elif e == "HELPMENUPREVIOUS":
+                    if self.helpPageList:
+                        if self.helpPageIndex - 1 >= 0:
+                            self.helpPageIndex -= 1
+                        else:
+                            self.helpPageIndex = len(self.helpPageList) - 1
+                        if self.helpTitle == "Status Effect Listing":
+                            text = "All Status Effects; press B for back or N for next."
+                            self.screen.show_tiling_dialog(text, self.helpPageList[self.helpPageIndex], bgcolor='lightblue')
+                        else:
+                            self.screen.show_text_dialog(self.helpPageList[self.helpPageIndex], self.helpTitle)
+                    
                 ### Character Sheet ###
                 elif e == "CHARSHEETOPEN":
                     self.display_character_sheet()
@@ -684,7 +754,11 @@ class Game(object):
                     self.open_consumables()
                 elif e == "CONSUMABLEUSE":
                     self.currentItem = self.pane.person[self.id].inventory.allConsumables[self.screen.hide_dialog()[1]]
-                    self.select_self()
+                    self.use_item()
+                    keystate.inputState = "COMBAT"
+                elif e == "CONSUMABLECANCEL":
+                    self.screen.hide_dialog()
+                    self.screen.show_text("Item use cancelled.")
                     keystate.inputState = "COMBAT"
 
                 ### Combat Only Commands ###
@@ -716,16 +790,23 @@ class Game(object):
                 elif e == "CYCLETARGETB":
                     self.cycle_targets(reverse=True)
                 elif e == "ACTIVATESELECTED":
-                    if self.currentItem:
-                        self.use_item()
-                    else:
-                        self.attempt_attack()
+                    self.attempt_attack()
                 elif e == "ENDTURN":
                     self.force_end_turn()
                 elif e == "SELECTSELF":
                     self.select_self()
                 elif e == "ANALYZETARGET":
                     self.display_target_details()
+
+                ### Keybinding dialog ###
+                elif e == "BINDINGSOPEN":
+                    keystate.inputState = "BINDINGS"
+                    text = "Hi!  You can change your keybindings here!"
+                    left = [Item(e, b[1] if isinstance(b[1], list) else "\r\n".join([b[1]])) \
+                            for e, b in keystate.bindings.iteritems()]
+                    e = keystate.bindings.keys()[0]
+                    right = [Item(b, "\r\n".join(keystate.get_states(e))) for b in keystate.get_key(e, all=True)]
+                    self.screen.show_dual_pane_dialog(text, left, right, 'gray')
 
                 ### Strictly non-combat commands ###
                 elif e == "GETITEM":
@@ -796,7 +877,7 @@ class Game(object):
         self.CDF.send(action)
 
     def display_save_menu(self):
-        menuItems = ['Save and Return', 'Save and Quit', 'Return without Saving']
+        menuItems = ['Save and Return', 'Save and Quit', 'Return without Saving', 'In-Game Help']
         self.screen.show_menu_dialog(menuItems)
         keystate.inputState = "SAVEMENU"
 

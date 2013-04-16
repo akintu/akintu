@@ -123,11 +123,10 @@ class GameScreen(object):
     def show_text_dialog(self,
                          text,
                          title,
-                         bgcolor='gray',
+                         bgcolor='lightblue',
                          nextkey='N',
                          backkey='B',
-                         exitkey='Q',
-                         topkey='T'):
+                         exitkey='ESC'):
         '''
         Show a text dialog
         '''
@@ -136,8 +135,7 @@ class GameScreen(object):
                                              bgcolor,
                                              nextkey,
                                              backkey,
-                                             exitkey,
-                                             topkey)
+                                             exitkey)
         self.screen.blit(self.dialog.surface, (0, 0))
         pygame.display.update()
         return None
@@ -150,10 +148,10 @@ class GameScreen(object):
         '''
         Show a dual pane dialog with the given parameters
         '''
-        self.dialog = screenutils.ItemDialog(text,
-                                             leftitems,
-                                             rightitems,
-                                             bgcolor)
+        self.dialog = screenutils.DualPaneDialog(text,
+                                                 leftitems,
+                                                 rightitems,
+                                                 bgcolor)
         self.screen.blit(self.dialog.surface, (0, 0))
         pygame.display.update()
         return self.dialog.get_selection()
@@ -1053,7 +1051,7 @@ class Item(object):
     '''
     Generic item, for use in the DualPaneDialog
     '''
-    def __init__(self, name, details, color):
+    def __init__(self, name, details, color='black'):
         '''
         Initialize the item
         '''

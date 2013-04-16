@@ -40,7 +40,6 @@ class Pane(object):
             self.location = location
         self.seed = seed
         self.is_server = is_server
-        self.tmpFileName = "Pane_" + str(self.location[0]) + "_" + str(self.location[1])
         self.pane_state = pane_state
         self.tiles = dict()
         self.objects = dict()
@@ -61,26 +60,12 @@ class Pane(object):
                     # self.add_obstacle((i, j), RAND_ENTITIES)
 
         if load_entities:
-            ##TEST STAMP TEXT
-            # stamp = Stamp.getStringStamp("("+ str(self.location[0]) + ":" + str(self.location[1]) + ":" + str(self.z) + ")")
-            # stamp_loc = Location(self.location, (random.randrange(1, PANE_X-stamp.width), random.randrange(1, PANE_Y-stamp.height)))
-            # self.load_stamps({stamp_loc:stamp})
-
-            # for i in range(1):
-                # stamp_dict = Stamp.getStamps(Stamp.LANDSCAPE)
-                # #stamp_size_tuple = random.choice(list(stamp_dict.values()))
-                # stamp_list = stamp_dict[(20,15)]
-                # stamp = random.choice(stamp_list)
-                # stamp_loc = Location(self.location, (random.randrange(1, PANE_X-stamp.width), random.randrange(1, PANE_Y-stamp.height)))
-                # self.load_stamps({stamp_loc:stamp})
-
             if self.pane_state:
                 self.load_state(self.pane_state)
             elif self.is_server:
                 self.load_chests()
                 self.load_monsters()
                 #self.load_items()
-
 
     def __repr__(self):
         s = "\nPane " + str(self.location) + "\n"

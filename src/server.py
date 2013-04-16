@@ -5,6 +5,7 @@ from Queue import PriorityQueue
 from theorycraft import TheoryCraft
 from playercharacter import *
 from servercombat import *
+from combat import *
 from state import State
 from portal import Portal
 import shop
@@ -14,6 +15,7 @@ class GameServer():
         self.world = world
         self.SDF = ServerDataFactory()
         self.CS = CombatServer(self)
+        Combat.gameServer = self
         reactor.listenTCP(port, self.SDF)
         self.turnTime = turnTime
 

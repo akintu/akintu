@@ -33,7 +33,7 @@ Example:
   -- Magical properties are listed at the bottom of the item.  In this 
   example, these greaves have 3 stacks of elemental resistance to poison
   and one stack of bonus damage resistance (DR). --
-  -- Typically, platemailgreaves only grant 7% DR, but these are listed as 
+  -- Typically, platemail greaves only grant 7% DR, but these are listed as 
   9%.  Every stack of DR bonus on this piece of equipment counts as 2% DR. 
   On other gear, the DR granted from a DR bonus might be higher or lower 
   than 2% per stack.  (Heavy armor and weapons tend to benefit more from
@@ -64,12 +64,3 @@ from by dual-wielding or using a weapon and a shield.
 more powerful if you have a high Sorcery attribute.  They will not increase
 in power when you put them on, but rather, when you find them, they will
 have more properties than if you had a lower Sorcery.
-
-
-
-
-
-
-
-    
-  

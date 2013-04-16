@@ -44,38 +44,22 @@ class Testy(object):
     def actionOne():
         print "Sample Output"
 
-if __name__ == "__main__":
-    dictA = {'A' : 2, 'B' : 3}
-    dictA2 = dictA
-    dictA2['A'] = 5
-    print dictA
-    print dictA2
-    
-    # theorycraft.TheoryCraft.loadAll()
+if __name__ == "__main__":  
+    theorycraft.TheoryCraft.loadAll()
 
-    # for s in theorycraft.TheoryCraft.statuses:
-        # print s.name
-        # print s.text + "\n"
+    for i in range(32):
+        print theorycraft.TheoryCraft.statuses[i].image
     
+    # x = None
     # char = theorycraft.TheoryCraft.getNewPlayerCharacter("Orc", "Barbarian")
-    # mon = theorycraft.TheoryCraft.getMonster(level=3)
-    # for i in range(120):
-        # tc = treasurechest.TreasureChest("Large", 19, None)
+    # for i in range(150):
+        # tc = treasurechest.TreasureChest("Large", 20, None)
         # tc.generateTreasure(char)
         # for item in char.inventory.allItems:
-            # if isinstance(item, equipment.Equipment) and item.type != "Shield":
-                # char.equip(item)
-                # print char.equippedItems.equippedWeapon.displayName
-                # for prop in char.equippedItems.equippedWeapon.propertyList:
-                    # print prop.name + " " + `prop.counts`
-                    
-                # combat.Combat.weaponAttack(char, mon, "Critical Hit")
-        # if i % 5 == 1:
-            # print `i`
-            # char.inventory._allItems =[]
-    
-    
-    
+            # print item.displayName
+            # x = item
+        # print `i`
+    # print x.details
     # saved = char.dehydrate()
     # with open('./data/testSaveFile.txt', 'wb') as f:
         # f.write(saved)
