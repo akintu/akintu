@@ -591,7 +591,7 @@ class Game(object):
                     topPage = helpmenu.topPages['Akintu Help Menu']
                     self.helpTitle = topPage['title']
                     self.screen.show_menu_dialog(topPage['options'], topPage['color'], topPage['title'])
-                
+
                 elif e == "SAVEMENUACCEPT":
                     selection = self.screen.hide_dialog()
                     # 0 -- 'Save and Return',
@@ -967,7 +967,6 @@ class Game(object):
     def move_person(self, direction=0, distance=1):
         if self.running:
             if direction:
-                print "STOP RUNNING", self.running, keystate.direction("MOVEMENT")
                 self.running = 0
             else:
                 direction = self.running
