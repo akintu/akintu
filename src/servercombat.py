@@ -390,6 +390,8 @@ class CombatServer():
 
     def check_turn_end(self, combatPane, timeExpired=False):
         ''' stuff '''
+        if self.combatStates[combatPane].isMonsterTurn:
+            return
         APRemains = False
         for player in [self.server.person[x] for x in self.server.pane[combatPane].person if x in
                 self.server.player.values()]:
@@ -413,6 +415,7 @@ class CombatServer():
             for character in [self.server.person[x] for x in self.server.pane[combatPane].person]:
                 self.shout_turn_start(character, turn="Monster")
             print "Starting monster turn."
+            self.combatStates[combatPane].isMonsterTurn = True
             self.monster_phase(combatPane, initial=True)
 
     def prepare_player_turn(self, combatPane):
@@ -482,6 +485,7 @@ class CombatServer():
             #end = time.clock()
             #print str(end-start) + " turn over"
             self.prepare_player_turn(combatPane)
+            self.combatStates[combatPane].isMonsterTurn = False
             return
         for mon in monsters:
             if self.combatStates[combatPane].monsterStatusDict[mon] == "TURN_START":
@@ -691,7 +695,8 @@ class CombatState(object):
         # or Monster : 'MOVING'
         # or Monster : 'TURN_START'
         # or Monster : 'TURN_OVER'
-
+        self.isMonsterTurn = False
+        # Used as a lock for turn end processing.
 
 
 
