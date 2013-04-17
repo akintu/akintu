@@ -706,7 +706,7 @@
   [INTERNAL: Melee_accuracy_bonus]
     [MAGNITUDE: 5]
   [INTERNAL: Critical_chance_bonus]
-    [MAGNITUDE: 1]
+    [MAGNITUDE: 2]
   [CATEGORY: Buff]
 	
 [NAME: Defensive Slash]
