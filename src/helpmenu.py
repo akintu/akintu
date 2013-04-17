@@ -3,6 +3,7 @@
 import sys
 import os
 import theorycraft
+import re
 from const import *
 
 HELP_COLOR = 'lightblue'
@@ -32,7 +33,7 @@ def navigateUpPage(title):
             return topPages[key]
     print "ERROR: Can not find help page"
 
-def navigateDownPage(currentTitle, position):
+def navigateDownPage(currentTitle, position, keyBinding=None):
     '''Moves down one page based on the position of the input
     given.  Because the screen is using an index-based system,
     this will use an index based system rather than a name-based
@@ -68,6 +69,15 @@ def navigateDownPage(currentTitle, position):
         lines = text.count("\n")
         gluedPages = []
         if len(textArray) <= HELP_MAX_LINES:
+            while(True):
+                toReplaceMatch = re.search(r"@.*@", text)
+                toReplace = None
+                if toReplaceMatch:
+                    toReplace = toReplaceMatch.group(0).replace("@", "")
+                    replacement = keyBinding.get_key(toReplace, shortest=False, all=True)
+                    text = text.replace("@" + toReplace + "@", str(replacement))
+                if not toReplace:
+                    break
             gluedPages = [text]
         else:
             textPages = []
@@ -84,6 +94,7 @@ def navigateDownPage(currentTitle, position):
                     gluedPage += "\n"
                     gluedPage += line
                 gluedPages.append(gluedPage)
+                
         return (gluedPages, "Path", pageName)
 
     

@@ -154,6 +154,7 @@ class Keystate():
         b["GETITEM"] = ("g", "OVERWORLD")
         b["BASHCHEST"] = ("b", "OVERWORLD")
         b["STARTLEVELUP"] = ("y", "OVERWORLD")
+        b["CHEATLEVELUP"] = ("CTRL+SHIFT+y", "OVERWORLD")
         b["STARTRESPEC"] = ("r", "OVERWORLD")
         b["CHEAT CODE"] = ("[+]", self.MOVEMENT)
 

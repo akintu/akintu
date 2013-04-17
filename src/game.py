@@ -620,7 +620,7 @@ class Game(object):
                     selectionNum = self.screen.get_dialog_selection()
                     selection = None
                     if selectionNum is not None:
-                        resultDuple = helpmenu.navigateDownPage(self.helpTitle, selectionNum)
+                        resultDuple = helpmenu.navigateDownPage(self.helpTitle, selectionNum, keystate)
                         if resultDuple[1] == "Dict":
                             currentPage = resultDuple[0]
                             self.helpTitle = currentPage['title']
@@ -855,9 +855,11 @@ class Game(object):
                 elif e == "BASHCHEST":
                     self.break_in()
                 elif e == "STARTLEVELUP":
-                    self.request_levelup(True)
+                    self.request_levelup(False)
                 elif e == "STARTRESPEC":
                     self.request_respec()
+                elif e == "CHEATLEVELUP":
+                    self.request_levelup(True)
 
                 ### Debug codes ###
                 elif e == "CHEAT CODE":

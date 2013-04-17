@@ -3,49 +3,50 @@
 Overworld Controls
 
   UP, DOWN, LEFT, RIGHT  --> Movement (Hold to run)
-  $BASHCHEST$  --> Bash locked chest
-  $CHARSHEETOPEN$  --> Display Character Sheet
-  $SHOPOPEN$  --> Open Shop (Towns only) 
-  $GETITEM$  --> Get items from chest/Pick locks on chests
-  $INVENTORYOPEN$  --> Open Inventory
-  $STARTRESPEC$  --> Respec character (set at level 1, use $STARTLEVELUP$ to regain levels)
-  $QUIT$  --> Open Save Menu
-  $STARTLEVELUP$  --> Manual levelup (only used if you have respecc'd your character)
+  @BASHCHEST@  --> Bash locked chest
+  @CHARSHEETOPEN@  --> Display Character Sheet
+  @SHOPOPEN@  --> Open Shop (Towns only) 
+  @GETITEM@  --> Get items from chest/Pick locks on chests
+  @INVENTORYOPEN@  --> Open Inventory
+  @STARTRESPEC@  --> Respec character 
+					(set at level 1, use @STARTLEVELUP@ to regain levels)
+  @QUIT@  --> Open Save Menu
+  @STARTLEVELUP@  --> Manual levelup (only used if you have respecc'd your character)
   
 Combat
 
-  $ABILITIESOPEN$  --> Open ability selection
-  $ANALYZETARGET$  --> Display strengths/weaknesses of target 
-  $ACTIVATESELECTED$  --> Use selected ability/spell/consumable
-  $SPELLSOPEN$  --> Select spells from spellbook
-  $CYCLETARGETF$  --> Cycle targets
-  $CONSUMABLEOPEN$  --> Open consumable selection
-  $ENDTURN$  --> End turn
-  $SWITCHGEAR$  --> Switch to alternate weapon set
-  $SELECTSELF$  --> Select self as a target
-  $CYCLETARGETB$  --> Cycle targets in reverse
+  @ABILITIESOPEN@  --> Open ability selection
+  @ANALYZETARGET@  --> Display strengths/weaknesses of target 
+  @ACTIVATESELECTED@  --> Use selected ability/spell/consumable
+  @SPELLSOPEN@  --> Select spells from spellbook
+  @CYCLETARGETF@  --> Cycle targets
+  @CONSUMABLEOPEN@  --> Open consumable selection
+  @ENDTURN@  --> End turn
+  @SWITCHGEAR@  --> Switch to alternate weapon set
+  @SELECTSELF@  --> Select self as a target
+  @CYCLETARGETB@  --> Cycle targets in reverse
   
 Inventory
 
-  $INVENTORYCLOSE$  --> Close inventory
-  $INVENTORYDROP$  --> Destroy an item from your inventory
-  $INVENTORYEQUIPMH$  --> Equip weapon/armor from your inventory
-  $INVENTORYEQUIPMHALT$  --> Equip weapon/shield in an alternate slot
-  $INVENTORYEQUIPOH$  --> Equip weapon/ring in your off-hand
-  $INVENTORYEQUIPOHALT$  --> Equip weapon/ring in an alternate off-hand slot
-  $INVENTORYUNEQUIP$  --> Unequip equipment from your equipped gear
+  @INVENTORYCLOSE@  --> Close inventory
+  @INVENTORYDROP@  --> Destroy an item from your inventory
+  @INVENTORYEQUIPMH@  --> Equip weapon/armor from your inventory
+  @INVENTORYEQUIPMHALT@  --> Equip weapon/shield in an alternate slot
+  @INVENTORYEQUIPOH@  --> Equip weapon/ring in your off-hand
+  @INVENTORYEQUIPOHALT@  --> Equip weapon/ring in an alternate off-hand slot
+  @INVENTORYUNEQUIP@  --> Unequip equipment from your equipped gear
   
 Shop
 
-  $SHOPTRANSACTION$  --> Buy/Sell item
-  $SHOPCLOSE$  --> Exit shop
+  @SHOPTRANSACTION@  --> Buy/Sell item
+  @SHOPCLOSE@  --> Exit shop
 
 Scrolling (Combat and overworld)
 
-  $SCROLLUP$  --> Scroll up
-  $SCROLLDOWN$  --> Scroll down
-  $SCROLLTOP$  --> Scroll to top
-  $SCROLLBOTTOM$  --> Scroll to bottom
+  @SCROLLUP@  --> Scroll up
+  @SCROLLDOWN@  --> Scroll down
+  @SCROLLTOP@  --> Scroll to top
+  @SCROLLBOTTOM@  --> Scroll to bottom
   
 Other (Defaults only)
 
