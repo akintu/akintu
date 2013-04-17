@@ -149,6 +149,8 @@ class TheoryCraft(object):
             if isinstance(item, equipment.Weapon) and newChar.equippedItems._allGear['Main Hand']:
                 # Already has gear on the main hand.
                 newChar.equip(item, "Left")
+            elif isinstance(item, equipment.Armor) and item.type == "Finger" and newChar.equippedItems._allGear['Right Finger']:
+                newChar.equip(item, "Left")
             else:
                 newChar.equip(item)
             newChar.inventory.removeItem(item)
@@ -212,6 +214,8 @@ class TheoryCraft(object):
             newChar.inventory.addItem(item)
             if isinstance(item, equipment.Weapon) and newChar.equippedItems._allGear['Main Hand']:
                 # Already has gear on the main hand.
+                newChar.equip(item, "Left")
+            elif isinstance(item, equipment.Armor) and item.type == "Finger" and newChar.equippedItems._allGear['Right Finger']:
                 newChar.equip(item, "Left")
             else:
                 newChar.equip(item)

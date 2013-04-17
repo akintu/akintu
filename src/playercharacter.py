@@ -26,11 +26,7 @@ class PlayerCharacter(p.Person):
 
         self.team = "Players"
         self.name = name
-        if name in ["Devin Ekins", "Joshua Belcher", "Colton Myers"]:
-            self.name = "Awesome Dude"
-        elif name == "jabelch" or name == "JAB":
-            self.name = "Flagrant Noob"
-        elif name == "yourself":
+        if name == "yourself":
             self.name = "Ugly Grue"
 
         self.level = 1

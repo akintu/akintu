@@ -10,7 +10,7 @@ import random
 class Shop(object):
     '''Shops are created by the server.'''
     def __init__(self, level=1, seed=None):
-        self.level = level
+        self.level = max(1, level)
         self.stock = []
         if not seed:
             self.seed = Dice.roll(0, 200000)
