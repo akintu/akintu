@@ -422,6 +422,7 @@ class CombatServer():
     def prepare_player_turn(self, combatPane):
         for character in [self.server.person[x] for x in self.server.pane[combatPane].person]:
             self.upkeep(character)
+        self.update_dead_people(combatPane)
         # New Turn here
         for character in [self.server.person[x] for x in self.server.pane[combatPane].person
                             if self.server.person[x].team == "Players"]:

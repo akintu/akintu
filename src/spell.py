@@ -255,6 +255,8 @@ class Spell(object):
         HP is at or below 50%.  Should heal self
         if at or below 67%'''
         source = self.owner
+        if target.HP < 1:
+            return False
         if target == source and target.HP <= target.totalHP * 0.67:
             return True
         elif target.HP <= target.totalHP * 0.50:
@@ -272,6 +274,8 @@ class Spell(object):
         '''Should only cast a buffing spell if the target doesn't
         already have it.'''
         source = self.owner
+        if target.HP < 1:
+            return False
         if target.hasStatus("Stone Guard"):
             return False
         return True
