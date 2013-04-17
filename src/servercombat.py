@@ -146,6 +146,7 @@ class CombatServer():
                 Combat.sendCombatMessage(itemMessage, user, color='purple', toAll=False)
                 self.server.broadcast(Command("ITEM", "REMOVE", id=command.id,
                         itemName=command.itemName), port=port)
+                self.check_turn_end(user.cPane)
             else:
                 itemMessage = usable[1]
                 Combat.sendCombatMessage(itemMessage, user, color='white', toAll=False)
