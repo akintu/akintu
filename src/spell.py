@@ -465,7 +465,8 @@ class Spell(object):
         lower = 10
         upper = 35
         knockbackDistance = 5
-        newTar = Combat.getLineTargets(target.cPane, source.cLocation, target.cLocation, selectMonsters=True, width=1, selectFirstOnly=True)[0]
+        selectMonsters = (source.team == "Players")
+        newTar = Combat.getLineTargets(target.cPane, source.cLocation, target.cLocation, selectMonsters=selectMonsters, width=1, selectFirstOnly=True)[0]
         hitType = Combat.calcHit(source, newTar, "Magical")
         if hitType != "Miss" and hitType != "Fully Resisted":
             dam = Combat.calcDamage(source, newTar, lower, upper, "Cold", hitValue=hitType, scalesWith="Spellpower", scaleFactor=0.014)
@@ -478,7 +479,8 @@ class Spell(object):
         source = self.owner
         lower = 5
         upper = 33
-        manyTargets = Combat.getLineTargets(target.cPane, source.cLocation, target.cLocation, selectMonsters=True, width=2)
+        selectMonsters = (source.team == "Players")
+        manyTargets = Combat.getLineTargets(target.cPane, source.cLocation, target.cLocation, selectMonsters=selectMonsters, width=2)
         for t in manyTargets:
             hitType = Combat.calcHit(source, t, "Magical")
             if hitType != "Miss" and hitType != "Fully Resisted":
