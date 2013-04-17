@@ -340,9 +340,9 @@ class Game(object):
 
             ###### Add Person Status ######
             if command.type == "PERSON" and command.action == "ADDSTATUS":
-                #id, status, turns, image
+                #id, status, turns, image, displayText
                 self.pane.person[command.id].addClientStatus(command.status, command.image, \
-                        command.turns)
+                        command.turns, command.displayText)
                 statsdict = {'team' : self.pane.person[command.id].team,
                              'statusList' : self.pane.person[command.id].clientStatusView}
                 self.screen.update_person(command.id, statsdict)
@@ -823,7 +823,16 @@ class Game(object):
                     self.select_self()
                 elif e == "ANALYZETARGET":
                     self.display_target_details()
-
+                elif e == "DISPLAYCOMBATSTATUS":
+                    keystate.inputState = "COMBATSTATUS"
+                    self.display_combat_status()
+                elif e == "CLOSECOMBATSTATUS":
+                    self.screen.hide_dialog()
+                    if self.combat:
+                        keystate.inputState = "COMBAT"
+                    else:
+                        keystate.inputState = "OVERWORLD"
+                
                 ### Keybinding dialog ###
                 elif e == "BINDINGSOPEN":
                     keystate.inputState = "BINDINGS"
@@ -1228,7 +1237,27 @@ class Game(object):
         if not self.combat or self.id < 0:
             return
         self.currentTarget = self.id
-#        self.screen.show_text("Targeting: yourself", color='lightblue')
+
+    def display_combat_status(self):
+        class Anon(object):
+            def __init__(x, a, b, c):
+                x.image = a
+                x.name = b
+                x.text = c
+                
+        combatStatuses = []
+        for char in self.pane.person.values():
+            for x in char.clientStatusView:
+                image = char.clientStatusView[x]['image']
+                name = x
+                text = char.clientStatusView[x]['displayText']
+                combatStatuses.append(Anon(image, name, text))
+        if not combatStatuses:
+            return
+        if len(combatStatuses) > 48:
+            combatStatuses = combatStatuses[:47]
+        text = "List of current status effects in combat."
+        self.screen.show_tiling_dialog(text, combatStatuses, bgcolor='lightblue')
 
     def display_target_details(self):
         if not self.currentTarget or self.currentTarget not in self.pane.person:

@@ -3,6 +3,7 @@
 Overworld Controls
 
   UP, DOWN, LEFT, RIGHT  --> Movement (Hold to run)
+  @HELPMENUOPEN@  --> Open help menu (also works in combat)
   @BASHCHEST@  --> Bash locked chest
   @CHARSHEETOPEN@  --> Display Character Sheet
   @SHOPOPEN@  --> Open Shop (Towns only) 
@@ -25,6 +26,7 @@ Combat
   @SWITCHGEAR@  --> Switch to alternate weapon set
   @SELECTSELF@  --> Select self as a target
   @CYCLETARGETB@  --> Cycle targets in reverse
+  @DISPLAYCOMBATSTATUS@  --> Display Combat Status Effects (detailed) 
   
 Inventory
 

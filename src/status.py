@@ -59,6 +59,7 @@ class Status(object):
         for iStatus in clone.internalList:
             iStatus.element = clone.element
             iStatus.duration = duration
+            iStatus.updateText()
             clone.text += iStatus.text + "\n"
         return clone
 

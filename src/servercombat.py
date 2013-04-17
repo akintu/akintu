@@ -150,8 +150,7 @@ class CombatServer():
             else:
                 itemMessage = usable[1]
                 Combat.sendCombatMessage(itemMessage, user, color='white', toAll=False)
-
-
+            
         if command.id in self.server.person:
             self.update_dead_people(self.server.person[command.id].cPane)
 
