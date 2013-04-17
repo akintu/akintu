@@ -117,7 +117,7 @@ class CombatServer():
         #### Switch gear ####
         elif command.type == "ABILITY" and command.action == "SWITCH_GEAR":
             target = self.server.person[command.id]
-            switchGearAP = 7
+            switchGearAP = 5
             if target.AP < switchGearAP:
                 Combat.sendCombatMessage("Not enough AP to switch weapons (" + `switchGearAP` + " needed.)", target, toAll=False)
             else:
