@@ -981,7 +981,7 @@ class Combat(object):
 
     # Shout methods are helpers to bundle and broadcast (shout) Broadcast objects
     # to appropriate targets.
-        
+
     @staticmethod
     def _shoutAttackDodged(source, target):
         dodger = target
@@ -1215,4 +1215,4 @@ class Combat(object):
         '''Method grabs a location adjacent to the given location randomly.
         If no location is passable in this region, it returns None.'''
         R = Region("CIRCLE", location, 1)
-        return random.choice([x for x in R if Combat.gameServer.tile_is_open(x, cPane=cPane)])
+        return random.choice([x for x in R if x.pane == (0, 0) and Combat.gameServer.tile_is_open(x, cPane=cPane)])
