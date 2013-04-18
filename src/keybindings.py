@@ -68,6 +68,7 @@ class Keystate():
         b["QUIT"] = (["escape", "CTRL+q", "CTRL+x", "META+q", "META+x"], "OVERWORLD")
         b["SAVEMENUACCEPT"] = (["a", "space", "return", "keypad enter"], "SAVEMENU")
         b["SAVEMENUCANCEL"] = ("escape", "SAVEMENU")
+        b["TOGGLEFULLSCREEN"] = (["ALT+return", "ALT+keypad enter"], "ALL")
 
         b["DEATHCONTINUE"] = (["a", "space", "return", "keypad enter", "escape"], "DEATH")
 
@@ -152,7 +153,7 @@ class Keystate():
         b["ANALYZETARGET"] = (".", "COMBAT")
         b["DISPLAYCOMBATSTATUS"] = ("F3", "COMBAT")
         b["CLOSECOMBATSTATUS"] = ("escape", "COMBATSTATUS")
-        
+
         b["GETITEM"] = ("g", "OVERWORLD")
         b["BASHCHEST"] = ("b", "OVERWORLD")
         b["STARTLEVELUP"] = ("y", "OVERWORLD")

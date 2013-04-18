@@ -66,6 +66,7 @@ class Game(object):
         self.combat = False
         self.inside = False
         self.musicState = "overworld"
+        self.fullScreen = False
 
         # Levelup state
         self.levelup = None
@@ -580,6 +581,12 @@ class Game(object):
                     self.screen.scroll_down(1)
                 elif e == "SCROLLBOTTOM":
                     self.screen.scroll_down(1000)
+                elif e == "TOGGLEFULLSCREEN":
+                    pygame.display.set_mode((PANE_X * TILE_SIZE + 256, \
+                            max(PANE_Y * TILE_SIZE, 20 * TILE_SIZE)), \
+                            pygame.FULLSCREEN if not self.fullScreen else 0)
+                    self.fullScreen = not self.fullScreen
+                    self.screen.redraw()
 
                 elif e == "DEATHCONTINUE":
                     self.screen.hide_dialog()
