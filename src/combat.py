@@ -7,6 +7,13 @@ import location
 import command
 from region import Region
 
+# combat.py
+# Author: Devin Ekins -- G. Cube
+#
+# combat.py is used to handle the majority of combat logic according to game
+# rules.  See ability.py, spell.py, trait.py, status.py for other facets of
+# Combat specific to individual activities.
+
 class IncompleteMethodCall(Exception):
     def __init__(self, value):
         self.value = value
@@ -188,10 +195,9 @@ class Combat(object):
                                      source, color=color)
         return result
 
-
-
     @staticmethod
     def physicalHitMechanics(source, target, modifier, critMod, ignoreMeleeBowPenalty):
+        '''Returns the appropriate hit/miss result based on game rules for physical hits.'''
         hitDuple = None
         if source.usingWeapon("Ranged"):
             # Ranged attack
@@ -231,6 +237,7 @@ class Combat(object):
 
     @staticmethod
     def magicalHitMechanics(source, target):
+        '''Returns the appropriate hit/miss result based on game rules for magical hits.'''
         offense = source.totalSpellpower
         defense = target.totalMagicResist
         result = Combat.calcMagicalHit(offense, defense)
@@ -658,6 +665,7 @@ class Combat(object):
 
     @staticmethod
     def monsterAttack(source, target, hitType, **params):
+        '''Performs a basic monster attack.'''
         Combat._shoutAttackHit(source, target, hitType)
         if hitType == "Miss":
             Combat._shoutAttackDodged(source, target)
@@ -860,41 +868,6 @@ class Combat(object):
         Combat.modifyResource(player, "AP", -player.AP)
 
     @staticmethod
-    def modifyThreat(source, target, threatAdjustment):
-        """Alters the threat of the given source toward the target specified by
-        multiplying the existing level by threatAdjustment.
-        Inputs:
-          source -- Person; the monster whose threat level will be modified
-          target -- Person; the player to which the monster will have an adjusted
-                    threat level
-          threadAdjustment -- float; the amount to mulitply the threat level by
-        Outputs:
-          None"""
-        pass #TODO
-
-    @staticmethod
-    def unsummonGuardian(target):
-        """Removes the current guardian of the player from the battlefield.
-        The player will not incur an HP loss.
-        Inputs:
-          target -- Person; owner of the guardian
-        Outputs:
-          None"""
-        pass #TODO
-
-    @staticmethod
-    def summonGuardian(owner, name):
-        """Create a Sorcerer-type Guardian on a nearby tile with the given
-        name.
-        Inputs:
-          owner -- Person; the Sorcerer performing the summon
-          name -- string; the name of the particular summon, must match an
-                  actual summon's name
-        Outputs:
-          None"""
-        pass #TODO
-
-    @staticmethod
     def disarmTraps(thief):
         """Disarm the traps within melee range.
         Inputs:
@@ -918,6 +891,8 @@ class Combat(object):
 
     @staticmethod
     def inBackstabPosition(source, target):
+        '''Returns True if this source is in an acceptable backstab position
+        of the given target.'''
         # Make sure you are facing the enemy's back.
         direction = source.cLocation.direction_to(target.cLocation)
         directionValues = [direction]
@@ -982,6 +957,7 @@ class Combat(object):
 
     @staticmethod
     def applyElementalEffects(source):
+        '''Returns all onhiteffects associated with the given source.'''
         ee = []
         for effect in source.onHitEffects:
             if "On Hit" in effect.categories:
@@ -1003,6 +979,9 @@ class Combat(object):
                 expGain += int(round(mon.experience * 0.15))
         return expGain
 
+    # Shout methods are helpers to bundle and broadcast (shout) Broadcast objects
+    # to appropriate targets.
+        
     @staticmethod
     def _shoutAttackDodged(source, target):
         dodger = target
@@ -1197,16 +1176,21 @@ class Combat(object):
 
     @staticmethod
     def againstWall(cPane, location, direction):
+        '''Method returns True if the given target has its back to an impassible
+        surface.'''
         return not Combat.gameServer.pane[cPane].is_tile_passable(location.move(direction, 1))
 
     @staticmethod
     def getDiagonalTargets(cPane, location):
+        '''Method returns all monster-targets on the corners of the given location.'''
         R = Region("CIRCLE", location, 1)
         R("SUB", "DIAMOND", location, 1)
         return Combat.getTargetsInRegion(cPane, R)
 
     @staticmethod
     def checkParryPosition(cPane, location, targetLoc):
+        '''Method returns True if the given targetLocation is in a "Parryable"
+        position according to the specs on the trait "parry", and False otherwise.'''
         R = Region("CIRCLE", location, 1)
         if targetLoc in R:
             facings = {2: [1, 2, 3], 4: [1, 4, 7], 6: [3, 6, 9], 8: [7, 8, 9]}
@@ -1216,6 +1200,9 @@ class Combat(object):
 
     @staticmethod
     def getTargetsInRegion(cPane, R, selectMonsters=True):
+        '''Method returns a list of all targets in the region, either all players
+        or monsters.  Returns an empty list if there are no such targets in the
+        given region.'''
         people = []
         for i in Combat.gameServer.pane[cPane].person:
             if Combat.gameServer.person[i].cLocation in R and Combat.gameServer.person[i].team == \
@@ -1225,5 +1212,7 @@ class Combat(object):
 
     @staticmethod
     def getRandomAdjacentLocation(cPane, location):
+        '''Method grabs a location adjacent to the given location randomly.
+        If no location is passable in this region, it returns None.'''
         R = Region("CIRCLE", location, 1)
         return random.choice([x for x in R if Combat.gameServer.tile_is_open(x, cPane=cPane)])
