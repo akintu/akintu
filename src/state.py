@@ -10,50 +10,31 @@ from const import *
 from location import Location
 
 class State(object):
-    
+
     char_file = None
     world_file = None
-    
     world_data = None
     tmp_world_data = dict()
-    
-    log_data = ""
-    
+
     @staticmethod
-    def load(path, filename, pickled=True):
+    def load(path, filename):
         path_to_file = os.path.join(path, filename)
         try:
             if os.path.exists(path_to_file):
-                #print "Attempting to open " + path_to_file
-                if pickled:
-                    data = pickle.load( open( path_to_file, "rb" ) )
-                else:
-                    print "Use of State.load(pickled=False) not supported"
-                    # try:
-                        # file = open(path_to_file, "rb")
-                        # for line in file:
-                            # pass
-                        # last = line
-                        # file.close()
-                        # print "Unpickled Data: "
-                        # print data
+                data = pickle.load( open( path_to_file, "rb" ) )
                 return data
             else:
-                return None#print "File doesn't exist " + path_to_file
+                return None
         except:
             print "Could not open " + path_to_file
             return None
-            
-            
+
+
     @staticmethod
     def save(path, filename, data, overwrite=True, pickled=True):
         # Create the saves directories if they don't exist
         if not os.path.exists(path):
             os.makedirs(path)
-        # if not os.path.exists(CHAR_SAVE_PATH):
-            # os.makedirs(CHAR_SAVE_PATH)
-        # if not os.path.exists(WORLD_SAVE_PATH):
-            # os.makedirs(WORLD_SAVE_PATH)
 
         if overwrite:
             att = "wb"  #write, byte format
@@ -70,11 +51,8 @@ class State(object):
                 file.close()
             except:
                 print "Problem saving unpickled data to " + filename
-        # file = open(path_to_file, att) 
-        # file.write("\n" + data)
-        # file.close()
-            
-    
+
+
     @staticmethod
     def load_player(file_name):
         '''
@@ -86,7 +64,7 @@ class State(object):
                 3. The 3 digit number at the beginning of the filename (Looking in CHAR_SAVE_PATH)
         
         '''
-        
+
         if isinstance(file_name, tuple):
             State.char_file = None
             return None
@@ -102,7 +80,7 @@ class State(object):
                                 continue
                             else:
                                 #path_to_file = os.path.join(CHAR_SAVE_PATH, filename)
-                                print "Substituting " + file_name + " with " + filename
+                                # print "Substituting " + file_name + " with " + filename
                                 file_name = filename
                                 break
                 except:
@@ -111,14 +89,14 @@ class State(object):
             State.char_file = file_name
             player_string = State.load(CHAR_SAVE_PATH, State.char_file)
             return player_string
-        
-        
+
+
     @staticmethod
     def save_player(player):
         '''
         Dehydrates our current player and saves it.
         '''
-        
+
         if not player:
             return
 
@@ -138,16 +116,16 @@ class State(object):
                 max_save = max(increment_list)
             max_save += 1
             State.char_file = str("%03d" % max_save) + "_" + str(player.name) + "_" + str(player.race) + "_" + str(player.characterClass) + CHAR_SAVE_EXT
-        
+
         player_string = player.dehydrate()
         if os.path.exists(State.char_file):
             path = ""
         else:
             path = CHAR_SAVE_PATH
-            
+
         State.save(path, State.char_file, player_string)
-        
-    
+
+
     @staticmethod
     def delete_player():
         '''
@@ -157,12 +135,13 @@ class State(object):
         #If we haven't saved our character yet we can do nothing
         if file == None:    
             return
-        
+
         if not os.path.exists(file):
             file = os.path.join(CHAR_SAVE_PATH, file)
         if os.path.exists(file):
             os.remove(file)
-    
+
+
     @staticmethod
     def load_world(state):
         '''
@@ -185,7 +164,7 @@ class State(object):
                         {
                             MONSTER_KEY :   [(dehydrated_monster, Location_Object), (...)]
                             CHEST_KEY   :   [(type, level, tile_loc), (...)]
-                            ITEM_KEY    :   [("items"), (...)] TODO: NOT YET IMPLEMENTED (3/15/2013)
+                            ITEM_KEY    :   [("items"), (...)] NOT YET IMPLEMENTED
                         }
                 }
         '''
@@ -196,18 +175,11 @@ class State(object):
         else:                       #Option 2
             State.world_file = state
             State.world_data = State.load(WORLD_SAVE_PATH, State.world_file)
-            
-        for key, value in State.world_data.iteritems():
-            if isinstance(value, dict):
-                # print "PANE: " + str(key)
-                monsters = value[MONSTER_KEY]
-                # for monster in monsters:
-                    # print "\tMonster loc: " + str(monster[1])
-        
+
         assert State.world_data != None, "World should be a dictionary with at least a SEED_KEY"
         return State.world_data
-    
-    
+
+
     @staticmethod
     def save_world():
         '''
@@ -241,50 +213,31 @@ class State(object):
             if isinstance(value, dict):
                 monsters = value[MONSTER_KEY]
         State.save(WORLD_SAVE_PATH, State.world_file, data)
-        
-        
+
+
     @staticmethod
     def load_pane(pane_loc):
         '''
         Returns a dictionary of data for a pane given a location tuple
         for that pane (e.g. (0, 1)) or None if no saved data exists.
         '''
-        
+
         data = None
-        if pane_loc in State.tmp_world_data:
+        if pane_loc in State.tmp_world_data.keys():
             data = State.tmp_world_data[pane_loc]
-        elif pane_loc in State.world_data:
+        elif pane_loc in State.world_data.keys():
             data = State.world_data[pane_loc]
 
-        if data:
-            # print "PANE: " + str(pane_loc)
-            monsters = data[MONSTER_KEY]
-            # for monster in monsters:
-                # print "\tMonster loc: " + str(monster[1])
         return data
-        
+
+
     @staticmethod
     def save_pane(pane_loc, data):
         '''
         Saves the given pane data dictionary into our world state dictionary
         '''
-        
+
         assert isinstance(data, dict), "Pane data should be a dictionary"
         assert isinstance(pane_loc, tuple) or isinstance(pane_loc, Location), "Pane location should be a tuple"
-        #print "Saving pane " + str(pane_loc)+ " with data " + str(data)
         State.tmp_world_data[pane_loc] = data
-        
-        if data:
-            #print "PANE: " + str(pane_loc)
-            monsters = data[MONSTER_KEY]
-            # for monster in monsters:
-                # print "\tMonster loc: " + str(monster[1])
-        
-    @staticmethod
-    def log(data):
-        pass
 
-    @staticmethod
-    def save_log():
-        pass
-        

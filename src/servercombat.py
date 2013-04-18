@@ -229,6 +229,8 @@ class CombatServer():
                 elif char.team == "Players":
                     if not char.hardcore:
                         Combat.sendCombatMessage(char.name + " has Fallen!", color='darkred', character=char)
+                        if "Devil" in [m.name for m in allMonsters]:
+                            Combat.sendCombatMessage("Puny mortal! Come back when you're stronger.", color='darkred', character=char, toAll=False)
                         self.softcoreDeath(char)
                     else:
                         Combat.sendCombatMessage(char.name + " has Perished!", color='darkred', character=char)
@@ -572,6 +574,8 @@ class CombatServer():
         Combat.sendCombatMessage("Gained " + str(exp) + " Experience. (" + str(player.experience) +
                                  "/" + str(player.getExpForNextLevel()) + ")",
                                  player, color='magenta', toAll=False)
+        if "Devil" in [m.name for m in monsterList]:
+            Combat.sendCombatMessage("You've driven the great evil from our town!", player, color='green', toAll=False)
         # Levelup is not performed here.
 
     def giveGold(self, player, monsterList):

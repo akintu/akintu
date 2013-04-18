@@ -21,10 +21,19 @@ from building_inside import *
 
 class World(object):
     '''
-    Represents the world
+    Represents the world and handles what to load and when.
+    The world consists of Panes, Townships, and Counties. A
+    Country contains a 5x5 grid of Townships and a Township
+    contains a 5x5 grid of panes.
+    
+    Since the world is *infinite* we don't want to generate 
+    everything at once. In order to facilitate this, you must
+    provide a pane location. Unlike Township tuple locations, 
+    Country and Pane locations are not recycled.
 
     Member Variables
-        seed: the random seed for this world
+        seed: The random seed for this world
+        pane: The pane location we want to generate first
     '''
 
     def __init__(self, seed, pane=Location(0,0)):
@@ -36,8 +45,9 @@ class World(object):
         self.countries = dict()
         self._generate_world(pane)
         # print self._listTowns(pane)
-        # print "Devil located at: " + str(self.countries[(0,0)].townships[(2,2)].boss)
+        print "Devil located at: " + str(self.countries[(0,0)].townships[(2,2)].boss)
         
+
     def is_town_pane(self, location):
         if isinstance(location, Location):
             loc = location.pane
@@ -48,35 +58,25 @@ class World(object):
         else:
             return False
 
-    def get_pane(self, location, is_server=False, portal=None):
+    def get_pane(self, location, is_server=False):
         '''
         Given a location tuple or object, returns the pane object for that
         position in the world.
         Member Variables:
             is_server:  Boolean value indicating whether the caller is the server
-            portal:     
+            portal:     Currently unimplemented, but will be used for indoor locations
         '''
 
-        inside = None
-        if portal != Portal.OVERWORLD:
-            #Check State For Pane
-            state = None
-            if is_server:
-                state = State.load_pane(location)
-            inside = Inside.getInside(portal, self.seed, location, is_server=is_server, pane_state=state)
-            self.panes[location] = inside
+        state = None
+        if is_server:
+            state = State.load_pane(location)
+        if not location in self._listTowns(location):
+            self.panes[location] = Pane(self.seed, location, is_server=is_server, load_entities=True, pane_state=state)
+        else:
+            self.panes[location] = self._getTown(location, is_server, True, state)
+        self._loadStamps(location=location)
+        self.panes[location].load_images()
 
-        if not inside:
-            state = None
-            if is_server:
-                state = State.load_pane(location)
-
-            if not location in self._listTowns(location):
-                self.panes[location] = Pane(self.seed, location, is_server=is_server, load_entities=True, pane_state=state)
-            else:
-                self.panes[location] = self._getTown(location, is_server, True, state)
-            self._loadStamps(location)
-            self.panes[location].load_images()
         if not is_server:
             self.panes[location].person = {}
         return self.panes[location]
@@ -92,15 +92,17 @@ class World(object):
             self._generate_world(pane)
         stamps = self.countries[country_loc].getStamps(pane)
         if stamps:
-            self.panes[location].load_stamps(stamps, True)
+            self.panes[location].load_stamps(loc_stamp_dict=stamps, clear_region=True)
 
     def _getTown(self, location, is_server, load_entities, pane_state):
         return Town(self.seed, location, is_server, load_entities, pane_state)
     
     def _listTowns(self, location):
         '''
-        location is an object
+        Returns a list of towns in the country that contains
+        the pane given by location.
         '''
+
         if isinstance(location, Location):
             loc = location.pane
         else:

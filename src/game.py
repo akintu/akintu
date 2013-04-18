@@ -195,17 +195,12 @@ class Game(object):
 
             ###### CreatePerson ######
             if command.type == "PERSON" and (command.action == "CREATE" or command.action == "LOAD"):
-                portal = command.portal if hasattr(command, "portal") else None
                 if self.id == -1:  # Need to setup the pane
                     self.id = command.id
                     if self.combat:
                         self.switch_panes(command.cPane, combat=self.combat)
                     else:
-                        if hasattr(command, 'iLocation'):
-                            pane_loc = command.iLocation
-                        else:
-                            pane_loc = command.location
-                        self.switch_panes(pane_loc, portal=portal)
+                        self.switch_panes(command.location)
 
                 if command.action == "LOAD":
                     self.pane.person[command.id] = TheoryCraft.rehydratePlayer(command.details)
@@ -1356,7 +1351,7 @@ class Game(object):
         #TODO: make this delayed. (maybe use DelayedCall?)
         self.pane.remove_entities(location.tile)
 
-    def switch_panes(self, location, combat=False, portal=None):
+    def switch_panes(self, location, combat=False):
         #TODO we can add transitions here.
 
         self.rangeRegion = Region()
@@ -1368,10 +1363,8 @@ class Game(object):
             self.pane = self.pane.get_combat_pane(location)
         else:
             self.screen.show_text('Entering ' + str(location.pane))
-            if not portal:
-                self.pane = self.world.get_pane(location.pane)
-            else:
-                self.pane = self.world.get_pane(location, portal=portal)
+            self.pane = self.world.get_pane(location.pane)
+
         self.screen.set_pane(self.pane)
 
     def update_bindings(self):

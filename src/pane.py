@@ -1,8 +1,6 @@
-'''
-Pane objects
-'''
 
 import random
+import trap
 
 from const import*
 from sprites import*
@@ -16,17 +14,15 @@ from dice import *
 from stamps import *
 from fields import Fields
 
-import trap
-
 class Pane(object):
     '''
     Represents a single screen of the world
 
     Member Variables
-        seed:
-        location:
-        load_entities:
-        pane_state:
+        seed:           Game seed chosen by host
+        location:       Usually a tuple object, but can also be a Location
+        load_entities:  Boolean indicating the need to load this pane's consumables
+        pane_state:     The dictionary of consumables if loading from file
     '''
 
     PaneCorners = {1:TILE_BOTTOM_LEFT, 3:TILE_BOTTOM_RIGHT, 7:TILE_TOP_LEFT, 9:TILE_TOP_RIGHT}
@@ -39,6 +35,7 @@ class Pane(object):
             self.location = location
         self.seed = seed
         self.is_server = is_server
+        self.load_entities = load_entities
         self.pane_state = pane_state
         self.tiles = dict()
         self.objects = dict()
@@ -55,13 +52,9 @@ class Pane(object):
         for i in range(PANE_X):
             for j in range(PANE_Y):
                 self.tiles[(i, j)] = Tile(None, True)
-                # if load_entities:
-                    # self.add_obstacle((i, j), RAND_ENTITIES)
 
-        if load_entities:
-            if self.pane_state:
-                self.load_state(self.pane_state)
-            elif self.is_server:
+        if self.load_entities:
+            if self.is_server:
                 self.load_chests()
                 self.load_monsters()
                 #self.load_items()
@@ -375,7 +368,6 @@ class Pane(object):
 
             obst = random.choice(sorted(OBSTACLES))
             for loc, type in stamp.getEntityLocations(location).iteritems():
-
                 #CONSUMABLES, ITEMS, AND MONSTERS (REMOVED AFTER USE OR DEATH)
                 if type in [CHEST_KEY, MONSTER_KEY, ITEM_KEY, BOSS_KEY]:
                     if not self.pane_state and self.is_server:
@@ -393,6 +385,10 @@ class Pane(object):
                 #OBSTACLES AND PATHS
                 if loc.pane == self.location and type != None:
                     self.add_obstacle(loc.tile, 1, entity_type=type)
+            #Load the state
+            if self.load_entities:
+                if self.pane_state:
+                    self.load_state(self.pane_state)
 
     def load_region(self, region, entity_type=None):
         if entity_type:

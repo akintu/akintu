@@ -13,38 +13,37 @@ class Country(object):
         COUNTRY_X, COUNTRY_Y defined in const.py
     '''
 
-    def __init__(self, seed, loc=(0,0)):
+    def __init__(self, seed, country_loc=(0,0)):
         self.seed = seed
-        self.loc = loc
+        self.country_loc = country_loc
 
         self.townships = dict()
         self.towns = []
         self.stamps = dict()
-        for x in range(COUNTRY_X):
-            for y in range(COUNTRY_Y):
-        # for x in range(2, 3):
-            # for y in range(2, 3):
-                t = Township(self.seed, country_loc=loc, township_loc=(x,y))
-                # t.addTown()
-                # t.addDungeons(5)
-                t.loadStamps(5)
-                self.townships[(x, y)] = t
-                self.towns.append(t.town_loc)
-                self.stamps = dict(self.stamps.items() + t.stamps.items())
+        # for x in range(COUNTRY_X):
+            # for y in range(COUNTRY_Y):
+        self.addTownship((2,2))
 
     def getStamps(self, pane):
         if pane in self.stamps:
-            # print self.stamps[pane]
             return self.stamps[pane]
-        # print str(pane) + " not found in country stamp dictionary"
-        # print self.stamps.keys()
         country_loc, township_loc = Township.getTownshipLocation(pane)
-        if township_loc in self.townships:
+        if not township_loc in self.townships:
+            self.addTownship(township_loc)
             t = self.townships[township_loc]
             if pane in t.stamps:
                 return t.stamps[pane]
         return None
 
+    def addTownship(self, township_loc):
+        t = Township(self.seed, country_loc=self.country_loc, township_loc=township_loc)
+        t.loadStamps()
+        self.townships[township_loc] = t
+        self.towns.append(t.town_loc)
+        self.stamps = dict(self.stamps.items() + t.stamps.items())
+
+    def loadTownship(self, pane_location):
+        pass
 
 if __name__ == "__main__":
     '''

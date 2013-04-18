@@ -42,8 +42,8 @@ class GameServer():
             if command.type == "PERSON" and (command.action == "CREATE" or command.action == "LOAD"):
                 _location_key = command.location
                 if hasattr(command, "portal"):
-                    self.load_pane(_location_key, portal=command.portal)
-                    print "Called self.load_pane with portal information"
+                    self.load_pane(_location_key)
+                    #print "Called self.load_pane with portal information"
                 else:
                     _location_key = _location_key.pane
                     self.load_pane(_location_key)
@@ -75,7 +75,7 @@ class GameServer():
                                     details=self.person[i].dehydrate())
                             self.broadcast(comm, port=port)
 
-                    self.send_world_items(port, command.location)
+                    self.send_world_items(command.location, port=port)
 
             ###### MovePerson ######
             if command.type == "PERSON" and command.action == "MOVE":
@@ -138,7 +138,7 @@ class GameServer():
                                     self.broadcast(comm, command.id)
 
                             # HANDLE SENDING SPECIFIC PANE THINGS HERE
-                            self.send_world_items(command.id, command.location)
+                            self.send_world_items(command.location, pid=command.id)
 
                         self.unload_panes()
 
@@ -336,13 +336,13 @@ class GameServer():
                 port = [p for p, i in self.player.iteritems() if i == pid][0]
             self.SDF.send(port, command)
 
-    def send_world_items(self, p, location):
+    def send_world_items(self, location, pid=None, port=None):
         chests = self.pane[location.pane].get_chest_list()
         # CHESTS
         if chests:
             for chest in chests:
                 cmd = Command("CHEST", "ADD", chestType=chest[0], level=chest[1], location=Location(location.pane, chest[2]))
-                self.broadcast(cmd, p)
+                self.broadcast(cmd, pid, port)
         # TODO: ITEMS
 
     def tile_is_open(self, location, pid=None, cPane=None, iLoc=None, portal=False):
@@ -363,9 +363,7 @@ class GameServer():
             return False
         return True
 
-    def load_pane(self, pane, pid=None, portal=None):
-        # if portal:
-            # print "server.load_pane(portal=TRUE)"
+    def load_pane(self, pane, pid=None):
         if pane not in self.pane:
             print("Loading pane " + str(pane))
             if pid:
@@ -376,7 +374,7 @@ class GameServer():
                     p.location = None
                     p.cPane = pane
             else:
-                self.pane[pane] = self.world.get_pane(Location(pane), True, portal=portal)
+                self.pane[pane] = self.world.get_pane(pane, True)
 
             # Add all people in pane to global person table, then replace pane's person list with
             # a list of personIDs
