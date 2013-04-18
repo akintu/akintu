@@ -851,7 +851,7 @@ class PassiveAbility(object):
         'level' : 1,
         'type' : 'static',
         'action' : None,
-        'image' : ANARCHIST + 'trap-chaos.png.',
+        'image' : ANARCHIST + 'trap-chaos.png',
         'text' : 'You can lay down traps on adjacent enemies.  If you do so, the trap\n' + \
                 'is immediately triggered and has a trap rating bonus of  +5 + Cunning/10.\n' + \
                 'Traps with multiple charges apply all charges at once.  (If the trap does\n' + \
@@ -1233,7 +1233,7 @@ class PassiveAbility(object):
         'level' : 1,
         'type' : 'static',
         'action' : applyMysticalAccuracy,
-        'image' : BATTLEMAGE + 'mystical-accuracy',
+        'image' : BATTLEMAGE + 'mystical-accuracy.png',
         'text' : '+2 Melee Accuracy'
         },
         'Mystical Shield Use':
