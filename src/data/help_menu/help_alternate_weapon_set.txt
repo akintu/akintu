@@ -8,7 +8,7 @@ If you equip your weapon/armor via the alternate equipment keys (DEFAULT:
 hold down ALT while equipping), you will equip them in an alternate weapon 
 slot. This will make them blue in color and have no direct impact on your 
 characteristics. However, when you are in combat, if you press the key to 
-swap weapons (DEFAULT key: O) it will consume 7 AP and you will then be 
+swap weapons (DEFAULT key: O) it will consume 5 AP and you will then be 
 using your previously alternate weapons (your "red" and "blue" equipment 
 will be swapped.)
 

@@ -68,7 +68,10 @@ class InternalStatus(object):
                                 magnitude=str(cloneStatus.magnitude), element=cloneStatus.element)
         return cloneStatus
 
-
+    def updateText(self):
+        self.text = InternalStatus.textDict[self.name].format(
+                                magnitude=str(self.magnitude), element=self.element)
+    
     def Applied_poison_rating_bonus_method(self, target, magnitude):
         target.equipmentPoisonRatingBonus += magnitude
 

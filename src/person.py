@@ -261,8 +261,8 @@ class Person(en.Entity):
         '''A dict of status components to be displayed to the UI.'''
         return self._clientStatusView
 
-    def addClientStatus(self, statusName, image, turnsLeft):
-        self._clientStatusView[statusName] = {'image' : image, 'turnsLeft' : turnsLeft}
+    def addClientStatus(self, statusName, image, turnsLeft, displayText=""):
+        self._clientStatusView[statusName] = {'image' : image, 'turnsLeft' : turnsLeft, 'displayText' : displayText}
 
     def removeClientStatus(self, statusName):
         if statusName in self._clientStatusView:

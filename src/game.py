@@ -340,9 +340,9 @@ class Game(object):
 
             ###### Add Person Status ######
             if command.type == "PERSON" and command.action == "ADDSTATUS":
-                #id, status, turns, image
+                #id, status, turns, image, displayText
                 self.pane.person[command.id].addClientStatus(command.status, command.image, \
-                        command.turns)
+                        command.turns, command.displayText)
                 statsdict = {'team' : self.pane.person[command.id].team,
                              'statusList' : self.pane.person[command.id].clientStatusView}
                 self.screen.update_person(command.id, statsdict)
@@ -535,7 +535,7 @@ class Game(object):
             elif event.type == MOUSEBUTTONDOWN and event.button == 3 and keystate.inputState == "TARGET":
                 self.currentTarget = Location(event.pos[0] / TILE_SIZE, event.pos[1] / TILE_SIZE)
                 self.attempt_attack()
-                keystate.inputState = "COMBAT"
+                keystate.inputState = "COMBAT" if self.combat else "OVERWORLD"
                 self.currentAbility = self.pane.person[self.id].abilities[0]
                 self.update_regions()
                 if not self.valid_target():
@@ -566,7 +566,7 @@ class Game(object):
                 elif e in ["TARGETACCEPT", "TARGETCANCEL"]:
                     if e == "TARGETACCEPT":
                         self.attempt_attack()
-                    keystate.inputState = "COMBAT"
+                    keystate.inputState = "COMBAT" if self.combat else "OVERWORLD"
                     self.currentAbility = self.pane.person[self.id].abilities[0]
                     self.update_regions()
                     if not self.valid_target():
@@ -620,7 +620,7 @@ class Game(object):
                     selectionNum = self.screen.get_dialog_selection()
                     selection = None
                     if selectionNum is not None:
-                        resultDuple = helpmenu.navigateDownPage(self.helpTitle, selectionNum)
+                        resultDuple = helpmenu.navigateDownPage(self.helpTitle, selectionNum, keystate)
                         if resultDuple[1] == "Dict":
                             currentPage = resultDuple[0]
                             self.helpTitle = currentPage['title']
@@ -643,7 +643,7 @@ class Game(object):
                     if not pageDict:
                         if self.combat:
                             self.screen.hide_dialog()
-                            keystate.inputState = "COMBAT"
+                            keystate.inputState = "COMBAT" if self.combat else "OVERWORLD"
                         else:
                             menuItems = ['Save and Return', 'Save and Quit', 'Return without Saving', 'In-Game Help']
                             self.screen.show_menu_dialog(menuItems)
@@ -781,11 +781,11 @@ class Game(object):
                 elif e == "CONSUMABLEUSE":
                     self.currentItem = self.pane.person[self.id].inventory.allConsumables[self.screen.hide_dialog()[1]]
                     self.use_item()
-                    keystate.inputState = "COMBAT"
+                    keystate.inputState = "COMBAT" if self.combat else "OVERWORLD"
                 elif e == "CONSUMABLECANCEL":
                     self.screen.hide_dialog()
                     self.screen.show_text("Item use cancelled.")
-                    keystate.inputState = "COMBAT"
+                    keystate.inputState = "COMBAT" if self.combat else "OVERWORLD"
 
                 ### Combat Only Commands ###
                 elif e == "ABILITIESOPEN":
@@ -804,7 +804,7 @@ class Game(object):
                         keystate.inputState = "TARGET"
                         self.currentTarget = self.pane.person[self.id].location
                     else:
-                        keystate.inputState = "COMBAT"
+                        keystate.inputState = "COMBAT" if self.combat else "OVERWORLD"
                     self.update_regions()
                     if not self.valid_target():
                         self.cycle_targets()
@@ -823,6 +823,15 @@ class Game(object):
                     self.select_self()
                 elif e == "ANALYZETARGET":
                     self.display_target_details()
+                elif e == "DISPLAYCOMBATSTATUS":
+                    keystate.inputState = "COMBATSTATUS"
+                    self.display_combat_status()
+                elif e == "CLOSECOMBATSTATUS":
+                    self.screen.hide_dialog()
+                    if self.combat:
+                        keystate.inputState = "COMBAT" if self.combat else "OVERWORLD"
+                    else:
+                        keystate.inputState = "OVERWORLD"
 
                 ### Keybinding dialog ###
                 elif e == "BINDINGSOPEN":
@@ -855,9 +864,11 @@ class Game(object):
                 elif e == "BASHCHEST":
                     self.break_in()
                 elif e == "STARTLEVELUP":
-                    self.request_levelup(True)
+                    self.request_levelup(False)
                 elif e == "STARTRESPEC":
                     self.request_respec()
+                elif e == "CHEATLEVELUP":
+                    self.request_levelup(True)
 
                 ### Debug codes ###
                 elif e == "CHEAT CODE":
@@ -947,7 +958,7 @@ class Game(object):
             text = "Select a consumable"
             self.screen.show_item_dialog(text, cons, [], isEquipment, bgcolor='tan')
         else:
-            keystate.inputState = "COMBAT"
+            keystate.inputState = "COMBAT" if self.combat else "OVERWORLD"
 
     def choose_ability(self):
         text = "Select an Ability"
@@ -960,7 +971,7 @@ class Game(object):
         bgcolor = "lightblue"
         itemslist = self.pane.person[self.id].spellList
         if not itemslist:
-            keystate.inputState = "COMBAT"
+            keystate.inputState = "COMBAT" if self.combat else "OVERWORLD"
             return
         self.screen.show_tiling_dialog(text, itemslist, bgcolor=bgcolor)
 
@@ -1025,6 +1036,7 @@ class Game(object):
         text = "Passive Abilities (Press 'C' to return to main statistics)"
         bgcolor = "cadetblue"
         itemslist = self.pane.person[self.id].passiveAbilities
+        itemslist = [x for x in itemslist if "--IGNORE--" not in x.name]
         if not itemslist:
             self.display_character_sheet()
             return
@@ -1226,7 +1238,27 @@ class Game(object):
         if not self.combat or self.id < 0:
             return
         self.currentTarget = self.id
-#        self.screen.show_text("Targeting: yourself", color='lightblue')
+
+    def display_combat_status(self):
+        class Anon(object):
+            def __init__(x, a, b, c):
+                x.image = a
+                x.name = b
+                x.text = c
+
+        combatStatuses = []
+        for char in self.pane.person.values():
+            for x in char.clientStatusView:
+                image = char.clientStatusView[x]['image']
+                name = x
+                text = char.clientStatusView[x]['displayText']
+                combatStatuses.append(Anon(image, name, text))
+        if not combatStatuses:
+            return
+        if len(combatStatuses) > 48:
+            combatStatuses = combatStatuses[:47]
+        text = "List of current status effects in combat."
+        self.screen.show_tiling_dialog(text, combatStatuses, bgcolor='lightblue')
 
     def display_target_details(self):
         if not self.currentTarget or self.currentTarget not in self.pane.person:

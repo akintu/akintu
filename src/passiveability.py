@@ -53,7 +53,7 @@ class PassiveAbility(object):
         else:
             self.image = './res/images/icons/cubeforce.png'
         if 'text' in content:
-            self.text = content['text'] 
+            self.text = content['text']
         else:
             self.text = 'No description yet.'
         if self.type == 'dynamic':
@@ -114,13 +114,13 @@ class PassiveAbility(object):
         source = self.owner
         if source.record._previousTurnTilesMoved > 0:
             Combat.healTarget(source, source, int(source.totalHP * 0.01))
-            
+
     # Dragoon
 
     def applyOblivious(self, target):
         target.baseIntuition -= 12
         target.baseAwareness -= 5
-    
+
     def applyPolearmSpecialization(self, target, reverse=False, other=None):
         source = self.owner
         if not reverse:
@@ -158,7 +158,7 @@ class PassiveAbility(object):
                 break
         if toRemove:
             target.abilities.remove(toRemove)
-        
+
     def applyJumpAttackUpgrade2(self, target):
         toRemove = None
         for abil in target.abilities:
@@ -176,7 +176,7 @@ class PassiveAbility(object):
                 break
         if toRemove:
             target.abilities.remove(toRemove)
-            
+
     # Spellsword
     def applySeekerOfEnchantments(self, target, reverse=False, spell=None):
         if not reverse:
@@ -206,7 +206,7 @@ class PassiveAbility(object):
             target.statusCriticalChance += 8
         else:
             target.statusCriticalChance -= 8
-        
+
     def applyFocalPoint(self, target, reverse=False, other=None):
         if not target.usingWeaponStyle("Two Handed") or not target.hasWeaponEnchant():
             return
@@ -227,13 +227,13 @@ class PassiveAbility(object):
     # Anarchist
     def applyHateCraft(self, target):
         target.bonusTrapDamage += 20
-    
+
     def applyShockAndBurn(self, target):
         target.baseFireBonusDamage += 5
         target.baseElectricBonusDamage += 5
         target.baseElectricResistance += 10
         target.baseArmorPenetration += 2
-            
+
     def applyRushedDelivery(self, target, reverse=False, other=None):
         source = self.owner
         if not reverse:
@@ -244,7 +244,7 @@ class PassiveAbility(object):
             if source.record._currentTurnTilesMoved >= 3:
                 source.bonusTrapDamage -= 50
                 source.bonusTrapRating -= 2
-            
+
     # Marksman
     def applyExcellentVision(self, target):
         target._bonusRange += 2
@@ -345,7 +345,7 @@ class PassiveAbility(object):
         target.goldFind += 2
 
     def applySlingSkills(self, target, reverse=False, other=None):
-        source = self.target
+        source = self.owner
         if not reverse:
             if source.usingWeapon("Sling"):
                 source.statusRangedAccuracy += 5
@@ -354,7 +354,7 @@ class PassiveAbility(object):
                 source.statusRangedAccuracy -= 5
 
     def applyHideInPeril(self, target, reverse=False, amount=None):
-        source = self.target
+        source = self.owner
         if amount >= source.totalHP * 0.3 and not source.inStealth():
             Combat.addStatus(source, "Shadow Walk", -1)
 
@@ -375,13 +375,13 @@ class PassiveAbility(object):
                 break
         if toRemove:
             target.abilities.remove(toRemove)
-            
+
     # Nightblade
     def applyNightArmor(self, target):
         target.baseDR += 3
         target.baseShadowResistance += 3
         target.avoidanceChance += 3
-    
+
     def applyForbiddenStudies(self, target):
         target.baseShadowBonusDamage += 5
 
@@ -406,7 +406,7 @@ class PassiveAbility(object):
             if source.inStealth():
                 source.statusShadowBonusDamage -= 5
                 source.statusSpellpower -= 4
-                
+
     def applyUpCloseAndPersonal(self, target, reverse=False, spell=None):
         source = self.owner
         if not reverse:
@@ -426,7 +426,7 @@ class PassiveAbility(object):
             if source.usingWeaponStyle("Single"):
                 source.statusMeleeAccuracy -= 4
                 source.statusCriticalChance -= 6
-                
+
     # Battle Mage
     def applyCloseRangedMagic(self, target, reverse=False, spell=None):
         if not reverse:
@@ -500,13 +500,13 @@ class PassiveAbility(object):
             duration = 1
             magnitude = 5
             Combat.addStatus(self.owner, "Refraction", duration, magnitude)
-                
+
     # Arcane Archer
     def applyManaArrows(self, target, reverse=False, other=None):
         source = self.owner
         if source.usingWeapon("Bow") or source.usingWeapon("Crossbow"):
             Combat.modifyResource(source, "MP", source.arcaneArcherManaRegen)
-        
+
     def applyConduit(self, target):
         target.baseArcaneBonusDamage += 15
         target.baseCriticalMagnitude += 5
@@ -544,7 +544,7 @@ class PassiveAbility(object):
 
     def applyBurningPassion(self, target):
         target.baseFireBonusDamage += 15
-        
+
     def applyDoubleDodge(self, target, reverse=False):
         source = self.owner
         Combat.addStatus(source, "Double Dodge", 1)
@@ -570,12 +570,12 @@ class PassiveAbility(object):
 
     def applyJustPlainLucky(self, target):
         target.baseDodge += 3
-        
+
     # Debug
-    
+
     def applyLibertarian(self, target):
         target.baseHP += 1000
-        
+
     # Monsters
 
     def applyDeflectMissiles(self, target, reverse=False, other=None):
@@ -603,7 +603,7 @@ class PassiveAbility(object):
         source = self.owner
         distance = 2
         Combat.knockback(other, self.cLocation, distance)
-        
+
     def applyMonsterAgility(self, target):
         ''' Monsters with 'Monster Agility' have +10-30 Dodge (based on level). '''
         target.baseDodge += target.level + 10
@@ -710,7 +710,7 @@ class PassiveAbility(object):
                 'this turn.'
         },
 
-        
+
         'Oblivious':
         {
         'class' : 'Dragoon',
@@ -890,7 +890,7 @@ class PassiveAbility(object):
                 'use on an enemy will deal +50% Overall damage and have an\n' + \
                 'additional +2 Trap Rating.'
         },
-        
+
         'Excellent Vision':
         {
         'class' : 'Marksman',
@@ -929,7 +929,7 @@ class PassiveAbility(object):
         'image' : MARKSMAN + 'camouflage.png',
         'text' : 'If invisible via magical spells or potions, +8 Sneak.\n' + \
                 'Also grants +2 Dodge and +2 Ranged Accuracy always.'
-                
+
         },
         'Shortbow Niche':
         {
@@ -966,7 +966,7 @@ class PassiveAbility(object):
         'text' : 'If the Marksman is hit with a non-magical ranged attack, her accuracy\n' + \
                 'increases by 3 for the next turn.'
         },
-        
+
         # Druid
         'Knowledge of Poison':
         {
@@ -1453,7 +1453,7 @@ class PassiveAbility(object):
         'type' : 'static',
         'action' : applyLibertarian
         },
-        
+
         # Monsters
         'Deflect Missiles':
         {

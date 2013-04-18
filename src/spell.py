@@ -255,6 +255,8 @@ class Spell(object):
         HP is at or below 50%.  Should heal self
         if at or below 67%'''
         source = self.owner
+        if target.HP < 1:
+            return False
         if target == source and target.HP <= target.totalHP * 0.67:
             return True
         elif target.HP <= target.totalHP * 0.50:
@@ -272,6 +274,8 @@ class Spell(object):
         '''Should only cast a buffing spell if the target doesn't
         already have it.'''
         source = self.owner
+        if target.HP < 1:
+            return False
         if target.hasStatus("Stone Guard"):
             return False
         return True
@@ -465,7 +469,8 @@ class Spell(object):
         lower = 10
         upper = 35
         knockbackDistance = 5
-        newTar = Combat.getLineTargets(target.cPane, source.cLocation, target.cLocation, selectMonsters=True, width=1, selectFirstOnly=True)[0]
+        selectMonsters = (source.team == "Players")
+        newTar = Combat.getLineTargets(target.cPane, source.cLocation, target.cLocation, selectMonsters=selectMonsters, width=1, selectFirstOnly=True)[0]
         hitType = Combat.calcHit(source, newTar, "Magical")
         if hitType != "Miss" and hitType != "Fully Resisted":
             dam = Combat.calcDamage(source, newTar, lower, upper, "Cold", hitValue=hitType, scalesWith="Spellpower", scaleFactor=0.014)
@@ -478,7 +483,8 @@ class Spell(object):
         source = self.owner
         lower = 5
         upper = 33
-        manyTargets = Combat.getLineTargets(target.cPane, source.cLocation, target.cLocation, selectMonsters=True, width=2)
+        selectMonsters = (source.team == "Players")
+        manyTargets = Combat.getLineTargets(target.cPane, source.cLocation, target.cLocation, selectMonsters=selectMonsters, width=2)
         for t in manyTargets:
             hitType = Combat.calcHit(source, t, "Magical")
             if hitType != "Miss" and hitType != "Fully Resisted":

@@ -25,7 +25,7 @@ will have a 20% chance to be "jammed" where you won't have a chance to
 attack but it will still deduct the AP. It might be worth moving back a 
 couple of tiles and then attacking at that point. Spells cannot be jammed. 
 The trick in solo is thus to quickly eliminate your enemies before they 
-reach melee range and then consider if it is worth 7 AP to switch weapon
+reach melee range and then consider if it is worth 5 AP to switch weapon
 sets to a melee weapon. Most classes with spells have enough mana (MP) to 
 cast just about whatever they'd like in single player without running out 
 of mana. Remember, HP and MP are restored to 100% after combat.

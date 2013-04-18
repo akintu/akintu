@@ -373,7 +373,8 @@ class Ability(object):
 
     def _balm(self, target):
         source = self.owner
-        Combat.healTarget(source, source, round(source.totalHP * 0.05))
+        healPercent = 18 + source.totalCunning / 10
+        Combat.healTarget(source, source, round(source.totalHP * healPercent * 0.01))
 
     def _rapidReload(self, target):
         source = self.owner
@@ -390,9 +391,6 @@ class Ability(object):
         source = self.owner
         duration = 1
         Combat.addStatus(source, "Ranger's Aim", duration)
-
-    def _rangersAimCheck(self, target):
-        return (True, "")
 
     def _shrapnelTrap(self, targetLocation):
         source = self.owner
@@ -2041,15 +2039,15 @@ class Ability(object):
         'level' : 2,
         'class' : 'Ranger',
         'HPCost' : 0,
-        'APCost' : 6,
+        'APCost' : 5,
         'range' : 0,
         'target' : 'self',
         'action' : _balm,
-        'cooldown' : 2,
+        'cooldown' : 3,
         'checkFunction' : None,
         'breakStealth' : 100,
         'image' : RANGER_SKILLS + 'balm.png',
-        'text' : 'Heal 5% of your own HP.'
+        'text' : 'Heal 18% of your own HP. (+1% of max HP per 10 Cunning)'
         },
         'Rapid Reload':
         {
@@ -2076,10 +2074,10 @@ class Ability(object):
         'target' : 'self',
         'action' : _rangersAim,
         'cooldown' : 1,
-        'checkFunction' : _rangersAimCheck,
+        'checkFunction' : None,
         'breakStealth' : 0,
         'image' : RANGER_SKILLS + 'rangers-aim.png',
-        'text' : 'Improve your Accuracy by 5 and Critical hit chance by 1% for the remainder of this turn.'
+        'text' : 'Improve your Accuracy by 5 and Critical hit chance by 2% for the remainder of this turn.'
         },
         'Boulder Pit Trap':
         {

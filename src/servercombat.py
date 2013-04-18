@@ -117,7 +117,7 @@ class CombatServer():
         #### Switch gear ####
         elif command.type == "ABILITY" and command.action == "SWITCH_GEAR":
             target = self.server.person[command.id]
-            switchGearAP = 7
+            switchGearAP = 5
             if target.AP < switchGearAP:
                 Combat.sendCombatMessage("Not enough AP to switch weapons (" + `switchGearAP` + " needed.)", target, toAll=False)
             else:
@@ -146,11 +146,11 @@ class CombatServer():
                 Combat.sendCombatMessage(itemMessage, user, color='purple', toAll=False)
                 self.server.broadcast(Command("ITEM", "REMOVE", id=command.id,
                         itemName=command.itemName), port=port)
+                self.check_turn_end(user.cPane)
             else:
                 itemMessage = usable[1]
                 Combat.sendCombatMessage(itemMessage, user, color='white', toAll=False)
-
-
+            
         if command.id in self.server.person:
             self.update_dead_people(self.server.person[command.id].cPane)
 
@@ -390,6 +390,8 @@ class CombatServer():
 
     def check_turn_end(self, combatPane, timeExpired=False):
         ''' stuff '''
+        if self.combatStates[combatPane].isMonsterTurn:
+            return
         APRemains = False
         for player in [self.server.person[x] for x in self.server.pane[combatPane].person if x in
                 self.server.player.values()]:
@@ -413,11 +415,13 @@ class CombatServer():
             for character in [self.server.person[x] for x in self.server.pane[combatPane].person]:
                 self.shout_turn_start(character, turn="Monster")
             print "Starting monster turn."
+            self.combatStates[combatPane].isMonsterTurn = True
             self.monster_phase(combatPane, initial=True)
 
     def prepare_player_turn(self, combatPane):
         for character in [self.server.person[x] for x in self.server.pane[combatPane].person]:
             self.upkeep(character)
+        self.update_dead_people(combatPane)
         # New Turn here
         for character in [self.server.person[x] for x in self.server.pane[combatPane].person
                             if self.server.person[x].team == "Players"]:
@@ -482,6 +486,7 @@ class CombatServer():
             #end = time.clock()
             #print str(end-start) + " turn over"
             self.prepare_player_turn(combatPane)
+            self.combatStates[combatPane].isMonsterTurn = False
             return
         for mon in monsters:
             if self.combatStates[combatPane].monsterStatusDict[mon] == "TURN_START":
@@ -691,7 +696,8 @@ class CombatState(object):
         # or Monster : 'MOVING'
         # or Monster : 'TURN_START'
         # or Monster : 'TURN_OVER'
-
+        self.isMonsterTurn = False
+        # Used as a lock for turn end processing.
 
 
 

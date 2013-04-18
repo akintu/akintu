@@ -31,10 +31,10 @@ class Keystate():
                         "DOWNRIGHT": 3}
 
         self.ALL = ["OVERWORLD", "LEVELUP", "INVENTORY", "CONSUMABLE", "TARGET", "SHOP", "ABILITIES", \
-                "SPELLS", "COMBAT", "CHARSHEET", "SAVEMENU", "HELPMENU", "DEATH", "BINDINGS"]
+                "SPELLS", "COMBAT", "CHARSHEET", "SAVEMENU", "HELPMENU", "DEATH", "BINDINGS", "COMBATSTATUS"]
         self.MOVEMENT = ["OVERWORLD", "COMBAT"]
         self.DIALOG = ["LEVELUP", "INVENTORY", "CONSUMABLE", "SHOP", "ABILITIES", "SPELLS", \
-                "CHARSHEET", "SAVEMENU", "HELPMENU", "DEATH", "BINDINGS"]
+                "CHARSHEET", "SAVEMENU", "HELPMENU", "DEATH", "BINDINGS", "COMBATSTATUS"]
 
         '''
         The bindings data structure is a bit involved, so get your thinking cap on for this.
@@ -150,10 +150,13 @@ class Keystate():
         b["ENDTURN"] = ("n", "COMBAT")
         b["SELECTSELF"] = ("s", "COMBAT")
         b["ANALYZETARGET"] = (".", "COMBAT")
-
+        b["DISPLAYCOMBATSTATUS"] = ("F3", "COMBAT")
+        b["CLOSECOMBATSTATUS"] = ("escape", "COMBATSTATUS")
+        
         b["GETITEM"] = ("g", "OVERWORLD")
         b["BASHCHEST"] = ("b", "OVERWORLD")
         b["STARTLEVELUP"] = ("y", "OVERWORLD")
+        b["CHEATLEVELUP"] = ("CTRL+SHIFT+y", "OVERWORLD")
         b["STARTRESPEC"] = ("r", "OVERWORLD")
         b["CHEAT CODE"] = ("[+]", self.MOVEMENT)
 

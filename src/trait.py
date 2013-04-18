@@ -1096,7 +1096,7 @@ class Trait(object):
             'onStringList' : ['Outgoing Melee Attack'],
             'offStringList' : ['Outgoing Melee Attack Complete'],
             'image' : FIGHTER + 'hammer-and-anvil.png',
-            'text' : 'Deal additional overall damge with melee attacks against an emey with its back against a wall.\n' + \
+            'text' : 'Deal additional overall damge with melee attacks against an enemy with its back against a wall.\n' + \
                     'Rank I:   +5% Damage\n' + \
                     'Rank II:  +10% Damage\n' + \
                     'Rank III: +15% Damage\n' + \

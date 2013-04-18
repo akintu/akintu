@@ -26,11 +26,7 @@ class PlayerCharacter(p.Person):
 
         self.team = "Players"
         self.name = name
-        if name in ["Kyle Rich", "Devin Ekins", "Joshua Belcher", "Colton Myers"]:
-            self.name = "Awesome Dude"
-        elif name == "jabelch" or name == "JAB":
-            self.name = "Flagrant Noob"
-        elif name == "yourself":
+        if name == "yourself":
             self.name = "Ugly Grue"
 
         self.level = 1
@@ -1316,7 +1312,7 @@ class PlayerCharacter(p.Person):
             altGear.append(offHand)
         oldGear = []
         if len(altGear) > 0 and altGear[0]:
-            print "Alt Gear 0: " + altGear[0].name 
+            print "Alt Gear 0: " + altGear[0].name
             oldGear.extend(self.equip(altGear[0]))
         if len(altGear) > 1 and altGear[1]:
             print "Alt Gear 1: " + altGear[1].name
@@ -1327,7 +1323,7 @@ class PlayerCharacter(p.Person):
         if len(oldGear) > 1 and oldGear[1]:
             print "Old Gear 1: " + oldGear[1].name
             self.equip(oldGear[1], "Left", alternate=True)
-            
+
     def printCharacterSheet(self):
         '''Method prints a mock-up of a character sheet to the console as
         a placeholder until a real UI character sheet exists.'''
