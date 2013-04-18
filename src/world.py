@@ -49,29 +49,24 @@ class World(object):
             return False
 
     def get_pane(self, location, is_server=False, portal=None):
-        #print portal
+        '''
+        Given a location tuple or object, returns the pane object for that
+        position in the world.
+        Member Variables:
+            is_server:  Boolean value indicating whether the caller is the server
+            portal:     
+        '''
+
         inside = None
-        if portal != Portal.OVERWORLD:# == Portal.HOUSE:
+        if portal != Portal.OVERWORLD:
             #Check State For Pane
             state = None
             if is_server:
                 state = State.load_pane(location)
-            # self.panes[location] = House(self.seed, location, is_server=is_server, pane_state=state)
             inside = Inside.getInside(portal, self.seed, location, is_server=is_server, pane_state=state)
             self.panes[location] = inside
 
         if not inside:
-            # if isinstance(location, Location):
-                # surrounding_locations = location.get_surrounding_panes()
-            # else:
-                # surrounding_locations = Location(location, None).get_surrounding_panes()
-            # for key, loc in surrounding_locations.iteritems():
-                # if not loc in self.panes:
-                    # if loc in self._listTowns(loc):
-                        # self.panes[loc] = self._getTown(loc, False, False, None)
-                    # else:
-                        # self.panes[loc] = Pane(self.seed, loc)
-            #Check State For Pane
             state = None
             if is_server:
                 state = State.load_pane(location)
@@ -80,9 +75,7 @@ class World(object):
                 self.panes[location] = Pane(self.seed, location, is_server=is_server, load_entities=True, pane_state=state)
             else:
                 self.panes[location] = self._getTown(location, is_server, True, state)
-
             self._loadStamps(location)
-
             self.panes[location].load_images()
         if not is_server:
             self.panes[location].person = {}

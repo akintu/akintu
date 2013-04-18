@@ -595,6 +595,7 @@ class CombatPane(Pane):
                 j+=3
             i+=3
 
+        self.add_zoomed_features()
         self.load_background_images()
         if monster:
             monsters = TheoryCraft.generateMonsterGroup(monster, numberOfPlayers=num_players)
@@ -604,6 +605,17 @@ class CombatPane(Pane):
                 loc = monster.location
                 self.traps_region("SUB", "SQUARE", loc, loc)
             self.place_traps(num_players)
+
+    def add_zoomed_features(self):
+        coverage = 20
+        loc = Location(self.location, (PANE_X/2, PANE_Y/2))
+        while coverage > 0:
+            while not self.is_passable(loc) or not self.is_within_bounds(loc, 3):
+                #Choose a new location
+                loc = self.rand_move_within_pane(loc, [1,9], [1,5], 3)
+            coverage -= 1
+            self.add_obstacle(loc.tile, RAND_ENTITIES)
+            self.traps_region("SUB", "SQUARE", loc, loc)
 
     def place_monsters(self, monsters, start_location):
         loc = temp = start_location
