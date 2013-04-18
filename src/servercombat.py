@@ -21,16 +21,18 @@ class CombatServer():
             activePlayer = self.server.person[command.id]
 
             # If this is a legal move request
-            if self.server.tile_is_open(command.location, command.id) and \
-                 activePlayer.AP >= activePlayer.totalMovementAPCost or\
+            if  (hasattr(command, 'force') and command.force) or \
+                    self.server.tile_is_open(command.location, command.id) and \
+                 activePlayer.AP >= activePlayer.totalMovementAPCost or \
                  activePlayer.remainingMovementTiles > 0:
                 if activePlayer.team == "Players":
                     activePlayer.record.recordMovement()
-                    if activePlayer.remainingMovementTiles == 0:
-                        Combat.modifyResource(activePlayer, "AP", -activePlayer.totalMovementAPCost)
-                        Combat.resetMovementTiles(activePlayer)
-                    else:
-                        Combat.decrementMovementTiles(activePlayer)
+                    if not (hasattr(command, 'force') and command.force):
+                        if activePlayer.remainingMovementTiles == 0:
+                            Combat.modifyResource(activePlayer, "AP", -activePlayer.totalMovementAPCost)
+                            Combat.resetMovementTiles(activePlayer)
+                        else:
+                            Combat.decrementMovementTiles(activePlayer)
 
                 # Update location and broadcast, including possible trap interactions.
                 activePlayer.cLocation = command.location
@@ -150,7 +152,7 @@ class CombatServer():
             else:
                 itemMessage = usable[1]
                 Combat.sendCombatMessage(itemMessage, user, color='white', toAll=False)
-            
+
         if command.id in self.server.person:
             self.update_dead_people(self.server.person[command.id].cPane)
 
