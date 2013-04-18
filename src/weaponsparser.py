@@ -5,7 +5,13 @@ import re
 import equipment
 import statuseffectsparser as sep
 
-
+# weaponsparser.py
+# Author: Devin Ekins -- G. Cube
+#
+# This module simply parses the Weapon_Data.txt file in such a fashion that
+# Akintu will be able to make use of it after one execution.  It contains
+# only one method that matters to the outside, parseAll() which will 
+# load all data at startup time.
 
 class WeaponsParser(object):
 
