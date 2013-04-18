@@ -104,95 +104,43 @@ class GameServer():
                         for entity in ent_list:
                             portal_loc, new_loc = entity.trigger()
                             # print "PORTAL LOCATION: " + str(portal_loc)
-                            self.SDF.queue.put((None, Command("PERSON", "MOVE", id=command.id, portal=entity, iLocation=portal_loc, location=new_loc)))
+                            # self.SDF.queue.put((None, Command("PERSON", "MOVE", id=command.id, portal=entity, iLocation=portal_loc, location=new_loc)))
+                            #"SHOP" and command.action == "REQUESTSHOP"
+                            if entity.portal_type == Portal.SHOP:
+                                self.SDF.queue.put((None, Command("SHOP", "REQUESTSHOP", id=command.id)))
 
-                    # Portals always treats it as a separate pane
-                    portal_type = portal.portal_type if portal != None else None
-                    if portal_type == None:
-                        # If the origin and destination are in the same pane
-                        if self.person[command.id].location.pane == command.location.pane and not portal:
-                            # Update location and broadcast
-                            self.person[command.id].location = command.location
-                            self.broadcast(command, -command.id, exclude=True if port else False)
-                        else:
-                            # Remove person from players' person tables, and pane's person list
-                            self.pane[self.person[command.id].location.pane].person.remove(command.id)
-                            self.broadcast(Command("PERSON", "REMOVE", id=command.id), -command.id)
-
-                            # Update location in server memory
-                            self.person[command.id].location = command.location
-
-                            # Add player to new pane lists and send to clients in the affected pane
-                            self.pane[command.location.pane].person.append(command.id)
-                            command.action = "CREATE"
-                            command.details = self.person[command.id].dehydrate()
-                            self.broadcast(command, pane=command.location.pane)
-
-                            # Send list of players to the issuing client
-                            if command.id in self.player.values():
-                                for i in self.pane[command.location.pane].person:
-                                    if i != command.id:
-                                        comm = Command("PERSON", "CREATE", id=i, \
-                                                location=self.person[i].location, \
-                                                details=self.person[i].dehydrate())
-                                        self.broadcast(comm, command.id)
-
-                                # HANDLE SENDING SPECIFIC PANE THINGS HERE
-                                self.send_world_items(command.id, command.location)
-
-                            self.unload_panes()
-                    else:
-#                        print "ilocation = " + str(command.iLocation)
-                        #HANDLE ALL THINGS PORTAL HERE
-                        # Remove person from players' person tables, and pane's person list
-                        key = self.person[command.id].iLocation
-                        if not key:
-                            loc = self.person[command.id].location
-                            key = loc
-                        if not key in self.pane:
-                            key = key.pane
-
-                        # Update location in server memory
-                        self.person[command.id].iLocation = command.iLocation
-                        # print "command.iLocation=" + str(command.iLocation)
+                    # If the origin and destination are in the same pane
+                    if self.person[command.id].location.pane == command.location.pane:
+                        # Update location and broadcast
                         self.person[command.id].location = command.location
-
-                        if portal_type == Portal.OVERWORLD:
-                            pane = command.iLocation.pane
-                            self.load_pane(pane)
-                            self.person[command.id].iLocation = None
-                            command = Command("PERSON", "CREATE", id=command.id, location=command.location)
-                        else:
-                            pane = command.iLocation
-                            self.load_pane(pane, portal=portal_type)
-
-                        self.pane[key].person.remove(command.id)
-                        # print "Trying to remove person from pane " + str(key)
-                        # self.pane[self.person[command.id].location.pane].person.remove(command.id)
+                        self.broadcast(command, -command.id, exclude=True if port else False)
+                    else:
+                        # Remove person from players' person tables, and pane's person list
+                        self.pane[self.person[command.id].location.pane].person.remove(command.id)
                         self.broadcast(Command("PERSON", "REMOVE", id=command.id), -command.id)
 
+                        # Update location in server memory
+                        self.person[command.id].location = command.location
+
                         # Add player to new pane lists and send to clients in the affected pane
-                        self.pane[pane].person.append(command.id)
+                        self.pane[command.location.pane].person.append(command.id)
                         command.action = "CREATE"
-                        command.portal = portal_type
                         command.details = self.person[command.id].dehydrate()
                         self.broadcast(command, pane=command.location.pane)
 
                         # Send list of players to the issuing client
                         if command.id in self.player.values():
-                            key = command.location
-                            if not key in self.pane:
-                                key = command.location.pane
-                            for i in self.pane[key].person:
+                            for i in self.pane[command.location.pane].person:
                                 if i != command.id:
                                     comm = Command("PERSON", "CREATE", id=i, \
                                             location=self.person[i].location, \
-                                            portal=portal_type, \
                                             details=self.person[i].dehydrate())
                                     self.broadcast(comm, command.id)
 
                             # HANDLE SENDING SPECIFIC PANE THINGS HERE
                             self.send_world_items(command.id, command.location)
+
+                        self.unload_panes()
 
                     # Check for combat range and initiate combat states
                     if command.id in self.player.values():
