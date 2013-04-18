@@ -894,7 +894,7 @@ class InternalStatus(object):
         'Prepare_melee_dodge_counterattack' :
             "The next melee attack dodged will be counter-attacked.",
         'Ranged_accuracy_bonus' :
-            "Ranged accuracy has been raised, increasing the chance of hitting with Ranged attacks.",
+            "Ranged accuracy has been raised {magnitude} points, increasing the chance of hitting with Ranged attacks.",
         'Ranged_accuracy_penalty' :
             "Ranged accuracy has been lowered, decreasing the chance of hitting with Ranged attacks.",
         'Ranged_critical_magnitude_bonus' :

@@ -118,22 +118,22 @@ class Trait(object):
             return
         if not reverse:
             if self.rank == 1:
-                target.statusDR += 1
-            elif self.rank == 2:
                 target.statusDR += 2
-            elif self.rank == 3:
+            elif self.rank == 2:
                 target.statusDR += 4
+            elif self.rank == 3:
+                target.statusDR += 6
             elif self.rank == 4:
-                target.statusDR += 7
+                target.statusDR += 9
         else:
             if self.rank == 1:
-                target.statusDR -= 1
-            elif self.rank == 2:
                 target.statusDR -= 2
-            elif self.rank == 3:
+            elif self.rank == 2:
                 target.statusDR -= 4
+            elif self.rank == 3:
+                target.statusDR -= 6
             elif self.rank == 4:
-                target.statusDR -= 7
+                target.statusDR -= 9
 
     
     def applyFencer(self, target, reverse=False, other=None):
@@ -304,22 +304,22 @@ class Trait(object):
             return
         if not reverse:
             if self.rank == 1:
-                target.baseOverallDamageBonus += 5
+                target.baseOverallDamageBonus += 8
             elif self.rank == 2:
-                target.baseOverallDamageBonus += 10
-            elif self.rank == 3:
                 target.baseOverallDamageBonus += 15
+            elif self.rank == 3:
+                target.baseOverallDamageBonus += 23
             elif self.rank == 4:
-                target.baseOverallDamageBonus += 20
+                target.baseOverallDamageBonus += 30
         else:
             if self.rank == 1:
-                target.baseOverallDamageBonus -= 5
+                target.baseOverallDamageBonus -= 8
             elif self.rank == 2:
-                target.baseOverallDamageBonus -= 10
-            elif self.rank == 3:
                 target.baseOverallDamageBonus -= 15
+            elif self.rank == 3:
+                target.baseOverallDamageBonus -= 23
             elif self.rank == 4:
-                target.baseOverallDamageBonus -= 20
+                target.baseOverallDamageBonus -= 30
 
     # Ranger
     
@@ -1015,10 +1015,10 @@ class Trait(object):
             'offStringList' : ['Incoming Melee Attack Complete', 'Incoming Ranged Attack Complete'],
             'image' : FIGHTER + 'tank.png',
             'text' : 'If wearing heavy armor, gain bonus damage resistance.\n' + \
-                    'Rank I:   +1% DR\n' + \
-                    'Rank II:  +2% DR\n' + \
-                    'Rank III: +4% DR\n' + \
-                    'Rank IV:  +7% DR'
+                    'Rank I:   +2% DR\n' + \
+                    'Rank II:  +4% DR\n' + \
+                    'Rank III: +6% DR\n' + \
+                    'Rank IV:  +9% DR'
             },
         'Fencer':
             {
@@ -1097,10 +1097,10 @@ class Trait(object):
             'offStringList' : ['Outgoing Melee Attack Complete'],
             'image' : FIGHTER + 'hammer-and-anvil.png',
             'text' : 'Deal additional overall damge with melee attacks against an enemy with its back against a wall.\n' + \
-                    'Rank I:   +5% Damage\n' + \
-                    'Rank II:  +10% Damage\n' + \
-                    'Rank III: +15% Damage\n' + \
-                    'Rank IV:  +20% Damage'
+                    'Rank I:   +8% Damage\n' + \
+                    'Rank II:  +15% Damage\n' + \
+                    'Rank III: +23% Damage\n' + \
+                    'Rank IV:  +30% Damage'
             },
 
         # Ranger Traits

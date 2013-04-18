@@ -520,7 +520,7 @@ class Ability(object):
         Combat.addStatus(source, self.name, duration)
 
     def _reverseHex(self, target):
-        Combat.removeStatusOfType(target, "debuff")
+        Combat.removeStatusOfType(target, "Debuff")
 
     def _spellSight(self, target):
         source = self.owner
@@ -1753,8 +1753,8 @@ class Ability(object):
         'checkFunction' : _mightyBlowCheck,
         'breakStealth' : 100,
         'image' : FIGHTER_SKILLS + "mighty-blow.png",
-        'text' : 'Melee attack that deals bonus damage but with a penalty to accuracy.\n' + \
-                'It is more powerful with larger weapons.'
+        'text' : 'Melee attack with Force x 1.6 and +3 Might that has a 5 point\n' + \
+                'penalty to accuracy.'
         },
         'Brace':
         {
