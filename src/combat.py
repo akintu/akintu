@@ -509,14 +509,14 @@ class Combat(object):
         newloc = target.cLocation.move(sourceOfImpact.direction_to(target.cLocation), distance)
         if newloc == target.cLocation:
             return
-            
+
         line = target.cLocation.line_to(newloc)
         for i, loc in enumerate(line):
             if not Combat.gameServer.tile_is_open(loc, target.id) or loc.pane != (0, 0):
                 line = line[:i]
                 break
         newloc = line.pop() if len(line) > 0 else target.cLocation
-        action = command.Command("PERSON", "MOVE", id=target.id, location=newloc)
+        action = command.Command("PERSON", "MOVE", id=target.id, location=newloc, force=True)
         Combat.gameServer.SDF.queue.put((None, action))
 
     @staticmethod
@@ -876,7 +876,7 @@ class Combat(object):
           None"""
         nearbyTraps = [Combat.gameServer.pane[thief.cPane].tiles[loc.tile].getTrap() for loc in \
                 Region("CIRCLE", thief.cLocation, 1) \
-                if Combat.gameServer.pane[thief.cPane].tiles[loc.tile].getTrap() and 
+                if Combat.gameServer.pane[thief.cPane].tiles[loc.tile].getTrap() and
                    Combat.gameServer.pane[thief.cPane].tiles[loc.tile].getTrap().visible]
         numberTrapsDisarmed = 0
         for trap in nearbyTraps:
@@ -1003,7 +1003,7 @@ class Combat(object):
         bundle = {'direction' : direction, 'type' : attackType, 'otherPerson' : otherParty}
         bc = broadcast.AttackBroadcast(bundle)
         bc.shout(hearer)
-        
+
         # Now for the monster
         if direction == "Outgoing":
             direction = "Incoming"
@@ -1035,7 +1035,7 @@ class Combat(object):
         bundle = {'direction' : direction, 'type' : attackType, 'otherPerson' : otherParty, 'suffix' : hitTypeString}
         bc = broadcast.AttackBroadcast(bundle)
         bc.shout(hearer)
-        
+
         # Now for the monster
         if direction == "Outgoing":
             direction = "Incoming"
@@ -1046,7 +1046,7 @@ class Combat(object):
         bundle = {'direction' : direction, 'type' : attackType, 'otherPerson' : otherParty, 'suffix' : hitTypeString}
         bc = broadcast.AttackBroadcast(bundle)
         bc.shout(hearer)
-        
+
     @staticmethod
     def _shoutAttackComplete(source, target, noCounter):
         direction = "Outgoing"
@@ -1062,7 +1062,7 @@ class Combat(object):
         bundle = {'direction' : direction, 'type' : attackType, 'otherPerson' : otherParty, 'suffix' : 'Complete', 'noCounter' : noCounter}
         bc = broadcast.AttackBroadcast(bundle)
         bc.shout(hearer)
-        
+
         # Now for the monster
         if direction == "Outgoing":
             direction = "Incoming"
@@ -1073,7 +1073,7 @@ class Combat(object):
         bundle = {'direction' : direction, 'type' : attackType, 'otherPerson' : otherParty, 'suffix' : 'Complete', 'noCounter' : noCounter}
         bc = broadcast.AttackBroadcast(bundle)
         bc.shout(hearer)
-        
+
     @staticmethod
     def _shoutDamage(target, amount):
         direction = "Incoming"
