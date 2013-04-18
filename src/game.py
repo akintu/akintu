@@ -167,10 +167,11 @@ class Game(object):
             self.screen.set_turntime(turnTime)
 
         self.check_queue()
-        self.handle_events()
-        self.handle_non_events()
-        self.play_music()
-        self.screen.update()
+        if self.pane:
+            self.handle_events()
+            self.handle_non_events()
+            self.play_music()
+            self.screen.update()
 
     def play_music(self, state=None, stop=False):
         if state and state != self.musicState:
