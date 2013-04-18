@@ -6,6 +6,15 @@ import playercharacter
 import statuseffectsparser as sep
 import theorycraft
 
+# cctemplateparser.py
+# Author: Devin Ekins -- G. Cube
+#
+# This module simply parses the Character_Class_Data.txt file in addition to the
+# Race_Data.txt file in such a fashion that
+# Akintu will be able to make use of it after one execution.  It contains
+# only one method that matters to the outside, parseAll() which will 
+# load all data at startup time.
+
 class CCTemplatesParser(object):
 
     def __init__(self):

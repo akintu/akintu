@@ -9,6 +9,17 @@ ROOT_FOLDER = "./res/images/icons/"
 TIER1 = ROOT_FOLDER + "tier1_spells/"
 TIER2 = ROOT_FOLDER + "tier2_spells/"
 
+# spell.py
+# Author: Devin Ekins -- G. Cube
+#
+# This module contains all Spells used by players and monsters.
+# Individual methods are not typically commented as they represent 
+# the functionality of individual spells -- those spells already have
+# documentation on their functionality as detailed in the description
+# on both the wiki and the dictionary containing the parameters of these
+# functions.
+
+
 class SpellStub(object):
     def __init__(self, name):
         self.name = name
@@ -90,7 +101,8 @@ class Spell(object):
 
     def canUse(self, target):
         '''
-        target: Person (later, Location?)
+        Determines if a spell can be used on the given target.
+        target: Person or Location
         '''
         source = self.owner
 

@@ -5,6 +5,19 @@ import re
 import status
 import internalstatus
 
+# statuseffectsparser.py
+# Author: Devin Ekins -- G. Cube
+#
+# This module simply parses the Stats_Effects_Data.txt file in such a fashion that
+# Akintu will be able to make use of it after one execution.  It contains
+# only one method that matters to the outside, parseAll() which will 
+# load all data at startup time.
+#
+# This file is modeled after a DFA pattern and was the first of the parsers to be
+# written.  As a consequence it is more flexible to handle errors in the data
+# file, but has much more complex code written here.
+
+
 class InvalidDataFileSyntax(Exception):
     def __init__(self, value):
         self.value = value
