@@ -535,7 +535,7 @@ class Game(object):
             elif event.type == MOUSEBUTTONDOWN and event.button == 3 and keystate.inputState == "TARGET":
                 self.currentTarget = Location(event.pos[0] / TILE_SIZE, event.pos[1] / TILE_SIZE)
                 self.attempt_attack()
-                keystate.inputState = "COMBAT"
+                keystate.inputState = "COMBAT" if self.combat else "OVERWORLD"
                 self.currentAbility = self.pane.person[self.id].abilities[0]
                 self.update_regions()
                 if not self.valid_target():
@@ -566,7 +566,7 @@ class Game(object):
                 elif e in ["TARGETACCEPT", "TARGETCANCEL"]:
                     if e == "TARGETACCEPT":
                         self.attempt_attack()
-                    keystate.inputState = "COMBAT"
+                    keystate.inputState = "COMBAT" if self.combat else "OVERWORLD"
                     self.currentAbility = self.pane.person[self.id].abilities[0]
                     self.update_regions()
                     if not self.valid_target():
@@ -643,7 +643,7 @@ class Game(object):
                     if not pageDict:
                         if self.combat:
                             self.screen.hide_dialog()
-                            keystate.inputState = "COMBAT"
+                            keystate.inputState = "COMBAT" if self.combat else "OVERWORLD"
                         else:
                             menuItems = ['Save and Return', 'Save and Quit', 'Return without Saving', 'In-Game Help']
                             self.screen.show_menu_dialog(menuItems)
@@ -781,11 +781,11 @@ class Game(object):
                 elif e == "CONSUMABLEUSE":
                     self.currentItem = self.pane.person[self.id].inventory.allConsumables[self.screen.hide_dialog()[1]]
                     self.use_item()
-                    keystate.inputState = "COMBAT"
+                    keystate.inputState = "COMBAT" if self.combat else "OVERWORLD"
                 elif e == "CONSUMABLECANCEL":
                     self.screen.hide_dialog()
                     self.screen.show_text("Item use cancelled.")
-                    keystate.inputState = "COMBAT"
+                    keystate.inputState = "COMBAT" if self.combat else "OVERWORLD"
 
                 ### Combat Only Commands ###
                 elif e == "ABILITIESOPEN":
@@ -804,7 +804,7 @@ class Game(object):
                         keystate.inputState = "TARGET"
                         self.currentTarget = self.pane.person[self.id].location
                     else:
-                        keystate.inputState = "COMBAT"
+                        keystate.inputState = "COMBAT" if self.combat else "OVERWORLD"
                     self.update_regions()
                     if not self.valid_target():
                         self.cycle_targets()
@@ -829,10 +829,10 @@ class Game(object):
                 elif e == "CLOSECOMBATSTATUS":
                     self.screen.hide_dialog()
                     if self.combat:
-                        keystate.inputState = "COMBAT"
+                        keystate.inputState = "COMBAT" if self.combat else "OVERWORLD"
                     else:
                         keystate.inputState = "OVERWORLD"
-                
+
                 ### Keybinding dialog ###
                 elif e == "BINDINGSOPEN":
                     keystate.inputState = "BINDINGS"
@@ -958,7 +958,7 @@ class Game(object):
             text = "Select a consumable"
             self.screen.show_item_dialog(text, cons, [], isEquipment, bgcolor='tan')
         else:
-            keystate.inputState = "COMBAT"
+            keystate.inputState = "COMBAT" if self.combat else "OVERWORLD"
 
     def choose_ability(self):
         text = "Select an Ability"
@@ -971,7 +971,7 @@ class Game(object):
         bgcolor = "lightblue"
         itemslist = self.pane.person[self.id].spellList
         if not itemslist:
-            keystate.inputState = "COMBAT"
+            keystate.inputState = "COMBAT" if self.combat else "OVERWORLD"
             return
         self.screen.show_tiling_dialog(text, itemslist, bgcolor=bgcolor)
 
@@ -1245,7 +1245,7 @@ class Game(object):
                 x.image = a
                 x.name = b
                 x.text = c
-                
+
         combatStatuses = []
         for char in self.pane.person.values():
             for x in char.clientStatusView:
