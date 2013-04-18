@@ -829,8 +829,8 @@ class Ability(object):
                 damage = Combat.calcDamage(source, target, minDamage, maxDamage, element, "Normal Hit")
                 Combat.lowerHP(target, damage)
                 source.record.recordTrapSuccess()
-                splashMin = int(minDamage * 0.75 * (1 + source.bonusTrapDamage * 0.01))
-                splashMax = int(maxDamage * 0.75 * (1 + source.bonusTrapDamage * 0.01))
+                splashMin = int(minDamage * 0.75)
+                splashMax = int(maxDamage * 0.75)
                 targetGroup = Combat.getAOETargets(target.cPane, target.cLocation, radius=1)
                 for tar in targetGroup:
                     dam = Combat.calcDamage(source, tar, splashMin, splashMax, element, "Normal Hit")

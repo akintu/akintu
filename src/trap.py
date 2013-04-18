@@ -117,7 +117,7 @@ class Trap(e.Entity):
             dieRoll = Dice.roll(splashMin, splashMax)
             dam = self.calcTrapDamage(tar, dieRoll, element)
             Combat.lowerHP(tar, dam)
-            Combat.sendCombatMessage("Trap dealt " + `damage` + " secondary damage.", self.owner, color="yellow")
+            Combat.sendCombatMessage("Trap dealt " + `dam` + " secondary damage.", self.owner, color="yellow")
             
     def _accuracyFavor(self, target):
         accuracyBonus = 3 + self.owner.totalCunning / 4
