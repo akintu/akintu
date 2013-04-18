@@ -218,6 +218,21 @@ class GameScreen(object):
 
         return selection
 
+    def redraw(self):
+        '''
+        Redraw the world, hiding any dialog that may have been present
+        '''
+        self.dialog = None
+
+        self.draw_world()
+        self._drawmonsterframes()
+        self._drawplayerframes()
+        self._draw_text()
+        self.personsgroup.update()
+        self.personsgroup.draw(self.screen)
+        pygame.display.update()
+        self.personsgroup.clear(self.screen, self.background)
+
     def get_dialog_selection(self):
         '''
         Get the current selection in the dialog (if it exists)
