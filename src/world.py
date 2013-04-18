@@ -36,6 +36,7 @@ class World(object):
         self.countries = dict()
         self._generate_world(pane)
         # print self._listTowns(pane)
+        # print "Devil located at: " + str(self.countries[(0,0)].townships[(2,2)].boss)
         
     def is_town_pane(self, location):
         if isinstance(location, Location):

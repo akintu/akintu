@@ -134,6 +134,7 @@ class Pane(object):
             location = Location(self.location, (random.randrange(PANE_X), random.randrange(PANE_Y)))
 
         ignore_max = True if level > 9 else False
+        # print ignore_max
         person = TheoryCraft.getMonster(level=level, name=name, tolerance=tolerance, ignoreMaxLevel=ignore_max)
         person.location = location
         if not region:
@@ -612,7 +613,7 @@ class CombatPane(Pane):
             self.paneCharacterLevel = max(self.paneCharacterLevel, person.level)
             # print "Combat Pane Level: " + str(self.paneCharacterLevel)
             # print "Monster baseHP: " + str(person.baseHP)
-            while not self.is_passable(loc) or not self.is_within_bounds(loc, 3):
+            while not self.is_passable(loc) or not self.is_within_bounds(loc, 3) or loc.tile[0] == 0:
                 #Choose a new location
                 #print str(loc) + " New Location"
                 loc = self.rand_move_within_pane(loc, [1,9], [1,5], 3)
@@ -676,7 +677,7 @@ class CombatPane(Pane):
         Zooms the given obstacle to a 3x3 obstacle and centers it on the given tile.
         '''
 
-        entity_key += "_zoom"
+        entity_key += "_zoom" if entity_key.find("_zoom") == -1 else ""
         for di in range(0,3):
             for dj in range(0,3):
                 tile = (tile_center[0]+(di-1), tile_center[1]+(dj-1))
