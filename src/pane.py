@@ -120,7 +120,7 @@ class Pane(object):
             for i in range(0):
                 self.add_monster()
 
-    def add_monster(self, level=None, tolerance=None, location=None, region=None, ai=None):
+    def add_monster(self, name=None, level=None, tolerance=None, location=None, region=None, ai=None):
         #Handle Default Objects
         if not level:
             level = self.paneLevel
@@ -133,7 +133,8 @@ class Pane(object):
         if not location:
             location = Location(self.location, (random.randrange(PANE_X), random.randrange(PANE_Y)))
 
-        person = TheoryCraft.getMonster(level=level, tolerance=tolerance)
+        ignore_max = True if level > 9 else False
+        person = TheoryCraft.getMonster(level=level, name=name, tolerance=tolerance, ignoreMaxLevel=ignore_max)
         person.location = location
         if not region:
             region = Region()
@@ -375,8 +376,8 @@ class Pane(object):
             obst = random.choice(sorted(OBSTACLES))
             for loc, type in stamp.getEntityLocations(location).iteritems():
 
-                #CONSUMABLES AND ITEMS (REMOVED AFTER USE)
-                if type in [CHEST_KEY, MONSTER_KEY, ITEM_KEY]:
+                #CONSUMABLES, ITEMS, AND MONSTERS (REMOVED AFTER USE OR DEATH)
+                if type in [CHEST_KEY, MONSTER_KEY, ITEM_KEY, BOSS_KEY]:
                     if not self.pane_state and self.is_server:
                         if type == CHEST_KEY:
                             self.add_chest(tile=loc.tile)
@@ -384,6 +385,8 @@ class Pane(object):
                                 self.add_monster(location=loc)
                         if type == ITEM_KEY:
                             self.add_item(tile=loc.tile)
+                        if type == BOSS_KEY:
+                            self.add_monster(location=loc, name="Devil", level=20)
                     continue
                 if type == 'obstacle':
                     type = obst

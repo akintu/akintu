@@ -75,3 +75,4 @@ SEED_KEY = "seed"
 MONSTER_KEY = "monsters"
 ITEM_KEY = "items"
 CHEST_KEY = "chests"    #Also used with images
+BOSS_KEY = "boss"

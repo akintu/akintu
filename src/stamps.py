@@ -3,6 +3,7 @@ from const import *
 from region import *
 
 class Stamp(object):
+    BOSS = "boss"
     DUNGEON = "dungeon"
     HOUSE = "house"
     SHOP = "shop"
@@ -28,7 +29,7 @@ class Stamp(object):
                 'b':'bones',
                 '$':CHEST_KEY,
                 'm':MONSTER_KEY,
-                'B':'building',
+                'B':BOSS_KEY,
                 'G':'garden',
                 'H':'house',
                 'R':'respec',
@@ -125,7 +126,7 @@ class Stamp(object):
         Stamp.allTypes = dict()
         Stamp.allStamps = dict()
 
-        Stamp.keys = [Stamp.DUNGEON, Stamp.HOUSE, Stamp.SHOP, Stamp.RESPEC, Stamp.GARDEN, Stamp.TREASURE, Stamp.WATER, Stamp.LANDSCAPE]
+        Stamp.keys = [Stamp.DUNGEON, Stamp.HOUSE, Stamp.SHOP, Stamp.RESPEC, Stamp.GARDEN, Stamp.TREASURE, Stamp.WATER, Stamp.LANDSCAPE, Stamp.BOSS]
         for key in Stamp.keys:
             Stamp.allStamps[key] = Stamp.parseStampFiles(os.path.join(STAMP_PATH, key))
 

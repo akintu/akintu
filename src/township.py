@@ -19,6 +19,7 @@ class Township(object):
         self.loc = (country_loc, township_loc)
         self.stampsLoaded = False
         self.dungeons = []
+        self.boss = []
         self.stamps = dict()
         self.town_loc = None
         
@@ -37,11 +38,12 @@ class Township(object):
 
         self.rect_list = []
 
-    def loadStamps(self, dungeons=5, coverage=.7, monsters=1.5, treasure=1.5):
+    def loadStamps(self, dungeons=5, coverage=.7, monsters=1.5, treasure=0.5):
         
         if not self.stampsLoaded:
             self.addTown()
-            self.addDungeons(dungeons)
+            #self.addDungeons(dungeons)
+            self.addBoss()
             self.addLandscape(coverage)
             self.addMonsters(monsters)
             self.addTreasure(treasure)
@@ -82,6 +84,28 @@ class Township(object):
             stamp = random.choice(stamp_dict[size])
             self._placeStamp(stamp, threshhold=100, pane=self.town_loc)
         self.rect_list.append(self.town_rect)
+
+    def addBoss(self, number=1):
+        random.seed(self.seed + "BOSS")
+        
+        #PICK OUR PANE TO PLACE A BOSS
+        for i in range(number):
+            stamps = dict()
+            boss_loc = (random.randrange(0, TOWNSHIP_X) + self.topLeft[0], \
+                            random.randrange(0, TOWNSHIP_Y) + self.topLeft[1])
+            #make sure it isn't in a town or an existing dungeon pane
+            while boss_loc == self.town_loc or boss_loc in self.boss:
+                boss_loc = (random.randrange(0, TOWNSHIP_X) + self.topLeft[0], \
+                                random.randrange(0, TOWNSHIP_Y) + self.topLeft[1])
+            self._placeBossStamp(boss_loc)
+
+    def _placeBossStamp(self, boss_pane):
+        self.boss.append(boss_pane)
+        #Choose a stamp from our dungeons
+        stamp_dict = Stamp.getStamps(Stamp.BOSS)
+        size = random.choice(list(stamp_dict.keys()))
+        stamp = random.choice(stamp_dict[size])
+        self._placeStamp(stamp, threshhold=100, pane=boss_pane)
 
     def addDungeons(self, number):
         random.seed(self.seed + "DUNGEON")
