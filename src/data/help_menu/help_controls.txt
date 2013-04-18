@@ -6,7 +6,6 @@ Overworld Controls
   @HELPMENUOPEN@  --> Open help menu (also works in combat)
   @BASHCHEST@  --> Bash locked chest
   @CHARSHEETOPEN@  --> Display Character Sheet
-  @SHOPOPEN@  --> Open Shop (Towns only) 
   @GETITEM@  --> Get items from chest/Pick locks on chests
   @INVENTORYOPEN@  --> Open Inventory
   @STARTRESPEC@  --> Respec character 

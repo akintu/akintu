@@ -107,7 +107,7 @@ class Keystate():
 
         b["LEVELUPADVANCE"] = (["space", "a", "return", "keypad enter"], "LEVELUP")
 
-        b["SHOPOPEN"] = ("F2", "OVERWORLD")
+        # b["SHOPOPEN"] = ("F2", "OVERWORLD")
         b["SHOPTRANSACTION"] = (["a", "return", "keypad enter"], "SHOP")
         b["SHOPCLOSE"] = (["space", "escape"], "SHOP")
 
