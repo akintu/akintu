@@ -4,6 +4,15 @@ import sys
 import onhiteffect
 from combat import Combat
 
+# internalstatus.py
+# Author: Devin Ekins -- G. Cube
+#
+# This module contains all internal status effects in Akintu.
+# Individual methods are not typically commented as they represent 
+# the functionality of individual iStatuses -- those iStatuses already have
+# documentation on their functionality as detailed in the description
+# in the dictionary containing the text of these functions.
+
 # The lifetime of a Status object:
 #   1. Status is loaded into memory from the data file on game startup.
 #       --STATE-- Common Fields are initialized but the Status is unusable.
@@ -53,8 +62,7 @@ class InternalStatus(object):
 
         # May only be known at apply time:
         self.magnitude = None # inherit magnitude from caller if 0.
-        self.duration = None # Not typically used or kept track of here.  Only for HP Buffers
-                             # thus far.
+        self.duration = None
         self.element = element
         self.staticText = InternalStatus.textDict[name].format(magnitude="x", element="{ELE}")
         self.text = InternalStatus.textDict[name]

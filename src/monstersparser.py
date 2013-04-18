@@ -5,6 +5,14 @@ import re
 import monster
 import statuseffectsparser as sep
 
+# monstersparser.py
+# Author: Devin Ekins -- G. Cube
+#
+# This module simply parses the Monster_Data.txt file in such a fashion that
+# Akintu will be able to make use of it after one execution.  It contains
+# only one method that matters to the outside, parseAll() which will 
+# load all data at startup time.
+
 class MonstersParser(object):
 
     def __init__(self):

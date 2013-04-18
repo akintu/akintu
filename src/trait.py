@@ -13,6 +13,16 @@ RANGER = ROOT_FOLDER + "traits/ranger_traits/"
 THIEF = ROOT_FOLDER + "traits/thief_traits/"
 WIZARD = ROOT_FOLDER + "traits/wizard_traits/"
 
+# trait.py
+# Author: Devin Ekins -- G. Cube
+#
+# This module contains all Traits used by players.
+# Individual methods are not typically commented as they represent 
+# the functionality of individual traits -- those traits already have
+# documentation on their functionality as detailed in the description
+# on both the wiki and the dictionary containing the parameters of these
+# functions.
+
 
 class TraitStub(object):
     def __init__(self, name):
@@ -51,14 +61,8 @@ class Trait(object):
         self.image = content['image']
         
     def advanceTier(self):
-        # if self.rank == 4:
-            # return
-        # if self.rank == 3 and self.owner.level < 7:
-            # return
-        # if self.rank == 2 and self.owner.level < 5:
-            # return
-        # if self.rank == 1 and self.owner.level < 3:
-            # return
+        '''Increase the tier (and benefits) of this trait by 1.
+        Apply benefits straight-away if static.'''
         self.rank += 1
         if self.type == "static":
             self.action(self, self.owner)

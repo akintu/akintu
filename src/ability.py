@@ -31,6 +31,17 @@ TACTICIAN_SKILLS = ROOT_FOLDER + "tactician_skills/"
 TRICKSTER_SKILLS = ROOT_FOLDER + "trickster_skills/"
 WEAPONMASTER_SKILLS = ROOT_FOLDER + "weaponmaster_skills/"
 
+# ability.py
+# Author: Devin Ekins -- G. Cube
+#
+# This module contains all Abilities used by players and monsters.
+# Individual methods are not typically commented as they represent 
+# the functionality of individual abilities -- those abilities already have
+# documentation on their functionality as detailed in the description
+# on both the wiki and the dictionary containing the parameters of these
+# functions.
+
+
 class AbilityStub(object):
     def __init__(self, name):
         self.name = name
