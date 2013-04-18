@@ -186,13 +186,6 @@ class Location(object):
         distx = dest.abs_x - self.abs_x
         disty = dest.abs_y - self.abs_y
         dist = max(abs(distx), abs(disty))
-        if dist == 0:
-            print "=========================================================================="
-            print "SELF: %s, DEST: %s" % (self, dest)
-            print "%s, %s, %s, %s" % (dest.abs_x, self.abs_x, dest.abs_y, self.abs_y)
-            print "PLEASE POST THIS AS A GIST AND GIVE IT TO KYLE, THANKS"
-            print "=========================================================================="
-            return [self]
         for x in range(dist + 1):
             locs.append(Location(self.abs_x + int(round(float(x) / dist * distx)),
                     self.abs_y + int(round(float(x) / dist * disty)), self.z))
@@ -313,10 +306,10 @@ if __name__ == "__main__":
     r = Location(q)
     s = r.move(6)
     assert s == o
-    #t = Location((0, 0), (25, 19))
-    #u = Location((0, 1), (25, 2))
-    t = Location(25, 19)
-    u = Location(25, 22)
+    t = Location((0, 0), (0, 7))
+    u = Location((-1, 0), (30, 7))
+#    t = Location(25, 19)
+#    u = Location(25, 22)
     print t, u
     print t.abs_x, t.abs_y
     print u.abs_x, u.abs_y

@@ -12,7 +12,6 @@ from treasurechest import*
 from tile import Tile
 from theorycraft import TheoryCraft
 from state import State
-from ai import AI
 from dice import *
 from stamps import *
 from fields import Fields
@@ -579,10 +578,10 @@ class CombatPane(Pane):
         loc_x -= dx
         loc_y -= dy
 
-        self.focus_location = Location((0, 0), (PANE_X/2 + dx*3, PANE_Y/2 + dy*3))
+        self.focus_location = Location(PANE_X/2 + dx*3, PANE_Y/2 + dy*3)
         fx = max(0, min(PANE_X - 1, self.focus_location.tile[0]))
         fy = max(0, min(PANE_Y - 1, self.focus_location.tile[1]))
-        self.focus_location.tile = (fx, fy)
+        self.focus_location = Location(fx, fy)
 
         i = 2
         for x in range(loc_x-4, loc_x+6):
@@ -613,7 +612,8 @@ class CombatPane(Pane):
             self.paneCharacterLevel = max(self.paneCharacterLevel, person.level)
             # print "Combat Pane Level: " + str(self.paneCharacterLevel)
             # print "Monster baseHP: " + str(person.baseHP)
-            while not self.is_passable(loc) or not self.is_within_bounds(loc, 3) or loc.tile[0] == 0:
+            #while not self.is_passable(loc) or not self.is_within_bounds(loc, 3) or loc.tile[0] == 0:
+            while not self.is_passable(loc) or not self.is_within_bounds(loc, 3):
                 #Choose a new location
                 #print str(loc) + " New Location"
                 loc = self.rand_move_within_pane(loc, [1,9], [1,5], 3)
@@ -702,5 +702,3 @@ class CombatPane(Pane):
         for i in range(PANE_X):
             for j in range(PANE_Y):
                 self.tiles[(i, j)].set_image(Sprites.get_background_tile(self.background_key, (i, j)))
-
-
