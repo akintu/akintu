@@ -526,14 +526,15 @@ class Ability(object):
         source = self.owner
         duration = -1
         Combat.addStatus(source, "Spell Sight", duration)
-        newListener = listener.Listener(self, self.owner, [], self._spellSightDisable, ['Outgoing Spell Cast Complete', 'Outgoing Ranged Attack Complete'])
+        newListener = listener.Listener(self, self.owner, [], Ability._spellSightDisable, ['Outgoing Spell Cast Complete', 'Outgoing Ranged Attack Complete'])
         source.listeners.append(newListener)
 
-    def _spellSightDisable(self, target, reverse=False, percent=None):
-        Combat.removeStatus("Spell Sight")
+    @staticmethod
+    def _spellSightDisable(dirtyHack, target, **kwargs):
+        Combat.removeStatus(target, "Spell Sight")
         toRemove = None
         for x in target.listeners:
-            if x.action == self._spellSightDisable:
+            if x.action == Ability._spellSightDisable:
                 toRemove = x
         if toRemove:
             target.listeners.remove(toRemove)

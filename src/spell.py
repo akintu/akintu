@@ -858,7 +858,7 @@ class Spell(object):
         'action' : _fright,
         'cooldown' : 1,
         'image' : TIER2 + 'fright.png',
-        'text' : 'Lowers the target\'s shadow resistance by 30% aand\n' + \
+        'text' : 'Lowers the target\'s shadow resistance by 30% and\n' + \
                 'it\'s attack power by 10% for four turns.'
         },
         'Infection':
