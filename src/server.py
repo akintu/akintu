@@ -350,7 +350,7 @@ class GameServer():
             return True
         if location.pane not in self.pane and not pid and not cPane:
             return False
-        if not cPane and pid and self.person[pid] and self.person[pid].cPane:
+        if not cPane and pid and pid in self.person and self.person[pid].cPane:
             cPane = self.person[pid].cPane
         loc = 'cLocation' if cPane else 'location'
         p = cPane if cPane else iLoc if iLoc else location.pane
