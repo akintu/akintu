@@ -1036,6 +1036,7 @@ class Game(object):
         text = "Passive Abilities (Press 'C' to return to main statistics)"
         bgcolor = "cadetblue"
         itemslist = self.pane.person[self.id].passiveAbilities
+        itemslist = [x for x in itemslist if "--IGNORE--" not in x.name]
         if not itemslist:
             self.display_character_sheet()
             return
