@@ -355,8 +355,7 @@ class PassiveAbility(object):
 
     def applyHideInPeril(self, target, reverse=False, damage=None):
         source = self.owner
-        #if amount >= source.totalHP * 0.3 and not source.inStealth(): TODO CHANGE BACK
-        if damage >= 1:
+        if damage >= source.totalHP * 0.3 and not source.inStealth():
             Combat.addStatus(source, "Shadow Walk", -1)
 
     def applyBackstabUpgrade(self, target):

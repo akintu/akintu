@@ -26,8 +26,6 @@ class CombatServer():
                  activePlayer.AP >= activePlayer.totalMovementAPCost or \
                  activePlayer.remainingMovementTiles > 0:
                 if activePlayer.team == "Players":
-                    if self.combatStates[activePlayer.cPane].isMonsterTurn:
-                        return
                     activePlayer.record.recordMovement()
                     if not (hasattr(command, 'force') and command.force):
                         if activePlayer.remainingMovementTiles == 0:

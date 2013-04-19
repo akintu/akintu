@@ -1264,8 +1264,8 @@ class Ability(object):
             duration = 2
             magnitude = 3
             Combat.addStatus(target, "Bleeding", duration, magnitude)
-            #if Dice.rollPresetChance(source, target, "Occasional"): TODO CHANGE BACK
-            Combat.addStatus(target, "Stun", 1)
+            if Dice.rollPresetChance(source, target, "Occasional"):
+                Combat.addStatus(target, "Stun", 1)
         
     def _stunningBackstabCheck(self, target):
         source = self.owner
