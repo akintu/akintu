@@ -481,7 +481,9 @@ class Spell(object):
         lower = 10
         upper = 35
         knockbackDistance = 5
-        selectMonsters = (source.team == "Players")
+        selectMonsters = True
+        if source.team == "Monsters":
+            selectMonsters = False
         newTar = Combat.getLineTargets(target.cPane, source.cLocation, target.cLocation, selectMonsters=selectMonsters, width=1, selectFirstOnly=True)[0]
         hitType = Combat.calcHit(source, newTar, "Magical")
         if hitType != "Miss" and hitType != "Fully Resisted":
@@ -495,7 +497,9 @@ class Spell(object):
         source = self.owner
         lower = 5
         upper = 33
-        selectMonsters = (source.team == "Players")
+        selectMonsters = True
+        if source.team == "Monsters":
+            selectMonsters = False
         manyTargets = Combat.getLineTargets(target.cPane, source.cLocation, target.cLocation, selectMonsters=selectMonsters, width=2)
         for t in manyTargets:
             hitType = Combat.calcHit(source, t, "Magical")

@@ -5,6 +5,13 @@ import entity
 from combat import *
 from dice import *
 
+# consumable.py
+# Author: Devin Ekins -- G. Cube
+#
+# Consumable module consists of a couple of control methods and individual
+# methods specific to their individual use.  They are not commented as the 
+# description of their function is defined in their dict.
+
 class Consumable(entity.Entity):
 
     AP_COST = 7
@@ -38,6 +45,7 @@ class Consumable(entity.Entity):
         self.color = "black" # Never changes
             
     def canUse(self, user):
+        '''Return True if the user can use this consumable.'''
         if self.type in [x[0] for x in user.cooldownList]:
             durationLeft = [x[1] for x in user.cooldownList][0]
             return (False, "Item type: " + self.type + " is on cooldown (" + str(durationLeft) + ")")
@@ -48,15 +56,12 @@ class Consumable(entity.Entity):
                         str(Consumable.AP_COST) + " needed)")
 
     def use(self, user):
-        #usable = self.canUse(user)
-        #if usable[0]:
+        '''Have the user use this consumable'''
         self.effect(self, user)
         user.inventory.removeItem(self)
         Combat.applyCooldown(user, self.type, self.cooldownLength)
         Combat.modifyResource(user, "AP", -Consumable.AP_COST)
         return "Used item: " + self.name + "."
-        #else:
-        #    return usable[1]
 
 
     def _basicHealingPotion(self, user):

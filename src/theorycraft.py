@@ -308,7 +308,7 @@ class TheoryCraft(object):
             if lower == upper:
                 levelChoice = lower
             else:
-                levelChoice = randint(lower, upper)
+                levelChoice = Dice.roll(lower, upper)
 
             if ignoreMaxLevel:
                 inLevelList = [x for x in TheoryCraft.monsters if x['minLevel'] <= levelChoice]

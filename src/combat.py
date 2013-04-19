@@ -1204,6 +1204,7 @@ class Combat(object):
         or monsters.  Returns an empty list if there are no such targets in the
         given region.'''
         people = []
+        print "GetTargetsInRegion: selectMonsters = " + `selectMonsters`
         for i in Combat.gameServer.pane[cPane].person:
             if Combat.gameServer.person[i].cLocation in R and Combat.gameServer.person[i].team == \
                     "Monsters" if selectMonsters else "Players":

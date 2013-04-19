@@ -4,7 +4,9 @@ import sys
 import random
 
 class Dice(object):
-    """A utility class used for purely chance events."""
+    """A utility class used for purely chance events.
+    Uses its own wrapper to prevent mangling the random seed from the
+    random module."""
 
     useGivenSeed = False
     oldGenerator = None

@@ -827,7 +827,6 @@ class Game(object):
                 elif e == "ANALYZETARGET":
                     self.display_target_details()
                 elif e == "DISPLAYCOMBATSTATUS":
-                    keystate.inputState = "COMBATSTATUS"
                     self.display_combat_status()
                 elif e == "CLOSECOMBATSTATUS":
                     self.screen.hide_dialog()
@@ -1262,6 +1261,7 @@ class Game(object):
             combatStatuses = combatStatuses[:47]
         text = "List of current status effects in combat."
         self.screen.show_tiling_dialog(text, combatStatuses, bgcolor='lightblue')
+        keystate.inputState = "COMBATSTATUS"
 
     def display_target_details(self):
         if not self.currentTarget or self.currentTarget not in self.pane.person:
