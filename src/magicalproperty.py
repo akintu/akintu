@@ -241,9 +241,9 @@ class MagicalProperty(object):
                 return prop
 
     @staticmethod
+    def getTotalWeight(subList):
         ''' Calculates the total weight of all defined magical properties in
         this subset list.'''
-    def getTotalWeight(subList):
         total = 0
         for prop in subList:
             total += prop[1]['weight']
@@ -259,10 +259,10 @@ class MagicalProperty(object):
             MagicalProperty.fullList.append(current)
 
     @staticmethod
+    def getFilledList(item):
         ''' Generates a sublist of properties appropriate for the equipment
         type supplied.  For instance, Armor should not increase damage, and
         weapons should not increase DR.'''
-    def getFilledList(item):
         subList = []
         if isinstance(item, equipment.Armor):
             subList.extend([prop for prop in MagicalProperty.fullList
