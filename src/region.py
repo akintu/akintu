@@ -7,6 +7,15 @@ import re
 
 class Region:
     def __init__(self, *args):
+        '''
+        Initializer accepts several different possible inputs.  They are:
+            * a Region object, which it copies
+            * a list of Location objects, which it converts to a Region one at a time
+            * a serialized Region, which it deserializes
+            * a shape creation command, as per the __call__ method, with the small difference
+                that for the first shape, only the "ADD" method is supported, so that argument is
+                completely omitted.
+        '''
         self.locations = set()
         self.history = []
         if len(args) == 1:
@@ -29,6 +38,11 @@ class Region:
         return item in self.locations
 
     def __str__(self):
+        '''
+        Returns a picture of the region using ascii characters.
+        The edges of the printed area are determined by scanning the region for the extreme locations
+            on each of the four direction boundaries.
+        '''
         if len(self.locations) == 0:
             return ""
         left = right = top = bottom = self.locations.pop()
@@ -58,6 +72,21 @@ class Region:
         return zlib.compress(cPickle.dumps(self.history), 9)
 
     def __call__(self, method, shape, *details):
+        '''
+        Creates a new shape and performs a specified set operation with the locations in that shape
+        against the locations currently in the Region.
+        Currently supported set operation methods include:
+            * ADD (Union)
+            * SUB (Difference)
+            * INT (Intersection)
+            * XOR (Exclusive Or)
+        Currently supported shapes include:
+            * SQUARE
+            * CIRCLE
+            * DIAMOND
+            * LINE
+        Details are shape specific, see their individual method documentation for details.
+        '''
         if method.upper() == "SHIFT":
             temp = set()
             for l in self.locations:
@@ -82,6 +111,8 @@ class Region:
     def __eq__(self, other):
         return all(x in other for x in self) and all (x in self for x in other)
 
+    #All set operators supported in Python are also supported for Regions, as Regions are just sets
+    #with convenience methods for populating the set.  These include |, -, &, ^
     def __add__(self, other):
         R = Region(self)
         R("ADD", "REGION", other)
@@ -110,8 +141,16 @@ class Region:
         R("SHIFT", other)
         return R
 
+    #dehydrate, rehydrate, getstate, and setstate are all used in Region serialization.
+    #Most regions are just used as a glorified iterator, but serialization is used in monster AI saving
     def dehydrate(self):
         return self.__repr__()
+
+    def rehydrate(self, history):
+        if not isinstance(history, list):
+            history = cPickle.loads(zlib.decompress(history))
+        for line in history:
+            self(line['method'], line['shape'], *line['details'])
 
     def __getstate__(self):
         return self.__repr__()
@@ -129,13 +168,14 @@ class Region:
             return None
         return list(self.locations)[key]
 
-    def rehydrate(self, history):
-        if not isinstance(history, list):
-            history = cPickle.loads(zlib.decompress(history))
-        for line in history:
-            self(line['method'], line['shape'], *line['details'])
 
     def square(self, loc1, loc2):
+        '''
+        Accepts one of two formats for construction:
+            * loc1 and loc2 are both Locations corresponding to opposite corners of a quadrilateral
+            * loc1 is the center Location of a square with a diagonal of length loc2 * 2
+                In this method, loc2 is like a radius of sorts for the square
+        '''
         locations = set()
 
         if not isinstance(loc2, Location):
@@ -149,6 +189,10 @@ class Region:
         return locations
 
     def diamond(self, loc, dist):
+        '''
+        Creates a diamond shape centered on loc, with a total distance to each edge Location of dist
+        See Location.distance() for more details on the distance calculation
+        '''
         locations = set()
 
         for x in loc.move(7, dist).line_to(loc.move(9, dist)):
@@ -158,6 +202,9 @@ class Region:
         return locations
 
     def circle(self, loc, rad):
+        '''
+        Creates a circle centered at loc with radius rad
+        '''
         locations = set()
 
         for x in loc.move(7, rad).line_to(loc.move(9, rad)):
@@ -167,6 +214,9 @@ class Region:
         return locations
 
     def line(self, loc1, loc2, width=1):
+        '''
+        Creates a line from loc1 to loc2 that is width tiles wide
+        '''
         locations = set()
 
         for x in range(-(width - 1) / 2, ((width - 1) / 2) + 1):
@@ -177,18 +227,6 @@ class Region:
                 locations |= set(Location(loc1.abs_x + x, loc1.abs_y).line_to(
                         Location(loc2.abs_x + x, loc2.abs_y)))
         return locations
-
-    def curve(self, center, radius, width=1):
-        locations = set()
-        locations |= self.circle(center, radius + width / 2)
-        locations -= self.circle(center, radius - width / 2)
-        return locations
-
-    def region(self, R):
-        if isinstance(R, Region):
-            return R.locations
-        else:
-            return Region(R).locations
 
 if __name__ == "__main__":
     R = Region()
