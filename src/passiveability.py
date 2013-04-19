@@ -1113,10 +1113,10 @@ class PassiveAbility(object):
         'level' : 4,
         'type' : 'dynamic',
         'action' : applyHideInPeril,
-        'onStringList' : ['Incmoing Damage'],
+        'onStringList' : ['Incoming Damage'],
         'offStringList' : [],
         'image' : SHADOW + 'hide-in-peril.png',
-        'text' : 'When harmed by anything dealing at least 40% of your maximum HP,\n' + \
+        'text' : 'When harmed by anything dealing at least 30% of your maximum HP,\n' + \
                 'you will immediately enter stealth if you aren\'t in stealth already.'
         },
         '--IGNORE-- Backstab Upgrade 2':
