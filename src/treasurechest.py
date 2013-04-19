@@ -9,6 +9,13 @@ import wealth
 import equipment
 import consumable
 
+# treasurechest.py
+# Author: Devin Ekins -- G. Cube
+#
+# TreasureChest is used to create all of the treasure chests in the game.
+# open, picklock and bash are the only methods the outside needs to see of
+# this module.
+
 class TreasureChest(entity.Entity):
 
     GOLD_PER_IP = 25

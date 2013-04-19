@@ -3,6 +3,12 @@
 import sys
 import entity
 
+# wealth.py
+# Author: Devin Ekins -- G. Cube
+#
+# Module has been temporarily disabled.  It is thought to be used in later
+# (post-release) versions of Akintu.
+
 class Wealth(entity.Entity):
 
     wealthList = []
