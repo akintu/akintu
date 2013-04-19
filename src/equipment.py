@@ -7,6 +7,16 @@ import magicalproperty
 import copy
 import math
 
+# equipment.py
+# Author: Devin Ekins -- G. Cube
+#
+# Equipment is a base class for Weapon, Armor, and GambleItem (which exist
+# very briefly before being converted to one of the other two).  
+#
+# This module in general is used to house the finished products of equipment.
+# However, the algorithms determining the specific details of those weapons
+# are written elsewhere.
+
 class Equipment(e.Entity):
 
     ERROR = "INITIALIZATION_FAILURE"
@@ -94,6 +104,7 @@ class Equipment(e.Entity):
 
         
     def assignIdentifier(self):
+        ''' Assign the identifier used to reconstruct this item.'''
         longName = []
         longName.append(self.name)
         for prop in self.propertyList:
@@ -102,6 +113,7 @@ class Equipment(e.Entity):
         self.identifier = ''.join(longName)
         
     def assignText(self):
+        ''' Assign the display text to be shown for this item. '''
         longText = []
         if self.prefix:
             longText.append(self.prefix + "\n")

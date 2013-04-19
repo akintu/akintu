@@ -5,6 +5,18 @@ import internalstatus
 
 ROOT = "./res/images/icons/"
     
+# status.py
+# Author: Devin Ekins -- G. Cube
+#
+# Status is used for display statuses, what the player will see when a 
+# status effect is applied.  In reality they are comprised of one or more
+# internal statuses (in the internalstatus.py module.)  The functionality
+# is thus only what is granted from its contents, but the outward view and
+# interface for interacting with statuseffects should be used here.
+#
+# The status effect reading from data file process is complicated but is
+# detailed in the internalstatus.py module.
+    
 class Status(object):
 
     DEFAULT_IMAGE = "./res/icons/cubeforce.svg"

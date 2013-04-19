@@ -512,7 +512,11 @@ class Game(object):
 
     def save_no_quit(self):
         '''
+<<<<<<< HEAD
         Send the signal to the server to save the gamestate, but don't quit just yet
+=======
+        Contains Save and Return functionality
+>>>>>>> 95210326462cc1ee61629ae349133dd3d6cfe0c1
         '''
         if hasattr(self, 'gs'):
             self.gs.save_all(shutdown=False)
@@ -942,10 +946,16 @@ class Game(object):
         self.CDF.send(Command("PERSON", "OPEN", id=self.id))
 
     def break_in(self):
+        '''
+        Used to attempt to bash a locked chest.
+        '''
         self.CDF.send(Command("PERSON", "BASHCHEST", id=self.id))
 
     def request_levelup(self, debug=False):
-        # Remove EXP code left for testing, TODO
+        '''
+        Used to start the levelup process; includes a shortcut for debugging
+        purposes.
+        '''
         player = self.pane.person[self.id]
         if player.experience >= player.getExpForNextLevel() and player.level < LEVEL_MAX:
             player.level += 1
@@ -960,19 +970,31 @@ class Game(object):
             pass
 
     def request_respec(self):
+        '''
+        Begins the respecialization process.
+        '''
         action = Command("RESPEC", "REQUESTRESPEC", id=self.id)
         self.CDF.send(action)
 
     def request_shop(self):
+        '''
+        Asks the server for a shop to open.
+        '''
         action = Command("SHOP", "REQUESTSHOP", id=self.id)
         self.CDF.send(action)
 
     def display_save_menu(self):
+        '''
+        Display the top (overworld) menu.
+        '''
         menuItems = ['Save and Return', 'Save and Quit', 'Return without Saving', 'In-Game Help']
         self.screen.show_menu_dialog(menuItems)
         keystate.inputState = "SAVEMENU"
 
     def open_inventory(self):
+        '''
+        Opens the character's inventory.
+        '''
         keystate.inputState = "INVENTORY"
         player = self.pane.person[self.id]
         isEquipment = True
@@ -991,6 +1013,10 @@ class Game(object):
         self.screen.show_item_dialog(text, inv, eq, isEquipment, bgcolor='tan', capacity=capacity, gold=gold)
 
     def open_consumables(self):
+        '''
+        Opens a subset of the character's inventory while in combat so
+        he or she can select and use consumable items.
+        '''
         keystate.inputState = "CONSUMABLE"
         player = self.pane.person[self.id]
         cons = player.inventory.allConsumables
@@ -1002,12 +1028,18 @@ class Game(object):
             keystate.inputState = "COMBAT" if self.combat else "OVERWORLD"
 
     def choose_ability(self):
+        '''
+        Opens the ability selection screen in combat.
+        '''
         text = "Select an Ability"
         bgcolor = "cadetblue"
         itemslist = self.pane.person[self.id].abilities
         self.screen.show_tiling_dialog(text, itemslist, bgcolor=bgcolor)
 
     def choose_spell(self):
+        '''
+        Opens the spell selection screen in combat.
+        '''
         text = "Select a Spell"
         bgcolor = "lightblue"
         itemslist = self.pane.person[self.id].spellList
@@ -1065,6 +1097,9 @@ class Game(object):
                 self.cycle_targets()
 
     def display_character_sheet(self):
+        '''
+        Displays the client's view of the character sheet.
+        '''
         player = self.pane.person[self.id]
         self.screen.show_character_dialog(player, abilitykey=keystate.get_key("CHARSHEETABILITIES"),
                 spellkey=keystate.get_key("CHARSHEETSPELLS"),
@@ -1072,12 +1107,20 @@ class Game(object):
                 traitkey=keystate.get_key("CHARSHEETTRAITS"))
 
     def display_character_abilities(self):
+        '''
+        Within the character sheet, display the active abilities this
+        character knows.
+        '''
         text = "Active Abilities (Press 'C' to return to main statistics)"
         bgcolor = "cadetblue"
         itemslist = self.pane.person[self.id].abilities
         self.screen.show_tiling_dialog(text, itemslist, bgcolor=bgcolor)
 
     def display_character_passives(self):
+        '''
+        Within the character sheet, display the passive abilities this
+        character knows.
+        '''
         text = "Passive Abilities (Press 'C' to return to main statistics)"
         bgcolor = "cadetblue"
         itemslist = self.pane.person[self.id].passiveAbilities
@@ -1088,6 +1131,10 @@ class Game(object):
         self.screen.show_tiling_dialog(text, itemslist, bgcolor=bgcolor)
 
     def display_character_spells(self):
+        '''
+        Within the character sheet, display the spells this
+        character knows.
+        '''
         if self.pane.person[self.id].growthType == "Non-Caster":
             self.display_character_sheet()
             return
@@ -1097,6 +1144,10 @@ class Game(object):
         self.screen.show_tiling_dialog(text, itemslist, bgcolor=bgcolor)
 
     def display_character_traits(self):
+        '''
+        Within the character sheet, display the traits this
+        character has learned.
+        '''
         if self.pane.person[self.id].level == 1:
             self.display_character_sheet()
             return
@@ -1106,6 +1157,9 @@ class Game(object):
         self.screen.show_tiling_dialog(text, itemslist, bgcolor=bgcolor)
 
     def force_end_turn(self):
+        '''
+        Send a command to the server to end this players turn (early?)
+        '''
         ap = self.pane.person[self.id].AP
         movesLeft = self.pane.person[self.id].remainingMovementTiles
         if ap > 0 or movesLeft > 0:
@@ -1113,6 +1167,9 @@ class Game(object):
             self.CDF.send(action)
 
     def attempt_attack(self):
+        '''
+        Ask the server to make this player use an attack (ability/spell).
+        '''
         if not self.currentTarget:
             print "No target selected."
             return
@@ -1132,6 +1189,9 @@ class Game(object):
                     if not anarchistTrap else tempTarget, abilityName=self.currentAbility.name))
 
     def use_item(self):
+        '''
+        Actually use a selected item.
+        '''
         if not self.currentItem or \
           self.currentItem not in self.pane.person[self.id].inventory.allConsumables:
             self.screen.show_text("No item selected", color='white')
@@ -1140,6 +1200,9 @@ class Game(object):
         self.currentItem = None
 
     def switch_gear(self):
+        '''
+        Swap gear between main and alternate sets of wepaons/shield
+        '''
         player = self.pane.person[self.id]
         if not player.equippedItems.alternateWeapon:
             print "DEBUG: No weapon found"
@@ -1148,7 +1211,9 @@ class Game(object):
             self.CDF.send(Command("ABILITY", "SWITCH_GEAR", id=self.id))
 
     def cycle_targets(self, reverse=False):
-        # Cycles through the current persons in the current combat pane.
+        '''
+        Cycles through the current persons in the current combat pane.
+        '''
         if not self.combat or not self.pane.person:
             return
 
@@ -1289,11 +1354,18 @@ class Game(object):
         self.screen.update()
 
     def select_self(self):
+        '''
+        Quickly select yourself in combat.
+        '''
         if not self.combat or self.id < 0:
             return
         self.currentTarget = self.id
 
     def display_combat_status(self):
+        '''
+        Display all status effects currently in play in combat.
+        If there are no status effects currently in play, do nothing.
+        '''
         class Anon(object):
             def __init__(x, a, b, c):
                 x.image = a
@@ -1316,6 +1388,10 @@ class Game(object):
         keystate.inputState = "COMBATSTATUS"
 
     def display_target_details(self):
+        '''
+        Print a message to the in game text box containing details on the
+        strengths and weaknesses of the current target.
+        '''
         if not self.currentTarget or self.currentTarget not in self.pane.person:
             return
         target = self.pane.person[self.currentTarget]

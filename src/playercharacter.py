@@ -15,6 +15,20 @@ import math
 import consumable
 import playercombatrecord
 
+# playercharacter.py
+# Author: Devin Ekins -- G. Cube
+#
+# playercharacter is used to house the details of a Person specific to only
+# player's characters and not monsters.  A few utility methods specific to
+# manipulating inventories (via other modules) and performing some querying
+# operations are also here.
+#
+# The pattern used in these modules is to have every access to a derived attribute
+# ask the parent attribute for its current state, which in turn computes itself
+# from its various components.  This makes keeping the derived attributes in
+# synch with their parent attributes automatic.
+#
+
 class PlayerCharacter(p.Person):
 
     expRequiredForLevel = {1 : 30, 2 : 150, 3 : 420, 4 : 820, 5 : 1570}

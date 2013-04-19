@@ -8,6 +8,16 @@ from const import *
 import entity as e
 import broadcast
 
+# trap.py
+# Author: Devin Ekins -- G. Cube
+#
+# Trap is a child of Entity that represents traps placed in combat, both
+# friendly, and hostile.  The module contains a small interface consisting
+# of a couple of methods through which all outer interactions should be 
+# performed.  It also contains a dict with all of the traps in game, according
+# to, and documented by, the wiki of official game rules.
+#
+
 class Trap(e.Entity):
 
     totalWeight = 0

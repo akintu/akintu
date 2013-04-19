@@ -3,6 +3,15 @@
 import sys
 import equipment
 
+# equippedItems.py
+# Author: Devin Ekins -- G. Cube
+#
+# equippeditems is used both to keep track of, and control changes to, the
+# armor and weapons a character is currently using.  Its helper methods
+# use sadly complex logic to determine where a piece of gear should be 
+# equipped and if anything needs to be taken off (replaced) as a consequence
+# but the interface it presents to other modules is rather clean and robust.
+
 class EquippedItems(object):
     def __init__(self, startingGearDict):
         self._allGear = {'Chest' : None,
@@ -20,6 +29,8 @@ class EquippedItems(object):
         
     @property
     def allGear(self):
+        ''' A view of all gear in both the main set and the alternate weapon
+            set. '''
         list = [x for x in self._allGear.values() if x]
         list.extend([x for x in self._alternateSet.values() if x])
         return list
@@ -279,6 +290,7 @@ class EquippedItems(object):
 
     @property
     def totalArmorGrade(self):
+        ''' The integer representing how much armor a player is using'''
         ag = 0
         if self._allGear['Head']:
             ag += self._allGear['Head'].gradePoints
@@ -294,6 +306,7 @@ class EquippedItems(object):
 
     @property
     def armorLevel(self):
+        '''The text description of the armorGrade'''
         grade = self.totalArmorGrade
         if grade == 0:
             return "Robes"
@@ -306,6 +319,7 @@ class EquippedItems(object):
 
     @property
     def equippedWeight(self):
+        ''' The total weight of all equipped gear.'''
         totalWeight = 0
         if self._allGear['Head']:
             totalWeight += int(self._allGear['Head'].weight)

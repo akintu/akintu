@@ -4,6 +4,14 @@ import sys
 from dice import *
 from combat import *
 
+# onhiteffect.py
+# Author: Devin Ekins -- G. Cube
+#
+# onhiteffect is a place to store methods that are a part of status effects
+# but only get applied when a weapon hits its target.  Individual methods
+# are only meant to be executed after being bound to a variable; only the
+# apply() call should ever be used by outside modules.
+
 class OnHitEffect(object):
     def __init__(self, count, function, elementalDamageType=None):
         self.count = count

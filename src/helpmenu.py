@@ -10,6 +10,13 @@ HELP_COLOR = 'lightblue'
 HELP_MAX_LINES = 70
 ICONS_PER_PAGE = 48
 
+# helpmenu.py
+# Author: Devin Ekins -- G. Cube
+# 
+# This module contains the hierarchy of help pages and logic to navigate
+# through them.  The actual help pages are data files.  This module also
+# processes keybindings dynamically when appropriate.
+
 def navigateUpPage(title):
     '''Returns the dictionary of the page that is 
     "Up one level" from the current page.  This page

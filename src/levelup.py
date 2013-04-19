@@ -7,6 +7,17 @@ import passiveability
 import trait
 import spell
 
+# levelup.py
+# Author: Devin Ekins -- G. Cube
+#
+# levelup contains a Levelup object which houses temporary data needed for
+# the leveling up process.  It is designed to present a simple, clean interface
+# to other modules with only one method necessary, next().  It is built to
+# minimize the chance of character data corruption/loss in the event that 
+# the levelup is interrupted, such as via power loss to the host computer.
+# The levelup process can be seen as a "transaction" that only takes effect
+# after all choices have been made, and no sooner.
+
 
 class Levelup(object):
     def __init__(self, player, screen):
@@ -25,6 +36,10 @@ class Levelup(object):
         self.spellOptions = []
 
     def next(self):
+        ''' Method is called when the next (or first) phase of a levelup needs
+        to be processed/displayed.  It will advance to the appropriate phase
+        of this levelup process and prepare its data for the final character
+        modifications. '''
         if not self.phase:
             self._determinePhaseList()
             self.phase = self.phaseList[0]
@@ -130,6 +145,7 @@ class Levelup(object):
         self.phaseList.append("SUMMARY")
 
     def reset(self):
+        ''' Method reserved, but currently unused.'''
         self.phase = None
         self.phaseList = []
         self.skill = None

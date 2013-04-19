@@ -3,6 +3,19 @@
 import sys
 import broadcast
 
+# listener.py
+# Author: Devin Ekins -- G. Cube
+#
+# listener is used to respond to Broadcast objects "shouted" in combat.
+# if a player has a listener that is set up to care about a particular kind
+# of broadcast carrying a message that matches its onStringList or its 
+# offStringList, it will respond with the appropriate activity.
+#
+# onStringLists trigger the initial events, while the offStringList cleans
+# up those events.  Some listeners do not have one or the other due to more
+# complex interactions that only require one of them to be handled here.
+# No listener lacks both kinds of lists, as that would render it inert.
+
 class Listener(object):
     def __init__(self, callObject, host, onStringList, action, offStringList=None):
         self.onStringList = onStringList

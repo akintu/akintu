@@ -8,6 +8,22 @@ from dice import *
 from combat import *
 import collections
 
+# person.py
+# Author: Devin Ekins -- G. Cube
+#
+# person is used to house a lot of bookkeeping on Monsters and PlayerCharacters.
+# Person is the parent object for those classes.  Person contains a lot of
+# game rules ingrained in its methods and properties.  The many attributes
+# of PlayerCharacters and Monsters that are shared are housed here.  
+#
+# The pattern used in these modules is to have every access to a derived attribute
+# ask the parent attribute for its current state, which in turn computes itself
+# from its various components.  This makes keeping the derived attributes in
+# synch with their parent attributes automatic.
+#
+# A number of Person utility methods used primarily to query information about
+# the Person are also available.
+
 class IncompleteDataInitialization(Exception):
     def __init__(self, value):
         self.value = value
@@ -999,8 +1015,6 @@ class Person(en.Entity):
         float -- The total Force multiplier used with Might to determine used might.
         """
         return (float(self._statusForce)/100 + float(self._equipmentForce) / 100)
-
-    # TODO: Verify that force is not being treated as a float...
 
     @property
     def equipmentForce(self):
@@ -2277,16 +2291,12 @@ class Person(en.Entity):
 
     @property
     def directionFacing(self):
-        """The direction this Person is facing."""
+        """Deprecated: Do not use"""
         return self._directionFacing
 
     @directionFacing.setter
     def directionFacing(self, direction):
-        """Possible values:
-             "UP"
-             "DOWN"
-             "LEFT"
-             "RIGHT" """
+        """Deprecated: Do not use"""
         if not direction:
             return
         direction = direction.upper()
@@ -2324,6 +2334,7 @@ class Person(en.Entity):
 
     @property
     def owner(self):
+        '''Unused.  Will be handy for the unimplemented Sorcerer class'''
         return self._owner
 
     @owner.setter
@@ -2566,18 +2577,6 @@ class Person(en.Entity):
         else:
             return statusObject.stacks
 
-    def canReach(self, target, tilesAllowed):
-        """Returns True if it is possible to walk from self's current location
-        to the target's location within the allowed number of tiles.
-        Inputs:
-          self
-          target = Location of destination
-          tilesAllowed = non-negative integer of how many tiles can be used
-                         to reach the target location.
-        Outputs:
-          True or False"""
-        pass #TODO: Requires path-finding
-
     def inStealth(self, clientView=False):
         """Returns True if this Person has any form of stealth other than
         invisibility.
@@ -2635,15 +2634,6 @@ class Person(en.Entity):
         Outputs:
           True or False"""
         return self.characterClass == className
-
-    def hasAdjacentFreeSpace(self):
-        """Returns True if this person has at least one connecting
-        tile (at its location) that is not occupied.
-        Inputs:
-          self
-        Outputs:
-          True or False"""
-        pass
 
     def hasWeaponEnchant(self):
         """Returns True if any wepaon enchantment cast by a spellsword is
@@ -2898,6 +2888,5 @@ class Person(en.Entity):
             return True
         else:
             return False
-        # Include Noise later? TODO (Out of combat considerations.)
 
-    # Non theorycrafted methods go here:
+            

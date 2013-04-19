@@ -22,6 +22,19 @@ from random import randint, choice
 from dice import *
 from const import *
 
+# theorycraft.py
+# Author: Devin Ekins -- G. Cube
+#
+# TheoryCraft is the storage place for all data read from the parsers/data files.
+# It contains the interfaces for accessing this game data from other modules.
+# As such, it needs to be able to interpret representation strings (dehydrated strings)
+# from the network and turn them into the actual objects they represent.  This can
+# be a complicated process.  Altering methods in TheoryCraft will typically invalidate
+# old saved characters and possibly game worlds.
+#
+# Theorycraft should have its loadAll() method called before any other interactions with
+# it are performed!  
+
 class TheoryCraft(object):
 
     GROUP_GP = 10 # TODO: Move to const.py
@@ -36,6 +49,8 @@ class TheoryCraft(object):
 
     @staticmethod
     def loadAll():
+        '''This method calls all parsers and must be called before any other
+            data or methods are accessed in this module!'''
         if TheoryCraft.hasLoaded:
             print "Warning: The parsers have already loaded their data."
 

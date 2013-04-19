@@ -12,6 +12,24 @@ from dice import *
 from const import *
 from combat import *
 
+# monster.py
+# Author: Devin Ekins -- G. Cube
+#
+# This module contains the basic Monster object used for all "Monsters", or
+# hostile Person objects, in Akintu.  These monsters are populated with
+# properties according to the Monster_Data.txt data file which is parsed
+# elsewhere.  
+#
+# This module also controls a large portion of the combat AI for the monsters.
+# As such, it is more tightly coupled with the combatserver.py module than I 
+# would like.  This is evidenced by the globalServer variable which caches a
+# reference to the game's server.
+#
+# Some expiramentation with a particular unadvised but functional pattern is
+# used here to assign data values from a passed in kwargs dict.  If this pattern
+# is ever revoked, the compensatory code to replace that pattern has been
+# included but is presently commented out.
+
 class Monster(person.Person):
 
     ERROR = "INITIALIZATION_FAILURE"
@@ -81,6 +99,8 @@ class Monster(person.Person):
         self.baseMagicResist = Monster.setFrom(argDict, 'magicResist')
         
         self.__dict__.update(argDict)
+        # ~~~ Expiramental python pattern ahead! You've been warned! ~~~
+        #
         # self.levelupArmorPenetration = Monster.setFrom(argDict, 'levelupArmorPenetration')
         # self.levelupCunning = Monster.setFrom(argDict, 'levelupCunning')
         # self.levelupDexterity = Monster.setFrom(argDict, 'levelupDexterity')
