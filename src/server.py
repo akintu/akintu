@@ -40,13 +40,7 @@ class GameServer():
 
             ###### CreatePerson ######
             if command.type == "PERSON" and (command.action == "CREATE" or command.action == "LOAD"):
-                _location_key = command.location
-                if hasattr(command, "portal"):
-                    self.load_pane(_location_key)
-                    #print "Called self.load_pane with portal information"
-                else:
-                    _location_key = _location_key.pane
-                    self.load_pane(_location_key)
+                self.load_pane(command.location.pane)
                 if command.action == "LOAD":
                     person = TheoryCraft.rehydratePlayer(command.details)
                 elif command.action == "CREATE":
