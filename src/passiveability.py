@@ -353,10 +353,10 @@ class PassiveAbility(object):
             if source.usingWeapon("Sling"):
                 source.statusRangedAccuracy -= 5
 
-    def applyHideInPeril(self, target, reverse=False, amount=None):
+    def applyHideInPeril(self, target, reverse=False, damage=None):
         source = self.owner
         #if amount >= source.totalHP * 0.3 and not source.inStealth(): TODO CHANGE BACK
-        if amount >= 1:
+        if damage >= 1:
             Combat.addStatus(source, "Shadow Walk", -1)
 
     def applyBackstabUpgrade(self, target):
