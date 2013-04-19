@@ -77,7 +77,10 @@ class Dice(object):
         if minimum == maximum:
             return minimum
         Dice.stashGen()
-        rValue = random.randint(minimum, maximum)
+        try:
+            rValue = random.randint(minimum, maximum)
+        except:
+            rValue = minimum
         Dice.popGen()
         return rValue
 
