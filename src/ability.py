@@ -1926,22 +1926,23 @@ class Ability(object):
         'image' : THIEF_SKILLS + "agile-position.png",
         'text' : 'Defensive move that ends turn but grants +12 to dodge.'
         },
-        'Hit and Run':
-        {
-        'level' : 2,
-        'class' : 'Thief',
-        'HPCost' : 0,
-        'APCost' : 5,
-        'range' : 1,
-        'target' : 'hostile',
-        'action' : _hitAndRun,
-        'cooldown' : 2,
-        'checkFunction' : None,
-        'breakStealth' : 100,
-        'image' : THIEF_SKILLS + 'hit-and-run.png',
-        'text' : 'Basic melee attack followed by moving two spaces away from\n' + \
-                'your target, if possible.'
-        },
+        # Deprecated...
+        # 'Hit and Run':
+        # {
+        # 'level' : 2,
+        # 'class' : 'Thief',
+        # 'HPCost' : 0,
+        # 'APCost' : 5,
+        # 'range' : 1,
+        # 'target' : 'hostile',
+        # 'action' : _hitAndRun,
+        # 'cooldown' : 2,
+        # 'checkFunction' : None,
+        # 'breakStealth' : 100,
+        # 'image' : THIEF_SKILLS + 'hit-and-run.png',
+        # 'text' : 'Basic melee attack followed by moving two spaces away from\n' + \
+                # 'your target, if possible.'
+        # },
         'Feint':
         {
         'level' : 4,

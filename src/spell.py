@@ -490,7 +490,8 @@ class Spell(object):
             dam = Combat.calcDamage(source, newTar, lower, upper, "Cold", hitValue=hitType, scalesWith="Spellpower", scaleFactor=0.014)
             Combat.lowerHP(newTar, dam)
             if hitType == "Normal Hit" or hitType == "Critical Hit":
-                Combat.knockback(newTar, source.cLocation, knockbackDistance)
+                if newTar.team == "Monsters":
+                    Combat.knockback(newTar, source.cLocation, knockbackDistance)
         return hitType
 
     def _lightningBolt(self, target):
