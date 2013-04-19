@@ -602,7 +602,7 @@ class PassiveAbility(object):
         hit them with their basic attack 2 tiles. '''
         source = self.owner
         distance = 2
-        Combat.knockback(other, self.cLocation, distance)
+        #Combat.knockback(other, self.cLocation, distance)
 
     def applyMonsterAgility(self, target):
         ''' Monsters with 'Monster Agility' have +10-30 Dodge (based on level). '''
