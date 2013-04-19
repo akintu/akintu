@@ -1203,22 +1203,14 @@ class Combat(object):
         '''Method returns a list of all targets in the region, either all players
         or monsters.  Returns an empty list if there are no such targets in the
         given region.'''
-        people = []
-        print "GetTargetsInRegion: selectMonsters = " + `selectMonsters`
-        for i in Combat.gameServer.pane[cPane].person:
-            if selectMonsters:
-                if Combat.gameServer.person[i].cLocation in R and Combat.gameServer.person[i].team == \
-                    "Monsters":
-                    people.append(Combat.gameServer.person[i])
-            else:
-                if Combat.gameServer.person[i].cLocation in R and Combat.gameServer.person[i].team == \
-                    "Players":
-                    people.append(Combat.gameServer.person[i])
-        return people
+        return [Combat.gameServer.person[i] for i in Combat.gameServer.pane[cPane].person \
+                if Combat.gameServer.person[i].cLocation in R and \
+                Combat.gameServer.person[i].team == ("Monsters" if selectMonsters else "Players")]
 
     @staticmethod
     def getRandomAdjacentLocation(cPane, location):
         '''Method grabs a location adjacent to the given location randomly.
         If no location is passable in this region, it returns None.'''
         R = Region("CIRCLE", location, 1)
-        return random.choice([x for x in R if x.pane == (0, 0) and Combat.gameServer.tile_is_open(x, cPane=cPane)])
+        return random.choice([x for x in R if x.pane == (0, 0) and \
+                Combat.gameServer.tile_is_open(x, cPane=cPane)])

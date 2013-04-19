@@ -488,7 +488,7 @@ class CombatServer():
                     self.combatStates[combatPane].monsterStatusDict[mon] = "TURN_START"
                 else:
                     self.combatStates[combatPane].monsterStatusDict[mon] = "TURN_OVER"
-                    
+
         monsters = [x for x in initMonsters if
                     self.combatStates[combatPane].monsterStatusDict[x] == "READY" or
                     self.combatStates[combatPane].monsterStatusDict[x] == "TURN_START"]
@@ -628,13 +628,15 @@ class CombatServer():
         self.server.unload_panes()
 
     def monster_victory(self, combatPane):
-        p = [p for i, p in self.server.person.iteritems() if p.location == combatPane][0]
-        if self.combatStates[combatPane].turnTimer and self.combatStates[combatPane].turnTimer.active():
-            self.combatStates[combatPane].turnTimer.cancel()
+        p = [p for i, p in self.server.person.iteritems() if p.location == combatPane]
+        if len(p) > 0:
+            p = p[0]
+            if self.combatStates[combatPane].turnTimer and self.combatStates[combatPane].turnTimer.active():
+                self.combatStates[combatPane].turnTimer.cancel()
 
-        p.ai.resume()
-        p.cPane = None
-        p.cLocation = None
+            p.ai.resume()
+            p.cPane = None
+            p.cLocation = None
 
     def death(self, player):
         combatPane = player.cPane

@@ -37,6 +37,9 @@ class GameServer():
             if hasattr(command, 'id') and (command.id in self.person and self.person[command.id].cPane):
                 self.CS.handle(port, command)
                 continue
+            if hasattr(command, 'id') and not (command.type == "PERSON" and command.action == "CREATE") \
+                    and command.id not in self.person:
+                continue
 
             ###### CreatePerson ######
             if command.type == "PERSON" and (command.action == "CREATE" or command.action == "LOAD"):
