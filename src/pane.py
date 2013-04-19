@@ -226,12 +226,12 @@ class Pane(object):
                 image = Sprites.get_path(entity_key, self.seed, self.location, tile)
                 passable = True
             elif entity_key == 'house':
-                house = HouseOverworld(Location(self.location, tile))
+                house = ShopOverworld(Location(self.location, tile))
                 self.add_entities(house.entities)
                 continue
             elif entity_key == 'shop':
-                house = HouseOverworld(Location(self.location, tile))
-                self.add_entities(house.entities)
+                shop = ShopOverworld(Location(self.location, tile))
+                self.add_entities(shop.entities)
                 continue
             elif entity_key == 'dungeon':
                 dungeon = DungeonOverworld(Location(self.location, tile))
