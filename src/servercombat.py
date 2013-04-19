@@ -1,3 +1,8 @@
+'''
+This class is an extension of server.py.  It is broken into two to keep the combat specific commands
+separate from their overworld cousins.
+'''
+
 from network import *
 import broadcast
 from combat import *
@@ -16,6 +21,9 @@ class CombatServer():
         self.combatStates = {}
 
     def handle(self, port, command):
+        '''
+        Validate incoming commands, update game state, and broadcast to clients that need to act on them
+        '''
         ###### MovePerson ######
         if command.type == "PERSON" and command.action == "MOVE":
             activePlayer = self.server.person[command.id]
@@ -415,7 +423,7 @@ class CombatServer():
                 self.combatStates[combatPane].turnTimer.cancel()
         if timeExpired or not APRemains:
             self.end_turn(combatPane)
-        
+
 
     def end_turn(self, combatPane):
         ''' Actually end the turn of all players. '''
@@ -427,7 +435,7 @@ class CombatServer():
             self.monster_phase(combatPane, initial=True)
 
     def prepare_player_turn(self, combatPane):
-        ''' Prepare teh players' turns for starting.  Calls upkeep before starting the players' turns.'''
+        ''' Prepare the players' turns for starting.  Calls upkeep before starting the players' turns.'''
         for character in [self.server.person[x] for x in self.server.pane[combatPane].person]:
             self.upkeep(character)
         self.update_dead_people(combatPane)
@@ -478,7 +486,7 @@ class CombatServer():
         their state in the monsterStatusDict dictionary.
             Will initialize monsters if initial = True for the start of their turns.
             Will quickly return if no monsters are available to move.
-            Will start the player turn process if all monsters are incapable of 
+            Will start the player turn process if all monsters are incapable of
             further moves.'''
         #start = time.clock()
 
@@ -641,6 +649,10 @@ class CombatServer():
         self.server.unload_panes()
 
     def monster_victory(self, combatPane):
+        '''
+        Called when all players have died, and the monsters have won
+        Starts the monsters moving around in the overworld again, and cleans up combat
+        '''
         p = [p for i, p in self.server.person.iteritems() if p.location == combatPane]
         if len(p) > 0:
             p = p[0]
@@ -652,6 +664,10 @@ class CombatServer():
             p.cLocation = None
 
     def death(self, player):
+        '''
+        Cleans up combat for a player who has died, and restarts them in town
+        '''
+
         combatPane = player.cPane
         chars = [self.server.person[x] for x in self.server.pane[combatPane].person]
         players = [x for x in chars if x.team == "Players"]
@@ -685,6 +701,10 @@ class CombatServer():
             self.monster_victory(combatPane)
 
     def hardcoreDeath(self, player):
+        '''
+        Cleans up combat for a player, deletes their save file, and recreates their character at level 1
+        '''
+
         Combat.sendCombatMessage("You've Died Forever... HARDCORE!!", player, color='darkred', toAll=False)
 
         #Tell client to remove player's save file
@@ -716,6 +736,9 @@ class CombatServer():
 
 
 class CombatState(object):
+    '''
+    This is a container class for storing the Deferred objects generated when creating Delayed Calls
+    '''
     def __init__(self):
         self.turnTimer = None
         self.deadMonsterSet = set([])
