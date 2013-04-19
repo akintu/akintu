@@ -157,7 +157,7 @@ class Pane(object):
             items:  A list of item tuples in the following format:
                     ("Name", "Attributes", "tile_location", ...)
 
-                    TODO: STILL UNIMPLEMENTED, need info on creating items from name...
+                    UNIMPLEMENTED, No items directly on the overworld
         '''
 
         print "load_items() currently does nothing :)"
@@ -210,13 +210,14 @@ class Pane(object):
         if not tile:
             tile = (random.randrange(1, PANE_X-1), random.randrange(1, PANE_Y-1))
         self.tiles[tile].add_chest(TreasureChest(chest_type, level, tile))
-        self.load_images()
+        self.load_images(load_all=False)
 
-    def load_images(self):
+    def load_images(self, load_all=True):
         self.images = Sprites.get_images_dict()
-        for i in range(PANE_X):
-            for j in range(PANE_Y):
-                self.tiles[(i, j)].set_image(Sprites.get_background_tile(self.background_key, (i, j)))
+        if load_all:
+            for i in range(PANE_X):
+                for j in range(PANE_Y):
+                    self.tiles[(i, j)].set_image(Sprites.get_background_tile(self.background_key, (i, j)))
         for tile, entity_key in self.objects.iteritems():
             passable = False
             image = None
@@ -249,30 +250,6 @@ class Pane(object):
 
     def is_tile_passable(self, location, check_entity_keys=False):
         return self.tiles[location.tile].is_passable(check_entity_keys)
-
-    def get_edge_tiles(self, edge):
-        passable_list = dict()
-        #Get the corner that edge represents
-        if edge in Pane.PaneCorners:
-            tile_loc = Pane.PaneCorners[edge]
-            opposite = Location(None, tile_loc).get_opposite_tile(edge).tile
-            if not self.is_tile_passable(Location(self.location, tile_loc), True):
-                passable_list[opposite] = self.objects[tile_loc]
-        #Get the edge
-        if edge in Pane.PaneEdges:
-            edge_range = Pane.PaneEdges[edge]
-            for x in range(edge_range[0][0], edge_range[1][0]+1):
-                for y in range(edge_range[0][1], edge_range[1][1]+1):
-                    opposite = Location(None, (x, y)).get_opposite_tile(edge).tile
-                    if not self.is_tile_passable(Location(self.location, (x, y)), True):
-                        if (x, y) in self.objects:
-                            passable_list[opposite] = self.objects[(x, y)]
-        return passable_list
-
-    def merge_tiles(self, tiles):
-        if tiles:
-            for tile, entity_key in tiles.iteritems():
-                self.add_obstacle(tile, 1, entity_key)
 
     def add_obstacle(self, tile, percentage, entity_type=None):
         if not tile in self.tiles:
@@ -594,6 +571,7 @@ class CombatPane(Pane):
             i+=3
 
         self.add_zoomed_features()
+
         self.load_background_images()
         if monster:
             monsters = TheoryCraft.generateMonsterGroup(monster, numberOfPlayers=num_players)
@@ -611,26 +589,23 @@ class CombatPane(Pane):
             while not self.is_passable(loc) or not self.is_within_bounds(loc, 3):
                 #Choose a new location
                 loc = self.rand_move_within_pane(loc, [1,9], [1,5], 3)
+            print "zoomed feature at " + str(loc.tile)
             coverage -= 1
             self.add_obstacle(loc.tile, RAND_ENTITIES)
             self.traps_region("SUB", "SQUARE", loc, loc)
+            loc = self.rand_move_within_pane(loc, [1,9], [1,5], 3)
 
     def place_monsters(self, monsters, start_location):
-        loc = temp = start_location
+        loc = start_location
         #print monsters
         for person in monsters:
             self.paneCharacterLevel = max(self.paneCharacterLevel, person.level)
-            # print "Combat Pane Level: " + str(self.paneCharacterLevel)
-            # print "Monster baseHP: " + str(person.baseHP)
-            #while not self.is_passable(loc) or not self.is_within_bounds(loc, 3) or loc.tile[0] == 0:
+            #Try to place monsters "near" eachother, but prevent placement off pane
             while not self.is_passable(loc) or not self.is_within_bounds(loc, 3):
                 #Choose a new location
-                #print str(loc) + " New Location"
                 loc = self.rand_move_within_pane(loc, [1,9], [1,5], 3)
-            #print str(loc) + " Passable Location"
             person.location = loc
             self.person[id(person)] = person
-            temp = loc
             loc = self.rand_move_within_pane(loc, [1,9], [2,5], 3)
 
     def place_traps(self, number):
@@ -649,7 +624,6 @@ class CombatPane(Pane):
             hostileTrap = trap.Trap.getRandomTrap(self.paneCharacterLevel, location)
             self.addTrap(location, hostileTrap)
 
-
             #Ensure we don't place a trap in the same spot
             self.traps_region -= Region("SQUARE", location, location)
 
@@ -657,16 +631,13 @@ class CombatPane(Pane):
         random.seed()
         while True:
             dir = random.randint(dir_range[0], dir_range[1])
-            if dir == 5:
-                #print "Cant move in direction 5"
+            if dir == 5:    #Can't move in direction 5
                 continue
             dist = random.randint(dist_range[0], dist_range[1])
             new_loc = location.move(dir, dist)
-            if new_loc.pane != location.pane:
-                #print "Off the pane"
+            if new_loc.pane != location.pane:   #Can't move off the pane
                 continue
             return new_loc
-
 
     def is_passable(self, location):
         for key, person in self.person.iteritems():

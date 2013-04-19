@@ -1206,9 +1206,14 @@ class Combat(object):
         people = []
         print "GetTargetsInRegion: selectMonsters = " + `selectMonsters`
         for i in Combat.gameServer.pane[cPane].person:
-            if Combat.gameServer.person[i].cLocation in R and Combat.gameServer.person[i].team == \
-                    "Monsters" if selectMonsters else "Players":
-                people.append(Combat.gameServer.person[i])
+            if selectMonsters:
+                if Combat.gameServer.person[i].cLocation in R and Combat.gameServer.person[i].team == \
+                    "Monsters":
+                    people.append(Combat.gameServer.person[i])
+            else:
+                if Combat.gameServer.person[i].cLocation in R and Combat.gameServer.person[i].team == \
+                    "Players":
+                    people.append(Combat.gameServer.person[i])
         return people
 
     @staticmethod
