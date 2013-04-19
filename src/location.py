@@ -1,5 +1,5 @@
 '''
-Location Class
+Location is a utility class for tracking positions in the game world
 '''
 from const import *
 import math
@@ -7,6 +7,13 @@ import re
 
 class Location(object):
     def __init__(self, pane, tile=None, z=0, direction=2):
+        '''
+        The initializer can construct a new Location from one of several inputs:
+            * A string representation of a location
+            * Another Location object (copy constructor)
+            * Individual pane, tile, and optional z and direction values
+            * Absolute x and y values, which are then converted to pane and tile coordinates
+        '''
         if isinstance(pane, basestring):
             r = re.match(r'\((?P<p>\(.*\)|None), (?P<t>\(.*\)), (?P<z>.*), (?P<d>.*)\)', pane)
             if r.group('p') == "None":
@@ -46,7 +53,6 @@ class Location(object):
             self.abs_x = self.tile[0]
             self.abs_y = self.tile[1]
 
-    # So it turns out __repr__ is like toString()
     def __repr__(self):
         return "(%s, %s, %d, %d)" % (self.pane, self.tile, self.z, self.direction)
 
@@ -54,6 +60,11 @@ class Location(object):
         return self.__repr__()
 
     def __eq__(self, other):
+        '''
+        A Location is equal to another if their pane, tiles and z values match
+        A differing direction indicates that it may have been derived from two different directions,
+            but should still match as being equal if they represent the same physical location.
+        '''
         if isinstance(other, self.__class__):
             return self.pane == other.pane and self.tile == other.tile and self.z == other.z
 
@@ -61,6 +72,10 @@ class Location(object):
         return not self == other
 
     def __lt__(self, other):
+        '''
+        I don't think I ever actually used this, but a Location is "less than" another Location if
+        it is above the other Location, or on the same row and to the left of it.
+        '''
         if self.abs_y == other.abs_y:
             return self.abs_x < other.abs_x
         else:
@@ -88,7 +103,9 @@ class Location(object):
 
     def move(self, direction, distance=1):
         '''
-        Direction is number based (with diagonals)
+        Returns a new Location that is distance units away from self, in the specified direction
+
+        Direction is number based (with diagonals)  (Just like the numeric keypad on the keyboard)
         See diagram:
                  UP
              7   8   9
@@ -179,6 +196,13 @@ class Location(object):
             (self.tile[0] + dx, self.tile[1] + dy) for dx in range(-1, 2) for dy in range(1, -2, -1)}
 
     def line_to(self, dest, diags=True):
+        '''
+        Returns a list of Locations located between self and the destination.
+        If diags == False, then this line is to be uesd for character pathing, which cannot move
+            diagonally.  Therefore, additional Locations must be added so that all transitions
+            from one element in the path to the next are either horizontal or vertical.
+            No diagonals
+        '''
         if self == dest:
             return [self]
 
@@ -199,6 +223,9 @@ class Location(object):
         return locs
 
     def direction_to(self, dest):
+        '''
+        Returns a number from 1 to 9 as per the numeric keypad indicating relative directions
+        '''
         if self == dest:
             return 5
         distx = dest.abs_x - self.abs_x
@@ -214,12 +241,25 @@ class Location(object):
         return int((y * 3) + x + 1)
 
     def distance(self, dest):
+        '''
+        This distance is used in measuring non-diagonal movements requred to traverse from one Location
+        to another.  In geometric terms, it is equivalent to the sum of the two sides of a triangle that
+        are not the hypotenuse drawn directly between the source and the destination.
+        '''
         return  abs(self.abs_x - dest.abs_x) + abs(self.abs_y - dest.abs_y)
 
     def true_distance(self, dest):
+        '''
+        This is the hypotenuse of the aforementioned triangle, and is mostly only used in drawing
+        circles via the Region class
+        '''
         return math.sqrt((self.abs_x - dest.abs_x)**2 + (self.abs_y - dest.abs_y)**2)
 
     def in_melee_range(self, dest):
+        '''
+        Returns true if the destination Location is one of the 9 Locations in a 3x3 square centered
+        on self.
+        '''
         if self.pane != dest.pane or self.z != dest.z:
             return False
         if dest.tile in [(self.tile[0] + dx, self.tile[1] + dy) for dx in range(-1, 2) \
@@ -306,10 +346,3 @@ if __name__ == "__main__":
     r = Location(q)
     s = r.move(6)
     assert s == o
-    t = Location((0, 0), (0, 7))
-    u = Location((-1, 0), (30, 7))
-#    t = Location(25, 19)
-#    u = Location(25, 22)
-    print t, u
-    print t.abs_x, t.abs_y
-    print u.abs_x, u.abs_y

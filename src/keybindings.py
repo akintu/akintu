@@ -168,6 +168,14 @@ class Keystate():
         self.load_keys()
 
     def __call__(self, e=None):
+        '''
+        Calls to the keystate object update the currently pressed key list, and then match them to the
+            list of keybindings to find and return any events that should be handled.
+        If a valid new key combination is being pressed, that combination is stored for later
+            event association.
+        The keystate object is called and an event e passed in from pygame via game.py
+        It is also called via the direction method, in order to ascertain direction events
+        '''
         if e:
 #            if hasattr(e, 'unicode'):
 #                print "UNICODE: ", e.unicode
@@ -188,6 +196,16 @@ class Keystate():
         return events[0] if events else None
 
     def __contains__(self, combolist):
+        '''
+        This magic method does the heavy lifting to see if a keybinding is constituted by the current
+        set of keys being held down.
+        A key will still match if there are other keys being held down, unless one of the other keys
+        is a modifier (CTRL, SHIFT, ALT, META).  Modifiers must match exactly with no extras being
+        pressed.
+
+        I'm sorry it's so convoluted -- it was simple when I started it!  At this point, it would take
+        me a lot more time to unravel this comprehension than I have, and it seems to work correctly
+        '''
         if not isinstance(combolist, list):
             combolist = [combolist]
         return any(all((key in self.keystate or str(key).lower() in \
@@ -202,6 +220,13 @@ class Keystate():
         return str(self.keystate)
 
     def direction(self, state):
+        '''
+        Takes a class of input states (state) and checks to see if:
+            * The inputState variable is in the class of states (e.g., "OVERWORLD" is in the
+                "MOVEMENT" class of input states)
+            * A direction key is held down
+        If both of those are true, it returns the direction indicated as an integer in [2, 4, 6, 8]
+        '''
         dir = self()
         if not dir:
             return False
@@ -214,6 +239,10 @@ class Keystate():
         return False
 
     def get_key(self, event, shortest=True, all=False):
+        '''
+        Takes an event as a string, and returns the first, shortest, or all keybindings
+        that will trigger that event.
+        '''
         if event not in self.bindings:
             return False
         combos = self.bindings[event][0]
@@ -230,10 +259,17 @@ class Keystate():
             return combos[0]
 
     def get_states(self, event):
+        '''
+        Returns a list of inputStates in which the specified event can trigger
+        '''
         return self.bindings[event][1] if isinstance(self.bindings[event][1], list) else \
                 [self.bindings[event][1]]
 
     def add_binding(self, event):
+        '''
+        Takes an event as a string, and then associates the binding stored in the new binding buffer
+        with the event.
+        '''
         keys = self.get_key(event, all=True)
         for i, key in enumerate(self.newBinding):
             if any(key in keylist for keylist in self.mod_keys.values()):
@@ -244,16 +280,26 @@ class Keystate():
         self.save_keys()
 
     def delete_binding(self, event, combo):
+        '''
+        Deletes the specific keybinding 'combo' from the binding for the specified event.
+        '''
         keys = self.get_key(event, all=True)
         del keys[combo]
         self.bindings[event] = (keys, self.bindings[event][1])
         self.save_keys()
 
     def save_keys(self):
+        '''
+        Saves all keybindings to a text file for long-term storage
+        '''
         file = os.path.join('res', 'keybindings.txt')
         pass
 
     def load_keys(self):
+        '''
+        After processing the bindings data structure above, overwrites actual key binding values
+        with those from the key file.
+        '''
         pass
 
 keystate = Keystate()
