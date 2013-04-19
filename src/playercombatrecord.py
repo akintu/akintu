@@ -2,6 +2,19 @@
 
 import sys
 
+# playercombatrecord.py
+# Author: Devin Ekins -- G. Cube
+#
+# playercombatrecord is a glorified struct containing information about the
+# current and last turn of a player.  It has modifier methods for readability
+# of other modules.  
+#
+# Having this module seperate serves two purposes:
+#   1. It keeps PlayerCharacter slightly smaller.
+#   2. It allows for a place for us to add long term statistics about a player
+#      in the event that we want "Achievements" such as, "Walked 10,000 spaces"
+#      or the like.  This would be valuable if we were purchased by Steam.  
+
 class PlayerCombatRecord(object):
 
     def __init__(self):

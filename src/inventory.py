@@ -6,6 +6,13 @@ import wealth
 import consumable
 import equippeditems
 
+# inventory.py
+# Author: Devin Ekins -- G. Cube
+#
+# inventory.py is used to manage basic character inventory interactions.
+# It also contains a method to populate new characters with their starting
+# gear.  Note that this module does not, itself, manage items currently
+# equipped on a player.  (See: equippeditems.py)
 
 class Inventory(object):
     MAX_SLOTS = 20
@@ -78,19 +85,21 @@ class Inventory(object):
 
     @property
     def allItems(self):
+        ''' A public view of all items '''
         return self._allItems
 
     @property
     def allConsumables(self):
+        ''' A view of a subset of the inventory containing only consumables.'''
         return [x for x in self._allItems if isinstance(x, consumable.Consumable)]
 
     def addItem(self, item):
+        ''' Add an item to the inventory'''
         if isinstance(item, int):
             self.gold += item
         else:
             self._allItems.append(item)
             item.location = None
-            # Check for weight here?
 
     def removeItem(self, item=None, itemName=None):
         '''Removes and returns a given item from this
@@ -122,6 +131,7 @@ class Inventory(object):
 
     @property
     def totalWeight(self):
+        ''' The weight of all items NOT equipped.'''
         tWeight = 0
         for item in self._allItems:
             tWeight += int(item.weight)

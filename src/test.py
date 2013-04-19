@@ -25,6 +25,15 @@ import trap
 import treasurechest
 import wealth
 
+# test.py
+#
+# Author: Devin Ekins -- G. Cube
+#
+# This module is a placeholder for test code as well as syntax checking of 
+# many modules at once, as it imports from nearly all of our code base.
+#
+# It is not used while running Akintu.
+
 class Testy(object):
 
     @staticmethod

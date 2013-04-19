@@ -5,6 +5,29 @@ import equipment
 from dice import *
 import onhiteffect
 
+# magicalproperty.py
+# Author: Devin Ekins -- G. Cube
+#
+# magicalproperty houses the logic and game logic behind all of the interesting
+# facets of item creation, namely, the distribution of magical properties.
+# The dictionary and individual helper methods are set up to apply very specific
+# modifications to an equipping player and are not called explicitly.  These
+# methods are more data than code, as they will be assigned into individual
+# pieces of equipment which will have a bound variable used to call them.
+#
+# Magical Property generation is a complex heuristic task that involves
+# thinning out the possible magical properties into a smaller subset of 
+# available properties based on game rules followed by a guess-and-check
+# pattern of trying to match randomly selected properties into an item
+# until they fit perfectly with no IP (item points) remaining.
+# This is not guaranteed to complete execution within a specific amount
+# of time, but actual experienced runtimes have never caused more than
+# a negligible delay.  I suspect the algorithm could fail to find an item
+# within 20 seconds or so with about the same probability that a meteor will
+# extinguish all life on the planet Earth, rendering the execution delay 
+# of this process less noticable.
+#
+
 class MagicalProperty(object):
 
     fullList = []
@@ -37,6 +60,8 @@ class MagicalProperty(object):
 
     @property
     def counts(self):
+        ''' The public view of the counts of a property.  Some propreties
+        are doubled on two-handed weapons; that is handled here.'''
         if self.doubled and self.itemIsTwoHanded:
             return min(self._counts * 2, self.max)
         return self._counts
@@ -73,6 +98,7 @@ class MagicalProperty(object):
 
     @staticmethod
     def roundIp(ip):
+        ''' Deprecated method for unecessary optimization in item creation.'''
         rounded = ip
         factor = 1
         if 9 <= rounded <= 29:
@@ -99,6 +125,9 @@ class MagicalProperty(object):
         
     @staticmethod
     def getMaxProperties(ip):
+        ''' Method uses game rules to determine how many properties
+        a weapon or armor should have on it according to its overall IP
+        value. '''
         if ip <= 4:
             return 1
         elif ip <= 9:
@@ -112,6 +141,7 @@ class MagicalProperty(object):
             
     @staticmethod
     def setErrorThreshold(ip):
+        ''' Deprecated method for unnecessary optimization. '''
         if ip < 30:
             return 3
         elif ip < 70:
@@ -121,6 +151,21 @@ class MagicalProperty(object):
             
     @staticmethod
     def rollProperties(subList, maxListSize, givenIp, totalWeight, item):
+        ''' Beast of a method that takes an item and its potential, as 
+        represented by its parameters (described below) and pseudo-randomly
+        selects which properties are assigned to the item.
+        INPUTS:
+          subList -- A list of magical properties that are valid for this item.
+          maxListSize -- An int representing how many properties should exist on this item.
+          givenIp -- An int representing the potential power of this item based on game
+                     rules and item/treasure chest level.
+          totalWeight -- An int representing the total weighting of all magical properties
+                         int the sublist of the total list
+                         defined elsewhere in this module.
+          item -- The actual piece of Equipment (Weapon, Armor) that will have
+                  its properties determined here.
+        OUTPUTS:
+          A list of chosen magical properties to be assigned to this Equipment.'''
         errorThreshold = MagicalProperty.setErrorThreshold(givenIp)
         chosenList = []
         position = 0
@@ -186,6 +231,8 @@ class MagicalProperty(object):
 
     @staticmethod
     def selection(subList, dieRoll):
+        ''' Select an individual property from all properties supplied in
+        its subset list (sublist).'''
         remaining = dieRoll
         for prop in subList:
             currentWeight = prop[1]['weight']
@@ -194,6 +241,8 @@ class MagicalProperty(object):
                 return prop
 
     @staticmethod
+        ''' Calculates the total weight of all defined magical properties in
+        this subset list.'''
     def getTotalWeight(subList):
         total = 0
         for prop in subList:
@@ -202,11 +251,17 @@ class MagicalProperty(object):
 
     @staticmethod
     def cacheList():
+        ''' Store a master list of all magical property objects from this
+            modules master dictionary.  Should only be performed once
+            per execution of Akintu.'''
         for key, value in MagicalProperty.allProperties.iteritems():
             current = [key, value]
             MagicalProperty.fullList.append(current)
 
     @staticmethod
+        ''' Generates a sublist of properties appropriate for the equipment
+        type supplied.  For instance, Armor should not increase damage, and
+        weapons should not increase DR.'''
     def getFilledList(item):
         subList = []
         if isinstance(item, equipment.Armor):
@@ -225,9 +280,12 @@ class MagicalProperty(object):
                                 prop[1]['exclusion'] != "Melee Weapon Only"])
         return subList
 
-    # Method balloons values!! TODO: Fix!
     @staticmethod
     def adjustWeights(subList, item):
+        ''' Deprecated method assigning particular properties to certain kinds
+        of weapons/armor according to preset values in the data file.  Was moved
+        to a Tier 4 feature when the algorithmic complexity made it impractical
+        to delve into before Tier 3 release. '''
         print item.name
         for prop in subList:
             for tendency in item.bonusTendencyList:
@@ -239,8 +297,11 @@ class MagicalProperty(object):
                     prop[1]['weight'] = round(prop[1]['weight'] * (1 + float(tAmount) / 100))
         return subList
         
-
     def _doNothing(self, *args, **kwargs):
+        '''The best method ever; it knows exactly what you are thinking
+        at the moment of execution and then performs that action.  It 
+        instantaneously reverses the action afterward, leaving nothing but
+        awe in its wake.'''
         pass
         
     def _AP(self, owner, reverse=False):

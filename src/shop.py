@@ -7,6 +7,17 @@ from consumable import Consumable
 from equipment import GambleItem
 import random
 
+# shop.py
+# Author: Devin Ekins -- G. Cube
+# 
+# Shop is a UI hook/interaction module by functionality.  By structure,
+# it is also an object that will hold specific items generated on first
+# visit.  Elsewhere (server.py) these shops are cached according to town,
+# making towns have specific and certain items such that players can save
+# up for desired items and still have them be there when they return with
+# enough money to buy them.
+#
+
 class Shop(object):
     '''Shops are created by the server.'''
     def __init__(self, level=1, seed=None):
@@ -19,6 +30,7 @@ class Shop(object):
         self._generateStock()
         
     def open(self, player, screen):
+        ''' Initialize the store'''
         isEquipment = False
         text = "Welcome to my shop!"
         inv = player.inventory.allItems
@@ -30,6 +42,7 @@ class Shop(object):
                                         gold=gold, discount=discount, valuemod=valuemod)
         
     def buy(self, index, player, screen):
+        ''' Purchase an item from the store.'''
         item = self.stock[index]
         if item.value > player.inventory.gold:
             capacity = `player.inventoryWeight` + "/" + `player.inventoryCapacity` + ' lbs'
@@ -47,6 +60,7 @@ class Shop(object):
             screen.update_item_dialog_text("Thank you for your purchase!", capacity=capacity, gold=gold)
                                                 
     def sell(self, index, player, screen):
+        ''' Sell an item to the store.'''
         item = player.inventory.allItems[index]
         player.inventory.gold += self._getSellingPrice(item, player)
         player.inventory.removeItem(item)
@@ -56,10 +70,12 @@ class Shop(object):
         screen.update_item_dialog_text("Thank you for your sale!", capacity=capacity, gold=gold)
             
     def close(self, player, screen):
+        ''' Shut down the store.'''
         screen.hide_dialog()
         return player.dehydrate()
         
     def _getPriceMods(self, player):
+        ''' Determine the markup-markdown for the items in the store.'''
         sellMod = 0.5 * (1 + player.totalShopBonus * 0.01)
         buyMod = 1.5 * (1 - player.totalShopBonus * 0.01)
         return (sellMod, buyMod)

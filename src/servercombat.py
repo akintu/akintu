@@ -269,6 +269,7 @@ class CombatServer():
         return rValue
 
     def monsterMove(self, monster):
+        ''' Makes a monster take a single step in a self-determined direction.'''
         player = monster.getNearestPlayer(monster.detectedPlayers)
         if not player:
             return "NO_MOVE"
@@ -292,6 +293,8 @@ class CombatServer():
             return "MOVED"
 
     def monsterFinishedMoving(self, monster):
+        '''Called to unlock a monster's state such that it may make another move
+        or have its turn ended.'''
         combatPane = monster.cPane
         self.combatStates[combatPane].monsterStatusDict[monster] = "READY"
 
@@ -395,7 +398,7 @@ class CombatServer():
         self.shout_turn_start(self.server.person[playerId], turn="Player")
 
     def check_turn_end(self, combatPane, timeExpired=False):
-        ''' stuff '''
+        ''' Check to see if the turn should end for players. '''
         if self.combatStates[combatPane].isMonsterTurn:
             return
         APRemains = False
@@ -412,11 +415,10 @@ class CombatServer():
                 self.combatStates[combatPane].turnTimer.cancel()
         if timeExpired or not APRemains:
             self.end_turn(combatPane)
-        # TODO: check to see if remaining AP is not enough to do anything
-        # with.
+        
 
     def end_turn(self, combatPane):
-        ''' stuff '''
+        ''' Actually end the turn of all players. '''
         if self.update_dead_people(combatPane) == "CONTINUE_COMBAT":
             for character in [self.server.person[x] for x in self.server.pane[combatPane].person]:
                 self.shout_turn_start(character, turn="Monster")
@@ -425,6 +427,7 @@ class CombatServer():
             self.monster_phase(combatPane, initial=True)
 
     def prepare_player_turn(self, combatPane):
+        ''' Prepare teh players' turns for starting.  Calls upkeep before starting the players' turns.'''
         for character in [self.server.person[x] for x in self.server.pane[combatPane].person]:
             self.upkeep(character)
         self.update_dead_people(combatPane)
@@ -470,6 +473,13 @@ class CombatServer():
         return False
 
     def monster_phase(self, combatPane, initial=False):
+        ''' Is frequently called to determine monster combat AI and perform their
+        interactions in combat according to whether they can move or not, based on
+        their state in the monsterStatusDict dictionary.
+            Will initialize monsters if initial = True for the start of their turns.
+            Will quickly return if no monsters are available to move.
+            Will start the player turn process if all monsters are incapable of 
+            further moves.'''
         #start = time.clock()
 
         if combatPane not in self.server.pane:
@@ -586,6 +596,8 @@ class CombatServer():
         # Levelup is not performed here.
 
     def giveGold(self, player, monsterList):
+        ''' Gives the appropriate amount of gold for victory to the specified
+        player.'''
         gold = 0
         for monster in monsterList:
             gold += monster.level * 3 + monster.GP * 2
@@ -594,6 +606,7 @@ class CombatServer():
                                  ")", player, color='magenta', toAll=False)
 
     def refillResources(self, player):
+        ''' Sets the resources of the specified player to their maximums.'''
         Combat.modifyResource(player, "MP", player.totalMP)
         Combat.modifyResource(player, "HP", player.totalHP)
         Combat.modifyResource(player, "AP", player.totalAP)

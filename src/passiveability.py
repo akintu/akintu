@@ -23,6 +23,16 @@ TACTICIAN = ROOT_FOLDER + "tactician_skills/"
 TRICKSTER = ROOT_FOLDER + "trickster_skills/"
 WEAPONMASTER = ROOT_FOLDER + "weaponmaster_skills/"
 
+# passiveability.py
+# Author: Devin Ekins -- G. Cube
+#
+# This module contains all Passives used by players and monsters.
+# Individual methods are not typically commented as they represent 
+# the functionality of individual passives -- those passives already have
+# documentation on their functionality as detailed in the description
+# on both the wiki and the dictionary containing the parameters of these
+# functions.
+
 class PassiveAbilityStub(object):
     def __init__(self, name):
         self.name = name
