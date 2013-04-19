@@ -111,28 +111,16 @@ class World(object):
         
 
     def _generate_world(self, pane):
+        '''
+        Based on the given pane location, generates a Country object
+        for that area.
+        '''
         if isinstance(pane, Location):
             pane = pane.pane
         country_loc, township_loc = Township.getTownshipLocation(pane)
         c = Country(self.seed, country_loc)
         self.countries[country_loc] = c 
 
-    def _verify_path(self, start_location, end_location):
-        pass
-
-    def _merge_tiles(self, pane_locations):
-        '''
-        Merges the edge tiles of the surrounding panes with the current pane
-
-        Member Variables
-            pane_locations:  A dictionary of tuples that represent the panes to be merged.
-                    This is given from Location.get_surrounding_panes()
-        '''
-        curr_pane = self.panes[pane_locations[5]]  #Get our current pane
-        for key, value in pane_locations.iteritems():
-            surrounding_pane = self.panes[value]
-            edge_tiles = surrounding_pane.get_edge_tiles(10-key)#We request the opposite side
-            curr_pane.merge_tiles(edge_tiles)
 
 if __name__ == "__main__":
     '''
