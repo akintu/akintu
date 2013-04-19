@@ -87,7 +87,6 @@ class Township(object):
 
     def addBoss(self, number=1):
         random.seed(self.seed + "BOSS")
-        
         #PICK OUR PANE TO PLACE A BOSS
         for i in range(number):
             stamps = dict()
@@ -109,7 +108,6 @@ class Township(object):
 
     def addDungeons(self, number):
         random.seed(self.seed + "DUNGEON")
-        
         #PICK OUR PANE TO PLACE A DUNGEON
         for i in range(number):
             stamps = dict()
@@ -134,16 +132,12 @@ class Township(object):
         stamp_dict = Stamp.getStamps(Stamp.LANDSCAPE)
         i = 0
         threshhold = 1000
-
         # Add Landscape Stamps Until Coverage Is Reached
         while coverage > self.areaCoverage():
             if i >= threshhold:
                 break
             i += 1
             self._addLandscapeStamp(stamp_dict)
-        # print "Reached  " + str(i) + " restarts"
-        # print "Total of " + str(len(self.rect_list)) + " rectangles"
-        # print "Achieved " + str(self.areaCoverage()*100) + "% Coverage"
 
     def _addLandscapeStamp(self, stamp_dict):
         # Choose a Stamp
@@ -165,7 +159,7 @@ class Township(object):
             bound_x, bound_y = (PANE_X-1), (PANE_Y-1)
         else:
             bound_x, bound_y = (self.bounding_rect.width-1), (self.bounding_rect.height-1)
-        # Pick some threshhold to prevent an infinite loop
+        # Check threshhold to prevent an infinite loop
         i = 0
         while i < threshhold:
         
@@ -218,13 +212,17 @@ class Township(object):
         for y in range(len(self.stamp_array)):
             for i in range(TOWNSHIP_X-1):
                 x = (i+1)*(PANE_X-1) + i
-                self.stamp_array[y].insert(x, self.stamp_array[y][x])
+                char = self.stamp_array[y][x]
+                char = " " if char == 'm' else char
+                self.stamp_array[y].insert(x, char)
 
         # HORIZONTAL EDGES
         # Just duplicate and insert the entire row
         for i in range(TOWNSHIP_Y-1):
             y = (i+1)*(PANE_Y-1) + i
-            self.stamp_array.insert(y, self.stamp_array[y])
+            line = self.stamp_array[y]
+            line = [x.replace('m', " ") for x in line]
+            self.stamp_array.insert(y, line)
 
         # Split into pane sized chunks and load into self.stamps
         #[x[:] for x in [[" "]*self.height_tiles]*self.width_tiles]
