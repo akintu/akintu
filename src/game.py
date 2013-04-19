@@ -1,5 +1,5 @@
 '''
-Main game control
+Main game control loop
 '''
 
 import pygame
@@ -33,6 +33,10 @@ LEVEL_MAX = 5
 class Game(object):
     def __init__(self, port, serverip=None, state=None, player=None, **kwargs):
         '''
+        This initializer sets up a ton of variables for tracking game state in many different categories,
+            and initiates the connection to the server.  Then it kicks off a looping call to setup_game,
+            which contains further initialization code that cannot run until the client has an active
+            connection to the server.
         Parameters:
             port:       required for both host and client
             serverip:   None if hosting, required for client
@@ -44,10 +48,6 @@ class Game(object):
 
         TheoryCraft.loadAll()   #Static method call, Devin's stuff.
         Sprites.load_all()      #Static method call to load sprites
-
-        # if not state:  # This is a hack, should be getting seed from host
-            # state = {SEED_KEY: 'fdsa'}
-        # assert player
 
         if state:   #We are the server here, setup state and pull out seed.
             loaded_state = State.load_world(state)
@@ -105,7 +105,7 @@ class Game(object):
             self.gs = GameServer(self.world, self.port, self.turnTime)
 
         self.CDF = ClientDataFactory()
-        reactor.connectTCP(self.serverip, self.port, self.CDF)
+        reactor.connectTCP(self.serverip, self.port, self.CDF) #This is the connection to the server
 
         hardcore = False
         if kwargs.get('hardcore'):
@@ -133,13 +133,20 @@ class Game(object):
         reactor.run()
 
     def setup_game(self, person):
+        '''
+        This method keeps getting called until the client has a connection to the server, then sends
+        its first request which is to create the player's character.  Then it waits for the world
+        seed to be sent from the server, constructs the game world, and sets up the display.
+        '''
         if not self.CDF.port:
             return
 
+        # Create person on server
         if self.id == -2:
             self.CDF.send(person)
             self.id = -1
 
+        # Obtain world seed from server
         if not self.CDF.queue.empty():
             command = self.CDF.queue.get()
             if command.type == "UPDATE" and command.action == "SEED":
@@ -154,12 +161,17 @@ class Game(object):
         self.screen = GameScreen()
         Combat.screen = self.screen
 
+        # Start music
         pygame.mixer.music.set_volume(0.1)
 
         self.setup.stop()
         LoopingCall(self.game_loop).start(1.0 / DESIRED_FPS)
 
     def game_loop(self):
+        '''
+        I always thought the MAIN GAME LOOP would be a little bit hairier than this.  But this is what
+        drives all the events and handling for the entire game.
+        '''
         clock.tick()
         self.screen.set_fps(clock.get_fps())
         if hasattr(self, 'combatTurnStart'):
@@ -175,6 +187,12 @@ class Game(object):
             self.screen.update()
 
     def play_music(self, state=None, stop=False):
+        '''
+        Accepts one of 'overworld', 'battle', or 'town' for the state and plays music appropriate
+            to that game state.
+        If stop == True, will interrupt the currently playing track to move to the new state.
+        '''
+
         if state and state != self.musicState:
             self.musicState = state
         musicDir = os.path.join('res', 'music', self.musicState)
@@ -190,6 +208,10 @@ class Game(object):
             pygame.mixer.music.play()
 
     def check_queue(self):
+        '''
+        Simply empties the queue that network.py fills up with commands from the server, and handles them
+        '''
+
         while not self.CDF.queue.empty():
             command = self.CDF.queue.get()
 
@@ -276,17 +298,11 @@ class Game(object):
                 if self.combat and not self.valid_target():
                     self.cycle_targets()
 
-            ###### StopRunning ######
-            if command.type == "PERSON" and command.action == "STOP":
-                if command.id == self.id:
-                    self.running = False
-
             ###### Hardcore Death Screen #####
             if command.type == "CLIENT" and command.action == "DEATH":
                 if command.id == self.id:
                     keystate.inputState = "DEATH"
                     self.screen.show_menu_dialog(["Aw, shucks."], 'red', "You have died -- restart a new character.")
-
 
             ###### Levelup Player ######
             if command.type == "PERSON" and command.action == "REPLACE":
@@ -429,22 +445,17 @@ class Game(object):
                 if command.action == "ANIMATE":
                     #Animate obstacle
                     self.animate_entity(command.location)
-                    #print "Animating entities at " + str(command.location)
                 if command.action == "REMOVE":
                     #Remove from pane
                     self.remove_entities(command.location)
                     self.screen.update_tile(self.pane.get_tile(command.location.tile), command.location)
-                    #print "Removing entities at " + str(command.location.tile)
 
             elif command.type == "CHEST":
                 if command.action == "ADD":
-                    #print "Adding chest to " + str(command.location)
                     self.pane.add_chest(command.chestType, command.level, command.location.tile)
 
                 if command.action == "REMOVE":
-                    # print "Removing chest from " + str(command.location)
                     self.remove_entities(command.location)
-                    #self.pane.remove_chest(command.location.tile)
                 self.screen.update_tile(self.pane.get_tile(command.location.tile), command.location)
 
             elif command.type == "ABILITY" and command.action == "PLACE_TRAP":
@@ -500,14 +511,25 @@ class Game(object):
         self.quit()
 
     def save_no_quit(self):
+        '''
+        Send the signal to the server to save the gamestate, but don't quit just yet
+        '''
         if hasattr(self, 'gs'):
             self.gs.save_all(shutdown=False)
         self.save_player()#player_string)
 
     def quit(self):
+        '''
+        Does this really need documentation?
+        '''
         reactor.stop()
 
     def handle_non_events(self):
+        '''
+        I wasn't sure what else to call this method, but it checks for things that need to happen
+        even if no events have fired to initiate them.  Things like starting another run animation
+        if the character is running, or handling an arrow key that is still held down get called here
+        '''
         if self.running:
             self.move_person()
         if hasattr(self, 'pane') and hasattr(self.pane, 'person') and self.id in self.pane.person and \
@@ -523,6 +545,10 @@ class Game(object):
                     self.update_bindings()
 
     def handle_events(self):
+        '''
+        Update the current key state information, get back any applicable event strings, and then
+        act on them.
+        '''
 #        pygame.event.clear([MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
         for event in pygame.event.get():
 #            print "Event: ", event
@@ -538,15 +564,21 @@ class Game(object):
                 if not self.valid_target():
                     self.cycle_targets()
             elif event.type == KEYUP:
+                #Update the current key state information
                 keystate(event)
             elif event.type == KEYDOWN:
+                #Update the current key state information
                 e = keystate(event)
                 if e == "QUIT":
                     self.display_save_menu()
                 if e == "FORCEQUIT":
                     self.save_and_quit()
+
+                #This is a family of events that happen when the character is in a movement state
                 elif keystate.direction("MOVEMENT"):
                     self.move_person(keystate.direction("MOVEMENT"))
+
+                #This is a family of events that allow cursor movement inside of any dialog menu
                 elif keystate.direction("DIALOG"):
                     self.screen.move_dialog(keystate.direction("DIALOG"))
                     keystate.keyTime = time.time() + 2 * keystate.typematicRate
@@ -555,6 +587,8 @@ class Game(object):
                         if sel[0] == 0 and keystate.direction("DIALOG") in [2, 8]:
                             self.dialog_selection = sel[1]
                             self.update_bindings()
+
+                #This is a family of events that allow cursor movement when targeting a spell or ability
                 elif keystate.direction("TARGET"):
                     newloc = self.currentTarget.move(keystate.direction("TARGET"))
                     if newloc.pane == self.currentTarget.pane and newloc in self.rangeRegion:
@@ -568,6 +602,7 @@ class Game(object):
                     self.update_regions()
                     if not self.valid_target():
                         self.cycle_targets()
+
                 elif e == "SCROLLTOP":
                     self.screen.scroll_up(1000)
                 elif e == "SCROLLUP":
@@ -717,6 +752,7 @@ class Game(object):
                                                             'totalAP' : self.pane.person[self.id].totalAP,
                                                             'AP' : self.pane.person[self.id].AP})
 
+                ### Shop Commands ###
                 elif e == "SHOPOPEN":
                     self.request_shop()
                 elif e == "SHOPTRANSACTION":
@@ -812,6 +848,7 @@ class Game(object):
                     if not self.valid_target():
                         self.cycle_targets()
 
+                #### Miscellaneous events ###
                 elif e == "SWITCHGEAR":
                     self.switch_gear()
                 elif e == "CYCLETARGETF":
@@ -894,13 +931,15 @@ class Game(object):
                     self.update_regions()
 
     def get_item(self):
+        '''
+        If player is on an item, pick it up (the top item).
+        If player is next to a treasure chest, attempt to open it.
+        If the chest is locked, send a message to the screen.
+        If you are a thief, attempt to unlock it.
+        If the chest is unlocked, distribute treasure to this player
+           and all others on this pane.
+        '''
         self.CDF.send(Command("PERSON", "OPEN", id=self.id))
-        # If player is on an item, pick it up (the top item).
-        # If player is next to a treasure chest, attempt to open it.
-        # If the chest is locked, send a message to the screen.
-        # If you are a thief, attempt to unlock it.
-        # If the chest is unlocked, distribute treasure to this player
-        #    and all others on this pane.
 
     def break_in(self):
         self.CDF.send(Command("PERSON", "BASHCHEST", id=self.id))
@@ -978,6 +1017,10 @@ class Game(object):
         self.screen.show_tiling_dialog(text, itemslist, bgcolor=bgcolor)
 
     def move_person(self, direction=0, distance=1):
+        '''
+        Accept a direction and distance, then validate a movement in that direction, send the request
+        to the server, start animations, update running state
+        '''
         if self.running:
             if direction:
                 self.running = 0
@@ -1131,6 +1174,10 @@ class Game(object):
         self.update_regions()
 
     def valid_target(self):
+        '''
+        Checks to see if the current target has been invalidated.  Used in target cycling updating
+        overlay regions
+        '''
         if not self.currentTarget:
             return False
         if isinstance(self.currentTarget, Location):
@@ -1157,6 +1204,11 @@ class Game(object):
         return True
 
     def update_regions(self):
+        '''
+        Update the current range based on your ability and position, and your target.
+        XOR with previous range and target regions to obtain dirty tiles, and then redraw them all
+        according to their current states.
+        '''
         if self.id < 0:
             return
 
@@ -1280,6 +1332,9 @@ class Game(object):
             self.screen.show_text("Nothing remarkable.", color='greenyellow')
 
     def animate(self, id, source, dest, length):
+        '''
+        Perform all the calculations that are needed to setup a looping call that will animate people
+        '''
         xdist = (dest.tile[0] - source.tile[0]) * TILE_SIZE
         ydist = (dest.tile[1] - source.tile[1]) * TILE_SIZE
         steps = max(abs(xdist), abs(ydist))
@@ -1295,6 +1350,10 @@ class Game(object):
             self.pane.person[id].anim.start(1)
 
     def do_animation(self, id, source, dest, xdist, ydist, length):
+        '''
+        Based on the intended duration (length) of the animation and the time since the animation has
+        begun, update the display to the appropriate position and image and redraw.
+        '''
         completion = min((time.time() - self.pane.person[id].anim_start) / float(length), 1)
         statsdict = {}
         if completion < 1:
@@ -1368,6 +1427,10 @@ class Game(object):
         self.screen.set_pane(self.pane)
 
     def update_bindings(self):
+        '''
+        Populate lists with the key bound events and their current bindings, and send them to the
+        GUI dual-pane dialog
+        '''
         left = [Item(e, "\n".join(b[1]) if isinstance(b[1], list) else b[1]) \
                 for e, b in keystate.bindings.iteritems()]
         e = keystate.bindings.keys()[self.dialog_selection]

@@ -1,5 +1,5 @@
 '''
-Network communication class
+Network communication class, using Twisted networking library
 '''
 
 from twisted.internet.protocol import Factory, Protocol
@@ -17,8 +17,9 @@ from const import *
 
 class ServerData(LineReceiver):
     '''
-    Server protocol
+    Server protocol that is instantiated by ServerDataFactory
     '''
+
     def connectionMade(self):
         self.port = self.transport.getPeer().port
         if self.port not in self.factory.clients:
@@ -36,6 +37,9 @@ class ServerData(LineReceiver):
             self.factory.queue.put((self.port, Command("PERSON", "REMOVE")))
 
     def lineReceived(self, data):
+        '''
+        This is where the incoming data is actually picked up
+        '''
         data = cPickle.loads(data)
         if socket.gethostname() in ["Jzar", "Jgor"]: print("S " + str(self.port) + "> " + str(data))
         self.factory.queue.put((self.port, data))
@@ -52,6 +56,9 @@ class ServerDataFactory(Factory):
         self.queue = Queue.Queue()
 
     def send(self, port, data):
+        '''
+        Sends data to the client connected on the specified port
+        '''
         data = cPickle.dumps(data)
         if port in self.clients:
             self.clients[port].sendLine(data)
@@ -75,6 +82,9 @@ class ClientData(LineReceiver):
             self.factory.queue.put(Command("CLIENT", "QUIT"))
 
     def lineReceived(self, data):
+        '''
+        Handles data received from the server
+        '''
         data = cPickle.loads(data)
         if self.factory.port is None:
             self.factory.port = data
@@ -95,6 +105,10 @@ class ClientDataFactory(Factory):
         print('Connecting to server...')
 
     def send(self, data):
+        '''
+        Sends data to the server.  No port necessary since that was only necessary in instantiating
+        the connection in the first place.
+        '''
         data = cPickle.dumps(data)
         self.server.sendLine(data)
 
