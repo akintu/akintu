@@ -571,7 +571,6 @@ class CombatPane(Pane):
             i+=3
 
         self.add_zoomed_features()
-
         self.load_background_images()
         if monster:
             monsters = TheoryCraft.generateMonsterGroup(monster, numberOfPlayers=num_players)
