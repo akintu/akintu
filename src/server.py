@@ -27,9 +27,13 @@ class GameServer():
         self.shops = {} # {Pane : Shop} Dict of Shop objects
 
     def server_loop(self):
+        '''
+        Network.py fills SDF.queue with commands from the clients
+        server_loop handles them in the general pattern of validating the command, updating the game
+        state, and then broadcasting the command to everyone else who needs to act on it.
+        '''
         while not self.SDF.queue.empty():
             port, command = self.SDF.queue.get()
-            #print str(command)
 
             if command.type == "PERSON" and command.action == "REMOVE" and port \
                     and not hasattr(command, 'id'):
@@ -89,9 +93,6 @@ class GameServer():
                 # If this is a legal move request
                 if self.tile_is_open(command.location, pid=command.id, portal=portal, iLoc=iLoc):
                     if not portal:
-                        # print "command.portal=" + str(portal)
-                        # print "iLoc=" + str(iLoc)
-                        # ---JAB---
                         #Check for entities that have a trigger() attribute
                         p = iLoc if iLoc in self.pane else command.location.pane if command.location.pane in self.pane else None
                         if command.location.pane in self.pane and not iLoc:
@@ -347,6 +348,13 @@ class GameServer():
         # TODO: ITEMS
 
     def tile_is_open(self, location, pid=None, cPane=None, iLoc=None, portal=False):
+        '''
+        Uses the location, person id (pid), and cPane to figure out which pane is being evaluated.
+        Then tests for obstacles on the pane, portals, and people acting as obstacles
+        Returns false if the listed person may not move to the location.
+        True otherwise
+        '''
+
         if portal:  #Ensures we can take the portal, even if a player is on the other end
             return True
         if location.pane not in self.pane and not pid and not cPane:
@@ -365,6 +373,9 @@ class GameServer():
         return True
 
     def load_pane(self, pane, pid=None):
+        '''
+        Loads a pane that a person is moving onto into memory
+        '''
         if pane not in self.pane:
             print("Loading pane " + str(pane))
             if pid:
@@ -387,6 +398,11 @@ class GameServer():
             #print self.pane.keys()
 
     def unload_panes(self, unloadAll=False):
+        '''
+        This is called whenever someone leaves a pane, but like a garbage collector, is not guaranteed
+        to unload anything.  But it checks for panes that have nobody in an adjacent pane (because
+        there's a reasonable chance they'll move back onto this pane) and only then unloads it
+        '''
         current_panes = []
         for i in self.player.values():
             if self.person[i].cPane:
@@ -398,7 +414,6 @@ class GameServer():
             current_panes = []
         for pane in self.pane.keys():
             if pane not in current_panes and not (unloadAll and isinstance(pane, Location)):
-                # Save pane state to disk and then...
                 print("Unloading pane " + str(pane))
                 people = {}
                 # Stop all AI behaviors
@@ -413,6 +428,9 @@ class GameServer():
                 del self.pane[pane]
 
     def save_all(self, shutdown=True):
+        '''
+        Save all panes without destroying them in the process
+        '''
         if shutdown:
             self.unload_panes(True)
         else:
@@ -433,16 +451,31 @@ class GameServer():
         State.save_world()
 
     def get_nearby_players(self, personId):
+        '''
+        Accepts a personId and returns a list of players on the same pane.
+        Works with overworld panes and combat panes
+        '''
         pane = self.person[personId].cPane if self.person[personId].cPane else \
                 self.person[personId].location.pane
         return [self.person[i] for i in self.player.values() if i in self.pane[pane].person]
 
     def get_monster_leader(self, cPane):
+        '''
+        The monster on the overworld that spawns the group you enter combat with is the "Monster Leader"
+        Given a combatPane, this method returns the MonsterLeader so that he can be deleted.
+        '''
         for p in self.person.values():
             if cPane == p.location:
                 return p
 
     def find_path(self, loc1, loc2, pid=None, cPane=None):
+        '''
+        Pathfinding algorithm using a tweaked implementation of Dijkstra's Algorithm
+        The difference is that we may not need a path directly to loc2.  If pid refers to a valid
+        Person object, we just need a path to the closest location that is within attack range of
+        the final target.  So loop through all possible locations searching for the location with the
+        shortest path, and return that.
+        '''
         if loc1 == loc2:
             return []
         if loc1.distance(loc2) == 1:
@@ -477,6 +510,7 @@ class GameServer():
         path = []
         u = loc2
 
+        # Update destination to a location within attack range of the ultimate target
         if pid:
             minDist = (dist[u], u)
             for loc in [l for l in Region("DIAMOND", u, self.person[pid].attackRange - 1) if l.pane == loc1.pane]:
@@ -484,6 +518,8 @@ class GameServer():
                     minDist = (dist[loc], loc)
             u = minDist[1]
 
+        # If still no valid destination, find the closest point in anticipation of an obstacle
+        # eventually being removed, such as an ally getting killed
         radius = 1
         while not prev[u]:
             R = Region("SQUARE", loc2, radius) - Region("SQUARE", loc2, radius - 1)
@@ -493,6 +529,7 @@ class GameServer():
                     break
             radius += 1
 
+        # Follow the path backwards from destination to reconstitute the shortest path
         while prev[u]:
             path.append(u)
             u = prev[u]
