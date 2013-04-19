@@ -230,7 +230,9 @@ class CombatServer():
                     if not char.hardcore:
                         Combat.sendCombatMessage(char.name + " has Fallen!", color='darkred', character=char)
                         if "Devil" in [m.name for m in allMonsters]:
-                            Combat.sendCombatMessage("Puny mortal! Come back when you're stronger.", color='darkred', character=char, toAll=False)
+                            Combat.sendCombatMessage("Puny mortal! You're no match for me!", color='orange', character=char, toAll=False)
+                            Combat.sendCombatMessage("Your town needs you, " + char.name + ". Please free us from the Devil!", \
+                                                        color='yellow', character=char, toAll=False)
                         self.softcoreDeath(char)
                     else:
                         Combat.sendCombatMessage(char.name + " has Perished!", color='darkred', character=char)
@@ -575,7 +577,8 @@ class CombatServer():
                                  "/" + str(player.getExpForNextLevel()) + ")",
                                  player, color='magenta', toAll=False)
         if "Devil" in [m.name for m in monsterList]:
-            Combat.sendCombatMessage("You've driven the great evil from our town!", player, color='green', toAll=False)
+            Combat.sendCombatMessage("You may have beaten me, mortal, but I have many friends!", player, color='orange', toAll=False)
+            Combat.sendCombatMessage("Thank you " + player.name + "! You've driven the great evil from our town.", player, color='green', toAll=False)
         # Levelup is not performed here.
 
     def giveGold(self, player, monsterList):
@@ -611,7 +614,7 @@ class CombatServer():
         self.server.broadcast(Command("UPDATE", "COMBAT", combat=False), player.id)
         self.server.broadcast(Command("PERSON", "CREATE", id=player.id, \
                 location=player.location, details=player.dehydrate(), checkLevelup=True), player.id)
-        self.server.send_world_items(player.id, player.location)
+        self.server.send_world_items(location=player.location, pid=player.id)
         for i in self.server.pane[player.location.pane].person:
             if i != player.id:
                 self.server.broadcast(Command("PERSON", "CREATE", id=i, \

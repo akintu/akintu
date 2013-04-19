@@ -337,11 +337,15 @@ class GameServer():
             self.SDF.send(port, command)
 
     def send_world_items(self, location, pid=None, port=None):
-        chests = self.pane[location.pane].get_chest_list()
+        if isinstance(location, Location):
+            pane = location.pane
+        else:
+            pane = location
+        chests = self.pane[pane].get_chest_list()
         # CHESTS
         if chests:
             for chest in chests:
-                cmd = Command("CHEST", "ADD", chestType=chest[0], level=chest[1], location=Location(location.pane, chest[2]))
+                cmd = Command("CHEST", "ADD", chestType=chest[0], level=chest[1], location=Location(pane, chest[2]))
                 self.broadcast(cmd, pid, port)
         # TODO: ITEMS
 

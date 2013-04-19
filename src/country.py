@@ -22,7 +22,7 @@ class Country(object):
         self.stamps = dict()
         # for x in range(COUNTRY_X):
             # for y in range(COUNTRY_Y):
-        self.addTownship((2,2))
+        # self.addTownship((2,2))
 
     def getStamps(self, pane):
         if pane in self.stamps:
