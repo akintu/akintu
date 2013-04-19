@@ -541,7 +541,7 @@ class Ability(object):
         source.listeners.append(newListener)
 
     @staticmethod
-    def _spellSightDisable(dirtyHack, target, **kwargs):
+    def _spellSightDisable(cls, target, **kwargs):
         Combat.removeStatus(target, "Spell Sight")
         toRemove = None
         for x in target.listeners:
@@ -710,7 +710,7 @@ class Ability(object):
             return (True, "")
             
     @staticmethod
-    def _martialModeDisable(dirtyHack, target, reverse=False, percent=None):
+    def _martialModeDisable(cls, target, reverse=False, percent=None):
         if percent > 0.15:
             Combat.removeStatus(target, "Martial Mode")
         toRemove = None
@@ -753,7 +753,7 @@ class Ability(object):
         source.listeners.append(newListener)
         
     @staticmethod
-    def _reboundEffect(dirtyHack, target, reverse=False, spell=None):
+    def _reboundEffect(cls, target, reverse=False, spell=None):
         if target.hasStatus("Rebound"):
             if spell.MPCost >= 5:
                 Combat.modifyResource(target, "MP", 5)
@@ -1372,7 +1372,7 @@ class Ability(object):
             return (False, "MP level must be above 75% to use: " + self.name + " .")
 
     @staticmethod
-    def _innerMightDisable(dirtyHack, target, reverse=False, percent=None):
+    def _innerMightDisable(cls, target, reverse=False, percent=None):
         if percent < 0.75:
             Combat.removeStatus(target, "Inner Might")
         toRemove = None
