@@ -126,6 +126,9 @@ class Pane(object):
             location = Location(self.location, (random.randrange(PANE_X), random.randrange(PANE_Y)))
 
         ignore_max = True if level > 9 else False
+        
+        level = 15
+        level = min(level, 9) if name != "Devil" else level
         # print ignore_max
         person = TheoryCraft.getMonster(level=level, name=name, tolerance=tolerance, ignoreMaxLevel=ignore_max)
         person.location = location
