@@ -904,7 +904,7 @@ class InternalStatus(object):
         'Ranged_accuracy_bonus' :
             "Ranged accuracy has been raised {magnitude} points, increasing the chance of hitting with Ranged attacks.",
         'Ranged_accuracy_penalty' :
-            "Ranged accuracy has been lowered, decreasing the chance of hitting with Ranged attacks.",
+            "Ranged accuracy has been lowered {magnitude} points, decreasing the chance of hitting with Ranged attacks.",
         'Ranged_critical_magnitude_bonus' :
             "Bonus damage from ranged critical hits has been raised by {magnitude}%.",
         'Ranged_dodge_bonus' :

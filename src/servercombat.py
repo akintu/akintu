@@ -332,12 +332,12 @@ class CombatServer():
         action = Command("PERSON", "DECREMENT_STATUSES", id=target.id)
         self.server.broadcast(action, -target.id)
 
-        # TODO: Remove the following Debugging Messages
-        for stat in target.statusList:
-            if stat.turnsLeft == -1:
-                print target.name + " has status enabled: " + stat.name
-            else:
-                print target.name + " has status: " + stat.name + " T=" + `int(stat.turnsLeft)`
+        # Enable for Debugging:
+        # for stat in target.statusList:
+            # if stat.turnsLeft == -1:
+                # print target.name + " has status enabled: " + stat.name
+            # else:
+                # print target.name + " has status: " + stat.name + " T=" + `int(stat.turnsLeft)`
 
         # Check to see if this player discovered any traps.
         # Apply field effects as well.
@@ -483,8 +483,12 @@ class CombatServer():
         # Initialize Monster State
         if initial:
             for mon in initMonsters:
-                self.combatStates[combatPane].monsterStatusDict[mon] = "TURN_START"
-                mon.AP = mon.totalAP
+                if not mon.hasStatus("Stun"):
+                    mon.AP = mon.totalAP
+                    self.combatStates[combatPane].monsterStatusDict[mon] = "TURN_START"
+                else:
+                    self.combatStates[combatPane].monsterStatusDict[mon] = "TURN_OVER"
+                    
         monsters = [x for x in initMonsters if
                     self.combatStates[combatPane].monsterStatusDict[x] == "READY" or
                     self.combatStates[combatPane].monsterStatusDict[x] == "TURN_START"]

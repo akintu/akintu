@@ -823,8 +823,8 @@ class Ability(object):
             trapRating = int(25 * (1 + 0.01 * source.totalCunning) + source.bonusTrapRating + trapChaosBonusRating)
             didHit = Dice.rollTrapHit(trapRating, target, True)
             if didHit:
-                minDamage = int(10 * (1 + source.totalCunning * 0.01) * (1 + source.bonusTrapDamage * 0.01))
-                maxDamage = int(20 * (1 + source.totalCunning * 0.01) * (1 + source.bonusTrapDamage * 0.01))
+                minDamage = int(9 * (1 + source.totalCunning * 0.01) * (1 + source.bonusTrapDamage * 0.01))
+                maxDamage = int(18 * (1 + source.totalCunning * 0.01) * (1 + source.bonusTrapDamage * 0.01))
                 element = "Fire"
                 damage = Combat.calcDamage(source, target, minDamage, maxDamage, element, "Normal Hit")
                 Combat.lowerHP(target, damage)
@@ -1264,8 +1264,8 @@ class Ability(object):
             duration = 2
             magnitude = 3
             Combat.addStatus(target, "Bleeding", duration, magnitude)
-            if Dice.rollPresetChance(source, target, "Occasional"):
-                Combat.addStatus(target, "Stun", 1)
+            #if Dice.rollPresetChance(source, target, "Occasional"): TODO CHANGE BACK
+            Combat.addStatus(target, "Stun", 1)
         
     def _stunningBackstabCheck(self, target):
         source = self.owner
@@ -1439,12 +1439,8 @@ class Ability(object):
         hit = Combat.calcHit(source, target, "Physical", modifier=-2)
         Combat.basicAttack(source, target, hit)
         if hit != "Miss" and target.size != "Huge":
-            direction = source.cLocation.direction_to(target.cLocation)
-            landingZone = target.cLocation.move(direction, 1)
-            if Combat.gameServer.tile_is_open(landingZone, cPane=source.cPane):
-                Combat.instantMove(target, landingZone)
-            duration = 2
-            Combat.addStatus(target, "Warp Shot", duration)
+            Combat.knockback(target, source.cLocation, 1)
+            Combat.addStatus(target, "Warp Shot", duration=2)
         
     def _warpShotCheck(self, target):
         source = self.owner

@@ -102,8 +102,8 @@ class Trap(e.Entity):
             Combat.addStatus(target, "Poison Thorn Trap", duration, dot)
 
     def _explosiveTrap(self, target):
-        minDamage = int(10 * (1 + self.owner.totalFireBonusDamage * 0.01))
-        maxDamage = int(20 * (1 + self.owner.totalFireBonusDamage * 0.01))
+        minDamage = int(9 * (1 + self.owner.totalFireBonusDamage * 0.01))
+        maxDamage = int(18 * (1 + self.owner.totalFireBonusDamage * 0.01))
         dieRoll = Dice.roll(minDamage, maxDamage)
         element = "Fire"
         damage = self.calcTrapDamage(target, dieRoll, element)
