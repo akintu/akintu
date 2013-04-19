@@ -61,8 +61,7 @@ class BuildingOverworld(object):
         
         self.path = Region()
         self.path("ADD", "LINE", Location(pane_loc, self.center), Location(pane_loc, opening), 2)
-        #self.boundary("SUB", "LINE", Location(pane_loc, self.center), Location(pane_loc, opening), 2)
-        
+
         self.add_npc()
         
     def add_npc(self):
@@ -74,11 +73,8 @@ class BuildingOverworld(object):
         # self.npcs[id(person)] = person
         pass
 
-    
+
 class ShopOverworld(BuildingOverworld):
-    pass
-    
-class HouseOverworld(BuildingOverworld):
     def __init__(self, location):
         '''
         House has size (4, 2)
@@ -90,22 +86,23 @@ class HouseOverworld(BuildingOverworld):
         '''
         #self.entities = dict() #IN SUPER CLASS BUILDING
         
-        super(HouseOverworld, self).__init__(boundary_type="tree", bounds=None, pane_loc=location.pane, size=(7, 5), location=location)
-        house_sheet = Sprites.get_sheet(HOUSE_KEY)
-        
-        
-        house_loc = (location.tile[0], location.tile[1])
-        
+        super(ShopOverworld, self).__init__(boundary_type="tree", bounds=None, pane_loc=location.pane, size=(7, 5), location=location)
+        shop_sheet = Sprites.get_sheet(SHOP_KEY)
+
+        shop_loc = (location.tile[0], location.tile[1])
+
         for x in range(4):
             for y in range(2):
-                loc = (house_loc[0]+x, house_loc[1]+y)
+                loc = (shop_loc[0]+x, shop_loc[1]+y)
                 if x == y and x == 1:
                     self.door = loc
                     passable = True
-                    self.entities[loc] = Portal(Location(location.pane, loc), portal_type=Portal.SHOP, new_location=Location((0, 0), (PANE_X/2, PANE_Y-3)), image=house_sheet.getimage((x, y)), passable=passable)
+                    self.entities[loc] = Portal(Location(location.pane, loc), portal_type=Portal.SHOP, \
+                                            new_location=Location((0, 0), (PANE_X/2, PANE_Y-3)), \
+                                            image=shop_sheet.getimage((x, y)), passable=passable)
                 else:
                     passable = False
-                    self.entities[loc] = Entity(location=loc, image=house_sheet.getimage((x, y)), passable=passable)
+                    self.entities[loc] = Entity(location=loc, image=shop_sheet.getimage((x, y)), passable=passable)
             y = 0
             
         self.opening = (self.door[0], self.door[1]+1)
