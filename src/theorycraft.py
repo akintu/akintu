@@ -314,7 +314,7 @@ class TheoryCraft(object):
                 inLevelList = [x for x in TheoryCraft.monsters if x['minLevel'] <= levelChoice and if x['name'] != "Devil"]
             else:
                 inLevelList = [x for x in TheoryCraft.monsters if x['minLevel'] <= levelChoice and x['maxLevel'] >= levelChoice
-                                and if x['name'] != "Devil"]
+                                and x['name'] != "Devil"]
             if inLevelList:
                 theMonster = monster.Monster(choice(inLevelList))
             else:
