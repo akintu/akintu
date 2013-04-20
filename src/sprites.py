@@ -41,9 +41,8 @@ WALK = (OBSTACLES_IMAGES_PATH, "walk.png", TILE_SIZE, None, TILE_SIZE)
 WALK_ZOOM = WALK
 FLOWERS = (OBSTACLES_IMAGES_PATH, "flowers.png", TILE_SIZE, None, TILE_SIZE)
 FLOWERS_ZOOM = WALK
-SPAWN = (OBSTACLES_IMAGES_PATH, "spawn.png", TILE_SIZE, None, TILE_SIZE)
 
-PATHS = {'gravel': GRAVEL, 'dirt': DIRT, 'walk': WALK, 'flowers': FLOWERS, 'spawn': SPAWN}
+PATHS = {'gravel': GRAVEL, 'dirt': DIRT, 'walk': WALK, 'flowers': FLOWERS}
 PATH_KEYS = sorted(PATHS.keys())
 
 #ALL ENTITIES TOGETHER

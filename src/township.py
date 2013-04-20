@@ -100,14 +100,11 @@ class Township(object):
         '''
         stamps_rect = []
         stamps = dict()
-        for key in [Stamp.SHOP, Stamp.SPAWN, Stamp.RESPEC, Stamp.GARDEN, Stamp.GARDEN, Stamp.SHOP, Stamp.GARDEN, Stamp.HOUSE]:
+        for key in [Stamp.SHOP, Stamp.RESPEC, Stamp.GARDEN, Stamp.GARDEN, Stamp.SHOP, Stamp.GARDEN, Stamp.HOUSE]:
             stamp_dict = Stamp.getStamps(key)
             size = random.choice(list(stamp_dict.keys()))
             stamp = random.choice(stamp_dict[size])
-            threshhold = 1000 if key == Stamp.SPAWN else 100
-            loc = self._placeStamp(stamp, threshhold=threshhold, pane=self.town_loc)
-            if key == Stamp.SPAWN:
-                self.spawn_loc = loc.tile
+            loc = self._placeStamp(stamp, threshhold=100, pane=self.town_loc)
         self.rect_list.append(self.town_rect)
 
     def addBoss(self, number=1):

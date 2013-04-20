@@ -45,7 +45,6 @@ class Stamp(object):
     keys = [DUNGEON, HOUSE, SHOP, RESPEC, GARDEN, TREASURE, WATER, LANDSCAPE, SPAWN, BOSS]
     key_dict = {' ': None,
                 '_': None,
-                '^':'spawn',
                 'p':'walk',
                 'd':'dirt',
                 'l':'gravel',
