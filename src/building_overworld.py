@@ -65,6 +65,9 @@ class BuildingOverworld(object):
         self.add_npc()
         
     def add_npc(self):
+        '''
+        Currently unimplemented. Once npc persons are in place, add them here or override this method.
+        '''
         # tolerance = 1
         # lvl = 1
         # person = TheoryCraft.getMonster(level=lvl, tolerance=tolerance)
@@ -78,7 +81,7 @@ class ShopOverworld(BuildingOverworld):
     def __init__(self, location):
         '''
         House has size (4, 2)
-        Will use outdoor paths from path_sheet (set in building)
+        Will use outdoor paths from path_sheet (set in building) in front of the door.
             Row 0: Outdoor Rocks
             Row 1: Outdoor cement/Brick
             Row 2: Tile or specialty (in or out)
@@ -121,7 +124,7 @@ class ShopOverworld(BuildingOverworld):
     
     def add_npc(self, information=None):
         '''
-        Add a random npc here that might talk to you
+        Add a random npc here that might talk to you. Currently unimplemented.
         '''
         # tolerance = 1
         # lvl = 1
@@ -130,12 +133,6 @@ class ShopOverworld(BuildingOverworld):
         # person.ai.add("WANDER", person.ai.wander, person.movementSpeed, pid=id(person), region=self.clear, move_chance=1.0 / (person.movementSpeed))
         # self.npcs[id(person)] = person
         pass
-
-class GardenOverworld(BuildingOverworld):
-    pass
-    
-class RespecOverworld(BuildingOverworld):
-    pass
     
 class DungeonOverworld(BuildingOverworld):
     '''
@@ -155,7 +152,7 @@ class DungeonOverworld(BuildingOverworld):
                 if x == 1 and y == 3:   #Door opening
                     self.door = loc
                     passable = True
-                    #self.entities[loc] = Portal(Location((0, -3), (17, 10), z=-1, direction=8), portal_type=Portal.DUNGEON, location=loc, image=dungeon_sheet.getimage((x, y)), passable=passable)
+                    #Add a portal here when dungeons are in place.
                     self.entities[loc] = Entity(location=loc, image=dungeon_sheet.getimage((x, y)), passable=passable)
                 else:
                     passable = False
@@ -164,7 +161,6 @@ class DungeonOverworld(BuildingOverworld):
             
         self.opening = (self.door[0], self.door[1])
         self.path = Region()
-        # self.path("ADD", "LINE", Location(location.pane, (self.door[0], self.door[1]+1)), Location(location.pane, self.opening), 1)
         self.boundary("SUB", "LINE", Location(location.pane, (self.door[0], self.door[1]+1)), Location(location.pane, self.opening), 1)
         
         #Choose the type of path that we want, probably from rows 0 to 2 (from self.path_sheet)
@@ -174,5 +170,4 @@ class DungeonOverworld(BuildingOverworld):
         for loc in self.path:
             if loc.pane == location.pane:
                 self.entities[loc.tile] = Entity(location=loc.tile, image=path_image, passable=True)
-                #TODO: Add outer edge entities here (to give edge to path)
-        
+

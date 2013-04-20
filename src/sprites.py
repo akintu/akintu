@@ -1,5 +1,6 @@
 '''
-Sprite Related Objects and Helper Functions
+Sprite Related Objects and Helper Functions. Contains contant values and keys used
+for loading images.
 
 '''
 import os

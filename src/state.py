@@ -10,7 +10,17 @@ from const import *
 from location import Location
 
 class State(object):
-
+    '''
+    Static methods to maintain the state of the world. Server must explicitly
+    call these methods, or handled from the server's Pane object. As each pane
+    is unloaded, it must explicitly call save_pane and pass in the data dict()
+    it wants to save. Every pane we visit will have an entry in a master dict()
+    that keeps track of the world.
+    Additionally, clients use this class to save and load their characters. If 
+    a new character is created, this will generate the save file automatically, 
+    based on their name and class. It prepends the filename with an incremental
+    number (000-999).
+    '''
     char_file = None
     world_file = None
     world_data = None
@@ -18,6 +28,12 @@ class State(object):
 
     @staticmethod
     def load(path, filename):
+        '''
+        Should not be called directly outside of this class.
+        Handles loading a pickled file. Pickle then unpackages
+        it and returns the data object from that file, None if 
+        there was a problem.
+        '''
         path_to_file = os.path.join(path, filename)
         try:
             if os.path.exists(path_to_file):
@@ -32,6 +48,14 @@ class State(object):
 
     @staticmethod
     def save(path, filename, data, overwrite=True, pickled=True):
+        '''
+        Should not be called from outside of this class. Given a set of
+        data, this method saves it to file with the given filename and 
+        path. If you want to save the file without pickle, use the 
+        pickled flag.  NOTE: load does not currently support loading
+        non-pickled files. This option should only be used for non-game
+        items, or files that will be accessed with other tools.
+        '''
         # Create the saves directories if they don't exist
         if not os.path.exists(path):
             os.makedirs(path)
@@ -96,7 +120,6 @@ class State(object):
         '''
         Dehydrates our current player and saves it.
         '''
-
         if not player:
             return
 
@@ -168,7 +191,6 @@ class State(object):
                         }
                 }
         '''
-        
         if isinstance(state, dict): #Option 1
             State.world_file = None
             State.world_data = state

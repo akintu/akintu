@@ -2,6 +2,12 @@
 from entity import*
 
 class Portal(Entity):
+    '''
+    The Portal class is used for transporting the player
+    to a specific location, or too provide information 
+    that the server can use to trigger a specific event,
+    like opening a shop.
+    '''
 
     DUNGEON = "dungeon"
     OVERWORLD = "overworld"
@@ -16,6 +22,11 @@ class Portal(Entity):
         self.portal_type = portal_type
         
     def trigger(self):
-        #print "Portal.trigger() called"
+        '''
+        Does not actually fire an event, but provides
+        additional location information.  The existance
+        of this method allows the server to pull the
+        relevant info from this class.
+        '''
         return (self.iLocation, self.new_location)
         

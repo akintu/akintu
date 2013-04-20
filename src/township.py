@@ -1,11 +1,3 @@
-'''
-TOWNSHIP: 
-    Contains a set number of panes with the size
-    defined in const.py (TOWNSHIP_X, TOWNSHIP_Y)
-    Each territory contains 1 Town (Pane) object
-    and will have at least 1 dungeon
-'''
-
 import random
 import pygame
 from const import *
@@ -14,6 +6,17 @@ from pane import *
 from location import Location
 
 class Township(object):
+    '''
+    TOWNSHIP: 
+        Contains a set number of panes with the size
+        defined in const.py (TOWNSHIP_X, TOWNSHIP_Y)
+        Each territory contains 1 Town (Pane) object.
+        This class handles the placement of "Stamps" 
+        in the world. Everything is added to a 2-D
+        list data structure, then split up into pane
+        sized stamps. Country objects manage the creation
+        and querying of this Township.
+    '''
     def __init__(self, seed, township_loc, country_loc):
         self.seed = seed + str(country_loc) + str(township_loc)
         self.loc = (country_loc, township_loc)
@@ -27,22 +30,33 @@ class Township(object):
                 township_loc[1] < TOWNSHIP_Y, \
                 str(township_loc) + " is outside of " + str((TOWNSHIP_X, TOWNSHIP_Y))
 
+        # This is the top left Pane location in the world.
         self.topLeft = Township.getTownshipTopLeftPane(country_loc, township_loc)
         self.center = ((self.topLeft[0] + TOWNSHIP_X/2), (self.topLeft[1]+TOWNSHIP_Y/2))
 
+        # Need the width and height of each pane to be one less than
+        # the original height. This allows for object replication on
+        # the edges.
         self.width_tiles = (PANE_X-1) * TOWNSHIP_X
         self.height_tiles = (PANE_Y-1) * TOWNSHIP_Y
 
+        # Contains the bounds of this township. All rectangles will 
+        # be added to this bounding rectangle. Used for collision
+        # detection when placing stamps.
         self.bounding_rect = pygame.Rect(0, 0, self.width_tiles, self.height_tiles)
         self.stamp_array = [x[:] for x in [[" "]*self.width_tiles]*self.height_tiles]
 
         self.rect_list = []
 
     def loadStamps(self, dungeons=5, coverage=.7, monsters=1.5, treasure=0.5):
-        
+        '''
+        This method must be explicitly called after the creation of the 
+        Township object. The optional parameters can then be manipulated
+        directly for variation of the world. Should only be called once.
+        '''
         if not self.stampsLoaded:
             self.addTown()
-            #self.addDungeons(dungeons)
+            #self.addDungeons(dungeons) #To be added when dungeons are functional
             self.addBoss()
             self.addLandscape(coverage)
             self.addMonsters(monsters)
@@ -53,10 +67,15 @@ class Township(object):
             print "Township.loadStamps has already been called"
 
     def addTown(self):
+        '''
+        One town is added to each Township. First we block out that area and
+        add that rectangle to the bounding rectangle, then we add the individual
+        stamps to the town to give it variety.
+        '''
         random.seed(self.seed + "TOWN")
         #PICK OUR TOWN'S LOCATION
         country_loc, township_loc = self.loc
-        #PANE (0,0) is always a town
+        #PANE (0,0) is always a town. This is where we start.
         if country_loc == (0, 0) and township_loc == (COUNTRY_X/2, COUNTRY_Y/2):
             town_x = town_y = 2
             self.town_loc = self.center
@@ -72,13 +91,15 @@ class Township(object):
         y = town_y + PANE_Y + 2
         #Account for padding when we place the town rectangle
         self.town_rect = pygame.Rect(town_x*(PANE_X-1)-1, town_y*(PANE_Y-1)-1, x, y)
-        assert self.bounding_rect.contains(self.town_rect), "Bounding Rectangle doesn't contain the town"
         self._placeTownStamps()
 
     def _placeTownStamps(self):
+        '''
+        Always add at least a shop to the town, it is the first stamp to be placed.
+        '''
         stamps_rect = []
         stamps = dict()
-        for key in [Stamp.SHOP, Stamp.RESPEC, Stamp.HOUSE, Stamp.GARDEN, Stamp.HOUSE, Stamp.GARDEN, Stamp.HOUSE]:
+        for key in [Stamp.SHOP, Stamp.RESPEC, Stamp.GARDEN, Stamp.GARDEN, Stamp.SHOP, Stamp.GARDEN, Stamp.HOUSE]:
             stamp_dict = Stamp.getStamps(key)
             size = random.choice(list(stamp_dict.keys()))
             stamp = random.choice(stamp_dict[size])
@@ -86,6 +107,10 @@ class Township(object):
         self.rect_list.append(self.town_rect)
 
     def addBoss(self, number=1):
+        '''
+        Each Township can have a boss, but this can be explicitly 
+        manipulated to spread them out.
+        '''
         random.seed(self.seed + "BOSS")
         #PICK OUR PANE TO PLACE A BOSS
         for i in range(number):
@@ -99,6 +124,9 @@ class Township(object):
             self._placeBossStamp(boss_loc)
 
     def _placeBossStamp(self, boss_pane):
+        '''
+        Loads a boss stamp from file.
+        '''
         self.boss.append(boss_pane)
         #Choose a stamp from our dungeons
         stamp_dict = Stamp.getStamps(Stamp.BOSS)
@@ -107,6 +135,9 @@ class Township(object):
         self._placeStamp(stamp, threshhold=100, pane=boss_pane)
 
     def addDungeons(self, number):
+        '''
+        Adds dungeons to the world.
+        '''
         random.seed(self.seed + "DUNGEON")
         #PICK OUR PANE TO PLACE A DUNGEON
         for i in range(number):
@@ -120,6 +151,9 @@ class Township(object):
             self._placeDungeonStamp(dungeon_loc)
 
     def _placeDungeonStamp(self, dungeon_pane):
+        '''
+        Handles the placement of dungeon stamps
+        '''
         self.dungeons.append(dungeon_pane)
         #Choose a stamp from our dungeons
         stamp_dict = Stamp.getStamps(Stamp.DUNGEON)
@@ -128,6 +162,9 @@ class Township(object):
         self._placeStamp(stamp, threshhold=100, pane=dungeon_pane)
 
     def addLandscape(self, coverage):
+        '''
+        Adds variety to the world.
+        '''
         random.seed(self.seed + "LANDSCAPE")
         stamp_dict = Stamp.getStamps(Stamp.LANDSCAPE)
         i = 0
@@ -140,20 +177,39 @@ class Township(object):
             self._addLandscapeStamp(stamp_dict)
 
     def _addLandscapeStamp(self, stamp_dict):
+        '''
+        Handles adding landscape stamps to the world.
+        '''
         # Choose a Stamp
         size = random.choice(list(stamp_dict.keys()))
         stamp = random.choice(stamp_dict[size])
         self._placeStamp(stamp, threshhold=100)
 
     def addMonsters(self, monster):
+        '''
+        Should be called after town, boss, and landscape
+        stamps have already been placed.
+        '''
         for i in range(int(monster*TOWNSHIP_X*TOWNSHIP_Y)):
             self._placeStamp(Stamp((1, 1), "m"))
 
     def addTreasure(self, treasure):
+        '''
+        Like addMonsters, should be called after the other
+        stamps have been placed.
+        '''
         for i in range(int(treasure*TOWNSHIP_X*TOWNSHIP_Y)):
             self._placeStamp(Stamp((1, 1), "$"))
 
     def _placeStamp(self, stamp, threshhold=100, pane=None):
+        '''
+        Generic method used to place a stamp in the world. Threshhold
+        parameter can be manipulated to shorten the load time vs. 
+        try new placement locations. As we add more stamps, finding 
+        an open location that will fit the stamp gets harder. We loop
+        through a list of rectangles already added to the Township to 
+        do this check, rather than the Region class (much faster).
+        '''
         size = stamp.size
         if pane:
             bound_x, bound_y = (PANE_X-1), (PANE_Y-1)
@@ -182,6 +238,14 @@ class Township(object):
             i += 1
 
     def _joinStamps(self, loc, stamp):
+        '''
+        Once we've placed a stamp, this is called to add it to the
+        "superstamp". e.g. the 2-D array that represents the entire
+        township. When we put it into the array, we check that a 
+        generic 'object' is replaced with one we choose at random
+        with the caveat that it is NOT water. Some stamps just look
+        wierd with water.
+        '''
         if isinstance(loc, Location):
             loc = self._getAbsoluteLocation(loc)
         width = stamp.width
@@ -207,6 +271,14 @@ class Township(object):
             i += 1
 
     def _splitStampArray(self):
+        '''
+        Once all stamps have been placed, this method is used to replicate
+        objects located on the edge boundaries of where a pane would be. 
+        It then splits the "superstamp" into pane sized chunks and loads
+        them into the self.stamps dictionary with the location of the pane
+        it represents as the key. This means that every pane will have a 
+        single pane-sized stamp that it will load.
+        '''
         # Duplicate *Pane* edges in the array
         # VERTICAL EDGES
         for y in range(len(self.stamp_array)):
@@ -241,12 +313,28 @@ class Township(object):
                 self.stamps[pane] = {Location(pane, (0, 0)):Stamp((PANE_X, PANE_Y), stamp_string)}
                 
     def _getAbsoluteLocation(self, location):
+        '''
+        When we are dealing with the 2-d array "superstamp" this
+        method allows us to get the index into that array given a 
+        specific location object.  Since a township object places
+        (0,0) as the center pane, we must offset it by the top left
+        pane tuple. e.g. for a 5x5 township object, if you were
+        trying to get the index of pane (0, 0), you would subtract
+        the top-left pane (-2, -2) from (0, 0) giving (2, 2). We then
+        multiply those by the number of tiles in a pane (-1 to account
+        for a smaller sized pane for edge duplication) then add to it
+        the tile portion of the Location object.
+        '''
         x = location.pane[0] - self.topLeft[0]
         y = location.pane[1] - self.topLeft[1]
         rect_x, rect_y = (x*(PANE_X-1) + location.tile[0], y*(PANE_Y-1) + location.tile[1])
         return (rect_x, rect_y)
 
     def areaCoverage(self):
+        '''
+        Used to determine the amount of stamp coverage in this township.
+        Returns a decimal percentage.
+        '''
         area_placed = 0.0
         total_area = (self.bounding_rect.width)*(self.bounding_rect.height)
         for rect in self.rect_list:
@@ -301,13 +389,3 @@ class Township(object):
         loc_y = (ty+TOWNSHIP_Y*cy)*TOWNSHIP_Y - TOWNSHIP_Y/2
 
         return (loc_x, loc_y)
-
-if __name__=="__main__":
-    t = Township("SOME_SEED", township_loc=(2,2), country_loc=(0,0))
-    t.loadStamps()
-    # print t.stamp_array
-    
-    # print "TOWN LOCATION: " + str(t.town_loc)
-    # print "  DUNGEON LOCATIONS: " + str(t.dungeons)
-    # print "  STAMPS: " + str(t.stamps.keys())
-    # print str(t.stamps[(2, -2)])

@@ -3,6 +3,32 @@ from const import *
 from region import *
 
 class Stamp(object):
+    '''
+    Used for parsing stamp files for later use by Township.py. Stamps files
+    are categorized for finer grain placement, if desired. A stamp file is 
+    saved with the convention X_Y.txt where X and Y represent the width and
+    height of the stamps in that file (respectively). Each stamp is preceded
+    by two lines. They will begin with # but can have other information on the
+    line that will be ignored. e.g a file called 4_6.txt might look like this:
+        #   4x6 Landscape Stamp
+        #
+        tttrrr
+        ttwwrr
+        twwwww
+        twwwww
+        #
+        #
+        ... (more stamps follow)
+    The content of each stamp is determined by Stamp.key_dict. It contains the 
+    key value pairs that the world can use to place the appropriate objects on
+    the pane. The key is a single character, the value is the key that will be
+    used by the Sprite class to determine the image to use, and allows for 
+    specific funtionality (e.g. passability).
+
+    The exception to this convention is the text.txt stamp file. It contains
+    additional information for each stamp to allow for varied widths within
+    the same file. Text stamps will always be 5 tiles tall.
+    '''
     BOSS = "boss"
     DUNGEON = "dungeon"
     HOUSE = "house"
@@ -14,6 +40,7 @@ class Stamp(object):
     WATER = "water"
     LANDSCAPE = "landscape"
     TEXT = "text"
+    keys = [Stamp.DUNGEON, Stamp.HOUSE, Stamp.SHOP, Stamp.RESPEC, Stamp.GARDEN, Stamp.TREASURE, Stamp.WATER, Stamp.LANDSCAPE, Stamp.BOSS]
     key_dict = {' ': None,
                 '_': None,
                 'p':'walk',
@@ -58,6 +85,10 @@ class Stamp(object):
         return self.__repr__()
 
     def getRegion(self, location=Location((0, 0), (0, 0))):
+        '''
+        Returns a Region object that contains the locations of 
+        entities within this stamp.
+        '''
         right = location.tile[0]
         bottom = location.tile[1]
         self.region("ADD", "SQUARE", location, Location(location.pane, (right + self.width-1, bottom + self.height-1)))
@@ -74,6 +105,11 @@ class Stamp(object):
         return self.region
         
     def getEntityLocations(self, location):
+        '''
+        Returns the locations and keys of all the entities 
+        in this stamp as a dictionary. Used by Pane to 
+        load the stamp.
+        '''
         entities_dict = dict()
         for i in range(self.height):
             tmp = location.move(2, i)
@@ -87,6 +123,14 @@ class Stamp(object):
         return entities_dict
 
     def join(self, direction, stamp, distance=0):
+        '''
+        Used to join two stamps together. Currently
+        only used with text stamps, and as such, does
+        not fully support other stamps or placement
+        schemes. It is only to be used with stamps of
+        the same height. Uses the direction scheme 
+        defined in Location.py
+        '''
         new_string = ""
         padding = ""
         for pad in range(distance):
@@ -101,9 +145,6 @@ class Stamp(object):
             
             width = a.width + b.width + distance
             height = max(a.height, b.height)
-            # print(width, height)
-            #TODO: This will break when a.height is less than b.height
-            #Need to add padding to the string that has no more data to give
             for i in range(a.height):
                 start_1 = i*a.width
                 start_2 = i*b.width
@@ -112,13 +153,16 @@ class Stamp(object):
                 new_string += a.data[start_1:end_1] + padding + b.data[start_2:end_2]
                     
         if direction == 2:
-            pass
+            assert False, "Currenly only suports joining stamps horizontally"
 
         return Stamp((width, height), new_string)
 
 
     @staticmethod
     def load():
+        '''
+        Parses all stamp files into memory
+        '''
         if Stamp.loaded:
             return
         Stamp.loaded = True
@@ -126,20 +170,18 @@ class Stamp(object):
         Stamp.allTypes = dict()
         Stamp.allStamps = dict()
 
-        Stamp.keys = [Stamp.DUNGEON, Stamp.HOUSE, Stamp.SHOP, Stamp.RESPEC, Stamp.GARDEN, Stamp.TREASURE, Stamp.WATER, Stamp.LANDSCAPE, Stamp.BOSS]
         for key in Stamp.keys:
             Stamp.allStamps[key] = Stamp.parseStampFiles(os.path.join(STAMP_PATH, key))
 
-        #This is not included in Stamp.allSizes, Stamp.allTypes, or 
+        #This is not included. Replace 'd' with the type of entity you would
+        #like the text to represent. 'dirt' is passable, so that is why it is used.
         Stamp.text = Stamp.parseTextStamps(('+', 'd'))
 
     @staticmethod
-    def getStamp(size):
-        if size in Stamp.allSizes:
-            pass
-
-    @staticmethod
     def getStamps(key):
+        '''
+        Returns the stamps of a particular key contained in Stamp.keys.
+        '''
         if not Stamp.loaded:
             Stamp.load()
         if key in Stamp.allStamps:
@@ -149,6 +191,9 @@ class Stamp(object):
 
     @staticmethod
     def getStringStamp(text):
+        '''
+        Used to get a stamp that represents the 'text'
+        '''
         text = str(text).upper()
         if not Stamp.loaded:
             Stamp.load()
@@ -163,6 +208,9 @@ class Stamp(object):
 
     @staticmethod
     def parseStampFiles(path, rep=("+", "+")):
+        '''
+        Parses the stamps in the file given by path.
+        '''
         stamp_dict = dict()
         stamp_files = None
         if os.path.exists(path):
@@ -204,6 +252,9 @@ class Stamp(object):
 
     @staticmethod
     def parseTextStamps(rep=('+', '+')):
+        '''
+        Parses the text.txt stamp file.
+        '''
         text_dict = dict()
         path = os.path.join(STAMP_PATH, "text", "font.txt")
         if not os.path.exists(path):
