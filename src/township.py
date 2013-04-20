@@ -25,6 +25,7 @@ class Township(object):
         self.boss = []
         self.stamps = dict()
         self.town_loc = None
+        self.spawn_loc = None
         
         assert township_loc[0] < TOWNSHIP_X and \
                 township_loc[1] < TOWNSHIP_Y, \
@@ -99,11 +100,14 @@ class Township(object):
         '''
         stamps_rect = []
         stamps = dict()
-        for key in [Stamp.SHOP, Stamp.RESPEC, Stamp.GARDEN, Stamp.GARDEN, Stamp.SHOP, Stamp.GARDEN, Stamp.HOUSE]:
+        for key in [Stamp.SHOP, Stamp.SPAWN, Stamp.RESPEC, Stamp.GARDEN, Stamp.GARDEN, Stamp.SHOP, Stamp.GARDEN, Stamp.HOUSE]:
             stamp_dict = Stamp.getStamps(key)
             size = random.choice(list(stamp_dict.keys()))
             stamp = random.choice(stamp_dict[size])
-            self._placeStamp(stamp, threshhold=100, pane=self.town_loc)
+            threshhold = 1000 if key == Stamp.SPAWN else 100
+            loc = self._placeStamp(stamp, threshhold=threshhold, pane=self.town_loc)
+            if key == Stamp.SPAWN:
+                self.spawn_loc = loc.tile
         self.rect_list.append(self.town_rect)
 
     def addBoss(self, number=1):
@@ -234,7 +238,7 @@ class Township(object):
             if candidate.collidelist(self.rect_list) == -1:
                 self.rect_list.append(candidate)
                 self._joinStamps(location, stamp)
-                return
+                return location
             i += 1
 
     def _joinStamps(self, loc, stamp):

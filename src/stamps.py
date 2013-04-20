@@ -39,10 +39,13 @@ class Stamp(object):
     MAZE = "maze"
     WATER = "water"
     LANDSCAPE = "landscape"
+    SPAWN = "spawn"
     TEXT = "text"
-    keys = [DUNGEON, HOUSE, SHOP, RESPEC, GARDEN, TREASURE, WATER, LANDSCAPE, BOSS]
+
+    keys = [DUNGEON, HOUSE, SHOP, RESPEC, GARDEN, TREASURE, WATER, LANDSCAPE, SPAWN, BOSS]
     key_dict = {' ': None,
                 '_': None,
+                '^':'spawn',
                 'p':'walk',
                 'd':'dirt',
                 'l':'gravel',
