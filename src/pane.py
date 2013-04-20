@@ -13,6 +13,7 @@ from state import State
 from dice import *
 from stamps import *
 from fields import Fields
+from path import Path
 
 class Pane(object):
     '''
@@ -533,10 +534,7 @@ class CombatPane(Pane):
         self.objects = dict()           #Fixed combat/overworld passability bug
         self.paneCharacterLevel = 1
 
-        self.traps_region = Region("SQUARE", Location(self.location, (0, 0)), Location(self.location, (PANE_X-1, PANE_Y-1)))
-        #Remove areas where players can enter
-        for (x, y) in CombatPane.CombatEntrances:
-            self.traps_region("SUB", "SQUARE", Location(self.location, (x-1, y-1)), Location(self.location, (x+1, y+1)))
+        self.open_region = Region("SQUARE", Location(self.location, (0, 0)), Location(self.location, (PANE_X-1, PANE_Y-1)))
 
         loc_x = pane_focus.tile[0]
         loc_y = pane_focus.tile[1]
@@ -565,7 +563,7 @@ class CombatPane(Pane):
                 if (x,y) in pane.objects:
                     self.add_zoomed_obstacle((i, j), pane.objects[(x,y)])
                     #Remove areas where there are obstacles
-                    self.traps_region("SUB", "SQUARE", Location(self.location, (i-1, j-1)), Location(self.location, (i+1, j+1)))
+                    self.open_region("SUB", "SQUARE", Location(self.location, (i-1, j-1)), Location(self.location, (i+1, j+1)))
                 j+=3
             i+=3
 
@@ -573,10 +571,13 @@ class CombatPane(Pane):
         if monster:
             monsters = TheoryCraft.generateMonsterGroup(monster, numberOfPlayers=num_players)
             self.place_monsters(monsters, self.focus_location)
+            # for id, monster in self.person.iteritems():
+                # loc = monster.location
+                # self.traps_region("SUB", "SQUARE", loc, loc)
+            #Remove areas where players can enter
+            for (x, y) in CombatPane.CombatEntrances:
+                self.open_region("SUB", "SQUARE", Location(self.location, (x-1, y-1)), Location(self.location, (x+1, y+1)))
 
-            for id, monster in self.person.iteritems():
-                loc = monster.location
-                self.traps_region("SUB", "SQUARE", loc, loc)
             self.place_traps(num_players)
 
 
@@ -586,9 +587,7 @@ class CombatPane(Pane):
         for person in monsters:
             self.paneCharacterLevel = max(self.paneCharacterLevel, person.level)
             #Try to place monsters "near" eachother, but prevent placement off pane
-            while not self.is_passable(loc) or not self.is_within_bounds(loc, 3):
-                #Choose a new location
-                loc = self.rand_move_within_pane(loc, [1,9], [1,5], 3)
+            loc = self.rand_move_within_pane(loc, [1,9], [1,5], 3)
             person.location = loc
             self.person[id(person)] = person
             loc = self.rand_move_within_pane(loc, [1,9], [2,5], 3)
@@ -604,14 +603,14 @@ class CombatPane(Pane):
             numberOfTraps += 2
 
         for i in range(numberOfTraps):
-            location = random.choice(list(self.traps_region))
+            location = random.choice(list(self.open_region))
 
             #Place a trap here
             hostileTrap = trap.Trap.getRandomTrap(self.paneCharacterLevel, location)
             self.addTrap(location, hostileTrap)
 
             #Ensure we don't place a trap in the same spot
-            self.traps_region -= Region("SQUARE", location, location)
+            self.open_region -= Region("SQUARE", location, location)
 
 
     def rand_move_within_pane(self, location, dir_range, dist_range, bounds):
@@ -622,8 +621,17 @@ class CombatPane(Pane):
                 continue
             dist = random.randint(dist_range[0], dist_range[1])
             new_loc = location.move(dir, dist)
-            if new_loc.pane != location.pane:   #Can't move off the pane
+            if not self.is_passable(new_loc):           #Can't place whith obstacles
                 continue
+            if not self.is_within_bounds(new_loc):  #Can't move off the pane
+                continue
+            if not new_loc in self.open_region:    #Location must be accessable
+                continue
+            if not self.has_path_to_edge(new_loc):  #Eliminate unreachable locations 
+                self.open_region("SUB", "SQUARE", new_loc, new_loc)
+                continue
+            #We've found a suitable location, remove it from available list
+            self.open_region("SUB", "SQUARE", new_loc, new_loc)
             return new_loc
 
     def is_passable(self, location):
@@ -632,8 +640,17 @@ class CombatPane(Pane):
                 return False
         return super(CombatPane, self).is_tile_passable(location)
 
+    def has_path_to_edge(self, location):
+        #Check location against a known accessable location (0, 0)
+        start = Location(location.pane, location.tile)
+        end = Location(self.location, (0, 0))
+        pane_locations = Region("SQUARE", Location(self.location, (0, 0)), Location(self.location, (PANE_X - 1, PANE_Y - 1))).locations
+        open_locations = self.open_region.locations
+        has_path = Path.has_path(start, end, open_locations, pane_locations)
+        # print "Path from " + str(start) + " to " + str(end) + ": " + str(has_path)
+        return has_path
 
-    def is_within_bounds(self, location, edge):
+    def is_within_bounds(self, location):
         #Outside of current pane
         if self.location != location.pane:
             return False
