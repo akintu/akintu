@@ -228,6 +228,13 @@ class Region:
                         Location(loc2.abs_x + x, loc2.abs_y)))
         return locations
 
+    def region(self, R):
+        if isinstance(R, Region):
+            return R.locations
+        else:
+            return Region(R).locations
+
+
 if __name__ == "__main__":
     R = Region()
 
