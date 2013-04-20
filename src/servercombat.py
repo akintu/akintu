@@ -446,7 +446,7 @@ class CombatServer():
             self.server.broadcast(Command("PERSON", "UPDATE", id=character.id, AP=character.AP),
                     pane=combatPane)
             if character.hasStatus("Stun"):
-                Combat.modifyResource(character, "AP", -character.AP)
+                Combat.modifyResource(character, "AP", (-character.AP + 1))
         self.server.broadcast(Command("UPDATE", "TURNTIME"), pane=combatPane)
         for character in [self.server.person[x] for x in self.server.pane[combatPane].person]:
             self.shout_turn_start(character, turn="Player")

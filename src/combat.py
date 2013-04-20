@@ -176,7 +176,7 @@ class Combat(object):
           "Normal Hit" is the poison worked,
           "Miss" if the poison was tolerated."""
         offense = None
-        defense = source.totalPoisonTolerance
+        defense = target.totalPoisonTolerance
         color = 'darkgreen'
         if source.team == "Players":
             offense = source.totalPoisonRatingBonus + rating
@@ -1009,8 +1009,12 @@ class Combat(object):
             direction = "Incoming"
         else:
             direction = "Outgoing"
-        otherParty = source
-        hearer = target
+        if source.team == "Monsters":
+            otherParty = target
+            hearer = source
+        else:
+            otherParty = source
+            hearer = target
         bundle = {'direction' : direction, 'type' : attackType, 'otherPerson' : otherParty}
         bc = broadcast.AttackBroadcast(bundle)
         bc.shout(hearer)
@@ -1041,8 +1045,12 @@ class Combat(object):
             direction = "Incoming"
         else:
             direction = "Outgoing"
-        otherParty = source
-        hearer = target
+        if source.team == "Monsters":
+            otherParty = target
+            hearer = source
+        else:
+            otherParty = source
+            hearer = target
         bundle = {'direction' : direction, 'type' : attackType, 'otherPerson' : otherParty, 'suffix' : hitTypeString}
         bc = broadcast.AttackBroadcast(bundle)
         bc.shout(hearer)
@@ -1068,8 +1076,12 @@ class Combat(object):
             direction = "Incoming"
         else:
             direction = "Outgoing"
-        otherParty = source
-        hearer = target
+        if source.team == "Monsters":
+            otherParty = target
+            hearer = source
+        else:
+            otherParty = source
+            hearer = target
         bundle = {'direction' : direction, 'type' : attackType, 'otherPerson' : otherParty, 'suffix' : 'Complete', 'noCounter' : noCounter}
         bc = broadcast.AttackBroadcast(bundle)
         bc.shout(hearer)

@@ -731,12 +731,12 @@ class Ability(object):
                     stat = status
                     break
             element = stat.element
-            if not element:
+            if not element or element == "None":
                 element = "Arcane"
             allTargets = Combat.getAOETargets(source.cPane, target.cLocation, radius=1)
             damage = 3 + source.totalSpellpower / 3
             for tar in allTargets:
-                tarDamage = Combat.calcDamage(source, target, damage, damage, element, "Normal Hit")
+                tarDamage = Combat.calcDamage(source, tar, damage, damage, element, "Normal Hit")
                 Combat.lowerHP(tar, tarDamage)
     
     def _splashMagicCheck(self, target):
@@ -1600,7 +1600,7 @@ class Ability(object):
                 Combat.addStatus(target, "Stun", duration=2)
             duration = 3
             magnitude = 3 + source.level # Used for both spellpower and accuracy loss
-            Combat.addStatus(target, "Phantom Stare", duration)
+            Combat.addStatus(target, "Phantom Stare", duration, magnitude)
             sMin = 8 + source.level * 2
             sMax = 16 + source.level * 2
             damage = Combat.calcDamage(source, target, sMin, sMax, "Shadow", hit, partial=0.25)
@@ -1660,7 +1660,7 @@ class Ability(object):
             if pHit != "Miss":
                 duration = 4
                 magnitude = 3 + source.level # Used for dodge penalty not poison tolerance loss.
-                Combat.applyStatus(target, "Sedate", duration, magnitude)
+                Combat.addStatus(target, "Sedate", duration, magnitude)
         
     def _smash(self, target):
         ''' Deal +20% damage with +15 armor penetration '''

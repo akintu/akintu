@@ -226,7 +226,7 @@ class Spell(object):
         targets = Combat.getAOETargets(source.cPane, target.cLocation, radius=1, selectMonsters=False)
         for tar in targets:
             hitType = Combat.calcHit(source, tar, "Magical")
-            damageBase = 11
+            damageBase = 8
             damage = Combat.calcDamage(source, tar, damageBase, damageBase * 4, "Shadow", hitValue=hitType,
                                    partial=0.33, scalesWith="Spellpower", scaleFactor=0.02)
             Combat.lowerHP(tar, damage)
