@@ -87,8 +87,6 @@ class ShopOverworld(BuildingOverworld):
             Row 2: Tile or specialty (in or out)
             Row 3: Indoor Wood/Carpet
         '''
-        #self.entities = dict() #IN SUPER CLASS BUILDING
-        
         super(ShopOverworld, self).__init__(boundary_type="tree", bounds=None, pane_loc=location.pane, size=(7, 5), location=location)
         shop_sheet = Sprites.get_sheet(SHOP_KEY)
 

@@ -40,7 +40,7 @@ class Stamp(object):
     WATER = "water"
     LANDSCAPE = "landscape"
     TEXT = "text"
-    keys = [Stamp.DUNGEON, Stamp.HOUSE, Stamp.SHOP, Stamp.RESPEC, Stamp.GARDEN, Stamp.TREASURE, Stamp.WATER, Stamp.LANDSCAPE, Stamp.BOSS]
+    keys = [DUNGEON, HOUSE, SHOP, RESPEC, GARDEN, TREASURE, WATER, LANDSCAPE, BOSS]
     key_dict = {' ': None,
                 '_': None,
                 'p':'walk',
