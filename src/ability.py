@@ -1660,7 +1660,7 @@ class Ability(object):
             if pHit != "Miss":
                 duration = 4
                 magnitude = 3 + source.level # Used for dodge penalty not poison tolerance loss.
-                Combat.applyStatus(target, "Sedate", duration, magnitude)
+                Combat.addStatus(target, "Sedate", duration, magnitude)
         
     def _smash(self, target):
         ''' Deal +20% damage with +15 armor penetration '''
