@@ -10,3 +10,15 @@ b            b
 b  b       b b
 b            b
 bbbbbb bbbbbbb
+#
+#
+    bbbbbb
+   b__B___b   
+  b__b__b__b  
+  b_bb__bb_b   
+  b_bb__bb_b   
+  b___bb___b   
+    b____b     
+    b_bb_b     
+    b    b     
+     bbbb   

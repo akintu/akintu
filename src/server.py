@@ -335,6 +335,14 @@ class GameServer():
             self.SDF.send(port, command)
 
     def send_world_items(self, location, pid=None, port=None):
+        '''
+        The server keeps track of all consumables and sends them
+        to the clients using this method.  Currently only chests
+        are transmitted.  If we add items to the world, this is
+        where you would send them.
+        Uses the server's copy of the pane to determine what gets
+        sent.
+        '''
         if isinstance(location, Location):
             pane = location.pane
         else:
@@ -345,7 +353,7 @@ class GameServer():
             for chest in chests:
                 cmd = Command("CHEST", "ADD", chestType=chest[0], level=chest[1], location=Location(pane, chest[2]))
                 self.broadcast(cmd, pid, port)
-        # TODO: ITEMS
+        # ITEMS (When added)
 
     def tile_is_open(self, location, pid=None, cPane=None, iLoc=None, portal=False):
         '''

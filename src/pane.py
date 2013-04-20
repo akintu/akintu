@@ -490,7 +490,6 @@ class Pane(object):
 
 class Town(Pane):
 
-
     def __init__(self, seed, location, is_server=False, load_entities=False, pane_state=None):
         super(Town, self).__init__(seed, location, is_server, False, pane_state)
         self.buildings = []
@@ -580,6 +579,7 @@ class CombatPane(Pane):
                 self.traps_region("SUB", "SQUARE", loc, loc)
             self.place_traps(num_players)
 
+
     def place_monsters(self, monsters, start_location):
         loc = start_location
         #print monsters
@@ -592,6 +592,7 @@ class CombatPane(Pane):
             person.location = loc
             self.person[id(person)] = person
             loc = self.rand_move_within_pane(loc, [1,9], [2,5], 3)
+
 
     def place_traps(self, number):
         ''' Number indicates the number of players '''
@@ -611,6 +612,7 @@ class CombatPane(Pane):
 
             #Ensure we don't place a trap in the same spot
             self.traps_region -= Region("SQUARE", location, location)
+
 
     def rand_move_within_pane(self, location, dir_range, dist_range, bounds):
         random.seed()
@@ -662,6 +664,7 @@ class CombatPane(Pane):
                 else:
                     print "KEY NOT FOUND " + entity_key
                 self.tiles[tile].entities.append(Entity(tile, image=image, passable=passable))
+
 
     def load_background_images(self):
         self.images = Sprites.get_images_dict()

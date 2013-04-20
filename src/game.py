@@ -512,11 +512,7 @@ class Game(object):
 
     def save_no_quit(self):
         '''
-<<<<<<< HEAD
         Send the signal to the server to save the gamestate, but don't quit just yet
-=======
-        Contains Save and Return functionality
->>>>>>> 95210326462cc1ee61629ae349133dd3d6cfe0c1
         '''
         if hasattr(self, 'gs'):
             self.gs.save_all(shutdown=False)
@@ -1449,6 +1445,13 @@ class Game(object):
         self.screen.update_person(id, statsdict)
 
     def animate_entity(self, location):
+        '''
+        Similar to self.animate, this is used for animating
+        non player objects, such as chests. As long as the
+        entity provides an attribute 'getAnimationImages'
+        along with a list of images to animate, this will
+        work with it.
+        '''
         tile = self.pane.get_tile(location.tile)
         tile.anim_start = time.time()
 
@@ -1469,6 +1472,12 @@ class Game(object):
                 item.anim.start(float(length) / (steps*2))
 
     def do_animation_entity(self, location, start_time, length, steps, images):
+        '''
+        Similar to self.do_animation, method is to be
+        called using a looping call from animate_entity.
+        Used for chest entities primarily, but can be
+        used for any non-player game object.
+        '''
         tile = self.pane.get_tile(location.tile)
         elapsed = time.time() - start_time
         time_step = length/steps
@@ -1483,12 +1492,18 @@ class Game(object):
         self.screen.update_tile(tile, location)
 
     def remove_entities(self, location):
-        #TODO: make this delayed. (maybe use DelayedCall?)
+        '''
+        Helper method to remove the entities from a 
+        specific tile in a pane object.  Removes chests
+        after they are opened.
+        '''
         self.pane.remove_entities(location.tile)
 
     def switch_panes(self, location, combat=False):
-        #TODO we can add transitions here.
-
+        '''
+        Main call to change the pane we want to view.
+        Handles regular panes as well as combat panes.
+        '''
         self.rangeRegion = Region()
         self.targetRegion = Region()
         self.trapsRegion = Region()
