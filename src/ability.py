@@ -1686,7 +1686,7 @@ class Ability(object):
         if hit == "Normal Hit":
             duration = 3 + source.level / 4
             magnitude = 5 + source.level # Used for accuracy debuff
-            Combat.applyStatus(target, "Toxic Spit", duration, magnitude)
+            Combat.addStatus(target, "Toxic Spit", duration, magnitude)
             pDamMin = 2 + source.level
             pDamMax = 5 + source.level
             damage = Combat.calcDamage(source, target, pDamMin, pDamMax, "Poison", "Normal Hit")
