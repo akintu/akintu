@@ -39,21 +39,23 @@ class AI():
         '''
         Move person with pid randomly in the assigned region, with probability equal to move_chance
         '''
-        if time() < self.behavior['wander']['time']:
+        t = time()
+        if t < self.behavior['wander']['time']:
             return False
         if random.random() <= move_chance:
             dirs = [2, 4, 6, 8]
-            direction = random.choice(dirs)
+            random.shuffle(dirs)
+            direction = dirs[0]
             newloc = self.server.person[pid].location.move(direction, 1)
             while not newloc in region or not self.server.tile_is_open(newloc) or self.server.world.is_town_pane(newloc.pane):
-                dirs.remove(direction)
+                dirs = dirs[1:]
                 if len(dirs) == 0:
                     return False
-                direction = random.choice(dirs)
+                direction = dirs[0]
                 newloc = self.server.person[pid].location.move(direction, 1)
 
             self.server.SDF.queue.put((None, Command("PERSON", "MOVE", id=pid, location=newloc)))
-            self.behavior['wander']['time'] = time() + (1.0 / self.behavior['wander']['frequency'])
+            self.behavior['wander']['time'] = t + (1.0 / self.behavior['wander']['frequency'])
             return True
 
     ###### AI MANAGEMENT ######
