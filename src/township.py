@@ -100,6 +100,7 @@ class Township(object):
         '''
         stamps_rect = []
         stamps = dict()
+        self.rect_list.append(pygame.Rect(PANE_X/2, PANE_Y/2, 1, 1)) #Spawn location
         for key in [Stamp.SHOP, Stamp.RESPEC, Stamp.GARDEN, Stamp.GARDEN, Stamp.SHOP, Stamp.GARDEN, Stamp.HOUSE]:
             stamp_dict = Stamp.getStamps(key)
             size = random.choice(list(stamp_dict.keys()))
