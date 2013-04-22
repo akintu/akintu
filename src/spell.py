@@ -479,7 +479,7 @@ class Spell(object):
     def _torrent(self, target):
         source = self.owner
         lower = 10
-        upper = 35
+        upper = 28
         knockbackDistance = 5
         selectMonsters = True
         if source.team == "Monsters":
@@ -933,7 +933,7 @@ class Spell(object):
         'action' : _torrent,
         'cooldown' : 2,
         'image' : TIER2 + 'torrent.png',
-        'text' : 'Blasts a target with supercooled liquid for 10-35 + 1.4% Cold damage and knocks back\n' + \
+        'text' : 'Blasts a target with supercooled liquid for 10-28 + 1.4% Cold damage and knocks back\n' + \
                 'any non-huge target 5 tiles that does not resist (paritally or fully).  Will hit the first\n' + \
                 'hostile target it encounters between itself and the intended target.'
         },

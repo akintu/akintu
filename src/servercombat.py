@@ -29,10 +29,10 @@ class CombatServer():
             activePlayer = self.server.person[command.id]
 
             # If this is a legal move request
-            if  (hasattr(command, 'force') and command.force) or \
-                    self.server.tile_is_open(command.location, command.id) and \
-                 activePlayer.AP >= activePlayer.totalMovementAPCost or \
-                 activePlayer.remainingMovementTiles > 0:
+            if ((hasattr(command, 'force') and command.force) or
+                activePlayer.AP >= activePlayer.totalMovementAPCost or
+                activePlayer.remainingMovementTiles > 0) and \
+                self.server.tile_is_open(command.location, command.id):
                 if activePlayer.team == "Players":
                     activePlayer.record.recordMovement()
                     if not (hasattr(command, 'force') and command.force):
@@ -41,7 +41,7 @@ class CombatServer():
                             Combat.resetMovementTiles(activePlayer)
                         else:
                             Combat.decrementMovementTiles(activePlayer)
-
+                            
                 # Update location and broadcast, including possible trap interactions.
                 activePlayer.cLocation = command.location
                 self.server.broadcast(command, -command.id, exclude=True)
@@ -50,6 +50,11 @@ class CombatServer():
                     self.check_field_trigger(activePlayer, activePlayer.cLocation)
                     self.check_turn_end(activePlayer.cPane)
 
+            elif port:
+                # Invalide move attempted, ensure we're back where we started.
+                command.location = self.person[command.id].cLocation
+                self.server.broadcast(command, -command.id)
+                    
         ###### RemovePerson ######
         elif command.type == "PERSON" and command.action == "REMOVE":
             if command.id in self.server.person:
