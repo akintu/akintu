@@ -140,7 +140,8 @@ topPages = {
     'Equipment Information' : {
             'title' : "Equipment Information",
             'options' : \
-            ['Armor Tolerance',
+            ['Accuracy Penalties',
+             'Armor Tolerance',
              'Armor Types',
              'Magical Equipment',
              'Weapon Types'],
@@ -186,6 +187,7 @@ contentPaths = {
     
     'Monster Details' : os.path.join(HELP_PATH, 'help_monster_listing.txt'),
     
+    'Accuracy Penalties' : os.path.join(HELP_PATH, 'help_accuracy_penalties.txt'),
     'Armor Tolerance' : os.path.join(HELP_PATH, 'help_armor_tolerance.txt'),
     'Armor Types' : os.path.join(HELP_PATH, 'help_armor.txt'),
     'Magical Equipment' : os.path.join(HELP_PATH, 'help_magical_equipment.txt'),
