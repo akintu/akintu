@@ -169,49 +169,49 @@ class OnHitEffect(object):
             Combat.addStatus(target, "Vile Poison", duration)
 
     def applyWeakeningFire(self, magnitude, source, target):
-        chance = magnitude * 2
+        chance = magnitude * 3
         duration = 4
         if Dice.rollBeneath(chance):
             Combat.addStatus(target, "Weakening Fire Magic Weapon", duration)
         return None
 
     def applyWeakeningCold(self, magnitude, source, target):
-        chance = magnitude * 2
+        chance = magnitude * 3
         duration = 4
         if Dice.rollBeneath(chance):
             Combat.addStatus(target, "Weakening Cold Magic Weapon", duration)
         return None
 
     def applyWeakeningElectric(self, magnitude, source, target):
-        chance = magnitude * 2
+        chance = magnitude * 3
         duration = 4
         if Dice.rollBeneath(chance):
             Combat.addStatus(target, "Weakening Electric Magic Weapon", duration)
         return None
 
     def applyWeakeningPoison(self, magnitude, source, target):
-        chance = magnitude * 2
+        chance = magnitude * 3
         duration = 4
         if Dice.rollBeneath(chance):
             Combat.addStatus(target, "Weakening Poison Magic Weapon", duration)
         return None
 
     def applyWeakeningDivine(self, magnitude, source, target):
-        chance = magnitude * 2
+        chance = magnitude * 3
         duration = 4
         if Dice.rollBeneath(chance):
             Combat.addStatus(target, "Weakening Divine Magic Weapon", duration)
         return None
 
     def applyWeakeningShadow(self, magnitude, source, target):
-        chance = magnitude * 2
+        chance = magnitude * 3
         duration = 4
         if Dice.rollBeneath(chance):
             Combat.addStatus(target, "Weakening Shadow Magic Weapon", duration)
         return None
 
     def applyWeakeningArcane(self, magnitude, source, target):
-        chance = magnitude * 2
+        chance = magnitude * 3
         duration = 4
         if Dice.rollBeneath(chance):
             Combat.addStatus(target, "Weakening Arcane Magic Weapon", duration)

@@ -342,7 +342,7 @@ class MagicalProperty(object):
             owner.equipmentConstitution -= bonus
 
     def _carryingCapacity(self, owner, reverse=False):
-        bonus = self.counts * 2
+        bonus = self.counts * 4
         if not reverse:
             owner.equipmentCarryingCapacity += bonus
         else:
@@ -397,49 +397,49 @@ class MagicalProperty(object):
             owner.equipmentDodge -= bonus
 
     def _elementalEnhancementFire(self, owner, reverse=False):
-        bonus = self.counts * 2
+        bonus = self.counts * 3
         if not reverse:
             owner.equipmentFireBonusDamage += bonus
         else:
             owner.equipmentFireBonusDamage -= bonus
 
     def _elementalEnhancementCold(self, owner, reverse=False):
-        bonus = self.counts * 2
+        bonus = self.counts * 3
         if not reverse:
             owner.equipmentColdBonusDamage += bonus
         else:
             owner.equipmentColdBonusDamage -= bonus
 
     def _elementalEnhancementElectric(self, owner, reverse=False):
-        bonus = self.counts * 2
+        bonus = self.counts * 3
         if not reverse:
             owner.equipmentElectricBonusDamage += bonus
         else:
             owner.equipmentElectricBonusDamage -= bonus
 
     def _elementalEnhancementPoison(self, owner, reverse=False):
-        bonus = self.counts * 2
+        bonus = self.counts * 3
         if not reverse:
             owner.equipmentPoisonBonusDamage += bonus
         else:
             owner.equipmentPoisonBonusDamage -= bonus
 
     def _elementalEnhancementDivine(self, owner, reverse=False):
-        bonus = self.counts * 2
+        bonus = self.counts * 3
         if not reverse:
             owner.equipmentDivineBonusDamage += bonus
         else:
             owner.equipmentDivineBonusDamage -= bonus
 
     def _elementalEnhancementShadow(self, owner, reverse=False):
-        bonus = self.counts * 2
+        bonus = self.counts * 3
         if not reverse:
             owner.equipmentShadowBonusDamage += bonus
         else:
             owner.equipmentShadowBonusDamage -= bonus
 
     def _elementalEnhancementArcane(self, owner, reverse=False):
-        bonus = self.counts * 2
+        bonus = self.counts * 3
         if not reverse:
             owner.equipmentArcaneBonusDamage += bonus
         else:
@@ -515,49 +515,49 @@ class MagicalProperty(object):
             owner.removeOnHitEffect("ElementalDamage Arcane", self.counts)
 
     def _elementalResistanceFire(self, owner, reverse=False):
-        bonus = self.counts
+        bonus = self.counts * 2
         if not reverse:
             owner.equipmentFireResistance += bonus
         else:
             owner.equipmentFireResistance -= bonus
 
     def _elementalResistanceCold(self, owner, reverse=False):
-        bonus = self.counts
+        bonus = self.counts * 2
         if not reverse:
             owner.equipmentColdResistance += bonus
         else:
             owner.equipmentColdResistance -= bonus
 
     def _elementalResistanceElectric(self, owner, reverse=False):
-        bonus = self.counts
+        bonus = self.counts * 2
         if not reverse:
             owner.equipmentElectricResistance += bonus
         else:
             owner.equipmentElectricResistance -= bonus
 
     def _elementalResistancePoison(self, owner, reverse=False):
-        bonus = self.counts
+        bonus = self.counts * 2
         if not reverse:
             owner.equipmentPoisonResistance += bonus
         else:
             owner.equipmentPoisonResistance -= bonus
 
     def _elementalResistanceDivine(self, owner, reverse=False):
-        bonus = self.counts
+        bonus = self.counts * 2
         if not reverse:
             owner.equipmentDivineResistance += bonus
         else:
             owner.equipmentDivineResistance -= bonus
 
     def _elementalResistanceShadow(self, owner, reverse=False):
-        bonus = self.counts
+        bonus = self.counts * 2
         if not reverse:
             owner.equipmentShadowResistance += bonus
         else:
             owner.equipmentShadowResistance -= bonus
 
     def _elementalResistanceArcane(self, owner, reverse=False):
-        bonus = self.counts
+        bonus = self.counts * 2
         if not reverse:
             owner.equipmentArcaneResistance += bonus
         else:
