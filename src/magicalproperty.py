@@ -342,7 +342,7 @@ class MagicalProperty(object):
             owner.equipmentConstitution -= bonus
 
     def _carryingCapacity(self, owner, reverse=False):
-        bonus = self.counts * 4
+        bonus = self.counts * 6
         if not reverse:
             owner.equipmentCarryingCapacity += bonus
         else:
@@ -838,7 +838,7 @@ class MagicalProperty(object):
         'AP':
             {
             'weight' : 4,
-            'cost' : 9,
+            'cost' : 10,
             'effect' : _AP,
             'max' : 5,
             'doubled' : False,
