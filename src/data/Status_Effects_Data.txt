@@ -748,7 +748,7 @@
   [INTERNAL: Elemental_offense_arcane]
 	[MAGNITUDE: 10]
   [INTERNAL: Elemental_offense_divine]
-	[MAGNITUDE: 10]
+	[MAGNITUDE: 15]
   [CATEGORY: Buff]
 	
 [NAME: Spell Sight]

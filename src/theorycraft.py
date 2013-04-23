@@ -392,7 +392,7 @@ class TheoryCraft(object):
             if m['GP'] < minGP:
                 minGP = m['GP']
         currentGP = initialMonster.GP
-        numMonsters = 0
+        numMonsters = 1
         while(minGP <= TheoryCraft.GROUP_GP - currentGP and numMonsters < 6):
             selection = None
             if len(subList) == 1:

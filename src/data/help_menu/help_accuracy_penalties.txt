@@ -1,0 +1,23 @@
+# help_accuracy_penalties.txt
+
+Some weapons in Akintu are difficult to use without proper training.
+Characters without specific training suffer a reduction in their accuracy
+when using these weapons.
+
+Katana
+  -75% Accuracy
+  Classes that don't suffer the penalty: Ninja
+
+Longbow
+  -25% Accuracy
+  Classes that don't suffer the penalty: Dragoon, Anarchist, Marksman,
+  Druid, Tactician, Assassin, Arcane Archer
+  
+Polearms (Spears and Halberds)
+  -30% Accuracy
+  Classes that don't suffer the penalty: Barbarian, Dragoon, Weapon Master,
+  Spellsword
+  
+Shuriken
+  -75% Accuracy
+  Classes that don't suffer the penalty: Ninja
