@@ -271,8 +271,8 @@ class Ability(object):
         critMag = 0
         accuracy = 0
         if source.usingWeapon("Sword"):
-            critChance = 30
-            critMag = 1.6
+            critChance = 33
+            critMag = 1.65
             if source.usingWeaponStyle("Single"):
                 accuracy = 9
         elif source.usingWeapon("Knife"):
@@ -1141,8 +1141,8 @@ class Ability(object):
         critMag = 0
         accuracy = 0
         if source.usingWeapon("Sword"):
-            critChance = 25
-            critMag = 1.5
+            critChance = 33
+            critMag = 1.65
             if source.usingWeaponStyle("Single"):
                 accuracy = 9
         elif source.usingWeapon("Knife"):
@@ -1179,8 +1179,8 @@ class Ability(object):
         critMag = 0
         accuracy = 0
         if source.usingWeapon("Sword"):
-            critChance = 25
-            critMag = 1.5
+            critChance = 33
+            critMag = 1.65
             if source.usingWeaponStyle("Single"):
                 accuracy = 9
         elif source.usingWeapon("Knife"):
@@ -1240,8 +1240,8 @@ class Ability(object):
         critMag = 0
         accuracy = 0
         if source.usingWeapon("Sword"):
-            critChance = 25
-            critMag = 1.5
+            critChance = 33
+            critMag = 1.65
             if source.usingWeaponStyle("Single"):
                 accuracy = 9
         elif source.usingWeapon("Knife"):
@@ -2128,7 +2128,7 @@ class Ability(object):
         'level' : 2,
         'class' : 'Wizard',
         'HPCost' : 0,
-        'APCost' : 7,
+        'APCost' : 6,
         'range' : 0,
         'target' : 'self',
         'action' : _gather,
@@ -2136,7 +2136,7 @@ class Ability(object):
         'checkFunction' : None,
         'breakStealth' : 100,
         'image' : WIZARD_SKILLS + 'gather.png',
-        'text' : 'Gather in energy from your surroundings to gain +5 spellpower, +10% Arcane and Divine damage\n' + \
+        'text' : 'Gather in energy from your surroundings to gain +5 spellpower, +10% Arcane and +15% Divine damage\n' + \
             'for the remainder of your turn.'
         },
         'Reverse Hex':
@@ -3137,7 +3137,7 @@ class Ability(object):
         'action' : _hex,
         'cooldown' : 2,
         'checkFunction' : None,
-        'breakStealth' : 100,
+        'breakStealth' : 0,
         'image' : NIGHTBLADE_SKILLS + 'hex.png',
         'text' : 'Weaken a target foe.  On a successful magical hit roll, the foe\'s\n' + \
                 'Slashing resistance is lowered 25%, DR by 10% and Shadow Resistance\n' + \

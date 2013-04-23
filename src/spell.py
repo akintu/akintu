@@ -342,10 +342,10 @@ class Spell(object):
         hitType = Combat.calcHit(source, target, "Magical")
         duration = int(Dice.scale(source.totalSpellpower, 4, 0.025))
         magnitude = Dice.scale(source.totalSpellpower, 10, 0.012)
-        if hitType == "Partially Resisted":
-            magnitude /= 2
+        if hitType == "Partially Resisted" or hitType == "Partial Resist":
+            magnitude *= 0.5
         if hitType != "Miss" and hitType != "Fully Resisted":
-            Combat.addStatus(target, self.name, duration, magnitude)
+            Combat.addStatus(target, self.name, duration, int(magnitude))
         return hitType
 
     def _cloudVisionCheck(self, target):
@@ -730,7 +730,7 @@ class Spell(object):
         'action' : _cloudVision,
         'cooldown' : None,
         'image' : TIER1 + 'cloud-vision.png',
-        'text' : 'Greatly lowers enemy accuracy.\n' + \
+        'text' : 'Lowers enemy accuracy by 10 points. (+1.2%)\n' + \
                 'Lasts 4 turns + 1 per 10 spellpower.\n' + \
                 'On Partial Resist: -50% accuracy penalty',
         'condition' : _cloudVisionCheck
