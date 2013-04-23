@@ -422,7 +422,7 @@ class GameServer():
             current_panes = []
         for pane in self.pane.keys():
             #if pane not in current_panes and not (unloadAll and isinstance(pane, Location)):
-            if pane not in [p.location.pane for p in self.person.values()]:
+            if pane not in [p.location.pane if p.location else p.cPane for p in self.person.values()]:
                 print("Unloading pane " + str(pane))
                 people = {}
                 # Stop all AI behaviors
