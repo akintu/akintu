@@ -421,7 +421,8 @@ class GameServer():
         if unloadAll:
             current_panes = []
         for pane in self.pane.keys():
-            if pane not in current_panes and not (unloadAll and isinstance(pane, Location)):
+            #if pane not in current_panes and not (unloadAll and isinstance(pane, Location)):
+            if pane not in [p.location.pane for p in self.person.values()]:
                 print("Unloading pane " + str(pane))
                 people = {}
                 # Stop all AI behaviors
@@ -529,7 +530,7 @@ class GameServer():
         # If still no valid destination, find the closest point in anticipation of an obstacle
         # eventually being removed, such as an ally getting killed
         radius = 1
-        while not prev[u]:
+        while not prev[u] and radius < 10:
             R = Region("SQUARE", loc2, radius) - Region("SQUARE", loc2, radius - 1)
             for loc in [l for l in R if l.pane == loc1.pane]:
                 if prev[loc]:
