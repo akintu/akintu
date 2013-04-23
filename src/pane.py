@@ -624,7 +624,7 @@ class CombatPane(Pane):
             dist = random.randint(dist_range[0], dist_range[1])
             new_loc = location.move(dir, dist)
             if i >= 100:
-                print "Prevent infinite loop"
+                # print "Prevent infinite loop"
                 new_loc = random.choice(list(self.open_region.locations))
             if not self.is_passable(new_loc):           #Can't place whith obstacles
                 continue
