@@ -1495,7 +1495,7 @@ class Ability(object):
         Combat.healTarget(source, source, healing)
         duration = 3
         # Fire resist magnitude set at +15%, this magnitude is for spell resist.
-        magnitude = 2 * self.level
+        magnitude = 2 * source.level
         Combat.addStatus(source, "Draconic Guard", duration, magnitude)
 
     def _draconicGuardCheck(self, target):
@@ -1537,10 +1537,10 @@ class Ability(object):
         source = self.owner
         hit = Combat.calcHit(source, target, "Physical", modifier=-5)
         if hit != "Miss":
-            dam = Combat.calcDamage(source, target, self.level * 4, self.level * 6, "Fire", "Normal Hit")
+            dam = Combat.calcDamage(source, target, source.level * 4, source.level * 6, "Fire", "Normal Hit")
             Combat.lowerHP(target, dam)
             duration = 4
-            magnitude = 4 * self.level
+            magnitude = 4 * source.level
             Combat.addStatus(target, "Flaming Rend", duration, magnitude)
 
     def _frigidSlash(self, target):
@@ -1548,8 +1548,8 @@ class Ability(object):
         source = self.owner
         hit = Combat.calcHit(source, target, "Physical", modifier=-6)
         if hit != "Miss":
-            damSlash = Combat.calcDamage(source, target, 5 + self.level * 2, 5 + self.level * 3, "Slashing", "Normal Hit")
-            damCold = Combat.calcDamage(source, target, self.level * 2, self.level * 3, "Cold", "Normal Hit")
+            damSlash = Combat.calcDamage(source, target, 5 + source.level * 2, 5 + source.level * 3, "Slashing", "Normal Hit")
+            damCold = Combat.calcDamage(source, target, source.level * 2, source.level * 3, "Cold", "Normal Hit")
             Combat.lowerHP(target, damSlash)
             Combat.lowerHP(target, damCold)
             duration = 3
@@ -1580,7 +1580,7 @@ class Ability(object):
         '''Grants bonus accuracy, +15% overall damage, but lowers shadow resistance 25%'''
         source = self.owner
         duration = 5
-        magnitude = self.level + 4 # Used for accuracy bonus only
+        magnitude = source.level + 4 # Used for accuracy bonus only
         Combat.addStatus(source, "Military Valor", duration, magnitude)
 
     def _militaryValorCheck(self, target):
@@ -1655,7 +1655,7 @@ class Ability(object):
             dartMin = 4
             dartMax = 8
             damage = Combat.calcDamage(source, target, dartMin, dartMax, "Piercing", "Normal Hit")
-            rating = 7 + self.level * 2
+            rating = 7 + source.level * 2
             pHit = Combat.calcPoisonHit(source, target, rating)
             if pHit != "Miss":
                 duration = 4
@@ -1681,7 +1681,7 @@ class Ability(object):
         '''If a poison check is failed, target suffers reduced accuracy, 9% spell failure,
         and -20% poison resistance (elemental.) Also deals a small amount of poison damage.'''
         source = self.owner
-        rating = 6 + self.level * 3
+        rating = 6 + source.level * 3
         hit = Combat.calcPoisonHit(source, target, rating)
         if hit == "Normal Hit":
             duration = 3 + source.level / 4
