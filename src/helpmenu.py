@@ -114,7 +114,8 @@ topPages = {
              'Monsters Information',
              'Equipment Information',
              'Status Effects',
-             'Advanced Topics'],
+             'Advanced Topics',
+             'Acknowledgments'],
              'color' : HELP_COLOR
             },
     'Game Basics' : {
@@ -170,6 +171,12 @@ topPages = {
              'Spell Schools',
              'Wiki'],
             'color' : HELP_COLOR
+            },
+    'Acknowledgments' : {
+            'title' : 'Acknowledgments',
+            'options' : \
+            ['Acknowledgments'],
+            'color' : HELP_COLOR
             }
     }
             
@@ -207,7 +214,9 @@ contentPaths = {
     'Size' : os.path.join(HELP_PATH, 'help_size.txt'),
     'Sneak and Awareness' : os.path.join(HELP_PATH, 'help_stealth_and_hidden_objects.txt'),
     'Spell Schools' : os.path.join(HELP_PATH, 'help_spell_schools.txt'),
-    'Wiki' : os.path.join(HELP_PATH, 'help_wiki.txt')
+    'Wiki' : os.path.join(HELP_PATH, 'help_wiki.txt'),
+    
+    'Acknowledgments' : os.path.join(HELP_PATH, 'help_acknowledgments.txt.')
     }
     
             
