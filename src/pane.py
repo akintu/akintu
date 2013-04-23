@@ -615,12 +615,17 @@ class CombatPane(Pane):
 
     def rand_move_within_pane(self, location, dir_range, dist_range, bounds):
         random.seed()
+        i = 0
         while True:
+            i += 1
             dir = random.randint(dir_range[0], dir_range[1])
             if dir == 5:    #Can't move in direction 5
                 continue
             dist = random.randint(dist_range[0], dist_range[1])
             new_loc = location.move(dir, dist)
+            if i >= 100:
+                print "Prevent infinite loop"
+                new_loc = random.choice(list(self.open_region.locations))
             if not self.is_passable(new_loc):           #Can't place whith obstacles
                 continue
             if not self.is_within_bounds(new_loc):  #Can't move off the pane

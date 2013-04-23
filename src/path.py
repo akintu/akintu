@@ -18,7 +18,6 @@ class Path(object):
         if start.distance(end) == 1:
             return [end]
 
-        open_tiles = open_locations
         Q = all_locations
         dist = {}
         prev = {}
@@ -37,7 +36,7 @@ class Path(object):
 
             neighbors = [u.move(dir) for dir in [2, 4, 6, 8]]
             #(self.tile_is_open(v, pid, cPane) or v == end)
-            neighbors = [v for v in neighbors if v in Q and (v in open_tiles or v == end)]
+            neighbors = [v for v in neighbors if v in Q and (v in open_locations or v == end)]
             for v in neighbors:
                 Q.remove(v)
                 alt = dist[u] + u.distance(v)
