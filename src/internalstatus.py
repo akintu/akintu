@@ -96,7 +96,7 @@ class InternalStatus(object):
         target.statusArmorPenetration += magnitude
 
     def Avoidance_method(self, target, magnitude):
-        target.avoidanceChance = magnitude
+        target.avoidanceChance += magnitude
 
     def Awareness_penalty_method(self, target, magnitude):
         target.statusAwareness -= magnitude
@@ -353,7 +353,7 @@ class InternalStatus(object):
         target.statusArmorPenetration -= magnitude
 
     def Avoidance_method_reverse(self, target, magnitude):
-        target.avoidanceChance = 0
+        target.avoidanceChance -= magnitude
 
     def Awareness_penalty_method_reverse(self, target, magnitude):
         target.statusAwareness += magnitude
