@@ -52,7 +52,7 @@ class CombatServer():
 
             elif port:
                 # Invalide move attempted, ensure we're back where we started.
-                command.location = self.person[command.id].cLocation
+                command.location = self.server.person[command.id].cLocation
                 self.server.broadcast(command, -command.id)
                     
         ###### RemovePerson ######
