@@ -7,32 +7,32 @@ attributes.  All races have strengths and weaknesses.
   Human:
     +5 Maximum HP
     (The most balanced option; a good choice for any class)
-	
+    
   Dwarf:
     +2 Constitution
-	+5 Awareness
-	-2 Sorcery
-	-5 Magic Resist
-	(A good choice for Fighter classes)
-	
+    +5 Awareness
+    -2 Sorcery
+    -5 Magic Resist
+    (A good choice for Fighter classes)
+    
   Elf:
     +2 Sorcery
     +2 Ranged Accuracy
-	-2 Constitution
-	-5 Poison Tolerance
-	(A good choice for ranged attackers and Wizard classes)
-	
+    -2 Constitution
+    -5 Poison Tolerance
+    (A good choice for ranged attackers and Wizard classes)
+    
   Halfling:
     +2 Dexterity
-	+2 Cunning
-	-2 Strength
-	-5 Magic Resist
-	(A good choice for Thief classes)
-	
+    +2 Cunning
+    -2 Strength
+    -5 Magic Resist
+    (A good choice for Thief classes)
+    
   Orc:
     +3 Strength
-	+2 Constitution
-	+5 Poison Tolerance
-	-4 Piety
-	-2 Cunning
-	(Another good choice for Fighter classes)
+    +2 Constitution
+    +5 Poison Tolerance
+    -4 Piety
+    -2 Cunning
+    (Another good choice for Fighter classes)

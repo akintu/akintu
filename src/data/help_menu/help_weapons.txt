@@ -16,7 +16,7 @@ Example Weapon:
 
   Battle Axe
     -- Name; no prefix or suffix indicates non-magical weapon --
-	
+    
   Type: Axe
     -- Some special attacks are only possible with specific "types" --
   Hands: One-Handed Exclusive
@@ -25,10 +25,10 @@ Example Weapon:
     -- Minimum and Maximum damage dealt with no bonuses or penalties --
   Damage Type: Slashing
     -- One of three physical "elements"; some monsters are stronger --
-	-- or weaker to some types of physical attacks. --
+    -- or weaker to some types of physical attacks. --
   Force: 120%
     -- Benefits from Might 120% of the normal amount.  A might of --
-	-- 10 would thus become 12 while using this weapon. --
+    -- 10 would thus become 12 while using this weapon. --
   Critical Multiplier: 150%
     -- Deals 150% damage if it critically hits --
   Range: Melee
@@ -37,62 +37,62 @@ Example Weapon:
     -- Determines how much it weighs in your inventory --
   Value: 130 gold
     -- The value of this weapon before any discount or markups --
-	
+    
 Weapon Types
 
   Sword
     Balanced weapon type with moderate force and a good critical
-	multiplier.
-	
+    multiplier.
+    
   Axe
     Weapon type that favors strong characters as it has a high
-	Force value, augmenting already strong warriors more than
-	weaker warriors.  Lower critical multiplier than most
-	weapons.
-	
+    Force value, augmenting already strong warriors more than
+    weaker warriors.  Lower critical multiplier than most
+    weapons.
+    
   Knife
     Weapon type with low base damage and poor Force but has
-	the highest of critical multipliers.  Katanas belong to
-	this category, but have an innate accuracy penalty if the
-	wielder is not a Ninja.
-	
+    the highest of critical multipliers.  Katanas belong to
+    this category, but have an innate accuracy penalty if the
+    wielder is not a Ninja.
+    
   Polearm
     Weapon type with very high base damage but only mediocre
-	Force and the lowest critical multipliers.  A good weapon
-	for beginning characters and Dragoons.  Contains an
-	innate accuracy penalty for classes without Fighter as their
-	primary base class.
-	
+    Force and the lowest critical multipliers.  A good weapon
+    for beginning characters and Dragoons.  Contains an
+    innate accuracy penalty for classes without Fighter as their
+    primary base class.
+    
   Club
     Weapon type with excellent Force, but lower base damage and
-	low critical multipliers.  Even better than Axes if your 
-	strength is high enough.  Clubs deal bludgeoning damage
-	which fewer monsters resist than Piercing or Slashing.
-	
+    low critical multipliers.  Even better than Axes if your 
+    strength is high enough.  Clubs deal bludgeoning damage
+    which fewer monsters resist than Piercing or Slashing.
+    
   Wizard
     Inexpensive weapon type that is prone to having magical
-	properties when found in treasure chests.  Generally
-	less powerful than other weapons if not magical.
-	
+    properties when found in treasure chests.  Generally
+    less powerful than other weapons if not magical.
+    
   Bow
     Long range weapons with excellent critical multipliers
-	and decent Force.  Has only moderate base damage.
-	Longbows have an inherent accuracy penalty unless the
-	wielder is a Ranger-derived class.
-	
+    and decent Force.  Has only moderate base damage.
+    Longbows have an inherent accuracy penalty unless the
+    wielder is a Ranger-derived class.
+    
   Crossbow
     Medium range weapon that has 0% Force.  This means it deals
-	no bonus damage based on Strength/Might.  However, it has
-	exceptional base damage, making it an excellent choice for
-	low strength attackers.
-	
+    no bonus damage based on Strength/Might.  However, it has
+    exceptional base damage, making it an excellent choice for
+    low strength attackers.
+    
   Sling
     Medium range weapon that deals weak damage but is prone
-	to magical properties and is the only ranged weapon to deal
-	bludgeoning damage.
-	
+    to magical properties and is the only ranged weapon to deal
+    bludgeoning damage.
+    
   Shuriken
     Medium range weapon that deals slashing damage and has a
-	chance of piercing enemies in a straight line to harm those
-	behind them.
-	
+    chance of piercing enemies in a straight line to harm those
+    behind them.
+    

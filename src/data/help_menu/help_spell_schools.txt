@@ -13,29 +13,29 @@ Common Spell Schools
   
   Mystical
     Spells are either self-buffs that cannot be cast on anyone but yourself
-	or deal Arcane damage to enemies (an element that few enemies have
-	innate resistances to.)
-	
+    or deal Arcane damage to enemies (an element that few enemies have
+    innate resistances to.)
+    
   Natural
     Spells include defensive buffs, healing spells, and poison or holy 
-	damage spells.
-	
+    damage spells.
+    
   Primal
     Spells typically focus on dealing fire, cold, or electrical damage.
-	
+    
 Restricted Spell Schools
 
   Bane (Nightblade only)
     Spells involve dealing Shadow damage or debuffs but frequently have
-	a few short range.
-	
+    a few short range.
+    
   Enchantment (Spellsword only)
     Spells involve offensive buffs to yourself or allies as well as a few
-	debuffing spells used against enemies.
-	
+    debuffing spells used against enemies.
+    
   Mental (Tactician only)*
     Spells are primarily useful against enemy casters but this school also
-	contains some "crowd-control" spells used to keep weaker enemies
-	from overwhelming you while you deal with larger threats.
-	
+    contains some "crowd-control" spells used to keep weaker enemies
+    from overwhelming you while you deal with larger threats.
+    
 *Both the Tactician and Mental spell school are coming soon.

@@ -22,20 +22,20 @@ Combination Classes
 
   Barbarian (Fighter/Fighter)
     You are a powerful melee attacker whose abilities are tied to your
-	HP level.  Beware magic, as your defenses against it are particularly
-	low.
-	- Wears Heavy Armor
-	- Example Ability: Berserker Rage
-	    Gain bonus Might and Critical Magnitude when your HP is under
-		75%.
-	
+    HP level.  Beware magic, as your defenses against it are particularly
+    low.
+    - Wears Heavy Armor
+    - Example Ability: Berserker Rage
+        Gain bonus Might and Critical Magnitude when your HP is under
+        75%.
+    
   Dragoon (Fighter/Ranger)
     You are a mobile warrior that is very skilled with Spears and 
     Halberds.  You are capable of quickly navigating the battlefield
     with your Jump Attack and dealing group damage in melee.  Beware
     Traps as your focus on the sky leaves you little Awareness for 
     hidden traps below.
-	- Wears Heavy Armor
+    - Wears Heavy Armor
     - Example Ability: Jump Attack
         Jump to your target and deal massive damage on landing.  Nearby
         foes are harmed by the impact of your impact.
@@ -46,7 +46,7 @@ Combination Classes
     spellpower is the most limited of all the magical classes, you make up
     for it with your heavy armor and the highest HP of any class able to
     cast spells.
-	- Wears Heavy Armor
+    - Wears Heavy Armor
     - Example Spell: Enhance Weapon
         Your target's weapon gains bonus critical magnitude, armor
         penetration, critical hit chance and accuracy.
@@ -57,7 +57,7 @@ Combination Classes
     to be the most powerful of any trap-laying class.  Be warned that your
     standard melee and ranged attacks consume more AP than most other
     classes.
-	- Wears Medium Armor
+    - Wears Medium Armor
     - Example Ability: Explosive Trap
         Lay a trap down that will deal fire damage to the monster that
         triggers it as well as all monsters adjacent to it.
@@ -68,7 +68,7 @@ Combination Classes
     of your ranged attacks, allowing you to pick apart targets before they
     can reach you.  Beware foes that manage to reach you in melee.  Both
     your movement and your melee attack AP costs are high.
-	- Wears Light Armor
+    - Wears Light Armor
     - Example Ability: Cusp of Escape
         Attack a target on the edge of your range with an incredible
         bonus to accuracy and critical hit chance.
@@ -79,82 +79,82 @@ Combination Classes
     them slowly over a period of time.  Beware foes with high poison 
     resistance or tolerance as they will be difficult for you to weaken
     with most of your abilities.
-	- Wears Medium Armor
+    - Wears Medium Armor
     - Example Ability: Painful Shot
         Attack with a ranged weapon dealing bonus critical damage
         and occasionally lowering enemy attack power.
-		
+        
   Assassin (Thief/Ranger)
     You are a ranged stealth specialist that frequently deals critical
-	hits.  You strike from the shadows, often without breaking your
-	stealth.  Beware agile and observent enemies as they will be able
-	to detect you and close the distance to reach you where your ranged
-	attacks will be less effective.
-	- Wears Light Armor
-	- Example Ability: Ranged Backstab
-	    Perform a Thief backstab with a bow or crossbow with a huge
-		bonus to critical hit chance, dealing massive damage if it 
-		criticals and moderate damage otherwise.
-		
+    hits.  You strike from the shadows, often without breaking your
+    stealth.  Beware agile and observent enemies as they will be able
+    to detect you and close the distance to reach you where your ranged
+    attacks will be less effective.
+    - Wears Light Armor
+    - Example Ability: Ranged Backstab
+        Perform a Thief backstab with a bow or crossbow with a huge
+        bonus to critical hit chance, dealing massive damage if it 
+        criticals and moderate damage otherwise.
+        
   Shadow (Thief/Thief)
     You are the ultimate stealth master.  Your stealth is the most
-	difficult to detect.  You are able to re-enter stealth very quickly
-	after breaking out.  Less aware enemies are often helpless against
-	your hit-and-stealth tactics.  Beware highly observent foes and
-	enemies that use area-of-effect attacks because your conventional
-	abilities are limited and your survivability relies almost completely
-	on non-detection.
-	- Wears Light Armor
-	- Example Ability: Hide in Peril
-	    When harmed by anything that deals at least 30% of your 
-		maximum HP, immediately enter stealth if you aren't in stealth
-		already.
-		
+    difficult to detect.  You are able to re-enter stealth very quickly
+    after breaking out.  Less aware enemies are often helpless against
+    your hit-and-stealth tactics.  Beware highly observent foes and
+    enemies that use area-of-effect attacks because your conventional
+    abilities are limited and your survivability relies almost completely
+    on non-detection.
+    - Wears Light Armor
+    - Example Ability: Hide in Peril
+        When harmed by anything that deals at least 30% of your 
+        maximum HP, immediately enter stealth if you aren't in stealth
+        already.
+        
   Nightblade (Thief/Wizard)
     You are a combination of stealth and magic with an emphasis on shadow
-	elemental attacks.  You have access to a unique school of close-range
-	shadow spells known as Bane spells.  While your physical attacks are
-	not massively powerful, and you lack a large amount of MP, you have 
-	access to several abilites to defeat your enemies through vampirism
-	and shrouds of darkness when your physical and magical might fails
-	you.
-	- Wears Light Armor
-	- Example Ability: Shroud
-	    Deal shadow damage to all adjacent enemies and gain a 
-		protective cover of darkness that gives a 20% chance to avoid
-		enemy attacks outright.
-		
+    elemental attacks.  You have access to a unique school of close-range
+    shadow spells known as Bane spells.  While your physical attacks are
+    not massively powerful, and you lack a large amount of MP, you have 
+    access to several abilites to defeat your enemies through vampirism
+    and shrouds of darkness when your physical and magical might fails
+    you.
+    - Wears Light Armor
+    - Example Ability: Shroud
+        Deal shadow damage to all adjacent enemies and gain a 
+        protective cover of darkness that gives a 20% chance to avoid
+        enemy attacks outright.
+        
   Battle Mage (Wizard/Fighter)
     You are a practitioner of devastating close-range magic.  You are
-	able to wield medium armor without penalty and gain bonuses to your
-	close-range spells.  While your HP is relatively low for a front-line
-	combatant, you have many options to boost your defenses through spells
-	and the ability to regenerate mana when landing melee attacks to keep
-	those spells going.
-	- Wears Medium Armor
+    able to wield medium armor without penalty and gain bonuses to your
+    close-range spells.  While your HP is relatively low for a front-line
+    combatant, you have many options to boost your defenses through spells
+    and the ability to regenerate mana when landing melee attacks to keep
+    those spells going.
+    - Wears Medium Armor
     - Example Ability: Close-Ranged Magic
         Gain +6 Spellpower on all spells with a range of 3 or less.
-	
+    
   Arcane Archer (Wizard/Ranger)
     You are a long-range caster that mixes physical attacks with your
-	bonuses at dealing arcane damage.  Your ranged attacks always
-	regenerate mana for you, even if they miss.  You have large bonuses
-	to arcane damage, which few monsters are resistant to.  Beware
-	foes that reach you in melee as you are very frail and your movement
-	costs too much AP for you to successfully flee from their attacks.
-	- Wears Robes
-	- Example Ability: Arcane-Threading
-	    Your ranged attacks with bows and crossbows deal bonus arcane
-		damage.  This benefit lasts an entire battle.
+    bonuses at dealing arcane damage.  Your ranged attacks always
+    regenerate mana for you, even if they miss.  You have large bonuses
+    to arcane damage, which few monsters are resistant to.  Beware
+    foes that reach you in melee as you are very frail and your movement
+    costs too much AP for you to successfully flee from their attacks.
+    - Wears Robes
+    - Example Ability: Arcane-Threading
+        Your ranged attacks with bows and crossbows deal bonus arcane
+        damage.  This benefit lasts an entire battle.
   
   Trickster (Wizard/Thief)
     You are a high-risk high-reward hybrid caster that performs well
-	in melee as well as in ranged situtations.  Your primary mechanism
-	for regenerating mana is through dodging enemy attacks, which you 
-	are suprisingly good at.  Beware enemy magical attacks, because while
-	your magic defense is substantial, if any spells are able to break 
-	through it, your high dodge will not be able to protect your meagre
-	HP pool.
-	- Wears Robes
-	- Example Ability: Glee
-	    Regain 18 + 2 per level MP every time you dodge an attack.
+    in melee as well as in ranged situtations.  Your primary mechanism
+    for regenerating mana is through dodging enemy attacks, which you 
+    are suprisingly good at.  Beware enemy magical attacks, because while
+    your magic defense is substantial, if any spells are able to break 
+    through it, your high dodge will not be able to protect your meagre
+    HP pool.
+    - Wears Robes
+    - Example Ability: Glee
+        Regain 18 + 2 per level MP every time you dodge an attack.
