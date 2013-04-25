@@ -1,0 +1,15 @@
+Akintu
+by Gelatinous Cube
+
+Colton Myers
+Joshua Belcher
+Devin Ekins
+Kyle Rich
+
+User Documentation:  https://github.com/basepi/akintu-pub/wiki/Getting-Started
+Wiki with info about almost everything in the game:  http://akintu.net
+Game Download Page:  http://akintu.net/downloads
+
+Additional help is given in-game, accessible through the main menu.  The
+in-game help is not a copy-paste job from the wiki pages, but rather has been
+modified to be relevant to a player in the game.
