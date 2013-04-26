@@ -792,7 +792,7 @@
   [INTERNAL: Movement_speed_penalty]
     [MAGNITUDE: 1]
   [INTERNAL: Spell_failure_chance]
-    [MAGNITUDE: 7]
+    [MAGNITUDE: 15]
   [INTERNAL: Dodge_penalty]
     [MAGNITUDE: 5]
   [CATEGORY: Debuff]

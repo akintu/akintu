@@ -1890,9 +1890,10 @@ class Ability(object):
         'checkFunction' : _chainGraspCheck,
         'breakStealth' : 100,
         'image' : THIEF_SKILLS + "chain-grasp.png",
-        'text' : 'Throw a chain to tangle a target, lowering its dodge, movement speed,\n' +
-                    'and spell casting success.  Dependent on Cunning and cannot be used on\n' +
-                    'huge foes.'
+        'text' : 'Throw a chain to tangle a target, lowering its dodge by 5, movement speed by,\n' + \
+                    '1 tile per move and causing a 15% chance to fail to cast spells.\n' + \
+                    'Dependent on Cunning, and cannot be used on huge foes and has (at best)\n' + \
+                    'a 90% chance of succeeding.'
         },
         'Disarm traps':
         {
