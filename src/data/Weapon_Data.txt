@@ -280,7 +280,7 @@
 [BONUS_MOD: 1]
 [GOLD_VALUE: 75]
 [WEIGHT: 2]
-[RANGE: 6]
+[RANGE: 7]
 
 [NAME: Longbow]
 [TYPE: Bow]
@@ -313,7 +313,7 @@
 [BONUS_MOD: 0]
 [GOLD_VALUE: 130]
 [WEIGHT: 8]
-[RANGE: 6]
+[RANGE: 7]
 
 [NAME: Sling]
 [TYPE: Sling]
@@ -326,10 +326,10 @@
 [BONUS_TENDENCY: Elemental_Damage,200%]
 [BONUS_TENDENCY: Wizard,100%]
 [BONUS_TENDENCY: Ranger,25%]
-[BONUS_MOD: 8]
+[BONUS_MOD: 9]
 [GOLD_VALUE: 75]
 [WEIGHT: 1]
-[RANGE: 5]
+[RANGE: 6]
 
 [NAME: Shuriken]
 [TYPE: Shuriken]
@@ -344,7 +344,7 @@
 [BONUS_MOD: -1]
 [GOLD_VALUE: 130]
 [WEIGHT: 5]
-[RANGE: 5]
+[RANGE: 6]
 
 # Shuriken will eventually have a 15% chance of piercing through the first target, 
 # a 10% chance of piercing through the second, and a 5% chance of piercing through the

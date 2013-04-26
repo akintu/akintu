@@ -206,6 +206,10 @@ class CombatServer():
             if tEnt.shouldTrigger(actor):
                 tEnt.trigger(actor)
             if tEnt.charges <= 0:
+                try:
+                    self.server.pane[actor.cPane].hostileTraps.remove(tEnt)
+                except:
+                    pass
                 self.server.pane[actor.cPane].removeTrap(location, hostile=True)
                 self.server.broadcast(Command("TRAP", "REMOVE", location=location), \
                         -actor.id)
@@ -219,6 +223,11 @@ class CombatServer():
             effect = spell.fieldEffects[fName]
             effect(actor)
 
+    def update_fields(self, cPane):
+        '''Checks the combat pane for status fields that need to be removed
+        because they expired.'''
+        pass
+            
     def shout_turn_start(self, player, turn="Player"):
         '''Shouts to the Player that this particular turn is starting.
         Defaults to "Player"; "Monster" is the other valid value.'''

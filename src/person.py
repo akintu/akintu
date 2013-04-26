@@ -2270,7 +2270,7 @@ class Person(en.Entity):
         if( self.totalPiety == 0 or self._baseMP == 0):
             return self._baseMP
         else:
-            pietyBonus = max(0, (self.totalPiety - 10) * 4)
+            pietyBonus = max(0, (self.totalPiety - 10) * 3)
             return int(max(0, self._baseMP + pietyBonus + self.equipmentMP))
 
     @property

@@ -154,8 +154,7 @@ class Combat(object):
           Any Hit type string"""
         offense *= Dice.rollFloat(0.75, 1.00)
         defense *= Dice.rollFloat(0.75, 1.00)
-        if(offense * 3 <= defense):
-            # Spell fails Listener TODO
+        if(offense * 2.5 <= defense):
             return "Fully Resisted"
         elif(offense < defense):
             return "Partially Resisted"

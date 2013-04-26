@@ -135,7 +135,7 @@ class Spell(object):
             if self.cooldown:
                 Combat.applyCooldown(self.owner, self.name, self.cooldown)
             spellSuccess = Dice.rollSuccess(100 - self.owner.spellFailureChance)
-            if spellSuccess:
+            if spellSuccess == "Normal Hit":
                 hitType = None
                 self._shoutSpellCast(self.owner, target)
                 if self.targetType == "hostile" and target.team == "Players":
@@ -478,8 +478,8 @@ class Spell(object):
 
     def _torrent(self, target):
         source = self.owner
-        lower = 10
-        upper = 28
+        lower = 8
+        upper = 27
         knockbackDistance = 5
         selectMonsters = True
         if source.team == "Monsters":
@@ -497,7 +497,7 @@ class Spell(object):
     def _lightningBolt(self, target):
         source = self.owner
         lower = 5
-        upper = 33
+        upper = 31
         selectMonsters = True
         if source.team == "Monsters":
             selectMonsters = False
@@ -931,9 +931,9 @@ class Spell(object):
         'range' : 16,
         'target' : 'hostile',
         'action' : _torrent,
-        'cooldown' : 2,
+        'cooldown' : 3,
         'image' : TIER2 + 'torrent.png',
-        'text' : 'Blasts a target with supercooled liquid for 10-28 + 1.4% Cold damage and knocks back\n' + \
+        'text' : 'Blasts a target with supercooled liquid for 8-27 + 1.4% Cold damage and knocks back\n' + \
                 'any non-huge target 5 tiles that does not resist (paritally or fully).  Will hit the first\n' + \
                 'hostile target it encounters between itself and the intended target.'
         },
@@ -948,7 +948,7 @@ class Spell(object):
         'action' : _lightningBolt,
         'cooldown' : 1,
         'image' : TIER2 + 'lightning-bolt.png',
-        'text' : 'Zap a series of targets between you and your specified target for 5-33 + 0.5% Electric damage.\n' + \
+        'text' : 'Zap a series of targets between you and your specified target for 5-31 + 0.5% Electric damage.\n' + \
                 'On partial resist: -50% damage\n' + \
                 'On critical: +30% damage'
         },
@@ -997,7 +997,7 @@ class Spell(object):
         'cooldown' : 2,
         'image' : TIER2 + 'shrink.png',
         'text' : 'Shrinks a target and its adjacent allies such that their attack power and\n' + \
-                'DR are both reduced by 12% for 2 turns (up to 5 turns with 60 spellpower).\n' + \
+                'DR are both reduced by 18% for 2 turns (up to 5 turns with 60 spellpower).\n' + \
                 'Monsters that partially resist ignore all effects; small creatures are immune.',
         'radius' : 1
         },
@@ -1014,7 +1014,7 @@ class Spell(object):
         'image' : TIER2 + 'frost-weapon.png',
         'text' : 'Enhance the effect of your, or your ally\'s, weapon to deal 2-5 + 2% Cold damage and\n' + \
                 'have an unlikely chance on hit to reduce movement speed by 1 tile/move and lower\n' + \
-                'Dodge by 4 points for 3 turns.  The enchantment itself lasts 3 Turns + 1 per 10 spellpower\n' + \
+                'Dodge by 6 points for 3 turns.  The enchantment itself lasts 3 Turns + 1 per 10 spellpower\n' + \
                 'up to a maximum of 7 turns.'
         }
     }

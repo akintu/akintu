@@ -265,8 +265,9 @@ class Trap(e.Entity):
 
     def _manaSiphonTrap(self, target):
         ''' Ultra-rare trap that drains all mana from a player. '''
-        Combat.modifyResource(target, "MP", -target.totalMP)
-        Combat.sendCombatMessage(self.name + " drained " + `target.totalMP` + " mana from " + target.name, target, color="red")
+        drainAmount = target.totalMP / 2
+        Combat.modifyResource(target, "MP", -drainAmount)
+        Combat.sendCombatMessage(self.name + " drained " + `drainAmount` + " mana from " + target.name, target, color="red")
 
     # Utility methods
     def trigger(self, target):
@@ -511,7 +512,7 @@ class Trap(e.Entity):
             },
         'Mana Siphon Trap' :
             {
-            'rating' : 50,
+            'rating' : 40,
             'ratingScale' : 0.2,
             'effect' : _manaSiphonTrap,
             'rarityWeight' : 1,
