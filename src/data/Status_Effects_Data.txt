@@ -1941,7 +1941,7 @@
   [INTERNAL: Poison_tolerance_penalty]
     [MAGNITUDE: 0]
   [INTERNAL: Elemental_vulnerability]
-    [MAGNITUDE: 5]
+    [MAGNITUDE: 10]
   [INTERNAL: Might_penalty]
     [MAGNITUDE: 3]
   [CATEGORY: Debuff]

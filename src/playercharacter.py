@@ -1168,7 +1168,7 @@ class PlayerCharacter(p.Person):
         oldPieces = self.equippedItems.equip(newPiece, hand, alternate)
         oldPiece = oldPieces[0]
         oldPiece2 = None
-        if oldPiece and len(oldPieces) > 1:
+        if len(oldPieces) > 1:
             oldPiece2 = oldPieces[1]
         if not alternate:
             for prop in newPiece.propertyList:
@@ -1192,7 +1192,7 @@ class PlayerCharacter(p.Person):
                     self.equipmentDodge -= oldPiece.dodgeMod
                 elif isinstance(oldPiece, equipment.Weapon):
                     pass
-            self.inventory.allItems.append(oldPiece)
+            self.inventory.addItem(oldPiece)
         if oldPiece2:
             if not alternate:
                 for prop in oldPiece2.propertyList:
@@ -1203,7 +1203,7 @@ class PlayerCharacter(p.Person):
                     self.equipmentDodge -= oldPiece2.dodgeMod
                 elif isinstance(oldPiece2, equipment.Weapon):
                     pass
-            self.inventory.allItems.append(oldPiece2)
+            self.inventory.addItem(oldPiece2)
         if self.AP > self.totalAP:
             self.AP = self.totalAP
         return [oldPiece, oldPiece2]
@@ -1266,7 +1266,6 @@ class PlayerCharacter(p.Person):
         if isinstance(item, consumable.Consumable):
             return
         self.equip(item, alternate=alternate)
-        self.inventory.removeItem(item)
         text = "Equipped: " + item.displayName
         if alternate:
             text += " (alternate set)"

@@ -106,16 +106,19 @@ class Inventory(object):
         inventory, if it is in it.  Otherwise returns
         None.'''
         if not itemName and item:
-            toReturn = None
-            for x in self._allItems:
-                if item.identifier == x.identifier:
-                    toReturn = x
-                    break
-            if toReturn:
-                self._allItems.remove(toReturn)
-                return toReturn
-            else:
-                return None 
+            if item in self._allItems:
+                self._allItems.remove(item)
+                return item
+            # toReturn = None
+            # for x in self._allItems:
+                # if item is x:
+                    # toReturn = x
+                    # break
+            # if toReturn:
+                # self._allItems.remove(toReturn)
+                # return toReturn
+            # else:
+                # return None 
         elif not item and itemName:
             toReturn = None
             for x in self._allItems:

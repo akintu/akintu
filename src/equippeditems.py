@@ -130,6 +130,11 @@ class EquippedItems(object):
                 gearDict['Main Hand'] = None
         if oldPieceOne:
             oldPieceOne.color = "black"
+            # print "New Piece " + `id(newPiece)`
+            # print "Old Piece " + `id(oldPieceOne)`
+            # print "Equipped " + `id(gearDict['Main Hand'])`
+            
+        # print "\n"
         if oldPieceTwo:
             oldPieceTwo.color = "black"
             return [oldPieceOne, oldPieceTwo]

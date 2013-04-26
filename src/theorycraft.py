@@ -152,10 +152,6 @@ class TheoryCraft(object):
 
         newChar.inventory.gold = gold
         
-        for itemName in inventoryNames:
-            if itemName == '':
-                continue
-            newChar.inventory.addItem(TheoryCraft.rehydrateTreasure(itemName))
         for itemName in toEquip:
             if itemName == '':
                 continue
@@ -168,7 +164,10 @@ class TheoryCraft(object):
                 newChar.equip(item, "Left")
             else:
                 newChar.equip(item)
-            newChar.inventory.removeItem(item)
+        for itemName in inventoryNames:
+            if itemName == '':
+                continue
+            newChar.inventory.addItem(TheoryCraft.rehydrateTreasure(itemName))
         
         newChar.HP = newChar.totalHP
         newChar.AP = newChar.totalAP
@@ -218,10 +217,6 @@ class TheoryCraft(object):
             if spellName == '':
                 continue
             newChar.spellList.append(spell.Spell(spellName, newChar))
-        for itemName in inventoryNames:
-            if itemName == '':
-                continue
-            newChar.inventory.addItem(TheoryCraft.rehydrateTreasure(itemName))
         for itemName in toEquip:
             if itemName == '':
                 continue
@@ -234,7 +229,6 @@ class TheoryCraft(object):
                 newChar.equip(item, "Left")
             else:
                 newChar.equip(item)
-            newChar.inventory.removeItem(item)
         for itemName in alternateEquip:
             if itemName == '':
                 continue
@@ -245,7 +239,11 @@ class TheoryCraft(object):
                 newChar.equip(item, "Left", True)
             else:
                 newChar.equip(item, alternate=True)
-            newChar.inventory.removeItem(item)
+        for itemName in inventoryNames:
+            if itemName == '':
+                continue
+            newChar.inventory.addItem(TheoryCraft.rehydrateTreasure(itemName))
+        
         for passiveName in passiveNames:
             if passiveName == '':
                 continue
