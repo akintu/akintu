@@ -1493,7 +1493,7 @@ class Game(object):
 
     def remove_entities(self, location):
         '''
-        Helper method to remove the entities from a 
+        Helper method to remove the entities from a
         specific tile in a pane object.  Removes chests
         after they are opened.
         '''
@@ -1514,6 +1514,10 @@ class Game(object):
         else:
             self.screen.show_text('Entering ' + str(location.pane))
             self.pane = self.world.get_pane(location.pane)
+            if self.world.is_town_pane(location.pane) and self.musicState != "town":
+                self.play_music("town", True)
+            if not self.world.is_town_pane(location.pane) and self.musicState != "overworld":
+                self.play_music("overworld", True)
 
         self.screen.set_pane(self.pane)
 
