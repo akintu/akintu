@@ -1171,8 +1171,8 @@ class Person(en.Entity):
         return self._baseRangedForce
 
     @baseRangedForce.setter
-    def baseRangedFroce(self, value):
-        """ The default value here should be 100 """
+    def baseRangedForce(self, value):
+        """ The default value here should be 0 """
         self._baseRangedForce = value
 
     @property
