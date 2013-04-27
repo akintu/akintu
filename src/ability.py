@@ -902,7 +902,7 @@ class Ability(object):
     def _hotBullet(self, target):
         source = self.owner
         hitType = Combat.calcHit(source, target, "Physical")
-        Combat.basicAttack(sourcd, target, hitType, criticalDamageMod=1.1)
+        Combat.basicAttack(source, target, hitType, criticalDamageMod=1.1)
         fireBase = 8 + source.totalCunning / 6
         fireDamage = Combat.calcDamage(source, target, fireBase, fireBase, "Fire", hitType)
         Combat.lowerHP(target, fireDamage)
@@ -2629,7 +2629,7 @@ class Ability(object):
         'range' : -1,
         'target' : 'hostile',
         'action' : _cuspOfEscape,
-        'cooldown' : 1,
+        'cooldown' : 2,
         'checkFunction' : _cuspOfEscapeCheck,
         'breakStealth' : 100,
         'image' : MARKSMAN_SKILLS + 'cusp-of-escape.png',
