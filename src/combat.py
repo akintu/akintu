@@ -733,7 +733,7 @@ class Combat(object):
         effectiveForce = (weapon.force + source.statusForce) * forceMod
         if source.usingWeapon("Ranged"):
             effectiveForce *= 1 + (float(source.totalRangedForce) / 100)
-        effectiveMight = round(Dice.rollFloat(0.75, 1.0) * (source.totalMight + mightMod) * (float(effectiveForce) / 100))
+        effectiveMight = round(Dice.rollFloat(0.50, 1.0) * (source.totalMight + mightMod) * (float(effectiveForce) / 100))
         effectiveDR = min(80, max(0, target.totalDR - (armorPenetrationMod + source.totalArmorPenetration)))
         outgoingDamage = ((Dice.roll(weapon.damageMin + weapon.damageMinBonus,
                                     weapon.damageMax + weapon.damageMaxBonus) +
