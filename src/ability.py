@@ -861,7 +861,7 @@ class Ability(object):
     def _cuspOfEscape(self, target):
         source = self.owner
         hitType = Combat.calcHit(source, target, "Physical", modifier=12, critMod=12)
-        Combat.basicAttack(source, target, hitType)
+        Combat.basicAttack(source, target, hitType, criticalDamageMod=1.12)
 
     def _cuspOfEscapeCheck(self, target):
         source = self.owner
@@ -871,6 +871,20 @@ class Ability(object):
             return (False, "Target must be exactly " + `source.attackRange` + " tiles away.")
         return (True, "")
 
+    def _huntersShot(self, target):
+        source = self.owner
+        hitType = Combat.calcHit(source, target, "Physical", modifier=-5, critMod=5)
+        sizeMod = 1.0
+        if target.size == "Huge" or target.size == "Large":
+            sizeMod = 1.05
+        Combat.basicAttack(source, target, hitType, criticalDamageMod=1.2, mightMod=6, overallDamageMod=sizeMod)
+        
+    def _huntersShotCheck(self, target):
+        source = self.owner
+        if source.usingWeapon("Melee"):
+            return (False, "Must be using a ranged weapon for: " + self.name)
+        return (True, "")
+        
     def _hotArrow(self, target):
         source = self.owner
         hitType = Combat.calcHit(source, target, "Physical", modifier=-1)
@@ -2042,7 +2056,8 @@ class Ability(object):
         'checkFunction' : _tunnelVisionCheck,
         'breakStealth' : 0,
         'image' : RANGER_SKILLS + 'tunnel-vision.png',
-        'text' : 'Increases Ranged accuracy by 10 and Might by 3 but movement tiles drop by 1.'
+        'text' : 'Increases Ranged accuracy by 10 and Might by 3 but movement tiles drop by 1.\n' + \
+                'Lasts 4 Turns.'
         },
         'Balm':
         {
@@ -2610,7 +2625,7 @@ class Ability(object):
         'level' : 1,
         'class' : 'Marksman',
         'HPCost' : 0,
-        'APCost' : 10,
+        'APCost' : 5,
         'range' : -1,
         'target' : 'hostile',
         'action' : _cuspOfEscape,
@@ -2618,10 +2633,27 @@ class Ability(object):
         'checkFunction' : _cuspOfEscapeCheck,
         'breakStealth' : 100,
         'image' : MARKSMAN_SKILLS + 'cusp-of-escape.png',
-        'text' : 'Ranged attack with +12 Accuracy and +12% Critical hit chance.\n' + \
-                'Only usable if the target is exactly on the edge of your weapon\'s\n' + \
-                'range.',
+        'text' : 'Ranged attack with +12 Accuracy, +12% Critical hit chance, and\n' + \
+                '+12% Critical Magnitude. Only usable if the target is exactly\n' + \
+                'on the edge of your weapon\'s range.\n',
         'specialTargeting' : "BORDER"
+        },
+        "Hunter's Shot":
+        {
+        'level' : 1,
+        'class' : 'Marksman',
+        'HPCost' : 0,
+        'APCost' : 5,
+        'range' : -1,
+        'target' : 'hostile',
+        'action' : _huntersShot,
+        'cooldown' : 3,
+        'checkFunction' : _huntersShotCheck,
+        'breakStealth' : 100,
+        'image' : MARKSMAN_SKILLS + 'hunters-shot.png',
+        'text' : 'Ranged Attack with -5 Accuracy but +5% Critical chance, +6 Might,\n' + \
+                'and +20% Critical Magnitude.  Deals +5% damage against large or\n' + \
+                'huge targets.'
         },
         'Hot Arrow':
         {
