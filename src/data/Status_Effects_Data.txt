@@ -1873,7 +1873,7 @@
   [INTERNAL: Magic_resist_bonus]
     [MAGNITUDE: 0]
   [INTERNAL: Elemental_resistance_fire]
-    [MAGNITUDE: 15]
+    [MAGNITUDE: 30]
   [CATEGORY: Buff]
 
 [NAME: Endure Beating]

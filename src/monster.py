@@ -186,6 +186,7 @@ class Monster(person.Person):
             self.baseHP = int(self.baseHP * 2)
         elif self.playerNum == 4:
             self.baseHP = int(self.baseHP * 2.5)
+        self.HP = self.baseHP
             
     def getDetailTuple(self):
         '''DEPRECATED'''

@@ -404,8 +404,8 @@ class TheoryCraft(object):
                 currentGP += subList[selection]['GP']
                 numMonsters += 1
 
-        # for mon in listOfMonsters:
-            # mon.adjustMaxHP()
+        for mon in listOfMonsters:
+            mon.adjustMaxHP()
         return listOfMonsters
 
 

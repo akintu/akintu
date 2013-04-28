@@ -1508,14 +1508,14 @@ class Ability(object):
         healing = round(source.totalHP * 0.1)
         Combat.healTarget(source, source, healing)
         duration = 3
-        # Fire resist magnitude set at +15%, this magnitude is for spell resist.
+        # Fire resist magnitude set at +30%, this magnitude is for spell resist.
         magnitude = 2 * source.level
         Combat.addStatus(source, "Draconic Guard", duration, magnitude)
 
     def _draconicGuardCheck(self, target):
-        ''' Only used when at <35% of max HP '''
+        ''' Only used when at <50% of max HP '''
         source = self.owner
-        if source.HP < source.totalHP * 0.35:
+        if source.HP < source.totalHP * 0.50:
             return (True, "")
         return (False, "")
 
