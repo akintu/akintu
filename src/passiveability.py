@@ -96,10 +96,10 @@ class PassiveAbility(object):
     def applyTwoWeaponTargeting(self, target, reverse=False, other=None):
         if not reverse:
             if target.usingWeaponStyle("Dual"):
-                target.baseMeleeAccuracy += 2
+                target.baseMeleeAccuracy += 3
         else:
             if target.usingWeaponStyle("Dual"):
-                target.baseMeleeAccuracy -= 2
+                target.baseMeleeAccuracy -= 3
 
     def applyBloodOnTheEdge(self, target, reverse=False, damage=0):
         # No reverse possible.
@@ -620,12 +620,11 @@ class PassiveAbility(object):
 
     def applyPanic(self, target, reverse=False, other=None):
         ''' Monsters that Panic gain Dexterity (increasing their accuracy and
-        dodge) every time they are hit with melee attacks when at half health
-        or lower.  Lasts the entire battle and stacks. '''
+        dodge) every time they are hit with melee attacks.
+        Lasts the entire battle and stacks. '''
         source = self.owner
-        if source.HP <= 0.5 * source.totalHP:
-            source.statusDexterity += 2
-            Combat.sendCombatMessage(source.name + " Panics; +2 Dexterity.", other, color='red')
+        source.statusDexterity += 2
+        Combat.sendCombatMessage(source.name + " Panics; +2 Dexterity.", other, color='red')
 
     def applyRegeneration(self, target, reverse=False):
         ''' Monsters with regerenation recover 15% of their max HP each turn.'''
@@ -671,7 +670,7 @@ class PassiveAbility(object):
         'onStringList' : ['Outgoing Melee Attack'],
         'offStringList' : ['Outgoing Melee Attack Complete'],
         'image' : BARBARIAN + "two-weapon-targeting.png",
-        'text' : "+2 Accuracy on attacks with two weapons"
+        'text' : "+3 Accuracy on attacks with two weapons"
         },
         'Blood on the Edge':
         {

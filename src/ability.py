@@ -204,7 +204,7 @@ class Ability(object):
     def _mightyBlow(self, target):
         source = self.owner
         hit = Combat.calcHit(source, target, "Physical", modifier=-5)
-        Combat.basicAttack(source, target, hit, forceMod=1.6, mightMod=3)
+        Combat.basicAttack(source, target, hit, forceMod=1.5)
 
     def _mightyBlowCheck(self, target):
         if self.owner.usingWeapon("Melee"):
@@ -224,7 +224,7 @@ class Ability(object):
     def _quickStrike(self, target):
         source = self.owner
         hit = Combat.calcHit(source, target, "Physical", modifier=-12)
-        Combat.basicAttack(source, target, hit, forceMod=0.5, overallDamageMod=0.75)
+        Combat.basicAttack(source, target, hit, forceMod=0.5, overallDamageMod=0.95)
 
     def _quickStrikeCheck(self, target):
         if self.owner.usingWeapon("Melee"):
@@ -233,7 +233,7 @@ class Ability(object):
 
     def _preciseBlow(self, target):
         source = self.owner
-        hit = Combat.calcHit(source, target, "Physical", modifier=5, critMod=6)
+        hit = Combat.calcHit(source, target, "Physical", modifier=5, critMod=3)
         Combat.basicAttack(source, target, hit)
 
     def _preciseBlowCheck(self, target):
@@ -563,7 +563,7 @@ class Ability(object):
     def _sacrificialStrike(self, target):
         source = self.owner
         hit = Combat.calcHit(source, target, "Physical", critMod=2)
-        Combat.basicAttack(source, target, hit, forceMod=1.75, mightMod=8)
+        Combat.basicAttack(source, target, hit, forceMod=1.40)
 
     def _sacrificialStrikeCheck(self, target):
         source = self.owner
@@ -1775,8 +1775,7 @@ class Ability(object):
         'checkFunction' : _mightyBlowCheck,
         'breakStealth' : 100,
         'image' : FIGHTER_SKILLS + "mighty-blow.png",
-        'text' : 'Melee attack with Force x 1.6 and +3 Might that has a 5 point\n' + \
-                'penalty to accuracy.'
+        'text' : 'Melee attack with Force x 1.5 that has a 5 point penalty to accuracy.'
         },
         'Brace':
         {
@@ -1821,7 +1820,7 @@ class Ability(object):
         'checkFunction' : _quickStrikeCheck,
         'breakStealth' : 100,
         'image' : FIGHTER_SKILLS + "quick-strike.png",
-        'text' : "Fast melee attack with -12 Accuracy, -50% force, and -25% overall damage."
+        'text' : "Fast melee attack with -12 Accuracy, -50% force, and -5% overall damage."
         },
         'Precise Blow':
         {
@@ -1836,7 +1835,7 @@ class Ability(object):
         'checkFunction' : _preciseBlowCheck,
         'breakStealth' : 100,
         'image' : FIGHTER_SKILLS + "precise-blow.png",
-        'text' : "Melee attack with +5 additional Accuracy and +6% Critical Hit chance"
+        'text' : "Melee attack with +5 additional Accuracy and +3% Critical Hit chance"
         },
         'Thrust':
         {
@@ -1914,7 +1913,7 @@ class Ability(object):
         'level' : 2,
         'class' : 'Thief',
         'HPCost' : 0,
-        'APCost' : 6,
+        'APCost' : 5,
         'range' : 0,
         'target' : 'self',
         'action' : _disarmTraps,
@@ -2222,7 +2221,7 @@ class Ability(object):
         'breakStealth' : 100,
         'image' : BARBARIAN_SKILLS + 'sacrificial-strike.png',
         'text' : 'Attack harms you and your foe.\n' + \
-                'Has 1.75x Force, +8 Might and +2% Critical Chance.'
+                'Has 1.40x Force and +2% Critical Chance.'
         },
         'Desperate Strike':
         {

@@ -287,20 +287,20 @@ class Trait(object):
     def applyWellTraveled(self, target):
         if self.rank == 1:
             target._baseInventoryCapacity += 15
-            target.baseFireResistance += 1
-            target.baseColdResistance += 1
-        if self.rank == 2:
-            target._baseInventoryCapacity += 15
-            target.baseFireResistance += 1
-            target.baseColdResistance += 1
-        if self.rank == 3:
-            target._baseInventoryCapacity += 15
-            target.baseFireResistance += 1
-            target.baseColdResistance += 1
-        if self.rank == 4:
-            target._baseInventoryCapacity += 25
             target.baseFireResistance += 2
             target.baseColdResistance += 2
+        if self.rank == 2:
+            target._baseInventoryCapacity += 15
+            target.baseFireResistance += 2
+            target.baseColdResistance += 2
+        if self.rank == 3:
+            target._baseInventoryCapacity += 15
+            target.baseFireResistance += 2
+            target.baseColdResistance += 2
+        if self.rank == 4:
+            target._baseInventoryCapacity += 25
+            target.baseFireResistance += 3
+            target.baseColdResistance += 3
 
     def applyHammerAndAnvil(self, target, reverse=False, other=None):
         direction = target.cLocation.direction_to(other.cLocation)
@@ -333,16 +333,16 @@ class Trait(object):
         magnitude = None
         duration = 2
         if self.rank == 1:
-            chance = 10
+            chance = 12
             magnitude = 5
         elif self.rank == 2:
-            chance = 12
+            chance = 14
             magnitude = 6
         elif self.rank == 3:
-            chance = 15
+            chance = 17
             magnitude = 7
         elif self.rank == 4:
-            chance = 18
+            chance = 20
             magnitude = 8
         if Dice.rollBeneath(chance):
             Combat.addStatus(other, "Wounding Projectiles", duration, magnitude)
@@ -658,7 +658,6 @@ class Trait(object):
 
     
     def applyDiscerningEyes(self, target):
-        #self.rank = Trait.getTraiself.rank(target, "Discerning Eyes")
         if self.rank == 1:
             target.baseAwareness += 5
             target.trapDisarmBonus += 1
@@ -674,33 +673,31 @@ class Trait(object):
 
     
     def applyTreasureHunter(self, target):
-        #self.rank = Trait.getTraiself.rank(target, "Treasure Hunter")
         if self.rank == 1:
-            target.goldFind += 2
+            target.goldFind += 4
         elif self.rank == 2:
-            target.goldFind += 1
-        elif self.rank == 3:
             target.goldFind += 2
+        elif self.rank == 3:
+            target.goldFind += 4
         elif self.rank == 4:
-            target.goldFind += 3
+            target.goldFind += 6
 
     
     def applyDilatant(self, target):
-        #self.rank = Trait.getTraiself.rank(target, "Dilatant")
         if self.rank == 1:
             target.baseHP += 3
             target._baseInventoryCapacity += 5
             target.baseAwareness += 1
-            target.baseShadowResistance += 1
+            target.baseShadowResistance += 2
         elif self.rank == 2:
             target.baseHP += 3
             target._baseInventoryCapacity += 5
             target.baseAwareness += 2
-            target.baseShadowResistance += 1
+            target.baseShadowResistance += 2
         elif self.rank == 3:
             target.baseHP += 3
             target._baseInventoryCapacity += 5
-            target.baseShadowResistance += 1
+            target.baseShadowResistance += 2
         elif self.rank == 4:
             target.baseHP += 5
             target._baseInventoryCapacity += 10
@@ -722,15 +719,18 @@ class Trait(object):
         target.MP = target.totalMP
     
     def applySurvivor(self, target):
-        #self.rank = Trait.getTraiself.rank(target, "Survivor")
         if self.rank == 1:
             target.baseHP += 4
+            target.baseIntuition += 1
         elif self.rank == 2:
             target.baseHP += 4
+            target.baseIntuition += 1
         elif self.rank == 3:
             target.baseHP += 4
+            target.baseIntuition += 1
         elif self.rank == 4:
             target.baseHP += 4
+            target.baseIntuition += 1
         target.HP = target.totalHP
     
     def applyIllusionSpellFocusStatic(self, target):
@@ -1087,10 +1087,10 @@ class Trait(object):
             'action' : applyWellTraveled,
             'image' : FIGHTER + 'well-travelled.png',
             'text' : 'Gain a bonus to fire and cold elemental resistances as well as carrying capacity.\n' + \
-                    'Rank I:   +1% Fire Resistance, +1% Cold Resistance, +15 lbs\n' + \
-                    'Rank II:  +2% Fire Resistance, +2% Cold Resistance, +30 lbs\n' + \
-                    'Rank III: +3% Fire Resistance, +3% Cold Resistance, +45 lbs\n' + \
-                    'Rank IV:  +5% Fire Resistance, +5% Cold Resistance, +70 lbs'
+                    'Rank I:   +2% Fire Resistance, +2% Cold Resistance, +15 lbs\n' + \
+                    'Rank II:  +4% Fire Resistance, +4% Cold Resistance, +30 lbs\n' + \
+                    'Rank III: +6% Fire Resistance, +6% Cold Resistance, +45 lbs\n' + \
+                    'Rank IV:  +9% Fire Resistance, +9% Cold Resistance, +70 lbs'
             },
         'Hammer and Anvil':
             {
@@ -1117,10 +1117,10 @@ class Trait(object):
             'offStringList' : [],
             'image' : RANGER + 'wounding-projectiles.png',
             'text' : 'All successful ranged attacks have a chance to lower enemy dodge for 2 turns.  Stacks up to 3 times.\n' + \
-                    'Rank I:   10% chance to apply, -5 Dodge\n' + \
-                    'Rank II:  12% chance to apply, -6 Dodge\n' + \
-                    'Rank III: 15% chance to apply, -7 Dodge\n' + \
-                    'Rank IV:  18% chance to apply, -8 Dodge'
+                    'Rank I:   12% chance to apply, -5 Dodge\n' + \
+                    'Rank II:  14% chance to apply, -6 Dodge\n' + \
+                    'Rank III: 17% chance to apply, -7 Dodge\n' + \
+                    'Rank IV:  20% chance to apply, -8 Dodge'
             },
         'Melee Archery':
             {
@@ -1326,10 +1326,10 @@ class Trait(object):
             'action' : applyTreasureHunter,
             'image' : THIEF + 'treasure-hunter.png',
             'text' : 'Increases the amount of gold you will find.\n' + \
-                    'Rank I:   +2% Gold Find\n' + \
-                    'Rank II:  +3% Gold Find\n' + \
-                    'Rank III: +5% Gold Find\n' + \
-                    'Rank IV:  +8% Gold Find'
+                    'Rank I:   +4% Gold Find\n' + \
+                    'Rank II:  +6% Gold Find\n' + \
+                    'Rank III: +10% Gold Find\n' + \
+                    'Rank IV:  +16% Gold Find'
             },
         'Dilatant':
             {
@@ -1338,10 +1338,10 @@ class Trait(object):
             'action' : applyDilatant,
             'image' : THIEF + 'dilatant.png',
             'text' : 'Increases HP, Carrying Capacity, Awareness, and Shadow elemental resistance.\n' + \
-                    'Rank I:   +3 HP, +5 lbs, +1 Awareness, +1% Shadow resistance\n' + \
-                    'Rank II:  +6 HP, +10 lbs, +2 Awareness, +2% Shadow resistance\n' + \
-                    'Rank III: +9 HP, +15 lbs, +3 Awareness, +3% Shadow resistance\n' + \
-                    'Rank IV:  +14 HP, +25 lbs, +5 Awareness, +5% Shadow resistance'
+                    'Rank I:   +3 HP, +5 lbs, +1 Awareness, +2% Shadow resistance\n' + \
+                    'Rank II:  +6 HP, +10 lbs, +2 Awareness, +4% Shadow resistance\n' + \
+                    'Rank III: +9 HP, +15 lbs, +3 Awareness, +6% Shadow resistance\n' + \
+                    'Rank IV:  +14 HP, +25 lbs, +5 Awareness, +8% Shadow resistance'
             },
 
         # Wizard Traits
@@ -1363,11 +1363,11 @@ class Trait(object):
             'type' : 'static',
             'action' : applySurvivor,
             'image' : WIZARD + 'survivor.png',
-            'text' : 'Gain a permanent bonus to your maximum health.\n' + \
-                    'Rank I:   +4 Max HP\n' + \
-                    'Rank II:  +8 Max HP\n' + \
-                    'Rank III: +12 Max HP\n' + \
-                    'Rank IV:  +16 Max HP\n' 
+            'text' : 'Gain a permanent bonus to your maximum health and intuition.\n' + \
+                    'Rank I:   +4 Max HP, +1 Intuition\n' + \
+                    'Rank II:  +8 Max HP, +2 Intuition\n' + \
+                    'Rank III: +12 Max HP, +3 Intuition\n' + \
+                    'Rank IV:  +16 Max HP, +4 Intuition\n' 
             },
         'Illusion Spell Focus':
             {

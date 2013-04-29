@@ -1783,7 +1783,7 @@
   [IMAGE: item_status/rock-potion.png]
   [ELEMENT: None]
   [INTERNAL: DR_bonus]
-    [MAGNITUDE: 10]
+    [MAGNITUDE: 20]
   [CATEGORY: Buff]
   [CATEGORY: Stone]
   
@@ -1792,11 +1792,11 @@
   [IMAGE: item_status/prismatic-potion.png]
   [ELEMENT: Arcane]
   [INTERNAL: Elemental_resistance_fire]
-    [MAGNITUDE: 10]
+    [MAGNITUDE: 15]
   [INTERNAL: Elemental_resistance_cold]
-    [MAGNITUDE: 10]
+    [MAGNITUDE: 15]
   [INTERNAL: Elemental_resistance_electric]
-    [MAGNITUDE: 10]
+    [MAGNITUDE: 15]
   [CATEGORY: Buff]
   
 [NAME: Vaccine]
@@ -1812,9 +1812,9 @@
   [IMAGE: item_status/spirit-potion.png]
   [ELEMENT: Shadow]
   [INTERNAL: Elemental_resistance_shadow]
-    [MAGNITUDE: 20]
+    [MAGNITUDE: 22]
   [INTERNAL: Elemental_resistance_arcane]
-    [MAGNITUDE: 5]
+    [MAGNITUDE: 7]
   [CATEGORY: Buff]
 	
 # Display Effects -- Applied Poisons

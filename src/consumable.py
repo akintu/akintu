@@ -264,11 +264,11 @@ class Consumable(entity.Entity):
             },
         'Rock Potion' :
             {
-            'value' : 120,
+            'value' : 140,
             'level' : 5,
             'effect' : _rockPotion,
-            'ip' : 5,
-            'details' : 'Grants +10% DR for 8 \n' + \
+            'ip' : 6,
+            'details' : 'Grants +20% DR for 8 \n' + \
                         'Turns (stone-based)'
             },
         'Prismatic Potion' :
@@ -277,7 +277,7 @@ class Consumable(entity.Entity):
             'level' : 5,
             'effect' : _prismaticPotion,
             'ip' : 6,
-            'details' : 'Grants +10% Fire, Cold,\n' + \
+            'details' : 'Grants +15% Fire, Cold,\n' + \
                         'and Electric Resistance'
             },
         'Vaccine' :
@@ -296,8 +296,8 @@ class Consumable(entity.Entity):
             'level' : 8,
             'effect' : _spiritPotion,
             'ip' : 10,
-            'details' : 'Grants +20% Shadow Resistance\n' + \
-                        'and +5% Arcane Resistance'
+            'details' : 'Grants +22% Shadow Resistance\n' + \
+                        'and +7% Arcane Resistance'
             }
             # TODO: Other buffing potions go here.
         }
