@@ -122,22 +122,22 @@ class Trait(object):
             return
         if not reverse:
             if self.rank == 1:
-                target.statusDR += 2
+                target.statusDR += 3
             elif self.rank == 2:
-                target.statusDR += 4
+                target.statusDR += 5
             elif self.rank == 3:
-                target.statusDR += 6
+                target.statusDR += 7
             elif self.rank == 4:
-                target.statusDR += 9
+                target.statusDR += 10
         else:
             if self.rank == 1:
-                target.statusDR -= 2
+                target.statusDR -= 3
             elif self.rank == 2:
-                target.statusDR -= 4
+                target.statusDR -= 5
             elif self.rank == 3:
-                target.statusDR -= 6
+                target.statusDR -= 7
             elif self.rank == 4:
-                target.statusDR -= 9
+                target.statusDR -= 10
 
     
     def applyFencer(self, target, reverse=False, other=None):
@@ -146,21 +146,29 @@ class Trait(object):
         if not reverse:
             if self.rank == 1:
                 target.statusMeleeAccuracy += 2
+                target.statusMeleeDodge += 1
             elif self.rank == 2:
                 target.statusMeleeAccuracy += 4
+                target.statusMeleeDodge += 1
             elif self.rank == 3:
                 target.statusMeleeAccuracy += 6
+                target.statusMeleeDodge += 2
             elif self.rank == 4:
                 target.statusMeleeAccuracy += 9
+                target.statusMeleeDodge += 2
         else:
             if self.rank == 1:
                 target.statusMeleeAccuracy -= 2
+                target.statusMeleeDodge -= 1
             elif self.rank == 2:
                 target.statusMeleeAccuracy -= 4
+                target.statusMeleeDodge -= 1
             elif self.rank == 3:
                 target.statusMeleeAccuracy -= 6
+                target.statusMeleeDodge -= 2
             elif self.rank == 4:
                 target.statusMeleeAccuracy -= 9
+                target.statusMeleeDodge -= 2
 
     
     def applyShieldResilience(self, target, reverse=False, other=None):
@@ -1019,10 +1027,10 @@ class Trait(object):
             'offStringList' : ['Incoming Melee Attack Complete', 'Incoming Ranged Attack Complete'],
             'image' : FIGHTER + 'tank.png',
             'text' : 'If wearing heavy armor, gain bonus damage resistance.\n' + \
-                    'Rank I:   +2% DR\n' + \
-                    'Rank II:  +4% DR\n' + \
-                    'Rank III: +6% DR\n' + \
-                    'Rank IV:  +9% DR'
+                    'Rank I:   +3% DR\n' + \
+                    'Rank II:  +5% DR\n' + \
+                    'Rank III: +7% DR\n' + \
+                    'Rank IV:  +10% DR'
             },
         'Fencer':
             {
@@ -1033,10 +1041,10 @@ class Trait(object):
             'offStringList' : ['Outgoing Melee Attack Complete'],
             'image' : FIGHTER + 'fencer.png',
             'text' : 'If wearing medium armor, gain bonus melee attack accuracy.\n' + \
-                    'Rank I:   +2 Melee Accuracy\n' + \
-                    'Rank II:  +4 Melee Accuracy\n' + \
-                    'Rank III: +6 Melee Accuracy\n' + \
-                    'Rank IV:  +9 Melee Accuracy'
+                    'Rank I:   +2 Melee Accuracy, +1 Melee Dodge\n' + \
+                    'Rank II:  +4 Melee Accuracy, +1 Melee Dodge\n' + \
+                    'Rank III: +6 Melee Accuracy, +2 Melee Dodge\n' + \
+                    'Rank IV:  +9 Melee Accuracy, +2 Melee Dodge'
             },
         'Shield Resilience':
             {

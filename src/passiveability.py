@@ -116,7 +116,7 @@ class PassiveAbility(object):
 
     def applyStunningRecovery(self, target, reverse=False, statusName=None):
         if statusName == "Stun" and not target.hasStatus("Stunning Recovery"):
-            healing = round(target.totalHP * 0.05)
+            healing = round(target.totalHP * 0.10)
             Combat.healTarget(target, target, healing)
             Combat.addStatus(target, "Stunning Recovery", duration=1)
 
@@ -702,7 +702,7 @@ class PassiveAbility(object):
         'onStringList' : ['Incoming Status Applied'],
         'offStringList' : [],
         'image' : BARBARIAN + "stunning-recovery.png",
-        'text' : 'Whenever the Barbarian is stunned, he recovers 5% of his\n' + \
+        'text' : 'Whenever the Barbarian is stunned, he recovers 10% of his\n' + \
                 'Maximum HP.  May occur once per monster turn.'
         },
         'Walk it off':

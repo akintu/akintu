@@ -224,7 +224,7 @@ class Ability(object):
     def _quickStrike(self, target):
         source = self.owner
         hit = Combat.calcHit(source, target, "Physical", modifier=-12)
-        Combat.basicAttack(source, target, hit, forceMod=0.5, overallDamageMod=0.95)
+        Combat.basicAttack(source, target, hit, forceMod=0.5)
 
     def _quickStrikeCheck(self, target):
         if self.owner.usingWeapon("Melee"):
@@ -1820,7 +1820,7 @@ class Ability(object):
         'checkFunction' : _quickStrikeCheck,
         'breakStealth' : 100,
         'image' : FIGHTER_SKILLS + "quick-strike.png",
-        'text' : "Fast melee attack with -12 Accuracy, -50% force, and -5% overall damage."
+        'text' : "Fast melee attack with -12 Accuracy and -50% force."
         },
         'Precise Blow':
         {
