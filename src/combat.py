@@ -152,8 +152,8 @@ class Combat(object):
           defense -- int probably magicResist
         Outputs:
           Any Hit type string"""
-        offense *= Dice.rollFloat(0.75, 1.00)
-        defense *= Dice.rollFloat(0.75, 1.00)
+        offense *= Dice.rollFloat(0.0, 1.00)
+        defense *= Dice.rollFloat(0.0, 1.00)
         if(offense * 2.5 <= defense):
             return "Fully Resisted"
         elif(offense < defense):

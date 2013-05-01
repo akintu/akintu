@@ -304,12 +304,12 @@ class Spell(object):
     def _chill(self, target):
         source = self.owner
         hitType = Combat.calcHit(source, target, "Magical")
-        damage = Combat.calcDamage(source, target, minimum=1, maximum=12, element="Cold",
+        damage = Combat.calcDamage(source, target, minimum=2, maximum=12, element="Cold",
                                    hitValue=hitType, scalesWith="Spellpower",
                                    scaleFactor=0.01)
         duration = 3
         chance = Dice.rollPresetChance(source, target, "Frequent")
-        magnitude = Dice.scale(source.totalSpellpower, 5, 0.012)
+        magnitude = int(Dice.scale(source.totalSpellpower, 5, 0.012))
         Combat.addStatus(target, self.name, duration, magnitude, hitValue=hitType, chance=chance)
         Combat.lowerHP(target, damage)
         return hitType
@@ -672,8 +672,9 @@ class Spell(object):
         'action' : _chill,
         'cooldown' : None,
         'image' : TIER1 + 'chill.png',
-        'text' : 'Deals 1-12 + 1% cold damage and has a frequent chance to lower\n' + \
-                'the dodge of the target by at least 5 points for 3 turns.'
+        'text' : 'Deals 2-12 + 1% cold damage and has a frequent chance to lower\n' + \
+                'the dodge of the target by at least 5 points and lowers their\n' + \
+                'Cold resistance by 20% for 3 turns.'
         },
 
         'Shock':

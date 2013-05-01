@@ -440,6 +440,8 @@
   [ELEMENT: Cold]
   [INTERNAL: Dodge_penalty]
     [MAGNITUDE: 0]
+  [INTERNAL: Elemental_vulnerability]
+    [MAGNITUDE: 20]
   [CATEGORY: Debuff]
 
 #[NAME: Suggest Laziness]
@@ -1905,9 +1907,9 @@
   [IMAGE: monster_status/howl.png]
   [ELEMENT: None]
   [INTERNAL: Might_penalty]
-    [MAGNITUDE: 15]
+    [MAGNITUDE: 0]
   [INTERNAL: Spell_failure_chance]
-    [MAGNITUDE: 3]
+    [MAGNITUDE: 4]
   [CATEGORY: Debuff]
 
 [NAME: Military Valor]

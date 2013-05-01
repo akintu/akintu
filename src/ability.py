@@ -1570,14 +1570,15 @@ class Ability(object):
             Combat.addStatus(target, "Frigid Slash", duration)
 
     def _howl(self, target):
-        '''Lowers Might by 15 and causes 3% of spells to fail. in an area of effect,
+        '''Lowers Might and causes 4% of spells to fail. in an area of effect,
          and deals a small amount of shadow damage.'''
         source = self.owner
         targetsList = source.getPlayersInRange(4)
         duration = 5
         baseShadowDamage = source.level * 3
         for t in targetsList:
-            Combat.addStatus(t, "Howl", duration)
+            mag = source.level + 9 # Used for might reduction, not spell failure.
+            Combat.addStatus(t, "Howl", duration, mag)
             dam = Combat.calcDamage(source, t, baseShadowDamage, baseShadowDamage + 4, "Shadow", "Normal Hit")
             Combat.lowerHP(t, dam)
 
@@ -3370,7 +3371,8 @@ class Ability(object):
         'checkFunction' : None,
         'breakStealth' : 0,
         'image' : TRICKSTER_SKILLS + 'risky-focus.png',
-        'text' : 'Increase your spellpower by 6 at the cost of 5 Dodge'
+        'text' : 'Increase your spellpower by 6 at the cost of 5 Dodge for the rest\n' + \
+                'of your turn.'
         },
         'Weary Bolt':
         {
