@@ -245,14 +245,14 @@ class Spell(object):
     def _arcaneWard(self, target):
         source = self.owner
         duration = int(Dice.scale(source.totalSpellpower, 3, 0.1, cap=6))
-        magnitude = Dice.scale(source.totalSpellpower, 5, 0.01)
+        magnitude = int(Dice.scale(source.totalSpellpower, 5, 0.01))
         Combat.addStatus(target, self.name, duration, magnitude)
         return "Normal Hit"
 
     def _mysticShield(self, target):
         source = self.owner
         duration = 5
-        magnitude = Dice.scale(source.totalSpellpower, 7, 0.06)
+        magnitude = int(Dice.scale(source.totalSpellpower, 7, 0.06))
         Combat.addStatus(target, self.name, duration, magnitude)
         return "Normal Hit"
 
@@ -278,7 +278,7 @@ class Spell(object):
     def _stoneGuard(self, target):
         source = self.owner
         duration = int(Dice.scale(source.totalSpellpower, 4, 0.05, cap=6))
-        magnitude = Dice.scale(source.totalSpellpower, 12, 0.008)
+        magnitude = int(Dice.scale(source.totalSpellpower, 12, 0.008))
         Combat.addStatus(target, self.name, duration, magnitude)
         return "Normal Hit"
 
@@ -297,7 +297,7 @@ class Spell(object):
         hitType = Combat.calcHit(source, target, "Magical")
         damage = (Combat.calcDamage(source, target, minimum=2, maximum=10, element="Fire",
                                     hitValue=hitType, critical=1.2, partial=0.5,
-                                    scalesWith="Spellpower", scaleFactor=0.05))
+                                    scalesWith="Spellpower", scaleFactor=0.04))
         Combat.lowerHP(target, damage)
         return hitType
 
@@ -306,7 +306,7 @@ class Spell(object):
         hitType = Combat.calcHit(source, target, "Magical")
         damage = Combat.calcDamage(source, target, minimum=2, maximum=12, element="Cold",
                                    hitValue=hitType, scalesWith="Spellpower",
-                                   scaleFactor=0.01)
+                                   scaleFactor=0.02)
         duration = 3
         chance = Dice.rollPresetChance(source, target, "Frequent")
         magnitude = int(Dice.scale(source.totalSpellpower, 5, 0.012))
@@ -364,7 +364,7 @@ class Spell(object):
         Combat.lowerHP(target, damage)
         if hitType not in ["Partial Resist", "Partially Resisted", "Miss", "Fully Resisted", "Resisted"]:
             duration = int(Dice.scale(source.totalSpellpower, 3, 0.02, cap=4))
-            magnitude = round(Dice.roll(2,8) * (1 + source.totalSpellpower * 0.005))
+            magnitude = int(round(Dice.roll(2,8) * (1 + source.totalSpellpower * 0.005)))
             Combat.addStatus(target, self.name, duration, magnitude, hitValue=hitType)
         return hitType
 
@@ -381,7 +381,7 @@ class Spell(object):
     def _blurry(self, target):
         source = self.owner
         duration = 1
-        magnitude = Dice.scale(source.totalSpellpower, 5, 0.02)
+        magnitude = int(Dice.scale(source.totalSpellpower, 5, 0.02))
         Combat.addStatus(target, self.name, duration, magnitude)
         return "Normal Hit"
 
@@ -657,7 +657,7 @@ class Spell(object):
         'action' : _singe,
         'cooldown' : None,
         'image' : TIER1 + 'singe.png',
-        'text' : 'Deals 2-10 + 5% fire damage.\n' + \
+        'text' : 'Deals 2-10 + 4% fire damage.\n' + \
                 'On Critical +20% damage'
         },
 
@@ -672,7 +672,7 @@ class Spell(object):
         'action' : _chill,
         'cooldown' : None,
         'image' : TIER1 + 'chill.png',
-        'text' : 'Deals 2-12 + 1% cold damage and has a frequent chance to lower\n' + \
+        'text' : 'Deals 2-12 + 2% cold damage and has a frequent chance to lower\n' + \
                 'the dodge of the target by at least 5 points and lowers their\n' + \
                 'Cold resistance by 20% for 3 turns.'
         },

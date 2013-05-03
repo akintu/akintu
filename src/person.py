@@ -2848,7 +2848,7 @@ class Person(en.Entity):
         elif element == "Electric":
             testValue = self.totalElectricResistance
         elif element == "Fire":
-            testValue = self.totalElectricResistance
+            testValue = self.totalFireResistance
         elif element == "Piercing":
             testValue = self.totalPiercingResistance
         elif element == "Poison":

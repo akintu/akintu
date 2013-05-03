@@ -1512,7 +1512,18 @@ class Game(object):
         if combat:
             self.pane = self.pane.get_combat_pane(location)
         else:
-            self.screen.show_text('Entering ' + str(location.pane))
+            # If panes had an accessor method for cartesian coordinates, I wouldn't have to
+            # code this in here!
+            paneName = str(location.pane)
+            # Example Format: (+x, -y)
+            paneX = paneName.partition(", ")[0] + paneName.partition(", ")[1]
+            paneY = paneName.partition(", ")[2]
+            if paneY[0] == '-':
+                paneY = paneY[1:]
+            elif paneY[0] != "0":
+                paneY = '-' + paneY[:]
+            displayName = paneX + paneY
+            self.screen.show_text('Entering ' + displayName)
             self.pane = self.world.get_pane(location.pane)
             if self.world.is_town_pane(location.pane) and self.musicState != "town":
                 self.play_music("town", True)

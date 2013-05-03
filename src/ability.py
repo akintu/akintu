@@ -1475,7 +1475,7 @@ class Ability(object):
 
     def _wearyBolt(self, target):
         source = self.owner
-        hit = Combat.calcHit(source, target, "Physical")
+        hit = Combat.calcHit(source, target, "Physical", modifier=2)
         Combat.basicAttack(source, target, hit)
         if hit != "Miss":
             count = target.getStatusStackCount("Weary Bolt") + 1
@@ -3387,7 +3387,7 @@ class Ability(object):
         'checkFunction' : _wearyBoltCheck,
         'breakStealth' : 100,
         'image' : TRICKSTER_SKILLS + 'weary-bolt.png',
-        'text' : 'A ranged attack that requires a crossbow.  On a successful\n' + \
+        'text' : 'A ranged attack at +2 accuracy that requires a crossbow.  On a successful\n' + \
                 'hit, your target loses 5% attack power for 3 turns.  This effect\n' + \
                 'may stack up to 4 times to a total of -20% attack power.'
         },
