@@ -1325,16 +1325,16 @@ class PlayerCharacter(p.Person):
             altGear.append(offHand)
         oldGear = []
         if len(altGear) > 0 and altGear[0]:
-            print "Alt Gear 0: " + altGear[0].name
+            #print "Alt Gear 0: " + altGear[0].name
             oldGear.extend(self.equip(altGear[0]))
         if len(altGear) > 1 and altGear[1]:
-            print "Alt Gear 1: " + altGear[1].name
-            oldGear.extend(self.equip(altGear[1]))
+            #print "Alt Gear 1: " + altGear[1].name
+            oldGear.extend(self.equip(altGear[1], hand="Left"))
         if len(oldGear) > 0 and oldGear[0]:
-            print "Old Gear 0: " + oldGear[0].name
+            #print "Old Gear 0: " + oldGear[0].name
             self.equip(oldGear[0], alternate=True)
         if len(oldGear) > 1 and oldGear[1]:
-            print "Old Gear 1: " + oldGear[1].name
+            #print "Old Gear 1: " + oldGear[1].name
             self.equip(oldGear[1], "Left", alternate=True)
 
     def printCharacterSheet(self):
