@@ -310,7 +310,8 @@ class Spell(object):
         duration = 3
         chance = Dice.rollPresetChance(source, target, "Frequent")
         magnitude = int(Dice.scale(source.totalSpellpower, 5, 0.012))
-        Combat.addStatus(target, self.name, duration, magnitude, hitValue=hitType, chance=chance)
+        if hitType != "Fully Resisted" and hitType != "Miss":
+            Combat.addStatus(target, self.name, duration, magnitude, hitValue=hitType, chance=chance)
         Combat.lowerHP(target, damage)
         return hitType
 
