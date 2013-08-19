@@ -1806,7 +1806,7 @@ class Ability(object):
         'checkFunction' : None,
         'breakStealth' : 100,
         'image' : FIGHTER_SKILLS + "dash.png",
-        'text' : "Allows for movement at a reduced AP cost."
+        'text' : "Allows for movement at a reduced AP cost. (Will break Stealth.)"
         },
         'Quick Strike':
         {
