@@ -145,7 +145,7 @@ class PlayerCharacter(p.Person):
         self.knockbackResistance = 0 # Amount above 100 is treated as 100.
         self._equipmentIntuition = 0
         self._statusIntuition = 0
-        self._baseIntuition = 0
+        self._baseIntuition = p.Person.setFrom(argDict, 'startingIntuition', 0)
         self._equipmentShopBonus = 0
 
         # --- Thief classes ---
