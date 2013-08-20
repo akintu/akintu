@@ -187,6 +187,71 @@ class PassiveAbility(object):
         if toRemove:
             target.abilities.remove(toRemove)
 
+    # Weapon Master
+    def applyShieldEfficiency(self, target, reverse=False, other=None):
+        source = self.owner
+        if source.usingShield():
+            Combat.modifyResource(source, "AP", 1)
+
+    def applyDirectCounterattack(self, target, reverse=False, other=None):
+        source = self.owner
+        # TODO: STUB
+        pass
+        
+    def applyShieldCounter(self, target, reverse=False, other=None):
+        source = self.owner
+        # Stack an additional 50% bludgeoning damage onto the counterattack.
+        # TODO: STUB
+        pass
+        
+    def applyTwoHandedParry(self, target, reverse=False, other=None):
+        source = self.owner
+        # TODO: Make this only apply to angles that you can counterattack from.
+        if not source.usingWeaponStyle("Two Handed"):
+            return
+        if not reverse:
+            source.statusDodge += 4
+        else:
+            source.statusDodge -= 4
+            
+    def applyHoldTheLine(self, target, reverse=False, percent=None):
+        if not reverse:
+            if not target.hasStatus("Hold the Line") and percent < 0.30:
+                Combat.addStatus(target, "Hold the Line", -1)
+        else:
+            if target.hasStatus("Hold the Line") and percent >= 0.30:
+                Combat.removeStatus(target, "Hold the Line")
+            
+    def applyDirectCounterattack2(self, target, reverse=False, other=None):
+        source = self.owner
+        # TODO: STUB
+        pass
+    
+    def applyDirectCounterattackUpgrade(self, target):    
+        toRemove = None
+        for abil in target.abilities:
+            if abil.name == "Direct Counterattack":
+                toRemove = abil
+                break
+        if toRemove:
+            target.abilities.remove(toRemove)
+            
+    def applyTwoWeaponGlancing(self, target, reverse=False, other=None):
+        source = self.owner
+        if not reverse:
+            if source.usingWeaponStyle("Dual"):
+                source.statusDR += 2
+        else:
+            if source.usingWeaponStyle("Dual"):
+                source.statusDR -= 2
+    
+    def applyRapidBandaging(self, target, reverse=False,  statusName=None):
+        # An odd mechanism to find out if the most recently applied status
+        # was a bleeding status...
+        status = target.getMostRecentStatus("Bleeding")
+        if status.name == statusName and Dice.rollSuccess(50):
+            Combat.removeStatus(target, statusName)
+    
     # Spellsword
     def applySeekerOfEnchantments(self, target, reverse=False, spell=None):
         if not reverse:
@@ -785,6 +850,111 @@ class PassiveAbility(object):
         'action' : applyJumpAttackUpgrade3
         },
 
+        'Shield Efficiency':
+        {
+        'class' : 'Weapon Master',
+        'level' : 1,
+        'type' : 'dynamic',
+        'action' : applyShieldEfficiency,
+        'onStringList' : ['Outgoing Melee Attack'],
+        'offStringList' : [],
+        # 'image' : WEAPONMASTER + 'shield-efficiency.png',
+        'text' : 'Basic melee attacks refund 1 AP when using a shield.' 
+        },
+        'Direct Counterattack':
+        {
+        'class' : 'Weapon Master',
+        'level' : 1,
+        'type' : 'dynamic',
+        'action' : applyDirectCounterattack,
+        'onStringList' : ['Incoming Melee Attack'],
+        'offStringList' : [],
+        'image' : WEAPONMASTER + 'direct-counterattack.png',
+        'text' : "Upon being attacked in melee by an enemy directly\n" +\
+                 "in front of you, you will immediately counterattack with a\n" +\
+                 "basic melee attack during the enemy's turn."
+        },
+        'Shield Counter':
+        {
+        'class' : 'Weapon Master',
+        'level' : 2,
+        'type' : 'dynamic',
+        'action' : applyShieldCounter,
+        'onStringList' : ['Outgoing Counterattack'],
+        'offStringList' : [],
+        'image' : WEAPONMASTER + 'shield-counter.png',
+        'text' : 'Deal 50% extra damage as bludgeoning during counterattacks.\n' +\
+                 'Must have a shield equipped.'
+        },
+        'Two-Handed Parry':
+        {
+        'class' : 'Weapon Master',
+        'level' : 2,
+        'type' : 'dynamic',
+        'action' : applyTwoHandedParry,
+        'onStringList' : ['Incoming Melee Attack'],
+        'offStringList' : ['Incoming Melee Attack Complete'],
+        'image' : WEAPONMASTER + 'two-handed-parry.png',
+        'text' : 'When attacked from angles from which you can counterattack,\n' +\
+                 '+4 Dodge if equipped with a two-handed weapon.'
+        },
+        'Hold the Line':
+        {
+        'class' : 'Weapon Master',
+        'level' : 3,
+        'type' : 'dynamic',
+        'action' : applyHoldTheLine,
+        'onStringList' : ['Player HP Level Changed'],
+        'offStringList' : ['Player HP Level Changed'],
+        'image' : WEAPONMASTER + 'hold-the-line.png',
+        'text' :  'If your HP is reduced below 30%, you gain +5% DR until\n' +\
+                  'it reaches 30% or higher. Must have a shield equipped.'
+        },
+        'Direct Counterattack 2':
+        {
+        'class' : 'Weapon Master',
+        'level' : 4,
+        'type' : 'dynamic',
+        'action' : applyDirectCounterattack2,
+        'onStringList' : ['Incoming Melee Attack'],
+        'offStringList' : [],
+        'image' : WEAPONMASTER + 'direct-counterattack.png',
+        'text' : "Upon being attacked in melee by an enemy directly\n" +\
+                 "in front of you, or front-diagonal to you, you will\n" +\
+                 "immediately counterattack with a basic melee\n" +\
+                 "attack during the enemy's turn."
+        },
+        '--IGNORE-- Direct Counterattack Upgrade':
+        {
+        'class' : 'Weapon Master',
+        'level' : 4,
+        'type' : 'static',
+        'action' : applyDirectCounterattackUpgrade
+        },
+        'Two-Weapon Glancing':
+        {
+        'class' : 'Weapon Master',
+        'level' : 5,
+        'type' : 'dynamic',
+        'action' : applyTwoWeaponGlancing,
+        'onStringList' : ['Incoming Melee Attack'],
+        'offStringList' : ['Incoming Melee Attack Complete'],
+        'image' : WEAPONMASTER + 'two-weapon-glancing.png',
+        'text' : 'Gain +2% DR against melee attacks while equipping two weapons.'
+        },
+        'Rapid Bandaging':
+        {
+        'class' : 'Weapon Master',
+        'level' : 5,
+        'type' : 'dynamic',
+        'action' : applyRapidBandaging,
+        'onStringList' : ['Incoming Status Applied'],
+        'offStringList' : [],
+        'image' : WEAPONMASTER + 'rapid-bandaging.png',
+        'text' : 'When a bleeding effect would normally be applied to the\n' +\
+                 'Weaponmaster, there is a 50% chance that it will be ignored.'
+        },
+        
         'Seeker of Enchantments':
         {
         'class' : 'Spellsword',

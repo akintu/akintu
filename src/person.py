@@ -2727,7 +2727,7 @@ class Person(en.Entity):
                      to look for.  Possible values include:
                      "Buff", "Debuff", "Magical", "Physical",
                      "Weapon Enchantment", "Threading", "Stealth",
-                     "DR Debuff"
+                     "DR Debuff", "Bleeding"
         Outputs:
           Status object or None"""
         matches = []
