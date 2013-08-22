@@ -294,8 +294,8 @@ class Combat(object):
                                          target)
                 return "Miss"
             if source.usingWeapon("Ranged") and \
-               Dice.rollBeneath(target.totalRangedAvoidanceChance):
-               Combat.sendCombatMessage("Avoided ranged attack (" + str(target.totalRangedAvoidanceChance) +
+            Dice.rollBeneath(target.totalRangedAvoidanceChance):
+                Combat.sendCombatMessage("Avoided ranged attack (" + str(target.totalRangedAvoidanceChance) +
                                         "%)", target)
                 return "Miss"
             attackOne = Combat.physicalHitMechanics(source, target, modifier, critMod, ignoreMeleeBowPenalty)

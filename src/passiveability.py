@@ -858,7 +858,7 @@ class PassiveAbility(object):
         'action' : applyShieldEfficiency,
         'onStringList' : ['Outgoing Melee Attack'],
         'offStringList' : [],
-        # 'image' : WEAPONMASTER + 'shield-efficiency.png',
+        'image' : WEAPONMASTER + 'shield-efficiency.png',
         'text' : 'Basic melee attacks refund 1 AP when using a shield.' 
         },
         'Direct Counterattack':

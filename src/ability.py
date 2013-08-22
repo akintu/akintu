@@ -735,8 +735,22 @@ class Ability(object):
         
     def _trueFriend(self, target):
         source = self.owner
-        # TODO: STUB
-        pass
+        bonusDodge = False
+        if source.usingShield():
+            selfMagnitude = 35
+            friendMagnitude = 30
+        else:
+            selfMagnitude = 30
+            friendMagnitude = 25
+            bonusDodge = True
+        duration = 1
+        Combat.addStatus(source, "True Friend", duration, selfMagnitude)
+        for ally in Combat.getAOETargets(source.cPane, source.cLocation, radius=1, selectMonsters=False):
+            if ally != source:
+                Combat.addStatus(ally, "True Friend", duration, friendMagnitude)
+            if bonusDodge:
+                Combat.addStatus(ally, "True Friend Parry", duration)
+        Combat.endTurn(source)
         
     # Spellsword
     def _martialMode(self, target):
@@ -2497,11 +2511,11 @@ class Ability(object):
         'checkFunction' : None,
         'breakStealth' : 100,
         'image' : WEAPONMASTER_SKILLS + 'true-friend.png',
-        'text' : 'If you end your turn adjacent to another player that is \n' +\
-                 'not a Weaponmaster, you will receive all melee attacks\n' +\
-                 'directed at that player 60% of the time. You gain 5%\n' +\
-                 'bonus DR during this period. You cannot counter attacks\n' +\
-                 'from angles that you could not previously counter.'
+        'text' : 'Grant +25 DR to all allies adjacent to you and +30 DR\n' +\
+                 'to yourself for the coming enemy turn. If you are using\n' +\
+                 'a shield, both you and affected allies gain and additional\n' +\
+                 '+5 DR. If you are not using a shield, both you and affected\n' +\
+                 'allies gain a bonus +2 Dodge.'
         },
         
         
