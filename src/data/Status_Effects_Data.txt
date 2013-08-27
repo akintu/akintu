@@ -289,6 +289,10 @@
   [RECURRING: False]
   [IMMUNE: None]
 
+[NAME: Ranged_avoidance_bonus]
+  [TYPE: Internal]
+  [RECURRING: False]
+
 [NAME: Ranged_critical_magnitude_bonus]
   [TYPE: Internal]
   [RECURRING: False]
@@ -844,28 +848,27 @@
 
 # Display Effects -- Weapon Master Skills
 
-#[NAME: Shield Deflection]
-#  [TYPE: Display]
-#  [IMAGE: skills/weaponmaster_skills/shield-deflection.png]
-#  [ELEMENT: None]
-#  [INTERNAL: Ignore_ranged_attacks]
-#    [MAGNITUDE: 20]
-#  [REMOVED_ON: Shield Unequipped]
-#  [CATEGORY: Buff]
+[NAME: Shield Deflection]
+  [TYPE: Display]
+  [IMAGE: skills/weaponmaster_skills/shield-deflection.png]
+  [ELEMENT: None]
+  [INTERNAL: Ranged_avoidance]
+    [MAGNITUDE: 20]
+  [CATEGORY: Buff]
   
-#[NAME: True Friend]
-#  [TYPE: Display]
-#  [IMAGE: skills/weaponmaster_skills/true-friend.png]
-#  [ELEMENT: None]
-#  [INTERNAL: DR_bonus]
-#    [MAGNITUDE: 5]
-	
-#[NAME: True Friend Protection]
-#  [TYPE: Display]
-#  [IMAGE: skills/weaponmaster_skills/true-friend.png]
-#  [ELEMENT: None]
-#  [INTERNAL: Redirect_melee_attacks]
-#    [MAGNITUDE: 90]
+[NAME: True Friend]
+  [TYPE: Display]
+  [IMAGE: skills/weaponmaster_skills/true-friend.png]
+  [ELEMENT: None]
+  [INTERNAL: DR_bonus]
+    [MAGNITUDE: 0]
+
+[NAME: True Friend Parry]
+  [TYPE: Display]
+  [IMAGE: skills/weaponmaster_skills/true-friend.png]
+  [ELEMENT: None]
+  [INTERNAL: Dodge_bonus]
+    [MAGNITUDE: 2]
 
 # Display Effects -- Dragoon Skills
 

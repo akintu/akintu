@@ -694,6 +694,64 @@ class Ability(object):
             return (True, "")
         return (False, "Must be using a polearm to use: " + self.name)
     
+    #Weapon Master
+    def _shieldDeflection(self, target):
+        source = self.owner
+        duration = 2
+        Combat.addStatus(target, "Shield Deflection", duration)
+    
+    def _shieldDeflectionCheck(self, target):
+        source = self.owner
+        if source.usingShield("Heavy"):
+            return (True, "")
+        return (False, "Must be using a Heavy Shield to use: " + self.name)
+
+    def _shieldBash(self, target):
+        source = self.owner
+        hit = Combat.calcHit(source, target, "Physical")
+        Combat.basicAttack(source, target, hit, elementOverride="Bludgeoning", overallDamageMod=0.30)
+        if hit != "Miss":
+            chance = 80
+            if target.size == "Large":
+                chance = 30
+            elif target.size == "Huge":
+                chance = 0
+            if target.totalDR >= 20:
+                chance = 0
+            if Dice.rollSuccess(chance) == "Normal Hit":
+                duration = 1
+                Combat.addStatus(target, "Stun", duration)
+                Combat.sendCombatMessage("Stun Success! (" + str(chance) + ")", source, color="darkorange", toAll=False)
+            elif chance !=0:
+                Combat.sendCombatMessage("Failed to Stun! (" + str(chance) + ")", source, color="darkorange", toAll=False)
+            else:
+                Combat.sendCombatMessage("Target Immune to Shield Bash stun.", source, color="darkorange", toAll=False)
+        
+    def _shieldBashCheck(self, target):
+        source = self.owner
+        if source.usingShield():
+            return (True, "")
+        return (False, "Must be using a Shield to use: " + self.name)
+        
+    def _trueFriend(self, target):
+        source = self.owner
+        bonusDodge = False
+        if source.usingShield():
+            selfMagnitude = 35
+            friendMagnitude = 30
+        else:
+            selfMagnitude = 30
+            friendMagnitude = 25
+            bonusDodge = True
+        duration = 1
+        Combat.addStatus(source, "True Friend", duration, selfMagnitude)
+        for ally in Combat.getAOETargets(source.cPane, source.cLocation, radius=1, selectMonsters=False):
+            if ally != source:
+                Combat.addStatus(ally, "True Friend", duration, friendMagnitude)
+            if bonusDodge:
+                Combat.addStatus(ally, "True Friend Parry", duration)
+        Combat.endTurn(source)
+        
     # Spellsword
     def _martialMode(self, target):
         source = self.owner
@@ -2405,6 +2463,61 @@ class Ability(object):
                 'with a reliable chance if the hit is successful.  Must be using\n' + \
                 'a polearm.'
         },
+        
+        #Weapon Master
+        'Shield Deflection':
+        {
+        'level' : 1,
+        'class' : 'Weapon Master',
+        'HPCost' : 0,
+        'APCost' : 4,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _shieldDeflection,
+        'cooldown' : 5,
+        'checkFunction' : _shieldDeflectionCheck,
+        'breakStealth' : 0,
+        'image' : WEAPONMASTER_SKILLS + 'shield-deflection.png',
+        'text' : 'Gain a 20% chance to avoid ranged attacks. Requires a heavy shield. \n' +\
+                 'Lasts 2 turns.'
+        },
+        'Shield Bash':
+        {
+        'level' : 1,
+        'class' : 'Weapon Master',
+        'HPCost' : 0,
+        'APCost' : 8,
+        'range' : 1,
+        'target' : 'hostile',
+        'action' : _shieldBash,
+        'cooldown' : 3,
+        'checkFunction' : _shieldBashCheck,
+        'breakStealth' : 0,
+        'image' : WEAPONMASTER_SKILLS + 'shield-bash.png',
+        'text' : 'Deal 30% weapon damage as bludgeoning. If the enemy has less than 20% DR,\n' +\
+                 'you have an 80% chance to stun for one turn. If the enemy is large, that\n' +\
+                 'chance is 30%. Huge enemies are immune.'
+        },
+        'True Friend':
+        {
+        'level' : 3,
+        'class' : 'Weapon Master',
+        'HPCost' : 0,
+        'APCost' : 10,
+        'range' : 0,
+        'target' : 'self',
+        'action' : _trueFriend,
+        'cooldown' : None,
+        'checkFunction' : None,
+        'breakStealth' : 100,
+        'image' : WEAPONMASTER_SKILLS + 'true-friend.png',
+        'text' : 'Grant +25 DR to all allies adjacent to you and +30 DR\n' +\
+                 'to yourself for the coming enemy turn. If you are using\n' +\
+                 'a shield, both you and affected allies gain and additional\n' +\
+                 '+5 DR. If you are not using a shield, both you and affected\n' +\
+                 'allies gain a bonus +2 Dodge.'
+        },
+        
         
         #Spellsword
         'Martial Mode':

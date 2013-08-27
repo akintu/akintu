@@ -268,6 +268,9 @@ class InternalStatus(object):
     def Ranged_accuracy_penalty_method(self, target, magnitude):
         target.statusRangedAccuracy -= magnitude
 
+    def Ranged_avoidance_bonus_method(self, target, magnitude):
+        target.rangedAvoidanceChance += magnitude
+        
     def Ranged_critical_magnitude_bonus_method(self, target, magnitude):
         target.statusRangedCriticalMagnitude += magnitude
 
@@ -524,6 +527,9 @@ class InternalStatus(object):
 
     def Ranged_accuracy_penalty_method_reverse(self, target, magnitude):
         target.statusRangedAccuracy += magnitude
+        
+    def Ranged_avoidance_bonus_method_reverse(self, target, magnitude):
+        target.rangedAvoidanceChance -= magnitude
 
     def Ranged_critical_magnitude_bonus_method_reverse(self, target, magnitude):
         target.statusRangedCriticalMagnitude -= magnitude
@@ -659,6 +665,7 @@ class InternalStatus(object):
         'Prepare_melee_dodge_counterattack' : None,
         'Ranged_accuracy_bonus' : Ranged_accuracy_bonus_method,
         'Ranged_accuracy_penalty' : Ranged_accuracy_penalty_method,
+        'Ranged_avoidance_bonus' : Ranged_avoidance_bonus_method,
         'Ranged_critical_magnitude_bonus' : Ranged_critical_magnitude_bonus_method,
         'Ranged_dodge_bonus' : Ranged_dodge_bonus_method,
         'Ranged_dodge_penalty' : Ranged_dodge_penalty_method,
@@ -753,6 +760,7 @@ class InternalStatus(object):
         'Prepare_melee_dodge_counterattack' : None,
         'Ranged_accuracy_bonus' : Ranged_accuracy_bonus_method_reverse,
         'Ranged_accuracy_penalty' : Ranged_accuracy_penalty_method_reverse,
+        'Ranged_avoidance_bonus' : Ranged_avoidance_bonus_method_reverse,
         'Ranged_critical_magnitude_bonus' : Ranged_critical_magnitude_bonus_method_reverse,
         'Ranged_dodge_bonus' : Ranged_dodge_bonus_method_reverse,
         'Ranged_dodge_penalty' : Ranged_dodge_penalty_method_reverse,
@@ -905,6 +913,8 @@ class InternalStatus(object):
             "Ranged accuracy has been raised {magnitude} points, increasing the chance of hitting with Ranged attacks.",
         'Ranged_accuracy_penalty' :
             "Ranged accuracy has been lowered {magnitude} points, decreasing the chance of hitting with Ranged attacks.",
+        'Ranged_avoidance_bonus' :
+            "The chance to ignore incoming ranged attacks has been increased {magnitude}%.",
         'Ranged_critical_magnitude_bonus' :
             "Bonus damage from ranged critical hits has been raised by {magnitude}%.",
         'Ranged_dodge_bonus' :

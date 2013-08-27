@@ -229,6 +229,7 @@ class Person(en.Entity):
         self._statusSlashingResistance = 0
 
         self._avoidanceChance = 0
+        self._rangedAvoidanceChance = 0
 
         self._HPBufferList = []
 
@@ -419,6 +420,22 @@ class Person(en.Entity):
         """Should be a non-negative int."""
         self._avoidanceChance = value
 
+    @property
+    def totalRangedAvoidanceChance(self):
+        '''The chance to avoid (not dodge) a ranged
+        attack, usually due to heavy shield abilities.'''
+        return self._rangedAvoidanceChance
+        
+    @property
+    def rangedAvoidanceChance(self):
+        '''The chance to avoid (not dodge) a ranged
+        attack, usually due to heavy shield abilities.'''
+        return self._rangedAvoidanceChance
+        
+    @rangedAvoidanceChance.setter
+    def rangedAvoidanceChance(self, value):
+        self._rangedAvoidanceChance = value
+        
     # Elemental Resistances
 
     @property
@@ -2727,7 +2744,7 @@ class Person(en.Entity):
                      to look for.  Possible values include:
                      "Buff", "Debuff", "Magical", "Physical",
                      "Weapon Enchantment", "Threading", "Stealth",
-                     "DR Debuff"
+                     "DR Debuff", "Bleeding"
         Outputs:
           Status object or None"""
         matches = []
