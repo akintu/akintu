@@ -1317,7 +1317,8 @@ class Game(object):
         self.targetRegion = target
 
         trapList = [l for l in Region("SQUARE", Location(self.pane.person[self.id].location.pane, \
-                (0, 0)), Location(PANE_X - 1, PANE_Y - 1)) if self.pane.tiles[l.tile].trap]
+                (0, 0)), Location(self.pane.person[self.id].location.pane, (PANE_X - 1, PANE_Y - 1))) \
+                if self.pane.tiles[l.tile].trap]
         traps = Region(trapList)
         dirty += self.trapsRegion ^ traps
         self.trapsRegion = traps
