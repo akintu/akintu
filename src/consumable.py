@@ -311,7 +311,6 @@ class Consumable(entity.Entity):
             'details' : 'Applies +20% Weapon damage \n' + \
                         'as Poison (Rating = User level\n' + \
                         ' * 3 + 7)'
-                
             },
         'Numbing Poison' :
             {
@@ -340,25 +339,3 @@ class Consumable(entity.Entity):
             # TODO: Fill in other poisons.
         }
         # TODO: Scrolls/Oils and Effusions
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
