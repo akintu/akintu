@@ -1,3 +1,0 @@
-This is a placeholder file to make the doc folder show up in github
-
-It will be deleted when we generate real docs later
