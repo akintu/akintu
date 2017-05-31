@@ -34,5 +34,5 @@ command (assumes python.exe is in your path):
 
 For more information:
 
-Public Wiki:  http://github.com/basepi/akintu-pub/wiki
-Keybindings:  https://github.com/basepi/akintu-pub/wiki/Controls
+Public Wiki:  https://github.com/akintu/akintu/wiki
+Keybindings:  https://github.com/akintu/akintu/wiki/Controls
